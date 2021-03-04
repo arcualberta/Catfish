@@ -3269,13 +3269,22 @@ namespace Catfish.UnitTests
             atf.FieldLabelCssClass = "col-md-12";
             atf.FieldValueCssClass = "col-md-12";
             atf.TableHead.CreateField<InfoSection>("", lang);
-            atf.TableHead.CreateField<IntegerField>("U of A", lang);
-            atf.TableHead.CreateField<IntegerField>("Other Canada", lang);
-            atf.TableHead.CreateField<IntegerField>("Other Countries", lang);
-            atf.TableHead.CreateField<IntegerField>("Total # of People", lang);
-            atf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
-            atf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
-
+            var fromUofA =atf.TableHead.CreateField<IntegerField>("U of A", lang);
+            var fromCanada = atf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            var fromOtherCountries =atf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            var totPeople = atf.TableHead.CreateField<IntegerField>("Total # of People", lang);
+            totPeople.Readonly = true;
+            totPeople.ValueExpression.AppendValue(fromUofA)
+            .AppendOperator(ComputationExpression.eMath.PLUS)
+            .AppendValue(fromCanada)
+            .AppendOperator(ComputationExpression.eMath.PLUS)
+            .AppendValue(fromOtherCountries);
+            var regFee =  atf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
+            var totRegFee = atf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
+            totRegFee.ValueExpression.AppendValue(totPeople)
+                .AppendOperator(ComputationExpression.eMath.MULT)
+                .AppendValue(regFee);
+            totRegFee.Readonly = true;
             //NOTE: we MUST finish defining all columns before setting any column values.
             atf.SetColumnValues(0, attendeeCat, lang);
             atf.AllowAddRows = false;
@@ -3287,10 +3296,17 @@ namespace Catfish.UnitTests
             stf.FieldLabelCssClass = "col-md-12";
             stf.FieldValueCssClass = "col-md-12";
             stf.TableHead.CreateField<InfoSection>("", lang);
-            stf.TableHead.CreateField<IntegerField>("U of A", lang);
-            stf.TableHead.CreateField<IntegerField>("Other Canada", lang);
-            stf.TableHead.CreateField<IntegerField>("Other Countries", lang);
-            stf.TableHead.CreateField<IntegerField>("Total", lang);
+           var uofaSpeakers =  stf.TableHead.CreateField<IntegerField>("U of A", lang);
+            var canadaSpeakers = stf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            var otherSpeakers = stf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            var totSpeakers = stf.TableHead.CreateField<IntegerField>("Total", lang);
+            totSpeakers.ValueExpression
+                       .AppendValue(uofaSpeakers)
+                       .AppendOperator(ComputationExpression.eMath.PLUS)
+                       .AppendValue(canadaSpeakers)
+                       .AppendOperator(ComputationExpression.eMath.PLUS)
+                       .AppendValue(otherSpeakers);
+            totSpeakers.Readonly = true;
 
             //NOTE: we MUST finish defining all columns before setting any column values.
             stf.SetColumnValues(0, speakerCat, lang);
@@ -3300,9 +3316,12 @@ namespace Catfish.UnitTests
             stfooter.Fields[0].SetValue("Total", lang);
             stfooter.SetReadOnly();
             for (var i = 1; i < stfooter.Fields.Count; ++i)
+            {
+                stfooter.Fields[i].ValueExpression.Clear();
                 stfooter.Fields[i].ValueExpression.AppendColumnSum(stf, i);
+            }
 
-            stf.AllowAddRows = false;
+          
 
 
 
@@ -3321,15 +3340,14 @@ namespace Catfish.UnitTests
             ftf.TableHead.CreateField<RadioField>("Is Confirmed?", lang, new string[] { "Yes", "No" })
                 .FieldValueCssClass = "";
 
-            ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
-            ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);
-            ftf.TableHead.CreateField<DecimalField>("Total", lang);
+           var amountReq =  ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
+           var amountConfirm =  ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);
 
             TableRow ffooter = ftf.AppendRow(TableField.eRowTarget.Footer);
             ffooter.Fields[0].SetValue("Grand Total", lang);
             ffooter.SetReadOnly();
             //only to target last col for Grand Total
-            for (var i = ffooter.Fields.Count-1; i < ffooter.Fields.Count; ++i)
+            for (var i = ffooter.Fields.Count-2; i < ffooter.Fields.Count; ++i)
             {
              //   The footer doesn't need value expressions inherited 
               //  from the header elements, so we clear them first
@@ -3341,8 +3359,6 @@ namespace Catfish.UnitTests
 
             //The third column in the footer is meaningless, so we exclude it from rendering
             ffooter.Fields[1].Exclude = true;
-            ffooter.Fields[2].Exclude = true;
-            ffooter.Fields[3].Exclude = true;
 
 
             ftf.AppendRows(1);
@@ -3592,6 +3608,161 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             form.CreateField<TextArea>("Comments", lang, false).SetAttribute("cols", 50);
 
             return form;
+        }
+
+        [Test]
+        public void GapFinalReportTest()
+        {
+            //OTHER EXTRA FORMS : "Add Notes", "Adjudication" and "Ranking" forms same with SAS ones
+            // cahirAssesment and adviser assessment form
+            string lang = "en";
+            string templateName = "GAP Final Report";
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            //ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = template.Workflow;
+
+            //Defininig states
+
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+
+          
+            //=============================================================================== Defininig SAS form
+            DataItem confForm = template.GetDataItem("GAP Final Report", true, lang);
+            confForm.IsRoot = true;
+            confForm.SetDescription("This template is designed for Gap Final Report", lang);
+
+            // ====================================================== HOST
+            confForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h3", "Instructions", lang);
+            confForm.CreateField<InfoSection>(null, null)
+               .AppendContent("div", "Briefly outline how the funding received benefited the project for which funding was granted.", lang, "alert alert-info");
+            confForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h3", "Demographics", lang);
+
+            confForm.CreateField<TextField>("Name:", lang, true);
+            var applicantEmail = confForm.CreateField<EmailField>("Email:", lang, true)
+                .SetDescription("Please use your UAlberta CCID email address.", lang);
+
+            string[] departmentList = GetDepartmentList();
+            var dept = confForm.CreateField<SelectField>("Department:", lang, departmentList, true);
+
+            string[] appCat = new string[] { "SAS Grant", "Conference Fund Grant" };
+            var applicantCat = confForm.CreateField<SelectField>("Grant Name:", lang, appCat, true);
+
+            confForm.CreateField<DateField>("Date of Award:", lang, true);
+            confForm.CreateField<DateField>("Report Due Date:", lang, true);
+            var notes = confForm.CreateField<TextArea>("Report Notes:", lang,true);
+
+            notes.Rows = 5;
+            notes.Cols = 50;
+
+
+            //=============================================================================             Defininig roles
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("SAS_Admin", true));
+
+
+            //Defining email templates
+
+
+
+            // ================================================
+            //  Submission-Instantiate related workflow items
+            // ================================================
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedDomain("@ualberta.ca");
+
+
+            // ================================================
+            //  Submission-List related workflow items
+            // ================================================
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+
+            // ================================================
+            //  Submission-Edit related workflow items
+            // ================================================
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            editSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining post actions
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+
+            // ================================================
+            //  Submission-Delete related workflow items
+            // ================================================
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\gapFinalReportForm_generared.xml");
+
+            // string json = JsonConvert.SerializeObject(template);
+            // File.WriteAllText("..\\..\\..\\..\\Examples\\gapFinalReportForm_generared.json", json);
         }
 
 
