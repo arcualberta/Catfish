@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Models.Contents.Workflow;
 using System;
 using System.Collections.Generic;
@@ -149,6 +150,22 @@ namespace Catfish.Core.Models
         public DataItem InstantiateRootItem()
         {
             return InstantiateDataItem(GetRootDataItem(false).Id);
+        }
+
+        public T GetReport<T>(string reportName, bool createIfNotExists) where T : BaseReport
+        {
+            BaseReport report = Reports
+                .Where(rep => rep.Name == reportName)
+                .FirstOrDefault();
+
+            if (report == null && createIfNotExists)
+            {
+                var t = typeof(T);
+
+                report = Activator.CreateInstance(t) as T;
+                Reports.Add(report);
+            }
+            return report as T;
         }
     }
 }

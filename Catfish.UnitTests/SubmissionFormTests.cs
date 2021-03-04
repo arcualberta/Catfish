@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
 using NUnit.Framework;
@@ -443,5 +444,39 @@ namespace Catfish.UnitTests
 
         }
 
+        [Test]
+
+        public void ReportTest()
+        {
+            string lang = "en";
+            string templateName = "Report Test Template";
+            string submissionFormName = "Report Test";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+            DataItem form = template.GetRootDataItem(false);
+            Assert.IsNotNull(form);
+
+            string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
+            var dd1 = form.CreateField<SelectField>("DD 1", lang, options, false);
+            var rb1 = form.CreateField<RadioField>("RB 1", lang, options, false);
+            var chk1 = form.CreateField<CheckboxField>("CB 1", lang, options, false);
+            var txt1 = form.CreateField<TableField>("Text 1", lang, false);
+            var ta1 = form.CreateField<TextArea>("Text 1", lang, false);
+
+            //var cf1 = form.CreatedFied<CompositeField>("CF 1", lang);
+
+            //var report = template.GetReport<SubmissionReport>("report name", true);
+            //report
+            //    .AddField(dd1)
+            //    .AddField(chk1)
+            //    .AddField(txt1)
+            //    .AddField(cf1, chidFormField);
+
+
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\reportTestFormWorkflow_generared.xml");
+
+        }
     }
 }

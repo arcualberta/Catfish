@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Catfish.Core.Models.Contents.Reports
 {
-    public class SubmissionReport
+    public class SubmissionReport : BaseReport
     {
     }
 }
