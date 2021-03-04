@@ -3657,7 +3657,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-
+          
             //=============================================================================== Defininig SAS form
             DataItem confForm = template.GetDataItem("GAP Final Report", true, lang);
             confForm.IsRoot = true;
@@ -3690,11 +3690,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
 
             //=============================================================================             Defininig roles
-            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
-            WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
-
-
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("SAS_Admin", true));
+           
 
             //Defining email templates
             // string emailBody = "";
@@ -3709,14 +3706,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //<br/>
             //<p>Thank you.</p>";
 
-          //  EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
-          //  chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
-          //  chairEmailTemplate.SetSubject("SAS Application");
-          //  chairEmailTemplate.SetBody("emailBody");
+            //  EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
+            //  chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
+            //  chairEmailTemplate.SetSubject("SAS Application");
+            //  chairEmailTemplate.SetBody("emailBody");
 
-          //  EmailTemplate advisorEmailTemplate = template.GetEmailTemplate("Advisor Email Template", lang, true);
-           // advisorEmailTemplate.SetSubject("SAS Application");
-           // advisorEmailTemplate.SetBody("emailBody");
+            //  EmailTemplate advisorEmailTemplate = template.GetEmailTemplate("Advisor Email Template", lang, true);
+            // advisorEmailTemplate.SetSubject("SAS Application");
+            // advisorEmailTemplate.SetBody("emailBody");
 
             //emailBody= "<p>Dear @advisorName</p>
             //    < br />
@@ -3733,9 +3730,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
 
 
-          //  EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
-          //  applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
-          //  applicantSubmissionNotification.SetSubject("SAS Application Submission");
+            //  EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
+            //  applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
+            //  applicantSubmissionNotification.SetSubject("SAS Application Submission");
             //emailBody = @"<p>Dear Colleague,</p>
             //                    <p>
             //                    Thank you for submitting your SAS grant application. 
@@ -3750,7 +3747,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //                    Associate Dean (Research)
             //                    </p>";
 
-           // applicantSubmissionNotification.SetBody("emailBody");
+            // applicantSubmissionNotification.SetBody("emailBody");
 
 
             //Defining triggers
@@ -3770,7 +3767,11 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             startSubmissionAction.Access = GetAction.eAccess.Restricted;
             startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(inspectorRole.Id);
+                .AddAuthorizedRole(adminRole.Id);
+
+           // startSubmissionAction.AddAuthorizedRole(emptyState.Id, departmentAdmin.Id);
+            startSubmissionAction.AddAuthorizedDomain(emptyState.Id, "@ualberta.ca");
+
 
             //Listing inspection forms.
             //Inspectors can list their own submissions.
