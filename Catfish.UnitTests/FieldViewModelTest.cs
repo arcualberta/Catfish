@@ -9,6 +9,7 @@ using System.Linq;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Fields.ViewModels;
+using Newtonsoft.Json;
 
 namespace Catfish.UnitTests
 {
@@ -52,6 +53,7 @@ namespace Catfish.UnitTests
                 tmpList.Add(new Field(f));
             }
 
+            var json = JsonConvert.SerializeObject(tmpList);
             //Test re-instantiating data fields in the form using the view models
             foreach(Field f in tmpList)
             {

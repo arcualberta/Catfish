@@ -9,12 +9,17 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
         public Guid Id { get; set; }
         public bool AllowMultipleValues { get; set; }
         public string ModelType { get; set; }
-        public List<DisplayText> Name { get; set; } = new List<DisplayText>();
-        public List<DisplayText> Description { get; set; } = new List<DisplayText>();
+        public List<DisplayTextVM> Name { get; set; } = new List<DisplayTextVM>();
+        public List<DisplayTextVM> Description { get; set; } = new List<DisplayTextVM>();
         public List<Guid> ValueIds { get; set; } = new List<Guid>();
         public Dictionary<Guid, List<FieldValue>> ValueGroups { get; set; } = new Dictionary<Guid, List<FieldValue>>();
 
         public Field() { }
+
+        public Field(BaseField src)
+        {
+            Init(src);
+        }
 
         /// <summary>
         /// Constructure for TextFieds and TextAreas
@@ -52,8 +57,6 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
             //TODO: go over all values in 
             foreach(MultilingualValue multiLingualVal in src.Values)
             {
-                //Add the ID of the multiLingualVal to ValueIds
-                ValueIds.Add(multiLingualVal.Id);
 
                 //Create a new list of FieldValue objects
                 var tmp = new List<FieldValue>();
