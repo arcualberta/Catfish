@@ -60,8 +60,6 @@ namespace Catfish.UnitTests
                 //value groups/ids? i dont understand what this test is meaning
                 //f.UpdateTextValues(f);
             }
-
         }
-
     }
 }

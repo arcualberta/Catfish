@@ -11,13 +11,15 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
         public string Language { get; set; }
         public string Value { get; set; }
 
+        public DisplayTextVM() { }
+
         public DisplayTextVM(MultilingualText src)
         {
             //has more than one, but should be handled outside this class...
-            UpdateDisplayTextVM(src.Values);
+            Id = src.Id;
+            Value = src.ConcatenatedContent;
         }
-
-        public void UpdateDisplayTextVM(Text src)
+        public DisplayTextVM(Text src)
         {
             Id = src.Id;
             Format = src.Format.ToString();

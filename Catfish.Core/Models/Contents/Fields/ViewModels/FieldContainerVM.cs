@@ -5,7 +5,7 @@ using System.Text;
 namespace Catfish.Core.Models.Contents.Fields.ViewModels
 {
     //these are the MetadataSets
-    class FieldContainerVM
+    public class FieldContainerVM
     {
         public Guid Id { get; set; }
         public List<Field> Fields { get; set; }
