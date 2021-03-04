@@ -67,7 +67,7 @@
         let field = computedFields[i];
         let expression = $(field).attr("data-value-expression");
         if (expression) {
-            console.log(expression)
+            //console.log(expression)
 
             let result = eval(expression);
             $(field).val(result);
