@@ -3300,12 +3300,13 @@ namespace Catfish.UnitTests
             var canadaSpeakers = stf.TableHead.CreateField<IntegerField>("Other Canada", lang);
             var otherSpeakers = stf.TableHead.CreateField<IntegerField>("Other Countries", lang);
             var totSpeakers = stf.TableHead.CreateField<IntegerField>("Total", lang);
-            //totSpeakers.ValueExpression.AppendValue(uofaSpeakers)
-            //    .AppendOperator(ComputationExpression.eMath.PLUS)
-            //    .AppendValue(canadaSpeakers)
-            //     .AppendOperator(ComputationExpression.eMath.PLUS)
-            //     .AppendValue(otherSpeakers);
-            //totSpeakers.Readonly = true;
+            totSpeakers.ValueExpression
+                       .AppendValue(uofaSpeakers)
+                       .AppendOperator(ComputationExpression.eMath.PLUS)
+                       .AppendValue(canadaSpeakers)
+                       .AppendOperator(ComputationExpression.eMath.PLUS)
+                       .AppendValue(otherSpeakers);
+            totSpeakers.Readonly = true;
 
             //NOTE: we MUST finish defining all columns before setting any column values.
             stf.SetColumnValues(0, speakerCat, lang);
@@ -3315,7 +3316,10 @@ namespace Catfish.UnitTests
             stfooter.Fields[0].SetValue("Total", lang);
             stfooter.SetReadOnly();
             for (var i = 1; i < stfooter.Fields.Count; ++i)
+            {
+                stfooter.Fields[i].ValueExpression.Clear();
                 stfooter.Fields[i].ValueExpression.AppendColumnSum(stf, i);
+            }
 
           
 
@@ -3339,10 +3343,10 @@ namespace Catfish.UnitTests
            var amountReq =  ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
            var amountConfirm =  ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);
            var totAmount =  ftf.TableHead.CreateField<DecimalField>("Total", lang);
-           // totAmount.Readonly = true;
-            //totAmount.ValueExpression.AppendValue(amountReq)
-            //    .AppendOperator(ComputationExpression.eMath.PLUS)
-            //    .AppendValue(amountConfirm);
+            totAmount.Readonly = true;
+            totAmount.ValueExpression.AppendValue(amountReq)
+                .AppendOperator(ComputationExpression.eMath.PLUS)
+                .AppendValue(amountConfirm);
 
             TableRow ffooter = ftf.AppendRow(TableField.eRowTarget.Footer);
             ffooter.Fields[0].SetValue("Grand Total", lang);
