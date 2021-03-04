@@ -3695,32 +3695,17 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //=============================================================================             Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("SAS_Admin", true));
-           
+
 
             //Defining email templates
-            
-           
 
-            // Submitting an inspection form
-            //Only safey inspectors can submit this form
+
+
+            // ================================================
+            //  Submission-Instantiate related workflow items
+            // ================================================
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(adminRole.Id);
-
-           // startSubmissionAction.AddAuthorizedRole(emptyState.Id, departmentAdmin.Id);
-            startSubmissionAction.AddAuthorizedDomain(emptyState.Id, "@ualberta.ca");
-
-
-            //Listing inspection forms.
-            //Inspectors can list their own submissions.
-            //Admins can list all submissions.
-            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
-            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(adminRole.Id);
-
 
             //Post action for submitting the form
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
@@ -3731,25 +3716,40 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
-            //Defining trigger refs -- added Feb 12 2021
-            //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
-            //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedDomain("@ualberta.ca");
 
-            // Edit submission related workflow items
-            //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
 
-            //Submissions can only be edited by admins
-            editSubmissionAction.AddStateReferances(submittedState.Id)
+            // ================================================
+            //  Submission-List related workflow items
+            // ================================================
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
                 .AddAuthorizedRole(adminRole.Id);
+
+
+            // ================================================
+            //  Submission-Edit related workflow items
+            // ================================================
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            editSubmissionAction.Access = GetAction.eAccess.Restricted;
 
             //Defining post actions
             PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
 
 
-            // Delete submission related workflow items
-            //Defining actions. Only admin can delete a submission
+            // ================================================
+            //  Submission-Delete related workflow items
+            // ================================================
             GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
             deleteSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id);
