@@ -109,7 +109,7 @@
                                 <div v-for="(field, fIndex) in metadataSet.Fields.$values"
                                      class="tab-pane fade show field-section" :key="field.Id"
                                      id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                    <item-field-component :field-data="field" :is-in-preview-mode="isInPreviewMode"></item-field-component>
+                                    <item-field-component :field-data="field" :is-in-preview-mode="isInPreviewMode" :language-labels="languageLabels"></item-field-component>
                                 </div>
                             </transition-group>
                         </div>

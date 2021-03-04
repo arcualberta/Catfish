@@ -31,7 +31,7 @@
             else
             {
                 Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(Model.Fields[i], fieldRootId);
-
+                viewData.Add("data-field-index", i);
                 string fieldId = Html.IdFor(model => Model.Fields[i]);
 
                 <div class="control field-label @Model.Fields[i].FieldLabelCssClass">

@@ -214,6 +214,14 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
+        public ComputationExpression AppendCompositeFieldSum(CompositeField field, int childFieldIndex)
+        {
+            Data.Value += string.Format("CompositeFieldSum('{0}', {1})", field.Id, childFieldIndex);
+            return this;
+        }
+
+
+
         public void ReplaceReferences(Guid oldId, Guid newId)
         {
             Data.Value = Data.Value.Replace(oldId.ToString(), newId.ToString());
@@ -254,6 +262,34 @@ namespace Catfish.Core.Models.Contents.Expressions
             }
         }
 
-        
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="intValue"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(int val)
+        {
+            Data.Value += string.Format("{0}", val);
+            return this;
+        }
+
+        public ComputationExpression AppendValue(decimal val)
+        {
+            Data.Value += string.Format("{0}", val);
+            return this;
+        }
+
+        public ComputationExpression AppendValue(double val)
+        {
+            Data.Value += string.Format("{0}", val);
+            return this;
+        }
+
+        public ComputationExpression AppendValue(string val)
+        {
+            Data.Value += string.Format("'{0}'", val);
+            return this;
+        }
+
     }
 }
