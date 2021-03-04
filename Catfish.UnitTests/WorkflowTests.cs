@@ -3694,73 +3694,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
            
 
             //Defining email templates
-            // string emailBody = "";
-            //emailBody =	
-
-            //<p>Dear @chairName</p>
-            //<br/>
-            //<p>A @applicant from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application.
-            //            You will be required to log in with your CCID email.</p> 
-
-
-            //<br/>
-            //<p>Thank you.</p>";
-
-            //  EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
-            //  chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
-            //  chairEmailTemplate.SetSubject("SAS Application");
-            //  chairEmailTemplate.SetBody("emailBody");
-
-            //  EmailTemplate advisorEmailTemplate = template.GetEmailTemplate("Advisor Email Template", lang, true);
-            // advisorEmailTemplate.SetSubject("SAS Application");
-            // advisorEmailTemplate.SetBody("emailBody");
-
-            //emailBody= "<p>Dear @advisorName</p>
-            //    < br />
-
-            //    < p > A student from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application.
-
-            //       You will be required to log in with your CCID email.</ p >
-
-
-
-            //       < br />
-
-            //       < p > Thank you.</ p > "
-
-
-
-            //  EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
-            //  applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
-            //  applicantSubmissionNotification.SetSubject("SAS Application Submission");
-            //emailBody = @"<p>Dear Colleague,</p>
-            //                    <p>
-            //                    Thank you for submitting your SAS grant application. 
-            //                    Your chair has been automatically notified to provide an assessment about your application. 
-            //                    We will inform you of the decision when the application review process is completed. 
-            //                    </p>
-            //                    <p>
-            //                    Thank you.
-            //                    </p>
-            //                    <p>
-            //                    Steve Patten <br />
-            //                    Associate Dean (Research)
-            //                    </p>";
-
-            // applicantSubmissionNotification.SetBody("emailBody");
-
-
-            //Defining triggers
-            //Feb 12 2021
-            //EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
-            //applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
-            //applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
-
-            //EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
-            //chairNotificationEmailTrigger.AddRecipientByEmail(((TextField)chairEmail).GetValue("en"));
-            //chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
-
-
+            
+           
 
             // Submitting an inspection form
             //Only safey inspectors can submit this form
