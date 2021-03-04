@@ -3342,18 +3342,6 @@ namespace Catfish.UnitTests
 
            var amountReq =  ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
            var amountConfirm =  ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);
-           var totAmountReq =  ftf.TableHead.CreateField<DecimalField>("Total Requested", lang);
-            totAmountReq.Readonly = true;
-            totAmountReq.ValueExpression.AppendValue(amountReq)
-                .AppendOperator(ComputationExpression.eMath.PLUS)
-                .AppendValue(0);
-
-           // .AppendValue(amountConfirm);
-            var totAmountConfirmed = ftf.TableHead.CreateField<DecimalField>("Total Confirmed", lang);
-            totAmountConfirmed.Readonly = true;
-            totAmountConfirmed.ValueExpression.AppendValue(amountConfirm)
-                .AppendOperator(ComputationExpression.eMath.PLUS)
-                .AppendValue(0);
 
             TableRow ffooter = ftf.AppendRow(TableField.eRowTarget.Footer);
             ffooter.Fields[0].SetValue("Grand Total", lang);
@@ -3371,8 +3359,6 @@ namespace Catfish.UnitTests
 
             //The third column in the footer is meaningless, so we exclude it from rendering
             ffooter.Fields[1].Exclude = true;
-            ffooter.Fields[2].Exclude = true;
-            ffooter.Fields[3].Exclude = true;
 
 
             ftf.AppendRows(1);
