@@ -242,7 +242,7 @@ namespace Catfish.UnitTests
             totalEmployeeCount.Readonly = true;
             totalEmployeeCount.ValueExpression.AppendCompositeFieldSum(cf, 1);
 
-            var totalSalary = form.CreateField<IntegerField>("Total Salary", lang);
+            var totalSalary = form.CreateField<DecimalField>("Total Salary", lang);
             totalSalary.Readonly = true;
             totalSalary.ValueExpression.AppendCompositeFieldSum(cf, 2);
 

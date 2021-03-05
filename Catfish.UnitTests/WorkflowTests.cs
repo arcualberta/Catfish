@@ -2078,21 +2078,23 @@ namespace Catfish.UnitTests
                        sasForm.CreateField<TextArea>("Justification", lang).SetDescription("<i>Explain how this travel is essential to advancing your research. Maximum 250 words.</i>", lang).SetAttribute("cols", 50); ;
 
 
-                       //=== Personnel and Services
-                       sasForm.CreateField<InfoSection>(null, null)
-                           .AppendContent("h1", "Personnel and Services", lang)
-                           .AppendContent("div", "Failure to provide a detailed estimate will result in automatic disqualification of this part of the application.", lang, "alert alert-warning");
+            //=== =================================================================== Personnel and Services
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h1", "Personnel and Services", lang);
+            sasForm.CreateField<InfoSection>(null, null).AppendContent("div", "Failure to provide a detailed estimate will result in automatic disqualification of this part of the application.", lang, "alert alert-warning");
 
                        sasForm.CreateField<TextArea>("Description of personnel to be hired or services to be purchased", lang)
                                           .SetDescription(@"<i>Provide and outline of the type of work to be undertaken, the expected time frame for completing that work, and a comment on why it is essential to your research. Maximum 250 words.</ i>", lang)
                                           .SetAttribute("cols", 50);
-                       sasForm.CreateField<InfoSection>(null, null)
-                          .AppendContent("h3", "Estimate for Hiring Students", lang)
-                          .AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
+            
+            
+            sasForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h3", "Estimate for Hiring Students", lang);
+            sasForm.CreateField<InfoSection>(null, null).AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
                                 Applicants are expected to adhere to the Collective Agreement when calculating salaries for graduate students. Research budgets for casual student labour must reflect the minimum rate (award + salary + benefits)
                                for Doctoral and Masters students.</i>", lang);
 
-                       // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+             // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
                        CompositeField personnelBudget = sasForm.CreateField<CompositeField>("", lang, false);
                        personnelBudget = CreatePersonnelBudgetItemForm(personnelBudget,lang, 0);
                        personnelBudget.SetFieldLabelCssClass("col-md-12")
@@ -2101,8 +2103,8 @@ namespace Catfish.UnitTests
 
 
             sasForm.CreateField<InfoSection>(null, null)
-                          .AppendContent("h3", "Estimates for Contracted Services", lang)
-                          .AppendContent("div", @"For each contracted service, click 'Add' and then provide the requested information. Please describe the services to be provided. Note that you must also attach written estimates for all contracted services. Estimates should be combined into one single PDF document.", lang);
+                          .AppendContent("h3", "Estimates for Contracted Services", lang);
+            sasForm.CreateField<InfoSection>(null, null).AppendContent("div", @"For each contracted service, click 'Add' and then provide the requested information. Please describe the services to be provided. Note that you must also attach written estimates for all contracted services. Estimates should be combined into one single PDF document.", lang);
 
                        //Allow adding multiple PersonnelBudgetItem Form TODO
                        // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
@@ -2114,11 +2116,11 @@ namespace Catfish.UnitTests
                        sasForm.CreateField<AttachmentField>("Contractor Cost Estimates", lang).SetDescription(@"<i>Attach written estimate for contracted services as <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
            [Required if funding requested for professional services]</span>", lang);
                        sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Why are these services required for this project at this time? [Maximum 250 words]", lang).SetAttribute("cols", 50); ;
-            
-                            //==== EQUIPMENT AND MATERIAL
-                            sasForm.CreateField<InfoSection>(null, null)
-                              .AppendContent("h3", "Equipment and Materials", lang)
-                              .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
+
+            //==== EQUIPMENT AND MATERIAL
+            sasForm.CreateField<InfoSection>(null, null)
+              .AppendContent("h3", "Equipment and Materials", lang);
+            sasForm.CreateField<InfoSection>(null, null).AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
 
                             sasForm.CreateField<TextArea>("Equipment and Material Justification", lang).SetDescription("Provide a description of the materials and equipment you plan to purchase and outline why they are essential to your research project at this time. Maximum 250 words.", lang)
                                .SetAttribute("cols", 50); 
@@ -2193,10 +2195,25 @@ namespace Catfish.UnitTests
                                               ;
             researchTot.Readonly = true;
 
-                     var EqandMatTot =sasForm.CreateField<DecimalField>("Support for Research and Creative Activity Equipment and Materials", lang);
-                      var TRTot = sasForm.CreateField<DecimalField>("Teaching release time", lang);
-                       var PersonnelServiceTot = sasForm.CreateField<DecimalField>("Personnel and Services", lang);
-                            var grandTot = sasForm.CreateField<DecimalField>("TOTAL ASK OF GRANT", lang);
+               var EqandMatTot =sasForm.CreateField<DecimalField>("Support for Research and Creative Activity Equipment and Materials", lang);
+                     EqandMatTot.ValueExpression.AppendCompositeFieldSum(estimateEquip, 1);
+            EqandMatTot.Readonly = true;
+
+         var TRTot = sasForm.CreateField<DecimalField>("Teaching release time", lang);
+            TRTot.ValueExpression.AppendCompositeFieldSum(firstTerm, 2).AppendOperator(ComputationExpression.eMath.PLUS)
+                                        .AppendCompositeFieldSum(secTerm, 2);
+            TRTot.Readonly = true;
+            var PersonnelServiceTot = sasForm.CreateField<DecimalField>("Personnel and Services", lang);
+
+           PersonnelServiceTot.ValueExpression.AppendCompositeFieldSum(personnelBudget, 1).AppendOperator(ComputationExpression.eMath.PLUS)
+                                                    .AppendCompositeFieldSum(contractServ, 1);
+            PersonnelServiceTot.Readonly = true;
+            //var totalEmployeeCount = form.CreateField<IntegerField>("Total Employee Count", lang);
+            //totalEmployeeCount.Readonly = true;
+            //totalEmployeeCount.ValueExpression.AppendCompositeFieldSum(cf, 1);
+
+
+            var grandTot = sasForm.CreateField<DecimalField>("TOTAL ASK OF GRANT", lang);
                         grandTot.ValueExpression
                                 .AppendValue(confTotal)
                                 .AppendOperator(ComputationExpression.eMath.PLUS)
