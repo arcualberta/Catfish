@@ -13,9 +13,9 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
 
         public DisplayTextVM() { }
 
+        //doesnt have format or language
         public DisplayTextVM(MultilingualText src)
         {
-            //has more than one, but should be handled outside this class...
             Id = src.Id;
             Value = src.ConcatenatedContent;
         }

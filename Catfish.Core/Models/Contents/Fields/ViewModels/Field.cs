@@ -16,11 +16,6 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
 
         public Field() { }
 
-        public Field(BaseField src)
-        {
-            Init(src);
-        }
-
         /// <summary>
         /// Constructure for TextFieds and TextAreas
         /// </summary>
@@ -41,6 +36,22 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
 
             //TODO: Figure out how to represent radio options in this view-model structure
         }
+        //this needs to go, too generic... but then how am i making a new field from incoming ItemVM?
+        //src coming in as any of the subclasses, but then cant use above field constructors due to this, dont know how to get around this
+        public Field(BaseField src)
+        {
+            Init(src);
+
+            if (typeof(TextField).IsAssignableFrom(src.GetType()) )
+            {
+                UpdateTextValues(src as TextField);
+
+            }else if (typeof(DateField).IsAssignableFrom(src.GetType()) )
+            { 
+                UpdateTextValues(src as DateField);
+            }
+            
+        }
 
         public void Init(BaseField src)
         {
@@ -54,6 +65,13 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
             ValueIds = new List<Guid>();
             ValueGroups = new Dictionary<Guid, List<FieldValue>>();
 
+            Name = new List<DisplayTextVM>();
+            Description = new List<DisplayTextVM>();
+
+            //expect to need to loop these - but the superclass is a single item for each...
+            Name.Add(new DisplayTextVM(src.Name));
+            Description.Add(new DisplayTextVM(src.Description));
+
             //TODO: go over all values in 
             foreach(MultilingualValue multiLingualVal in src.Values)
             {
@@ -66,14 +84,35 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
                 //above list of FieldValue objects
                 foreach(Text text in multiLingualVal.Values)
                 {
-                    var userInput = new FieldValue(text);
-                    tmp.Add(userInput);
+                    tmp.Add(new FieldValue(text));
                 }
 
 
                 //Insert the list of field value objects into the dictionary
                 ValueGroups.Add(multiLingualVal.Id, tmp);
                 ValueIds.Add(multiLingualVal.Id);
+            }
+        }
+
+        
+        public void UpdateTextValues(DateField src)
+        {
+            ValueIds = new List<Guid>();
+            ValueGroups = new Dictionary<Guid, List<FieldValue>>();
+
+            //expect to need to loop these - but the superclass is a single item for each...
+            Name.Add(new DisplayTextVM(src.Name));
+            Description.Add(new DisplayTextVM(src.Description));
+
+            //this is setting up for the valudId/ValueGroup reference to use the same id as the text
+            //there is no containing object for the text because there is only 1 value for this field
+            var tmpList = new List<FieldValue>();
+            foreach (Text text in src.Values)
+            {
+                ValueIds.Add(text.Id);
+                tmpList.Add(new FieldValue(text) );
+                //this loop will only complete once because it is a monolingual value so this should be ok
+                ValueGroups.Add(text.Id, tmpList);
             }
         }
 
