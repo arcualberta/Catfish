@@ -130,6 +130,15 @@ namespace Catfish.Core.Models.Contents.Workflow
             TriggerRefs.Add(newTriggerRef);
             return newTriggerRef;
         }
-        
+        public TriggerRef AddTriggerRefs(string order, Guid refId, string exceptionMessage, Guid nextStatus, bool condition)
+        {
+            if (TriggerRefs.FindByAttribute(TriggerRef.RefIdAtt, refId.ToString()) != null)
+                throw new Exception(string.Format("Trigger-Ref {0}: {1} already exists.", refId.ToString(), exceptionMessage));
+
+            TriggerRef newTriggerRef = new TriggerRef() { Order = order, RefId = refId, Condition = condition, NextStatus = nextStatus };
+            TriggerRefs.Add(newTriggerRef);
+            return newTriggerRef;
+        }
+
     }
 }
