@@ -25,6 +25,13 @@ namespace Catfish.Core.Models.Contents.Workflow
             get => GetAttribute(FunctionAtt, null as string);
             set => SetAttribute(FunctionAtt, value);
         }
+
+        public bool ValidateInputs
+        {
+            get => GetAttribute("validate-inputs", true);
+            set => SetAttribute("validate-inputs", value);
+        }
+
         public XmlModelList<Mapping> StateMappings { get; set; }
         public XmlModelList<PopUp> PopUps { get; set; }
         public XmlModelList<TriggerRef> TriggerRefs { get; set; }

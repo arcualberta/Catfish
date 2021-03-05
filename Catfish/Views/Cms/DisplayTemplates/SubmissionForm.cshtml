@@ -122,6 +122,7 @@
                 {
                     string buttonName = @postAction.ButtonLabel + "_" + @suffix;
                     var stateMappings = postAction.StateMappings.Where(sm => sm.ButtonLabel == postAction.ButtonLabel);
+                    var validationControl = postAction.ValidateInputs ? "" : string.Format("removeRequiredAttribute($('#submissionForm_{0}'));", suffix);
                     foreach (var stateMapping in stateMappings)
                     {
                         var wrapperId = string.Format("button_wrapper_{0}", @stateMapping.Id);
@@ -180,7 +181,7 @@
                                                                             id="@buttonName" 
                                                                             type="button" 
                                                                             class="btn btn-success"
-                                                                            onclick="submitWorkflowForm('@stateMapping.Id','@stateMapping.ButtonLabel','@postAction.Id','@suffix', '@successMessage');"  
+                                                                            onclick="@validationControl submitWorkflowForm('@stateMapping.Id','@stateMapping.ButtonLabel','@postAction.Id','@suffix', '@successMessage');"  
                                                                             >@button.Text
                                                                     </button>
                                                                 }
@@ -195,7 +196,7 @@
                             }
                             else
                             {
-                                <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="submitWorkflowForm('@stateMapping.Id','@stateMapping.ButtonLabel','@postAction.Id','@suffix', '@successMessage');" />
+                                <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="@validationControl submitWorkflowForm('@stateMapping.Id','@stateMapping.ButtonLabel','@postAction.Id','@suffix', '@successMessage');" />
                             }
                         </div>
                     }

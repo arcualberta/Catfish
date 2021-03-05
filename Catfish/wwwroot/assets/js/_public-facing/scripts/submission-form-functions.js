@@ -21,6 +21,10 @@
     });
 });
 
+function removeRequiredAttribute(form) {
+    $(form).find("input,select,textarea").removeAttr("required");
+}
+
 function submitWorkflowForm(stateId, button, postActionId, suffix, successMessage) {
     $("#submission-result-message_" + suffix).hide();
 

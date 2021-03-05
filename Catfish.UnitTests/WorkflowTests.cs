@@ -2365,6 +2365,7 @@ namespace Catfish.UnitTests
 
             //Defining post actions
             PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
+            savePostAction.ValidateInputs = false;
             savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
             
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
@@ -3550,6 +3551,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining post actions
             PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
+            savePostAction.ValidateInputs = false; 
             savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
 
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
