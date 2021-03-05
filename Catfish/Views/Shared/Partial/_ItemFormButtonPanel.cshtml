@@ -32,7 +32,7 @@
                 {
                     foreach (var popup in postAction.PopUps)
                     {
-                        Guid popupTragetId = Guid.NewGuid();
+                        string popupTragetId = "model_" + Guid.NewGuid().ToString();
                         <input data-visible-if="@stateMapping.Condition"
                                data-field-id="@wrapperId"
                                id="@postAction.ButtonLabel"
@@ -41,8 +41,7 @@
                                type="submit"
                                value="@postAction.ButtonLabel"
                                data-toggle="modal"
-                               data-target="#@popupTragetId"
-                               onclick="return false;"/>
+                               data-target="#@popupTragetId"/>
 
                         <div id="@popupTragetId" class="modal fade" role="dialog">
                             <div>

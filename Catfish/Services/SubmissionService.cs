@@ -237,7 +237,7 @@ namespace Catfish.Services
                 Item newItem = template.Instantiate<Item>();
                 Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
 
-                //We always pass on the nbext state with the state mapping irrespective of whether
+                //We always pass on the next state with the state mapping irrespective of whether
                 //or not there is a "condition"
                 Guid statusId = stateMapping.Next; 
 
