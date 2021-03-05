@@ -225,7 +225,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames=null)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid stateMappingId, string action, string fileNames=null)
         {
             try
             {
@@ -235,7 +235,29 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item newItem = template.Instantiate<Item>();
-                newItem.StatusId = status;
+                Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
+                Guid statusId = Guid.Empty;
+                if(string.IsNullOrWhiteSpace(stateMapping.Condition))
+                {
+                    statusId = stateMapping.Next;
+                }
+                else
+                {
+
+                    //TODO: Get all state mappings represented by the stateMappingId from the workflow.
+                    //      Check if there are one or more state mappings of which the "Condition" is empty.
+                    //          If only one mapping if found with empty condition, then the "next" state specified by
+                    //          this condition should be used as the next state. If multiple such states found, throw an error.
+                    //
+                    //      If not states with empty condition is found, then see if there are at least one state mapping
+                    //      that matchs with the current state and the condition. If found, then use the state of that mapping
+                    //      as the new state. If multiple conditions satisfy, then throw an error.
+
+                    //Guid stateId = Guid.Empty; //TODO: find this as described above.
+
+                }
+
+                newItem.StatusId = statusId;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
                 newItem.GroupId = groupId;

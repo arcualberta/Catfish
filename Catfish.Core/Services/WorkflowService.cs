@@ -479,7 +479,29 @@ namespace Catfish.Core.Services
                 return null;
             }
         }
-
+        public Mapping GetStateMappingByStateMappingId(EntityTemplate entityTemplate, Guid stateMappingId)
+        {
+            try
+            {
+                var workflow = entityTemplate.Workflow;
+                foreach(var action in workflow.Actions)
+                {
+                    foreach(var postAction in action.PostActions)
+                    {
+                        if (postAction.StateMappings.Where(sm => sm.Id == stateMappingId).Any())
+                        {
+                            return postAction.StateMappings.Where(sm => sm.Id == stateMappingId).FirstOrDefault();
+                        }
+                    }  
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
         public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang)
         {
             ItemTemplate template = new ItemTemplate();
