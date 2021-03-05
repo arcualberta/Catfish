@@ -236,26 +236,30 @@ namespace Catfish.Services
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item newItem = template.Instantiate<Item>();
                 Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
-                Guid statusId = Guid.Empty;
-                if(string.IsNullOrWhiteSpace(stateMapping.Condition))
-                {
-                    statusId = stateMapping.Next;
-                }
-                else
-                {
 
-                    //TODO: Get all state mappings represented by the stateMappingId from the workflow.
-                    //      Check if there are one or more state mappings of which the "Condition" is empty.
-                    //          If only one mapping if found with empty condition, then the "next" state specified by
-                    //          this condition should be used as the next state. If multiple such states found, throw an error.
-                    //
-                    //      If not states with empty condition is found, then see if there are at least one state mapping
-                    //      that matchs with the current state and the condition. If found, then use the state of that mapping
-                    //      as the new state. If multiple conditions satisfy, then throw an error.
+                //We always pass on the nbext state with the state mapping irrespective of whether
+                //or not there is a "condition"
+                Guid statusId = stateMapping.Next; 
 
-                    //Guid stateId = Guid.Empty; //TODO: find this as described above.
+                ////////if (string.IsNullOrWhiteSpace(stateMapping.Condition))
+                ////////{
+                    
+                ////////}
+                ////////else
+                ////////{
 
-                }
+                ////////    //TODO: Get all state mappings represented by the stateMappingId from the workflow.
+                ////////    //      Check if there are one or more state mappings of which the "Condition" is empty.
+                ////////    //          If only one mapping if found with empty condition, then the "next" state specified by
+                ////////    //          this condition should be used as the next state. If multiple such states found, throw an error.
+                ////////    //
+                ////////    //      If not states with empty condition is found, then see if there are at least one state mapping
+                ////////    //      that matchs with the current state and the condition. If found, then use the state of that mapping
+                ////////    //      as the new state. If multiple conditions satisfy, then throw an error.
+
+                ////////    //Guid stateId = Guid.Empty; //TODO: find this as described above.
+
+                ////////}
 
                 newItem.StatusId = statusId;
                 newItem.PrimaryCollectionId = collectionId;
@@ -288,7 +292,7 @@ namespace Catfish.Services
             }
             
         }
-        public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid status, string action, string fileNames = null)
+        public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid stateMappingId, string action, string fileNames = null)
         {
             try
             {
@@ -298,8 +302,15 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item item = _db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+               
+                Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
+             
                 Guid oldStatus = (Guid)item.StatusId;
-                item.StatusId = status;
+
+                //We always pass on the nbext state with the state mapping irrespective of whether
+                //or not there is a "condition"
+                item.StatusId = stateMapping.Next;
+
                 item.Updated = DateTime.Now;
 
                 DataItem dataItem = item.DataContainer

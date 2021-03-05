@@ -44,7 +44,7 @@
     string function = Model.WorkflowFunction;
     string group = Model.WorkflowGroup;
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
-
+    var emptyStateId = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
     var Item = template.InstantiateRootItem();
 
     var postActions = _workflowService.GetPostActions(template, function, group);
@@ -117,94 +117,12 @@
                 {
                     @Html.EditorFor(model => Item, Item.GetType().ToString())
                 }
-            <div id="buttonLayer">
-                @foreach (var postAction in postActions)
-                {
-                    string buttonName = @postAction.ButtonLabel + "_" + @suffix;
-                    var stateMappings = postAction.StateMappings.Where(sm => sm.ButtonLabel == postAction.ButtonLabel);
-                    var validationControl = postAction.ValidateInputs ? "" : string.Format("removeRequiredAttribute($('#submissionForm_{0}'));", suffix);
-                    foreach (var stateMapping in stateMappings)
-                    {
-                        var wrapperId = string.Format("button_wrapper_{0}", @stateMapping.Id);
 
-                        <div id="@wrapperId" style="display:inline">
-                            @if (postAction.PopUps.Any())
-                            {
-
-                                foreach (var popup in postAction.PopUps)
-                                {
-                                    <input 
-                                           data-visible-if="@stateMapping.Condition"
-                                           data-field-id="@wrapperId"
-                                           id="@postAction.ButtonLabel" 
-                                           class="btn btn-success launch-modal"
-                                           name="@postAction.ButtonLabel" 
-                                           type="submit" 
-                                           value="@postAction.ButtonLabel" 
-                                           data-toggle="modal" 
-                                           data-target="#submissionModal_@suffix" 
-                                     />
-
-                                    <div id="submissionModal_@suffix" class="modal fade" role="dialog">
-                                        <div>
-                                            <div class="modal-dialog">
-                                                @*Modal content*@
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="card-body">
-                                                            <div class="form-group">
-                                                                <p>@popup.Body</p>
-                                                                @{
-                                                                    if (popup.Message.Any())
-                                                                    {
-                                                                        <p class="text-info"><small><strong>Note : </strong>@popup.Message</small></p>
-                                                                    }
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        @{
-                                                            foreach (var button in popup.Buttons)
-                                                            {
-                                                                if (button.Text == "Cancel")
-                                                                {
-                                                                    <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <button 
-                                                                            id="@buttonName" 
-                                                                            type="button" 
-                                                                            class="btn btn-success"
-                                                                            onclick="@validationControl submitWorkflowForm('@stateMapping.Id','@stateMapping.ButtonLabel','@postAction.Id','@suffix', '@successMessage');"  
-                                                                            >@button.Text
-                                                                    </button>
-                                                                }
-                                                            }
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            }
-                            else
-                            {
-                                <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="@validationControl submitWorkflowForm('@stateMapping.Id','@stateMapping.ButtonLabel','@postAction.Id','@suffix', '@successMessage');" />
-                            }
-                        </div>
-                    }
-
-
-                }
-            </div>
-        </form>
+                <partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml" 
+                         model="postActions"
+                         view-data='@new ViewDataDictionary(ViewData) { { "suffix", suffix}, { "successMessage", successMessage}, { "currentStateId", emptyStateId }, { "submitCallFunction", "submitWorkflowForm"} }'
+                         />
+            </form>
         @*<div id="submission-result-message_@suffix"></div>*@
     </div>
     <div id="submission-result-message_@suffix"></div>

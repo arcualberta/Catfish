@@ -13,12 +13,11 @@
         $(template).html(encodedHtml);
     });
 
-    $(".launch-modal").click(function () {
-        $("#submissionModal").modal({
-            backdrop: 'static'
-        });
-
-    });
+    //$(".launch-modal").click(function () {
+    //    $("#submissionModal").modal({
+    //        backdrop: 'static'
+    //    });
+    //});
 });
 
 function removeRequiredAttribute(form) {

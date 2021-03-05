@@ -2460,13 +2460,14 @@ namespace Catfish.UnitTests
             editSubmissionAction.Access = GetAction.eAccess.Restricted;
             //Defining post actions
             PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editSubmissionPostActionSave.ValidateInputs = false;
             PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit", "Save");
 
             //Defining state mappings
             editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inReviewState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inReviewState.Id, "Submit");
             //editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, savedState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, inReviewState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(inReviewState.Id, inReviewState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
             PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
@@ -2496,6 +2497,7 @@ namespace Catfish.UnitTests
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.ValidateInputs = false;
 
             //Defining state mappings
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
