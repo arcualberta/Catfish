@@ -484,7 +484,7 @@ namespace Catfish.Core.Services
                             }
                         }
                     }
-                        return postAction.TriggerRefs.Where(tr => tr.Condition == true && ).OrderBy(tr => tr.Order).ToList();
+                        return postAction.TriggerRefs.OrderBy(tr => tr.Order).ToList();
                 }
                 return null;
             }

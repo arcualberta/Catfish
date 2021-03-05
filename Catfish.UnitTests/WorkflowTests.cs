@@ -3459,62 +3459,48 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
 
             //Defining email templates
-            // string emailBody = "";
-            //emailBody =	
+             string emailBody = "";
+            emailBody = @"<p>Dear" + ((TextField)chairName).GetValue(lang) + ",</p><br/>" +
+                          "<p> A faculty member from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'> Canference Fund Application </ a > to provide your assessment about this application."+
+                            "You will be required to log in with your CCID email.</p><br/> <p> Thank you.</p>"; 
+      
 
-            //<p>Dear @chairName</p>
-            //<br/>
-            //<p>A @applicant from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application.
-            //            You will be required to log in with your CCID email.</p> 
-
-
-            //<br/>
-            //<p>Thank you.</p>";
-
-            EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
+                  EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
-            chairEmailTemplate.SetSubject("SAS Application");
-            chairEmailTemplate.SetBody("emailBody");
+            chairEmailTemplate.SetSubject("Conference Fund Application");
+            chairEmailTemplate.SetBody(emailBody);
 
             EmailTemplate advisorEmailTemplate = template.GetEmailTemplate("Advisor Email Template", lang, true);
-            advisorEmailTemplate.SetSubject("SAS Application");
-            advisorEmailTemplate.SetBody("emailBody");
+            advisorEmailTemplate.SetSubject("Conference Fund Application");
+            advisorEmailTemplate.SetBody(emailBody);
 
-            //emailBody= "<p>Dear @advisorName</p>
-            //    < br />
-
-            //    < p > A student from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application.
-
-            //       You will be required to log in with your CCID email.</ p >
-
-
-
-            //       < br />
-
-            //       < p > Thank you.</ p > "
+            //supervisorEmail
+            emailBody = "<p>Dear" + ((TextField)supervisor).GetValue(lang) + "</p><br/>" +
+               "<p> A student from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application." +
+                   "You will be required to log in with your CCID email.</p><br/><p>Thank you.</p>";
 
 
 
             EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
             applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
             applicantSubmissionNotification.SetSubject("SAS Application Submission");
-            //emailBody = @"<p>Dear Colleague,</p>
-            //                    <p>
-            //                    Thank you for submitting your SAS grant application. 
-            //                    Your chair has been automatically notified to provide an assessment about your application. 
-            //                    We will inform you of the decision when the application review process is completed. 
-            //                    </p>
-            //                    <p>
-            //                    Thank you.
-            //                    </p>
-            //                    <p>
-            //                    Steve Patten <br />
-            //                    Associate Dean (Research)
-            //                    </p>";
+            emailBody = @"<p>Dear Colleague,</p>
+                                <p>
+                                Thank you for submitting your SAS grant application. 
+                                Your chair has been automatically notified to provide an assessment about your application. 
+                                We will inform you of the decision when the application review process is completed. 
+                                </p>
+                                <p>
+                                Thank you.
+                                </p>
+                                <p>
+                                Steve Patten <br />
+                                Associate Dean (Research)
+                                </p>";
 
-            applicantSubmissionNotification.SetBody("emailBody");
+            applicantSubmissionNotification.SetBody(emailBody);
 
-
+           
             //Feb 12 2021
             EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
             applicantNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, applicantEmail.Id);
@@ -3524,6 +3510,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             chairNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, chairEmail.Id);
             chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
 
+
             EmailTrigger supervisourNotificationEmailTrigger = workflow.AddTrigger("ToSupervisor", "SendEmail");
             supervisourNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, supervisorEmail.Id);
             supervisourNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
@@ -3532,7 +3519,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
             //State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
-            State inSupervisorReviewState = workflow.AddState(ws.GetStatus(template.Id, "InSupervisourReview", true));
+            State inSupervisorReviewState = workflow.AddState(ws.GetStatus(template.Id, "InSupervisorReview", true));
             State inChairReviewState = workflow.AddState(ws.GetStatus(template.Id, "InChairReview", true));
             State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "ReviewCompleted", true));
             State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "InAdjudication", true));
@@ -3543,8 +3530,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             // Defining roles
             WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("GAP_Admin", true));
             WorkflowRole sasChair = workflow.AddRole(auth.GetRole("GAP_Chair", true));
-            WorkflowRole sasSupervisour = workflow.AddRole(auth.GetRole("GAP_Supervisour", true));
+            WorkflowRole sasSupervisour = workflow.AddRole(auth.GetRole("GAP_Supervisor", true));
 
+            //extra FORMS
+            DataItem chairAssessmentForm =CreateConferenceChairAssesmentForm(template);
+            DataItem supervisorAssessmentForm = CreateConferenceAdviserAssesmentForm(template);
+            DataItem additionalNoteForm = CreateAddNotesForm(template);
+            DataItem adjudicationForm = CreateAdjudicationForm(template);
+            DataItem addRankingForm = CreateAddRankingForm(template);
             // ================================================
             // Create submission-instances related workflow items
             // ================================================
@@ -3584,7 +3577,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining trigger refs
             submitPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger", inChairReviewState.Id, true);
-            submitPostAction.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inChairReviewState.Id, true);
+            submitPostAction.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inSupervisorReviewState.Id, true);
             submitPostAction.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             // Added state referances
@@ -3680,9 +3673,11 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining state mappings
             editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inSupervisorReviewState.Id, "Submit");
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inSupervisorReviewState.Id, "Submit", applicantCat,
+                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First());
             editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit");
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit", applicantCat,
+                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[1]).First());
             editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "Submit");
 
 
@@ -3694,9 +3689,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Defining trigger refs
             //*******To Do*******
             // Implement a function to restrict the e-mail triggers when SAS Admin updated the document
-            submitPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
-            submitPostAction.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger");
-            submitPostAction.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            editSubmissionPostActionSave.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger", inChairReviewState.Id, true);
+            editSubmissionPostActionSave.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inSupervisorReviewState.Id, true);
+            editSubmissionPostActionSave.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
 
             //Defining state referances
