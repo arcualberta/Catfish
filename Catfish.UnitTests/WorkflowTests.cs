@@ -3524,6 +3524,10 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             chairNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, chairEmail.Id);
             chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
 
+            EmailTrigger supervisourNotificationEmailTrigger = workflow.AddTrigger("ToSupervisor", "SendEmail");
+            supervisourNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, supervisorEmail.Id);
+            supervisourNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
@@ -3579,8 +3583,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             submitActionPopUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs
-            submitPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
-            submitPostAction.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            submitPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger", inChairReviewState.Id, true);
+            submitPostAction.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inChairReviewState.Id, true);
+            submitPostAction.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             // Added state referances
             startSubmissionAction.AddStateReferances(emptyState.Id)
@@ -3689,8 +3694,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Defining trigger refs
             //*******To Do*******
             // Implement a function to restrict the e-mail triggers when SAS Admin updated the document
-            editSubmissionPostActionSubmit.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
-            editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            submitPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
+            submitPostAction.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger");
+            submitPostAction.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
 
             //Defining state referances
@@ -3752,6 +3758,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             supervisorReviewActionPopUpopUp.AddButtons("Yes, complete", "true");
             supervisorReviewActionPopUpopUp.AddButtons("Cancel", "false");
 
+            supervisorReviewPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
 
             supervisourReviewAction.GetStateReference(inSupervisorReviewState.Id, true)
                 .AddAuthorizedRole(sasSupervisour.Id);

@@ -343,7 +343,7 @@ namespace Catfish.Services
                 EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
 
                 // get list trigger referances of given template, function and group. 
-                List<TriggerRef> triggerRefs = _workflowService.GetTriggersByPostActionID(template, postActionId);
+                List<TriggerRef> triggerRefs = _workflowService.GetTriggersByPostActionID(template, (Guid)item.StatusId, postActionId);
                 //need to go through all trigger referances and execute them one by one.
                 bool triggerExecutionStatus = true;
                 foreach (var triggerRef in triggerRefs)

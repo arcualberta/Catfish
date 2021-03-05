@@ -459,16 +459,32 @@ namespace Catfish.Core.Services
                 return null;
             } 
         }
-        public List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid postActionId)
+        public List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid statusId, Guid postActionId)
         {
             try
             {
                 //SetModel(entityTemplate);
+                List<TriggerRef> triggerRefs = new List<TriggerRef>();
                 var action = GetGetActionByPostActionID(entityTemplate, postActionId);
                 foreach (var postAction in action.PostActions)
                 {
                     if (postAction.Id.Equals(postActionId))
-                        return postAction.TriggerRefs.OrderBy(tr => tr.Order).ToList();
+                    {
+                        var triggers = postAction.TriggerRefs.ToList();
+                        foreach(var trigger in triggers)
+                        {
+                            if (trigger.Condition) 
+                            {
+                                if (trigger.NextStatus == statusId)
+                                    triggerRefs.Add(trigger);
+                            }
+                            else
+                            {
+                                triggerRefs.Add(trigger);
+                            }
+                        }
+                    }
+                        return postAction.TriggerRefs.Where(tr => tr.Condition == true && ).OrderBy(tr => tr.Order).ToList();
                 }
                 return null;
             }
