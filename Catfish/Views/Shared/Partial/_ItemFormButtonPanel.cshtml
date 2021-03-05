@@ -75,10 +75,16 @@
                                                     }
                                                     else
                                                     {
-                                                        <button id="@buttonName"
+                                                        @*<button id="@buttonName"
                                                                 type="button"
                                                                 class="btn btn-success"
                                                                 onclick="@validationControl submitWorkflowForm('@stateMapping.Id','@stateMapping.ButtonLabel','@postAction.Id','@suffix', '@successMessage');">
+                                                            @button.Text
+                                                            </button>*@
+                                                        <button id="@buttonName"
+                                                                type="button"
+                                                                class="btn btn-success"
+                                                                onclick="@onclickSubmitVal">
                                                             @button.Text
                                                             </button>
                                                         }
