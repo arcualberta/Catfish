@@ -79,7 +79,13 @@
 
                         <partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml"
                                  model="postActions"
-                                 view-data='@new ViewDataDictionary(ViewData) { { "suffix", suffix}, { "successMessage", successMessage}, { "currentStateId", item.StatusId }, { "submitCallFunction", "submitEditWorkflowForm"} }' />
+                                 view-data='@new ViewDataDictionary(ViewData) { 
+                                    { "suffix", suffix}, 
+                                    { "successMessage", successMessage}, 
+                                    { "currentStateId", item.StatusId }, 
+                                    { "submitCallFunction", "submitEditWorkflowForm"},
+                                    {"submissionFormNamePrefix", "submissionEditForm" }}' 
+                                 />
 
                     </div>
                 </div>

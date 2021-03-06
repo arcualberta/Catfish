@@ -6,6 +6,7 @@
     string successMessage = ViewData["successMessage"] as string;
     Guid? currentStateId = ViewData["currentStateId"] as Guid?;
     string submitCallFunction = ViewData["submitCallFunction"] as string;
+    string submissionFormNamePrefix = ViewData["submissionFormNamePrefix"] as string;
 }
 
     <div id="buttonLayer">
@@ -14,7 +15,7 @@
 
             string buttonName = @postAction.ButtonLabel + "_" + @suffix;
             var stateMappings = postAction.StateMappings.Where(sm => sm.ButtonLabel == postAction.ButtonLabel);
-            var validationControl = postAction.ValidateInputs ? "" : string.Format("removeRequiredAttribute($('#submissionForm_{0}'));", suffix);
+            var validationControl = postAction.ValidateInputs ? "" : string.Format("removeRequiredAttribute($('#{0}_{1}'));", submissionFormNamePrefix, suffix);
             foreach (var stateMapping in stateMappings)
             {
                 if (stateMapping.Current != currentStateId)
