@@ -3744,7 +3744,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             supervisourReviewAction.Access = GetAction.eAccess.Restricted;
 
             //Defining form template
-            //supervisourReviewAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
+            supervisourReviewAction.AddTemplate(supervisorAssessmentForm.Id, "Start Review Submission");
 
             //Defining post actions
             PostAction supervisorReviewPostAction = supervisourReviewAction.AddPostAction("Start Review", "Save");
@@ -3770,7 +3770,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             chairReviewAction.Access = GetAction.eAccess.Restricted;
 
             //Defining form template
-            //chairReviewAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
+            chairReviewAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
 
             //Defining post actions
             PostAction chairReviewPostAction = chairReviewAction.AddPostAction("Start Review", "Save");
