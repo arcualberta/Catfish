@@ -3464,11 +3464,11 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Defining email templates
              string emailBody = "";
             emailBody = @"<p>Dear" + ((TextField)chairName).GetValue(lang) + ",</p><br/>" +
-                          "<p> A faculty member from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'> Canference Fund Application </ a > to provide your assessment about this application."+
+                          "<p> A faculty member from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'> Conference Fund Application </ a > to provide your assessment about this application."+
                             "You will be required to log in with your CCID email.</p><br/> <p> Thank you.</p>"; 
       
 
-                  EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
+            EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
             chairEmailTemplate.SetSubject("Conference Fund Application");
             chairEmailTemplate.SetBody(emailBody);
@@ -3486,11 +3486,11 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
             applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
-            applicantSubmissionNotification.SetSubject("SAS Application Submission");
+            applicantSubmissionNotification.SetSubject("Conference Application Submission");
             emailBody = @"<p>Dear Colleague,</p>
                                 <p>
-                                Thank you for submitting your SAS grant application. 
-                                Your chair has been automatically notified to provide an assessment about your application. 
+                                Thank you for submitting your Conference fund application. 
+                                Your chair/supervisor has been automatically notified to provide an assessment about your application. 
                                 We will inform you of the decision when the application review process is completed. 
                                 </p>
                                 <p>
@@ -3795,7 +3795,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             changeStateAction.Access = GetAction.eAccess.Restricted;
 
             //Define Revision Template
-            //changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
+            changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
             //Defining post actions
             PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", "Save");
 
