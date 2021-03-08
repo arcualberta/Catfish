@@ -7,8 +7,8 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
     public class ItemVM
     {
         public Guid Id { get; set; }
-        public DisplayTextVM Name { get; set; }
-        public DisplayTextVM Description { get; set; }
+        public DisplayTextVM Name { get; set; } //this is correct... right? Not an array?
+        public DisplayTextVM Description { get; set; } //^^
         public List<FieldContainerVM> MetadataSets { get; set; }
 
         public ItemVM() { }

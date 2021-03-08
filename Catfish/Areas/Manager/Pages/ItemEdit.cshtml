@@ -32,7 +32,7 @@
             <div class="row">
                 <div class="col">
                     <div class="sitemap">
-                        <ol v-if="section.values">
+                        <ol v-if="section.value">
                             <li>
                                 <div class="sitemap-item">
                                     <div class="link">
@@ -42,12 +42,12 @@
                                 <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
                                     <!-- v-for="let set of entrySets" -->
                                     <ol class="dd-list">
-                                        <li v-for="(entry, index) in section.values" class="dd-item expanded">
+                                        <li v-for="(entry, index) in section" class="dd-item expanded"> <!-- Need to talk to Kamal about the Name and Description elements being given to me are not arrays -->
                                             <div class="sitemap-item">
                                                 <div class="link">
                                                     <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]"
                                                            class="language-label" for="input-0">
-                                                        {{languageLabels[index]}}:
+                                                        *Insert language here* :
                                                     </label>
                                                     <!--<div v-if="!isInPreviewMode" class="col-md-4 mb-3">
                                                     <input
@@ -96,7 +96,7 @@
                                :class="{show: index==0, active: index==0}"
                                :id="'meta-tab-' + index" data-toggle="tab" :href="'#tab-' + index" role="tab"
                                :aria-controls="'tab-' + index" :aria-selected="index==0 ? true : false">
-                                {{metadataSet.Name.Values.$values[0].Value}}
+                                {{metadataSet.Name}}
                             </a>
                         </div>
                     </nav>
@@ -106,7 +106,7 @@
                              :class="{active: metaIndex==0, show: metaIndex==0}">
 
                             <transition-group name="refresh">
-                                <div v-for="(field, fIndex) in metadataSet.Fields.$values"
+                                <div v-for="(field, fIndex) in metadataSet.Fields"
                                      class="tab-pane fade show field-section" :key="field.Id"
                                      id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                     <item-field-component :field-data="field" :is-in-preview-mode="isInPreviewMode" :language-labels="languageLabels"></item-field-component>
