@@ -3537,9 +3537,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
             // Defining roles
-            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("GAP_Admin", true));
-            WorkflowRole sasChair = workflow.AddRole(auth.GetRole("GAP_Chair", true));
-            WorkflowRole sasSupervisour = workflow.AddRole(auth.GetRole("GAP_Supervisor", true));
+            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("Conference_Fund_Admin", true));
+            WorkflowRole sasChair = workflow.AddRole(auth.GetRole("Conference_Fund_Chair", true));
+            WorkflowRole sasSupervisour = workflow.AddRole(auth.GetRole("Conference_Fund_Supervisor", true));
 
             //extra FORMS
             DataItem chairAssessmentForm =CreateConferenceChairAssesmentForm(template);
