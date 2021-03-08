@@ -28,7 +28,7 @@
     </div>
 
     <form id="item-edit-form" class="edit-form" novalidate>
-        <div v-for="section in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }">
+        <div v-for="(section, index) in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }">
             <div class="row">
                 <div class="col">
                     <div class="sitemap">
@@ -42,7 +42,7 @@
                                 <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
                                     <!-- v-for="let set of entrySets" -->
                                     <ol class="dd-list">
-                                        <li v-for="(entry, index) in section" class="dd-item expanded"> <!-- Need to talk to Kamal about the Name and Description elements being given to me are not arrays -->
+                                        <li class="dd-item expanded"> <!-- v-for="(entry, index) in section"  Need to talk to Kamal about the Name and Description elements being given to me are not arrays -->
                                             <div class="sitemap-item">
                                                 <div class="link">
                                                     <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]"
@@ -59,7 +59,7 @@
                                                         This field is required.
                                                     </div>
                                                 </div>-->
-                                                    <span>{{entry.Value}}</span>
+                                                    <span>{{section.Value}}</span>
                                                 </div>
                                             </div>
                                         </li>

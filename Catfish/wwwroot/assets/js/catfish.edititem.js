@@ -27,32 +27,9 @@ if (document.getElementById("item-edit-page")) {
                 fieldRequiredLabel: '',
                 valueLabel: '',
                 deleteLabel: '',
-                testField: {
-                    Values: [],
-                    Type: ''
-                },
-                threeLayerTest: {
-                    Values: [],
-                    Type: ''
-                },
-
-                //the better idea stuff
-                newFieldData: {
-                    Name: [],
-                    Description: [],
-                    ValueIds: []
-                },
-                userInputs: {},
+                
                 //temp so ids are unique per field, they will be with real data
                 uniqueIdForField: '',
-
-                //the better idea stuff - 100% flattened
-                newFieldDataFlattened: {
-                    Name: [],
-                    Description: [],
-                    ValueIds: []
-                },
-                userInputsFlattened: {}
 
             }
         },
@@ -125,132 +102,16 @@ if (document.getElementById("item-edit-page")) {
             /**
              * Deletes the field from the item
              */
-            deleteField() {
+            deleteField(fieldValueId) {
                 //this.metadataSets[metadataSetId].Fields.$values.splice(fieldId, 1);
                 //this.setOriginalFields();
+                let indexToRemove = this.fieldData.ValueIds.indexOf(fieldValueId);
+                this.fieldData.ValueIds.splice(indexToRemove, 1);
+
+                delete this.fieldData.ValueGroups[fieldValueId]
+                   
+                console.log(this.fieldData);
             },
-        },
-
-        mounted() {
-            //first index request is for language, second is values per language
-            //so therefore, this is the values for a single language
-
-            //therefore, to handle multiple languages - each one flattened?
-            //some variable need to hold the keys for each language - maybe is just indices though?
-            //testField only one language supported as-is, but its a good test to see if simplified works
-            //if (this.testField.Values.length <= 0 && this.fieldData.Values.$values[0].hasOwnProperty('Values')) {
-            //    //simplified object
-            //    this.testField.Values = JSON.parse(JSON.stringify(this.fieldData.Values.$values[0].Values.$values));
-            //    this.testField.Type = JSON.parse(JSON.stringify(this.fieldData.$type));
-
-            //    //three layer test
-            //    this.threeLayerTest.Values[0] = JSON.parse(JSON.stringify(this.fieldData.Values.$values[0].Values));
-            //    this.threeLayerTest.Type = JSON.parse(JSON.stringify(this.fieldData.$type));
-
-
-
-            //    //slightly not 100% flattened object - easier to display
-            //    //main object holds value-group ids
-            //    this.newFieldData.Name = [
-            //        {
-            //            id: '0',
-            //            Value: 'Name',
-            //            Language: 'English',
-            //        },
-            //        {
-            //            id: '1',
-            //            Value: 'Nom',
-            //            Language: 'French'
-            //        }
-            //    ];
-
-            //    this.newFieldData.Description = [
-            //        {
-            //            id: '00',
-            //            Value: "I am a description for this item",
-            //        },
-            //        {
-            //            id: '01',
-            //            Value: "French description for the item",
-            //        },
-            //    ];
-
-            //    this.newFieldData.ValueIds = ['123', '456', '789'];
-
-            //    this.userInputs = {
-            //        123:
-            //            [
-            //                {
-            //                    id: "abc",
-            //                    Value: "English words",
-            //                    $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //                },
-            //                {
-            //                    id: "def",
-            //                    Value: "French words",
-            //                    $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //                }
-            //            ],
-            //        456:
-            //            [
-            //                {
-            //                    id: "ghi",
-            //                    Value: "English words value 2",
-            //                    $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //                },
-            //                {
-            //                    id: "jkl",
-            //                    Value: "French words value 2",
-            //                    $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //                }
-            //            ],
-            //        789:
-            //            [
-            //                {
-            //                    id: "mno",
-            //                    Value: "English words value 3",
-            //                    $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //                },
-            //                {
-            //                    id: "pqr",
-            //                    Value: "French words value 3",
-            //                    $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //                }
-            //            ],
-            //    };
-
-            //    this.uniqueIdForField = uuidv1();
-
-            //    //final one - completely flattened
-            //    //similar to the above but will require more loops, might not be as easy to use
-            //    //but it is 'correct' irt flattening
-            //    //main object holds grouped value ids
-            //    this.newFieldDataFlattened.ValueIds = { '1': ['123', '456'], '2': ['789', '101112'] };
-            //    this.userInputsFlattened = {
-            //        123: {
-            //            id: "abc",
-            //            Value: "English words",
-            //            $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //        },
-            //        456: {
-            //            id: "cdf",
-            //            Value: "French words",
-            //            $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //        },
-            //        789: {
-            //            id: "ghi",
-            //            Value: "English words value 2",
-            //            $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //        },
-            //        101112: {
-            //            id: "jkl",
-            //            Value: "French words value 2",
-            //            $type: "Catfish.Core.Models.Contents.Fields.TextField"
-            //        }
-            //    }
-
-            //}
-
         },
 
         created() {
@@ -268,15 +129,15 @@ if (document.getElementById("item-edit-page")) {
                         <!-- <h3>Semi-flattened object, reacts to added value</h3> --> 
                         <div v-if="fieldData.ModelType.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of fieldData.ValueGroups[val]">
                             <div>
-                                <label :for="fieldValue.id + '-index-' + fieldValueIndex + '-' + index + uniqueIdForField"><h4>{{fieldData.Name[fieldValueIndex].Value}}: </h4></label>
-                                <input :id="fieldValue.id + '-index-' + fieldValueIndex + '-' + index + uniqueIdForField"
+                                <label :for="val.Id + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"><h4>{{fieldData.Name[fieldValueIndex].Value}}: </h4></label>
+                                <input :id="val.Id + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"
                                 required type="text" class="form-control"
                                 v-model="fieldValue.Value"
                                 >
                             </div>
                             <div class="btn-group new-value-button" role="group">
-                                <button :disabled="newFieldData.ValueIds.length <= 1"
-                                    type="button" v-on:click="deleteField()"
+                                <button :disabled="fieldData.ValueIds.length <= 1"
+                                    type="button" v-on:click="deleteField(val)"
                                     class="btn btn-sm btn-danger btn-labeled trash-button">
                                     <i class="fas fa-trash"></i>
                                     {{deleteLabel}}
