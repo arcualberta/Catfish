@@ -69,7 +69,7 @@ function submitWorkflowForm(stateId, button, postActionId, suffix, successMessag
                 message = data.message;
             }
 
-            $("#submission-result-message_" + suffix + " div").text(message);
+            $("#submission-result-message_" + suffix + " div").html(message);
             $("#submission-result-message_" + suffix).show();
         });
 

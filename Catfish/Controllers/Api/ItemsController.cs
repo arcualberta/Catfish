@@ -166,7 +166,15 @@ namespace Catfish.Controllers.Api
 
                 
                 result.Success = true;
-                result.Message = "Application " + actionButton + " successfully.";
+
+                if (actionButton == "Save")
+                    result.Message = "Form saved successfully.";
+                else if (actionButton == "Submit")
+                    result.Message = "Form submitted successfully.";
+                else if (actionButton == "Delete")
+                    result.Message = "Form deleted successfully.";
+                else
+                    result.Message = "Task completed successfully.";
 
             }
             catch (Exception ex)
@@ -196,8 +204,17 @@ namespace Catfish.Controllers.Api
 
                 _appDb.Items.Update(newItem);
                 _appDb.SaveChanges();
+
                 result.Success = true;
-                result.Message = "Application " + actionButton + " successfully.";
+
+                if (actionButton == "Save")
+                    result.Message = "Form saved successfully.";
+                else if (actionButton == "Submit")
+                    result.Message = "Form submitted successfully.";
+                else if (actionButton == "Delete")
+                    result.Message = "Form deleted successfully.";
+                else
+                    result.Message = "Task completed successfully.";
 
             }
             catch (Exception ex)
