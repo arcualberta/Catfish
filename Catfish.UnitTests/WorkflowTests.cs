@@ -2286,22 +2286,28 @@ namespace Catfish.UnitTests
             //================================================ Submit form ===============================
             sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
-                                       <div>To complete the application later, please click on the Save button below. You will be given a randomly generated reference number for which you need to submit a password. You can retrieve 
-                                      the application using this reference number and the password and complete it later. Unfortunately if you misplace the reference number or forget the password, 
-                                       you will have to start over a new application.</div>
-
-                                      <div>If you have completed your application, please use the Submit button below. Submitted applications cannot be modified. 
-                                            <span style='color: Red'>If your submission is successful, you should get a confirmation email</span>. Please check for this email <span style='color:Red'>before</span> you close your browser. 
-                                If you don't see the email, <span style='color: Red'>your application may not have been submitted</span>, so please contact Nancie Hodgson, Research Coordinator (resarts@ualberta.ca).</div>", lang, "alert alert-info");
+<div>
+    To save a partially completed application and work on it later, please click on the Save button below. 
+</div>
+<div>
+    If you have completed your application want to submit it, please use the Submit button instead. In order to
+    submit your appplication, you must fill all required fields. Submitted applications cannot be modified.
+</div>
+<div>
+    NOTE: If you successfully saved or submitted the application, your application form should disapear from this page and you
+    whould see a success message. If this wouldn't happen, then your session may be timed out. If so, please KEEP THIS
+    BROWSER TAB OPEN and sign in again with a DIFFERENT tab on the SAME BROWSER. Once you signed in, try to save or submit
+    your application again.
+</div>", lang, "alert alert-info");
 
            
 
             //Defining email templates
             string emailBody = "";
-            emailBody = "<p>Dear" + ((TextField)chairName).GetValue(lang) + ",</p><br/>" +
-                                    "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application." +
-                                    "You will be required to log in with your CCID email.</p> <br/>" +
-                                    "<p>Thank you.</p>";
+            emailBody = "<p>Dear Chair,</p><br/>" +
+                        "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application." +
+                        "You will be required to log in with your CCID email.</p> <br/>" +
+                        "<p>Thank you.</p>";
 
             EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
@@ -2322,7 +2328,7 @@ namespace Catfish.UnitTests
                                 Thank you.
                                 </p>
                                 <p>
-                                Steve Patten <br />
+                                Marie Carriere <br />
                                 Associate Dean (Research)
                                 </p>";
             applicantSubmissionNotification.SetBody(emailBody);
@@ -3463,7 +3469,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining email templates
              string emailBody = "";
-            emailBody = @"<p>Dear" + ((TextField)chairName).GetValue(lang) + ",</p><br/>" +
+            emailBody = @"<p>Dear Chair,</p><br/>" +
                           "<p> A faculty member from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'> Conference Fund Application </ a > to provide your assessment about this application."+
                             "You will be required to log in with your CCID email.</p><br/> <p> Thank you.</p>"; 
       
@@ -3478,8 +3484,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             advisorEmailTemplate.SetBody(emailBody);
 
             //supervisorEmail
-            emailBody = "<p>Dear" + ((TextField)supervisor).GetValue(lang) + "</p><br/>" +
-               "<p> A student from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application." +
+            emailBody = "<p>Dear Supervisor,</p><br/>" +
+               "<p> A student from your department has applied for a Conference Fund grant. Please click on this link: @LinkUrl to provide your assessment about this application." +
                    "You will be required to log in with your CCID email.</p><br/><p>Thank you.</p>";
 
 
@@ -3497,7 +3503,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                                 Thank you.
                                 </p>
                                 <p>
-                                Steve Patten <br />
+                                Marie Carriere <br />
                                 Associate Dean (Research)
                                 </p>";
 

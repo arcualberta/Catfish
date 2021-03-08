@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
+using Piranha.AspNetCore.Identity.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,13 +28,16 @@ namespace Catfish.Controllers.Api
     {
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly ISubmissionService _submissionService;
-       
+        private readonly IWorkflowService _workflowService;
+
+
         private readonly AppDbContext _appDb;
         private readonly IJobService _jobService;
-        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService, IJobService jobService, IConfiguration configuration)
+        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService, IJobService jobService, IConfiguration configuration, IWorkflowService workflowService)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
+            _workflowService = workflowService;
 
             _appDb = db;
             _jobService = jobService;
@@ -173,6 +177,7 @@ namespace Catfish.Controllers.Api
 
             return result;
         }
+
         // POST api/<ItemController>
         [Route("EditSubmissionForm")]
         [HttpPost]
@@ -203,6 +208,48 @@ namespace Catfish.Controllers.Api
 
             return result;
         }
+
+
+        [Route("AutoSave")]
+        [HttpPost]
+        public ApiResult AutoSave([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid itemId)
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                Backup backup = _appDb.Backups.Where(bk => bk.Id == value.Id).FirstOrDefault();
+                if(backup == null)
+                {
+                    backup = new Backup() { Id = value.Id };
+                    _appDb.Backups.Add(backup);
+                }
+
+                backup.SourceData = value.Content;
+                backup.SourceId = itemId;
+                backup.SourceType = "DataItem Backup - EntityTemplateId: " + entityTemplateId.ToString();
+                backup.Timestamp = DateTime.Now;
+                User user = _workflowService.GetLoggedUser();
+                if (user != null)
+                {
+                    backup.UserId = user.Id;
+                    backup.Username = user.UserName;
+                }
+
+                _appDb.SaveChanges();
+
+                result.Success = true;
+                result.Message = "Auto-save successful.";
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Auto-save failed.";
+            }
+
+            return result;
+        }
+
 
         // POST api/<ItemController>
         [Route("AddChild")]

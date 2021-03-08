@@ -28,6 +28,7 @@
     else
     {
         //JQuery based javascript form need by CSHTML based standard implementation of HTML forms.
+        _appService.RegisterScript("/assets/js/_public-facing/scripts/data-item-form-functions.js");
         _appService.RegisterScript("/assets/js/_public-facing/scripts/submission-form-functions.js");
         _appService.RegisterScript("/assets/js/_public-facing/scripts/attachment-functions.js");
         _appService.RegisterScript("/assets/js/_public-facing/scripts/composite-field-functions.js");
@@ -75,7 +76,7 @@
     if (authorizationSuccessful)
     {
         <div class="submission-form-block @Model.CssClass.Value">
-            <form id="submissionForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data">
+            <form id="submissionForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data" class="data-item-form">
                 <input data-val="true" data-val-required="The TemplateId field is required."
                        id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
                        value="@entityTemplateId">
@@ -118,19 +119,18 @@
                     @Html.EditorFor(model => Item, Item.GetType().ToString())
                 }
 
-                <partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml" 
+                <partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml"
                          model="postActions"
-                         view-data='@new ViewDataDictionary(ViewData) { 
-                            { "suffix", suffix}, 
-                            { "successMessage", successMessage}, 
-                            { "currentStateId", emptyStateId }, 
+                         view-data='@new ViewDataDictionary(ViewData) {
+                            { "suffix", suffix},
+                            { "successMessage", successMessage},
+                            { "currentStateId", emptyStateId },
                             { "submitCallFunction", "submitWorkflowForm"},
-                            {"submissionFormNamePrefix", "submissionForm" } }'
-                         />
+                            {"submissionFormNamePrefix", "submissionForm" } }' />
             </form>
-        @*<div id="submission-result-message_@suffix"></div>*@
-    </div>
-    <div id="submission-result-message_@suffix"></div>
+            @*<div id="submission-result-message_@suffix"></div>*@
+        </div>
+        <div id="submission-result-message_@suffix"></div>
     }
     else
     {

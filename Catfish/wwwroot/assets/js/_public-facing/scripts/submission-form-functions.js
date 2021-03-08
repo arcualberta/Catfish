@@ -1,29 +1,4 @@
-﻿$(document).ready(function () {
-    //Encoding inner-HTML of composite field templates into base 64 strings
-    $.each($("form .composite-field-template"), function (idx, template) {
-        let html = $(template).html();
-        let encodedHtml = btoa(html);
-        $(template).html(encodedHtml);
-    });
-
-    //Encoding inner-HTML of table field templates into base 64 strings
-    $.each($("form .tf-template"), function (idx, template) {
-        let html = $(template).html();
-        let encodedHtml = btoa(html);
-        $(template).html(encodedHtml);
-    });
-
-    //$(".launch-modal").click(function () {
-    //    $("#submissionModal").modal({
-    //        backdrop: 'static'
-    //    });
-    //});
-});
-
-function removeRequiredAttribute(form) {
-    $(form).find("input,select,textarea").removeAttr("required");
-}
-
+﻿
 function submitWorkflowForm(stateId, button, postActionId, suffix, successMessage) {
     $("#submission-result-message_" + suffix).hide();
 

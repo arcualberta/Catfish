@@ -15,6 +15,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>
+    <script src="~/assets/js/_public-facing/scripts/data-item-form-functions.js"></script>
+
+
 }
 @{
     var item = Model.Item;
@@ -48,7 +51,7 @@
         <div id="submission-edit-result-message_@suffix"></div>
     </div>
 
-    <form id="submissionEditForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data">
+    <form id="submissionEditForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data" class="data-item-form">
         <input data-val="true" data-val-required="The TemplateId field is required."
                id="templateId_@suffix" name="entityTemplateId" type="hidden"
                value="@item.TemplateId">

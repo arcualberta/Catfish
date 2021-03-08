@@ -1,5 +1,9 @@
 ﻿function updateFields() {
 
+    //Setting the global dataFormdModified variable to true so that it can trigger
+    //automatic form-save calls.
+    dataFormdModified = true;
+
     //Handling visible-if conditions
     var visibleIfFields = $("input[data-visible-if], textarea[data-visible-if], select[data-visible-if], option[data-visible-if]");
     for (i = 0; i < visibleIfFields.length; ++i) {
