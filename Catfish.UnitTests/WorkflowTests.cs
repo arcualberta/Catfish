@@ -3649,10 +3649,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
                 .AddOwnerAuthorization();
+
             viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
-                .AddAuthorizedRole(sasSupervisour.Id)
+                .AddAuthorizedUserByDataField(confForm.Id, supervisorEmail.Id)
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(sasChair.Id);
+
+            supervisourNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, supervisorEmail.Id);
+
             viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization()
