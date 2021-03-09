@@ -3473,7 +3473,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Defining email templates
              string emailBody = "";
             emailBody = @"<p>Dear Chair,</p><br/>" +
-                          "<p> A faculty member from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'> Conference Fund Application </ a > to provide your assessment about this application."+
+                          "<p> A faculty member from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'> Conference Fund Application</a> to provide your assessment about this application."+
                             "You will be required to log in with your CCID email.</p><br/> <p> Thank you.</p>"; 
       
 
@@ -3482,15 +3482,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             chairEmailTemplate.SetSubject("Conference Fund Application");
             chairEmailTemplate.SetBody(emailBody);
 
+            //supervisorEmail
+            emailBody = "<p>Dear Supervisor,</p><br/>" +
+               "<p> A student from your department has applied for a Conference Fund grant. Please click on <a href='@SiteUrl/items/@Item.Id'>this link</a> to provide your assessment about this application." +
+                   "You will be required to log in with your CCID email.</p><br/><p>Thank you.</p>";
+           
             EmailTemplate advisorEmailTemplate = template.GetEmailTemplate("Advisor Email Template", lang, true);
             advisorEmailTemplate.SetSubject("Conference Fund Application");
             advisorEmailTemplate.SetBody(emailBody);
-
-            //supervisorEmail
-            emailBody = "<p>Dear Supervisor,</p><br/>" +
-               "<p> A student from your department has applied for a Conference Fund grant. Please click on this link: @LinkUrl to provide your assessment about this application." +
-                   "You will be required to log in with your CCID email.</p><br/><p>Thank you.</p>";
-
 
 
             EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
@@ -3498,7 +3497,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             applicantSubmissionNotification.SetSubject("Conference Application Submission");
             emailBody = @"<p>Dear Colleague,</p>
                                 <p>
-                                Thank you for submitting your Conference fund application. 
+                                Thank you for submitting your <a href='@SiteUrl/items/@Item.Id'> Conference Fund application</a>. 
                                 Your chair/supervisor has been automatically notified to provide an assessment about your application. 
                                 We will inform you of the decision when the application review process is completed. 
                                 </p>
@@ -3522,10 +3521,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             chairNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, chairEmail.Id);
             chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
 
-
             EmailTrigger supervisourNotificationEmailTrigger = workflow.AddTrigger("ToSupervisor", "SendEmail");
             supervisourNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, supervisorEmail.Id);
-            supervisourNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+            supervisourNotificationEmailTrigger.AddTemplate(advisorEmailTemplate.Id, "Advisor Email Notification");
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -3651,7 +3649,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
-                .AddAuthorizedUserByDataField(confForm.Id, supervisorEmail.Id)
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(sasChair.Id);
 
@@ -3773,8 +3771,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             supervisorReviewPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
 
             supervisourReviewAction.GetStateReference(inSupervisorReviewState.Id, true)
-                .AddAuthorizedDomain("@ualberta.ca")
-                .AddAuthorizedDomain("@abva.org");
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id);
+                //.AddAuthorizedDomain("@ualberta.ca")
+                //.AddAuthorizedDomain("@abva.org");
                 
 
             // ================================================
@@ -3830,7 +3829,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
             changeStateAction.GetStateReference(inSupervisorReviewState.Id, true)
-                .AddAuthorizedRole(sasSupervisour.Id);
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id);
+                //.AddAuthorizedRole(sasSupervisour.Id);
             changeStateAction.GetStateReference(inChairReviewState.Id, true)
                 .AddAuthorizedRole(sasChair.Id);
 
