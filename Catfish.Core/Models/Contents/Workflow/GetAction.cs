@@ -123,6 +123,12 @@ namespace Catfish.Core.Models.Contents.Workflow
             stateRef.AuthorizedDomains.Add(d);
             return d;
         }
+
+        public StateRef AddAuthorizedUserByDataField(Guid dataItemId, Guid fieldId)
+        {
+            throw new NotImplementedException("AddAuthorizedUserByDataField(Guid dataItemId, Guid fieldId) needs to be implemented");
+        }
+
         public StateRef AddStateReferances(Guid refId)
         {
             if (States.Where(st => st.Id == refId).Any())

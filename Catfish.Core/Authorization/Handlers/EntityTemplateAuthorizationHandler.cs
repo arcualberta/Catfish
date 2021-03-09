@@ -161,6 +161,8 @@ namespace Catfish.Core.Authorization.Handlers
                     return Task.CompletedTask;
                 }
 
+                //TODO: Implement checking based on AddAuthorizedUserByDataField(Guid dataItemId, Guid fieldId)
+
 
                 //At this point, the user is authenticated and the permission-requested GetAction is restricted to 
                 //specific user roles.

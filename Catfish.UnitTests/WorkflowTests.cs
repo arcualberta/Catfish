@@ -2564,8 +2564,8 @@ namespace Catfish.UnitTests
 
             //Defining state mappings
             changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accepte");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Rejecte");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
@@ -3531,10 +3531,10 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
             //State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
-            State inSupervisorReviewState = workflow.AddState(ws.GetStatus(template.Id, "InSupervisorReview", true));
-            State inChairReviewState = workflow.AddState(ws.GetStatus(template.Id, "InChairReview", true));
-            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "ReviewCompleted", true));
-            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "InAdjudication", true));
+            State inSupervisorReviewState = workflow.AddState(ws.GetStatus(template.Id, "In Supervisor Review", true));
+            State inChairReviewState = workflow.AddState(ws.GetStatus(template.Id, "In Chair's Review", true));
+            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "Review Completed", true));
+            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "In Adjudication", true));
             State acceptedState = workflow.AddState(ws.GetStatus(template.Id, "Accepted", true));
             State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
@@ -3769,7 +3769,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             supervisorReviewPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
 
             supervisourReviewAction.GetStateReference(inSupervisorReviewState.Id, true)
-                .AddAuthorizedRole(sasSupervisour.Id);
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedDomain("@abva.org");
+                
 
             // ================================================
             // Review submission-instances by chair related workflow items
@@ -3810,8 +3812,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining state mappings
             changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accepte");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Rejecte");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
