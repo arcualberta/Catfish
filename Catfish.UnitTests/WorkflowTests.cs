@@ -2011,7 +2011,9 @@ namespace Catfish.UnitTests
 
               .AppendContent("div", "Please specify the travel cost breakdown and attach supporting documentation below.Please enter numerical values only.Do not use $ or, when entering your dollar values.", lang, "alert alert-warning");
             sasForm.CreateField<TextField>("Name of Conference", lang);
-            sasForm.CreateField<DateField>("Date of Conference", lang);
+            sasForm.CreateField<InfoSection>(null,null).AppendContent("h5","Dates of Conference", lang);
+            sasForm.CreateField<DateField>("From:", lang);
+            sasForm.CreateField<DateField>("To:", lang);
             sasForm.CreateField<TextField>("Destination", lang);
             sasForm.CreateField<DateField>("Departure Date", lang);
             sasForm.CreateField<DateField>("Return Date", lang);
@@ -2232,6 +2234,7 @@ namespace Catfish.UnitTests
                                    var otherFunding = sasForm.CreateField<RadioField>("Have you received any SAS funding in the past 5 years?", lang, optionText, true);
 
                                   CompositeField summaryFund = sasForm.CreateField<CompositeField>("", lang, false);
+                                  summaryFund.SetDescription("<div class='alert alert-info'>If 'Yes' please indicate the award details using this Green 'Add' button.</div>", lang);
                                     summaryFund = CreateFundingSummaryForm(summaryFund, lang, 0);
                                     summaryFund.SetFieldLabelCssClass("col-md-12")
                                         .SetFieldValueCssClass("col-md-12");
@@ -2645,14 +2648,14 @@ namespace Catfish.UnitTests
                                             "Psychology",
                                             "Sociology",
                                             "Women's and Gender Studies",
-                                            "Media and Technology Studies",
+                                            "Media and Technology Studies (MTS)",
                                             "Arts Resources Centre"
                                         };
 
             return dept;
         }
 
-        private string[] GetDepartmentChair(bool test = true)
+        private string[] GetDepartmentChair(bool test = false)
         {
             string[] chairDept;
 
@@ -2696,7 +2699,7 @@ namespace Catfish.UnitTests
                                                 "Anthony Singhal: asinghal@ualberta.ca",
                                                 "Sara Dorow: sdorow@ualberta.ca",
                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
-                                                "Astrid Ensslin: ensslin@ualberta.ca",
+                                                "Natasha Hurley: nhurley@ualberta.ca",
                                                 "arcAdmin : iwickram@ualberta.ca",
                                             "Steve Patten : spatten@ualberta.ca" //Dean have to be at the end!!
                                         };
@@ -3440,12 +3443,12 @@ namespace Catfish.UnitTests
             // ====================================     FUNDING REQUESTED
             confForm.CreateField<InfoSection>(null, null)
               .AppendContent("h1", "FUNDING REQUESTED:", lang)
-             .AppendContent("div", @"<ul><li>Full Conference Fund Grants - <b>Up to $2,000:</b> Full Conference Fund grants are for conferences, symposia, or colloquia held on campus or in Edmonton</li>
+             .AppendContent("div", @"<ul><li>Full Conference Fund Grants - <b>Up to $2,000:</b> Full Conference Fund grants are for multi-days conferences, symposia, or colloquia held on campus or in Edmonton</li>
                                           <li>Partial Conference Fund Grants - <b>Up to $1,000:</b> Partial Conference Fund grants are for conferences, symposia, or colloquia with three or fewer speakers for one day or less, particularly those focused on a single theme and targeted to a modest, essentially local audience.</li></ul>", lang);
 
             confForm.CreateField<DecimalField>("Please enter the amount requested from the Faculty of Arts Conference Fund: ($)", lang);
             confForm.CreateField<AttachmentField>("Supporting Documentation", lang)
-                                       .SetDescription(@"Any existing call for proposals, draft program, or other such documents must be attached to this application as supporting documentation.
+                                       .SetDescription(@"Supporting documentation is required with all applications. Call for proposals, draft program, keynote speaker confirmation, and other such documents must be attached to this application as supporting documentation.
 All required supporting documentation must be <span style='color: Red;'><b>combined into a single PDF</b></span> and submitted here. Maximum file size: 50 MB", lang);
 
             //TODO TABLE FIELD -- GRAND TOTAL
