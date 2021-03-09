@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -123,6 +124,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             stateRef.AuthorizedDomains.Add(d);
             return d;
         }
+
         public StateRef AddStateReferances(Guid refId)
         {
             if (States.Where(st => st.Id == refId).Any())
@@ -147,6 +149,34 @@ namespace Catfish.Core.Models.Contents.Workflow
             }
             return false;
         }
-        
+
+        public bool IsAuthorizedByEmailField(Entity entity, string userEmail)
+        {
+            var stateId = entity.StatusId;
+            StateRef stateRef = States.Where(st => st.RefId == stateId).FirstOrDefault();
+
+            if (stateRef == null)
+                throw new Exception(string.Format("Requested state does not exist within the GetAction."));
+
+            foreach(var fieldRef in stateRef.AuthorizedEmailFields)
+            {
+                var dataItem = entity.DataContainer.Where(di => di.TemplateId == fieldRef.DataItemId).FirstOrDefault();
+                if (dataItem != null)
+                {
+                    var emailFieldVals = dataItem.Fields
+                        .Where(df => df.Id == fieldRef.FieldId)
+                        .Select(df => df as EmailField)
+                        .SelectMany(ef => ef.Values)
+                        .Select(txt => txt.Value)
+                        .ToList();
+
+                    if (emailFieldVals.Contains(userEmail))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }

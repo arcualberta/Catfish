@@ -62,7 +62,7 @@
                 message = data.message;
             }
 
-            $("#submission-edit-result-message_" + suffix + " div").text(message);
+            $("#submission-edit-result-message_" + suffix + " div").html(message);
             $("#submission-edit-result-message_" + suffix).show();
         });
 

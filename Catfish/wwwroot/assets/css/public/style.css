@@ -472,3 +472,10 @@ input[readonly] {
 .radio-inline > div{
     display:inline;
 }
+
+/* Adding some margin for workflow buttons that appear on the top-right
+   corner of a detailed view of an item.
+*/
+.pull-right {
+    margin: 10px;
+}

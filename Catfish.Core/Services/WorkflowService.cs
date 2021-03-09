@@ -484,9 +484,9 @@ namespace Catfish.Core.Services
                             }
                         }
                     }
-                        return postAction.TriggerRefs.OrderBy(tr => tr.Order).ToList();
+                        //return postAction.TriggerRefs.OrderBy(tr => tr.Order).ToList();
                 }
-                return null;
+                return triggerRefs;
             }
             catch (Exception ex)
             {

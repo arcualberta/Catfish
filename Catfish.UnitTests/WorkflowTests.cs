@@ -2011,7 +2011,9 @@ namespace Catfish.UnitTests
 
               .AppendContent("div", "Please specify the travel cost breakdown and attach supporting documentation below.Please enter numerical values only.Do not use $ or, when entering your dollar values.", lang, "alert alert-warning");
             sasForm.CreateField<TextField>("Name of Conference", lang);
-            sasForm.CreateField<DateField>("Date of Conference", lang);
+            sasForm.CreateField<InfoSection>(null,null).AppendContent("h5","Dates of Conference", lang);
+            sasForm.CreateField<DateField>("From:", lang);
+            sasForm.CreateField<DateField>("To:", lang);
             sasForm.CreateField<TextField>("Destination", lang);
             sasForm.CreateField<DateField>("Departure Date", lang);
             sasForm.CreateField<DateField>("Return Date", lang);
@@ -2232,6 +2234,7 @@ namespace Catfish.UnitTests
                                    var otherFunding = sasForm.CreateField<RadioField>("Have you received any SAS funding in the past 5 years?", lang, optionText, true);
 
                                   CompositeField summaryFund = sasForm.CreateField<CompositeField>("", lang, false);
+                                  summaryFund.SetDescription("<div class='alert alert-info'>If 'Yes' please indicate the award details using this Green 'Add' button.</div>", lang);
                                     summaryFund = CreateFundingSummaryForm(summaryFund, lang, 0);
                                     summaryFund.SetFieldLabelCssClass("col-md-12")
                                         .SetFieldValueCssClass("col-md-12");
@@ -2286,22 +2289,28 @@ namespace Catfish.UnitTests
             //================================================ Submit form ===============================
             sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
-                                       <div>To complete the application later, please click on the Save button below. You will be given a randomly generated reference number for which you need to submit a password. You can retrieve 
-                                      the application using this reference number and the password and complete it later. Unfortunately if you misplace the reference number or forget the password, 
-                                       you will have to start over a new application.</div>
-
-                                      <div>If you have completed your application, please use the Submit button below. Submitted applications cannot be modified. 
-                                            <span style='color: Red'>If your submission is successful, you should get a confirmation email</span>. Please check for this email <span style='color:Red'>before</span> you close your browser. 
-                                If you don't see the email, <span style='color: Red'>your application may not have been submitted</span>, so please contact Nancie Hodgson, Research Coordinator (resarts@ualberta.ca).</div>", lang, "alert alert-info");
+<div>
+    To save a partially completed application and work on it later, please click on the Save button below. 
+</div>
+<div>
+    If you have completed your application want to submit it, please use the Submit button instead. In order to
+    submit your appplication, you must fill all required fields. Submitted applications cannot be modified.
+</div>
+<div>
+    NOTE: If you successfully saved or submitted the application, your application form should disapear from this page and you
+    whould see a success message. If this wouldn't happen, then your session may be timed out. If so, please KEEP THIS
+    BROWSER TAB OPEN and sign in again with a DIFFERENT tab on the SAME BROWSER. Once you signed in, try to save or submit
+    your application again.
+</div>", lang, "alert alert-info");
 
            
 
             //Defining email templates
             string emailBody = "";
-            emailBody = "<p>Dear" + ((TextField)chairName).GetValue(lang) + ",</p><br/>" +
-                                    "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application." +
-                                    "You will be required to log in with your CCID email.</p> <br/>" +
-                                    "<p>Thank you.</p>";
+            emailBody = "<p>Dear Chair,</p><br/>" +
+                        "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application." +
+                        "You will be required to log in with your CCID email.</p> <br/>" +
+                        "<p>Thank you.</p>";
 
             EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
@@ -2322,7 +2331,7 @@ namespace Catfish.UnitTests
                                 Thank you.
                                 </p>
                                 <p>
-                                Steve Patten <br />
+                                Marie Carriere <br />
                                 Associate Dean (Research)
                                 </p>";
             applicantSubmissionNotification.SetBody(emailBody);
@@ -2460,13 +2469,14 @@ namespace Catfish.UnitTests
             editSubmissionAction.Access = GetAction.eAccess.Restricted;
             //Defining post actions
             PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editSubmissionPostActionSave.ValidateInputs = false;
             PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit", "Save");
 
             //Defining state mappings
             editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inReviewState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inReviewState.Id, "Submit");
             //editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, savedState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, inReviewState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(inReviewState.Id, inReviewState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
             PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
@@ -2496,6 +2506,7 @@ namespace Catfish.UnitTests
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.ValidateInputs = false;
 
             //Defining state mappings
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
@@ -2553,8 +2564,8 @@ namespace Catfish.UnitTests
 
             //Defining state mappings
             changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accepte");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Rejecte");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
@@ -2637,14 +2648,14 @@ namespace Catfish.UnitTests
                                             "Psychology",
                                             "Sociology",
                                             "Women's and Gender Studies",
-                                            "Media and Technology Studies",
+                                            "Media and Technology Studies (MTS)",
                                             "Arts Resources Centre"
                                         };
 
             return dept;
         }
 
-        private string[] GetDepartmentChair(bool test = true)
+        private string[] GetDepartmentChair(bool test = false)
         {
             string[] chairDept;
 
@@ -2688,7 +2699,7 @@ namespace Catfish.UnitTests
                                                 "Anthony Singhal: asinghal@ualberta.ca",
                                                 "Sara Dorow: sdorow@ualberta.ca",
                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
-                                                "Astrid Ensslin: ensslin@ualberta.ca",
+                                                "Natasha Hurley: nhurley@ualberta.ca",
                                                 "arcAdmin : iwickram@ualberta.ca",
                                             "Steve Patten : spatten@ualberta.ca" //Dean have to be at the end!!
                                         };
@@ -3432,12 +3443,12 @@ namespace Catfish.UnitTests
             // ====================================     FUNDING REQUESTED
             confForm.CreateField<InfoSection>(null, null)
               .AppendContent("h1", "FUNDING REQUESTED:", lang)
-             .AppendContent("div", @"<ul><li>Full Conference Fund Grants - <b>Up to $2,000:</b> Full Conference Fund grants are for conferences, symposia, or colloquia held on campus or in Edmonton</li>
+             .AppendContent("div", @"<ul><li>Full Conference Fund Grants - <b>Up to $2,000:</b> Full Conference Fund grants are for multi-days conferences, symposia, or colloquia held on campus or in Edmonton</li>
                                           <li>Partial Conference Fund Grants - <b>Up to $1,000:</b> Partial Conference Fund grants are for conferences, symposia, or colloquia with three or fewer speakers for one day or less, particularly those focused on a single theme and targeted to a modest, essentially local audience.</li></ul>", lang);
 
             confForm.CreateField<DecimalField>("Please enter the amount requested from the Faculty of Arts Conference Fund: ($)", lang);
             confForm.CreateField<AttachmentField>("Supporting Documentation", lang)
-                                       .SetDescription(@"Any existing call for proposals, draft program, or other such documents must be attached to this application as supporting documentation.
+                                       .SetDescription(@"Supporting documentation is required with all applications. Call for proposals, draft program, keynote speaker confirmation, and other such documents must be attached to this application as supporting documentation.
 All required supporting documentation must be <span style='color: Red;'><b>combined into a single PDF</b></span> and submitted here. Maximum file size: 50 MB", lang);
 
             //TODO TABLE FIELD -- GRAND TOTAL
@@ -3461,41 +3472,40 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining email templates
              string emailBody = "";
-            emailBody = @"<p>Dear" + ((TextField)chairName).GetValue(lang) + ",</p><br/>" +
-                          "<p> A faculty member from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'> Canference Fund Application </ a > to provide your assessment about this application."+
+            emailBody = @"<p>Dear Chair,</p><br/>" +
+                          "<p> A faculty member from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'> Conference Fund Application</a> to provide your assessment about this application."+
                             "You will be required to log in with your CCID email.</p><br/> <p> Thank you.</p>"; 
       
 
-                  EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
+            EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
             chairEmailTemplate.SetSubject("Conference Fund Application");
             chairEmailTemplate.SetBody(emailBody);
 
+            //supervisorEmail
+            emailBody = "<p>Dear Supervisor,</p><br/>" +
+               "<p> A student from your department has applied for a Conference Fund grant. Please click on <a href='@SiteUrl/items/@Item.Id'>this link</a> to provide your assessment about this application." +
+                   "You will be required to log in with your CCID email.</p><br/><p>Thank you.</p>";
+           
             EmailTemplate advisorEmailTemplate = template.GetEmailTemplate("Advisor Email Template", lang, true);
             advisorEmailTemplate.SetSubject("Conference Fund Application");
             advisorEmailTemplate.SetBody(emailBody);
 
-            //supervisorEmail
-            emailBody = "<p>Dear" + ((TextField)supervisor).GetValue(lang) + "</p><br/>" +
-               "<p> A student from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application." +
-                   "You will be required to log in with your CCID email.</p><br/><p>Thank you.</p>";
-
-
 
             EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
             applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
-            applicantSubmissionNotification.SetSubject("SAS Application Submission");
+            applicantSubmissionNotification.SetSubject("Conference Application Submission");
             emailBody = @"<p>Dear Colleague,</p>
                                 <p>
-                                Thank you for submitting your SAS grant application. 
-                                Your chair has been automatically notified to provide an assessment about your application. 
+                                Thank you for submitting your <a href='@SiteUrl/items/@Item.Id'> Conference Fund application</a>. 
+                                Your chair/supervisor has been automatically notified to provide an assessment about your application. 
                                 We will inform you of the decision when the application review process is completed. 
                                 </p>
                                 <p>
                                 Thank you.
                                 </p>
                                 <p>
-                                Steve Patten <br />
+                                Marie Carriere <br />
                                 Associate Dean (Research)
                                 </p>";
 
@@ -3511,27 +3521,26 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             chairNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, chairEmail.Id);
             chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
 
-
             EmailTrigger supervisourNotificationEmailTrigger = workflow.AddTrigger("ToSupervisor", "SendEmail");
             supervisourNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, supervisorEmail.Id);
-            supervisourNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+            supervisourNotificationEmailTrigger.AddTemplate(advisorEmailTemplate.Id, "Advisor Email Notification");
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
             //State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
-            State inSupervisorReviewState = workflow.AddState(ws.GetStatus(template.Id, "InSupervisorReview", true));
-            State inChairReviewState = workflow.AddState(ws.GetStatus(template.Id, "InChairReview", true));
-            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "ReviewCompleted", true));
-            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "InAdjudication", true));
+            State inSupervisorReviewState = workflow.AddState(ws.GetStatus(template.Id, "In Supervisor Review", true));
+            State inChairReviewState = workflow.AddState(ws.GetStatus(template.Id, "In Chair's Review", true));
+            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "Review Completed", true));
+            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "In Adjudication", true));
             State acceptedState = workflow.AddState(ws.GetStatus(template.Id, "Accepted", true));
             State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
             // Defining roles
-            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("GAP_Admin", true));
-            WorkflowRole sasChair = workflow.AddRole(auth.GetRole("GAP_Chair", true));
-            WorkflowRole sasSupervisour = workflow.AddRole(auth.GetRole("GAP_Supervisor", true));
+            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("Conference_Fund_Admin", true));
+            WorkflowRole sasChair = workflow.AddRole(auth.GetRole("Conference_Fund_Chair", true));
+            WorkflowRole sasSupervisour = workflow.AddRole(auth.GetRole("Conference_Fund_Supervisor", true));
 
             //extra FORMS
             DataItem chairAssessmentForm =CreateConferenceChairAssesmentForm(template);
@@ -3638,10 +3647,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
                 .AddOwnerAuthorization();
+
             viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
-                .AddAuthorizedRole(sasSupervisour.Id)
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(sasChair.Id);
+
+            supervisourNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, supervisorEmail.Id);
+
             viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization()
@@ -3742,7 +3755,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             supervisourReviewAction.Access = GetAction.eAccess.Restricted;
 
             //Defining form template
-            //supervisourReviewAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
+            supervisourReviewAction.AddTemplate(supervisorAssessmentForm.Id, "Start Review Submission");
 
             //Defining post actions
             PostAction supervisorReviewPostAction = supervisourReviewAction.AddPostAction("Start Review", "Save");
@@ -3758,7 +3771,10 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             supervisorReviewPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
 
             supervisourReviewAction.GetStateReference(inSupervisorReviewState.Id, true)
-                .AddAuthorizedRole(sasSupervisour.Id);
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id);
+                //.AddAuthorizedDomain("@ualberta.ca")
+                //.AddAuthorizedDomain("@abva.org");
+                
 
             // ================================================
             // Review submission-instances by chair related workflow items
@@ -3768,7 +3784,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             chairReviewAction.Access = GetAction.eAccess.Restricted;
 
             //Defining form template
-            //chairReviewAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
+            chairReviewAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
 
             //Defining post actions
             PostAction chairReviewPostAction = chairReviewAction.AddPostAction("Start Review", "Save");
@@ -3793,14 +3809,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             changeStateAction.Access = GetAction.eAccess.Restricted;
 
             //Define Revision Template
-            //changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
+            changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
             //Defining post actions
             PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", "Save");
 
             //Defining state mappings
             changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accepte");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Rejecte");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
@@ -3813,7 +3829,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
             changeStateAction.GetStateReference(inSupervisorReviewState.Id, true)
-                .AddAuthorizedRole(sasSupervisour.Id);
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id);
+                //.AddAuthorizedRole(sasSupervisour.Id);
             changeStateAction.GetStateReference(inChairReviewState.Id, true)
                 .AddAuthorizedRole(sasChair.Id);
 

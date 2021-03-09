@@ -161,6 +161,15 @@ namespace Catfish.Core.Authorization.Handlers
                     return Task.CompletedTask;
                 }
 
+                //Authorization successful if the currrent user's email is equal to an email idenfieied
+                //under AuthorizedEmailFields.
+                if(workflowAction.IsAuthorizedByEmailField(entity, currentUserEmail))
+                {
+                    context.Succeed(requirement);
+                    return Task.CompletedTask;
+                }
+
+
 
                 //At this point, the user is authenticated and the permission-requested GetAction is restricted to 
                 //specific user roles.
