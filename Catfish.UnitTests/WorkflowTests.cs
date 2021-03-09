@@ -3764,7 +3764,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             supervisorReviewPostAction.AddStateMapping(inSupervisorReviewState.Id, inChairReviewState.Id, "Submit Assessment");
 
             //Defining the pop-up for the above postAction action
-            PopUp supervisorReviewActionPopUpopUp = supervisorReviewPostAction.AddPopUp("Confirmation", "Confirm the submission?", "Once submitted, you cannot resubmit an assessment.");
+            PopUp supervisorReviewActionPopUpopUp = supervisorReviewPostAction.AddPopUp("Confirmation", "Confirm the supervisor review assesment?", "Once submit the assesment, you cannot resubmit an assessment.");
             supervisorReviewActionPopUpopUp.AddButtons("Yes, complete", "true");
             supervisorReviewActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -3793,7 +3793,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             chairReviewPostAction.AddStateMapping(inChairReviewState.Id, reviewCompletedState.Id, "Submit Assessment");
 
             //Defining the pop-up for the above postAction action
-            PopUp chairReviewPopUpopUp = chairReviewPostAction.AddPopUp("Confirmation", "Confirm the submission?", "Once submitted, you cannot resubmit an assessment.");
+            PopUp chairReviewPopUpopUp = chairReviewPostAction.AddPopUp("Confirmation", "Confirm the chair's review assesment?", "Once submitted, you cannot resubmit an assessment.");
             chairReviewPopUpopUp.AddButtons("Yes, complete", "true");
             chairReviewPopUpopUp.AddButtons("Cancel", "false");
 
