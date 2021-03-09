@@ -76,22 +76,27 @@ namespace Catfish.Core.Models.Contents.Fields
                 throw new Exception("The source field is null or is not an OptionsField");
 
             var selections = src.SelectedOptionGuids == null ? new Guid[0] : src.SelectedOptionGuids;
-
+            int i = 0;
             foreach (var dstOption in Options)
             {
                 dstOption.Selected = selections.Contains(dstOption.Id);
+                Options[i].Selected = selections.Contains(dstOption.Id);
+                i++;
             }
         }
 
         public override void SetValue(string value, string lang)
         {
+            int i = 0;
             foreach (var op in Options)
             {
                 if (op.OptionText.Values.Where(txt => txt.Language == lang && txt.Value == value).Any())
                 {
                     op.Selected = true;
+                    Options[i].Selected = true;
                     break;
                 }
+                i++;
             }
         }
 
