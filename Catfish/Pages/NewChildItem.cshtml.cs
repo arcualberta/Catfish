@@ -22,6 +22,8 @@ namespace Catfish.Pages
         
         [BindProperty]
         public DataItem Child { get; set; }
+        
+        public Item Item { get; set; }
 
         [BindProperty]
         public Guid ChildTemplateId { get; set; }
@@ -57,14 +59,13 @@ namespace Catfish.Pages
             ChildTemplateId = childTemplateId;
 
             // Load the item with the specified "id"
-            Item item = _submissionService.GetSubmissionDetails(id);
+           Item = _submissionService.GetSubmissionDetails(id);
 
             // Get the entity template which has its ID to be the above loaded item's TemplateId
-            Template = _entityTemplateService.GetTemplate(item.TemplateId.Value);
+            Template = _entityTemplateService.GetTemplate(Item.TemplateId.Value);
 
             // Get the data item that is referred by the given childTemplateId from the template
             Child = Template.GetDataItem(childTemplateId);
-
             ButtonId = buttonId;
         }
         //////public IActionResult OnPost()

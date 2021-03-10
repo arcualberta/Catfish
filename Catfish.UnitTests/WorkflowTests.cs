@@ -2678,7 +2678,7 @@ namespace Catfish.UnitTests
                                             "Sara Dorow: arctech@ualberta.ca",
                                             "Michelle Meagher: arctech@ualberta.ca",
                                             "Kamal at Ranaweera (Chair): kamal@ranaweera.ca",
-                                            "arcAdmin : ouslsaba@gmail.com",
+                                            "arcAdmin :ouslsaba@gmail.com",
                                             "Kamal at Gmail (Dean) : kamal.ranaweera@gmail.com"};//Dean have to be at the end!!
             }
             else
@@ -2700,7 +2700,7 @@ namespace Catfish.UnitTests
                                                 "Sara Dorow: sdorow@ualberta.ca",
                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
                                                 "Natasha Hurley: nhurley@ualberta.ca",
-                                                "arcAdmin : iwickram@ualberta.ca",
+                                                "arcAdmin : mruaini@ualberta.ca",//iwickram@ualberta.ca
                                             "Steve Patten : spatten@ualberta.ca" //Dean have to be at the end!!
                                         };
             }
@@ -2797,11 +2797,53 @@ namespace Catfish.UnitTests
             string[] YNOptions = new string[]{ "Yes",
                                 "No"};
 
-            form.CreateField<RadioField>("Has the applicant requested a teaching release?", lang, YNOptions, true);
+            var reqTeachingRelease = form.CreateField<RadioField>("Has the applicant requested a teaching release?", lang, YNOptions, true,1);
+            string[] teachingLoad = GeTeachingLoadList();
+
+            // .VisibilityCondition
+            //   .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            var tLoad = form.CreateField<RadioField>("Teaching Load", lang, teachingLoad);
+                            tLoad.VisibilityCondition
+                        .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+                        tLoad.RequiredCondition
+                         .AppendLogicalExpression(reqTeachingRelease,ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+
+            var aLoad = form.CreateField<RadioField>("Administration Load", lang, teachingLoad);
+            aLoad.VisibilityCondition
+        .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            aLoad.RequiredCondition
+             .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+
+            var comment = form.CreateField<TextArea>("Comment on why teaching release time is urgent and essential at this time in the applicant’s research agenda and career.", lang);
+            comment.VisibilityCondition
+        .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            comment.RequiredCondition
+             .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            comment.Cols = 30;
+            comment.Rows = 5;
+
+            var comment2 = form.CreateField<TextArea>("Please specify any other teaching relief the applicant receives (i.e., SSHRC, Administrative, etc.)", lang);
+            comment2.VisibilityCondition
+        .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            comment2.RequiredCondition
+             .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            comment2.Cols = 30;
+            comment2.Rows = 5;
+
+
+
             return form;
         }
 
-        private DataItem CreateAddNotesForm(ItemTemplate template)
+        private string[] GeTeachingLoadList(bool test = false)
+        {
+            string[] teachingLoad = new string[] { "1(Light)", "2", "3", "4", "5", "6", "7(Heavy)" };
+
+            return teachingLoad;
+        }
+
+            private DataItem CreateAddNotesForm(ItemTemplate template)
         {
             string lang = "en";
             DataItem form = template.GetDataItem("SAS Notes Form", true, lang);

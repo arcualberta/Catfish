@@ -26,7 +26,7 @@
 
 
 @{
-    if ((await _authorizationService.AuthorizeAsync(User, Model.Template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+    if ((await _authorizationService.AuthorizeAsync(User, Model.Item, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
 .Succeeded)
     {
         <div class="container">
