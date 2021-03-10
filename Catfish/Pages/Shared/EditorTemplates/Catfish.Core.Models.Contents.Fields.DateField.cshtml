@@ -14,17 +14,10 @@
     var id = Html.IdFor(model => model.Values[i].DateValue);
     var required = Model.Required ? "required" : "";
     var fieldType = Model.IncludeTime ? "datetime-local" : "date";
-    string[] dt = Model.Values[i].Value.Split(" ");
-    string strdate = "";
-    if(dt.Length > 1)
-        strdate = DateTime.ParseExact(dt[0], "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
-
-    strdate = string.IsNullOrEmpty(strdate) ? Model.Values[i].Value : strdate;
-
     <input type="@fieldType"
            id="@id"
            name="@name"
-           value="@strdate"
+           value="@Model.Values[i].DateValue"
            onchange="@ViewData["onchange"]"
            @required
            data-value-expression="@ViewData["data-value-expression"]"

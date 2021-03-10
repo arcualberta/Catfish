@@ -22,7 +22,7 @@
     var nextStatus = stateMapping.Next;
     string suffix = Guid.NewGuid().ToString();
     string successMessage = "";// string.IsNullOrEmpty(Model.SubmissionConfirmation.Value) ? "" : Model.SubmissionConfirmation.Value.ToString();
-}   
+}
 
 
 @{
@@ -110,6 +110,8 @@
 
             </div>
         </form>
-        <div id="add-child-result-message_@suffix"></div>
+        <div class="container">
+            <div id="add-child-result-message_@suffix"></div>
+        </div>
     }
 }

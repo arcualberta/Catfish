@@ -3716,6 +3716,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                 .AddAuthorizedRole(gapChair.Id);
 
             viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(gapChair.Id);
@@ -3943,7 +3944,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Define Revision Template
             changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
             //Defining post actions
-            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", "Save");
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", "Save", @"<p>Application status changed successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                );
 
             //Defining state mappings
             changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
