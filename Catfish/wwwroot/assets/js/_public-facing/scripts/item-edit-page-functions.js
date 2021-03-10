@@ -51,7 +51,8 @@
             $('.modal-backdrop').remove();
             if (data.success) {
                 //  $(".submission-result-message").addClass("alert alert-success");
-                message = successMessage !== "" ? successMessage : data.message;
+               // message = successMessage !== "" ? successMessage : data.message;
+                message = data.message;
                 $("#submission-edit-result-message_" + suffix).append("<div class='alert alert-success' ></div>");
 
                 $("#submissionEditForm_" + suffix).hide();//[0].reset();

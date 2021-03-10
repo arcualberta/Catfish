@@ -207,14 +207,15 @@ namespace Catfish.Controllers.Api
 
                 result.Success = true;
 
-                if (actionButton == "Save")
-                    result.Message = "Form saved successfully.";
-                else if (actionButton == "Submit")
-                    result.Message = "Form submitted successfully.";
-                else if (actionButton == "Delete")
-                    result.Message = "Form deleted successfully.";
-                else
-                    result.Message = "Task completed successfully.";
+                result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, itemId);
+                //if (actionButton == "Save")
+                //    result.Message = "Form saved successfully.";
+                //else if (actionButton == "Submit")
+                //    result.Message = "Form submitted successfully.";
+                //else if (actionButton == "Delete")
+                //    result.Message = "Form deleted successfully.";
+                //else
+                //    result.Message = "Task completed successfully.";
 
             }
             catch (Exception ex)
