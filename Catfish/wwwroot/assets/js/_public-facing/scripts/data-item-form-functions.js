@@ -24,7 +24,6 @@ $(document).ready(function () {
         }
     },
     10 * 60000); //execute every 10 minutes.
-
 });
 
 function removeRequiredAttribute(form) {
