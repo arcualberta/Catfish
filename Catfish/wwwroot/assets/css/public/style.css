@@ -473,6 +473,9 @@ input[readonly] {
     display:inline;
 }
 
+.footer-row{
+    background-color:#eee;
+}
 /* Adding some margin for workflow buttons that appear on the top-right
    corner of a detailed view of an item.
 */

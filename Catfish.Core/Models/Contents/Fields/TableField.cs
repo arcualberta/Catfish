@@ -84,18 +84,17 @@ namespace Catfish.Core.Models.Contents.Fields
             foreach (var row in src.TableData)
                 InsertValues(row, eRowTarget.Data);
 
-            TableFooter.Clear();
-            foreach (var row in src.TableFooter)
-                InsertValues(row, eRowTarget.Footer);
-
-            //foreach (var srcChild in src.Children)
-            //{
-            //    var dstChild = ChildTemplate.Clone() as DataItem;
-            //    dstChild.TemplateId = ChildTemplate.Id;
-            //    dstChild.Id = srcChild.Id;
-            //    dstChild.UpdateFieldValues(srcChild);
-            //    Children.Add(dstChild);
-            //}
+            //Table footer is not meant to be replaced in whole but we only change the values
+            //of cells in each row.
+            for (var r = 0; r< Math.Min(src.TableFooter.Count, TableFooter.Count); ++r)
+            {
+                var srcRow = src.TableFooter[r];
+                var dstRow = TableFooter[r];
+                for(var c = 0; c< Math.Min(srcRow.Fields.Count, dstRow.Fields.Count); ++c)
+                {
+                    dstRow.Fields[c].UpdateValues(srcRow.Fields[c]);
+                }
+            }
         }
 
         /// <summary>
