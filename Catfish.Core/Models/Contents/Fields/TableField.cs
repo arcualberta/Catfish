@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
@@ -80,21 +81,34 @@ namespace Catfish.Core.Models.Contents.Fields
             if (src == null)
                 throw new Exception("The source field is null or is not a TableField");
 
-            TableData.Clear();
-            foreach (var row in src.TableData)
-                InsertValues(row, eRowTarget.Data);
+            //Here, we update the table data as follows:
+            //  1. If the source data contains rows that matches with Ids in "this" object, 
+            //     then we update those rows
+            //  2. If the source data contains "new" rows that do not exist in "this" object,
+            //     then we inser them
+            //  3. If the source data does NOT contain some of the rows in "this" object,
+            //     then we delete those extra rows from "this" object
+            foreach (var srcRow in src.TableData)
+            {
+                //Finding the matching row
+                var dstRow = TableData.Where(tr => tr.Id == srcRow.Id).FirstOrDefault();
+
+                if (dstRow == null)
+                    InsertValues(srcRow, eRowTarget.Data);
+                else
+                    UpdateValues(srcRow, dstRow);
+            }
+
+            //deleting any rows that are in "this" object but not in the src
+            var srcRowIds = src.TableData.Select(tr => tr.Id).ToList();
+            var toBeDeleted = TableData.Where(tr => !srcRowIds.Contains(tr.Id)).ToList();
+            foreach (var del in toBeDeleted)
+                TableData.Remove(del);
 
             //Table footer is not meant to be replaced in whole but we only change the values
             //of cells in each row.
             for (var r = 0; r< Math.Min(src.TableFooter.Count, TableFooter.Count); ++r)
-            {
-                var srcRow = src.TableFooter[r];
-                var dstRow = TableFooter[r];
-                for(var c = 0; c< Math.Min(srcRow.Fields.Count, dstRow.Fields.Count); ++c)
-                {
-                    dstRow.Fields[c].UpdateValues(srcRow.Fields[c]);
-                }
-            }
+                UpdateValues(src.TableFooter[r], TableFooter[r]);
         }
 
         /// <summary>
@@ -124,6 +138,15 @@ namespace Catfish.Core.Models.Contents.Fields
 
             return dstRow;
         }
+
+        public void UpdateValues(TableRow src, TableRow dst)
+        {
+            for (var c = 0; c < Math.Min(src.Fields.Count, dst.Fields.Count); ++c)
+            {
+                dst.Fields[c].UpdateValues(src.Fields[c]);
+            }
+        }
+
         public TableRow AppendRow(eRowTarget target = eRowTarget.Data)
         {
             TableRow row = new TableRow();
