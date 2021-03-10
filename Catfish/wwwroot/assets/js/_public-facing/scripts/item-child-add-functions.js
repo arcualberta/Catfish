@@ -60,7 +60,7 @@
                 message = data.message;
             }
 
-            $("#add-child-result-message_" + suffix + " div").text(message);
+            $("#add-child-result-message_" + suffix + " div").html(message);
             $("#add-child-result-message_" + suffix).show();
         });
 
