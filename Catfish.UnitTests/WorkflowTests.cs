@@ -2287,7 +2287,7 @@ namespace Catfish.UnitTests
                             .SetFieldValueCssClass("col-md-12");
 
             //================================================ Submit form ===============================
-            sasForm.CreateField<InfoSection>(null, null)
+            var saveInstructions = sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
 <div>
     To save a partially completed application and work on it later, please click on the Save button below. 
@@ -2303,7 +2303,9 @@ namespace Catfish.UnitTests
     your application again.
 </div>", lang, "alert alert-info");
 
-           
+            saveInstructions.EditorOnly = true;
+
+
 
             //Defining email templates
             string emailBody = "";
@@ -3495,7 +3497,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //TODO TABLE FIELD -- GRAND TOTAL
             //================================================ Submit form ===============================
-            confForm.CreateField<InfoSection>(null, null)
+            var saveOptionsInfo = confForm.CreateField<InfoSection>(null, null)
                 .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
                                        <div>To complete the application later, please click on the Save button below. You will be given a randomly generated reference number for which you need to submit a password. You can retrieve 
                                       the application using this reference number and the password and complete it later. Unfortunately if you misplace the reference number or forget the password, 
@@ -3504,6 +3506,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                                       <div>If you have completed your application, please use the Submit button below. Submitted applications cannot be modified. 
                                             <span style='color: Red'>If your submission is successful, you should get a confirmation email</span>. Please check for this email <span style='color:Red'>before</span> you close your browser. 
                                 If you don't see the email, <span style='color: Red'>your application may not have been submitted</span>, so please contact Nancie Hodgson, Research Coordinator (resarts@ualberta.ca).</div>", lang, "alert alert-info");
+            saveOptionsInfo.EditorOnly = true;
 
             ////=============================================================================             Defininig roles
             //WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
@@ -3793,6 +3796,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.ValidateInputs = false;
 
             //Defining state mappings
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
