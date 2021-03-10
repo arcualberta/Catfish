@@ -3660,31 +3660,38 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             // Added state referances
             listSubmissionsAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(inSupervisorReviewState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(inChairReviewState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
@@ -3701,41 +3708,34 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(gapChair.Id);
 
             viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(gapChair.Id);
 
             viewDetailsSubmissionAction.AddStateReferances(reviewCompletedState.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(gapChair.Id);
 
             viewDetailsSubmissionAction.AddStateReferances(inAdjudicationState.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdjudication.Id)
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(acceptedState.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedRole(gapAdmin.Id)
                 .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
