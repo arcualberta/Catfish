@@ -13,6 +13,13 @@ namespace Catfish.Core.Models.Contents.Fields
         public InfoSection() { DisplayLabel = "Info Section"; }
         public InfoSection(XElement data) : base(data) { DisplayLabel = "Info Section"; }
 
+        public bool EditorOnly
+        {
+            get => GetAttribute("editor-only", false);
+            set => SetAttribute("editor-only", value);
+        }
+
+
         public override void Initialize(eGuidOption guidOption)
         {
             base.Initialize(guidOption);
