@@ -120,6 +120,21 @@ namespace Catfish.Core.Models.Contents.Fields
             return Options.Where(op => op.OptionText.GetContent(lang) == optionText).FirstOrDefault();
         }
 
+        public override void CopyValue(BaseField srcField, bool overwrite = false)
+        {
+            if (overwrite || Options.Where(op => op.Selected).Any() == false)
+            {
+                var src = srcField as OptionsField;
+                foreach (var srcOption in src.Options)
+                {
+                    var option = Options
+                        .Where(op => op.OptionText.ConcatenatedContent == srcOption.OptionText.ConcatenatedContent)
+                        .FirstOrDefault();
 
+                    if (option != null)
+                        option.Selected = srcOption.Selected;
+                }
+            }
+        }
     }
 }

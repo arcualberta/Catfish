@@ -118,5 +118,24 @@ namespace Catfish.Core.Models.Contents.Fields
         {
             return string.Join(separator, Values.Select(txt => txt.Value));
         }
+
+        public override void CopyValue(BaseField srcField, bool overwrite = false)
+        {
+            var src = srcField as MonolingualTextField;
+
+            if (overwrite || Values.Where(txt => !string.IsNullOrEmpty(txt.Value)).Any() == false)
+            {
+                var srcValues = src.Values.Where(txt => !string.IsNullOrEmpty(txt.Value)).ToList();
+
+                //Iterate through every value in the src field and set or inser them to the target field
+                for(int i=0; i< srcValues.Count; ++i)
+                {
+                    if (Values.Count < i)
+                        Values[i].Copy(srcValues[i]);
+                    else
+                        Values.Add(new Text(srcValues[i]));
+                }
+            }
+        }
     }
 }

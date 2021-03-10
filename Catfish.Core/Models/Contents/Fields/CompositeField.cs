@@ -115,5 +115,13 @@ namespace Catfish.Core.Models.Contents.Fields
         /// <param name="lang"></param>
         public override void SetValue(string value, string lang) { }
 
+        /// <summary>
+        /// We have not implemented this method for CompositeFields
+        /// </summary>
+        /// <param name="srcField"></param>
+        public override void CopyValue(BaseField srcField, bool overwrite = false)
+        {
+            
+        }
     }
 }

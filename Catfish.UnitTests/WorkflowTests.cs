@@ -1906,7 +1906,7 @@ namespace Catfish.UnitTests
             sasForm.CreateField<InfoSection>(null, null)
                .AppendContent("div", "The Adjudication committee is a multi-disciplinary committee. Please write for someone who does not understand your work and/or field.<br/>Be clear and concise in your explanations, and make sure your justifications are detailed.", lang);
 
-            sasForm.CreateField<TextField>("Applicant Name:", lang, true, true);
+            var applicantName = sasForm.CreateField<TextField>("Applicant Name:", lang, true, true);
             var applicantEmail = sasForm.CreateField<EmailField>("Email Address:", lang, true, true)
                 .SetDescription("Please use your UAlberta CCID email address.", lang);
 
@@ -1914,12 +1914,12 @@ namespace Catfish.UnitTests
            
             var dept = sasForm.CreateField<SelectField>("Department:", lang, departmentList, true);
 
-            string[] rank = new string[]{ "Assistant Professor",
+            string[] rankOptions = new string[]{ "Assistant Professor",
                                 "Associate Professor",
                                 "Professor",
                                 "FSO",
                                 "Other"};
-            sasForm.CreateField<SelectField>("Rank:", lang, rank, true);
+            var rank = sasForm.CreateField<SelectField>("Rank:", lang, rankOptions, true);
 
             //==============================================================================CHAIR's Contact Information
             sasForm.CreateField<InfoSection>(null, null)
@@ -2343,13 +2343,16 @@ namespace Catfish.UnitTests
             EmailField assessFormApplicantEmail;
             SelectField assessFormDept;
             SelectField assessFormRank;
-            DataItem chairAssessmentForm = CreateChairAssessmentForm(template, rank, 
+            DataItem chairAssessmentForm = CreateChairAssessmentForm(template, rankOptions, 
                 out assessFormApplicantName, 
                 out assessFormApplicantEmail,
                 out assessFormDept,
                 out assessFormRank);
 
-
+            assessFormApplicantName.GetSourceReference(true).SetValue(sasForm.Id, applicantName.Id);
+            assessFormApplicantEmail.GetSourceReference(true).SetValue(sasForm.Id, applicantEmail.Id);
+            assessFormDept.GetSourceReference(true).SetValue(sasForm.Id, dept.Id);
+            assessFormRank.GetSourceReference(true).SetValue(sasForm.Id, rank.Id);
 
             DataItem additionalNoteForm = CreateAddNotesForm(template);
             //Defining triggers
@@ -2714,7 +2717,7 @@ namespace Catfish.UnitTests
                                                 "Sara Dorow: sdorow@ualberta.ca",
                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
                                                 "Natasha Hurley: nhurley@ualberta.ca",
-                                                "arcAdmin : mruaini@ualberta.ca",//iwickram@ualberta.ca
+                                                "arcAdmin : kamal@ranaweera.ca",//iwickram@ualberta.ca
                                             "Steve Patten : spatten@ualberta.ca" //Dean have to be at the end!!
                                         };
             }

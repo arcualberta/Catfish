@@ -212,6 +212,15 @@ namespace Catfish.Core.Models.Contents.Fields
                 TableData[i].Fields[columnIndex].Readonly = markReadOnly;
             }
         }
+
+        /// <summary>
+        /// We have not implemented this method for TableField
+        /// </summary>
+        /// <param name="srcField"></param>
+        public override void CopyValue(BaseField srcField, bool overwrite = false)
+        {
+
+        }
     }
 
     public class TableRow : FieldContainerBase

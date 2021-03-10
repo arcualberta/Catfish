@@ -32,5 +32,12 @@ namespace Catfish.Core.Models.Contents.Workflow
         {
 
         }
+
+        public FieldReference SetValue(Guid dataItemId, Guid fieldId)
+        {
+            DataItemId = dataItemId;
+            FieldId = fieldId;
+            return this;
+        }
     }
 }

@@ -61,5 +61,11 @@ namespace Catfish.Core.Models.Contents.Fields
             Content.SetContent(formattedContent, lang, true);
             return this;
         }
+
+        /// <summary>
+        /// This method is not relevant for the InfoSection field.
+        /// </summary>
+        /// <param name="srcField"></param>
+        public override void CopyValue(BaseField srcField, bool overwrite = false) { }
     }
 }
