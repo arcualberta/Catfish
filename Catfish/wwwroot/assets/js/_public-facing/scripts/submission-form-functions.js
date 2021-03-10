@@ -58,7 +58,8 @@ function submitWorkflowForm(stateId, button, postActionId, suffix, successMessag
             $('.modal-backdrop').remove();
             if (data.success) {
                 //  $(".submission-result-message").addClass("alert alert-success");
-                message = successMessage !== "" ? successMessage : data.message;
+                //message = successMessage !== "" ? successMessage : data.message;
+                message = data.message;
                 $("#submission-result-message_" + suffix).append("<div class='alert alert-success' ></div>");
             
                 $("#submissionForm_" + suffix).hide();//[0].reset();

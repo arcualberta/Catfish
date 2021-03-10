@@ -425,5 +425,34 @@ namespace Catfish.Services
                 return null;
             }
         }
+
+        public string SetSuccessMessage(Guid entityTemplateId, Guid postActionId, Guid itemId)
+        {
+            try
+            {
+                string successMessage = "";
+                // get entity template using entityTemplateId
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                var getAction = _workflowService.GetGetActionByPostActionID(template, postActionId);
+                var postAction = getAction.PostActions.Where(pa => pa.Id == postActionId).FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(postAction.SuccessMessage))
+                {
+                    successMessage = postAction.SuccessMessage;
+                    successMessage = successMessage.Replace("@SiteUrl", _config.GetSiteURL());
+                    successMessage = successMessage.Replace("@Item.Id", itemId.ToString());
+                }
+                else
+                {
+                    successMessage = "Your Application " + postAction.ButtonLabel + " Successfully";
+                }
+                return successMessage;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return "";
+            }
+        }
     }
 }

@@ -26,6 +26,7 @@ namespace Catfish.Helper
         string GetDefaultLanguage();
         string GetGoogleClientSecret();
         string GetGoogleServiceAccountFileName();
+        string GetSiteURL();
         bool GetEnabledLocalLogin();
         bool GetEnabledBreadcrumb();
         ePanelLocation GetDefaultSearchPanelLocation();
@@ -156,6 +157,10 @@ namespace Catfish.Helper
         public string GetGoogleServiceAccountFileName()
         {
             return _configuration["GoogleCalendar:ServiceAccountFileName"];
+        }
+        public string GetSiteURL()
+        {
+            return _configuration["SiteConfig:SiteURL"];
         }
         public bool GetEnabledLocalLogin()
         {
