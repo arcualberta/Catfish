@@ -3707,7 +3707,6 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization()
-                .AddAuthorizedRole(sasSupervisour.Id)
                 .AddAuthorizedRole(sasChair.Id);
 
             viewDetailsSubmissionAction.AddStateReferances(reviewCompletedState.Id)
