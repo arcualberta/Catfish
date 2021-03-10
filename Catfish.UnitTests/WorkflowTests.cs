@@ -3469,7 +3469,7 @@ namespace Catfish.UnitTests
             cctf.FieldLabelCssClass = "col-md-12";
             cctf.FieldValueCssClass = "col-md-12";
             cctf.TableHead.CreateField<InfoSection>("", lang);
-            cctf.TableHead.CreateField<DecimalField>("Itemized Costs", lang);
+            cctf.TableHead.CreateField<TextField>("Itemized Costs", lang);
 
             cctf.TableHead.CreateField<DecimalField>("Estimated Cost ($)", lang);
 
@@ -3477,8 +3477,13 @@ namespace Catfish.UnitTests
             TableRow ccfooter = cctf.AppendRow(TableField.eRowTarget.Footer);
             ccfooter.Fields[0].SetValue("Total Cost", lang);
             ccfooter.SetReadOnly();
-            for (var i = 1; i < ccfooter.Fields.Count; ++i)
+            for (var i = ccfooter.Fields.Count-1; i < ccfooter.Fields.Count; ++i)
+            {
+                ccfooter.Fields[i].ValueExpression.Clear();
                 ccfooter.Fields[i].ValueExpression.AppendColumnSum(cctf, i);
+
+            }
+                
 
             cctf.AllowAddRows = true;
             cctf.AppendRows(1);
