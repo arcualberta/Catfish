@@ -287,7 +287,7 @@ namespace Catfish.Controllers.Api
 
 
                 result.Success = true;
-                result.Message = "Your change successfully done.";
+                result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, itemId);
 
             }
             catch (Exception ex)
