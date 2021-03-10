@@ -3726,6 +3726,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             editSubmissionAction.Access = GetAction.eAccess.Restricted;
             //Defining post actions
             PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editSubmissionPostActionSave.ValidateInputs = false;
+
             PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit", "Save");
 
             //Defining state mappings
