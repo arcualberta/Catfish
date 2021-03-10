@@ -2338,7 +2338,19 @@ namespace Catfish.UnitTests
                                 </p>";
             applicantSubmissionNotification.SetBody(emailBody);
 
-            DataItem chairAssessmentForm = CreateChairAssessmentForm(template);
+            //Chair's assessment form with configurations set up to pre-fill applicant information
+            TextField assessFormApplicantName;
+            EmailField assessFormApplicantEmail;
+            SelectField assessFormDept;
+            SelectField assessFormRank;
+            DataItem chairAssessmentForm = CreateChairAssessmentForm(template, rank, 
+                out assessFormApplicantName, 
+                out assessFormApplicantEmail,
+                out assessFormDept,
+                out assessFormRank);
+
+
+
             DataItem additionalNoteForm = CreateAddNotesForm(template);
             //Defining triggers
             //Feb 12 2021
@@ -2768,25 +2780,30 @@ namespace Catfish.UnitTests
             return comField;
         }
 
-        private DataItem CreateChairAssessmentForm(ItemTemplate template)
+        private DataItem CreateChairAssessmentForm(ItemTemplate template, string[] rankOptions,
+            out TextField applicantName, 
+            out EmailField applicantEmail,
+            out SelectField dept,
+            out SelectField rank)
         {
             string lang = "en";
             DataItem form = template.GetDataItem("Chair's Assessment Form", true, lang);
             form.IsRoot = false;
             form.SetDescription("This template is designed for Chair's Assessment", lang);
 
-            form.CreateField<TextField>("Applicant Name", lang, true); //ideally this field will be automatically filled from the "Applicant Name" field on the main form
-            form.CreateField<EmailField>("Applicant Email", lang, true);//ideally this field will be automatically filled from the "Applicant Email" field on the main form
+            applicantName = form.CreateField<TextField>("Applicant Name", lang, true); //ideally this field will be automatically filled from the "Applicant Name" field on the main form
+            applicantEmail = form.CreateField<EmailField>("Applicant Email", lang, true);//ideally this field will be automatically filled from the "Applicant Email" field on the main form
             string[] departmentList = GetDepartmentList();
 
-            form.CreateField<SelectField>("Department:", lang, departmentList, true);
+            dept = form.CreateField<SelectField>("Department:", lang, departmentList, true);
 
-            string[] rank = new string[]{ "Assistant Professor",
-                                "Associate Professor",
-                                "Professor",
-                                "FSO",
-                                "Other"};
-            form.CreateField<SelectField>("Rank:", lang, rank, true);
+            ////string[] rankOptions = new string[]{ "Assistant Professor",
+            ////                    "Associate Professor",
+            ////                    "Professor",
+            ////                    "FSO",
+            ////                    "Other"};
+            rank = form.CreateField<SelectField>("Rank:", lang, rankOptions, true);
+
             form.CreateField<TextArea>("Comment on the feasibility of the project and its importance at this time in the applicant’s career.", lang, true).SetAttribute("cols", 50);
 
             string[] priorities = new string[]{ "Top Priority",
