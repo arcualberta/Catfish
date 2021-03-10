@@ -1,0 +1,9 @@
+﻿@model Catfish.Core.Models.Contents.Fields.AttachmentField;
+
+<div class="control field-label col-md-4">@Model.Name.ConcatenatedContent</div>
+ <div class="multilingual-input-block field-value col-md-8">
+    @foreach(var f in Model.Files)
+     {
+       <div>@f.OriginalFileName</div>
+     }
+ </div>
