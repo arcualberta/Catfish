@@ -26,6 +26,7 @@ namespace Catfish.Services
         //       bool SendEmail(EmailTemplate emailTemplate, string recipient);
         bool ExecuteTriggers(Guid entityTemplateId,Item item, Guid postActionId);
         Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action);
+        string SetSuccessMessage(Guid entityTemplateId, Guid postActionId, Guid itemId);
     }
     public class ItemField
     {

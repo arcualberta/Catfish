@@ -3601,11 +3601,15 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             startSubmissionAction.AddTemplate(confForm.Id, "Start Submission Template");
 
             //Defining post actions
-            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
+            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update),
+                @"<p>Your Conference Fund application saved successfully. You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
             savePostAction.ValidateInputs = false; 
             savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
 
-            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update), @"<p>
+                                Thank you for submitting your Conference Fund application. 
+                                Your chair/supervisor has been automatically notified to provide an assessment about your application.
+                                You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
             submitPostAction.AddStateMapping(
                 emptyState.Id, //Current state
                 inChairReviewState.Id, //New state

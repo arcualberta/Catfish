@@ -94,6 +94,16 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newPostAction;
         }
 
+        public PostAction AddPostAction(string buttonLable, string function, string successMessage)
+        {
+            if (PostActions.FindByAttribute(PostAction.LableAtt, buttonLable) != null)
+                throw new Exception(string.Format("Post action {0} already exists.", buttonLable));
+
+            PostAction newPostAction = new PostAction() { ButtonLabel = buttonLable, Function = function, SuccessMessage = successMessage};
+            PostActions.Add(newPostAction);
+            return newPostAction;
+        }
+
         public StateRef GetStateReference(Guid stateId, bool createIfNotExist)
         {
             StateRef stateRef = States.Where(sr => sr.RefId == stateId).FirstOrDefault();

@@ -13,7 +13,8 @@ namespace Catfish.Core.Models.Contents.Workflow
         public static readonly string TagName = "post-action";
         public static readonly string LableAtt = "button-lable";
         public static readonly string FunctionAtt = "function";
-        
+        public static readonly string MessageAtt = "success-message";
+
         public string ButtonLabel
         {
             get => GetAttribute(LableAtt, null as string);
@@ -24,6 +25,11 @@ namespace Catfish.Core.Models.Contents.Workflow
         {
             get => GetAttribute(FunctionAtt, null as string);
             set => SetAttribute(FunctionAtt, value);
+        }
+        public string SuccessMessage
+        {
+            get => GetAttribute(MessageAtt, null as string);
+            set => SetAttribute(MessageAtt, value);
         }
 
         public bool ValidateInputs
