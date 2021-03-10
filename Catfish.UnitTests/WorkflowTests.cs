@@ -3778,6 +3778,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.ValidateInputs = false;
 
             //Defining state mappings
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
