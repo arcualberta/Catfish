@@ -100,26 +100,31 @@
                     <div class="submission-form-block">
                         @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
                     </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="title">@Localizer.General["History"]</span>
-                        </div>
-                        <div class="card-body">
-                            @{
-                                foreach (var associateItem in associatedItems)
-                                {
-                                    var auditTrail = auditEntrys.Where(ae => ae.Created == associateItem.Created).FirstOrDefault();
-                                    <div class="card">
-                                        <div class="row">
-                                            @Html.DisplayFor(model => associateItem, associateItem.GetType().ToString())
-                                        </div>
-                                    </div>
-                                }
-                            }
+                    @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormView })).Succeeded)
+                    {
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="title">@Localizer.General["History"]</span>
+                            </div>
 
+                            <div class="card-body">
+                                @{
+                                    foreach (var associateItem in associatedItems)
+                                    {
+                                        var auditTrail = auditEntrys.Where(ae => ae.Created == associateItem.Created).FirstOrDefault();
+                                        <div class="card">
+                                            <div class="row">
+                                                @Html.DisplayFor(model => associateItem, associateItem.GetType().ToString())
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                            
                         </div>
-                    </div>
-                    
+                    }
+
                 </div>
             </form>
             <div id="item-details-result-message_@suffix"></div>

@@ -2657,7 +2657,7 @@ namespace Catfish.UnitTests
             return dept;
         }
 
-        private string[] GetDepartmentChair(bool test = false)
+        private string[] GetDepartmentChair(bool test = true)
         {
             string[] chairDept;
 
@@ -2702,7 +2702,7 @@ namespace Catfish.UnitTests
                                                 "Sara Dorow: sdorow@ualberta.ca",
                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
                                                 "Natasha Hurley: nhurley@ualberta.ca",
-                                                "arcAdmin : mruaini@ualberta.ca",//iwickram@ualberta.ca
+                                                "arcAdmin : iwickram@ualberta.ca",
                                             "Steve Patten : spatten@ualberta.ca" //Dean have to be at the end!!
                                         };
             }
@@ -3583,9 +3583,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
             // Defining roles
-            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("Conference_Fund_Admin", true));
-            WorkflowRole sasChair = workflow.AddRole(auth.GetRole("Conference_Fund_Chair", true));
-            WorkflowRole sasSupervisour = workflow.AddRole(auth.GetRole("Conference_Fund_Supervisor", true));
+            WorkflowRole gapAdmin = workflow.AddRole(auth.GetRole("Conference_Fund_Admin", true));
+            WorkflowRole gapChair = workflow.AddRole(auth.GetRole("Conference_Fund_Chair", true));
+            WorkflowRole gapAdjudication = workflow.AddRole(auth.GetRole("Conference_Fund_Adjudication", true));
 
             //extra FORMS
             DataItem chairAssessmentForm =CreateConferenceChairAssesmentForm(template);
@@ -3660,34 +3660,33 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             // Added state referances
             listSubmissionsAction.AddStateReferances(savedState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(inSupervisorReviewState.Id)
-                .AddAuthorizedRole(sasSupervisour.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
                 .AddOwnerAuthorization();
+
             listSubmissionsAction.AddStateReferances(inChairReviewState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(reviewCompletedState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
-                .AddAuthorizedDomain("@ualberta.ca");
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
+
             listSubmissionsAction.AddStateReferances(acceptedState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
+
             listSubmissionsAction.AddStateReferances(rejectedState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
-                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
 
 
@@ -3702,36 +3701,76 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
                 .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
                 .AddOwnerAuthorization()
-                .AddAuthorizedRole(sasChair.Id);
-
-            supervisourNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, supervisorEmail.Id);
+                .AddAuthorizedRole(gapChair.Id);
 
             viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization()
-                .AddAuthorizedRole(sasSupervisour.Id)
-                .AddAuthorizedRole(sasChair.Id);
+                .AddAuthorizedRole(gapChair.Id);
 
             viewDetailsSubmissionAction.AddStateReferances(reviewCompletedState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization()
-                .AddAuthorizedRole(sasChair.Id);
+                .AddAuthorizedRole(gapChair.Id);
 
             viewDetailsSubmissionAction.AddStateReferances(inAdjudicationState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(acceptedState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
+
             viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
                 .AddOwnerAuthorization();
+            
+            // ================================================
+            // Read child form details submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction viewChildFormDetailsAction = workflow.AddAction("ChildForm", nameof(TemplateOperations.ChildFormView), "List");
+
+            viewChildFormDetailsAction.Access = GetAction.eAccess.Restricted;
+
+            // Added state referances
+
+            viewChildFormDetailsAction.AddStateReferances(inChairReviewState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
+                .AddAuthorizedRole(gapChair.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapChair.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddAuthorizedRole(gapAdmin.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddAuthorizedRole(gapAdmin.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddAuthorizedRole(gapAdmin.Id);
 
             // ================================================
             // Edit submission-instances related workflow items
@@ -3795,9 +3834,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             editSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddOwnerAuthorization();
             editSubmissionAction.GetStateReference(inChairReviewState.Id, true)
-                .AddAuthorizedRole(sasAdmin.Id);
+                .AddAuthorizedRole(gapAdmin.Id);
             editSubmissionAction.GetStateReference(inSupervisorReviewState.Id, true)
-                .AddAuthorizedRole(sasAdmin.Id);
+                .AddAuthorizedRole(gapAdmin.Id);
 
 
             // ================================================
@@ -3825,9 +3864,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             deleteSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddOwnerAuthorization();
             deleteSubmissionAction.GetStateReference(inSupervisorReviewState.Id, true)
-                .AddAuthorizedRole(sasAdmin.Id); 
+                .AddAuthorizedRole(gapAdmin.Id); 
             deleteSubmissionAction.GetStateReference(inChairReviewState.Id, true)
-                 .AddAuthorizedRole(sasAdmin.Id);
+                 .AddAuthorizedRole(gapAdmin.Id);
 
 
             // ================================================
@@ -3892,11 +3931,11 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
 
             chairReviewAction.GetStateReference(inChairReviewState.Id, true)
-                .AddAuthorizedRole(sasChair.Id);
+                .AddAuthorizedRole(gapChair.Id);
 
-            // ================================================
+            // ========================================================
             // Change State submission-instances related workflow items
-            // ================================================
+            // ========================================================
 
             GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
             changeStateAction.Access = GetAction.eAccess.Restricted;
@@ -3917,15 +3956,20 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             changeStateActionPopUpopUp.AddButtons("Cancel", "false");
 
             //Defining states and their authorizatios
-            changeStateAction.GetStateReference(reviewCompletedState.Id, true)
-                .AddAuthorizedRole(sasAdmin.Id);
-            changeStateAction.GetStateReference(inAdjudicationState.Id, true)
-                .AddAuthorizedRole(sasAdmin.Id);
             changeStateAction.GetStateReference(inSupervisorReviewState.Id, true)
                 .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id);
-                //.AddAuthorizedRole(sasSupervisour.Id);
+
             changeStateAction.GetStateReference(inChairReviewState.Id, true)
-                .AddAuthorizedRole(sasChair.Id);
+                .AddAuthorizedRole(gapChair.Id);
+
+            changeStateAction.GetStateReference(reviewCompletedState.Id, true)
+                .AddAuthorizedRole(gapAdmin.Id);
+
+            changeStateAction.GetStateReference(inAdjudicationState.Id, true)
+                .AddAuthorizedRole(gapAdjudication.Id);
+            
+                //.AddAuthorizedRole(sasSupervisour.Id);
+            
 
 
             db.SaveChanges();
