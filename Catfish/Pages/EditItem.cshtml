@@ -14,8 +14,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>
-    <script src="~/assets/js/_public-facing/scripts/data-item-form-functions.js"></script>
+
 
 
 }
@@ -82,13 +81,12 @@
 
                         <partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml"
                                  model="postActions"
-                                 view-data='@new ViewDataDictionary(ViewData) { 
-                                    { "suffix", suffix}, 
-                                    { "successMessage", successMessage}, 
-                                    { "currentStateId", item.StatusId }, 
+                                 view-data='@new ViewDataDictionary(ViewData) {
+                                    { "suffix", suffix},
+                                    { "successMessage", successMessage},
+                                    { "currentStateId", item.StatusId },
                                     { "submitCallFunction", "submitEditWorkflowForm"},
-                                    {"submissionFormNamePrefix", "submissionEditForm" }}' 
-                                 />
+                                    {"submissionFormNamePrefix", "submissionEditForm" }}' />
 
                     </div>
                 </div>

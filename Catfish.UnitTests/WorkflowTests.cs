@@ -3756,13 +3756,24 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                                                                                             );
 
             //Defining state mappings
+            //-----------------------
+
+            //Saved document can be saved without changing state
             editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inSupervisorReviewState.Id, "Submit", applicantCat,
-                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First());
-            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit", applicantCat,
+
+            //Saved document can be submitted for supervisor's review if appCat[1] (student) is selected
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inSupervisorReviewState.Id, "Submit", applicantCat,
                 applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[1]).First());
-            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "Submit");
+
+            //Document in supervisor's review can be saved without changing state
+            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Save");
+
+            //Saved document can be submitted for chair's review directly if appCat[0] (Faculty) is selected
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit", applicantCat,
+                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First());
+
+            //Document in chair's review can be saved without changing state
+            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "Save");
 
 
             //Defining the pop-up for the above postActionSubmit action
@@ -3771,12 +3782,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs
-            //*******To Do*******
+            //*******To Do******* ==> KR: I don't think this is necessary because SAS admin only be "saving" these submissions rather than resubmitting them
             // Implement a function to restrict the e-mail triggers when SAS Admin updated the document
-            editSubmissionPostActionSave.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger", inChairReviewState.Id, true);
-            editSubmissionPostActionSave.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inSupervisorReviewState.Id, true);
-            editSubmissionPostActionSave.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
-
+            editSubmissionPostActionSubmit.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger", inChairReviewState.Id, true);
+            editSubmissionPostActionSubmit.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inSupervisorReviewState.Id, true);
+            editSubmissionPostActionSubmit.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            //editSubmissionPostActionSave.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger", inChairReviewState.Id, true);
+            //editSubmissionPostActionSave.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inSupervisorReviewState.Id, true);
+            //editSubmissionPostActionSave.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             //Defining state referances
             editSubmissionAction.GetStateReference(savedState.Id, true)

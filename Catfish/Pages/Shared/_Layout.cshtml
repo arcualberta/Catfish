@@ -8,6 +8,7 @@
 
 @inject ICompositeViewEngine _viewEngine
 @inject Piranha.IApi _piranhaApi;
+@inject Catfish.Services.IAppService _appService;
 
 <!doctype html>
 <html lang="en">
@@ -43,17 +44,19 @@
 
 
     <script src="~/assets/js/_public-facing/scripts/component-scripts.js"></script>
-    @* <script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>*@
     <script src="~/assets/js/_public-facing/scripts/item-child-add-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/item-list-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/item-details-page-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/item-edit-page-functions.js"></script>
 
-    <script src="~/assets/js/_public-facing/scripts/attachment-functions.js"></script>
-    <script src="~/assets/js/_public-facing/scripts/composite-field-functions.js"></script>
-    <script src="~/assets/js/_public-facing/scripts/table-field-functions.js"></script>
-    <script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>
-    <script src="~/assets/js/_public-facing/scripts/expression-functions.js"></script>
+    @foreach (var url in _appService.GetScriptUrls())
+    {
+        <script src="@url"></script>
+    }
+    @foreach (var url in _appService.GetStylesheetUrls())
+    {
+        <link href="@url" rel="stylesheet" />
+    }
 
     @{
         //Inserting custom CSS files
@@ -234,6 +237,13 @@
 
             });
         }
+
+    $(function () {
+        @foreach (var call in _appService.GetOnLoadFunctionCalls())
+        {
+            @Html.Raw(call)
+        }
+    });
 
     </script>
     @*<script src="~/assets/dist/vendorsPublicFacingSide.js"></script>*@
