@@ -131,7 +131,8 @@
                             <div class="signinout">
                                 @if (!User.Identity.IsAuthenticated)
                                 {
-                                    <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
+                                    var path = Context.Request.Path.ToString();
+                                    <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login?ret=@path'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
                                 }
                                 else
                                 {
