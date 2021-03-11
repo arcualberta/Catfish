@@ -44,14 +44,19 @@ namespace Catfish.Areas.Manager.Pages
         public void OnGet(Guid? id)
         {
             //If the id is given, retrieving the group from the database. Otherwise, creating a new one.
-            if (id.HasValue)
-                Group = _appDb.Groups.FirstOrDefault(g => g.Id == id);
-            else
+            if (id == null || id == Guid.Empty)
+            {
                 Group = new Group()
                 {
                     GroupStatus = Group.eGroupStatus.Inactive,
                     Id = Guid.NewGuid()
                 };
+            }
+            else
+            {
+                Group = _appDb.Groups.FirstOrDefault(g => g.Id == id);
+            }
+               
 
             if (Group == null)
                 throw new Exception(NotFound);
