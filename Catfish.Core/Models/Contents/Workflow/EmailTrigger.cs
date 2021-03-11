@@ -118,7 +118,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             //Make a clone and update references in the email body
             emailMessage = emailMessage.Clone<EmailTemplate>();
-            emailMessage.UpdateRerefences("@SiteUrl", ConfigHelper.SiteUrl);
+            emailMessage.UpdateRerefences("@SiteUrl", ConfigHelper.SiteUrl.TrimEnd('/'));
             emailMessage.UpdateRerefences("@Item.Id", item.Id.ToString());
 
             //get all recipient in the trigger.

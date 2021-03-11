@@ -439,7 +439,7 @@ namespace Catfish.Services
                 if (!string.IsNullOrWhiteSpace(postAction.SuccessMessage))
                 {
                     successMessage = postAction.SuccessMessage;
-                    successMessage = successMessage.Replace("@SiteUrl", _config.GetSiteURL());
+                    successMessage = successMessage.Replace("@SiteUrl", _config.GetSiteURL().TrimEnd('/'));
                     successMessage = successMessage.Replace("@Item.Id", itemId.ToString());
                 }
                 else
