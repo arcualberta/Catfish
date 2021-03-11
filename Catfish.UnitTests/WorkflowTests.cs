@@ -1487,7 +1487,10 @@ namespace Catfish.UnitTests
                 .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<RadioField>("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            var notes = inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
@@ -1498,7 +1501,9 @@ namespace Catfish.UnitTests
                 .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+           notes = inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
@@ -1511,7 +1516,10 @@ namespace Catfish.UnitTests
                 .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+           notes = inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
@@ -1520,7 +1528,10 @@ namespace Catfish.UnitTests
                 .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+           notes= inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
@@ -1551,7 +1562,10 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
           
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+           notes= inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
 
@@ -1574,8 +1588,10 @@ namespace Catfish.UnitTests
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
             listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(inspectorRole.Id)
-                .AddAuthorizedRole(adminRole.Id);
+                   .AddOwnerAuthorization()
+                   .AddAuthorizedRole(inspectorRole.Id)
+                  .AddAuthorizedRole(adminRole.Id);
+                 
 
             //Detailed submission inspection forms.
             //Inspectors can view their own submissions.
