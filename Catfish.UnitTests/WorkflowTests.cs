@@ -2526,7 +2526,7 @@ namespace Catfish.UnitTests
             deleteSubmissionPostAction.ValidateInputs = false;
 
             //Defining state mappings
-            deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+            ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
             deleteSubmissionPostAction.AddStateMapping(inReviewState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postAction action
@@ -2535,8 +2535,8 @@ namespace Catfish.UnitTests
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
             //Defining state referances
-            deleteSubmissionAction.GetStateReference(savedState.Id, true)
-                .AddOwnerAuthorization();
+            ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
+            ////////    .AddOwnerAuthorization();
             deleteSubmissionAction.GetStateReference(inReviewState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
 
@@ -3497,12 +3497,10 @@ namespace Catfish.UnitTests
             TableRow ccfooter = cctf.AppendRow(TableField.eRowTarget.Footer);
             ccfooter.Fields[0].SetValue("Total Cost", lang);
             ccfooter.SetReadOnly();
-            for (var i = ccfooter.Fields.Count-1; i < ccfooter.Fields.Count; ++i)
-            {
-                ccfooter.Fields[i].ValueExpression.Clear();
-                ccfooter.Fields[i].ValueExpression.AppendColumnSum(cctf, i);
+            ccfooter.Fields[1].Exclude = true;
+            ccfooter.Fields[2].ValueExpression.Clear();
+            ccfooter.Fields[2].ValueExpression.AppendColumnSum(cctf, 2);
 
-            }
                 
 
             cctf.AllowAddRows = true;
@@ -3877,7 +3875,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             deleteSubmissionPostAction.ValidateInputs = false;
 
             //Defining state mappings
-            deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+            ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
             deleteSubmissionPostAction.AddStateMapping(inSupervisorReviewState.Id, deleteState.Id, "Delete");
             deleteSubmissionPostAction.AddStateMapping(inChairReviewState.Id, deleteState.Id, "Delete");
 
@@ -3887,8 +3885,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
             //Defining state referances
-            deleteSubmissionAction.GetStateReference(savedState.Id, true)
-                .AddOwnerAuthorization();
+            ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
+            ////////     .AddAuthorizedRole(gapAdmin.Id);
             deleteSubmissionAction.GetStateReference(inSupervisorReviewState.Id, true)
                 .AddAuthorizedRole(gapAdmin.Id); 
             deleteSubmissionAction.GetStateReference(inChairReviewState.Id, true)
