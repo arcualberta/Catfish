@@ -1556,8 +1556,8 @@ namespace Catfish.UnitTests
 
 
             //Defininig roles
-            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Safety_Admin", true));
+            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Safety_Inspector", true));
 
 
             // Submitting an inspection form
