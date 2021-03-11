@@ -90,7 +90,9 @@ namespace Catfish.Core.Models.Contents
         }
 
         public Text(Text src)
+             : base(TagName)
         {
+            SetNewGuid();
             Copy(src);
         }
 

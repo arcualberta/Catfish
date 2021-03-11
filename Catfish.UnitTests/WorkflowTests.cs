@@ -2695,7 +2695,7 @@ namespace Catfish.UnitTests
                                             "Sara Dorow: arctech@ualberta.ca",
                                             "Michelle Meagher: arctech@ualberta.ca",
                                             "Kamal at Ranaweera (Chair): kamal@ranaweera.ca",
-                                            "arcAdmin :ouslsaba@gmail.com",
+                                            "arcAdmin : kamal@ranaweera.ca",
                                             "Kamal at Gmail (Dean) : kamal.ranaweera@gmail.com"};//Dean have to be at the end!!
             }
             else
@@ -2819,7 +2819,7 @@ namespace Catfish.UnitTests
             string[] YNOptions = new string[]{ "Yes",
                                 "No"};
 
-            var reqTeachingRelease = form.CreateField<RadioField>("Has the applicant requested a teaching release?", lang, YNOptions, true,1);
+            var reqTeachingRelease = form.CreateField<RadioField>("Has the applicant requested a teaching release?", lang, YNOptions, true);
             string[] teachingLoad = GeTeachingLoadList();
 
             // .VisibilityCondition

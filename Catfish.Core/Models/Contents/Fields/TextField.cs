@@ -110,9 +110,9 @@ namespace Catfish.Core.Models.Contents.Fields
                 return; //We don't want to overwrite data in the target field.
 
             int i = 0;
-            foreach (var srcMultilingualVal in Values)
+            foreach (var srcMultilingualVal in src.Values)
             {
-                if (srcMultilingualVal.Values.Where(txt => !string.IsNullOrEmpty(txt.Value)).Any() == false)
+                if (!srcMultilingualVal.Values.Where(txt => !string.IsNullOrEmpty(txt.Value)).Any())
                     continue; //No data is available under any of the languages
 
                 if (Values.Count <= i)

@@ -94,6 +94,10 @@ namespace Catfish.Core.Models.Contents.Fields
 
             Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
             Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
+
+            var sourceReference = GetElement(FieldReference.TagName, false);
+            if (sourceReference != null)
+                mSourceFieldReference = new FieldReference(sourceReference);
         }
 
         public FieldReference GetSourceReference(bool createIfNotExist = false)

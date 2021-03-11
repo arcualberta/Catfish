@@ -130,7 +130,7 @@ namespace Catfish.Core.Models.Contents.Fields
                 //Iterate through every value in the src field and set or inser them to the target field
                 for(int i=0; i< srcValues.Count; ++i)
                 {
-                    if (Values.Count < i)
+                    if (i < Values.Count)
                         Values[i].Copy(srcValues[i]);
                     else
                         Values.Add(new Text(srcValues[i]));
