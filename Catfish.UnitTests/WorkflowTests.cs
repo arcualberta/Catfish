@@ -1487,7 +1487,10 @@ namespace Catfish.UnitTests
                 .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<RadioField>("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            var notes = inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
@@ -1498,7 +1501,9 @@ namespace Catfish.UnitTests
                 .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+           notes = inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
@@ -1511,7 +1516,10 @@ namespace Catfish.UnitTests
                 .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+           notes = inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
@@ -1520,7 +1528,10 @@ namespace Catfish.UnitTests
                 .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+           notes= inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
@@ -1551,7 +1562,10 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText, true)
                 .FieldValueCssClass = "radio-inline"; ;
           
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+           notes= inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
 
@@ -1574,8 +1588,10 @@ namespace Catfish.UnitTests
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
             listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(inspectorRole.Id)
-                .AddAuthorizedRole(adminRole.Id);
+                   .AddOwnerAuthorization()
+                   .AddAuthorizedRole(inspectorRole.Id)
+                  .AddAuthorizedRole(adminRole.Id);
+                 
 
             //Detailed submission inspection forms.
             //Inspectors can view their own submissions.
@@ -1598,29 +1614,43 @@ namespace Catfish.UnitTests
 
             // Edit submission related workflow items
             //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
 
             //Submissions can only be edited by admins
             editSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
             //Defining post actions
-            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            //  PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            //   editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+           
+            PostAction editPostActionSubmit = editSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));//(Button Label, ActionName)
+            editPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");//current state, nectStae, buttonLabel
+            //editPostActionSubmit.ValidateInputs = false;
 
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditActionPopUpopUp = editPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            EditActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditActionPopUpopUp.AddButtons("Cancel", "false");
+
+         
 
             // Delete submission related workflow items
             //Defining actions. Only admin can delete a submission
-            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
-            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", nameof(CrudOperations.Delete), "Details");
+            deleteSubmissionAction.Access = GetAction.eAccess.Restricted;
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)    
                 .AddAuthorizedRole(adminRole.Id);
 
+
+            
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
             deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.ValidateInputs = false;
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.","");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Do you really want to delete this submission?","");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
