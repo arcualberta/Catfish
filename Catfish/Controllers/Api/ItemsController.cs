@@ -30,15 +30,19 @@ namespace Catfish.Controllers.Api
         private readonly ISubmissionService _submissionService;
         private readonly IWorkflowService _workflowService;
 
-
         private readonly AppDbContext _appDb;
         private readonly IJobService _jobService;
-        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService, IJobService jobService, IConfiguration configuration, IWorkflowService workflowService)
+
+        public ItemsController(AppDbContext db, 
+            IEntityTemplateService entityTemplateService, 
+            ISubmissionService submissionService, 
+            IJobService jobService, 
+            IConfiguration configuration, 
+            IWorkflowService workflowService)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
             _workflowService = workflowService;
-
             _appDb = db;
             _jobService = jobService;
 
@@ -374,6 +378,30 @@ namespace Catfish.Controllers.Api
                 }
             }
             return Ok(dictFileNames);
+        }
+
+        [Route("{itemId}/{dataItemId}/{fieldId}/{fileName}")]
+        public IActionResult GetFile(Guid itemId, Guid dataItemId, Guid fieldId, string fileName)
+        {
+            try
+            {
+                var item = _appDb.Items.Where(it => it.Id == itemId).FirstOrDefault();
+                var dataItem = item.DataContainer.Where(di => di.Id == dataItemId).FirstOrDefault();
+                var attField = dataItem.Fields.Where(field => field.Id == fieldId).FirstOrDefault() as AttachmentField;
+                var fileRef = attField.Files.Where(fr => fr.FileName == fileName).FirstOrDefault();
+
+                string pathName = Path.Combine(ConfigHelper.GetAttachmentsFolder(false), fileRef.FileName);
+                if (System.IO.File.Exists(pathName))
+                {
+                    var data = System.IO.File.ReadAllBytes(pathName);
+                    return File(data, fileRef.ContentType, fileRef.OriginalFileName);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return NotFound();
         }
     }
 }

@@ -16,6 +16,8 @@
 }
 @{
     var item = Model.Item;
+    var viewData = new Dictionary<string, object>();
+    viewData.Add("item-id", item.Id);
 
     var rootDataItem = item.GetRootDataItem(false);
     string formPostUrl = "/api/items/DetailsUpdate";
@@ -98,7 +100,7 @@
                         </div>
                     </div>
                     <div class="submission-form-block">
-                        @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
+                        @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString(), viewData)
                     </div>
                     @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormView })).Succeeded)
                     {

@@ -414,12 +414,12 @@ ul.checkboxgroup li {
             background-size: contain;
 }
 .file-container .file-entry .thumbnail .icon {
-                width: 100px;
-                height: 142px;
-                margin: 0px;
-                background-size: contain;
-                background-repeat: no-repeat;
-                text-align: right;
+            width: 100px;
+            height: 142px;
+            margin: 0px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            text-align: right;
 }
 
 .file-container .file-entry .label, .file-container .file-entry .label-active {
