@@ -2355,6 +2355,8 @@ namespace Catfish.UnitTests
             assessFormRank.GetSourceReference(true).SetValue(sasForm.Id, rank.Id);
 
             DataItem additionalNoteForm = CreateAddNotesForm(template);
+
+            DataItem adjudicationForm = CreateAdjudicationForm(template);
             //Defining triggers
             //Feb 12 2021
             EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
@@ -2378,6 +2380,7 @@ namespace Catfish.UnitTests
             // Defining roles
             WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("SAS_Admin", true));
             WorkflowRole sasChair = workflow.AddRole(auth.GetRole("SAS_Chair", true));
+            WorkflowRole sasAdjudication = workflow.AddRole(auth.GetRole("SAS_Adjudication", true));
 
             // ================================================
             // Create submission-instances related workflow items
@@ -2390,11 +2393,16 @@ namespace Catfish.UnitTests
             startSubmissionAction.AddTemplate(sasForm.Id, "Start Submission Template");
 
             //Defining post actions
-            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
+            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update),
+                                                                            @"<p>Your SAS application saved successfully. 
+                                                                                You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
             savePostAction.ValidateInputs = false;
             savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
             
-            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
+                                                                                 @"<p>Thank you for submitting your SAS application. 
+                                                                                    Your chair has been automatically notified to provide an assessment about your application.
+                                                                                 You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
             submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
@@ -2435,16 +2443,49 @@ namespace Catfish.UnitTests
             listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(sasAdjudication.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(acceptedState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(sasAdjudication.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(rejectedState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(sasAdjudication.Id)
                 .AddOwnerAuthorization();
 
+            // ================================================
+            // Read child form details submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction viewChildFormDetailsAction = workflow.AddAction("ChildForm", nameof(TemplateOperations.ChildFormView), "List");
+
+            viewChildFormDetailsAction.Access = GetAction.eAccess.Restricted;
+
+            // Added state referances
+
+            viewChildFormDetailsAction.AddStateReferances(inReviewState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasChair.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasChair.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddAuthorizedRole(sasAdmin.Id);
 
             // ================================================
             // Read submission-instances related workflow items
@@ -2470,13 +2511,16 @@ namespace Catfish.UnitTests
 
             viewDetailsSubmissionAction.AddStateReferances(inAdjudicationState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(acceptedState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
                 .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
                 .AddOwnerAuthorization();
 
             // ================================================
@@ -2485,9 +2529,16 @@ namespace Catfish.UnitTests
             GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
             editSubmissionAction.Access = GetAction.eAccess.Restricted;
             //Defining post actions
-            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", 
+                                                                                        nameof(TemplateOperations.Update),
+                                                                                        @"<p>Your SAS application saved successfully. 
+                                                                                            You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
             editSubmissionPostActionSave.ValidateInputs = false;
-            PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit", "Save");
+            PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit",
+                                                                                            nameof(TemplateOperations.Update),
+                                                                                             @"<p>Thank you for submitting your SAS application. 
+                                                                                                Your chair/supervisor has been automatically notified to provide an assessment about your application.
+                                                                                             You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
 
             //Defining state mappings
             editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
@@ -2552,13 +2603,16 @@ namespace Catfish.UnitTests
             reviewSubmissionAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
 
             //Defining post actions
-            PostAction ReviewSubmissionPostAction = reviewSubmissionAction.AddPostAction("Start Review", "Save");
+            PostAction ReviewSubmissionPostAction = reviewSubmissionAction.AddPostAction("Start Review", 
+                                                                                nameof(TemplateOperations.Update),
+                                                                                @"<p>Chair's review assessment submitted successfully. 
+                                                                                You can view the document and your review by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
 
             //Defining state mappings
             ReviewSubmissionPostAction.AddStateMapping(inReviewState.Id, reviewCompletedState.Id, "Submit Assessment");
 
             //Defining the pop-up for the above postAction action
-            PopUp reviewSubmissionActionPopUpopUp = ReviewSubmissionPostAction.AddPopUp("Confirmation", "Confirm the submission?", "Once submitted, you cannot resubmit an assessment.");
+            PopUp reviewSubmissionActionPopUpopUp = ReviewSubmissionPostAction.AddPopUp("Confirmation", "Confirm the Assessment?", "Once submitted, you cannot resubmit an assessment.");
             reviewSubmissionActionPopUpopUp.AddButtons("Yes, complete", "true");
             reviewSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -2577,12 +2631,11 @@ namespace Catfish.UnitTests
             //Define Revision Template
             changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
             //Defining post actions
-            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", "Save");
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
 
             //Defining state mappings
             changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
@@ -2592,13 +2645,32 @@ namespace Catfish.UnitTests
             //Defining states and their authorizatios
             changeStateAction.GetStateReference(reviewCompletedState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
-            changeStateAction.GetStateReference(inAdjudicationState.Id, true)
-                .AddAuthorizedRole(sasAdmin.Id);
             changeStateAction.GetStateReference(inReviewState.Id, true)
                 .AddAuthorizedRole(sasChair.Id);
+            changeStateAction.GetStateReference(inAdjudicationState.Id, true)
+                .AddAuthorizedRole(sasAdjudication.Id);
 
+            // ========================================================
+            // Adjudication Decision related workflow items
+            // ========================================================
+            GetAction adjudicationDecisionAction = workflow.AddAction("Adjudication Decision", nameof(TemplateOperations.ChangeState), "Details");
 
+            //Define Revision Template
+            adjudicationDecisionAction.AddTemplate(adjudicationForm.Id, "Adjudication Decision");
 
+            PostAction adjudicationDecisionPostAction = adjudicationDecisionAction.AddPostAction("Adjudication Decision", "Save", @"<p>Application final decision made successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                );
+            adjudicationDecisionPostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
+            adjudicationDecisionPostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp adjudicationDecisionPopUpopUp = adjudicationDecisionPostAction.AddPopUp("Confirmation", "Do you really want to make a decision ? ", "Once changed, you cannot revise this document.");
+            adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
+            adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
+
+            adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
+                .AddAuthorizedRole(sasAdjudication.Id);
             //Post action for submitting the form
             // PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
             //submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
@@ -2695,7 +2767,7 @@ namespace Catfish.UnitTests
                                             "Sara Dorow: arctech@ualberta.ca",
                                             "Michelle Meagher: arctech@ualberta.ca",
                                             "Kamal at Ranaweera (Chair): kamal@ranaweera.ca",
-                                            "arcAdmin : kamal@ranaweera.ca",
+                                            "arcAdmin : ouslsaba@gmail.com",
                                             "Kamal at Gmail (Dean) : kamal.ranaweera@gmail.com"};//Dean have to be at the end!!
             }
             else
@@ -2882,7 +2954,7 @@ namespace Catfish.UnitTests
         private DataItem CreateAdjudicationForm(ItemTemplate template)
         {
             string lang = "en";
-            DataItem form = template.GetDataItem("SAS Adjudication Result", true, lang);
+            DataItem form = template.GetDataItem("Adjudication Result", true, lang);
             form.IsRoot = false;
             form.SetDescription("This template is designed for Adjudication Result Form", lang);
 
@@ -3190,6 +3262,7 @@ namespace Catfish.UnitTests
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
 
+
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\compositeFormFieldTest_generared.xml");
@@ -3249,8 +3322,8 @@ namespace Catfish.UnitTests
             // ====================================================== HOST
             confForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h1", "Host", lang);
-           
-            confForm.CreateField<TextField>("Applicant Name:", lang, true, true);
+
+            var applicantName = confForm.CreateField<TextField>("Applicant Name:", lang, true, true);
             var applicantEmail = confForm.CreateField<EmailField>("Email Address:", lang, true, true)
                 .SetDescription("Please use your UAlberta CCID email address.", lang);
 
@@ -3610,9 +3683,38 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             WorkflowRole gapChair = workflow.AddRole(auth.GetRole("Conference_Fund_Chair", true));
             WorkflowRole gapAdjudication = workflow.AddRole(auth.GetRole("Conference_Fund_Adjudication", true));
 
+            
             //extra FORMS
-            DataItem chairAssessmentForm =CreateConferenceChairAssesmentForm(template);
-            DataItem supervisorAssessmentForm = CreateConferenceAdviserAssesmentForm(template);
+            TextField chairFormApplicantName;
+            EmailField chairFormApplicantEmail;
+            DataItem chairAssessmentForm = CreateConferenceChairAssesmentForm(template, 
+                out chairFormApplicantName,
+                out chairFormApplicantEmail);
+            chairFormApplicantName.GetSourceReference(true).SetValue(confForm.Id, applicantName.Id);
+            chairFormApplicantEmail.GetSourceReference(true).SetValue(confForm.Id, applicantEmail.Id);
+            
+            //extra FORMS
+            TextField supervisorFormApplicantName;
+            EmailField supervisorFormApplicantEmail;
+            SelectField supervisorFormDept;
+            DataItem supervisorAssessmentForm = CreateConferenceAdviserAssesmentForm(template,
+                out supervisorFormApplicantName,
+                out supervisorFormApplicantEmail,
+                out supervisorFormDept);
+            supervisorFormApplicantName.GetSourceReference(true).SetValue(confForm.Id, applicantName.Id);
+            supervisorFormApplicantEmail.GetSourceReference(true).SetValue(confForm.Id, applicantEmail.Id);
+            supervisorFormDept.GetSourceReference(true).SetValue(confForm.Id, dept.Id);
+            //
+            //DataItem chairAssessmentForm = CreateConferenceChairAssesmentForm(template,
+            //    out assessFormApplicantName,
+            //    out assessFormApplicantEmail,
+            //    out assessFormDept);
+
+            //assessFormApplicantName.GetSourceReference(true).SetValue(confForm.Id, applicantName.Id);
+            //assessFormApplicantEmail.GetSourceReference(true).SetValue(confForm.Id, applicantEmail.Id);
+            //assessFormDept.GetSourceReference(true).SetValue(confForm.Id, dept.Id);
+
+
             DataItem additionalNoteForm = CreateAddNotesForm(template);
             DataItem adjudicationForm = CreateAdjudicationForm(template);
             DataItem addRankingForm = CreateAddRankingForm(template);
@@ -3973,8 +4075,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining state mappings
             changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
-            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
+            
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
@@ -3990,12 +4091,30 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             changeStateAction.GetStateReference(reviewCompletedState.Id, true)
                 .AddAuthorizedRole(gapAdmin.Id);
-
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
                 .AddAuthorizedRole(gapAdjudication.Id);
-            
-                //.AddAuthorizedRole(sasSupervisour.Id);
-            
+
+            // ========================================================
+            // Adjudication Decision related workflow items
+            // ========================================================
+            GetAction adjudicationDecisionAction = workflow.AddAction("Adjudication Decision", nameof(TemplateOperations.ChangeState), "Details");
+
+            //Define Revision Template
+            adjudicationDecisionAction.AddTemplate(adjudicationForm.Id, "Adjudication Decision");
+
+            PostAction adjudicationDecisionPostAction = adjudicationDecisionAction.AddPostAction("Adjudication Decision", "Save", @"<p>Application final decision made successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                );
+            adjudicationDecisionPostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
+            adjudicationDecisionPostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp adjudicationDecisionPopUpopUp = adjudicationDecisionPostAction.AddPopUp("Confirmation", "Do you really want to make a decision ? ", "Once changed, you cannot revise this document.");
+            adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
+            adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
+
+            adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
+                .AddAuthorizedRole(gapAdjudication.Id);
 
 
             db.SaveChanges();
@@ -4006,32 +4125,37 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             // File.WriteAllText("..\\..\\..\\..\\Examples\\confForm_generared.json", json);
         }
 
-        private DataItem CreateConferenceChairAssesmentForm(ItemTemplate template)
+        private DataItem CreateConferenceChairAssesmentForm(ItemTemplate template,
+            out TextField applicantName,
+            out EmailField applicantEmail)
         {
             string lang = "en";
             DataItem form = template.GetDataItem("GAP Conference Chair's Assessment", true, lang);
             form.IsRoot = false;
             form.SetDescription("This template is designed for GAP Chair's Assessment", lang);
 
-           
-            form.CreateField<TextField>("Applicant Name", lang, true);//if it's possible prefilled from the main form
-            form.CreateField<EmailField>("Email Address", lang, true);//if it's possible prefilled from the main form
+
+
+            applicantName = form.CreateField<TextField>("Applicant Name", lang, true);//if it's possible prefilled from the main form
+            applicantEmail = form.CreateField<EmailField>("Email Address", lang, true);//if it's possible prefilled from the main form
             form.CreateField<RadioField>("Does your department support this application?", lang, YesNoOptionsText, true);
 
             return form;
         }
-        private DataItem CreateConferenceAdviserAssesmentForm(ItemTemplate template)
+        private DataItem CreateConferenceAdviserAssesmentForm(ItemTemplate template,
+            out TextField applicantName,
+            out EmailField applicantEmail,
+            out SelectField dept)
         {
             string lang = "en";
             DataItem form = template.GetDataItem("GAP Conference Adviser's Assessment", true, lang);
             form.IsRoot = false;
             form.SetDescription("This template is designed for GAP Conference Adviser's Assessment", lang);
 
-
-            form.CreateField<TextField>("Applicant Name", lang, true);//if it's possible prefilled from the main form
-            form.CreateField<EmailField>("Email Address", lang, true);//if it's possible prefilled from the main form
+            applicantName = form.CreateField<TextField>("Applicant Name", lang, true);
+            applicantEmail = form.CreateField<EmailField>("Applicant Email", lang, true);
             string[] depts = GetDepartmentList();
-            form.CreateField<SelectField>("Department", lang, depts, true);
+            dept = form.CreateField<SelectField>("Department:", lang, depts, true);
             form.CreateField<RadioField>("Do you approve the application?", lang, YesNoOptionsText, true);
 
             form.CreateField<TextArea>("Comments", lang, false).SetAttribute("cols", 50);
