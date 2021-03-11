@@ -11,7 +11,7 @@
     ViewBag.Title = Localizer.Page["Groups"];
     ViewBag.MenuItem = "Groups";
 
-    var siteURL = _config.GetSiteURL();
+    var siteURL = _config.GetSiteURL().TrimEnd('/'); 
     string groupEditURL = siteURL + "/manager/groups/edit";
 }
 
