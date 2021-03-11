@@ -50,7 +50,10 @@ namespace Catfish.Areas.Manager.Pages
                 {
                     GroupStatus = Group.eGroupStatus.Inactive,
                     Id = Guid.NewGuid()
+                   
                 };
+                _appDb.Add(Group);
+                _appDb.SaveChanges();
             }
             else
             {
