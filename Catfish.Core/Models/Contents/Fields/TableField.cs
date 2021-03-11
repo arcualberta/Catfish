@@ -82,28 +82,31 @@ namespace Catfish.Core.Models.Contents.Fields
                 throw new Exception("The source field is null or is not a TableField");
 
             //Here, we update the table data as follows:
-            //  1. If the source data contains rows that matches with Ids in "this" object, 
-            //     then we update those rows
-            //  2. If the source data contains "new" rows that do not exist in "this" object,
-            //     then we inser them
-            //  3. If the source data does NOT contain some of the rows in "this" object,
+            //  1. If the source data does NOT contain some of the rows in "this" object,
             //     then we delete those extra rows from "this" object
+            //  2. If the source data contains rows that matches with Ids in "this" object, 
+            //     then we update those rows
+            //  3. If the source data contains "new" rows that do not exist in "this" object,
+            //     then we inser them
+
+            //Step #1
+            var srcRowIds = src.TableData.Select(tr => tr.Id).ToList();
+            var toBeDeleted = TableData.Where(tr => !srcRowIds.Contains(tr.Id)).ToList();
+            foreach (var del in toBeDeleted)
+                TableData.Remove(del);
+
+            //Ste #2 and #3
             foreach (var srcRow in src.TableData)
             {
                 //Finding the matching row
                 var dstRow = TableData.Where(tr => tr.Id == srcRow.Id).FirstOrDefault();
 
-                if (dstRow == null)
-                    InsertValues(srcRow, eRowTarget.Data);
+                if (dstRow != null)
+                    UpdateValues(srcRow, dstRow); //Step #2
                 else
-                    UpdateValues(srcRow, dstRow);
+                    InsertValues(srcRow, eRowTarget.Data); //Step #3
             }
 
-            //deleting any rows that are in "this" object but not in the src
-            var srcRowIds = src.TableData.Select(tr => tr.Id).ToList();
-            var toBeDeleted = TableData.Where(tr => !srcRowIds.Contains(tr.Id)).ToList();
-            foreach (var del in toBeDeleted)
-                TableData.Remove(del);
 
             //Table footer is not meant to be replaced in whole but we only change the values
             //of cells in each row.
