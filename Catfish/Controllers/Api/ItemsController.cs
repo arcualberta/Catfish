@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
@@ -12,6 +13,7 @@ using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -29,6 +31,7 @@ namespace Catfish.Controllers.Api
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly ISubmissionService _submissionService;
         private readonly IWorkflowService _workflowService;
+        private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
 
         private readonly AppDbContext _appDb;
         private readonly IJobService _jobService;
@@ -38,13 +41,15 @@ namespace Catfish.Controllers.Api
             ISubmissionService submissionService, 
             IJobService jobService, 
             IConfiguration configuration, 
-            IWorkflowService workflowService)
+            IWorkflowService workflowService,
+            Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
             _workflowService = workflowService;
             _appDb = db;
             _jobService = jobService;
+            _dotnetAuthorizationService = dotnetAuthorizationService;
 
             ConfigHelper.Configuration = configuration;
         }
@@ -390,11 +395,17 @@ namespace Catfish.Controllers.Api
                 var attField = dataItem.Fields.Where(field => field.Id == fieldId).FirstOrDefault() as AttachmentField;
                 var fileRef = attField.Files.Where(fr => fr.FileName == fileName).FirstOrDefault();
 
-                string pathName = Path.Combine(ConfigHelper.GetAttachmentsFolder(false), fileRef.FileName);
-                if (System.IO.File.Exists(pathName))
+                var task = _dotnetAuthorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read });
+                task.Wait();
+
+                if (task.Result.Succeeded)
                 {
-                    var data = System.IO.File.ReadAllBytes(pathName);
-                    return File(data, fileRef.ContentType, fileRef.OriginalFileName);
+                    string pathName = Path.Combine(ConfigHelper.GetAttachmentsFolder(false), fileRef.FileName);
+                    if (System.IO.File.Exists(pathName))
+                    {
+                        var data = System.IO.File.ReadAllBytes(pathName);
+                        return File(data, fileRef.ContentType, fileRef.OriginalFileName);
+                    }
                 }
             }
             catch (Exception ex)
