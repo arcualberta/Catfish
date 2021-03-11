@@ -1614,16 +1614,25 @@ namespace Catfish.UnitTests
 
             // Edit submission related workflow items
             //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
 
             //Submissions can only be edited by admins
             editSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
             //Defining post actions
-            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            //  PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            //   editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+           
+            PostAction editPostActionSubmit = editSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));//(Button Label, ActionName)
+            editPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");//current state, nectStae, buttonLabel
 
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditActionPopUpopUp = editPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            EditActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditActionPopUpopUp.AddButtons("Cancel", "false");
+
+         
 
             // Delete submission related workflow items
             //Defining actions. Only admin can delete a submission
