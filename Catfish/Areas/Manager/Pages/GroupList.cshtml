@@ -68,7 +68,7 @@
                         {
                             if (!GroupService.CheckUserGroupRole(group.Id))
                             {
-                                <a class="danger" onclick="return false;" href="#" data-toggle="modal" data-target="#groupModal" data-content="@group.Id" onclick="addUser('@group.Id', '@group.Name'); return false;">
+                                <a class="danger" href="#" data-toggle="modal" data-target="#groupModal" data-content="@group.Id" onclick="addUser('@group.Id', '@group.Name'); return false;">
                                     <span class="fas fa-trash"></span>
                                 </a>
                             }
