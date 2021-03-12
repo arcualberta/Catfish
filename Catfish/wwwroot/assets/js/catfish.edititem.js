@@ -63,7 +63,7 @@ if (document.getElementById("item-edit-page")) {
                 delete this.fieldData.ValueGroups[fieldValueId]
                    
                 console.log(this.fieldData);
-            },
+            }
         },
 
         created() {
@@ -337,7 +337,16 @@ if (document.getElementById("item-edit-page")) {
                         break;
                 }
                 this.activeOption = option;
-			},
+            },
+
+            /**
+             * Checks the form for validity and displays required styles if invalid
+             * */
+            validateForm() {
+                let validity = this.$refs.myForm.checkValidity();
+                this.$refs.myForm.classList.add('was-validated');
+                return validity;
+            },
 
             /**
              * Saves the form, calls the API to send the data to.
@@ -345,22 +354,21 @@ if (document.getElementById("item-edit-page")) {
              */
             saveForm(event) {
                 event.preventDefault();
-                let vF = true;
+                this.validForm = this.validateForm();
 
+                //OLD - this is the Bootstrap way to do this, doesn't utilize Vue
                 //do form validation here and dont submit if problems
-                var forms = document.getElementsByClassName('edit-form');
+                //var forms = document.getElementsByClassName('edit-form');
                 // Loop over them and prevent submission
-                Array.prototype.filter.call(forms, function (form) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            vF = false;
-                        }
-                        console.log("form validated");
-                        form.classList.add('was-validated');
-                });
-
-                this.validForm = vF;
+                //Array.prototype.filter.call(forms, function (form) {
+                //        if (form.checkValidity() === false) {
+                //            event.preventDefault();
+                //            event.stopPropagation();
+                //            validForm = false;
+                //        }
+                //        console.log("form validated");
+                //        form.classList.add('was-validated');
+                //});
 
                 if (this.validForm) {
                     console.log("item being posted is here:", this.item);
