@@ -9,6 +9,8 @@
 @inject Catfish.Core.Services.IWorkflowService _workflowService;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+@inject Catfish.Helper.ICatfishAppConfiguration _appConfig;
+
 @{
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -97,6 +99,5 @@
 }
 else
 {
-    var errorMessage = "Authorization failed.";
-    <div class="alert alert-danger">@Html.Raw(errorMessage)</div>
+<div class="alert alert-danger">@Html.Raw(_appConfig.GenericAuthorizationErrorMessage())</div>
 }

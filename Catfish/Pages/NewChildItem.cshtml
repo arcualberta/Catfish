@@ -6,6 +6,7 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @inject Catfish.Core.Services.IWorkflowService _workflowService;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+@inject Catfish.Helper.ICatfishAppConfiguration _appConfig;
 
 
 @{
@@ -112,6 +113,12 @@
         </form>
         <div class="container">
             <div id="add-child-result-message_@suffix"></div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="alert alert-danger">@Html.Raw(_appConfig.GenericAuthorizationErrorMessage())</div>
         </div>
     }
 }

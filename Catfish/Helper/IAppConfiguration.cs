@@ -30,6 +30,7 @@ namespace Catfish.Helper
         bool GetEnabledLocalLogin();
         bool GetEnabledBreadcrumb();
         ePanelLocation GetDefaultSearchPanelLocation();
+        string GenericAuthorizationErrorMessage();
 
         bool GetValue(string key, bool defaultValue);
         string GetValue(string key, string defaultValue);
@@ -165,6 +166,13 @@ namespace Catfish.Helper
         public bool GetEnabledLocalLogin()
         {
             return GetValue("SiteConfig:EnabledLocalLogin", false);
+        }
+
+        public string GenericAuthorizationErrorMessage()
+        {
+            return string.IsNullOrEmpty(_configuration["GoogleCalendar:GenericAuthorizationErrorMessage"])
+                ? "Authorization failed. Please sign in and try again."
+                : _configuration["GoogleCalendar:GenericAuthorizationErrorMessage"];
         }
 
         public bool GetEnabledBreadcrumb()

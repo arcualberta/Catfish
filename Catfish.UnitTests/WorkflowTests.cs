@@ -1961,7 +1961,7 @@ namespace Catfish.UnitTests
             //if department Chair  -- the chair will be the dean
             //the order of the department chair list have to be in the same order of the list Department above
            
-            string[] chairDept = GetDepartmentChair();
+            string[] chairDept = GetDepartmentChair(false); //FALSE => production
            
 
           
@@ -2819,8 +2819,8 @@ namespace Catfish.UnitTests
                                                 "Sara Dorow: sdorow@ualberta.ca",
                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
                                                 "Natasha Hurley: nhurley@ualberta.ca",
-                                                "arcAdmin : kamal@ranaweera.ca",//iwickram@ualberta.ca
-                                            "Steve Patten : spatten@ualberta.ca" //Dean have to be at the end!!
+                                                "arcAdmin : iwickram@ualberta.ca",
+                                            "Steve Patten : artsrnd@ualberta.ca" //Dean have to be at the end!!
                                         };
             }
 
@@ -2845,7 +2845,7 @@ namespace Catfish.UnitTests
           
             comField.CreateChildTemplate("Teaching Release", "Teaching Release", lang);
             comField.ChildTemplate.CreateField<TextField>("Couse Name", lang, false);
-            comField.ChildTemplate.CreateField<TextField>("Release Required?", lang, false);
+            comField.ChildTemplate.CreateField<RadioField>("Release Required?", lang, new string[] { "yes", "No" }, true);
             comField.ChildTemplate.CreateField<DecimalField>("Amount Requested ($)", lang, false);
             comField.Min = min;
             comField.Max = max;//0 means unlimited
@@ -3391,7 +3391,7 @@ namespace Catfish.UnitTests
             //if department Chair  -- the chair will be the dean
             //the order of the department chair list have to be in the same order of the list Department above
 
-            string[] chairDept = GetDepartmentChair();
+            string[] chairDept = GetDepartmentChair(false); //FALSE => production
 
 
 
