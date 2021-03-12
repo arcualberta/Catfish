@@ -170,9 +170,9 @@ namespace Catfish.Helper
 
         public string GenericAuthorizationErrorMessage()
         {
-            return string.IsNullOrEmpty(_configuration["GoogleCalendar:GenericAuthorizationErrorMessage"])
+            return string.IsNullOrEmpty(_configuration["SiteConfig:GenericAuthorizationErrorMessage"])
                 ? "Authorization failed. Please sign in and try again."
-                : _configuration["GoogleCalendar:GenericAuthorizationErrorMessage"];
+                : _configuration["SiteConfig:GenericAuthorizationErrorMessage"];
         }
 
         public bool GetEnabledBreadcrumb()
