@@ -38,54 +38,6 @@ if (document.getElementById("item-edit-page")) {
              * Adds another entry set to the field
              */
             addNewValue() {
-
-                ////regular object method. this does not work because the object is too embedded to be reactive.
-                ////Vue cannot detect the new value added and so a new input is not added
-                //let newEntry = JSON.parse( JSON.stringify(this.fieldData.Values.$values[0]) );
-                //newEntry.Id = uuidv1();
-
-                ////TODO need to check this for Date, Integer, etc, the structure is different
-                //for (let item of newEntry.Values.$values) {
-                //    item.Value = "";
-                //}
-
-                //this.fieldData.Values.$values.splice(this.fieldData.Values.$values.length, 0, newEntry);
-                //console.log(this.fieldData.Values.$values);
-                ///////////////////////////////////////////////////////////////
-
-                ////testField is simplified to two layers, so the reactivity works
-                ////Vue can make a new input from this change
-                //let newEntry2 = JSON.parse(JSON.stringify(this.testField.Values[0]));
-                //newEntry2.Id = uuidv1();
-
-                ////TODO need to check this for Date, Integer, etc, the sfor (let item of newEntry.Values.$values) {
-                //newEntry2.Value = "";
-
-                //this.testField.Values.splice(this.testField.Values.length, 0, newEntry2);
-
-                ////////////////////////////////////////////////////////////////
-
-                ////three layer object
-                //let newEntry3 = JSON.parse(JSON.stringify(this.threeLayerTest.Values[0].$values[0]));
-                //newEntry3.Id = uuidv1();
-
-                ////TODO need to check this for Date, Integer, etc, the sfor (let item of newEntry.Values.$values) {
-                //newEntry3.Value = "";
-
-                //this.threeLayerTest.Values[0].$values.splice(this.threeLayerTest.Values[0].$values.length, 0, newEntry3);
-
-                ////////////////////////////////////////////////////////////////
-
-                ////semiflattened object
-                //let newEntry4 = JSON.parse(JSON.stringify(this.userInputs[this.newFieldData.ValueIds[0]]));
-                //for (let val of newEntry4) {
-                //    val.Value = "";
-                //    val.Id = uuidv1();
-                //}
-                ////needs an overall id - just assign?
-                //let newEntry4Id = uuidv1();
-                //this.$set(this.userInputs, newEntry4Id, newEntry4);
-                //this.newFieldData.ValueIds.splice(this.newFieldData.ValueIds.length, 0, newEntry4Id);
                 let valueObjToCopy = Object.values(this.fieldData.ValueGroups)[0];
                 let newEntry = JSON.parse(JSON.stringify(valueObjToCopy));
                 for (let val of newEntry) {
@@ -121,21 +73,28 @@ if (document.getElementById("item-edit-page")) {
         },
         template: `
         <div class="sitemap-item">
-            <div class="link">{{fieldData.ModelType}}
+            <div class="link">
                 <div class="flex-row" v-for="(val, index) of fieldData.ValueIds">
                     
-                    <div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
+                    <!--<div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">-->
 
-                        <!-- <h3>Semi-flattened object, reacts to added value</h3> --> 
-                        <div v-if="fieldData.ModelType.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of fieldData.ValueGroups[val]">
+                        <div v-if="fieldData.ModelType.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of fieldData.ValueGroups[val]" class="metadata-input">
                             <div>
-                                <label :for="val.Id + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"><h4>{{fieldData.Name[fieldValueIndex].Value}}: </h4></label>
-                                <input :id="val.Id + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"
-                                required type="text" class="form-control"
-                                v-model="fieldValue.Value"
-                                >
+                                <label :for="val + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"><h4>{{fieldData.Name[fieldValueIndex].Value}} </h4></label>
+                                <div v-if="!isInPreviewMode">
+                                    <input :id="val + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"
+                                    required type="text" class="form-control"
+                                    v-model="fieldValue.Value"
+                                    >
+                                    <div class="invalid-feedback">
+                                        This field is required.
+                                    </div>
+                                </div>
+                                <div v-else>
+                                    <div>{{fieldValue.Value}}</div>
+                                </div>
                             </div>
-                            <div class="btn-group new-value-button" role="group">
+                            <div v-if="!isInPreviewMode" class="btn-group float-right-button space-above" role="group">
                                 <button :disabled="fieldData.ValueIds.length <= 1"
                                     type="button" v-on:click="deleteField(val)"
                                     class="btn btn-sm btn-danger btn-labeled trash-button">
@@ -145,20 +104,86 @@ if (document.getElementById("item-edit-page")) {
                             </div>
                         </div>
                         
+                        <div v-else-if="fieldData.ModelType.includes(inputTypes.textarea)" v-for="(fieldValue, fieldValueIndex) of fieldData.ValueGroups[val]" class="metadata-input">
+                            <div>
+                                <label :for="val + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"><h4>{{fieldData.Name[fieldValueIndex].Value}} </h4></label>
+                            </div>
+                            <div v-if="!isInPreviewMode">
+                                <textarea :id="val + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"
+                                required class="form-control" rows="3"
+                                v-model="fieldValue.Value"></textarea>
+                                <div class="invalid-feedback">
+                                    This field is required.
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div>{{fieldValue.Value}}</div>
+                            </div>
+                            <div v-if="!isInPreviewMode" class="btn-group float-right-button space-above" role="group">
+                                <button :disabled="fieldData.ValueIds.length <= 1"
+                                    type="button" v-on:click="deleteField(val)"
+                                    class="btn btn-sm btn-danger btn-labeled trash-button">
+                                    <i class="fas fa-trash"></i>
+                                    {{deleteLabel}}
+                                </button>
+                            </div>
+                        </div>
 
-<!--
-                        <textarea v-else-if="fieldData.$type.includes(inputTypes.textarea)"
-                        required class="form-control" rows="3"
-                        v-model="fieldData.Values.$values[index].Values.$values[0].Value"></textarea>
-                        <input type="date" v-else-if="fieldData.$type.includes(inputTypes.date)"
-                        v-model="fieldData.Values.$values[index].Value"
-                        required class="form-control">
-                        <input type="number" v-else-if="fieldData.$type.includes(inputTypes.integer)"
-                        v-model="fieldData.Values.$values[index].Value"
-                        required class="form-control">-->
+                        <div v-else-if="fieldData.ModelType.includes(inputTypes.date)" v-for="(fieldValue, fieldValueIndex) of fieldData.ValueGroups[val]" class="metadata-input">
+                            <div>
+                                <label :for="val + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"><h4>{{fieldData.Name[fieldValueIndex].Value}} </h4></label>
+                            </div>
+                            <div v-if="!isInPreviewMode">
+                                <input type="date" 
+                                v-model="fieldValue.Value" required class="form-control">
+                                <div class="invalid-feedback">
+                                    This field is required.
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div>
+                                    {{fieldValue.Value}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-else-if="fieldData.ModelType.includes(inputTypes.integer)" v-for="(fieldValue, fieldValueIndex) of fieldData.ValueGroups[val]" class="metadata-input">
+                            <div>
+                                <label :for="val + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"><h4>{{fieldData.Name[fieldValueIndex].Value}} </h4></label>
+                            </div>
+                            <div v-if="!isInPreviewMode">
+                                <input type="number" v-if="!isInPreviewMode"
+                                v-model="fieldValue.Value" required class="form-control">
+                                <div class="invalid-feedback">
+                                    This field is required.
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div>
+                                    {{fieldValue.Value}}
+                                </div>
+                            </div>
+                        </div>
+
                         <!--TODO need to come back and adjust this for better decimal functionality -->
-                        <!--<input type="number" step=".01" v-else-if="fieldData.$type.includes(inputTypes.decimal)"
-                        required class="form-control" v-model="fieldData.Values.$values[index].Value">-->
+                        <div v-else-if="fieldData.ModelType.includes(inputTypes.decimal)" v-for="(fieldValue, fieldValueIndex) of fieldData.ValueGroups[val]" class="metadata-input">
+                            <div>
+                                <label :for="val + '-index-' + fieldValueIndex + '-' + index + fieldValue.Id"><h4>{{fieldData.Name[fieldValueIndex].Value}} </h4></label>
+                            </div>
+                            <div v-if="!isInPreviewMode">
+                                <input type="number" step=".01"
+                                required class="form-control" v-model="fieldValue.Value">
+                                <div class="invalid-feedback">
+                                    This field is required.
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div>
+                                    {{fieldValue.Value}}
+                                </div>
+                            </div>
+                        </div>
+
                         <!--<vue-editor v-else-if="fieldData.$type.includes(inputTypes.textarea)
                                 v-model="fieldData.Values.$values[index].Values.$values[0].Value">
                         </vue-editor>-->
@@ -167,23 +192,17 @@ if (document.getElementById("item-edit-page")) {
                             </div>
                         </div>
                         <!--<div v-else>
-                            <div v-if="fieldData.Values.$values[index].hasOwnProperty('Values')">
-                                {{fieldData.Values.$values[index].Values.$values[0].Value}}
-                            </div>
-                            <div v-else>
-                                <span>
-                                    {{fieldData.Values.$values[index].Value}} 
-                                </span>
-                            </div>
-
+                            <span>
+                                {{fieldData.Value}} 
+                            </span>
                         </div>-->
-                    </div>
+                    <!--</div>-->
                 </div>
 
-                <div v-if="piranha.permissions.pages.add" class="add-value-container">
-                    <div class="btn-group new-value-button" role="group">
-                        <button type="button" v-on:click="addNewValue()"
-                                class="btn btn-sm btn-primary btn-labeled">
+                <div v-if="piranha.permissions.pages.add && !isInPreviewMode" class="add-value-container">
+                    <div class="btn-group float-right-button" role="group">
+                        <button v-if="!fieldData.ModelType.includes(inputTypes.integer) && !fieldData.ModelType.includes(inputTypes.date)" type="button" v-on:click="addNewValue()"
+                                class="btn btn-lg btn-primary btn-labeled">
                             <i class="fas fa-plus"></i>
                             {{valueLabel}}
                         </button>
@@ -205,7 +224,7 @@ if (document.getElementById("item-edit-page")) {
             return {
                 //api strings
                 getString: "manager/api/items/",
-                postString: "manager/items/save",
+                postString: "manager/api/items",//"manager/items/save",
 
                 content: "<h1>Some initial content</h1>",
 
@@ -255,7 +274,9 @@ if (document.getElementById("item-edit-page")) {
 
                 saveSuccessfulLabel: "Saved!",
                 saveFailedLabel: "Failed to Save",
+                saveFieldsRequiredLabel: "Some fields are required",
                 saveStatus: 0,
+                validForm: true
             }
         },
         computed: {
@@ -324,7 +345,7 @@ if (document.getElementById("item-edit-page")) {
              */
             saveForm(event) {
                 event.preventDefault();
-                let validForm = true;
+                let vF = true;
 
                 //do form validation here and dont submit if problems
                 var forms = document.getElementsByClassName('edit-form');
@@ -333,21 +354,15 @@ if (document.getElementById("item-edit-page")) {
                         if (form.checkValidity() === false) {
                             event.preventDefault();
                             event.stopPropagation();
-                            validForm = false;
+                            vF = false;
                         }
                         console.log("form validated");
                         form.classList.add('was-validated');
                 });
 
-                if (validForm) {
-                    this.item.Name = this.nameAttribute;
-                    this.item.Description = this.descriptionAttribute;
-                    this.item.MetadataSets = {
-                        $type: this.metadataSets_type,
-                        $values: this.metadataSets,
+                this.validForm = vF;
 
-                    };
-
+                if (this.validForm) {
                     console.log("item being posted is here:", this.item);
 
                     fetch(piranha.baseUrl + this.postString,
@@ -358,7 +373,7 @@ if (document.getElementById("item-edit-page")) {
                             },
                             body: JSON.stringify(this.item)
                         })
-                        .then((res) =>  {
+                        .then((res) => {
                             if (res.ok) {
                                 this.saveStatus = 1;
                                 console.log("????");
@@ -367,14 +382,17 @@ if (document.getElementById("item-edit-page")) {
                                 this.saveStatus = -1;
                                 console.log("!!!!!");
                             }
-                            console.log("res",res);
+                            console.log("res", res);
                             return res;
                         })
                         .then(function (data) { /*alert(JSON.stringify(data))*/ })
                         .catch((error) => {
                             console.error('Error:', error);
                         });
-				}
+                } else {
+                    console.log("form invalid");
+                    this.saveStatus = -1;
+                }
                 
 			},
 
@@ -523,7 +541,7 @@ if (document.getElementById("item-edit-page")) {
         },
         mounted() {
 
-            //initializes all tooltips
+            //initializes all tooltips TODO put these back in, they were lost - or don't?
             $(document).ready(function () {
                 $("body").tooltip({ selector: '[data-toggle=tooltip]' });
             });

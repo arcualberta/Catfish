@@ -49,17 +49,19 @@
                                                            class="language-label" for="input-0">
                                                         *Insert language here* :
                                                     </label>
-                                                    <!--<div v-if="!isInPreviewMode" class="col-md-4 mb-3">
-                                                    <input
-                                                           required type="text" class="form-control"
-                                                           :id="[section.title + '-input-' + index]"
-                                                           aria-describedby="entry-label"
-                                                           v-model="entry.value">
-                                                    <div class="invalid-feedback">
-                                                        This field is required.
+                                                    <div v-if="!isInPreviewMode" class="width-100">
+                                                        <input
+                                                               required type="text" class="form-control"
+                                                               :id="[section.title + '-input-' + index]"
+                                                               aria-describedby="entry-label"
+                                                               v-model="section.value.Value">
+                                                        <div class="invalid-feedback">
+                                                            This field is required.
+                                                        </div>
                                                     </div>
-                                                </div>-->
-                                                    <span>{{section.Value}}</span>
+                                                    <div v-else>
+                                                        <span>{{section.value.Value}}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </li>

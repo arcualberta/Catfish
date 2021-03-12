@@ -31,6 +31,7 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
 
             Name = new DisplayTextVM(item.Name);
             Description = new DisplayTextVM(item.Description);
+            Id = Guid.NewGuid();
         }
     }
 }

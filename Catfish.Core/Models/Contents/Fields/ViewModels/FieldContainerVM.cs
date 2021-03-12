@@ -20,8 +20,9 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
         {
             Name = metadataSet.Name.ConcatenatedContent;
             Fields = new List<Field>();
+            Id = Guid.NewGuid();
 
-            foreach(BaseField f in metadataSet.Fields)
+            foreach (BaseField f in metadataSet.Fields)
             {
                 Fields.Add(new Field(f));
             }

@@ -9,7 +9,8 @@
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
     <h6 class="success-message" v-if="saveStatus==1">{{saveSuccessfulLabel}}</h6>
-    <h6 class="failed-message" v-if="saveStatus==-1">{{saveFailedLabel}}</h6>
+    <h6 class="failed-message" v-if="saveStatus==-1 && validForm">{{saveFailedLabel}}</h6>
+    <h6 class="failed-message" v-if="saveStatus==-1 && !validForm">{{saveFieldsRequiredLabel}}</h6>
     
     <div v-if="mcDropdownButtonLabel" class="btn-group dropdown save-preview-edit-button">
         <button form="item-edit-form" 
