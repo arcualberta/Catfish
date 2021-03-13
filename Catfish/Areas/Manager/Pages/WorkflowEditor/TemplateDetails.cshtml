@@ -1,5 +1,128 @@
 ﻿@page "~/manager/workflow/templates/{id:Guid}"
 @model Catfish.Areas.Manager.Pages.WorkflowEditor.EntityTemplatePage
 
+@using Microsoft.AspNetCore.Authorization
+
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@inject IAuthorizationService AuthorizationService
+@inject Catfish.Core.Services.IGroupService GroupService
+@inject Catfish.Helper.ICatfishAppConfiguration _config;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @{
+    ViewBag.Title = Localizer.Page["Workflow Templates"];
+    var siteURL = _config.GetSiteURL();
+
+    var template = Model.Template;
 }
+
+@section script
+{
+    <script src="@Url.Content(Piranha.Manager.Editor.EditorScripts.MainScriptUrl)"></script>
+    <script src="@Url.Content(Piranha.Manager.Editor.EditorScripts.EditorScriptUrl)"></script>
+    <script src="~/manager/assets/js/piranha.contentedit.min.js"></script>
+    <script src="~/manager/assets/js/piranha.siteedit.min.js"></script>
+}
+
+
+<div id="entityTypelist">
+    <div class="top">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">@Localizer.Menu["Workflow"]</li>
+                <li class="breadcrumb-item">@Localizer.Menu["Templates"]</li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Details"]</li>
+            </ol>
+        </nav>
+        <div class="container-fluid">
+            <div class="top-nav">
+                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Add)).Succeeded)
+                {
+
+                    @*<a href="@groupEditURL" class="btn btn-labeled btn-primary pull-right">
+                            <i class="fas fa-plus"></i>@Localizer.General["Add"]
+                        </a>*@
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <h3>Email Templates</h3>
+    <div id="email-templates" class="">
+        @for (int i = 0; i < template.MetadataSets.Count; ++i)
+        {
+            var child = template.MetadataSets[i];
+            var headingId = "et-head-" + child.Id;
+            var dataTargetId = "et-target-" + child.Id;
+
+            var expanded = i == 0 ? "true" : "false";
+            var show = ""; // i == 0 ? "show" : "";
+            <div class="card">
+                <div class="card-header" id="@headingId">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#@dataTargetId" aria-expanded="@expanded" aria-controls="@child.Id">
+                            @Html.Raw(child.Name.ConcatenatedContent)
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="@dataTargetId" class="collapse @show" aria-labelledby="@headingId" data-parent="#email-templates">
+                    <div class="card-body">
+                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<hr />
+@*<div class="container-fluid">
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Collapsible Group Item #1
+                    </button>
+                </h5>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Collapsible Group Item #2
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="headingThree">
+                <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Collapsible Group Item #3
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                <div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@

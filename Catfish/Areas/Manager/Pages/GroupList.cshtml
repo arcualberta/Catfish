@@ -1,17 +1,20 @@
 ﻿@page "~/manager/groups"
 @model Catfish.Areas.Manager.Pages.GroupListModel
-@inject Piranha.Manager.ManagerLocalizer Localizer
+
 @using Microsoft.AspNetCore.Authorization
+
+@inject Piranha.Manager.ManagerLocalizer Localizer
 @inject IAuthorizationService AuthorizationService
 @inject Catfish.Core.Services.IGroupService GroupService
+@inject Catfish.Helper.ICatfishAppConfiguration _config;
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@inject Catfish.Helper.ICatfishAppConfiguration _config;
 @{
     ViewBag.Title = Localizer.Page["Groups"];
     ViewBag.MenuItem = "Groups";
 
-    var siteURL = _config.GetSiteURL().TrimEnd('/'); 
+    var siteURL = _config.GetSiteURL();
     string groupEditURL = siteURL + "/manager/groups/edit";
 }
 

@@ -79,6 +79,20 @@ namespace Catfish.Services
 
         }
 
+        public async Task<EntityTemplate> GetTemplateAsync(Guid? templateId)
+        {
+            try
+            {
+                return await _db.EntityTemplates
+                    .FindAsync(templateId) //Handle the request asynchronously
+                    .ConfigureAwait(false); //Request can be handled in a separate thread
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
         public EntityTemplate GetTemplate(Guid? templateId)
         {
             try

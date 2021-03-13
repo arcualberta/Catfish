@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Services;
+using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
@@ -11,18 +12,19 @@ namespace Catfish.Areas.Manager.Pages.WorkflowEditor
 {
     public class EntityTemplatePage : PageModel
     {
-        public readonly IEntityTypeService _srv;
+        public readonly IEntityTemplateService _srv;
         public EntityTemplate Template { get; set; }
 
-        public EntityTemplatePage(IEntityTypeService srv)
+        public EntityTemplatePage(IEntityTemplateService srv)
         {
             _srv = srv;
         }
 
-        public async Task<IActionResult> OnGetAsync(Guid id)
+        public async Task OnGetAsync(Guid id)
         {
-            //Template = _srv
-            throw new NotImplementedException();
+            Template = await _srv.GetTemplateAsync(id)
+                .ConfigureAwait(false); //The library call does not need access to things like 
+                                        //the HTTP Context so it can run completely separately
         }
     }
 }
