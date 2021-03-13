@@ -3871,8 +3871,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
                 .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(gapChair.Id);
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
                 .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
@@ -4126,7 +4126,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             changeStateAction.GetStateReference(reviewCompletedState.Id, true)
                 .AddAuthorizedRole(gapAdmin.Id);
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
-                .AddAuthorizedRole(gapAdjudication.Id);
+                .AddAuthorizedRole(gapAdmin.Id);
 
             // ========================================================
             // Adjudication Decision related workflow items
@@ -4148,7 +4148,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
 
             adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
-                .AddAuthorizedRole(gapAdjudication.Id);
+                .AddAuthorizedRole(gapAdmin.Id);
 
 
             db.SaveChanges();
