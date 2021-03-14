@@ -1,0 +1,27 @@
+﻿@model Catfish.Core.Models.Contents.Fields.BaseField
+
+<td>
+    @Model.GetType().Name
+</td>
+<td>
+    @if(Model.Name != null)
+    {
+        foreach(var txt in Model.Name.Values)
+        {
+            <div id="@txt.Id">
+                @Html.Raw(txt.Value)
+            </div>
+        }
+    }
+</td>
+<td>
+    @if (Model.Description != null)
+    {
+        foreach (var txt in Model.Description.Values)
+        {
+            <div id="@txt.Id">
+                @Html.Raw(txt.Value)
+            </div>
+        }
+    }
+</td>

@@ -1,0 +1,21 @@
+﻿@model Catfish.Core.Models.Contents.Fields.OptionsField
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<partial name="Partial/DataItemFields/_BaseField" model="Model" />
+<td>
+    @foreach(var opt in Model.Options)
+    {
+        <div id="@opt.Id" class="option-value">
+            @for(int i=0; i<opt.OptionText.Values.Count; ++i)
+            {
+                var txt = opt.OptionText.Values[i];
+                <span id="@txt.Id">@txt.Value</span>
+                if(i < opt.OptionText.Values.Count - 1)
+                {
+                    <span>|</span>
+                }
+            }
+        </div>
+    }
+</td>
