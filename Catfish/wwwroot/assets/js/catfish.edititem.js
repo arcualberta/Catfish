@@ -72,7 +72,7 @@ if (document.getElementById("item-edit-page")) {
             this.deleteLabel = StaticItems.managerSideValues.editItemLabels.DELETE_LABEL;
         },
         template: `
-        <div class="sitemap-item">
+        <div class="sitemap-item additional-spacing">
             <div class="link">
                 <div class="flex-row" v-for="(val, index) of fieldData.ValueIds">
                     
@@ -102,6 +102,7 @@ if (document.getElementById("item-edit-page")) {
                                     {{deleteLabel}}
                                 </button>
                             </div>
+                            <hr style="width: 100%; display:inline-flex;">
                         </div>
                         
                         <div v-else-if="fieldData.ModelType.includes(inputTypes.textarea)" v-for="(fieldValue, fieldValueIndex) of fieldData.ValueGroups[val]" class="metadata-input">
@@ -183,21 +184,18 @@ if (document.getElementById("item-edit-page")) {
                                 </div>
                             </div>
                         </div>
-
-                        <!--<vue-editor v-else-if="fieldData.$type.includes(inputTypes.textarea)
-                                v-model="fieldData.Values.$values[index].Values.$values[0].Value">
-                        </vue-editor>-->
-                            <div class="invalid-feedback">
-                                {{fieldRequiredLabel}}
-                            </div>
+                        <div class="invalid-feedback">
+                            {{fieldRequiredLabel}}
                         </div>
-                        <!--<div v-else>
-                            <span>
-                                {{fieldData.Value}} 
-                            </span>
-                        </div>-->
-                    <!--</div>-->
+                    </div>
+                    <!--<div v-else>
+                        <span>
+                            {{fieldData.Value}} 
+                        </span>
+                    </div>-->
+                <!--</div>-->
                 </div>
+                
 
                 <div v-if="piranha.permissions.pages.add && !isInPreviewMode" class="add-value-container">
                     <div class="btn-group float-right-button" role="group">

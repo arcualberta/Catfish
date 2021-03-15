@@ -19,6 +19,10 @@
 	padding-right: 0;
 }
 
+.sitemap-item.additional-spacing {
+	margin-bottom: 10px;
+}
+
 .sitemap-item .link .language-label {
 	align-self: center;
 	padding-right: 10px;
