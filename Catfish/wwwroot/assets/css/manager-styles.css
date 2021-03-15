@@ -13,6 +13,19 @@
         */
 }
 
+.email-template .field-list{
+    border:solid 1px #ccc;
+    border-radius: 5px;
+}
+    .email-template .field-list .field {
+        margin: 15px 5px;
+    }
+
+    .email-template .field-list .fa-edit {
+        margin: 5px;
+    }
+
+
 .table.field-set-view td {
     background-color: white;
 }

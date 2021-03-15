@@ -1,16 +1,16 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.BaseField
 
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 <td>
     @Model.GetType().Name
 </td>
 <td>
-    @if(Model.Name != null)
+    @if (Model.Name != null)
     {
-        foreach(var txt in Model.Name.Values)
+        foreach (var txt in Model.Name.Values)
         {
-            <div id="@txt.Id">
-                @Html.Raw(txt.Value)
-            </div>
+            <partial name="Partial/DataItemFields/_Text" model="txt" />
         }
     }
 </td>
@@ -19,9 +19,7 @@
     {
         foreach (var txt in Model.Description.Values)
         {
-            <div id="@txt.Id">
-                @Html.Raw(txt.Value)
-            </div>
+            <partial name="Partial/DataItemFields/_Text" model="txt" />
         }
     }
 </td>

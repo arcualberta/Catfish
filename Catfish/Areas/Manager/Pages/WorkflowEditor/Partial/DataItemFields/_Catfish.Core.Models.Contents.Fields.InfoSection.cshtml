@@ -7,10 +7,8 @@
 </td>
 
 <td colspan="3">
-    @foreach(var txt in Model.Content.Values)
+    @foreach (var txt in Model.Content.Values)
     {
-        <div id="@txt.Id">
-            @Html.Raw(txt.Value)
-        </div>
+        <partial name="Partial/DataItemFields/_Text" model="txt" />
     }
 </td>
