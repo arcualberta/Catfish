@@ -414,12 +414,12 @@ ul.checkboxgroup li {
             background-size: contain;
 }
 .file-container .file-entry .thumbnail .icon {
-                width: 100px;
-                height: 142px;
-                margin: 0px;
-                background-size: contain;
-                background-repeat: no-repeat;
-                text-align: right;
+            width: 100px;
+            height: 142px;
+            margin: 0px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            text-align: right;
 }
 
 .file-container .file-entry .label, .file-container .file-entry .label-active {
@@ -471,4 +471,14 @@ input[readonly] {
 
 .radio-inline > div{
     display:inline;
+}
+
+.footer-row{
+    background-color:#eee;
+}
+/* Adding some margin for workflow buttons that appear on the top-right
+   corner of a detailed view of an item.
+*/
+.pull-right {
+    margin: 10px;
 }

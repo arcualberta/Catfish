@@ -68,6 +68,12 @@ namespace Catfish.Core.Models.Contents.Fields
         /// <param name="value"></param>
         public override void SetValue(string value, string lang) { }
 
+        /// <summary>
+        /// This method has no meaning for the Attachment class.
+        /// </summary>
+        /// <param name="srcField"></param>
+        public override void CopyValue(BaseField srcField, bool overwrite = false) { }
+
         public string FileNames { get; set; }
 
         // public string ContentDisposition => AttachmentFile.ContentDisposition;  //throw new NotImplementedException();

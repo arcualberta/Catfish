@@ -1,27 +1,5 @@
-﻿$(document).ready(function () {
-    //Encoding inner-HTML of composite field templates into base 64 strings
-    $.each($("form .composite-field-template"), function (idx, template) {
-        let html = $(template).html();
-        let encodedHtml = btoa(html);
-        $(template).html(encodedHtml);
-    });
-
-    //Encoding inner-HTML of table field templates into base 64 strings
-    $.each($("form .tf-template"), function (idx, template) {
-        let html = $(template).html();
-        let encodedHtml = btoa(html);
-        $(template).html(encodedHtml);
-    });
-
-    $(".launch-modal").click(function () {
-        $("#submissionModal").modal({
-            backdrop: 'static'
-        });
-
-    });
-});
-
-function submitWorkflowForm(status, button, postActionId, suffix, successMessage) {
+﻿
+function submitWorkflowForm(stateId, button, postActionId, suffix, successMessage) {
     $("#submission-result-message_" + suffix).hide();
 
     
@@ -64,7 +42,7 @@ function submitWorkflowForm(status, button, postActionId, suffix, successMessage
 
         values["groupId"] = groupId;
         values["actionButton"] = button;
-        values["status"] = status;
+        values["stateId"] = stateId;
         values["postActionId"] = postActionId;
 
        
@@ -80,7 +58,8 @@ function submitWorkflowForm(status, button, postActionId, suffix, successMessage
             $('.modal-backdrop').remove();
             if (data.success) {
                 //  $(".submission-result-message").addClass("alert alert-success");
-                message = successMessage !== "" ? successMessage : data.message;
+                //message = successMessage !== "" ? successMessage : data.message;
+                message = data.message;
                 $("#submission-result-message_" + suffix).append("<div class='alert alert-success' ></div>");
             
                 $("#submissionForm_" + suffix).hide();//[0].reset();
@@ -91,7 +70,7 @@ function submitWorkflowForm(status, button, postActionId, suffix, successMessage
                 message = data.message;
             }
 
-            $("#submission-result-message_" + suffix + " div").text(message);
+            $("#submission-result-message_" + suffix + " div").html(message);
             $("#submission-result-message_" + suffix).show();
         });
 

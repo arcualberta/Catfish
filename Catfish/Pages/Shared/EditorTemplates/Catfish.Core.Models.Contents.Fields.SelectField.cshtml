@@ -9,19 +9,49 @@
     return;
 
 @{
+    var fieldId = Html.IdFor(model => model);
+    var fieldName = Html.NameFor(model => model);
 
     var options = Model.Options.Select(op =>
-            new SelectListItem
-            {
-                Value = op.Id.ToString(),
-                Text = op.OptionText.GetConcatenatedContent(" | "),
-            }).ToList();
+    new SelectListItem
+    {
+        Value = op.Id.ToString(),
+        Text = op.OptionText.GetConcatenatedContent(" | "),
+        Selected = op.Selected
+    }).ToList();
     options.Insert(0, new SelectListItem());
 
 
     if (Model.Options.Where(op => !string.IsNullOrWhiteSpace(op.VisibilityCondition.Value)).Any() == false)
     {
-        @Html.DropDownListFor(model => model, options, ViewData)
+        @*@Html.DropDownListFor(model => model, options, ViewData)*@
+
+        string inputAttr = "";
+
+        foreach (var key in ViewData.Keys)
+        {
+            if (ViewData[key] == null)
+                inputAttr += key + " ";
+            else
+                inputAttr += key + "=" + ViewData[key] + " ";
+        }
+
+
+        <select @inputAttr id="@fieldId" name="@fieldName">
+            @foreach (var opt in options)
+            {
+                if (opt.Selected)
+                {
+                    <option value="@opt.Value" selected>@opt.Text</option>
+                }
+                else
+                {
+                    <option value="@opt.Value">@opt.Text</option>
+}
+
+            }
+        </select>
+
     }
     else
     {
@@ -48,6 +78,8 @@
                         optionElement.SetAttributeValue("data-visible-if", visibleIfValue);
                         optionElement.SetAttributeValue("id", op.Id);
                         optionElement.SetAttributeValue("data-field-id", op.Id);
+                        if (op.Selected)
+                            optionElement.SetAttributeValue("selected", "selected");
                     }
                 }
             }

@@ -75,5 +75,8 @@ function removeDataItem(childListContainerId, wrappperId, min, childrenNamePrefi
         });
     });
 
+    //Making sure all field calculations are updated
+    updateFields();
+
     return true;
 }

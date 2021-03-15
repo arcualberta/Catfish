@@ -6,6 +6,7 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @inject Catfish.Core.Services.IWorkflowService _workflowService;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+@inject Catfish.Helper.ICatfishAppConfiguration _appConfig;
 
 
 @{
@@ -22,11 +23,11 @@
     var nextStatus = stateMapping.Next;
     string suffix = Guid.NewGuid().ToString();
     string successMessage = "";// string.IsNullOrEmpty(Model.SubmissionConfirmation.Value) ? "" : Model.SubmissionConfirmation.Value.ToString();
-}   
+}
 
 
 @{
-    if ((await _authorizationService.AuthorizeAsync(User, Model.Template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+    if ((await _authorizationService.AuthorizeAsync(User, Model.Item, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
 .Succeeded)
     {
         <div class="container">
@@ -110,6 +111,14 @@
 
             </div>
         </form>
-        <div id="add-child-result-message_@suffix"></div>
+        <div class="container">
+            <div id="add-child-result-message_@suffix"></div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="alert alert-danger">@Html.Raw(_appConfig.GenericAuthorizationErrorMessage())</div>
+        </div>
     }
 }

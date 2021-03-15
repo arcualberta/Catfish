@@ -70,6 +70,9 @@
         <tbody>
             @for (var r = 0; r < Model.TableData.Count; ++r)
             {
+                @Html.HiddenFor(model => Model.TableData[r].Id)
+                @Html.HiddenFor(model => Model.TableData[r].ModelType)
+
                 var row = Model.TableData[r];
                 <tr data-r="@r" class="data-row">
                     @for (var c = 0; c < row.Fields.Count; ++c)
@@ -95,6 +98,9 @@
 
             @for (var r = 0; r < Model.TableFooter.Count; ++r)
             {
+                @Html.HiddenFor(model => Model.TableFooter[r].Id)
+                @Html.HiddenFor(model => Model.TableFooter[r].ModelType)
+
                 var row = Model.TableFooter[r];
                 var firstFooterRow = r == 0 ? "first-footer-row" : "";
                 <tr class="footer-row @firstFooterRow">
@@ -108,9 +114,9 @@
                         </td>
                     }
                 </tr>
-                }
+            }
 
-            </tbody>
+        </tbody>
     </table>
 
     @if(Model.AllowAddRows){

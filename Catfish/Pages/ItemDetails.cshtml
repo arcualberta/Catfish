@@ -8,6 +8,8 @@
 @inject Catfish.Core.Services.IWorkflowService _workflowService;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+@inject Catfish.Helper.ICatfishAppConfiguration _appConfig;
+
 @{
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -16,6 +18,8 @@
 }
 @{
     var item = Model.Item;
+    var viewData = new Dictionary<string, object>();
+    viewData.Add("item-id", item.Id);
 
     var rootDataItem = item.GetRootDataItem(false);
     string formPostUrl = "/api/items/DetailsUpdate";
@@ -98,28 +102,33 @@
                         </div>
                     </div>
                     <div class="submission-form-block">
-                        @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
+                        @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString(), viewData)
                     </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="title">@Localizer.General["History"]</span>
-                        </div>
-                        <div class="card-body">
-                            @{
-                                foreach (var associateItem in associatedItems)
-                                {
-                                    var auditTrail = auditEntrys.Where(ae => ae.Created == associateItem.Created).FirstOrDefault();
-                                    <div class="card">
-                                        <div class="row">
-                                            @Html.DisplayFor(model => associateItem, associateItem.GetType().ToString())
-                                        </div>
-                                    </div>
-                                }
-                            }
+                    @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormView })).Succeeded)
+                    {
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="title">@Localizer.General["History"]</span>
+                            </div>
 
+                            <div class="card-body">
+                                @{
+                                    foreach (var associateItem in associatedItems)
+                                    {
+                                        var auditTrail = auditEntrys.Where(ae => ae.Created == associateItem.Created).FirstOrDefault();
+                                        <div class="card">
+                                            <div class="row">
+                                                @Html.DisplayFor(model => associateItem, associateItem.GetType().ToString())
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                            
                         </div>
-                    </div>
-                    
+                    }
+
                 </div>
             </form>
             <div id="item-details-result-message_@suffix"></div>
@@ -128,7 +137,10 @@
 }
 else
 {
-    <div class="alert alert-danger">Authorization failed.</div>
+<div class="container">
+    <div class="alert alert-danger">@Html.Raw(_appConfig.GenericAuthorizationErrorMessage())</div>
+</div>
 }
+    
 
 

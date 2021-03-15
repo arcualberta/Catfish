@@ -13,6 +13,13 @@ namespace Catfish.Core.Models.Contents.Fields
         public InfoSection() { DisplayLabel = "Info Section"; }
         public InfoSection(XElement data) : base(data) { DisplayLabel = "Info Section"; }
 
+        public bool EditorOnly
+        {
+            get => GetAttribute("editor-only", false);
+            set => SetAttribute("editor-only", value);
+        }
+
+
         public override void Initialize(eGuidOption guidOption)
         {
             base.Initialize(guidOption);
@@ -54,5 +61,11 @@ namespace Catfish.Core.Models.Contents.Fields
             Content.SetContent(formattedContent, lang, true);
             return this;
         }
+
+        /// <summary>
+        /// This method is not relevant for the InfoSection field.
+        /// </summary>
+        /// <param name="srcField"></param>
+        public override void CopyValue(BaseField srcField, bool overwrite = false) { }
     }
 }

@@ -99,7 +99,7 @@
 function deleteRow(tableFieldId, index) {
     let container = $("#" + tableFieldId);
     let dataTable = $(container).find("table.tf-data");
-    let rows = $(dataTable).find("tbody tr");
+    let rows = $(dataTable).find("tbody tr[data-r]");
 
     if (rows.length <= $(dataTable).data("min-rows")) {
         alert("Sorry, you can't delete more rows from this table.");
@@ -129,13 +129,16 @@ function deleteRow(tableFieldId, index) {
         $(rows[i]).find(".delete-btn").attr("onclick", `deleteRow('${tableFieldId}', ${i}); return false;`);
 
         updateButtonVisibility(tableFieldId);
+
+        //Making sure all field calculations are updated
+        updateFields();
     }
 }
 
 function updateButtonVisibility(tableFieldId) {
     let container = $("#" + tableFieldId);
     let dataTable = $(container).find("table.tf-data");
-    let n = $(dataTable).find("tbody tr").length;
+    let n = $(dataTable).find("tbody tr[data-r]").length;
 
     if (n >= $(dataTable).data("max-rows")) 
         $(dataTable).find(".tableAddRowBtn").hide();

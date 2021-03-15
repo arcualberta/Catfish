@@ -1,5 +1,9 @@
 ﻿function updateFields() {
 
+    //Setting the global dataFormdModified variable to true so that it can trigger
+    //automatic form-save calls.
+    dataFormdModified = true;
+
     //Handling visible-if conditions
     var visibleIfFields = $("input[data-visible-if], textarea[data-visible-if], select[data-visible-if], option[data-visible-if]");
     for (i = 0; i < visibleIfFields.length; ++i) {
@@ -19,13 +23,6 @@
                 } 
             }
             else {
-                $("#" + fieldId).hide()
-                 //MR - March 03 2021: set disabled attribute for safari/IE
-                if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true) || (navigator.userAgent.indexOf("Safari") != -1)) //IF IE or SAFARI
-                {
-                    $("#" + fieldId).prop("disabled", true);
-                }  
-              
 
                 //If this is an option
                 if ($(field).prop("tagName").toLowerCase() === "option") {
@@ -47,6 +44,15 @@
                     $(field).prop('checked', false);
                 }
 
+                //Finally, hide the field
+
+                $("#" + fieldId).hide();
+
+                //MR - March 03 2021: set disabled attribute for safari/IE
+                if ((navigator.userAgent.indexOf("MSIE") !== -1) || (!!document.documentMode === true) || (navigator.userAgent.indexOf("Safari") !== -1)) //IF IE or SAFARI
+                {
+                    $("#" + fieldId).prop("disabled", true);
+                }  
             }
         }
     }
@@ -79,7 +85,7 @@
         let field = computedFields[i];
         let expression = $(field).attr("data-value-expression");
         if (expression) {
-            console.log(expression)
+            //console.log(expression)
 
             let result = eval(expression);
             $(field).val(result);

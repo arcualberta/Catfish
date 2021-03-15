@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
@@ -12,10 +13,12 @@ using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
+using Piranha.AspNetCore.Identity.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,16 +30,26 @@ namespace Catfish.Controllers.Api
     {
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly ISubmissionService _submissionService;
-       
+        private readonly IWorkflowService _workflowService;
+        private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
+
         private readonly AppDbContext _appDb;
         private readonly IJobService _jobService;
-        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService, IJobService jobService, IConfiguration configuration)
+
+        public ItemsController(AppDbContext db, 
+            IEntityTemplateService entityTemplateService, 
+            ISubmissionService submissionService, 
+            IJobService jobService, 
+            IConfiguration configuration, 
+            IWorkflowService workflowService,
+            Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
-
+            _workflowService = workflowService;
             _appDb = db;
             _jobService = jobService;
+            _dotnetAuthorizationService = dotnetAuthorizationService;
 
             ConfigHelper.Configuration = configuration;
         }
@@ -147,12 +160,12 @@ namespace Catfish.Controllers.Api
         // POST api/<ItemController>
         [Route("SubmitForm")]
         [HttpPost]
-        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] Guid status, [FromForm] Guid postActionId, [FromForm] string fileNames=null)
+        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] Guid stateId, [FromForm] Guid postActionId, [FromForm] string fileNames=null)
         {
             ApiResult result = new ApiResult();
             try
             {
-                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, status, actionButton);
+                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, stateId, actionButton);
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
 
@@ -162,7 +175,15 @@ namespace Catfish.Controllers.Api
 
                 
                 result.Success = true;
-                result.Message = "Application " + actionButton + " successfully.";
+                result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, newItem.Id);
+                //if (actionButton == "Save")
+                //    result.Message = "Form saved successfully.";
+                //else if (actionButton == "Submit")
+                //    result.Message = "Form submitted successfully.";
+                //else if (actionButton == "Delete")
+                //    result.Message = "Form deleted successfully.";
+                //else
+                //    result.Message = "Task completed successfully.";
 
             }
             catch (Exception ex)
@@ -173,6 +194,7 @@ namespace Catfish.Controllers.Api
 
             return result;
         }
+
         // POST api/<ItemController>
         [Route("EditSubmissionForm")]
         [HttpPost]
@@ -191,8 +213,18 @@ namespace Catfish.Controllers.Api
 
                 _appDb.Items.Update(newItem);
                 _appDb.SaveChanges();
+
                 result.Success = true;
-                result.Message = "Application " + actionButton + " successfully.";
+
+                result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, itemId);
+                //if (actionButton == "Save")
+                //    result.Message = "Form saved successfully.";
+                //else if (actionButton == "Submit")
+                //    result.Message = "Form submitted successfully.";
+                //else if (actionButton == "Delete")
+                //    result.Message = "Form deleted successfully.";
+                //else
+                //    result.Message = "Task completed successfully.";
 
             }
             catch (Exception ex)
@@ -203,6 +235,48 @@ namespace Catfish.Controllers.Api
 
             return result;
         }
+
+
+        [Route("AutoSave")]
+        [HttpPost]
+        public ApiResult AutoSave([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid itemId)
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                Backup backup = _appDb.Backups.Where(bk => bk.Id == value.Id).FirstOrDefault();
+                if(backup == null)
+                {
+                    backup = new Backup() { Id = value.Id };
+                    _appDb.Backups.Add(backup);
+                }
+
+                backup.SourceData = value.Content;
+                backup.SourceId = itemId;
+                backup.SourceType = "DataItem Backup - EntityTemplateId: " + entityTemplateId.ToString();
+                backup.Timestamp = DateTime.Now;
+                User user = _workflowService.GetLoggedUser();
+                if (user != null)
+                {
+                    backup.UserId = user.Id;
+                    backup.Username = user.UserName;
+                }
+
+                _appDb.SaveChanges();
+
+                result.Success = true;
+                result.Message = "Auto-save successful.";
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Auto-save failed.";
+            }
+
+            return result;
+        }
+
 
         // POST api/<ItemController>
         [Route("AddChild")]
@@ -222,7 +296,7 @@ namespace Catfish.Controllers.Api
 
 
                 result.Success = true;
-                result.Message = "Your change successfully done.";
+                result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, itemId);
 
             }
             catch (Exception ex)
@@ -309,6 +383,36 @@ namespace Catfish.Controllers.Api
                 }
             }
             return Ok(dictFileNames);
+        }
+
+        [Route("{itemId}/{dataItemId}/{fieldId}/{fileName}")]
+        public IActionResult GetFile(Guid itemId, Guid dataItemId, Guid fieldId, string fileName)
+        {
+            try
+            {
+                var item = _appDb.Items.Where(it => it.Id == itemId).FirstOrDefault();
+                var dataItem = item.DataContainer.Where(di => di.Id == dataItemId).FirstOrDefault();
+                var attField = dataItem.Fields.Where(field => field.Id == fieldId).FirstOrDefault() as AttachmentField;
+                var fileRef = attField.Files.Where(fr => fr.FileName == fileName).FirstOrDefault();
+
+                var task = _dotnetAuthorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read });
+                task.Wait();
+
+                if (task.Result.Succeeded)
+                {
+                    string pathName = Path.Combine(ConfigHelper.GetAttachmentsFolder(false), fileRef.FileName);
+                    if (System.IO.File.Exists(pathName))
+                    {
+                        var data = System.IO.File.ReadAllBytes(pathName);
+                        return File(data, fileRef.ContentType, fileRef.OriginalFileName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return NotFound();
         }
     }
 }

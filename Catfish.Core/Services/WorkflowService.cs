@@ -459,18 +459,34 @@ namespace Catfish.Core.Services
                 return null;
             } 
         }
-        public List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid postActionId)
+        public List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid statusId, Guid postActionId)
         {
             try
             {
                 //SetModel(entityTemplate);
+                List<TriggerRef> triggerRefs = new List<TriggerRef>();
                 var action = GetGetActionByPostActionID(entityTemplate, postActionId);
                 foreach (var postAction in action.PostActions)
                 {
                     if (postAction.Id.Equals(postActionId))
-                        return postAction.TriggerRefs.OrderBy(tr => tr.Order).ToList();
+                    {
+                        var triggers = postAction.TriggerRefs.ToList();
+                        foreach(var trigger in triggers)
+                        {
+                            if (trigger.Condition) 
+                            {
+                                if (trigger.NextStatus == statusId)
+                                    triggerRefs.Add(trigger);
+                            }
+                            else
+                            {
+                                triggerRefs.Add(trigger);
+                            }
+                        }
+                    }
+                        //return postAction.TriggerRefs.OrderBy(tr => tr.Order).ToList();
                 }
-                return null;
+                return triggerRefs;
             }
             catch (Exception ex)
             {
@@ -479,7 +495,29 @@ namespace Catfish.Core.Services
                 return null;
             }
         }
-
+        public Mapping GetStateMappingByStateMappingId(EntityTemplate entityTemplate, Guid stateMappingId)
+        {
+            try
+            {
+                var workflow = entityTemplate.Workflow;
+                foreach(var action in workflow.Actions)
+                {
+                    foreach(var postAction in action.PostActions)
+                    {
+                        if (postAction.StateMappings.Where(sm => sm.Id == stateMappingId).Any())
+                        {
+                            return postAction.StateMappings.Where(sm => sm.Id == stateMappingId).FirstOrDefault();
+                        }
+                    }  
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
         public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang)
         {
             ItemTemplate template = new ItemTemplate();

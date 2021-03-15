@@ -225,7 +225,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames=null)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid stateMappingId, string action, string fileNames=null)
         {
             try
             {
@@ -235,7 +235,33 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item newItem = template.Instantiate<Item>();
-                newItem.StatusId = status;
+                Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
+
+                //We always pass on the next state with the state mapping irrespective of whether
+                //or not there is a "condition"
+                Guid statusId = stateMapping.Next; 
+
+                ////////if (string.IsNullOrWhiteSpace(stateMapping.Condition))
+                ////////{
+                    
+                ////////}
+                ////////else
+                ////////{
+
+                ////////    //TODO: Get all state mappings represented by the stateMappingId from the workflow.
+                ////////    //      Check if there are one or more state mappings of which the "Condition" is empty.
+                ////////    //          If only one mapping if found with empty condition, then the "next" state specified by
+                ////////    //          this condition should be used as the next state. If multiple such states found, throw an error.
+                ////////    //
+                ////////    //      If not states with empty condition is found, then see if there are at least one state mapping
+                ////////    //      that matchs with the current state and the condition. If found, then use the state of that mapping
+                ////////    //      as the new state. If multiple conditions satisfy, then throw an error.
+
+                ////////    //Guid stateId = Guid.Empty; //TODO: find this as described above.
+
+                ////////}
+
+                newItem.StatusId = statusId;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
                 newItem.GroupId = groupId;
@@ -266,7 +292,7 @@ namespace Catfish.Services
             }
             
         }
-        public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid status, string action, string fileNames = null)
+        public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid stateMappingId, string action, string fileNames = null)
         {
             try
             {
@@ -276,8 +302,15 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item item = _db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+               
+                Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
+             
                 Guid oldStatus = (Guid)item.StatusId;
-                item.StatusId = status;
+
+                //We always pass on the nbext state with the state mapping irrespective of whether
+                //or not there is a "condition"
+                item.StatusId = stateMapping.Next;
+
                 item.Updated = DateTime.Now;
 
                 DataItem dataItem = item.DataContainer
@@ -321,7 +354,7 @@ namespace Catfish.Services
                 EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
 
                 // get list trigger referances of given template, function and group. 
-                List<TriggerRef> triggerRefs = _workflowService.GetTriggersByPostActionID(template, postActionId);
+                List<TriggerRef> triggerRefs = _workflowService.GetTriggersByPostActionID(template, (Guid)item.StatusId, postActionId);
                 //need to go through all trigger referances and execute them one by one.
                 bool triggerExecutionStatus = true;
                 foreach (var triggerRef in triggerRefs)
@@ -390,6 +423,35 @@ namespace Catfish.Services
             {
                 _errorLog.Log(new Error(ex));
                 return null;
+            }
+        }
+
+        public string SetSuccessMessage(Guid entityTemplateId, Guid postActionId, Guid itemId)
+        {
+            try
+            {
+                string successMessage = "";
+                // get entity template using entityTemplateId
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                var getAction = _workflowService.GetGetActionByPostActionID(template, postActionId);
+                var postAction = getAction.PostActions.Where(pa => pa.Id == postActionId).FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(postAction.SuccessMessage))
+                {
+                    successMessage = postAction.SuccessMessage;
+                    successMessage = successMessage.Replace("@SiteUrl", _config.GetSiteURL().TrimEnd('/'));
+                    successMessage = successMessage.Replace("@Item.Id", itemId.ToString());
+                }
+                else
+                {
+                    successMessage = "Your Application " + postAction.ButtonLabel + " Successfully";
+                }
+                return successMessage;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return "";
             }
         }
     }

@@ -10,12 +10,16 @@
     string visibleIfKey = "data-visible-if";
     string dataFieldIdKey = "data-field-id";
 
+    var fieldId = Html.IdFor(model => model);
+    var fieldName = Html.NameFor(model => model);
+
     var _viewData = new Dictionary<string, object>(); ;
     foreach (var key in ViewData.Keys)
         _viewData.Add(key, ViewData[key]);
 
     @for (int i = 0; i < Model.Options.Count; ++i)
     {
+       
         @Html.HiddenFor(model => model.Options[i].Id)
 
         if (_viewData.ContainsKey(visibleIfKey))
@@ -29,10 +33,26 @@
             _viewData.Add(visibleIfKey, Model.Options[i].VisibilityCondition.Value);
             _viewData.Add(dataFieldIdKey, Model.Options[i].Id);
         }
-        <div id="@Model.Options[i].Id" class="@Model.FieldValueCssClass">
-            @Html.RadioButtonFor(model => model, Model.Options[i].Id.ToString(), _viewData)
-            @Html.Raw(string.Format("<span class='radio-option-label' data-option-id='{0}'>{1}</span>",
-                Model.Options[i].Id, Model.Options[i].OptionText.GetConcatenatedContent(" | ")))
-        </div>
+<div id="@Model.Options[i].Id" class="@Model.FieldValueCssClass">
+
+     @{string inputAttr = "";
+
+         foreach (var key in ViewData.Keys)
+         {
+             if (ViewData[key] == null)
+                 inputAttr += key + " ";
+             else
+                 inputAttr += key + "=" + ViewData[key] + " ";
+         }
+         if(Model.Options[i].Selected)
+             inputAttr += "checked ";
+
+         inputAttr += "value= " + Model.Options[i].Id.ToString() + " ";
+     }
+    <input type="radio" @inputAttr id="@fieldId" name="@fieldName"/>
+    @*@Html.RadioButtonFor(model => model, Model.Options[i].Id.ToString(), _viewData)*@
+    @Html.Raw(string.Format("<span class='radio-option-label' data-option-id='{0}'>{1}</span>",
+        Model.Options[i].Id, Model.Options[i].OptionText.GetConcatenatedContent(" | ")))
+</div>
     }
 }

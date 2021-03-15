@@ -101,7 +101,6 @@ namespace Catfish.Core.Models.Contents.Workflow
             workflowService.SetModel(template);
             //get email trigger from workflow triggers using trigger referance.
             EmailTrigger selectedTrigger = (EmailTrigger)template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
-
             //get email template from selected workflow trigger.
             Guid emailReferanceId = selectedTrigger.Templates.Select(t => t.RefId).FirstOrDefault();
 
@@ -119,7 +118,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             //Make a clone and update references in the email body
             emailMessage = emailMessage.Clone<EmailTemplate>();
-            emailMessage.UpdateRerefences("@SiteUrl", ConfigHelper.SiteUrl);
+            emailMessage.UpdateRerefences("@SiteUrl", ConfigHelper.SiteUrl.TrimEnd('/'));
             emailMessage.UpdateRerefences("@Item.Id", item.Id.ToString());
 
             //get all recipient in the trigger.
