@@ -57,7 +57,7 @@ namespace Catfish.Controllers.Api
         /// <param name="endDate">end date</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public string GetItemList(Guid templateId, Guid? collectionId, DateTime? startDate, DateTime? endDate)
+        public string GetItemList(Guid templateId, Guid? collectionId, DateTime? startDate, DateTime? endDate, Guid? reportTemplate)
         {
             //Making sure the startDate is trimmed to the begining of the day and the endDate is bumped up to the end of the day
             if (startDate.HasValue)

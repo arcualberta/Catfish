@@ -455,21 +455,22 @@ namespace Catfish.UnitTests
             ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
             DataItem form = template.GetRootDataItem(false);
             Assert.IsNotNull(form);
+            var txt1 = form.CreateField<TextField>("Text 1", lang, false);
+            var ta1 = form.CreateField<TextArea>("Area 1", lang, false);
 
             string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
             var dd1 = form.CreateField<SelectField>("DD 1", lang, options, false);
             var rb1 = form.CreateField<RadioField>("RB 1", lang, options, false);
             var chk1 = form.CreateField<CheckboxField>("CB 1", lang, options, false);
-            var txt1 = form.CreateField<TableField>("Text 1", lang, false);
-            var ta1 = form.CreateField<TextArea>("Text 1", lang, false);
+          
 
             //var cf1 = form.CreatedFied<CompositeField>("CF 1", lang);
 
-            //var report = template.GetReport<SubmissionReport>("report name", true);
-            //report
-            //    .AddField(dd1)
-            //    .AddField(chk1)
-            //    .AddField(txt1)
+            var report = template.GetReport<SubmissionReport>("Submission Report",template.Id,  true);
+            report
+                .AddField(form.Id, txt1.Id)
+                .AddField(form.Id, ta1.Id);
+                
             //    .AddField(cf1, chidFormField);
 
 

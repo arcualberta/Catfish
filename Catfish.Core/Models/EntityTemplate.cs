@@ -152,7 +152,7 @@ namespace Catfish.Core.Models
             return InstantiateDataItem(GetRootDataItem(false).Id);
         }
 
-        public T GetReport<T>(string reportName, bool createIfNotExists) where T : BaseReport
+        public T GetReport<T>(string reportName,Guid entityTemplateId, bool createIfNotExists) where T : BaseReport
         {
             BaseReport report = Reports
                 .Where(rep => rep.Name == reportName)
@@ -163,6 +163,8 @@ namespace Catfish.Core.Models
                 var t = typeof(T);
 
                 report = Activator.CreateInstance(t) as T;
+                report.SetAttribute("name", reportName);
+                report.SetAttribute("entity-template-id", entityTemplateId);
                 Reports.Add(report);
             }
             return report as T;

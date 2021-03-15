@@ -1,4 +1,6 @@
-﻿function filterItems(templateId, collectionId, fromDate, toDate, resultTableId) {
+﻿function filterItems(templateId, collectionId, fromDate, toDate, resultTableId, reportTemplateId) {
+    let selectedReportTemplateId = $(reportTemplateId).val();
+    alert(selectedReportTemplateId);
 
     $.ajax({
 
@@ -8,7 +10,8 @@
             'templateId': templateId,
             "collectionId": collectionId,
             "startDate": fromDate,
-            "endDate": toDate
+            "endDate": toDate,
+            "reportTemplate": selectedReportTemplateId
         },
 
         success: function (data) {

@@ -2619,7 +2619,7 @@ namespace Catfish.UnitTests
                                             "Psychology",
                                             "Sociology",
                                             "Women's and Gender Studies",
-                                            "Media and Technology Studies",
+                                            "Media and Technology Studies (MTS)",
                                             "Arts Resources Centre"
                                         };
 
@@ -2670,7 +2670,7 @@ namespace Catfish.UnitTests
                                                 "Anthony Singhal: asinghal@ualberta.ca",
                                                 "Sara Dorow: sdorow@ualberta.ca",
                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
-                                                "Astrid Ensslin: ensslin@ualberta.ca",
+                                                "Natasha Hurley: nhurley@ualberta.ca",
                                                 "arcAdmin : iwickram@ualberta.ca",
                                             "Steve Patten : spatten@ualberta.ca" //Dean have to be at the end!!
                                         };
