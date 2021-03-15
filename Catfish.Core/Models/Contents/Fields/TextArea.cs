@@ -10,13 +10,25 @@ namespace Catfish.Core.Models.Contents.Fields
         public int Rows
         {
             get => GetAttribute("rows", 5);
-            set => SetAttribute("rows", 5);
+            set => SetAttribute("rows", value);
         }
 
         public int Cols
         {
             get => GetAttribute("cols", 5);
             set => SetAttribute("cols", value);
+        }
+
+        public int MaxWords
+        {
+            get => GetAttribute("max-words", 0);
+            set => SetAttribute("max-words", value);
+        }
+
+        public int MaxChars
+        {
+            get => GetAttribute("max-chars", 0);
+            set => SetAttribute("max-chars", value);
         }
 
         public TextArea SetSize(int rows, int cols) { Rows = rows; Cols = cols; return this; }

@@ -42,6 +42,35 @@ namespace Catfish.Core.Migrations
                     b.ToTable("Catfish_BackgroundJobs");
                 });
 
+            modelBuilder.Entity("Catfish.Core.Models.Backup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SourceData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SourceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SourceType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_Backup");
+                });
+
             modelBuilder.Entity("Catfish.Core.Models.Contents.Form", b =>
                 {
                     b.Property<Guid>("Id")

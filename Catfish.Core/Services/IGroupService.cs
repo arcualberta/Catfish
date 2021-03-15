@@ -30,5 +30,6 @@ namespace Catfish.Core.Services
         bool CheckUserGroupRole(Guid groupId);
         void DeleteUserGroupRole(Guid userGroupRoleId);
         bool CheckLoggedUser(Guid userId, Guid groupRoleId);
+        List<string> GetUserEmailListByRole(Guid roleId, Guid groupId);
     }
 }

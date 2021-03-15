@@ -26,9 +26,11 @@ namespace Catfish.Helper
         string GetDefaultLanguage();
         string GetGoogleClientSecret();
         string GetGoogleServiceAccountFileName();
+        string GetSiteURL();
         bool GetEnabledLocalLogin();
         bool GetEnabledBreadcrumb();
         ePanelLocation GetDefaultSearchPanelLocation();
+        string GenericAuthorizationErrorMessage();
 
         bool GetValue(string key, bool defaultValue);
         string GetValue(string key, string defaultValue);
@@ -157,9 +159,20 @@ namespace Catfish.Helper
         {
             return _configuration["GoogleCalendar:ServiceAccountFileName"];
         }
+        public string GetSiteURL()
+        {
+            return _configuration["SiteConfig:SiteURL"];
+        }
         public bool GetEnabledLocalLogin()
         {
             return GetValue("SiteConfig:EnabledLocalLogin", false);
+        }
+
+        public string GenericAuthorizationErrorMessage()
+        {
+            return string.IsNullOrEmpty(_configuration["SiteConfig:GenericAuthorizationErrorMessage"])
+                ? "Authorization failed. Please sign in and try again."
+                : _configuration["SiteConfig:GenericAuthorizationErrorMessage"];
         }
 
         public bool GetEnabledBreadcrumb()

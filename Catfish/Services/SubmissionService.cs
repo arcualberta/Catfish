@@ -7,7 +7,7 @@ using Catfish.Core.Services;
 using Catfish.Helper;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Authorization;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace Catfish.Services
 {
     public class SubmissionService : ISubmissionService
     {
-        private readonly IAuthorizationService _authorizationService;
+        private readonly Catfish.Core.Services.IAuthorizationService _authorizationService;
         private readonly IEmailService _emailService;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IWorkflowService _workflowService;
@@ -31,7 +31,7 @@ namespace Catfish.Services
         private readonly ErrorLog _errorLog;
         private readonly IServiceProvider _serviceProvider;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
-        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
+        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
         {
             _authorizationService = auth;
             _emailService = email;
@@ -225,7 +225,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string status, string action, string fileNames=null)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid stateMappingId, string action, string fileNames=null)
         {
             try
             {
@@ -235,9 +235,36 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item newItem = template.Instantiate<Item>();
-                newItem.StatusId = _entityTemplateService.GetSystemStatus(entityTemplateId, status).Id;
+                Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
+
+                //We always pass on the next state with the state mapping irrespective of whether
+                //or not there is a "condition"
+                Guid statusId = stateMapping.Next; 
+
+                ////////if (string.IsNullOrWhiteSpace(stateMapping.Condition))
+                ////////{
+                    
+                ////////}
+                ////////else
+                ////////{
+
+                ////////    //TODO: Get all state mappings represented by the stateMappingId from the workflow.
+                ////////    //      Check if there are one or more state mappings of which the "Condition" is empty.
+                ////////    //          If only one mapping if found with empty condition, then the "next" state specified by
+                ////////    //          this condition should be used as the next state. If multiple such states found, throw an error.
+                ////////    //
+                ////////    //      If not states with empty condition is found, then see if there are at least one state mapping
+                ////////    //      that matchs with the current state and the condition. If found, then use the state of that mapping
+                ////////    //      as the new state. If multiple conditions satisfy, then throw an error.
+
+                ////////    //Guid stateId = Guid.Empty; //TODO: find this as described above.
+
+                ////////}
+
+                newItem.StatusId = statusId;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
+                newItem.GroupId = groupId;
                 newItem.UserEmail = _workflowService.GetLoggedUserEmail();
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
@@ -265,7 +292,52 @@ namespace Catfish.Services
             }
             
         }
+        public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid stateMappingId, string action, string fileNames = null)
+        {
+            try
+            {
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                if (template == null)
+                    throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
 
+                //When we instantantiate an instance from the template, we do not need to clone metadata sets
+                Item item = _db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+               
+                Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
+             
+                Guid oldStatus = (Guid)item.StatusId;
+
+                //We always pass on the nbext state with the state mapping irrespective of whether
+                //or not there is a "condition"
+                item.StatusId = stateMapping.Next;
+
+                item.Updated = DateTime.Now;
+
+                DataItem dataItem = item.DataContainer
+                                        .Where(di => di.IsRoot == true).FirstOrDefault();
+                item.DataContainer.Remove(dataItem);
+                dataItem.UpdateFieldValues(value);
+                item.DataContainer.Add(dataItem);
+
+                User user = _workflowService.GetLoggedUser();
+                item.AddAuditEntry(user.Id,
+                    oldStatus,
+                    item.StatusId.Value,
+                    action
+                    );
+
+                if (groupId.HasValue)
+                    item.GroupId = groupId;
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+
+        }
         /// <summary>
         /// This method used to execute all triggers in a given workflow. need to pass the entity template, function and group.
         /// </summary>
@@ -274,7 +346,7 @@ namespace Catfish.Services
         /// <param name="function"></param>
         /// <param name="group"></param>
         /// <returns></returns>
-        public bool ExecuteTriggers(Guid entityTemplateId, string actionButton, string function, string group)
+        public bool ExecuteTriggers(Guid entityTemplateId, Item item, Guid postActionId)
         {
             try
             {
@@ -282,15 +354,13 @@ namespace Catfish.Services
                 EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
 
                 // get list trigger referances of given template, function and group. 
-                List<TriggerRef> triggerRefs = _workflowService.GetPostActions(template, function, group)
-                                                .Where(pa => pa.ButtonLabel == actionButton).FirstOrDefault()
-                                                .TriggerRefs.OrderBy(tr => tr.Order).ToList();
+                List<TriggerRef> triggerRefs = _workflowService.GetTriggersByPostActionID(template, (Guid)item.StatusId, postActionId);
                 //need to go through all trigger referances and execute them one by one.
                 bool triggerExecutionStatus = true;
                 foreach (var triggerRef in triggerRefs)
                 {
                     Trigger selectedTrigger = template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
-                    triggerExecutionStatus &= selectedTrigger.Execute(template, triggerRef, _serviceProvider);
+                    triggerExecutionStatus &= selectedTrigger.Execute(template, item, triggerRef, _serviceProvider);
                 }
                 return triggerExecutionStatus;
             }
@@ -303,16 +373,86 @@ namespace Catfish.Services
 
         public Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action)
         {
-            Item item = _db.Items.Where(i => i.Id == entityId).FirstOrDefault();
-            item.StatusId = nextStatusId;
-            item.Updated = DateTime.Now;
-            User user = _workflowService.GetLoggedUser();
-            item.AddAuditEntry(user.Id,
-                currentStatusId,
-                nextStatusId,
-                action);
-            return item;
+            try
+            {
+                Item item = _db.Items.Where(i => i.Id == entityId).FirstOrDefault();
+                item.StatusId = nextStatusId;
+                item.Updated = DateTime.Now;
+                User user = _workflowService.GetLoggedUser();
+                item.AddAuditEntry(user.Id,
+                    currentStatusId,
+                    nextStatusId,
+                    action);
+                return item;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
         }
 
+        public Item AddChild(DataItem value, Guid entityTemplateId, Guid itemId, Guid stateId, Guid buttonId, string fileNames = null)
+        {
+            try
+            {
+                // Get Parent Item to which Child will be added
+                Item parentItem = GetSubmissionDetails(itemId);
+                if (parentItem == null)
+                    throw new Exception("Entity template with ID = " + itemId + " not found.");
+
+                //get template from parent
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                User user = _workflowService.GetLoggedUser();
+
+                //Update the parent item with new status
+                var postAction = _workflowService.GetPostActionByButtonId(template, buttonId);
+                var state = postAction.StateMappings.Where(sm => sm.Id == buttonId).FirstOrDefault();
+                parentItem.StatusId = state.Next;
+                parentItem.Updated = DateTime.Now;
+                parentItem.AddAuditEntry(user.Id, state.Current, state.Next, state.ButtonLabel);
+
+                // instantantiate a version of the child and update it
+                DataItem newChildItem = template.InstantiateDataItem(value.Id);
+                newChildItem.UpdateFieldValues(value);
+                parentItem.DataContainer.Add(newChildItem);
+
+                return parentItem;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        public string SetSuccessMessage(Guid entityTemplateId, Guid postActionId, Guid itemId)
+        {
+            try
+            {
+                string successMessage = "";
+                // get entity template using entityTemplateId
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                var getAction = _workflowService.GetGetActionByPostActionID(template, postActionId);
+                var postAction = getAction.PostActions.Where(pa => pa.Id == postActionId).FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(postAction.SuccessMessage))
+                {
+                    successMessage = postAction.SuccessMessage;
+                    successMessage = successMessage.Replace("@SiteUrl", _config.GetSiteURL().TrimEnd('/'));
+                    successMessage = successMessage.Replace("@Item.Id", itemId.ToString());
+                }
+                else
+                {
+                    successMessage = "Your Application " + postAction.ButtonLabel + " Successfully";
+                }
+                return successMessage;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return "";
+            }
+        }
     }
 }

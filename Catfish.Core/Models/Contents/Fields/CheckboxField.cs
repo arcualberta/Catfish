@@ -24,6 +24,5 @@ namespace Catfish.Core.Models.Contents.Fields
 
             }
         }
-
     }
 }

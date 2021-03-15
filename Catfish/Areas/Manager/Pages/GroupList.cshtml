@@ -3,12 +3,16 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
-@inject  Catfish.Core.Services.IGroupService GroupService
+@inject Catfish.Core.Services.IGroupService GroupService
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+@inject Catfish.Helper.ICatfishAppConfiguration _config;
 @{
     ViewBag.Title = Localizer.Page["Groups"];
     ViewBag.MenuItem = "Groups";
+
+    var siteURL = _config.GetSiteURL().TrimEnd('/'); 
+    string groupEditURL = siteURL + "/manager/groups/edit";
 }
 
 @section script
@@ -32,7 +36,7 @@
                 @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Add)).Succeeded)
                 {
 
-                    <a href="edit" class="btn btn-labeled btn-primary pull-right">
+                    <a href="@groupEditURL" class="btn btn-labeled btn-primary pull-right">
                         <i class="fas fa-plus"></i>@Localizer.General["Add"]
                     </a>
                 }
@@ -68,7 +72,7 @@
                         {
                             if (!GroupService.CheckUserGroupRole(group.Id))
                             {
-                                <a class="danger" onclick="return false;" href="#" data-toggle="modal" data-target="#groupModal" data-content="@group.Id" onclick="addUser('@group.Id', '@group.Name'); return false;">
+                                <a class="danger" href="#" data-toggle="modal" data-target="#groupModal" data-content="@group.Id" onclick="addUser('@group.Id', '@group.Name'); return false;">
                                     <span class="fas fa-trash"></span>
                                 </a>
                             }

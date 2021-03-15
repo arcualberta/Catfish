@@ -25,6 +25,15 @@ namespace Catfish.Core.Helpers
             }
         }
 
+        public static string SiteUrl
+        {
+            get
+            {
+                string val = Configuration.GetSection("SiteConfig:SiteUrl").Value;
+                return string.IsNullOrEmpty(val) ? null : val.TrimEnd('/');
+            }
+        }
+
         public static string GetUploadTempFolder(bool createIfNotExist = false)
         {
             string path = Path.Combine(UploadRoot, "temp");

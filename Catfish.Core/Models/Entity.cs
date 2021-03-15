@@ -272,5 +272,22 @@ namespace Catfish.Core.Models
             return template;
         }
 
+
+        public MetadataSet GetMetadataSet(string metadataSetName, string lang, bool createIfNotExists, bool markAsTemplateMetadataSetIfCreated)
+        {
+            MetadataSet ms = MetadataSets
+            .Where(ms => ms.GetName(lang) == metadataSetName)
+            .FirstOrDefault();
+
+            if (ms == null && createIfNotExists)
+            {
+                ms = new MetadataSet();
+                ms.SetName(metadataSetName, lang);
+                MetadataSets.Add(ms);
+                if (markAsTemplateMetadataSetIfCreated)
+                    ms.IsTemplate = true;
+            }
+            return ms;
+        }
     }
 }

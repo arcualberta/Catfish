@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models.Contents.Expressions;
+using Catfish.Core.Models.Contents.Workflow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,7 +20,9 @@ namespace Catfish.Core.Models.Contents.Fields
         //{
         //    throw new Exception("This method must be overridden by sub classes");
         //}
-        public abstract void UpdateValues(BaseField srcField); 
+        public abstract void UpdateValues(BaseField srcField);
+        public abstract void SetValue(string values, string lang);
+        public abstract void CopyValue(BaseField srcField, bool overwrite = false);
 
         public bool Required
         {
@@ -39,6 +42,20 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("readonly", value);
         }
 
+        public Guid? RefId
+        {
+            get => GetAttribute("ref-id", null as Guid?);
+            set => SetAttribute("ref-id", value);
+        }
+
+        
+        ///Request to exclude the user-input field from rendering. However, the remaining
+        ///properties such as ID and model-type will be rendered.
+        public bool Exclude
+        {
+            get => GetAttribute("exlude", false);
+            set { SetAttribute("exlude", value); }
+        }
         public MultilingualName Name { get; protected set; }
 
         public MultilingualDescription Description { get; protected set; }
@@ -53,6 +70,9 @@ namespace Catfish.Core.Models.Contents.Fields
 
         private ValueExpression mValueExpression;
         public ValueExpression ValueExpression { get { if (mValueExpression == null) mValueExpression = new ValueExpression(GetElement(ValueExpression.TagName, true)); return mValueExpression; } }
+        public bool HasValueExpression { get => mValueExpression != null || GetElement(ValueExpression.TagName, false) != null; }
+
+        private FieldReference mSourceFieldReference;
 
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
@@ -74,8 +94,18 @@ namespace Catfish.Core.Models.Contents.Fields
 
             Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
             Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
+
+            var sourceReference = GetElement(FieldReference.TagName, false);
+            if (sourceReference != null)
+                mSourceFieldReference = new FieldReference(sourceReference);
         }
 
+        public FieldReference GetSourceReference(bool createIfNotExist = false)
+        {
+            if (mSourceFieldReference == null && createIfNotExist)
+                mSourceFieldReference = new FieldReference(GetElement(FieldReference.TagName, true));
+            return mSourceFieldReference;
+        }
         public string GetName(string lang)
         {
             Text val = Name.Values.Where(val => val.Language == lang).FirstOrDefault();

@@ -20,10 +20,13 @@ namespace Catfish.Services
         Item GetSubmissionDetails(Guid itemId);
         List<ItemField> GetAllField(string xml);
         SystemStatus GetStatus(Guid? statusId);
-        Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string status, string action, string fileNames=null);
- //       bool SendEmail(EmailTemplate emailTemplate, string recipient);
-        bool ExecuteTriggers(Guid entityTemplateId, string actionButton, string function, string group);
+        Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames=null);
+        Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid status, string action, string fileNames = null);
+        Item AddChild(DataItem value, Guid entityTemplateId, Guid itemId, Guid stateId, Guid buttonId, string fileNames = null);
+        //       bool SendEmail(EmailTemplate emailTemplate, string recipient);
+        bool ExecuteTriggers(Guid entityTemplateId,Item item, Guid postActionId);
         Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action);
+        string SetSuccessMessage(Guid entityTemplateId, Guid postActionId, Guid itemId);
     }
     public class ItemField
     {

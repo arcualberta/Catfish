@@ -28,8 +28,11 @@
     else
     {
         //JQuery based javascript form need by CSHTML based standard implementation of HTML forms.
+        _appService.RegisterScript("/assets/js/_public-facing/scripts/data-item-form-functions.js");
         _appService.RegisterScript("/assets/js/_public-facing/scripts/submission-form-functions.js");
         _appService.RegisterScript("/assets/js/_public-facing/scripts/attachment-functions.js");
+        _appService.RegisterScript("/assets/js/_public-facing/scripts/composite-field-functions.js");
+        _appService.RegisterScript("/assets/js/_public-facing/scripts/table-field-functions.js");
         _appService.RegisterScript("/assets/js/vendor/jquery.validate.js");
     }
 
@@ -42,7 +45,7 @@
     string function = Model.WorkflowFunction;
     string group = Model.WorkflowGroup;
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
-
+    var emptyStateId = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
     var Item = template.InstantiateRootItem();
 
     var postActions = _workflowService.GetPostActions(template, function, group);
@@ -73,7 +76,7 @@
     if (authorizationSuccessful)
     {
         <div class="submission-form-block @Model.CssClass.Value">
-            <form id="submissionForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data">
+            <form id="submissionForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data" class="data-item-form">
                 <input data-val="true" data-val-required="The TemplateId field is required."
                        id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
                        value="@entityTemplateId">
@@ -95,7 +98,7 @@
                     <div class="row field-row group-selector">
                         <div class="col-md-3 control field-label">@groupLabelLabel:<sup style="color:red">*</sup></div>
                         <div class="col-md-9 field-value">
-                            <select name="groupId" data-val-required="Please identify the group." required>
+                            <select id="groupId" name="groupId" data-val-required="Please identify the group." required>
                                 <option value="">Please select </option>
                                 @foreach (var gr in groups)
                                 {
@@ -116,69 +119,18 @@
                     @Html.EditorFor(model => Item, Item.GetType().ToString())
                 }
 
-                <div id="buttonLayer">
-                    @foreach (var postAction in postActions)
-                    {
-                        string buttonName = @postAction.ButtonLabel + "_" + @suffix;
-
-                        if (postAction.PopUps.Any())
-                        {
-                            foreach (var popup in postAction.PopUps)
-                            {
-                                <input id="@postAction.ButtonLabel" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal" />
-                                <div id="submissionModal" class="modal fade" role="dialog">
-
-                                    <div>
-                                        <div class="modal-dialog">
-                                            @*Modal content*@
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="card-body">
-                                                        <div class="form-group">
-                                                            <p>@popup.Body</p>
-                                                            @{
-                                                                if (popup.Message.Any())
-                                                                {
-                                                                    <p class="text-info"><small><strong>Note : </strong>@popup.Message</small></p>
-                                                                }
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    @{
-                                                        foreach (var button in popup.Buttons)
-                                                        {
-                                                            if (button.Text == "Cancel")
-                                                            {
-                                                                <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
-                                                            }
-                                                            else
-                                                            {
-                                                                <button id="@buttonName" type="submit" class="btn btn-success" onclick="submitWorkflowForm('@suffix', '@successMessage');">@button.Text</button>
-                                                            }
-                                                        }
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="submitWorkflowForm('@suffix', '@successMessage');" />
-                        }
-                    }
-                </div>
+                <partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml"
+                         model="postActions"
+                         view-data='@new ViewDataDictionary(ViewData) {
+                            { "suffix", suffix},
+                            { "successMessage", successMessage},
+                            { "currentStateId", emptyStateId },
+                            { "submitCallFunction", "submitWorkflowForm"},
+                            {"submissionFormNamePrefix", "submissionForm" } }' />
             </form>
-            <div id="submission-result-message_@suffix"></div>
+            @*<div id="submission-result-message_@suffix"></div>*@
         </div>
+        <div id="submission-result-message_@suffix"></div>
     }
     else
     {

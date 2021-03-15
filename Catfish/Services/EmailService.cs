@@ -35,7 +35,7 @@ namespace Catfish.Services
                 mailMessage.To.Add(email.RecipientEmail);
                 mailMessage.Subject = email.Subject;
                 mailMessage.IsBodyHtml = true;
-                mailMessage.Body = "<p>From: " + email.UserName + "</p><p>Email : " + email.FromEmail + "</p><p>Message: </p><p>" + email.Body + "</p>";
+                mailMessage.Body = "<p>" + email.Body + "</p>";
 
                 using (SmtpClient client = new SmtpClient(_config.GetSmtpServer(), portNumber))
                 {

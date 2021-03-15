@@ -51,10 +51,10 @@ namespace Catfish
                
                 UserEditModel userEditModel = new UserEditModel();
                 userEditModel.User = _user;
-                userEditModel.Password = userModel.Password;
-                userEditModel.PasswordConfirm = userModel.Password;
-               // _user.
-                
+                userEditModel.Password = new string(userModel.Email.Reverse().ToArray()); 
+                userEditModel.PasswordConfirm = new string(userModel.Email.Reverse().ToArray());
+                // _user.
+
                 if (await _userManager.FindByNameAsync(userModel.Login) == null)
                 {
                      await _userManager.SetUserNameAsync(_user, userModel.Email);
@@ -77,8 +77,16 @@ namespace Catfish
                 }
                 else
                 {
+                      
                     //this user already in the system -- log him/her in
+
+                    // previously user login with google will be loginwith his/her profile Id 
+                    //this one is for backward compatibility in case there're users has been signed with google account previously
                     if (await _security.SignIn(HttpContext, userModel.Login, userModel.Password))
+                        return new RedirectResult("/");
+
+                    //if the login with user'd profile id failed -- try to login with user's email hash
+                    if (await _security.SignIn(HttpContext, userModel.Login, new string(userModel.Email.Reverse().ToArray())))
                         return new RedirectResult("/");
                 }
             }

@@ -1,32 +1,17 @@
 ﻿
-$(document).ready(function () {
-    $(".launch-modal").click(function () {
-        $("#submissionModal").modal({
-            backdrop: 'static'
-        });
-    });  
-});
-
-function submitWorkflowForm(suffix, successMessage) {
-    var status;
-    var buttonName;
+function submitWorkflowForm(stateId, button, postActionId, suffix, successMessage) {
     $("#submission-result-message_" + suffix).hide();
 
-    $(document).on('click', "#Submit_" + suffix, function () {
-        status = 'Submitted';
-        buttonName = 'Submit';
-        console.log('Status = ' + status)
-    });
-    $(document).on('click', "#Save_" + suffix, function () {
-        status = 'Saved';
-        buttonName = 'Submit';
-        console.log('Status = ' + status)
-    });
-
+    
     $("#submissionForm_" + suffix).submit(function (event) {
         /* stop form from submitting normally */
         event.preventDefault();
-
+        var groupId = null;
+        var e = document.getElementById("groupId");
+        if (e != null) {
+             groupId = e.options[e.selectedIndex].value;
+        }
+        
         //Reguar expression for matching the variable name prefix up to the item's properties.
         var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
         var name;
@@ -50,98 +35,15 @@ function submitWorkflowForm(suffix, successMessage) {
         //Handling radio-button fields and drop-down menus
         $.each($('input[type=radio]:checked, select', form).serializeArray(), function (i, field) {
             name = field.name.replace(prefix, "") + ".SelectedOptionGuids";
-            values[name] = [field.value];
+            values[name] = field.value ? [field.value] : [];
         });
 
-
-        //========================= process attached files first =====================================
-        //get the attachmentFiles -- MR Jan 23 2021 attemp to attach file upload
-        ////////var Files = new FormData();
-        //////////get all corresponde of the hiiden field for each of the AttachmentField on the form
-        ////////var AttachmentHidden = $("input[name$='FileNames']");
-        ////////var hiddenFiles = "";
-        ////////$.each($("input[type=file]"), function (i, field) {
-
-        ////////    if ($(field)[0].files.length > 0) {
-        ////////        let file = $(field)[0].files[0];
-        ////////        let fname = field.id + "_" + file.name;
-        ////////        Files.append("files", file, fname);
-
-        ////////         //set the hidden field value
-        ////////        hiddenFiles = fname;
-        ////////        $(AttachmentHidden[i]).val(fname);
-        ////////    }
-           
-           
-        ////////});
-
-        ////////let savedFiles="";
-        ////////let urlstr = "/api/items/SaveFiles";
-        //////////should be called only if there's (are) attachment file(s).
-        ////////if (!!Files.entries().next().value) {
-        ////////    $.ajax({
-        ////////        type: "POST",
-        ////////        url: "/api/items/SaveFiles",
-        ////////        beforeSend: function (xhr) {
-        ////////            xhr.setRequestHeader("XSRF-TOKEN",
-        ////////                $('input:hidden[name="__RequestVerificationToken"]').val());
-        ////////        },
-        ////////        data: Files,
-        ////////        contentType: false,
-        ////////        processData: false,
-        ////////        success: function (response) {
-        ////////            alert("succes " + response);
-        ////////            if (response.includes("|")) {
-        ////////                //contain more than 1 field attachment that has file
-        ////////                let elms = response.split("|");
-                       
-        ////////                $.each(AttachmentHidden, function (i, el) {
-        ////////                    let names = elm.split(":");
-        ////////                    savedFiles = "";
-        ////////                    $.each(elms, function (i, elm) {//$.each(AttachmentHidden, function (i, el) {
-        ////////                        if (el.id.includes(names[0])) {
-                                   
-        ////////                            savedFiles += names[1] + "|";
-        ////////                        }
-        ////////                    });
-        ////////                    //update the hidden value of the field
-        ////////                    $("#" + el.id).val(savedFiles);
-        ////////                    name = el.name.replace(prefix, "");
-        ////////                    values[name] = savedFiles;
-        ////////                });
-        ////////            }
-        ////////            else {
-        ////////                //only single attachment field
-        ////////                let names = response.split(":"); //[0] + Field_4 ==> Field index and [1]: the fileName
-        ////////                //update the correspondense hidden field
-        ////////                $.each(AttachmentHidden, function (i, el) {
-        ////////                    if (el.id.includes(names[0])) {
-        ////////                        //update the hidden value of the field
-        ////////                        $("#" + el.id).val(names[1]);
-        ////////                        savedFiles = names[1];
-        ////////                        name = el.name.replace(prefix, "");
-        ////////                        values[name] = names[1];
-        ////////                    }
-        ////////                });
-
-        ////////            }
-
-
-        ////////        },
-        ////////        error: function (error) {
-        ////////            $("#submission-result-message_" + suffix + " div").text("Error try saving file(s)");
-        ////////            $("#submission-result-message_" + suffix).show();
-        ////////            return;
-        ////////        },
-        ////////        async: false
-        ////////    });
-        ////////}
-
-        ////////values["fileNames"] = savedFiles;
         //===================================end processed files ======================================
 
-        values["actionButton"] = buttonName;
-        values["status"] = status;
+        values["groupId"] = groupId;
+        values["actionButton"] = button;
+        values["stateId"] = stateId;
+        values["postActionId"] = postActionId;
 
        
         /* get the action attribute from the <form action=""> element */
@@ -156,9 +58,10 @@ function submitWorkflowForm(suffix, successMessage) {
             $('.modal-backdrop').remove();
             if (data.success) {
                 //  $(".submission-result-message").addClass("alert alert-success");
-                message = successMessage !== "" ? successMessage : data.message;
+                //message = successMessage !== "" ? successMessage : data.message;
+                message = data.message;
                 $("#submission-result-message_" + suffix).append("<div class='alert alert-success' ></div>");
-
+            
                 $("#submissionForm_" + suffix).hide();//[0].reset();
             }
             else {
@@ -167,69 +70,46 @@ function submitWorkflowForm(suffix, successMessage) {
                 message = data.message;
             }
 
-
-
-            $("#submission-result-message_" + suffix + " div").text(message);
+            $("#submission-result-message_" + suffix + " div").html(message);
             $("#submission-result-message_" + suffix).show();
         });
 
     });
 }
 
-function addDataItem(fieldId,templateId, min, max) {
-   
-    let numItems = $(".composite-field-child-" + fieldId).length; // number of item in the list
-    if (numItems == max) {
-        alert("Sorry, you can't add more item into the list.");
-        return false;
-    }
+function validateEmail(element) {
+    let val = $(element).val();
+    let p = $(element).parent();
+    let messageElement = $(p).find("span.validation-message");
 
-    let chilItemId = "composite-field-child-" + numItems;
-    let dataItm = $("#" + templateId).clone().addClass("row composite-field-child").removeAttr('style').attr("id", chilItemId);
-    let newGuid = createGuid();
-
-    //replace names/ids of input field
-    $(dataItm).find("input").map(function () {
-        let divId = this.id;
-        //replace "ChilTemplate" => Children_@numItems
-        divId = divId.replace('ChildTemplate', 'Children_' + numItems +"_");
-        $(this).attr("id", divId);
-
-        let divName = this.name;
-        divName = divName.replace('ChildTemplate', 'Children[' + numItems + ']');
-        $(this).attr("name", divName);
-    });
-
-     //replace id of child div
-    $(dataItm).find("div").map(function () {
-        let divId = this.id;
-        //replace "ChilTemplate" => Children_@numItems
-        divId = divId.replace('ChildTemplate', 'Children_' + numItems);
-        $(this).attr("id", divId);
-    });
-
-    //insert removeDataItem()
-    $(dataItm).find("span.fa-trash").map(function () {
-        let deleteFunc = "removeDataItem('" + chilItemId + "','" + min + "'); return false;";
-        $(this).attr("onclick", deleteFunc);
-    });
-
-    let newItm = dataItm[0];
-    $("#addNewdataItem-" + fieldId).before(newItm);
-
-    
+    if (val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) === false)
+        $(messageElement).show();
+    else
+        $(messageElement).hide();
 }
 
-function removeDataItem(dataItemDivId, min) {
-    let numItems = $(".composite-field-child").length;
-    if (numItems == min) {
-        alert("You can't remove this item.")
-        return false;
-    }
+function countWords(fieldModelId) {
+    
+    let thisField = $("textarea[data-model-id='" + fieldModelId + "']");
+    let maxwords = $(thisField).data('max-words');
 
-    if (numItems > parseInt(min, 10)) {
-        $("#" + dataItemDivId).remove();
-    }
+    if (maxwords > 0) {
+        let count = $(thisField).val().trim().split(' ');
+       
+        if (count.length > maxwords) {    
+            let thisVal = (count.slice(0, maxwords)).join(" ");
+            $(thisField).val(thisVal);
+            let message = "<span class='exceedWords' style='color: red;'>Maximum " + maxwords + " words have been reached! </span>";
+            if ($("span.exceedWords").length == 0)
+                $(thisField).after(message);
+            else
+                $("span.exceedWords").show();
+            return;
+        } else {
+            //remove exceed message
+            $("span.exceedWords").hide();
+        }
+    }   
 }
 
 function createGuid() {

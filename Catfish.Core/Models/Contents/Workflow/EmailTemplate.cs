@@ -30,9 +30,13 @@ namespace Catfish.Core.Models.Contents.Workflow
         public void SetBody(string val, string contentLanguage = "en") => SetFieldValue<TextArea>(BodyField, DefaultLanguage, val, contentLanguage);
         public string GetBody(string contentLanguage = "en") => GetValue<TextArea>(BodyField, DefaultLanguage, contentLanguage);
 
-
         public void SetRecipients(string[] val) => SetFieldValue<TextField>(RecipientsField, "en", val, "en");
         public List<string> GetRecipients() => GetValues<TextField>(RecipientsField, DefaultLanguage, DefaultLanguage);
 
+        public void UpdateRerefences(string key, string value)
+        {
+            var body = GetBody();
+            SetBody(body.Replace(key, value));
+        }
     }
 }

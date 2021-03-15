@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Authorization.Requirements;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
@@ -32,14 +33,16 @@ namespace Catfish.Core.Services
         private EntityTemplate mEntityTemplate;
         public readonly IHttpContextAccessor _httpContextAccessor;
         private Item mItem;
+        private readonly IAuthorizationService _auth;
 
-        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, ErrorLog errorLog)
+        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, IAuthorizationService auth, ErrorLog errorLog)
         {
             _db = db;
             _piranhaDb = pdb;
             _api = api;
             _httpContextAccessor = httpContextAccessor;
             _errorLog = errorLog;
+            _auth = auth;
         }
 
         public EntityTemplate GetModel()
@@ -71,19 +74,20 @@ namespace Catfish.Core.Services
 
         }
 
-        public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
-        {
-            try
-            {
-                MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
-                return ms == null ? null : new EmailTemplate(ms.Data);
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-                return null;
-            }
-        }
+        ////public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
+        ////{
+        ////    try
+        ////    {
+        ////        MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
+        ////        return ms == null ? null : new EmailTemplate(ms.Data);
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _errorLog.Log(new Error(ex));
+        ////        return null;
+        ////    }
+        ////}
+        
         protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists, bool markAsTemplateMetadataSetIfCreated)
         {
             try
@@ -455,15 +459,148 @@ namespace Catfish.Core.Services
                 return null;
             } 
         }
+        public List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid statusId, Guid postActionId)
+        {
+            try
+            {
+                //SetModel(entityTemplate);
+                List<TriggerRef> triggerRefs = new List<TriggerRef>();
+                var action = GetGetActionByPostActionID(entityTemplate, postActionId);
+                foreach (var postAction in action.PostActions)
+                {
+                    if (postAction.Id.Equals(postActionId))
+                    {
+                        var triggers = postAction.TriggerRefs.ToList();
+                        foreach(var trigger in triggers)
+                        {
+                            if (trigger.Condition) 
+                            {
+                                if (trigger.NextStatus == statusId)
+                                    triggerRefs.Add(trigger);
+                            }
+                            else
+                            {
+                                triggerRefs.Add(trigger);
+                            }
+                        }
+                    }
+                        //return postAction.TriggerRefs.OrderBy(tr => tr.Order).ToList();
+                }
+                return triggerRefs;
+            }
+            catch (Exception ex)
+            {
 
-        public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string lang)
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+        public Mapping GetStateMappingByStateMappingId(EntityTemplate entityTemplate, Guid stateMappingId)
+        {
+            try
+            {
+                var workflow = entityTemplate.Workflow;
+                foreach(var action in workflow.Actions)
+                {
+                    foreach(var postAction in action.PostActions)
+                    {
+                        if (postAction.StateMappings.Where(sm => sm.Id == stateMappingId).Any())
+                        {
+                            return postAction.StateMappings.Where(sm => sm.Id == stateMappingId).FirstOrDefault();
+                        }
+                    }  
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+        public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang)
         {
             ItemTemplate template = new ItemTemplate();
 
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            //template.getwo
+            Workflow workflow = template.Workflow;
+
+            //Defininig states
+            State emptyState = workflow.AddState(GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(GetStatus(template.Id, "Deleted", true));
+
+            //Defininig the entry for the root data item
+            DataItem inspectionForm = template.GetDataItem(submissionFormName, true, lang);
+            inspectionForm.IsRoot = true;
+
+            //Defininig roles
+            WorkflowRole adminRole = workflow.AddRole(_auth.GetRole("Admin", true));
+            WorkflowRole creatorRole = workflow.AddRole(_auth.GetRole("Creator", true));
+
+            // Submitting a form
+            //Only creators can submit this form
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(creatorRole.Id);
+
+            //Listing form submissions.
+            //Creators can list their own submissions.
+            //Admins can list all submissions.
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Detailed submission inspection forms.
+            //Creators can view their own submissions.
+            //Admins can view all submissions.
+            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
+            viewSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+            // Delete submission related workflow items
+            //Defining actions. Only admin can delete a submission
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
 
             return template;
         }

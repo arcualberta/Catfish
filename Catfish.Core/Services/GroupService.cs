@@ -647,5 +647,25 @@ namespace Catfish.Core.Services
                 return false;
             }
         }
+
+        public List<string> GetUserEmailListByRole(Guid roleId, Guid groupId)
+        {
+            try
+            {
+                List<string> emailList = new List<string>();
+                var groupRoleUsers = _appDb.UserGroupRoles.Include(gr => gr.GroupRole).Where(gr => gr.GroupRole.RoleId == roleId && gr.GroupRole.GroupId == groupId);
+
+                foreach (var groupRoleUser in groupRoleUsers)
+                    emailList.Add(_piranhaDb.Users.Where(u => u.Id == groupRoleUser.UserId).Select(u => u.Email).FirstOrDefault());
+
+                return emailList;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+            
+        }
     }
 }

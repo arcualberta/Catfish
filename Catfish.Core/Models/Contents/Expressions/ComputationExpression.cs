@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models.Contents.Fields;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -206,6 +207,26 @@ namespace Catfish.Core.Models.Contents.Expressions
 
             return this;
         }
+
+        public ComputationExpression AppendColumnSum(TableField field, int columnIndex)
+        {
+            Data.Value += string.Format("TableColumnSum('{0}', {1})", field.Id, columnIndex);
+            return this;
+        }
+
+        public ComputationExpression AppendCompositeFieldSum(CompositeField field, int childFieldIndex)
+        {
+            Data.Value += string.Format("CompositeFieldSum('{0}', {1})", field.Id, childFieldIndex);
+            return this;
+        }
+
+
+
+        public void ReplaceReferences(Guid oldId, Guid newId)
+        {
+            Data.Value = Data.Value.Replace(oldId.ToString(), newId.ToString());
+        }
+
         public static string Str(eMath val)
         {
             switch (val)
@@ -241,6 +262,34 @@ namespace Catfish.Core.Models.Contents.Expressions
             }
         }
 
-        
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="intValue"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(int val)
+        {
+            Data.Value += string.Format("{0}", val);
+            return this;
+        }
+
+        public ComputationExpression AppendValue(decimal val)
+        {
+            Data.Value += string.Format("{0}", val);
+            return this;
+        }
+
+        public ComputationExpression AppendValue(double val)
+        {
+            Data.Value += string.Format("{0}", val);
+            return this;
+        }
+
+        public ComputationExpression AppendValue(string val)
+        {
+            Data.Value += string.Format("'{0}'", val);
+            return this;
+        }
+
     }
 }
