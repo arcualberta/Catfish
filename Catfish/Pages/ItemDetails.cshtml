@@ -45,58 +45,63 @@
 .ToList();
     var auditEntrys = item.AuditTrail.OrderByDescending(ae => ae.Created);
 }
-@*@if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)*@
-@if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
-{
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString()) @item.UserEmail</h2>
+
+<div class="container">
+    @*@if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)*@
+    @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
+    {
+        <div class="container">
+            <div class="row">
                 @*@if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Update })).Succeeded)*@
-                @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Update })).Succeeded)
-                {
-                    <div class="float-right">
+                <div class="action-btn-panel float-right col-md-12">
+                    @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Update })).Succeeded)
+                    {
                         <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("edit/{0}", item.Id)">  @Localizer.General["Edit"]</a>
-                    </div>
-                }
+                    }
+
+                    @foreach (var postAction in allPostActions)
+                    {
+                        //if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+                        //  .Succeeded)
+                        if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+                            .Succeeded)
+                        {
+                            var stateMappings = postAction.StateMappings.Where(sm => sm.Current == item.StatusId).ToList();
+                            foreach (var stateMapping in stateMappings)
+                            {
+                                var childFormId = _workflowService.GetChildFormId(template, postAction.Id);
+
+                                if (childFormId != Guid.Empty)
+                                {
+                                    <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("../entity/{0}/addchild/{1}/ButtonId/{2}", Model.Item.Id, @childFormId, @stateMapping.Id)">  @Localizer.General[@stateMapping.ButtonLabel]</a>
+                                }
+                            }
+
+                        }
+                    }
+                </div>
             </div>
+
+            <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString())</h2>
+            <div>
+                <strong>Submitted by: @item.UserEmail (@item.Created)</strong> <br />
+                <strong>Status: @currentStatus</strong>
+            </div>
+
             <form id="submissionDetailsForm_@suffix" method="post" action="@formPostUrl">
                 <input data-val="true" data-val-required="The Function field is required."
                        id="entityId" name="entityId" type="hidden"
                        value="@item.Id">
-                <div class="card-body">
+                <div class="">
                     <div class="row">
                         <div class="col-sm-4">
-                            <div class="form-group">
-                                <span class="alert alert-info">
-                                    @currentStatus
-                                </span>
-                            </div>
+
                         </div>
                         <div class="col-sm-8">
                             <div class="form-group">
                                 @*<label>@Localizer.General["Actions"]</label>*@
                                 <div>
-                                    @foreach (var postAction in allPostActions)
-                                    {
-                                        //if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
-                                        //  .Succeeded)
-                                        if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
-                                            .Succeeded)
-                                        {
-                                            var stateMappings = postAction.StateMappings.Where(sm => sm.Current == item.StatusId).ToList();
-                                            foreach (var stateMapping in stateMappings)
-                                            {
-                                                var childFormId = _workflowService.GetChildFormId(template, postAction.Id);
 
-                                                if (childFormId != Guid.Empty)
-                                                {
-                                                    <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("../entity/{0}/addchild/{1}/ButtonId/{2}", Model.Item.Id, @childFormId, @stateMapping.Id)">  @Localizer.General[@stateMapping.ButtonLabel]</a>
-                                                }
-                                            }
-
-                                        }
-                                    }
                                 </div>
                             </div>
                         </div>
@@ -104,43 +109,38 @@
                     <div class="submission-form-block form-view">
                         @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString(), viewData)
                     </div>
-                    @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormView })).Succeeded)
-                    {
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="title">@Localizer.General["History"]</span>
-                            </div>
-
-                            <div class="card-body">
-                                @{
-                                    foreach (var associateItem in associatedItems)
-                                    {
-                                        var auditTrail = auditEntrys.Where(ae => ae.Created == associateItem.Created).FirstOrDefault();
-                                        <div class="card">
-                                            <div class="row">
-                                                @Html.DisplayFor(model => associateItem, associateItem.GetType().ToString())
-                                            </div>
-                                        </div>
-                                    }
-                                }
-
-                            </div>
-                            
-                        </div>
-                    }
-
                 </div>
             </form>
             <div id="item-details-result-message_@suffix"></div>
+        </div> <!-- end of main submission -->
+
+        @if (associatedItems.Count > 0 &&
+           (await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormView })).Succeeded)
+        {
+            <h1>History and Supporting Documents</h1>
+
+            @foreach (var associateItem in associatedItems)
+            {
+                var auditTrail = auditEntrys.Where(ae => ae.Created == associateItem.Created).FirstOrDefault();
+                <div class="card">
+                    <div class="card-header">
+                        <span>@associateItem.OwnerName</span>
+                        <span class="float-right">@associateItem.Created</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @Html.DisplayFor(model => associateItem, associateItem.GetType().ToString())
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <div class="container">
+            <div class="alert alert-danger">@Html.Raw(_appConfig.GenericAuthorizationErrorMessage())</div>
         </div>
-    </div>
-}
-else
-{
-<div class="container">
-    <div class="alert alert-danger">@Html.Raw(_appConfig.GenericAuthorizationErrorMessage())</div>
+    }
+
 </div>
-}
-    
-
-
