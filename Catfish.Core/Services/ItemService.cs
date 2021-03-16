@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Catfish.Core.Helpers;
+using Catfish.Core.Models.Contents.Fields.ViewModels;
 
 namespace Catfish.Core.Services
 {
@@ -118,20 +119,25 @@ namespace Catfish.Core.Services
         }
 
         
-        public void UpdateItemlDataModel(Item model)
+        public void UpdateItemlDataModel(ItemVM viewModel)
         {
             try
             {
-                Item itemData = Db.Items.Where(i => i.Id == model.Id).FirstOrDefault();
-                itemData.Content = model.Content;
-                itemData.Created = model.Created;
-                itemData.Updated = DateTime.Now;
-                itemData.PrimaryCollectionId = model.PrimaryCollectionId;
+                Item dataModel = Db.Items.Where(i => i.Id == viewModel.Id).FirstOrDefault();
+
+                //Delegating the responsibility of updating the data model to the view model
+                viewModel.UpdateDataModel(dataModel);
+
+                dataModel.Updated = DateTime.Now;
+
+                Db.SaveChanges();
+
                 //solrIndexService.AddUpdate(new SolrItemModel(model));
             }
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
+                throw ex;
             }
         }
 
