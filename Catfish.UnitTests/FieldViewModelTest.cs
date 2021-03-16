@@ -47,15 +47,15 @@ namespace Catfish.UnitTests
             //Test creating a list view models for all fields in the form
             Assert.IsNotNull(form);
 
-            var tmpList = new List<Field>();
+            var tmpList = new List<FieldVM>();
             foreach(TextField f in form.Fields)
             {
-                tmpList.Add(new Field(f));
+                tmpList.Add(new FieldVM(f));
             }
 
             var json = JsonConvert.SerializeObject(tmpList);
             //Test re-instantiating data fields in the form using the view models
-            foreach(Field f in tmpList)
+            foreach(FieldVM f in tmpList)
             {
                 //value groups/ids? i dont understand what this test is meaning
                 //f.UpdateTextValues(f);

@@ -56,14 +56,20 @@ namespace Catfish.Areas.Manager.Controllers
 
         // POST: api/Items
         [HttpPost]
-        public AsyncResult Save(Item model)
+        public AsyncResult Save(ItemVM model)
         {
             try
             {
                 _srv.UpdateItemlDataModel(model);
-                
-                //TODO:SOLR update
-                //solrIndexService.AddUpdate(new SolrItemModel(model));
+
+                return new AsyncResult
+                {
+                    Status = new StatusMessage
+                    {
+                        Type = StatusMessage.Success,
+                        Body = "The Item was successfully saved"
+                    }
+                };
             }
             catch
             {
@@ -76,14 +82,6 @@ namespace Catfish.Areas.Manager.Controllers
                     }
                 };
             }
-            return new AsyncResult
-            {
-                Status = new StatusMessage
-                {
-                    Type = StatusMessage.Success,
-                    Body = "The Item was successfully saved"
-                }
-            };
         }
 
         //public async Task<IActionResult> EditSave(Item model)
