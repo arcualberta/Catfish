@@ -375,7 +375,7 @@ if (document.getElementById("item-edit-page")) {
                         {
                             method: "POST",
                             headers: {
-                                'Content-Type': 'application/json',
+                                'Content-Type': 'application/json', //TODO add multipart for files possiblility
                             },
                             body: JSON.stringify(this.item)
                         })
