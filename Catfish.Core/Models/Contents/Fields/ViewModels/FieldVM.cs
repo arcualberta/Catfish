@@ -70,11 +70,20 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
             Description = new List<DisplayTextVM>();
 
             //expect to need to loop these - but the superclass is a single item for each...
-            Name.Add(new DisplayTextVM(src.Name));
-            Description.Add(new DisplayTextVM(src.Description));
+            foreach(Text txt in src.Name.Values)
+            {
+                Name.Add(new DisplayTextVM(txt));
+            }
+
+            foreach (Text txt in src.Description.Values)
+            {
+                Description.Add(new DisplayTextVM(txt));
+            }
+            //Name.Add(new DisplayTextVM(src.Name));
+            //Description.Add(new DisplayTextVM(src.Description));
 
             //TODO: go over all values in 
-            foreach(MultilingualValue multiLingualVal in src.Values)
+            foreach (MultilingualValue multiLingualVal in src.Values)
             {
                 //Create a new list of FieldValue objects
                 var tmp = new List<FieldValue>();
@@ -224,9 +233,19 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
             ValueIds = new List<Guid>();
             ValueGroups = new Dictionary<Guid, List<FieldValue>>();
 
-            //expect to need to loop these - but the superclass is a single item for each...
-            Name.Add(new DisplayTextVM(src.Name));
-            Description.Add(new DisplayTextVM(src.Description));
+            Name = new List<DisplayTextVM>();
+            Description = new List<DisplayTextVM>();
+            foreach(Text txt in src.Name.Values)
+            {
+                Name.Add(new DisplayTextVM(txt));
+            }
+
+            foreach (Text txt in src.Description.Values)
+            {
+                Description.Add(new DisplayTextVM(txt));
+            }
+            //Name.Add(new DisplayTextVM(src.Name));
+            //Description.Add(new DisplayTextVM(src.Description));
 
             //this is setting up for the valudId/ValueGroup reference to use the same id as the text
             //there is no containing object for the text because there is only 1 value for this field

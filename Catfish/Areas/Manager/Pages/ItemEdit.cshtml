@@ -42,25 +42,25 @@
                                 <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
                                     <!-- v-for="let set of entrySets" -->
                                     <ol class="dd-list">
-                                        <li class="dd-item expanded"> <!-- v-for="(entry, index) in section"  Need to talk to Kamal about the Name and Description elements being given to me are not arrays -->
+                                        <li  v-for="(entry, index) in section.value" class="dd-item expanded"> <!--  Need to talk to Kamal about the Name and Description elements being given to me are not arrays -->
                                             <div class="sitemap-item">
                                                 <div class="link">
                                                     <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]"
                                                            class="language-label" for="input-0">
-                                                        *Insert language here* :
+                                                        {{entry.Language}} :
                                                     </label>
                                                     <div v-if="!isInPreviewMode" class="width-100">
                                                         <input
                                                                required type="text" class="form-control"
                                                                :id="[section.title + '-input-' + index]"
                                                                aria-describedby="entry-label"
-                                                               v-model="section.value.Value">
+                                                               v-model="entry.Value">
                                                         <div class="invalid-feedback">
                                                             This field is required.
                                                         </div>
                                                     </div>
                                                     <div v-else>
-                                                        <span>{{section.value.Value}}</span>
+                                                        <span>{{entry.Value}}</span>
                                                     </div>
                                                 </div>
                                             </div>

@@ -34,13 +34,13 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
         /// This method iterates through each field inside "this" FieldContainerVM and
         /// update values of corresponding fields in the targetFiledContainer data model.
         /// </summary>
-        /// <param name="targetFiledContainer"></param>
-        public void UpdateFieldValues(FieldContainer targetFiledContainer)
+        /// <param name="targetFieldContainer"></param>
+        public void UpdateFieldValues(FieldContainer targetFieldContainer)
         {
             foreach(var fieldVM in Fields)
             {
                 //Find the corresponding field in the targetFiledContainer
-                var targetField = targetFiledContainer.Fields.Where(f => f.Id == fieldVM.Id).FirstOrDefault();
+                var targetField = targetFieldContainer.Fields.Where(f => f.Id == fieldVM.Id).FirstOrDefault();
 
                 //This function does not have enough information to create new fields, so if we don't find
                 //a matching field in the target, we can only throw an exception
