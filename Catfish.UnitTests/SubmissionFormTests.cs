@@ -6,7 +6,9 @@ using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
 using NUnit.Framework;
+using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Catfish.UnitTests
 {
@@ -445,7 +447,6 @@ namespace Catfish.UnitTests
         }
 
         [Test]
-
         public void ReportTest()
         {
             string lang = "en";
@@ -487,5 +488,40 @@ namespace Catfish.UnitTests
             template.Data.Save("..\\..\\..\\..\\Examples\\reportTestFormWorkflow_generared.xml");
 
         }
+
+        [Test]
+        public void SASReportTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\production\\_prod_sas.xml";
+            ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
+
+
+
+            template.Data.Save(file.Substring(0, file.LastIndexOf(".")) + "_with_report.xml");
+        }
+
+        [Test]
+        public void ConferenceFundReportTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\production\\_prod_conf.xml";
+            ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
+
+
+
+            template.Data.Save(file.Substring(0, file.LastIndexOf(".")) + "_with_report.xml");
+        }
+
+        [Test]
+        public void CovidInspectionReportTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\production\\_prod_covid_inspection.xml";
+            ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
+
+
+
+            template.Data.Save(file.Substring(0, file.LastIndexOf(".")) + "_with_report.xml");
+        }
+
+
     }
 }
