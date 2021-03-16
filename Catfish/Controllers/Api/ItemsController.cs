@@ -116,7 +116,10 @@ namespace Catfish.Controllers.Api
                             {
                                 if (f.FieldId == field.Id)
                                 {
-                                    headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", field.Name.GetConcatenatedContent(" | "))));
+                                    //Display the FieldLabel/ColLabel if defined, otherwise display the Label of the field from the Form
+                                    string colLabel = string.IsNullOrWhiteSpace(f.FieldLabel) ? field.Name.GetConcatenatedContent(" | ") : f.FieldLabel;
+                                    //headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", field.Name.GetConcatenatedContent(" | "))));
+                                    headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", colLabel)));
                                     selectedFieldGuids.Add(field.Id);
                                     break;
                                 }
