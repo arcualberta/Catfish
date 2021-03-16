@@ -46,7 +46,7 @@
     var auditEntrys = item.AuditTrail.OrderByDescending(ae => ae.Created);
 }
 
-<div class="container">
+<div class="container item-details-view">
     @*@if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)*@
     @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
     {
@@ -106,7 +106,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="submission-form-block form-view">
+                    <div class="submission-form-block">
                         @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString(), viewData)
                     </div>
                 </div>
@@ -122,10 +122,10 @@
             @foreach (var associateItem in associatedItems)
             {
                 var auditTrail = auditEntrys.Where(ae => ae.Created == associateItem.Created).FirstOrDefault();
-                <div class="card">
+                <div class="card child-data-item">
                     <div class="card-header">
-                        <span>@associateItem.OwnerName</span>
-                        <span class="float-right">@associateItem.Created</span>
+                        <span>@associateItem.Name.ConcatenatedContent</span>
+                        <span class="float-right">@associateItem.OwnerName | @associateItem.Created</span>
                     </div>
                     <div class="card-body">
                         <div class="row">
