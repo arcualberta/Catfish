@@ -101,7 +101,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="submission-form-block">
+                    <div class="submission-form-block form-view">
                         @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString(), viewData)
                     </div>
                     @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormView })).Succeeded)
