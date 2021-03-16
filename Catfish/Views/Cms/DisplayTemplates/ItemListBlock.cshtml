@@ -24,9 +24,8 @@
 {
 <div class="row col-md-12 form-group">
     <div class="label">Report Template :</div>
-    @Html.DropDownList("ReportTemplate", new SelectList(reportTemplates, "Value", "Text")," --- Select Report Template -- ", new {id = @reportTemplateId, @class= "btn btn-outline-secondary", @style="margin-left:10px;" })
-   
-    
+    @Html.DropDownList("ReportTemplate", new SelectList(reportTemplates, "Value", "Text"), new { id = @reportTemplateId, @class = "btn btn-outline-secondary", @style = "margin-left:10px;" })
+
 </div>
     <div class="row col-md-12">
         <div class="col-md-5 form-group">

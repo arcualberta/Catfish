@@ -1,5 +1,5 @@
 ﻿function filterItems(templateId, collectionId, fromDate, toDate, resultTableId, reportTemplateId) {
-    let selectedReportTemplateId = $(reportTemplateId).val();
+    let selectedReportTemplateId = reportTemplateId ? $(reportTemplateId).val() : null;
    
     $.ajax({
 

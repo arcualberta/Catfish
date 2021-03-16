@@ -80,8 +80,12 @@ namespace Catfish.Controllers.Api
 
             EntityTemplate template = _entityTemplateService.GetTemplate(templateId);
 
-           
-            if (template != null)
+            string errorMessage = "";
+            string resultString = "";
+
+            if (template == null)
+                errorMessage = "No template found.";
+            else
             {
                 Core.Models.Contents.Reports.BaseReport selectedReport = template.Reports.Where(r => r.Id == reportTemplate).FirstOrDefault();
 
@@ -95,7 +99,9 @@ namespace Catfish.Controllers.Api
                 thead.Add(headRow);
 
                 DataItem root = template.GetRootDataItem(false);
-                if (root != null)
+                if (root == null)
+                    errorMessage = "No form found in the template.";
+                else
                 {
                     var fieldList = root.GetValueFields(); //MR: this only get regular field -- no composite fields
                     List<Item> itemList = _submissionService.GetSubmissionList(User, templateId, collectionId, startDate, endDate);
@@ -159,78 +165,87 @@ namespace Catfish.Controllers.Api
                     List<Guid?> statusIds = new List<Guid?>();
                     List<string> statusVals = new List<string>();
 
-                    foreach (Item item in itemList)
+                    if (itemList.Count == 0)
+                        errorMessage = "No data found.";
+                    else
                     {
-                        XElement bodyRow = new XElement("tr");
-                        tbody.Add(bodyRow);
-
-                        //TODO: check if the currently logged in user to perform the following actions
-                        bool viewPermitted = true;
-                        string viewLink = viewPermitted ? string.Format("<a href='/items/{0}' class='fa fa-eye' target='_blank'></a>", item.Id) : "";
-                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", viewLink)));
-
-                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
-
-                        DataItem dataItem = item.GetRootDataItem(false);
-
-                       // List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
-                        List<string> fieldValues = dataItem.GetConcatenatedFieldValues(selectedFieldGuids, " |");
-
-                        //if composite field involved -- get the value from associated item??
-
-                        foreach (var val in fieldValues) //MR: These are just regular Field
+                        foreach (Item item in itemList)
                         {
-                            //Replacing "&" characters with " and ";
-                            var sanitizedVal = val.Replace("&", " and ");
-                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
-                        }
+                            XElement bodyRow = new XElement("tr");
+                            tbody.Add(bodyRow);
 
-                        //MR: March 15 2021: -- get composite field values if any define in the Report
-                        var compositeFields = item.DataContainer.Where(d => d.Fields.Any(f=> f.GetType() == typeof(CompositeField) && ((CompositeField)f).Children.Count >= 1)).ToList();
-                      
-                        foreach (var cf in compositeFields)
-                        {
+                            //TODO: check if the currently logged in user to perform the following actions
+                            bool viewPermitted = true;
+                            string viewLink = viewPermitted ? string.Format("<a href='/items/{0}' class='fa fa-eye' target='_blank'></a>", item.Id) : "";
+                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", viewLink)));
 
-                            foreach (var f in cf.Fields)
+                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
+
+                            DataItem dataItem = item.GetRootDataItem(false);
+
+                            // List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
+                            List<string> fieldValues = dataItem.GetConcatenatedFieldValues(selectedFieldGuids, " |");
+
+                            //if composite field involved -- get the value from associated item??
+
+                            foreach (var val in fieldValues) //MR: These are just regular Field
                             {
-                                if (typeof(CompositeField).IsAssignableFrom(f.GetType()))
+                                //Replacing "&" characters with " and ";
+                                var sanitizedVal = val.Replace("&", " and ");
+                                bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
+                            }
+
+                            //MR: March 15 2021: -- get composite field values if any define in the Report
+                            var compositeFields = item.DataContainer.Where(d => d.Fields.Any(f => f.GetType() == typeof(CompositeField) && ((CompositeField)f).Children.Count >= 1)).ToList();
+
+                            foreach (var cf in compositeFields)
+                            {
+
+                                foreach (var f in cf.Fields)
                                 {
-                                    foreach (var c in (f as CompositeField).Children)
+                                    if (typeof(CompositeField).IsAssignableFrom(f.GetType()))
                                     {
-                                        List<string> cfFieldValues = c.GetConcatenatedFieldValues(selectedCompositeFieldGuids, " |");
-                                        foreach (var val in cfFieldValues) //MR: These are just regular Field
+                                        foreach (var c in (f as CompositeField).Children)
                                         {
-                                            //Replacing "&" characters with " and ";
-                                            var sanitizedVal = val.Replace("&", " and ");
-                                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
+                                            List<string> cfFieldValues = c.GetConcatenatedFieldValues(selectedCompositeFieldGuids, " |");
+                                            foreach (var val in cfFieldValues) //MR: These are just regular Field
+                                            {
+                                                //Replacing "&" characters with " and ";
+                                                var sanitizedVal = val.Replace("&", " and ");
+                                                bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
+                                            }
+
                                         }
-                                       
                                     }
                                 }
                             }
+
+
+
+
+                            int statusIdx = statusIds.IndexOf(item.StatusId);
+                            string status;
+                            if (statusIdx < 0)
+                            {
+                                status = _submissionService.GetStatus(item.StatusId).NormalizedStatus;
+                                statusIds.Add(item.StatusId);
+                                statusVals.Add(status);
+                            }
+                            else
+                                status = statusVals[statusIdx];
+
+                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", status)));
                         }
-                        
-
-
-
-                        int statusIdx = statusIds.IndexOf(item.StatusId);
-                        string status;
-                        if (statusIdx < 0)
-                        {
-                            status = _submissionService.GetStatus(item.StatusId).NormalizedStatus;
-                            statusIds.Add(item.StatusId);
-                            statusVals.Add(status);
-                        }
-                        else
-                            status = statusVals[statusIdx];
-
-                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", status)));
                     }
                 }
 
-                return result.ToString();
+                resultString = result.ToString();
             }
-            return "";
+
+            if (!string.IsNullOrEmpty(errorMessage))
+                errorMessage = string.Format("<div class='alert alert-danger'>{0}</div>", errorMessage);
+
+            return errorMessage + resultString;
         }
 
      
