@@ -15,14 +15,6 @@
 
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
-    //var options = Model.Report.Select(op =>
-    //        new SelectListItem
-    //        {
-    //            Value = op.Id.ToString(),
-    //            Text = op.OptionText.GetConcatenatedContent(" | "),
-    //        }).ToList();
-    //options.Insert(0, new SelectListItem());
-
     var reportTemplates = template.Reports.Select(r=>new SelectListItem { Value= r.Id.ToString(), Text=r.Name }).ToList();
     string reportTemplateId="reportTemplate";
 
@@ -30,10 +22,10 @@
 @if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ListInstances }))
 .Succeeded)
 {
-<div class="row col-md-12">
-    <div>Report Template :</div>
-    <div>@Html.DropDownList("ReportTemplate", new SelectList(reportTemplates, "Value", "Text")," --- Select Report Template -- ", new {id = @reportTemplateId })</div>
-    @*<div>@Html.DropDownListFor(m=>selectedReportTemplate, new SelectList(reportTemplates, "Value", "Text"), "---Select Report Template ---")</div>*@
+<div class="row col-md-12 form-group">
+    <div class="label">Report Template :</div>
+    @Html.DropDownList("ReportTemplate", new SelectList(reportTemplates, "Value", "Text")," --- Select Report Template -- ", new {id = @reportTemplateId, @class= "btn btn-outline-secondary", @style="margin-left:10px;" })
+   
     
 </div>
     <div class="row col-md-12">

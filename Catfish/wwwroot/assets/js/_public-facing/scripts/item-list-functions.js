@@ -1,7 +1,6 @@
 ﻿function filterItems(templateId, collectionId, fromDate, toDate, resultTableId, reportTemplateId) {
     let selectedReportTemplateId = $(reportTemplateId).val();
-    alert(selectedReportTemplateId);
-
+   
     $.ajax({
 
         url: '/api/items/GetItemList/',

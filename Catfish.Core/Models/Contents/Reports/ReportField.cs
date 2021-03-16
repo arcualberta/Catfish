@@ -24,5 +24,26 @@ namespace Catfish.Core.Models.Contents.Reports
             set => Data.SetAttributeValue("field-id", value);
         }
 
+        /// <summary>
+        /// For Composite Field Id
+        /// </summary>
+        public Guid? ParentFieldId
+        {
+            get
+            {
+                if (Data.Attribute("composite-field-id") == null)
+                    return null;
+
+                return Guid.Parse(Data.Attribute("composite-field-id").Value);
+            }
+            set => Data.SetAttributeValue("composite-field-id", value);
+        }
+
+        public string FieldLabel
+        {
+            get => Data.Attribute("field-label").Value;
+            set => Data.SetAttributeValue("field-label", value);
+        }
+
     }
 }

@@ -79,8 +79,12 @@ namespace Catfish.Controllers.Api
                 endDate = endDate.Value.Date.AddDays(1);
 
             EntityTemplate template = _entityTemplateService.GetTemplate(templateId);
+
+           
             if (template != null)
             {
+                Core.Models.Contents.Reports.BaseReport selectedReport = template.Reports.Where(r => r.Id == reportTemplate).FirstOrDefault();
+
                 XElement result = new XElement("table");
                 result.SetAttributeValue("class", "table");
 
@@ -93,24 +97,61 @@ namespace Catfish.Controllers.Api
                 DataItem root = template.GetRootDataItem(false);
                 if (root != null)
                 {
-                    var fieldList = root.GetValueFields();
+                    var fieldList = root.GetValueFields(); //MR: this only get regular field -- no composite fields
+                    List<Item> itemList = _submissionService.GetSubmissionList(User, templateId, collectionId, startDate, endDate);
+                   
 
                     headRow.Add(XElement.Parse("<th></th>"));
 
                     headRow.Add(XElement.Parse("<th>Submission Date</th>"));
 
+                    List<Guid> selectedFieldGuids = new List<Guid>();
+                    List<Guid> selectedCompositeFieldGuids = new List<Guid>();
                     foreach (var field in fieldList)
-                        headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", field.Name.GetConcatenatedContent(" | "))));
-                    
+                    {
+                        //MR March : 15 2021: only include field that selected on the Report schema
+                        if (selectedReport != null)
+                        {
+                            foreach(var f in selectedReport.Fields)
+                            {
+                                if (f.FieldId == field.Id)
+                                {
+                                    headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", field.Name.GetConcatenatedContent(" | "))));
+                                    selectedFieldGuids.Add(field.Id);
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {  ///MR March : 15 2021: include all Fields if no Report schema existed
+                            headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", field.Name.GetConcatenatedContent(" | "))));
+                            selectedFieldGuids.Add(field.Id);
+                        }
+                    }
+
+                    //
+                    //if composite Field
+                    if (selectedReport != null)
+                    {
+                        foreach (var f in selectedReport.Fields)
+                        {
+                            if (f.ParentFieldId != null) //(f.ParentFieldId != null && f.ParentFieldId == field.Id)
+                            {
+                                //string flName = field.Name.GetConcatenatedContent(" | ");
+                                 headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", f.FieldLabel)));//to do
+                                selectedCompositeFieldGuids.Add(f.FieldId);
+                            }
+                        }
+                    }
+
                     headRow.Add(XElement.Parse("<th>Status</th>"));
 
                     XElement tbody = new XElement("tbody");
                     result.Add(tbody);
 
-                    var fieldGuids = fieldList.Select(field => field.Id).ToList();
+                   // var fieldGuids = fieldList.Select(field => field.Id).ToList();
 
-                    List<Item> itemList = _submissionService.GetSubmissionList(User, templateId, collectionId, startDate, endDate);
-                    
+                      
                     //Arrays to store already loaded status values instead of having to load them repeatedly from the database
                     List<Guid?> statusIds = new List<Guid?>();
                     List<string> statusVals = new List<string>();
@@ -128,13 +169,46 @@ namespace Catfish.Controllers.Api
                         bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
 
                         DataItem dataItem = item.GetRootDataItem(false);
-                        List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
-                        foreach (var val in fieldValues)
+
+                       // List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
+                        List<string> fieldValues = dataItem.GetConcatenatedFieldValues(selectedFieldGuids, " |");
+
+                        //if composite field involved -- get the value from associated item??
+
+                        foreach (var val in fieldValues) //MR: These are just regular Field
                         {
                             //Replacing "&" characters with " and ";
                             var sanitizedVal = val.Replace("&", " and ");
                             bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
                         }
+
+                        //MR: March 15 2021: -- get composite field values if any define in the Report
+                        var compositeFields = item.DataContainer.Where(d => d.Fields.Any(f=> f.GetType() == typeof(CompositeField) && ((CompositeField)f).Children.Count >= 1)).ToList();
+                      
+                        foreach (var cf in compositeFields)
+                        {
+
+                            foreach (var f in cf.Fields)
+                            {
+                                if (typeof(CompositeField).IsAssignableFrom(f.GetType()))
+                                {
+                                    foreach (var c in (f as CompositeField).Children)
+                                    {
+                                        List<string> cfFieldValues = c.GetConcatenatedFieldValues(selectedCompositeFieldGuids, " |");
+                                        foreach (var val in cfFieldValues) //MR: These are just regular Field
+                                        {
+                                            //Replacing "&" characters with " and ";
+                                            var sanitizedVal = val.Replace("&", " and ");
+                                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
+                                        }
+                                       
+                                    }
+                                }
+                            }
+                        }
+                        
+
+
 
                         int statusIdx = statusIds.IndexOf(item.StatusId);
                         string status;

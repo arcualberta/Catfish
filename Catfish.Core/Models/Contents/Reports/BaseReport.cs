@@ -44,9 +44,17 @@ namespace Catfish.Core.Models.Contents.Reports
             Fields = new XmlModelList<ReportField>(GetElement(FieldContainerTag, true), true, ReportField.TagName);
         }
 
-        public BaseReport AddField(Guid dataItemId, Guid fieldId) //return  ReportField
+        public BaseReport AddField(Guid dataItemId, Guid fieldId, string fieldLabel=null) //return  ReportField
         {
-            ReportField field = new ReportField() { TemplateId = dataItemId, FieldId = fieldId };
+            ReportField field = new ReportField() { TemplateId = dataItemId, FieldId = fieldId, FieldLabel=fieldLabel};
+            Fields.Add(field);
+            //return field;
+            return this;
+        }
+
+        public BaseReport AddField(Guid dataItemId, Guid parentFieldId, Guid fieldId, string fieldLabel = null) //return  ReportField
+        {
+            ReportField field = new ReportField() { TemplateId = dataItemId, ParentFieldId=parentFieldId, FieldId = fieldId, FieldLabel=fieldLabel };
             Fields.Add(field);
             //return field;
             return this;

@@ -462,15 +462,23 @@ namespace Catfish.UnitTests
             var dd1 = form.CreateField<SelectField>("DD 1", lang, options, false);
             var rb1 = form.CreateField<RadioField>("RB 1", lang, options, false);
             var chk1 = form.CreateField<CheckboxField>("CB 1", lang, options, false);
-          
 
+            DataItem childForm = template.GetDataItem("Child Form", true, lang);
+            var childName = childForm.CreateField<TextField>("Child Name", lang, true);
+            childForm.CreateField<DateField>("DOB", lang, false);
             //var cf1 = form.CreatedFied<CompositeField>("CF 1", lang);
+
+            CompositeField cf = form.CreateField<CompositeField>("Child Info", lang);
+            cf.Min = 1;
+            cf.Max = 1;
+            cf.AllowMultipleValues = false;
+            cf.ChildTemplate = childForm;
 
             var report = template.GetReport<SubmissionReport>("Submission Report",template.Id,  true);
             report
-                .AddField(form.Id, txt1.Id)
-                .AddField(form.Id, ta1.Id);
-                
+                .AddField(form.Id, txt1.Id,"")
+                .AddField(form.Id, ta1.Id, "")
+                .AddField(form.Id, cf.Id, childName.Id, "Child's Name"); //adding compositeField's field ==> cf.Id = compositeFieldId, childName => field in composteField
             //    .AddField(cf1, chidFormField);
 
 
