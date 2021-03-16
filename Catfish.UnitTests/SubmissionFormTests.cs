@@ -494,7 +494,7 @@ namespace Catfish.UnitTests
         {
             string file = "..\\..\\..\\..\\Examples\\production\\_prod_sas.xml";
             ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
-
+            var mainForm = template.GetRootDataItem(false);
 
 
             template.Data.Save(file.Substring(0, file.LastIndexOf(".")) + "_with_report.xml");
@@ -505,6 +505,7 @@ namespace Catfish.UnitTests
         {
             string file = "..\\..\\..\\..\\Examples\\production\\_prod_conf.xml";
             ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
+            var mainForm = template.GetRootDataItem(false);
 
 
 
@@ -516,6 +517,7 @@ namespace Catfish.UnitTests
         {
             string file = "..\\..\\..\\..\\Examples\\production\\_prod_covid_inspection.xml";
             ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
+            var mainForm = template.GetRootDataItem(false);
 
 
 
