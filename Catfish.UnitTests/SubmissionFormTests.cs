@@ -496,6 +496,8 @@ namespace Catfish.UnitTests
             ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
             var mainForm = template.GetRootDataItem(false);
 
+            //Pull the fields of Applicant Name, Email and Department out of the mainForm and build a report
+            //to show those entries + submission date + status in it.
 
             template.Data.Save(file.Substring(0, file.LastIndexOf(".")) + "_with_report.xml");
         }
