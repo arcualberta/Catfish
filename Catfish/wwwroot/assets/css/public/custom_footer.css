@@ -12,4 +12,10 @@
         width: inherit;
     }
 
+@media screen and (max-width: 767px) {
+    .footer-arc-text .col-md-4 {
+        max-width: 65%;
+        padding-bottom: 8px;
+    }
+}
 /********* END of Stuff for Footer CSS Section *************/
