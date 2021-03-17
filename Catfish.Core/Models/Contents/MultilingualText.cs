@@ -17,7 +17,7 @@ namespace Catfish.Core.Models.Contents
         }
 
         public string ConcatenatedContent => GetConcatenatedContent(" | ");
-        public string ConcatenatedRichText => GetConcatenatedRichText();
+        public string ConcatenatedRichText => GetConcatenatedContent("");
 
         public XmlModelList<Text> Values { get; protected set; }
 
@@ -79,18 +79,6 @@ namespace Catfish.Core.Models.Contents
 
             return string.Join(separator, selected);
         }
-
-        public string GetConcatenatedRichText()
-        {
-            var selected = Values
-                .Where(v => !string.IsNullOrEmpty(v.Value))
-                .SelectMany(v => v.Data.Elements())
-                .ToList();
-
-            string[] str = selected.Select(v => v.ToString()).ToArray();
-            return string.Concat(str);
-        }
-
 
         public void UpdateValues(MultilingualValue srcValue)
         {

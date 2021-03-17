@@ -1,32 +1,17 @@
 ﻿
-$(document).ready(function () {
-    $(".launch-modal").click(function () {
-        $("#submissionModal").modal({
-            backdrop: 'static'
-        });
-    });  
-});
-
-function submitWorkflowForm(suffix, successMessage) {
-    var status;
-    var buttonName;
+function submitWorkflowForm(stateId, button, postActionId, suffix, successMessage) {
     $("#submission-result-message_" + suffix).hide();
 
-    $(document).on('click', "#Submit_" + suffix, function () {
-        status = 'Submitted';
-        buttonName = 'Submit';
-        console.log('Status = ' + status)
-    });
-    $(document).on('click', "#Save_" + suffix, function () {
-        status = 'Saved';
-        buttonName = 'Submit';
-        console.log('Status = ' + status)
-    });
-
+    
     $("#submissionForm_" + suffix).submit(function (event) {
         /* stop form from submitting normally */
         event.preventDefault();
-
+        var groupId = null;
+        var e = document.getElementById("groupId");
+        if (e != null) {
+             groupId = e.options[e.selectedIndex].value;
+        }
+        
         //Reguar expression for matching the variable name prefix up to the item's properties.
         var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
         var name;
@@ -55,8 +40,10 @@ function submitWorkflowForm(suffix, successMessage) {
 
         //===================================end processed files ======================================
 
-        values["actionButton"] = buttonName;
-        values["status"] = status;
+        values["groupId"] = groupId;
+        values["actionButton"] = button;
+        values["stateId"] = stateId;
+        values["postActionId"] = postActionId;
 
        
         /* get the action attribute from the <form action=""> element */
@@ -71,7 +58,8 @@ function submitWorkflowForm(suffix, successMessage) {
             $('.modal-backdrop').remove();
             if (data.success) {
                 //  $(".submission-result-message").addClass("alert alert-success");
-                message = successMessage !== "" ? successMessage : data.message;
+                //message = successMessage !== "" ? successMessage : data.message;
+                message = data.message;
                 $("#submission-result-message_" + suffix).append("<div class='alert alert-success' ></div>");
             
                 $("#submissionForm_" + suffix).hide();//[0].reset();
@@ -82,67 +70,46 @@ function submitWorkflowForm(suffix, successMessage) {
                 message = data.message;
             }
 
-            $("#submission-result-message_" + suffix + " div").text(message);
+            $("#submission-result-message_" + suffix + " div").html(message);
             $("#submission-result-message_" + suffix).show();
         });
 
     });
 }
 
-function addDataItem(fieldId,templateId, min, max) {
-   
-    let numItems = $(".composite-field-child-" + fieldId).length; // number of item in the list
-    if (numItems == max) {
-        alert("Sorry, you can't add more item into the list.");
-        return false;
-    }
+function validateEmail(element) {
+    let val = $(element).val();
+    let p = $(element).parent();
+    let messageElement = $(p).find("span.validation-message");
 
-    let chilItemId = "composite-field-child-" + numItems;
-    let dataItm = $("#" + templateId).clone().addClass("row composite-field-child").removeAttr('style').attr("id", chilItemId);
-    let newGuid = createGuid();
-
-    //replace names/ids of input field
-    $(dataItm).find("input").map(function () {
-        let divId = this.id;
-        //replace "ChilTemplate" => Children_@numItems
-        divId = divId.replace('ChildTemplate', 'Children_' + numItems +"_");
-        $(this).attr("id", divId);
-
-        let divName = this.name;
-        divName = divName.replace('ChildTemplate', 'Children[' + numItems + ']');
-        $(this).attr("name", divName);
-    });
-
-     //replace id of child div
-    $(dataItm).find("div").map(function () {
-        let divId = this.id;
-        //replace "ChilTemplate" => Children_@numItems
-        divId = divId.replace('ChildTemplate', 'Children_' + numItems);
-        $(this).attr("id", divId);
-    });
-
-    //insert removeDataItem()
-    $(dataItm).find("span.fa-trash").map(function () {
-        let deleteFunc = "removeDataItem('" + chilItemId + "','" + min + "'); return false;";
-        $(this).attr("onclick", deleteFunc);
-    });
-
-    let newItm = dataItm[0];
-    $("#addNewdataItem-" + fieldId).before(newItm);
-
-    
+    if (val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) === false)
+        $(messageElement).show();
+    else
+        $(messageElement).hide();
 }
 
-function removeDataItem(dataItemDivId, min) {
-    let numItems = $(".composite-field-child").length;
-    if (numItems == min) {
-        alert("You can't remove this item.")
-        return false;
-    }
+function countWords(fieldModelId) {
+    
+    let thisField = $("textarea[data-model-id='" + fieldModelId + "']");
+    let maxwords = $(thisField).data('max-words');
 
-    if (numItems > parseInt(min, 10)) {
-        $("#" + dataItemDivId).remove();
-    }
+    if (maxwords > 0) {
+        let count = $(thisField).val().trim().split(' ');
+       
+        if (count.length > maxwords) {    
+            let thisVal = (count.slice(0, maxwords)).join(" ");
+            $(thisField).val(thisVal);
+            let message = "<span class='exceedWords' style='color: red;'>Maximum " + maxwords + " words have been reached! </span>";
+            if ($("span.exceedWords").length == 0)
+                $(thisField).after(message);
+            else
+                $("span.exceedWords").show();
+            return;
+        } else {
+            //remove exceed message
+            $("span.exceedWords").hide();
+        }
+    }   
 }
 
 function createGuid() {

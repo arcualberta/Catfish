@@ -17,10 +17,12 @@ namespace Catfish.Core.Authorization.Handlers
     {
         public readonly IAuthorizationHelper _authHelper;
         public readonly IWorkflowService _workflowService;
-        public EntityTemplateAuthorizationHandler(IAuthorizationHelper authHelper, IWorkflowService workflowService)
+        public readonly AppDbContext _appDb;
+        public EntityTemplateAuthorizationHandler(IAuthorizationHelper authHelper, IWorkflowService workflowService, AppDbContext db)
         {
             _authHelper = authHelper;
             _workflowService = workflowService;
+            _appDb = db;
         }
         protected override Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
@@ -46,7 +48,11 @@ namespace Catfish.Core.Authorization.Handlers
             else
             {
                 entity = resource;
-                template = resource.Template;
+                if(entity.Template == null && entity.TemplateId.HasValue && entity.TemplateId != null)
+                {
+                    entity.Template = _appDb.EntityTemplates.Where(et => et.Id == entity.TemplateId).FirstOrDefault();
+                }
+                template = entity.Template;
             }
 
             if (template.Workflow == null)
@@ -141,6 +147,9 @@ namespace Catfish.Core.Authorization.Handlers
                 // entities with the above status
                 var stateReference = workflowAction.States.Where(sr => sr.RefId == entityStatusId).FirstOrDefault();
 
+                if(stateReference == null)
+                    return Task.CompletedTask; //If no state reference is found, we cannot continue the authorization beyond this point
+
                 //Authorization successful if the current user is the owner of the entity AND
                 //the requested action is authorized to the owner
                 string currentUserEmail = _workflowService.GetLoggedUserEmail();
@@ -157,6 +166,15 @@ namespace Catfish.Core.Authorization.Handlers
                     context.Succeed(requirement);
                     return Task.CompletedTask;
                 }
+
+                //Authorization successful if the currrent user's email is equal to an email idenfieied
+                //under AuthorizedEmailFields.
+                if(workflowAction.IsAuthorizedByEmailField(entity, currentUserEmail))
+                {
+                    context.Succeed(requirement);
+                    return Task.CompletedTask;
+                }
+
 
 
                 //At this point, the user is authenticated and the permission-requested GetAction is restricted to 

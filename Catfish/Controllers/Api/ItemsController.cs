@@ -4,17 +4,21 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
+using Piranha.AspNetCore.Identity.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,16 +30,26 @@ namespace Catfish.Controllers.Api
     {
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly ISubmissionService _submissionService;
-       
+        private readonly IWorkflowService _workflowService;
+        private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
+
         private readonly AppDbContext _appDb;
         private readonly IJobService _jobService;
-        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService, IJobService jobService, IConfiguration configuration)
+
+        public ItemsController(AppDbContext db, 
+            IEntityTemplateService entityTemplateService, 
+            ISubmissionService submissionService, 
+            IJobService jobService, 
+            IConfiguration configuration, 
+            IWorkflowService workflowService,
+            Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
-
+            _workflowService = workflowService;
             _appDb = db;
             _jobService = jobService;
+            _dotnetAuthorizationService = dotnetAuthorizationService;
 
             ConfigHelper.Configuration = configuration;
         }
@@ -56,7 +70,7 @@ namespace Catfish.Controllers.Api
         /// <param name="endDate">end date</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public string GetItemList(Guid templateId, Guid? collectionId, DateTime? startDate, DateTime? endDate)
+        public string GetItemList(Guid templateId, Guid? collectionId, DateTime? startDate, DateTime? endDate, Guid? reportTemplate)
         {
             //Making sure the startDate is trimmed to the begining of the day and the endDate is bumped up to the end of the day
             if (startDate.HasValue)
@@ -64,9 +78,17 @@ namespace Catfish.Controllers.Api
             if (endDate.HasValue)
                 endDate = endDate.Value.Date.AddDays(1);
 
-            EntityTemplate template = _entityTemplateService.GetTemplate(templateId, User);
-            if (template != null)
+            EntityTemplate template = _entityTemplateService.GetTemplate(templateId);
+
+            string errorMessage = "";
+            string resultString = "";
+
+            if (template == null)
+                errorMessage = "No template found.";
+            else
             {
+                Core.Models.Contents.Reports.BaseReport selectedReport = template.Reports.Where(r => r.Id == reportTemplate).FirstOrDefault();
+
                 XElement result = new XElement("table");
                 result.SetAttributeValue("class", "table");
 
@@ -77,85 +99,183 @@ namespace Catfish.Controllers.Api
                 thead.Add(headRow);
 
                 DataItem root = template.GetRootDataItem(false);
-                if (root != null)
+                if (root == null)
+                    errorMessage = "No form found in the template.";
+                else
                 {
-                    var fieldList = root.GetValueFields();
+                    var fieldList = root.GetValueFields(); //MR: this only get regular field -- no composite fields
+                    List<Item> itemList = _submissionService.GetSubmissionList(User, templateId, collectionId, startDate, endDate);
+                   
 
                     headRow.Add(XElement.Parse("<th></th>"));
 
                     headRow.Add(XElement.Parse("<th>Submission Date</th>"));
 
+                    List<Guid> selectedFieldGuids = new List<Guid>();
+                    List<Guid> selectedCompositeFieldGuids = new List<Guid>();
                     foreach (var field in fieldList)
-                        headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", field.Name.GetConcatenatedContent(" | "))));
-                    
+                    {
+                        //MR March : 15 2021: only include field that selected on the Report schema
+                        if (selectedReport != null)
+                        {
+                            foreach(var f in selectedReport.Fields)
+                            {
+                                if (f.FieldId == field.Id)
+                                {
+                                    //Display the FieldLabel/ColLabel if defined, otherwise display the Label of the field from the Form
+                                    string colLabel = string.IsNullOrWhiteSpace(f.FieldLabel) ? field.Name.GetConcatenatedContent(" | ") : f.FieldLabel;
+                                    //headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", field.Name.GetConcatenatedContent(" | "))));
+                                    headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", colLabel)));
+                                    selectedFieldGuids.Add(field.Id);
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {  ///MR March : 15 2021: include all Fields if no Report schema existed
+                            headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", field.Name.GetConcatenatedContent(" | "))));
+                            selectedFieldGuids.Add(field.Id);
+                        }
+                    }
+
+                    //
+                    //if composite Field
+                    if (selectedReport != null)
+                    {
+                        foreach (var f in selectedReport.Fields)
+                        {
+                            if (f.ParentFieldId != null) //(f.ParentFieldId != null && f.ParentFieldId == field.Id)
+                            {
+                                //string flName = field.Name.GetConcatenatedContent(" | ");
+                                 headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", f.FieldLabel)));//to do
+                                selectedCompositeFieldGuids.Add(f.FieldId);
+                            }
+                        }
+                    }
+
                     headRow.Add(XElement.Parse("<th>Status</th>"));
 
                     XElement tbody = new XElement("tbody");
                     result.Add(tbody);
 
-                    var fieldGuids = fieldList.Select(field => field.Id).ToList();
+                   // var fieldGuids = fieldList.Select(field => field.Id).ToList();
 
-                    List<Item> itemList = _submissionService.GetSubmissionList(User, templateId, collectionId, startDate, endDate);
-                    
+                      
                     //Arrays to store already loaded status values instead of having to load them repeatedly from the database
                     List<Guid?> statusIds = new List<Guid?>();
                     List<string> statusVals = new List<string>();
 
-                    foreach (Item item in itemList)
+                    if (itemList.Count == 0)
+                        errorMessage = "No data found.";
+                    else
                     {
-                        XElement bodyRow = new XElement("tr");
-                        tbody.Add(bodyRow);
-
-                        //TODO: check if the currently logged in user to perform the following actions
-                        bool viewPermitted = true;
-                        string viewLink = viewPermitted ? string.Format("<a href='/items/{0}' class='fa fa-eye' target='_blank'></a>", item.Id) : "";
-                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", viewLink)));
-
-                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
-
-                        DataItem dataItem = item.GetRootDataItem(false);
-                        List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
-                        foreach (var val in fieldValues)
-                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", val)));
-
-                        int statusIdx = statusIds.IndexOf(item.StatusId);
-                        string status;
-                        if (statusIdx < 0)
+                        foreach (Item item in itemList)
                         {
-                            status = _submissionService.GetStatus(item.StatusId).NormalizedStatus;
-                            statusIds.Add(item.StatusId);
-                            statusVals.Add(status);
-                        }
-                        else
-                            status = statusVals[statusIdx];
+                            XElement bodyRow = new XElement("tr");
+                            tbody.Add(bodyRow);
 
-                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", status)));
+                            //TODO: check if the currently logged in user to perform the following actions
+                            bool viewPermitted = true;
+                            string viewLink = viewPermitted ? string.Format("<a href='/items/{0}' class='fa fa-eye' target='_blank'></a>", item.Id) : "";
+                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", viewLink)));
+
+                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
+
+                            DataItem dataItem = item.GetRootDataItem(false);
+
+                            // List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
+                            List<string> fieldValues = dataItem.GetConcatenatedFieldValues(selectedFieldGuids, " |");
+
+                            //if composite field involved -- get the value from associated item??
+
+                            foreach (var val in fieldValues) //MR: These are just regular Field
+                            {
+                                //Replacing "&" characters with " and ";
+                                var sanitizedVal = val.Replace("&", " and ");
+                                bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
+                            }
+
+                            //MR: March 15 2021: -- get composite field values if any define in the Report
+                            var compositeFields = item.DataContainer.Where(d => d.Fields.Any(f => f.GetType() == typeof(CompositeField) && ((CompositeField)f).Children.Count >= 1)).ToList();
+
+                            foreach (var cf in compositeFields)
+                            {
+
+                                foreach (var f in cf.Fields)
+                                {
+                                    if (typeof(CompositeField).IsAssignableFrom(f.GetType()))
+                                    {
+                                        foreach (var c in (f as CompositeField).Children)
+                                        {
+                                            List<string> cfFieldValues = c.GetConcatenatedFieldValues(selectedCompositeFieldGuids, " |");
+                                            foreach (var val in cfFieldValues) //MR: These are just regular Field
+                                            {
+                                                //Replacing "&" characters with " and ";
+                                                var sanitizedVal = val.Replace("&", " and ");
+                                                bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+
+                            int statusIdx = statusIds.IndexOf(item.StatusId);
+                            string status;
+                            if (statusIdx < 0)
+                            {
+                                status = _submissionService.GetStatus(item.StatusId).NormalizedStatus;
+                                statusIds.Add(item.StatusId);
+                                statusVals.Add(status);
+                            }
+                            else
+                                status = statusVals[statusIdx];
+
+                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", status)));
+                        }
                     }
                 }
 
-                return result.ToString();
+                resultString = result.ToString();
             }
-            return "";
+
+            if (!string.IsNullOrEmpty(errorMessage))
+                errorMessage = string.Format("<div class='alert alert-danger'>{0}</div>", errorMessage);
+
+            return errorMessage + resultString;
         }
 
      
         // POST api/<ItemController>
         [Route("SubmitForm")]
         [HttpPost]
-        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] string function, [FromForm] string group, [FromForm] string status, [FromForm] string fileNames=null)
+        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] Guid stateId, [FromForm] Guid postActionId, [FromForm] string fileNames=null)
         {
             ApiResult result = new ApiResult();
             try
             {
-                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, status, actionButton);
+                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, stateId, actionButton);
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
 
                 bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
 
-                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, actionButton, function, group);
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem, postActionId);
+
+                
                 result.Success = true;
-                result.Message = "Application " + actionButton + " successfully.";
+                result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, newItem.Id);
+                //if (actionButton == "Save")
+                //    result.Message = "Form saved successfully.";
+                //else if (actionButton == "Submit")
+                //    result.Message = "Form submitted successfully.";
+                //else if (actionButton == "Delete")
+                //    result.Message = "Form deleted successfully.";
+                //else
+                //    result.Message = "Task completed successfully.";
 
             }
             catch (Exception ex)
@@ -167,16 +287,116 @@ namespace Catfish.Controllers.Api
             return result;
         }
 
-        [Route("DetailsUpdate")]
+        // POST api/<ItemController>
+        [Route("EditSubmissionForm")]
         [HttpPost]
-        public ApiResult DetailsUpdate([FromForm] Guid entityId, [FromForm] Guid currentStatus, [FromForm] Guid status, [FromForm] string buttonName)
+        public ApiResult EditSubmission([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid itemId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] Guid status, [FromForm] Guid postActionId, [FromForm] string fileNames = null)
         {
             ApiResult result = new ApiResult();
-            Item item = _submissionService.StatusChange(entityId, currentStatus, status, buttonName);
-            _appDb.Items.Update(item);
-            _appDb.SaveChanges();
-            result.Success = true;
-            result.Message = "Application " + buttonName + " successfully.";
+            try
+            {
+                Item newItem = _submissionService.EditSubmission(value, entityTemplateId, collectionId,itemId, groupId, status, actionButton);
+                //_appDb.Items.Add(newItem);
+                //_appDb.SaveChanges();
+
+                bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
+
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem, postActionId);
+
+                _appDb.Items.Update(newItem);
+                _appDb.SaveChanges();
+
+                result.Success = true;
+
+                result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, itemId);
+                //if (actionButton == "Save")
+                //    result.Message = "Form saved successfully.";
+                //else if (actionButton == "Submit")
+                //    result.Message = "Form submitted successfully.";
+                //else if (actionButton == "Delete")
+                //    result.Message = "Form deleted successfully.";
+                //else
+                //    result.Message = "Task completed successfully.";
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Submission failed.";
+            }
+
+            return result;
+        }
+
+
+        [Route("AutoSave")]
+        [HttpPost]
+        public ApiResult AutoSave([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid itemId)
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                Backup backup = _appDb.Backups.Where(bk => bk.Id == value.Id).FirstOrDefault();
+                if(backup == null)
+                {
+                    backup = new Backup() { Id = value.Id };
+                    _appDb.Backups.Add(backup);
+                }
+
+                backup.SourceData = value.Content;
+                backup.SourceId = itemId;
+                backup.SourceType = "DataItem Backup - EntityTemplateId: " + entityTemplateId.ToString();
+                backup.Timestamp = DateTime.Now;
+                User user = _workflowService.GetLoggedUser();
+                if (user != null)
+                {
+                    backup.UserId = user.Id;
+                    backup.Username = user.UserName;
+                }
+
+                _appDb.SaveChanges();
+
+                result.Success = true;
+                result.Message = "Auto-save successful.";
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Auto-save failed.";
+            }
+
+            return result;
+        }
+
+
+        // POST api/<ItemController>
+        [Route("AddChild")]
+        [HttpPost]
+        public ApiResult AddChild([FromForm] DataItem value, [FromForm] Guid entityTemplateId,  [FromForm] Guid itemId, [FromForm] Guid postActionId,  [FromForm] Guid stateId, [FromForm] Guid buttonId, [FromForm] string fileNames = null)
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                Item newItem = _submissionService.AddChild(value, entityTemplateId, itemId, stateId, buttonId);
+                _appDb.Items.Update(newItem);
+                _appDb.SaveChanges();
+
+                bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
+
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem, postActionId);
+
+
+                result.Success = true;
+                result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, itemId);
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Submission failed.";
+            }
+
             return result;
         }
 
@@ -255,6 +475,36 @@ namespace Catfish.Controllers.Api
                 }
             }
             return Ok(dictFileNames);
+        }
+
+        [Route("{itemId}/{dataItemId}/{fieldId}/{fileName}")]
+        public IActionResult GetFile(Guid itemId, Guid dataItemId, Guid fieldId, string fileName)
+        {
+            try
+            {
+                var item = _appDb.Items.Where(it => it.Id == itemId).FirstOrDefault();
+                var dataItem = item.DataContainer.Where(di => di.Id == dataItemId).FirstOrDefault();
+                var attField = dataItem.Fields.Where(field => field.Id == fieldId).FirstOrDefault() as AttachmentField;
+                var fileRef = attField.Files.Where(fr => fr.FileName == fileName).FirstOrDefault();
+
+                var task = _dotnetAuthorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read });
+                task.Wait();
+
+                if (task.Result.Succeeded)
+                {
+                    string pathName = Path.Combine(ConfigHelper.GetAttachmentsFolder(false), fileRef.FileName);
+                    if (System.IO.File.Exists(pathName))
+                    {
+                        var data = System.IO.File.ReadAllBytes(pathName);
+                        return File(data, fileRef.ContentType, fileRef.OriginalFileName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return NotFound();
         }
     }
 }

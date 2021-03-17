@@ -39,10 +39,10 @@ namespace Catfish.Core.Models.Contents.Workflow
             set => Data.SetAttributeValue("field-id", value);
         }
 
-        public string Role
+        public Guid? RoleId
         {
-            get => Data.Attribute("role").Value;
-            set => Data.SetAttributeValue("role", value);
+            get => GetAttribute("role-id", null as Guid?);
+            set => SetAttribute("role-id", value);
         }
 
         public EmailRecipient(XElement data)

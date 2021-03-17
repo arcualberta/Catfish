@@ -1,9 +1,12 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.CheckboxField
 
-@{
-    @Html.HiddenFor(model => model.ModelType)
-    @Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
 
+@if (Model.Exclude)
+    return;
+
+@{
     var viewData = new Dictionary<string, object>(); ;
     foreach (var key in ViewData.Keys)
     {
@@ -20,4 +23,4 @@
         @Html.CheckBoxFor(model => model.Options[i].Selected, viewData);
         @Html.Raw(string.Format("<span class='radio-option-label'>{0}</span>", Model.Options[i].OptionText.GetConcatenatedContent(" | ")));
     }
-    }
+}

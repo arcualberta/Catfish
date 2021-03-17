@@ -26,6 +26,7 @@
     string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null as string);
     ICatfishAppConfiguration.ePanelLocation searchPanelLocation = _catfishAppConfig.GetDefaultSearchPanelLocation();
     var homepage = WebApp.Site.Sitemap.FirstOrDefault();
+    var pageUrl = WebApp.Url;
     string homepageUrlStartTag = "";
     string homepageUrlEndTag = "";
 
@@ -74,26 +75,26 @@
                     </div>
                     @if (_catfishAppConfig.IsAllowGoogleLogin())
                     {
-                <div class="signinout">
-                    @if (!User.Identity.IsAuthenticated)
-                    {
-                        <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
-                    }
-                    else
-                    {
-                        if (User.IsInRole("SysAdmin"))
-                        {
-                            <button class="btn btn-link" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
-                        }
-                        if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.PageAccess)).Succeeded)
-                        {
-                            <button class="btn btn-link" onclick="window.location.href='/manager/groups'"><span class="fa fa-diamond"> Groups</span></button>
-                        }
-                        <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
-                    }
+                        <div class="signinout">
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login?ret=@pageUrl'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
+                            }
+                            else
+                            {
+                                if (User.IsInRole("SysAdmin"))
+                                {
+                                    <button class="btn btn-link" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                }
+                                if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.PageAccess)).Succeeded)
+                                {
+                                    <button class="btn btn-link" onclick="window.location.href='/manager/groups'"><span class="fa fa-diamond"> Groups</span></button>
+                                }
+                                <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
+                            }
 
 
-                </div>
+                        </div>
                     }
                 </div> @* row*@
 

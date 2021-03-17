@@ -101,10 +101,27 @@ namespace Catfish.Core.Models.Contents.Fields
             foreach (var srcChild in src.Children)
             {
                 var dstChild = ChildTemplate.Clone() as DataItem;
+                dstChild.TemplateId = ChildTemplate.Id;
                 dstChild.Id = srcChild.Id;
                 dstChild.UpdateFieldValues(srcChild);
                 Children.Add(dstChild);
             }
+        }
+
+        /// <summary>
+        /// This method has no meaning for the composite field
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="lang"></param>
+        public override void SetValue(string value, string lang) { }
+
+        /// <summary>
+        /// We have not implemented this method for CompositeFields
+        /// </summary>
+        /// <param name="srcField"></param>
+        public override void CopyValue(BaseField srcField, bool overwrite = false)
+        {
+            
         }
     }
 }

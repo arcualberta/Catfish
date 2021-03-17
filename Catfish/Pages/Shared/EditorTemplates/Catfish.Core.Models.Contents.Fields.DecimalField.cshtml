@@ -3,6 +3,9 @@
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
 
+@if (Model.Exclude)
+    return;
+
 @{
     var viewData = new Dictionary<string, object>(); ;
     foreach (var key in ViewData.Keys)

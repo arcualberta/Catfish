@@ -24,6 +24,7 @@ namespace Catfish.UnitTests
     {
         private protected AppDbContext _db;
         private protected TestHelper _testHelper;
+        string[] YesNoOptionsText = new string[] { "Yes", "No" };
 
         [SetUp]
         public void Setup()
@@ -220,6 +221,9 @@ namespace Catfish.UnitTests
             State moveToDraftCorrectState = workflow.AddState(ws.GetStatus(template.Id, "MoveToDraftCorrect", true));
 
 
+            //Defininig roles
+            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("CentralAdmin", true));
+            WorkflowRole departmentAdmin = workflow.AddRole(auth.GetRole("DepartmentAdmin", true));
 
 
 
@@ -227,22 +231,22 @@ namespace Catfish.UnitTests
             EmailTemplate centralAdminNotification = template.GetEmailTemplate("Central Admin Notification", lang, true);
             centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
             centralAdminNotification.SetSubject("Calendar Change Submission");
-            centralAdminNotification.SetBody("A @Link[calendar chane|@Model] was submitted.\n\nThank you");
+            centralAdminNotification.SetBody("A <a href='@SiteUrl/items/@Item.Id'>calendar change</a> was submitted.\n\nThank you");
 
             EmailTemplate deptAdminSubmissionNotification = template.GetEmailTemplate("Dept. Admin Submission Admin Notification", lang, true);
             deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a new or revised calendar change.", lang);
             deptAdminSubmissionNotification.SetSubject("Calendar Change Submission");
-            deptAdminSubmissionNotification.SetBody("A @Link[calendar change|@Model] was submitted.\n\nThank you");
+            deptAdminSubmissionNotification.SetBody("A <a href='@SiteUrl/items/@Item.Id'>calendar change</a> was submitted.\n\nThank you");
 
             EmailTemplate revisionNotification = template.GetEmailTemplate("Central Admin Revision Notification", lang, true);
             revisionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when central admin make a revision request.", lang);
             revisionNotification.SetSubject("Calendar Change Submission Need to Revise");
-            revisionNotification.SetBody("A @Link[calendar change|@Model] need to revise.\n\nThank you");
+            revisionNotification.SetBody("A <a href='@SiteUrl/items/@Item.Id'>calendar change</a> needs to be revises.\n\nThank you");
 
             EmailTemplate moveToDraftCalendarNotification = template.GetEmailTemplate("Move to Draft Calendar Notification", lang, true);
             moveToDraftCalendarNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when the submission request move to the draft calendar.", lang);
             moveToDraftCalendarNotification.SetSubject("Calendar Change Submission moved to the draft calendar");
-            moveToDraftCalendarNotification.SetBody("A @Link[calendar change|@Model] moved to the draft calendar.\n\nThank you");
+            moveToDraftCalendarNotification.SetBody("A <a href='@SiteUrl/items/@Item.Id'>calendar change</a> has been moved to the draft calendar.\n\nThank you");
 
             //Defininig the Calendar Change Request form
             DataItem calendarChangeForm = template.GetDataItem("Calendar Change Request", true, lang);
@@ -272,10 +276,6 @@ namespace Catfish.UnitTests
             //WorkflowGroup arcGroup = workflow.AddGroup("ARC");
 
 
-            //Defininig roles
-            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("CentralAdmin", true));
-            WorkflowRole departmentAdmin = workflow.AddRole(auth.GetRole("DepartmentAdmin", true));
-
 
             ////Defining users
             //WorkflowUser centralAdminUser = workflow.AddUser("centraladmin@ualberta.ca");
@@ -287,7 +287,7 @@ namespace Catfish.UnitTests
 
             //Defining triggers
             EmailTrigger centralAdminNotificationEmailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
-            centralAdminNotificationEmailTrigger.AddRecipientByEmail(centralAdminEmail);
+            centralAdminNotificationEmailTrigger.AddRecipientByRole(centralAdminRole.Id, centralAdminRole.Value);
             centralAdminNotificationEmailTrigger.AddTemplate(centralAdminNotification.Id, "Central Admin Notification");
 
             EmailTrigger ownerSubmissionNotificationEmailTrigger = workflow.AddTrigger("ToOwnerOnDocumentSubmission", "SendEmail");
@@ -1483,33 +1483,55 @@ namespace Catfish.UnitTests
                 .AppendContent("h4", "Physical Distancing", lang);
 
             string[] optionText = new string[] { "Yes", "No", "N/A" };
-            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true );
-            inspectionForm.CreateField<RadioField>("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText, true);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true )
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            var notes = inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h4", "Personal Hygiene", lang);
-            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText, true);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+           notes = inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Housekeeping", lang);
-            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText, true);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+           notes = inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Training", lang);
-            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText, true);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+           notes= inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
@@ -1529,21 +1551,27 @@ namespace Catfish.UnitTests
                     "alert alert-info");
 
             var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
+            eyeWashFlushed.FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
                 .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
             
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Other", lang);
-            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
           
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+           notes= inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            notes.Cols = 30;
+            notes.Rows = 5;
+
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
 
             //Defininig roles
-            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Safety_Admin", true));
+            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Safety_Inspector", true));
 
 
             // Submitting an inspection form
@@ -1560,8 +1588,10 @@ namespace Catfish.UnitTests
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
             listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(inspectorRole.Id)
-                .AddAuthorizedRole(adminRole.Id);
+                   .AddOwnerAuthorization()
+                   .AddAuthorizedRole(inspectorRole.Id)
+                  .AddAuthorizedRole(adminRole.Id);
+                 
 
             //Detailed submission inspection forms.
             //Inspectors can view their own submissions.
@@ -1584,29 +1614,43 @@ namespace Catfish.UnitTests
 
             // Edit submission related workflow items
             //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
 
             //Submissions can only be edited by admins
             editSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
             //Defining post actions
-            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            //  PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            //   editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+           
+            PostAction editPostActionSubmit = editSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));//(Button Label, ActionName)
+            editPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");//current state, nectStae, buttonLabel
+            //editPostActionSubmit.ValidateInputs = false;
 
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditActionPopUpopUp = editPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            EditActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditActionPopUpopUp.AddButtons("Cancel", "false");
+
+         
 
             // Delete submission related workflow items
             //Defining actions. Only admin can delete a submission
-            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
-            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", nameof(CrudOperations.Delete), "Details");
+            deleteSubmissionAction.Access = GetAction.eAccess.Restricted;
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)    
                 .AddAuthorizedRole(adminRole.Id);
 
+
+            
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
             deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.ValidateInputs = false;
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.","");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Do you really want to delete this submission?","");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -1798,6 +1842,8 @@ namespace Catfish.UnitTests
 
             var dd3 = inspectionForm.CreateField<SelectField>("DD 3", lang, complexOptionVals);
 
+            inspectionForm.CreateField<TextArea>("Testing max chars", lang).SetAttribute("max-words", 5);
+
             //Setting the default value of a text field dynamically to a value selected by a dropdown menu
             ////////var dd3Val = inspectionForm.CreateField<TextField>("DD3 Value", lang);
             ////////dd3Val.Readonly = true;
@@ -1848,7 +1894,7 @@ namespace Catfish.UnitTests
         {
             string lang = "en";
             string templateName = "SAS Application Winter 2021";
-
+            
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -1878,12 +1924,7 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            //Defininig states
-             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
-           State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
-            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
-
-
+            
             //=============================================================================== Defininig SAS form
             DataItem sasForm = template.GetDataItem("SAS Application Form", true, lang);
             sasForm.IsRoot = true;
@@ -1895,20 +1936,20 @@ namespace Catfish.UnitTests
             sasForm.CreateField<InfoSection>(null, null)
                .AppendContent("div", "The Adjudication committee is a multi-disciplinary committee. Please write for someone who does not understand your work and/or field.<br/>Be clear and concise in your explanations, and make sure your justifications are detailed.", lang);
 
-            sasForm.CreateField<TextField>("Applicant Name:", lang, true, true);
-            var applicantEmail = sasForm.CreateField<TextField>("Email Address:", lang, true, true)
+            var applicantName = sasForm.CreateField<TextField>("Applicant Name:", lang, true, true);
+            var applicantEmail = sasForm.CreateField<EmailField>("Email Address:", lang, true, true)
                 .SetDescription("Please use your UAlberta CCID email address.", lang);
 
             string[] departmentList = GetDepartmentList(); 
            
             var dept = sasForm.CreateField<SelectField>("Department:", lang, departmentList, true);
 
-            string[] rank = new string[]{ "Assistant Professor",
+            string[] rankOptions = new string[]{ "Assistant Professor",
                                 "Associate Professor",
                                 "Professor",
                                 "FSO",
                                 "Other"};
-            sasForm.CreateField<SelectField>("Rank:", lang, rank, true);
+            var rank = sasForm.CreateField<SelectField>("Rank:", lang, rankOptions, true);
 
             //==============================================================================CHAIR's Contact Information
             sasForm.CreateField<InfoSection>(null, null)
@@ -1920,7 +1961,7 @@ namespace Catfish.UnitTests
             //if department Chair  -- the chair will be the dean
             //the order of the department chair list have to be in the same order of the list Department above
            
-            string[] chairDept = GetDepartmentChair();
+            string[] chairDept = GetDepartmentChair(false); //FALSE => production
            
 
           
@@ -1948,11 +1989,11 @@ namespace Catfish.UnitTests
             var chairName = sasForm.CreateField<TextField>("Chair's Name:", lang, true);
             chairName.Readonly = true;
              chairName.ValueExpression.AppendReadableValue(chair, delimiter, 0);
-            var chairEmail = sasForm.CreateField<TextField>("Chair's Email:", lang, true);
+            var chairEmail = sasForm.CreateField<EmailField>("Chair's Email:", lang, true);
             chairEmail.Readonly = true;
             chairEmail.ValueExpression.AppendReadableValue(chair, delimiter, 1);
 
-            //========================================================================PROJECT DETAILS
+            //PROJECT DETAILS
 
             sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h1", "Project Details", lang);
@@ -1977,7 +2018,7 @@ namespace Catfish.UnitTests
                       .AppendLogicalExpression(ethicApproval, ComputationExpression.eRelational.EQUAL, ethicApproval.Options[0]); ;
 
 
-            //========================================================================BUDGET DETAILS
+            //===BUDGET DETAILS
 
           sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h1", "Budget Details", lang)
@@ -2000,7 +2041,9 @@ namespace Catfish.UnitTests
 
               .AppendContent("div", "Please specify the travel cost breakdown and attach supporting documentation below.Please enter numerical values only.Do not use $ or, when entering your dollar values.", lang, "alert alert-warning");
             sasForm.CreateField<TextField>("Name of Conference", lang);
-            sasForm.CreateField<DateField>("Date of Conference", lang);
+            sasForm.CreateField<InfoSection>(null,null).AppendContent("h5","Dates of Conference", lang);
+            sasForm.CreateField<DateField>("From:", lang);
+            sasForm.CreateField<DateField>("To:", lang);
             sasForm.CreateField<TextField>("Destination", lang);
             sasForm.CreateField<DateField>("Departure Date", lang);
             sasForm.CreateField<DateField>("Return Date", lang);
@@ -2031,7 +2074,7 @@ namespace Catfish.UnitTests
             sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Explain the significance of this conference to your research and scholarly career. Maximum 250 words.", lang).SetAttribute("cols", 50); ;
 
      
-                       // =================================================================================  RESEARCH AND CREATIVE ACTIVITY
+                       // === RESEARCH AND CREATIVE ACTIVITY
             sasForm.CreateField<InfoSection>(null, null)
                      .AppendContent("h2", "Research and Creative Activity", lang)
                            .AppendContent("h3", "Travel", lang)
@@ -2067,21 +2110,23 @@ namespace Catfish.UnitTests
                        sasForm.CreateField<TextArea>("Justification", lang).SetDescription("<i>Explain how this travel is essential to advancing your research. Maximum 250 words.</i>", lang).SetAttribute("cols", 50); ;
 
 
-                       //=============================================================================== Personnel and Services
-                       sasForm.CreateField<InfoSection>(null, null)
-                           .AppendContent("h1", "Personnel and Services", lang)
-                           .AppendContent("div", "Failure to provide a detailed estimate will result in automatic disqualification of this part of the application.", lang, "alert alert-warning");
+            //=== =================================================================== Personnel and Services
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h1", "Personnel and Services", lang);
+            sasForm.CreateField<InfoSection>(null, null).AppendContent("div", "Failure to provide a detailed estimate will result in automatic disqualification of this part of the application.", lang, "alert alert-warning");
 
                        sasForm.CreateField<TextArea>("Description of personnel to be hired or services to be purchased", lang)
                                           .SetDescription(@"<i>Provide and outline of the type of work to be undertaken, the expected time frame for completing that work, and a comment on why it is essential to your research. Maximum 250 words.</ i>", lang)
                                           .SetAttribute("cols", 50);
-                       sasForm.CreateField<InfoSection>(null, null)
-                          .AppendContent("h3", "Estimate for Hiring Students", lang)
-                          .AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
+            
+            
+            sasForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h3", "Estimate for Hiring Students", lang);
+            sasForm.CreateField<InfoSection>(null, null).AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
                                 Applicants are expected to adhere to the Collective Agreement when calculating salaries for graduate students. Research budgets for casual student labour must reflect the minimum rate (award + salary + benefits)
                                for Doctoral and Masters students.</i>", lang);
 
-                       // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+             // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
                        CompositeField personnelBudget = sasForm.CreateField<CompositeField>("", lang, false);
                        personnelBudget = CreatePersonnelBudgetItemForm(personnelBudget,lang, 0);
                        personnelBudget.SetFieldLabelCssClass("col-md-12")
@@ -2090,8 +2135,8 @@ namespace Catfish.UnitTests
 
 
             sasForm.CreateField<InfoSection>(null, null)
-                          .AppendContent("h3", "Estimates for Contracted Services", lang)
-                          .AppendContent("div", @"For each contracted service, click 'Add' and then provide the requested information. Please describe the services to be provided. Note that you must also attach written estimates for all contracted services. Estimates should be combined into one single PDF document.", lang);
+                          .AppendContent("h3", "Estimates for Contracted Services", lang);
+            sasForm.CreateField<InfoSection>(null, null).AppendContent("div", @"For each contracted service, click 'Add' and then provide the requested information. Please describe the services to be provided. Note that you must also attach written estimates for all contracted services. Estimates should be combined into one single PDF document.", lang);
 
                        //Allow adding multiple PersonnelBudgetItem Form TODO
                        // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
@@ -2103,11 +2148,11 @@ namespace Catfish.UnitTests
                        sasForm.CreateField<AttachmentField>("Contractor Cost Estimates", lang).SetDescription(@"<i>Attach written estimate for contracted services as <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
            [Required if funding requested for professional services]</span>", lang);
                        sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Why are these services required for this project at this time? [Maximum 250 words]", lang).SetAttribute("cols", 50); ;
-            
-                            //====================================================================== EQUIPMENT AND MATERIAL
-                            sasForm.CreateField<InfoSection>(null, null)
-                              .AppendContent("h3", "Equipment and Materials", lang)
-                              .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
+
+            //==== EQUIPMENT AND MATERIAL
+            sasForm.CreateField<InfoSection>(null, null)
+              .AppendContent("h3", "Equipment and Materials", lang);
+            sasForm.CreateField<InfoSection>(null, null).AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
 
                             sasForm.CreateField<TextArea>("Equipment and Material Justification", lang).SetDescription("Provide a description of the materials and equipment you plan to purchase and outline why they are essential to your research project at this time. Maximum 250 words.", lang)
                                .SetAttribute("cols", 50); 
@@ -2125,7 +2170,7 @@ namespace Catfish.UnitTests
             sasForm.CreateField<AttachmentField>("Vendor Cost Estimates", lang).SetDescription(@"<i>Please submit documentation as a <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
                 [Required if funding requested for equipment and materials]</span>", lang);
 
-                                 // =============================================  TEACHING RELEASE
+                                 // ==== TEACHING RELEASE
                                    sasForm.CreateField<InfoSection>(null, null)
                                     .AppendContent("h3", "Teaching Release", lang)
                                     .AppendContent("div", @"<i>List the courses you are scheduled to teach in the academic year for which release time is requested, indicating in which of these courses you wish to be released from teaching. Use the + button to add courses.</i>", lang);
@@ -2182,10 +2227,25 @@ namespace Catfish.UnitTests
                                               ;
             researchTot.Readonly = true;
 
-                     var EqandMatTot =sasForm.CreateField<DecimalField>("Support for Research and Creative Activity Equipment and Materials", lang);
-                      var TRTot = sasForm.CreateField<DecimalField>("Teaching release time", lang);
-                       var PersonnelServiceTot = sasForm.CreateField<DecimalField>("Personnel and Services", lang);
-                            var grandTot = sasForm.CreateField<DecimalField>("TOTAL ASK OF GRANT", lang);
+               var EqandMatTot =sasForm.CreateField<DecimalField>("Support for Research and Creative Activity Equipment and Materials", lang);
+                     EqandMatTot.ValueExpression.AppendCompositeFieldSum(estimateEquip, 1);
+            EqandMatTot.Readonly = true;
+
+         var TRTot = sasForm.CreateField<DecimalField>("Teaching release time", lang);
+            TRTot.ValueExpression.AppendCompositeFieldSum(firstTerm, 2).AppendOperator(ComputationExpression.eMath.PLUS)
+                                        .AppendCompositeFieldSum(secTerm, 2);
+            TRTot.Readonly = true;
+            var PersonnelServiceTot = sasForm.CreateField<DecimalField>("Personnel and Services", lang);
+
+           PersonnelServiceTot.ValueExpression.AppendCompositeFieldSum(personnelBudget, 1).AppendOperator(ComputationExpression.eMath.PLUS)
+                                                    .AppendCompositeFieldSum(contractServ, 1);
+            PersonnelServiceTot.Readonly = true;
+            //var totalEmployeeCount = form.CreateField<IntegerField>("Total Employee Count", lang);
+            //totalEmployeeCount.Readonly = true;
+            //totalEmployeeCount.ValueExpression.AppendCompositeFieldSum(cf, 1);
+
+
+            var grandTot = sasForm.CreateField<DecimalField>("TOTAL ASK OF GRANT", lang);
                         grandTot.ValueExpression
                                 .AppendValue(confTotal)
                                 .AppendOperator(ComputationExpression.eMath.PLUS)
@@ -2204,6 +2264,7 @@ namespace Catfish.UnitTests
                                    var otherFunding = sasForm.CreateField<RadioField>("Have you received any SAS funding in the past 5 years?", lang, optionText, true);
 
                                   CompositeField summaryFund = sasForm.CreateField<CompositeField>("", lang, false);
+                                  summaryFund.SetDescription("<div class='alert alert-info'>If 'Yes' please indicate the award details using this Green 'Add' button.</div>", lang);
                                     summaryFund = CreateFundingSummaryForm(summaryFund, lang, 0);
                                     summaryFund.SetFieldLabelCssClass("col-md-12")
                                         .SetFieldValueCssClass("col-md-12");
@@ -2256,29 +2317,32 @@ namespace Catfish.UnitTests
                             .SetFieldValueCssClass("col-md-12");
 
             //================================================ Submit form ===============================
-            sasForm.CreateField<InfoSection>(null, null)
+            var saveInstructions = sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
-                                       <div>To complete the application later, please click on the Save button below. You will be given a randomly generated reference number for which you need to submit a password. You can retrieve 
-                                      the application using this reference number and the password and complete it later. Unfortunately if you misplace the reference number or forget the password, 
-                                       you will have to start over a new application.</div>
+<div>
+    To save a partially completed application and work on it later, please click on the Save button below. 
+</div>
+<div>
+    If you have completed your application want to submit it, please use the Submit button instead. In order to
+    submit your appplication, you must fill all required fields. Submitted applications cannot be modified.
+</div>
+<div>
+    NOTE: If you successfully saved or submitted the application, your application form should disapear from this page and you
+    whould see a success message. If this wouldn't happen, then your session may be timed out. If so, please KEEP THIS
+    BROWSER TAB OPEN and sign in again with a DIFFERENT tab on the SAME BROWSER. Once you signed in, try to save or submit
+    your application again.
+</div>", lang, "alert alert-info");
 
-                                      <div>If you have completed your application, please use the Submit button below. Submitted applications cannot be modified. 
-                                            <span style='color: Red'>If your submission is successful, you should get a confirmation email</span>. Please check for this email <span style='color:Red'>before</span> you close your browser. 
-                                If you don't see the email, <span style='color: Red'>your application may not have been submitted</span>, so please contact Nancie Hodgson, Research Coordinator (resarts@ualberta.ca).</div>", lang, "alert alert-info");
-
-            //=============================================================================             Defininig roles
-            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
-            WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
+            saveInstructions.EditorOnly = true;
 
 
 
             //Defining email templates
             string emailBody = "";
-            emailBody = "<p>Dear" + ((TextField)chairName).GetValue(lang) + ",</p><br/>" +
-                                    "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: @Link[Sas Application|@Model] to provide your assessment about this application." +
-                                    "You will be required to log in with your CCID email.</p> <br/>" +
-                                    "<p>Thank you.</p>";
+            emailBody = "<p>Dear Chair,</p><br/>" +
+                        "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application." +
+                        "You will be required to log in with your CCID email.</p> <br/>" +
+                        "<p>Thank you.</p>";
 
             EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
@@ -2299,81 +2363,388 @@ namespace Catfish.UnitTests
                                 Thank you.
                                 </p>
                                 <p>
-                                Steve Patten <br />
+                                Marie Carriere <br />
                                 Associate Dean (Research)
                                 </p>";
             applicantSubmissionNotification.SetBody(emailBody);
 
+            //Chair's assessment form with configurations set up to pre-fill applicant information
+            TextField assessFormApplicantName;
+            EmailField assessFormApplicantEmail;
+            SelectField assessFormDept;
+            SelectField assessFormRank;
+            DataItem chairAssessmentForm = CreateChairAssessmentForm(template, rankOptions, 
+                out assessFormApplicantName, 
+                out assessFormApplicantEmail,
+                out assessFormDept,
+                out assessFormRank);
 
+            assessFormApplicantName.GetSourceReference(true).SetValue(sasForm.Id, applicantName.Id);
+            assessFormApplicantEmail.GetSourceReference(true).SetValue(sasForm.Id, applicantEmail.Id);
+            assessFormDept.GetSourceReference(true).SetValue(sasForm.Id, dept.Id);
+            assessFormRank.GetSourceReference(true).SetValue(sasForm.Id, rank.Id);
+
+            DataItem additionalNoteForm = CreateAddNotesForm(template);
+
+            DataItem adjudicationForm = CreateAdjudicationForm(template);
             //Defining triggers
             //Feb 12 2021
-            //EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
-            //applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
-            //applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
+            EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
+            applicantNotificationEmailTrigger.AddRecipientByDataField(sasForm.Id, applicantEmail.Id);
+            applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
 
-            //EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
-            //chairNotificationEmailTrigger.AddRecipientByEmail(((TextField)chairEmail).GetValue("en"));
-            //chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+            EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
+            chairNotificationEmailTrigger.AddRecipientByDataField(sasForm.Id, chairEmail.Id);
+            chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
 
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
+            State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
+            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "ReviewCompleted", true));
+            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "InAdjudication", true));
+            State acceptedState = workflow.AddState(ws.GetStatus(template.Id, "Accepted", true));
+            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
+            // Defining roles
+            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("SAS_Admin", true));
+            WorkflowRole sasChair = workflow.AddRole(auth.GetRole("SAS_Chair", true));
+            WorkflowRole sasAdjudication = workflow.AddRole(auth.GetRole("SAS_Adjudication", true));
 
-            // Submitting an inspection form
-            //Only safey inspectors can submit this form
+            // ================================================
+            // Create submission-instances related workflow items
+            // ================================================
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            
             startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(inspectorRole.Id);
 
-            //Listing inspection forms.
-            //Inspectors can list their own submissions.
-            //Admins can list all submissions.
-            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
-            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(adminRole.Id);
+            //Defining form template
+            startSubmissionAction.AddTemplate(sasForm.Id, "Start Submission Template");
 
+            //Defining post actions
+            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update),
+                                                                            @"<p>Your SAS application saved successfully. 
+                                                                                You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+            savePostAction.ValidateInputs = false;
+            savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
+            
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
+                                                                                 @"<p>Thank you for submitting your SAS application. 
+                                                                                    Your chair has been automatically notified to provide an assessment about your application.
+                                                                                 You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
+            submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
 
-            //Post action for submitting the form
-            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
-
-            //Defining the pop-up for the above submitPostAction action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
-            //Defining trigger refs -- added Feb 12 2021
-          //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
-          //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
+            //Defining trigger refs
+            submitPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
+            submitPostAction.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            
+            // Added state referances
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedDomain("@ualberta.ca");
 
-            // Edit submission related workflow items
+
+            // ================================================
+            // List submission-instances related workflow items
+            // ================================================
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+
+            // Added state referances
+            listSubmissionsAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(inReviewState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca");
+
+            listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddOwnerAuthorization();
+
+            // ================================================
+            // Read child form details submission-instances related workflow items
+            // ================================================
+
             //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            GetAction viewChildFormDetailsAction = workflow.AddAction("ChildForm", nameof(TemplateOperations.ChildFormView), "List");
 
-            //Submissions can only be edited by admins
-            editSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+            viewChildFormDetailsAction.Access = GetAction.eAccess.Restricted;
 
+            // Added state referances
+
+            viewChildFormDetailsAction.AddStateReferances(inReviewState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasChair.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasChair.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction viewDetailsSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+
+            viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            // Added state referances
+            viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddOwnerAuthorization();
+            viewDetailsSubmissionAction.AddStateReferances(inReviewState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(sasChair.Id);
+
+            viewDetailsSubmissionAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(sasChair.Id);
+
+            viewDetailsSubmissionAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddOwnerAuthorization();
+
+            viewDetailsSubmissionAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddOwnerAuthorization();
+            viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasAdjudication.Id)
+                .AddOwnerAuthorization();
+
+            // ================================================
+            // Edit submission-instances related workflow items
+            // ================================================
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
+            editSubmissionAction.Access = GetAction.eAccess.Restricted;
             //Defining post actions
-            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", 
+                                                                                        nameof(TemplateOperations.Update),
+                                                                                        @"<p>Your SAS application saved successfully. 
+                                                                                            You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+            editSubmissionPostActionSave.ValidateInputs = false;
+            PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit",
+                                                                                            nameof(TemplateOperations.Update),
+                                                                                             @"<p>Thank you for submitting your SAS application. 
+                                                                                                Your chair/supervisor has been automatically notified to provide an assessment about your application.
+                                                                                             You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
+
+            //Defining state mappings
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inReviewState.Id, "Submit");
+            //editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, savedState.Id, "Save");
+            editSubmissionPostActionSubmit.AddStateMapping(inReviewState.Id, inReviewState.Id, "Submit");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            //*******To Do*******
+            // Implement a function to restrict the e-mail triggers when SAS Admin updated the document
+            editSubmissionPostActionSubmit.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
+            editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
 
-            // Delete submission related workflow items
-            //Defining actions. Only admin can delete a submission
-            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
-            deleteSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+            //Defining state referances
+            editSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddOwnerAuthorization();
+            editSubmissionAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+
+            // ================================================
+            // Delete submission-instances related workflow items
+            // ================================================
+
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", nameof(CrudOperations.Delete), "Details");
+            deleteSubmissionAction.Access = GetAction.eAccess.Restricted;
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
-            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.ValidateInputs = false;
 
-            //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            //Defining state mappings
+            ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(inReviewState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postAction action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining state referances
+            ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
+            ////////    .AddOwnerAuthorization();
+            deleteSubmissionAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+
+            // ================================================
+            // Review submission-instances related workflow items
+            // ================================================
+
+            GetAction reviewSubmissionAction = workflow.AddAction("Review Submission", nameof(TemplateOperations.Review), "Details");
+            reviewSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining form template
+            reviewSubmissionAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
+
+            //Defining post actions
+            PostAction ReviewSubmissionPostAction = reviewSubmissionAction.AddPostAction("Start Review", 
+                                                                                nameof(TemplateOperations.Update),
+                                                                                @"<p>Chair's review assessment submitted successfully. 
+                                                                                You can view the document and your review by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+
+            //Defining state mappings
+            ReviewSubmissionPostAction.AddStateMapping(inReviewState.Id, reviewCompletedState.Id, "Submit Assessment");
+
+            //Defining the pop-up for the above postAction action
+            PopUp reviewSubmissionActionPopUpopUp = ReviewSubmissionPostAction.AddPopUp("Confirmation", "Confirm the Assessment?", "Once submitted, you cannot resubmit an assessment.");
+            reviewSubmissionActionPopUpopUp.AddButtons("Yes, complete", "true");
+            reviewSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            reviewSubmissionAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasChair.Id);
+
+
+            // ================================================
+            // Change State submission-instances related workflow items
+            // ================================================
+
+            GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
+            changeStateAction.Access = GetAction.eAccess.Restricted;
+
+            //Define Revision Template
+            changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
+            //Defining post actions
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+
+            //Defining state mappings
+            changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
+            changeStateActionPopUpopUp.AddButtons("Yes", "true");
+            changeStateActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining states and their authorizatios
+            changeStateAction.GetStateReference(reviewCompletedState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+            changeStateAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasChair.Id);
+            changeStateAction.GetStateReference(inAdjudicationState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+            // ========================================================
+            // Adjudication Decision related workflow items
+            // ========================================================
+            GetAction adjudicationDecisionAction = workflow.AddAction("Adjudication Decision", nameof(TemplateOperations.ChangeState), "Details");
+
+            //Define Revision Template
+            adjudicationDecisionAction.AddTemplate(adjudicationForm.Id, "Adjudication Decision");
+
+            PostAction adjudicationDecisionPostAction = adjudicationDecisionAction.AddPostAction("Adjudication Decision", "Save", @"<p>Application final decision made successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                );
+            adjudicationDecisionPostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
+            adjudicationDecisionPostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp adjudicationDecisionPopUpopUp = adjudicationDecisionPostAction.AddPopUp("Confirmation", "Do you really want to make a decision ? ", "Once changed, you cannot revise this document.");
+            adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
+            adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
+
+            //////adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
+            //////    .AddAuthorizedRole(sasAdjudication.Id);
+            adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+
+            //Post action for submitting the form
+            // PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            //submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            //PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            //submitActionPopUp.AddButtons("Yes, submit", "true");
+            //submitActionPopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs -- added Feb 12 2021
+            //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
+            //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
+
+            // Edit submission related workflow items
+            //Defining actions
+            //GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Submissions can only be edited by admins
+            //editSubmissionAction.AddStateReferances(inReviewState.Id)
+            //  .AddAuthorizedRole(sasAdmin.Id);
+
+            //Defining post actions
+            //PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            //editPostActionSave.AddStateMapping(inReviewState.Id, inReviewState.Id, "Save");
+
+
+            //// Delete submission related workflow items
+            ////Defining actions. Only admin can delete a submission
+            //GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            //deleteSubmissionAction.AddStateReferances(inReviewState.Id)
+            //    .AddAuthorizedRole(sasAdmin.Id);
+
+            ////Defining post actions
+            //PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            //deleteSubmissionPostAction.AddStateMapping(inReviewState.Id, deleteState.Id, "Delete");
+
+            ////Defining the pop-up for the above postActionSubmit action
+            //PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            //deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            //deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
 
             db.SaveChanges();
@@ -2386,47 +2757,77 @@ namespace Catfish.UnitTests
         private string[] GetDepartmentList()
         {
             string[] dept =new string[] { "Anthropology",
-                                                "Art & Design",
-                                                "Drama",
-                                                "East Asian Studies",
-                                                "Economics",
-                                                "English and Film Studies",
-                                                "History and Classics",
-                                                "Linguistics",
-                                                "Modern Languages and Cultural Studies (MLCS)",
-                                                "Music",
-                                                "Philosophy",
-                                                "Political Science",
-                                                "Psychology",
-                                                "Sociology",
-                                                "Women's and Gender Studies",
-                                                "Media and Technology Studies",
-                                                "Arts Resources Centre" };
+                                            "Art & Design",
+                                            "Drama",
+                                            "East Asian Studies",
+                                            "Economics",
+                                            "English and Film Studies",
+                                            "History and Classics",
+                                            "Linguistics",
+                                            "Modern Languages and Cultural Studies (MLCS)",
+                                            "Music",
+                                            "Philosophy",
+                                            "Political Science",
+                                            "Psychology",
+                                            "Sociology",
+                                            "Women's and Gender Studies",
+                                            "Media and Technology Studies (MTS)",
+                                            "Arts Resources Centre"
+                                        };
 
             return dept;
         }
 
-        private string[] GetDepartmentChair()
+        private string[] GetDepartmentChair(bool test = true)
         {
-            string[] chairDept = new string[] {
-                                                "Pamela Willoughby: pwilloug@ualberta.ca",
-                                                "Aidan Rowe: rowe1@ualberta.ca",
-                                                "Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
-                                                "Christopher Lupke: lupke@ualberta.ca",
-                                                 "Rick Szostak: rszostak@ualberta.ca",
-                                                 "Cecily Devereux: devereux@ualberta.ca",
-                                                 "Ryan Dunch: rdunch@ualberta.ca",
-                                                 "Herb Colston: colston@ualberta.ca",
-                                                 "Alla Nedashkiviska: allan@ualberta.ca",
-                                                 "Patricia Tao: ptao@ualberta.ca",
-                                                 "Marie-Eve Morin: mmorin1@ualberta.ca",
-                                                 "Catherine Kellogg: ckellogg@ualberta.ca",
-                                                 "Anthony Singhal: asinghal@ualberta.ca",
-                                                 "Sara Dorow: sdorow@ualberta.ca",
-                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
-                                                 "Astrid Ensslin: ensslin@ualberta.ca",
-                                                 "arcAdmin : mruaini@ualberta.ca",
-                                                "Steve Patten : spatten@ualberta.ca"};//Dean have to be at the end!!
+            string[] chairDept;
+
+            if (test)
+            {
+                chairDept = new string[] {
+                                            "Pamela Willoughby: arctech@ualberta.ca",
+                                            "Aidan Rowe: arctech@ualberta.ca",
+                                            "Melanie Dreyer-Lude : arctech@ualberta.ca",
+                                            "Christopher Lupke: arctech@ualberta.ca",
+                                            "Rick Szostak: arctech@ualberta.ca",
+                                            "Cecily Devereux: arctech@ualberta.ca",
+                                            "Ryan Dunch: arctech@ualberta.ca",
+                                            "Herb Colston: arctech@ualberta.ca",
+                                            "Alla Nedashkiviska: arctech@ualberta.ca",
+                                            "Patricia Tao: arctech@ualberta.ca",
+                                            "Marie-Eve Morin: arctech@ualberta.ca",
+                                            "Catherine Kellogg: arctech@ualberta.ca",
+                                            "Anthony Singhal: arctech@ualberta.ca",
+                                            "Sara Dorow: arctech@ualberta.ca",
+                                            "Michelle Meagher: arctech@ualberta.ca",
+                                            "Kamal at Ranaweera (Chair): kamal@ranaweera.ca",
+                                            "arcAdmin : ouslsaba@gmail.com",
+                                            "Kamal at Gmail (Dean) : kamal.ranaweera@gmail.com"};//Dean have to be at the end!!
+            }
+            else
+            {
+                chairDept = new string[] {
+                                            "Pamela Willoughby: pwilloug@ualberta.ca",
+                                            "Aidan Rowe: rowe1@ualberta.ca",
+                                            "Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
+                                            "Christopher Lupke: lupke@ualberta.ca",
+                                                "Rick Szostak: rszostak@ualberta.ca",
+                                                "Cecily Devereux: devereux@ualberta.ca",
+                                                "Ryan Dunch: rdunch@ualberta.ca",
+                                                "Herb Colston: colston@ualberta.ca",
+                                                "Alla Nedashkiviska: allan@ualberta.ca",
+                                                "Patricia Tao: ptao@ualberta.ca",
+                                                "Marie-Eve Morin: mmorin1@ualberta.ca",
+                                                "Catherine Kellogg: ckellogg@ualberta.ca",
+                                                "Anthony Singhal: asinghal@ualberta.ca",
+                                                "Sara Dorow: sdorow@ualberta.ca",
+                                                "Michelle Meagher: mmmeaghe@ualberta.ca",
+                                                "Natasha Hurley: nhurley@ualberta.ca",
+                                                "arcAdmin : iwickram@ualberta.ca",
+                                            "Steve Patten : artsrnd@ualberta.ca" //Dean have to be at the end!!
+                                        };
+            }
+
             return chairDept;
         }
 
@@ -2448,7 +2849,7 @@ namespace Catfish.UnitTests
           
             comField.CreateChildTemplate("Teaching Release", "Teaching Release", lang);
             comField.ChildTemplate.CreateField<TextField>("Couse Name", lang, false);
-            comField.ChildTemplate.CreateField<TextField>("Release Required?", lang, false);
+            comField.ChildTemplate.CreateField<RadioField>("Release Required?", lang, new string[] { "yes", "No" }, true);
             comField.ChildTemplate.CreateField<DecimalField>("Amount Requested ($)", lang, false);
             comField.Min = min;
             comField.Max = max;//0 means unlimited
@@ -2461,7 +2862,7 @@ namespace Catfish.UnitTests
             comField.CreateChildTemplate("Collaborator", "Collaborator Information", lang);
 
             comField.ChildTemplate.CreateField<TextField>("Full Name", lang, false);
-            comField.ChildTemplate.CreateField<TextField>("Email Address", lang, false);
+            comField.ChildTemplate.CreateField<EmailField>("Email Address", lang, false);
             comField.Min = min;
             comField.Max = max;//0 means unlimited
             comField.AllowMultipleValues = true;
@@ -2486,6 +2887,164 @@ namespace Catfish.UnitTests
             comField.AllowMultipleValues = true;
             comField.InsertChildren();
             return comField;
+        }
+
+        private DataItem CreateChairAssessmentForm(ItemTemplate template, string[] rankOptions,
+            out TextField applicantName, 
+            out EmailField applicantEmail,
+            out SelectField dept,
+            out SelectField rank)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("Chair's Assessment Form", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for Chair's Assessment", lang);
+
+            applicantName = form.CreateField<TextField>("Applicant Name", lang, true); //ideally this field will be automatically filled from the "Applicant Name" field on the main form
+            applicantEmail = form.CreateField<EmailField>("Applicant Email", lang, true);//ideally this field will be automatically filled from the "Applicant Email" field on the main form
+            string[] departmentList = GetDepartmentList();
+
+            dept = form.CreateField<SelectField>("Department:", lang, departmentList, true);
+
+            ////string[] rankOptions = new string[]{ "Assistant Professor",
+            ////                    "Associate Professor",
+            ////                    "Professor",
+            ////                    "FSO",
+            ////                    "Other"};
+            rank = form.CreateField<SelectField>("Rank:", lang, rankOptions, true);
+
+            form.CreateField<TextArea>("Comment on the feasibility of the project and its importance at this time in the applicant’s career.", lang, true).SetAttribute("cols", 50);
+
+            string[] priorities = new string[]{ "Top Priority",
+                                "High Priority",
+                                "Moderate Priority",
+                                "Low Priority",
+                                "Should Not Be Funded"};
+            form.CreateField<RadioField>("Please rank the importance of the research or conference travel to the applicant’s career.", lang, priorities, true);
+            form.CreateField<RadioField>("Please rank the importance of the venue (for conference travel only).", lang, priorities, true);
+            string[] YNOptions = new string[]{ "Yes",
+                                "No"};
+
+            var reqTeachingRelease = form.CreateField<RadioField>("Has the applicant requested a teaching release?", lang, YNOptions, true);
+            string[] teachingLoad = GeTeachingLoadList();
+
+            // .VisibilityCondition
+            //   .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            var tLoad = form.CreateField<RadioField>("Teaching Load", lang, teachingLoad);
+                            tLoad.VisibilityCondition
+                        .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+                        tLoad.RequiredCondition
+                         .AppendLogicalExpression(reqTeachingRelease,ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+
+            var aLoad = form.CreateField<RadioField>("Administration Load", lang, teachingLoad);
+            aLoad.VisibilityCondition
+        .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            aLoad.RequiredCondition
+             .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+
+            var comment = form.CreateField<TextArea>("Comment on why teaching release time is urgent and essential at this time in the applicant’s research agenda and career.", lang);
+            comment.VisibilityCondition
+        .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            comment.RequiredCondition
+             .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            comment.Cols = 30;
+            comment.Rows = 5;
+
+            var comment2 = form.CreateField<TextArea>("Please specify any other teaching relief the applicant receives (i.e., SSHRC, Administrative, etc.)", lang);
+            comment2.VisibilityCondition
+        .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            comment2.RequiredCondition
+             .AppendLogicalExpression(reqTeachingRelease, ComputationExpression.eRelational.EQUAL, reqTeachingRelease.Options[0]);
+            comment2.Cols = 30;
+            comment2.Rows = 5;
+
+
+
+            return form;
+        }
+
+        private string[] GeTeachingLoadList(bool test = false)
+        {
+            string[] teachingLoad = new string[] { "1(Light)", "2", "3", "4", "5", "6", "7(Heavy)" };
+
+            return teachingLoad;
+        }
+
+            private DataItem CreateAddNotesForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("SAS Notes Form", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for SAS Notes Form", lang);
+
+            
+            form.CreateField<TextArea>("Notes", lang, false).SetAttribute("cols", 50);
+
+           
+            return form;
+        }
+
+        private DataItem CreateAdjudicationForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("Adjudication Result", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for Adjudication Result Form", lang);
+
+            string[] decisions = new string[]{ "Approved",
+                                "Declined"};
+
+            form.CreateField<RadioField>("Decision", lang, decisions, true);
+            form.CreateField<DecimalField>("Total Awarded", lang, false);
+            form.CreateField<TextArea>("Comments", lang, true).SetAttribute("cols", 50);
+
+
+            return form;
+        }
+        private DataItem CreateAddRankingForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("Ranking", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for SAS Ranking Form", lang);
+
+          
+            form.CreateField<EmailField>("Reviewer Email", lang, true);
+            form.CreateField<IntegerField>("Ranking", lang, true).SetDescription("Please score this submission with a value between 0 and 100", lang);
+            form.CreateField<TextArea>("Comments", lang, true).SetAttribute("cols", 50);
+
+
+            return form;
+        }
+
+        private DataItem CreateSASFinalReportForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("Final Report Form", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for SAS Final report", lang);
+
+            form.CreateField<InfoSection>(null, null)
+                .AppendContent("div", "Once your SAS or Conference Fund grant has been exhausted, and no later than the final report due date indicated in your notice of award, you must submit a final report to the Associate Dean, Research.", lang)
+                .AppendContent("div", "Faculty members will not be eligible for further SAS or Conference Fund grants if there are outstanding final reports from previous grants.", lang);
+
+            form.CreateField<TextField>("Name", lang, true);
+            form.CreateField<EmailField>("Email", lang, false);
+            string[] departmentList = GetDepartmentList();
+
+            form.CreateField<SelectField>("Department:", lang, departmentList, false);
+
+            form.CreateField<InfoSection>(null, null)
+                .AppendContent("div", "Your report should briefly outline how the funding received benefitted the project for which funding was granted.", lang);
+
+
+            form.CreateField<TextArea>("Report Notes", lang, true).SetAttribute("cols", 50);
+
+
+            form.CreateField<AttachmentField>("Attachment", lang).SetDescription("Maximum file size: 50 MB", lang);
+           
+            return form;
         }
 
         [Test]
@@ -2737,6 +3296,7 @@ namespace Catfish.UnitTests
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
 
+
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\compositeFormFieldTest_generared.xml");
@@ -2748,6 +3308,8 @@ namespace Catfish.UnitTests
         [Test]
         public void GapConferenceTest()
         {
+            //OTHER EXTRA FORMS : "Add Notes", "Adjudication" and "Ranking" forms same with SAS ones
+            // cahirAssesment and adviser assessment form
             string lang = "en";
             string templateName = "Conference Fund Application - Winter 2021";
 
@@ -2780,10 +3342,10 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            //Defininig states
-            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
-            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
-            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+            ////Defininig states
+            //State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            //State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            //State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
 
             //=============================================================================== Defininig SAS form
@@ -2794,29 +3356,46 @@ namespace Catfish.UnitTests
             // ====================================================== HOST
             confForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h1", "Host", lang);
-           
-            confForm.CreateField<TextField>("Applicant Name:", lang, true, true);
-            var applicantEmail = confForm.CreateField<TextField>("Email Address:", lang, true, true)
+
+            var applicantName = confForm.CreateField<TextField>("Applicant Name:", lang, true, true);
+            var applicantEmail = confForm.CreateField<EmailField>("Email Address:", lang, true, true)
                 .SetDescription("Please use your UAlberta CCID email address.", lang);
 
             string[] departmentList = GetDepartmentList();
-
             var dept = confForm.CreateField<SelectField>("Department:", lang, departmentList, true);
 
-            string[] appCat = new string[]{ "Faculty",
-                               
-                                "Student"};
+            string[] appCat = new string[]{ "Faculty", "Student"};
             var applicantCat = confForm.CreateField<RadioField>("Applicant Category:", lang, appCat, true);
+            applicantCat.FieldValueCssClass = "radio-inline";
+
+            //Additional student info, if appCat is Student
+            var supervisor = confForm.CreateField<TextField>("Supervisor", lang, false);
+            supervisor.VisibilityCondition
+                .AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL,
+                    applicantCat.Options.Where(op => op.OptionText.GetContent(lang) == appCat[1]).First());
+            supervisor.RequiredCondition
+                .AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL,
+                    applicantCat.Options.Where(op => op.OptionText.GetContent(lang) == appCat[1]).First());
+
+            var supervisorEmail = confForm.CreateField<EmailField>("Supervisor's Email", lang, false);
+            supervisorEmail.VisibilityCondition
+                .AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL,
+                    applicantCat.Options.Where(op => op.OptionText.GetContent(lang) == appCat[1]).First());
+            supervisorEmail.RequiredCondition
+                .AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL,
+                    applicantCat.Options.Where(op => op.OptionText.GetContent(lang) == appCat[1]).First());
+
 
             //==============================================================================CHAIR's Contact Information
-          
+
             string[] optionText = new string[] { "Yes", "No" };
             var isChair = confForm.CreateField<RadioField>("Are you the Department Chair?", lang, optionText, true);
             isChair.VisibilityCondition.AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL, applicantCat.Options[0]);
+            isChair.FieldValueCssClass = "radio-inline";
             //if department Chair  -- the chair will be the dean
             //the order of the department chair list have to be in the same order of the list Department above
 
-            string[] chairDept = GetDepartmentChair();
+            string[] chairDept = GetDepartmentChair(false); //FALSE => production
 
 
 
@@ -2861,50 +3440,194 @@ namespace Catfish.UnitTests
             confForm.CreateField<DateField>("End Date:", lang, true);
             confForm.CreateField<TextField>("Sponsor:", lang, true, true).SetDescription("What is the sponsoring organization?", lang);
 
-            confForm.CreateField<RadioField>("Is this a regularly held conference?", lang, optionText, true);
+            confForm.CreateField<RadioField>("Is this a regularly held conference?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline";
 
-            //TODO -- TABLE FIELD
+            //TABLE FIELD
+            TableField tf = confForm.CreateField<TableField>("Past Occurrences", lang, false, 1, 3);
+            tf.SetDescription("Where have the last 3 occurrences of this conference been held?", lang);
+            tf.FieldLabelCssClass = "col-md-12";
+            tf.FieldValueCssClass = "col-md-12";
 
-            confForm.CreateField<TextArea>("Conference Description:", lang, true, true)
-              .SetDescription(@"Describe your conference and explain the nature, purpose, and importance of the conference, topics to be addressed at the conference, relation to UAlberta, role of trainees, how the Faculty of Arts will be recognized, and how these conference funds will be used to support your activities and enhance your conference. (Maximum 250 words)", lang);
+            tf.TableHead.CreateField<TextField>("City, Country", lang);
+            tf.TableHead.CreateField<IntegerField>("Year of Conference", lang);
+            tf.TableHead.CreateField<DecimalField>("Total Conference Budget", lang);
+            tf.AppendRows(1);
 
+            var confDescField = confForm.CreateField<TextArea>("Conference Description:", lang, true, true);
+            confDescField.SetDescription(@"Describe your conference and explain the nature, purpose, and importance of the conference, topics to be addressed at the conference, relation to UAlberta, role of trainees, how the Faculty of Arts will be recognized, and how these conference funds will be used to support your activities and enhance your conference. (Maximum 250 words)", lang);
+            confDescField.Cols = 75;
 
             // ====================================     ANTICIPATE ATTENDANCES 
             confForm.CreateField<InfoSection>(null, null)
               .AppendContent("h1", "Anticipated Attendance", lang);
 
-            //TODO TABLE FIELD -- ATTENDEE
+            // ATTENDEE  
+            string[] attendeeCat = new string[] { "Faculty", "Students", "Other" };
+
+            TableField atf = confForm.CreateField<TableField>("Attendees", lang, true, attendeeCat.Length, attendeeCat.Length);
+            atf.FieldLabelCssClass = "col-md-12";
+            atf.FieldValueCssClass = "col-md-12";
+            atf.TableHead.CreateField<InfoSection>("", lang);
+            var fromUofA =atf.TableHead.CreateField<IntegerField>("U of A", lang);
+            var fromCanada = atf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            var fromOtherCountries =atf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            var totPeople = atf.TableHead.CreateField<IntegerField>("Total # of People", lang);
+            totPeople.Readonly = true;
+            totPeople.ValueExpression.AppendValue(fromUofA)
+            .AppendOperator(ComputationExpression.eMath.PLUS)
+            .AppendValue(fromCanada)
+            .AppendOperator(ComputationExpression.eMath.PLUS)
+            .AppendValue(fromOtherCountries);
+            var regFee =  atf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
+            var totRegFee = atf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
+            totRegFee.ValueExpression.AppendValue(totPeople)
+                .AppendOperator(ComputationExpression.eMath.MULT)
+                .AppendValue(regFee);
+            totRegFee.Readonly = true;
+            //NOTE: we MUST finish defining all columns before setting any column values.
+            atf.SetColumnValues(0, attendeeCat, lang);
+            atf.AllowAddRows = false;
 
             //TODO TABLE FIELD  -- SPEAKERS and PRESENTERS
+            string[] speakerCat = new string[] { "Keynote Speakers", "Paper Presenters"};
+
+            TableField stf = confForm.CreateField<TableField>("Speakers and Presenters*", lang, true, speakerCat.Length, speakerCat.Length);
+            stf.FieldLabelCssClass = "col-md-12";
+            stf.FieldValueCssClass = "col-md-12";
+            stf.TableHead.CreateField<InfoSection>("", lang);
+           var uofaSpeakers =  stf.TableHead.CreateField<IntegerField>("U of A", lang);
+            var canadaSpeakers = stf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            var otherSpeakers = stf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            var totSpeakers = stf.TableHead.CreateField<IntegerField>("Total", lang);
+            totSpeakers.ValueExpression
+                       .AppendValue(uofaSpeakers)
+                       .AppendOperator(ComputationExpression.eMath.PLUS)
+                       .AppendValue(canadaSpeakers)
+                       .AppendOperator(ComputationExpression.eMath.PLUS)
+                       .AppendValue(otherSpeakers);
+            totSpeakers.Readonly = true;
+
+            //NOTE: we MUST finish defining all columns before setting any column values.
+            stf.SetColumnValues(0, speakerCat, lang);
+            stf.AllowAddRows = false;
+
+            TableRow stfooter = stf.AppendRow(TableField.eRowTarget.Footer);
+            stfooter.Fields[0].SetValue("Total", lang);
+            stfooter.SetReadOnly();
+            for (var i = 1; i < stfooter.Fields.Count; ++i)
+            {
+                stfooter.Fields[i].ValueExpression.Clear();
+                stfooter.Fields[i].ValueExpression.AppendColumnSum(stf, i);
+            }
+
+          
+
+
 
             // ====================================     OTHER FUNDING SUPORT
             confForm.CreateField<InfoSection>(null, null)
               .AppendContent("h1", "Other Funding Support For This Conference", lang)
              .AppendContent("div", "<i>(Provide details of other funding applied for and/or confirmed.)</i>", lang);
 
-            //TODO TABLE FIELD -- GRAND TOTAL
+            // TABLE FIELD -- GRAND TOTAL   TODO : NEED TO REVISIT!!!!!!!!
+
+            TableField ftf = confForm.CreateField<TableField>("", lang, true, 1, 10);
+            ftf.FieldLabelCssClass = "col-md-12";
+            ftf.FieldValueCssClass = "col-md-12";
+
+            ftf.TableHead.CreateField<TextField>("Source of Funding", lang);
+            ftf.TableHead.CreateField<RadioField>("Is Confirmed?", lang, new string[] { "Yes", "No" })
+                .FieldValueCssClass = "";
+
+           var amountReq =  ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
+           var amountConfirm =  ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);
+
+            TableRow ffooter = ftf.AppendRow(TableField.eRowTarget.Footer);
+            ffooter.Fields[0].SetValue("Grand Total", lang);
+            ffooter.SetReadOnly();
+            //only to target last col for Grand Total
+            for (var i = ffooter.Fields.Count-2; i < ffooter.Fields.Count; ++i)
+            {
+             //   The footer doesn't need value expressions inherited 
+              //  from the header elements, so we clear them first
+                ffooter.Fields[i].ValueExpression.Clear();
+
+              //  Set the column - sum as the value expression.
+                ffooter.Fields[i].ValueExpression.AppendColumnSum(ftf, i);
+            }
+
+            //The third column in the footer is meaningless, so we exclude it from rendering
+            ffooter.Fields[1].Exclude = true;
+
+
+            ftf.AppendRows(1);
+            ftf.AllowAddRows = true;
 
             // ====================================     ESTIMATED CONFERENCE BUDGET
-            confForm.CreateField<InfoSection>(null, null)
-              .AppendContent("h1", "ESTIMATED CONFERENCE BUDGET", lang)
-             .AppendContent("div", "<i>(Please add more lines if necessary)</i>", lang);
+            ////KR commened the following and added it as the table name and description
+            //confForm.CreateField<InfoSection>(null, null)
+            //  .AppendContent("h1", "ESTIMATED CONFERENCE BUDGET", lang);
+            //confForm.CreateField<InfoSection>(null, null).AppendContent("div", "<i>(Please add more lines if necessary)</i>", lang);
 
+            string[] estConfBud = new string[] { "Total Funding From Other Sources", "Registration Fees" };
+
+            TableField ctf = confForm.CreateField<TableField>("ESTIMATED CONFERENCE BUDGET", lang, true, estConfBud.Length, estConfBud.Length);
+            ctf.Description.SetContent("Please add more lines if necessary");
+            ctf.FieldLabelCssClass = "col-md-12";
+            ctf.FieldValueCssClass = "col-md-12";
+
+            ctf.TableHead.CreateField<InfoSection>("", lang, "", "Revenue");
+
+            ctf.TableHead.CreateField<DecimalField>("Estimated ($)", lang);
+
+
+            TableRow cfooter = ctf.AppendRow(TableField.eRowTarget.Footer);
+            cfooter.Fields[0].SetValue("Total Revenue", lang);
+            cfooter.SetReadOnly();
+            for (var i = 1; i < cfooter.Fields.Count; ++i)
+                cfooter.Fields[i].ValueExpression.AppendColumnSum(ctf, i);
+
+            ctf.SetColumnValues(0, estConfBud, lang);
+            ctf.AllowAddRows = false;
+
+            ////
+            TableField cctf = confForm.CreateField<TableField>("", lang, true, 1, 10);
+            cctf.FieldLabelCssClass = "col-md-12";
+            cctf.FieldValueCssClass = "col-md-12";
+            cctf.TableHead.CreateField<InfoSection>("", lang);
+            cctf.TableHead.CreateField<TextField>("Itemized Costs", lang);
+
+            cctf.TableHead.CreateField<DecimalField>("Estimated Cost ($)", lang);
+
+
+            TableRow ccfooter = cctf.AppendRow(TableField.eRowTarget.Footer);
+            ccfooter.Fields[0].SetValue("Total Cost", lang);
+            ccfooter.SetReadOnly();
+            ccfooter.Fields[1].Exclude = true;
+            ccfooter.Fields[2].ValueExpression.Clear();
+            ccfooter.Fields[2].ValueExpression.AppendColumnSum(cctf, 2);
+
+                
+
+            cctf.AllowAddRows = true;
+            cctf.AppendRows(1);
             //TODO TABLE FIELD -- GRAND TOTAL
 
             // ====================================     FUNDING REQUESTED
             confForm.CreateField<InfoSection>(null, null)
               .AppendContent("h1", "FUNDING REQUESTED:", lang)
-             .AppendContent("div", @"<ul><li>Full Conference Fund Grants - <b>Up to $2,000:</b> Full Conference Fund grants are for conferences, symposia, or colloquia held on campus or in Edmonton</li>
+             .AppendContent("div", @"<ul><li>Full Conference Fund Grants - <b>Up to $2,000:</b> Full Conference Fund grants are for multi-days conferences, symposia, or colloquia held on campus or in Edmonton</li>
                                           <li>Partial Conference Fund Grants - <b>Up to $1,000:</b> Partial Conference Fund grants are for conferences, symposia, or colloquia with three or fewer speakers for one day or less, particularly those focused on a single theme and targeted to a modest, essentially local audience.</li></ul>", lang);
 
             confForm.CreateField<DecimalField>("Please enter the amount requested from the Faculty of Arts Conference Fund: ($)", lang);
             confForm.CreateField<AttachmentField>("Supporting Documentation", lang)
-                                       .SetDescription(@"Any existing call for proposals, draft program, or other such documents must be attached to this application as supporting documentation.
+                                       .SetDescription(@"Supporting documentation is required with all applications. Call for proposals, draft program, keynote speaker confirmation, and other such documents must be attached to this application as supporting documentation.
 All required supporting documentation must be <span style='color: Red;'><b>combined into a single PDF</b></span> and submitted here. Maximum file size: 50 MB", lang);
 
             //TODO TABLE FIELD -- GRAND TOTAL
             //================================================ Submit form ===============================
-            confForm.CreateField<InfoSection>(null, null)
+            var saveOptionsInfo = confForm.CreateField<InfoSection>(null, null)
                 .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
                                        <div>To complete the application later, please click on the Save button below. You will be given a randomly generated reference number for which you need to submit a password. You can retrieve 
                                       the application using this reference number and the password and complete it later. Unfortunately if you misplace the reference number or forget the password, 
@@ -2913,99 +3636,656 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                                       <div>If you have completed your application, please use the Submit button below. Submitted applications cannot be modified. 
                                             <span style='color: Red'>If your submission is successful, you should get a confirmation email</span>. Please check for this email <span style='color:Red'>before</span> you close your browser. 
                                 If you don't see the email, <span style='color: Red'>your application may not have been submitted</span>, so please contact Nancie Hodgson, Research Coordinator (resarts@ualberta.ca).</div>", lang, "alert alert-info");
+            saveOptionsInfo.EditorOnly = true;
 
-            //=============================================================================             Defininig roles
-            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
-            WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
+            ////=============================================================================             Defininig roles
+            //WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            //WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+            //WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
 
 
 
             //Defining email templates
-            // string emailBody = "";
-            //emailBody =	
-            
-				//<p>Dear @chairName</p>
-				//<br/>
-				//<p>A @applicant from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application.
-    //            You will be required to log in with your CCID email.</p> 
-				
-				
-				//<br/>
-				//<p>Thank you.</p>";
+             string emailBody = "";
+            emailBody = @"<p>Dear Chair,</p><br/>" +
+                          "<p> A faculty member from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'> Conference Fund Application</a> to provide your assessment about this application."+
+                            "You will be required to log in with your CCID email.</p><br/> <p> Thank you.</p>"; 
+      
 
             EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
-            chairEmailTemplate.SetSubject("SAS Application");
-            chairEmailTemplate.SetBody("emailBody");
+            chairEmailTemplate.SetSubject("Conference Fund Application");
+            chairEmailTemplate.SetBody(emailBody);
 
+            //supervisorEmail
+            emailBody = "<p>Dear Supervisor,</p><br/>" +
+               "<p> A student from your department has applied for a Conference Fund grant. Please click on <a href='@SiteUrl/items/@Item.Id'>this link</a> to provide your assessment about this application." +
+                   "You will be required to log in with your CCID email.</p><br/><p>Thank you.</p>";
+           
             EmailTemplate advisorEmailTemplate = template.GetEmailTemplate("Advisor Email Template", lang, true);
-            advisorEmailTemplate.SetSubject("SAS Application");
-            advisorEmailTemplate.SetBody("emailBody");
-
-            //emailBody= "<p>Dear @advisorName</p>
-            //    < br />
-
-            //    < p > A student from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application.
-
-            //       You will be required to log in with your CCID email.</ p >
-
-
-
-            //       < br />
-
-            //       < p > Thank you.</ p > "
-
+            advisorEmailTemplate.SetSubject("Conference Fund Application");
+            advisorEmailTemplate.SetBody(emailBody);
 
 
             EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
             applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
-            applicantSubmissionNotification.SetSubject("SAS Application Submission");
-            //emailBody = @"<p>Dear Colleague,</p>
-            //                    <p>
-            //                    Thank you for submitting your SAS grant application. 
-            //                    Your chair has been automatically notified to provide an assessment about your application. 
-            //                    We will inform you of the decision when the application review process is completed. 
-            //                    </p>
-            //                    <p>
-            //                    Thank you.
-            //                    </p>
-            //                    <p>
-            //                    Steve Patten <br />
-            //                    Associate Dean (Research)
-            //                    </p>";
+            applicantSubmissionNotification.SetSubject("Conference Application Submission");
+            emailBody = @"<p>Dear Colleague,</p>
+                                <p>
+                                Thank you for submitting your <a href='@SiteUrl/items/@Item.Id'> Conference Fund application</a>. 
+                                Your chair/supervisor has been automatically notified to provide an assessment about your application. 
+                                We will inform you of the decision when the application review process is completed. 
+                                </p>
+                                <p>
+                                Thank you.
+                                </p>
+                                <p>
+                                Marie Carriere <br />
+                                Associate Dean (Research)
+                                </p>";
 
-            applicantSubmissionNotification.SetBody("emailBody");
+            applicantSubmissionNotification.SetBody(emailBody);
 
-
-            //Defining triggers
+           
             //Feb 12 2021
-            //EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
-            //applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
-            //applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
+            EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
+            applicantNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, applicantEmail.Id);
+            applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
 
-            //EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
-            //chairNotificationEmailTrigger.AddRecipientByEmail(((TextField)chairEmail).GetValue("en"));
-            //chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+            EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
+            chairNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, chairEmail.Id);
+            chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+
+            EmailTrigger supervisourNotificationEmailTrigger = workflow.AddTrigger("ToSupervisor", "SendEmail");
+            supervisourNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, supervisorEmail.Id);
+            supervisourNotificationEmailTrigger.AddTemplate(advisorEmailTemplate.Id, "Advisor Email Notification");
+
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
+            //State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
+            State inSupervisorReviewState = workflow.AddState(ws.GetStatus(template.Id, "In Supervisor Review", true));
+            State inChairReviewState = workflow.AddState(ws.GetStatus(template.Id, "In Chair's Review", true));
+            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "Review Completed", true));
+            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "In Adjudication", true));
+            State acceptedState = workflow.AddState(ws.GetStatus(template.Id, "Accepted", true));
+            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+
+            // Defining roles
+            WorkflowRole gapAdmin = workflow.AddRole(auth.GetRole("Conference_Fund_Admin", true));
+            WorkflowRole gapChair = workflow.AddRole(auth.GetRole("Conference_Fund_Chair", true));
+            WorkflowRole gapAdjudication = workflow.AddRole(auth.GetRole("Conference_Fund_Adjudication", true));
+
+            
+            //extra FORMS
+            TextField chairFormApplicantName;
+            EmailField chairFormApplicantEmail;
+            DataItem chairAssessmentForm = CreateConferenceChairAssesmentForm(template, 
+                out chairFormApplicantName,
+                out chairFormApplicantEmail);
+            chairFormApplicantName.GetSourceReference(true).SetValue(confForm.Id, applicantName.Id);
+            chairFormApplicantEmail.GetSourceReference(true).SetValue(confForm.Id, applicantEmail.Id);
+            
+            //extra FORMS
+            TextField supervisorFormApplicantName;
+            EmailField supervisorFormApplicantEmail;
+            SelectField supervisorFormDept;
+            DataItem supervisorAssessmentForm = CreateConferenceAdviserAssesmentForm(template,
+                out supervisorFormApplicantName,
+                out supervisorFormApplicantEmail,
+                out supervisorFormDept);
+            supervisorFormApplicantName.GetSourceReference(true).SetValue(confForm.Id, applicantName.Id);
+            supervisorFormApplicantEmail.GetSourceReference(true).SetValue(confForm.Id, applicantEmail.Id);
+            supervisorFormDept.GetSourceReference(true).SetValue(confForm.Id, dept.Id);
+            //
+            //DataItem chairAssessmentForm = CreateConferenceChairAssesmentForm(template,
+            //    out assessFormApplicantName,
+            //    out assessFormApplicantEmail,
+            //    out assessFormDept);
+
+            //assessFormApplicantName.GetSourceReference(true).SetValue(confForm.Id, applicantName.Id);
+            //assessFormApplicantEmail.GetSourceReference(true).SetValue(confForm.Id, applicantEmail.Id);
+            //assessFormDept.GetSourceReference(true).SetValue(confForm.Id, dept.Id);
 
 
-
-            // Submitting an inspection form
-            //Only safey inspectors can submit this form
+            DataItem additionalNoteForm = CreateAddNotesForm(template);
+            DataItem adjudicationForm = CreateAdjudicationForm(template);
+            DataItem addRankingForm = CreateAddRankingForm(template);
+            // ================================================
+            // Create submission-instances related workflow items
+            // ================================================
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
-            startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(inspectorRole.Id);
 
-            //Listing inspection forms.
-            //Inspectors can list their own submissions.
-            //Admins can list all submissions.
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining form template
+            startSubmissionAction.AddTemplate(confForm.Id, "Start Submission Template");
+
+            //Defining post actions
+            PostAction savePostAction = startSubmissionAction.AddPostAction(
+                                                                            "Save", 
+                                                                            nameof(TemplateOperations.Update),
+                                                                            @"<p>Your Conference Fund application saved successfully. 
+                                                                                You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                            );
+            savePostAction.ValidateInputs = false; 
+            savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
+
+            PostAction submitPostAction = startSubmissionAction.AddPostAction(
+                                                                                "Submit", 
+                                                                                 nameof(TemplateOperations.Update), 
+                                                                                 @"<p>Thank you for submitting your Conference Fund application. 
+                                                                                    Your chair/supervisor has been automatically notified to provide an assessment about your application.
+                                                                                 You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>"
+                                                                                );
+            submitPostAction.AddStateMapping(
+                emptyState.Id, //Current state
+                inChairReviewState.Id, //New state
+                "Submit", //Button text
+                applicantCat,
+                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First()
+                );
+
+            submitPostAction.AddStateMapping(
+                emptyState.Id, //Current state
+                inSupervisorReviewState.Id, //New state
+                "Submit", //Button text
+                applicantCat, //data field ID for the conditional mapping
+                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[1]).First() //ID of the "Student" option 
+                );
+
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            submitPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger", inChairReviewState.Id, true);
+            submitPostAction.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inSupervisorReviewState.Id, true);
+            submitPostAction.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+
+            // Added state referances
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedDomain("@ualberta.ca");
+
+
+            // ================================================
+            // List submission-instances related workflow items
+            // ================================================
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(adminRole.Id);
 
+            // Added state referances
+            listSubmissionsAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(inSupervisorReviewState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(inChairReviewState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddOwnerAuthorization();
+
+
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction viewDetailsSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+
+            viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            // Added state referances
+            viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddOwnerAuthorization();
+
+            viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization();
+
+            viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(gapChair.Id);
+
+            viewDetailsSubmissionAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(gapChair.Id);
+
+            viewDetailsSubmissionAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization();
+
+            viewDetailsSubmissionAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddOwnerAuthorization();
+
+            viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddOwnerAuthorization();
+            
+            // ================================================
+            // Read child form details submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction viewChildFormDetailsAction = workflow.AddAction("ChildForm", nameof(TemplateOperations.ChildFormView), "List");
+
+            viewChildFormDetailsAction.Access = GetAction.eAccess.Restricted;
+
+            // Added state referances
+
+            viewChildFormDetailsAction.AddStateReferances(inChairReviewState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
+                .AddAuthorizedRole(gapChair.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddAuthorizedRole(gapChair.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddAuthorizedRole(gapAdmin.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddAuthorizedRole(gapAdmin.Id);
+
+            viewChildFormDetailsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(gapAdjudication.Id)
+                .AddAuthorizedRole(gapAdmin.Id);
+
+            // ================================================
+            // Edit submission-instances related workflow items
+            // ================================================
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
+            editSubmissionAction.Access = GetAction.eAccess.Restricted;
+            //Defining post actions
+            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction(
+                                                                                        "Save", 
+                                                                                        nameof(TemplateOperations.Update),
+                                                                                        @"<p>Your Conference Fund application saved successfully. 
+                                                                                            You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                        );
+            editSubmissionPostActionSave.ValidateInputs = false;
+
+            PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction(
+                                                                                            "Submit", 
+                                                                                            nameof(TemplateOperations.Update),
+                                                                                             @"<p>Thank you for submitting your Conference Fund application. 
+                                                                                                Your chair/supervisor has been automatically notified to provide an assessment about your application.
+                                                                                             You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>"
+                                                                                            );
+
+            //Defining state mappings
+            //-----------------------
+
+            //Saved document can be saved without changing state
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
+
+            //Saved document can be submitted for supervisor's review if appCat[1] (student) is selected
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inSupervisorReviewState.Id, "Submit", applicantCat,
+                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[1]).First());
+
+            //Document in supervisor's review can be saved without changing state
+            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Save");
+
+            //Saved document can be submitted for chair's review directly if appCat[0] (Faculty) is selected
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit", applicantCat,
+                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First());
+
+            //Document in chair's review can be saved without changing state
+            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "Save");
+
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            //*******To Do******* ==> KR: I don't think this is necessary because SAS admin only be "saving" these submissions rather than resubmitting them
+            // Implement a function to restrict the e-mail triggers when SAS Admin updated the document
+            editSubmissionPostActionSubmit.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger", inChairReviewState.Id, true);
+            editSubmissionPostActionSubmit.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inSupervisorReviewState.Id, true);
+            editSubmissionPostActionSubmit.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            //editSubmissionPostActionSave.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger", inChairReviewState.Id, true);
+            //editSubmissionPostActionSave.AddTriggerRefs("1", supervisourNotificationEmailTrigger.Id, "Supervisor's Notification Email Trigger", inSupervisorReviewState.Id, true);
+            //editSubmissionPostActionSave.AddTriggerRefs("2", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+
+            //Defining state referances
+            editSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddOwnerAuthorization();
+            editSubmissionAction.GetStateReference(inChairReviewState.Id, true)
+                .AddAuthorizedRole(gapAdmin.Id);
+            editSubmissionAction.GetStateReference(inSupervisorReviewState.Id, true)
+                .AddAuthorizedRole(gapAdmin.Id);
+
+
+            // ================================================
+            // Delete submission-instances related workflow items
+            // ================================================
+
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", nameof(CrudOperations.Delete), "Details");
+            deleteSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.ValidateInputs = false;
+
+            //Defining state mappings
+            ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(inSupervisorReviewState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(inChairReviewState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postAction action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining state referances
+            ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
+            ////////     .AddAuthorizedRole(gapAdmin.Id);
+            deleteSubmissionAction.GetStateReference(inSupervisorReviewState.Id, true)
+                .AddAuthorizedRole(gapAdmin.Id); 
+            deleteSubmissionAction.GetStateReference(inChairReviewState.Id, true)
+                 .AddAuthorizedRole(gapAdmin.Id);
+
+
+            // ================================================
+            // Review submission-instances by supervisour related workflow items
+            // ================================================
+
+            GetAction supervisourReviewAction = workflow.AddAction("Review Supervisor Submission", nameof(TemplateOperations.Review), "Details");
+            supervisourReviewAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining form template
+            supervisourReviewAction.AddTemplate(supervisorAssessmentForm.Id, "Start Review Submission");
+
+            //Defining post actions
+            PostAction supervisorReviewPostAction = supervisourReviewAction.AddPostAction(
+                                                                                            "Start Review", 
+                                                                                            nameof(TemplateOperations.Update),
+                                                                                            @"<p>Supervisor's review assessment submitted successfully. 
+                                                                                            You can view the document and your review by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                        );
+
+            //Defining state mappings
+            supervisorReviewPostAction.AddStateMapping(inSupervisorReviewState.Id, inChairReviewState.Id, "Submit Assessment");
+
+            //Defining the pop-up for the above postAction action
+            PopUp supervisorReviewActionPopUpopUp = supervisorReviewPostAction.AddPopUp("Confirmation", "Confirm the supervisor review assesment?", "Once submit the assesment, you cannot resubmit an assessment.");
+            supervisorReviewActionPopUpopUp.AddButtons("Yes, complete", "true");
+            supervisorReviewActionPopUpopUp.AddButtons("Cancel", "false");
+
+            supervisorReviewPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
+
+            supervisourReviewAction.GetStateReference(inSupervisorReviewState.Id, true)
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id);
+                //.AddAuthorizedDomain("@ualberta.ca")
+                //.AddAuthorizedDomain("@abva.org");
+                
+
+            // ================================================
+            // Review submission-instances by chair related workflow items
+            // ================================================
+
+            GetAction chairReviewAction = workflow.AddAction("Review Chair Submission", nameof(TemplateOperations.Review), "Details");
+            chairReviewAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining form template
+            chairReviewAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
+
+            //Defining post actions
+            PostAction chairReviewPostAction = chairReviewAction.AddPostAction(
+                                                                                "Start Review", 
+                                                                                nameof(TemplateOperations.Update),
+                                                                                @"<p>Chair's review assessment submitted successfully. 
+                                                                                You can view the document and your review by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                );
+
+            //Defining state mappings
+            chairReviewPostAction.AddStateMapping(inChairReviewState.Id, reviewCompletedState.Id, "Submit Assessment");
+
+            //Defining the pop-up for the above postAction action
+            PopUp chairReviewPopUpopUp = chairReviewPostAction.AddPopUp("Confirmation", "Confirm the chair's review assesment?", "Once submitted, you cannot resubmit an assessment.");
+            chairReviewPopUpopUp.AddButtons("Yes, complete", "true");
+            chairReviewPopUpopUp.AddButtons("Cancel", "false");
+
+
+            chairReviewAction.GetStateReference(inChairReviewState.Id, true)
+                .AddAuthorizedRole(gapChair.Id);
+
+            // ========================================================
+            // Change State submission-instances related workflow items
+            // ========================================================
+
+            GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
+            changeStateAction.Access = GetAction.eAccess.Restricted;
+
+            //Define Revision Template
+            changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
+            //Defining post actions
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", "Save", @"<p>Application status changed successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                );
+
+            //Defining state mappings
+            changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
+            
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
+            changeStateActionPopUpopUp.AddButtons("Yes", "true");
+            changeStateActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining states and their authorizatios
+            changeStateAction.GetStateReference(inSupervisorReviewState.Id, true)
+                .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id);
+
+            changeStateAction.GetStateReference(inChairReviewState.Id, true)
+                .AddAuthorizedRole(gapChair.Id);
+
+            changeStateAction.GetStateReference(reviewCompletedState.Id, true)
+                .AddAuthorizedRole(gapAdmin.Id);
+            changeStateAction.GetStateReference(inAdjudicationState.Id, true)
+                .AddAuthorizedRole(gapAdmin.Id);
+
+            // ========================================================
+            // Adjudication Decision related workflow items
+            // ========================================================
+            GetAction adjudicationDecisionAction = workflow.AddAction("Adjudication Decision", nameof(TemplateOperations.ChangeState), "Details");
+
+            //Define Revision Template
+            adjudicationDecisionAction.AddTemplate(adjudicationForm.Id, "Adjudication Decision");
+
+            PostAction adjudicationDecisionPostAction = adjudicationDecisionAction.AddPostAction("Adjudication Decision", "Save", @"<p>Application final decision made successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                );
+            adjudicationDecisionPostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accept");
+            adjudicationDecisionPostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Reject");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp adjudicationDecisionPopUpopUp = adjudicationDecisionPostAction.AddPopUp("Confirmation", "Do you really want to make a decision ? ", "Once changed, you cannot revise this document.");
+            adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
+            adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
+
+            adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
+                .AddAuthorizedRole(gapAdmin.Id);
+
+
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\confForm_generared.xml");
+
+            // string json = JsonConvert.SerializeObject(template);
+            // File.WriteAllText("..\\..\\..\\..\\Examples\\confForm_generared.json", json);
+        }
+
+        private DataItem CreateConferenceChairAssesmentForm(ItemTemplate template,
+            out TextField applicantName,
+            out EmailField applicantEmail)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("GAP Conference Chair's Assessment", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for GAP Chair's Assessment", lang);
+
+
+
+            applicantName = form.CreateField<TextField>("Applicant Name", lang, true);//if it's possible prefilled from the main form
+            applicantEmail = form.CreateField<EmailField>("Email Address", lang, true);//if it's possible prefilled from the main form
+            form.CreateField<RadioField>("Does your department support this application?", lang, YesNoOptionsText, true);
+
+            return form;
+        }
+        private DataItem CreateConferenceAdviserAssesmentForm(ItemTemplate template,
+            out TextField applicantName,
+            out EmailField applicantEmail,
+            out SelectField dept)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("GAP Conference Adviser's Assessment", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for GAP Conference Adviser's Assessment", lang);
+
+            applicantName = form.CreateField<TextField>("Applicant Name", lang, true);
+            applicantEmail = form.CreateField<EmailField>("Applicant Email", lang, true);
+            string[] depts = GetDepartmentList();
+            dept = form.CreateField<SelectField>("Department:", lang, depts, true);
+            form.CreateField<RadioField>("Do you approve the application?", lang, YesNoOptionsText, true);
+
+            form.CreateField<TextArea>("Comments", lang, false).SetAttribute("cols", 50);
+
+            return form;
+        }
+
+        [Test]
+        public void GapFinalReportTest()
+        {
+            //OTHER EXTRA FORMS : "Add Notes", "Adjudication" and "Ranking" forms same with SAS ones
+            // cahirAssesment and adviser assessment form
+            string lang = "en";
+            string templateName = "GAP Final Report";
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            //ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = template.Workflow;
+
+            //Defininig states
+
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+
+          
+            //=============================================================================== Defininig SAS form
+            DataItem confForm = template.GetDataItem("GAP Final Report", true, lang);
+            confForm.IsRoot = true;
+            confForm.SetDescription("This template is designed for Gap Final Report", lang);
+
+            // ====================================================== HOST
+            confForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h3", "Instructions", lang);
+            confForm.CreateField<InfoSection>(null, null)
+               .AppendContent("div", "Briefly outline how the funding received benefited the project for which funding was granted.", lang, "alert alert-info");
+            confForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h3", "Demographics", lang);
+
+            confForm.CreateField<TextField>("Name:", lang, true);
+            var applicantEmail = confForm.CreateField<EmailField>("Email:", lang, true)
+                .SetDescription("Please use your UAlberta CCID email address.", lang);
+
+            string[] departmentList = GetDepartmentList();
+            var dept = confForm.CreateField<SelectField>("Department:", lang, departmentList, true);
+
+            string[] appCat = new string[] { "SAS Grant", "Conference Fund Grant" };
+            var applicantCat = confForm.CreateField<SelectField>("Grant Name:", lang, appCat, true);
+
+            confForm.CreateField<DateField>("Date of Award:", lang, true);
+            confForm.CreateField<DateField>("Report Due Date:", lang, true);
+            var notes = confForm.CreateField<TextArea>("Report Notes:", lang,true);
+
+            notes.Rows = 5;
+            notes.Cols = 50;
+
+
+            //=============================================================================             Defininig roles
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("SAS_Admin", true));
+
+
+            //Defining email templates
+
+
+
+            // ================================================
+            //  Submission-Instantiate related workflow items
+            // ================================================
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
 
             //Post action for submitting the form
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
@@ -3016,25 +4296,40 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
-            //Defining trigger refs -- added Feb 12 2021
-            //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
-            //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedDomain("@ualberta.ca");
 
-            // Edit submission related workflow items
-            //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
 
-            //Submissions can only be edited by admins
-            editSubmissionAction.AddStateReferances(submittedState.Id)
+            // ================================================
+            //  Submission-List related workflow items
+            // ================================================
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
                 .AddAuthorizedRole(adminRole.Id);
+
+
+            // ================================================
+            //  Submission-Edit related workflow items
+            // ================================================
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            editSubmissionAction.Access = GetAction.eAccess.Restricted;
 
             //Defining post actions
             PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
 
 
-            // Delete submission related workflow items
-            //Defining actions. Only admin can delete a submission
+            // ================================================
+            //  Submission-Delete related workflow items
+            // ================================================
             GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
             deleteSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id);
@@ -3051,10 +4346,10 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             db.SaveChanges();
 
-            template.Data.Save("..\\..\\..\\..\\Examples\\confForm_generared.xml");
+            template.Data.Save("..\\..\\..\\..\\Examples\\gapFinalReportForm_generared.xml");
 
             // string json = JsonConvert.SerializeObject(template);
-            // File.WriteAllText("..\\..\\..\\..\\Examples\\confForm_generared.json", json);
+            // File.WriteAllText("..\\..\\..\\..\\Examples\\gapFinalReportForm_generared.json", json);
         }
 
 

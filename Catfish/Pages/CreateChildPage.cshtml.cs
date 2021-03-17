@@ -47,6 +47,22 @@ namespace Catfish.Pages
 
             // Get the data item that is referred by the given childTemplateId from the template
             Child = template.GetDataItem(childTemplateId);
+
+            //Pre-filling child form fields
+            foreach(var field in Child.Fields)
+            {
+                var sourceReference = field.GetSourceReference(false);
+                if(sourceReference != null)
+                {
+                    var srcDataItem = item.DataContainer.Where(di => di.Id == sourceReference.DataItemId).FirstOrDefault();
+                    if(srcDataItem != null)
+                    {
+                        var srcField = srcDataItem.Fields.Where(f => f.Id == sourceReference.FieldId).FirstOrDefault();
+                        if (srcField != null)
+                            field.CopyValue(srcField);
+                    }
+                }
+            }
         }
 
 

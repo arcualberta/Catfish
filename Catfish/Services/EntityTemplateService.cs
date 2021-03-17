@@ -121,6 +121,9 @@ namespace Catfish.Services
                     }
                     else
                     {
+                        //TODO: Check whether this template is authprized to access by the domain of the currently logged-in user.
+
+
                         //Finding all groups where the user possess some role and then
                         //getting all templates associated with those groups
                         List<Guid> selectTemplateIds = new List<Guid>();

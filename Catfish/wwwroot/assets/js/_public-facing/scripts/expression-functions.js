@@ -1,19 +1,28 @@
 ﻿function updateFields() {
 
+    //Setting the global dataFormdModified variable to true so that it can trigger
+    //automatic form-save calls.
+    dataFormdModified = true;
+
     //Handling visible-if conditions
     var visibleIfFields = $("input[data-visible-if], textarea[data-visible-if], select[data-visible-if], option[data-visible-if]");
     for (i = 0; i < visibleIfFields.length; ++i) {
         let field = visibleIfFields[i];
-        console.log(field);
+        //console.log(field);
         let expression = $(field).attr("data-visible-if");
         if (expression) {
             let fieldId = $(field).attr("data-field-id");
             let result = eval(expression);
             if (result) {
                 $("#" + fieldId).show()
+
+                //MR - March 03 2021: set disabled attribute for safari/IE
+                if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true) || (navigator.userAgent.indexOf("Safari") != -1)) //IF IE or SAFARI
+                {
+                    $("#" + fieldId).prop("disabled", false);
+                } 
             }
             else {
-                $("#" + fieldId).hide()
 
                 //If this is an option
                 if ($(field).prop("tagName").toLowerCase() === "option") {
@@ -35,6 +44,15 @@
                     $(field).prop('checked', false);
                 }
 
+                //Finally, hide the field
+
+                $("#" + fieldId).hide();
+
+                //MR - March 03 2021: set disabled attribute for safari/IE
+                if ((navigator.userAgent.indexOf("MSIE") !== -1) || (!!document.documentMode === true) || (navigator.userAgent.indexOf("Safari") !== -1)) //IF IE or SAFARI
+                {
+                    $("#" + fieldId).prop("disabled", true);
+                }  
             }
         }
     }
@@ -67,7 +85,7 @@
         let field = computedFields[i];
         let expression = $(field).attr("data-value-expression");
         if (expression) {
-            console.log(expression)
+            //console.log(expression)
 
             let result = eval(expression);
             $(field).val(result);
@@ -82,17 +100,17 @@ function StrValue(fieldModelId) {
 
 function IntValue(fieldModelId) {
     let val = StrValue(fieldModelId);
-    return parseInt(val);
+    return val ? parseInt(val) : 0;
 }
 
 function DoubleValue(fieldModelId) {
     let val = StrValue(fieldModelId);
-    return parseFloat(val);
+    return val ? parseFloat(val) : 0;
 }
 
 function FloatValue(fieldModelId) {
     let val = StrValue(fieldModelId);
-    return parseFloat(val);
+    return val ? parseFloat(val) : 0;
 }
 
 function DecimalValue(fieldModelId) {
@@ -102,7 +120,7 @@ function DecimalValue(fieldModelId) {
 
 function DateValue(fieldModelId) {
     let val = StrValue(fieldModelId);
-    return Date.parse(val);
+    return val ? Date.parse(val) : "";
 }
 
 function RadioValue(fieldModelId) {
@@ -123,7 +141,6 @@ function RadioFieldReadableValue(fieldModelId) {
     return $("span[data-option-id='" + fieldVal + "']").text();
 }
 
-
 function Extract(str, delimiter, selectItemIndex, trimEnds) {
 
     var value = str;
@@ -137,3 +154,38 @@ function Extract(str, delimiter, selectItemIndex, trimEnds) {
 
     return value;
 }
+
+function TableColumnSum(fieldModelId, columnIndex) {
+    let table = $("table[data-model-id='" + fieldModelId + "']")
+    let result = 0;
+    $(table).find("input[data-c=" + columnIndex + "]:visible").each(function () {
+        result += parseFloat($(this).val(), 10);
+    });
+
+    return result;
+}
+
+function CompositeFieldSum(fieldModelId, childFieldIndex) {
+    let container = $("div[data-model-id='" + fieldModelId + "']")
+    let result = 0;
+    $(container).find("input[data-field-index=" + childFieldIndex + "]:visible").each(function () {
+        result += parseFloat($(this).val(), 10);
+    });
+
+    return result;
+}
+
+////function TableRowSum(fieldModelId, srcColumns) {
+////    let dstField = $("input[data-model-id='" + fieldModelId + "']");
+////    let td = $(dstField).parent();
+////    let tr = $(td).parent();
+////    let result = 0;
+////    $.each(srcColumns, function (idx, col) {
+////        val = $(tr).find(`[data-c=${col}]:visible`).val();
+////        if (val)
+////            result += parseInt(val);
+////    });
+
+////    return result;
+////}
+

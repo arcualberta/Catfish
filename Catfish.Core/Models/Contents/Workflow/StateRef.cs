@@ -12,6 +12,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         public XmlModelList<RoleReference> AuthorizedRoles { get; set; }
         public XmlModelList<EmailDomain> AuthorizedDomains { get; set; }
+        public XmlModelList<FieldReference> AuthorizedEmailFields { get; set; }
 
         public StateRef(XElement data)
             : base(data)
@@ -32,6 +33,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             XElement authorizationsListDefinition = GetElement("authorizations", true);
             AuthorizedRoles = new XmlModelList<RoleReference>(authorizationsListDefinition, true, RoleReference.TagName);
             AuthorizedDomains = new XmlModelList<EmailDomain>(authorizationsListDefinition, true, EmailDomain.TagName);
+            AuthorizedEmailFields = new XmlModelList<FieldReference>(authorizationsListDefinition, true, FieldReference.TagName);
         }
 
         #region Role-based authorization
@@ -81,6 +83,18 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             return this;
         }
+
+        public StateRef AddAuthorizedUserByEmailField(Guid dataItemId, Guid emailFieldId)
+        {
+            if (AuthorizedEmailFields.Where(fr => fr.DataItemId == dataItemId && fr.FieldId == emailFieldId).Any())
+                throw new Exception(string.Format("Authorization is already granted."));
+
+            FieldReference fr = new FieldReference() { DataItemId = dataItemId, FieldId = emailFieldId };
+            AuthorizedEmailFields.Add(fr);
+
+            return this;
+        }
+
 
         public bool IsAuthorizedByDomain(string domain)
         {

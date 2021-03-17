@@ -13,6 +13,13 @@ namespace Catfish.Core.Models.Contents.Fields
         public InfoSection() { DisplayLabel = "Info Section"; }
         public InfoSection(XElement data) : base(data) { DisplayLabel = "Info Section"; }
 
+        public bool EditorOnly
+        {
+            get => GetAttribute("editor-only", false);
+            set => SetAttribute("editor-only", value);
+        }
+
+
         public override void Initialize(eGuidOption guidOption)
         {
             base.Initialize(guidOption);
@@ -33,9 +40,17 @@ namespace Catfish.Core.Models.Contents.Fields
 
         public override void UpdateValues(BaseField srcField)
         {
-            //InforSection represents only display text and it does not 
-            //accept any data through form submissions. Therefore, this method
-            //does not need any implementation.
+            InfoSection src = srcField as InfoSection;
+
+            Content.Values.Clear();
+            foreach(var txt in src.Content.Values)
+                Content.Values.Add(txt.Clone() as Text);
+        }
+
+        //This is a short-cut for setting the contents of the info field
+        public override void SetValue(string value, string lang)
+        {
+            Content.SetContent(value, lang);
         }
 
         public InfoSection AppendContent(string htmlElementTag, string content, string lang, string htmlClasses = null)
@@ -43,8 +58,14 @@ namespace Catfish.Core.Models.Contents.Fields
             if (htmlClasses == null)
                 htmlClasses = "";
             string formattedContent = string.Format("<{0} class='{1}'>{2}</{0}>", htmlElementTag, htmlClasses, content);
-            Content.AppendElement(formattedContent, lang);
+            Content.SetContent(formattedContent, lang, true);
             return this;
         }
+
+        /// <summary>
+        /// This method is not relevant for the InfoSection field.
+        /// </summary>
+        /// <param name="srcField"></param>
+        public override void CopyValue(BaseField srcField, bool overwrite = false) { }
     }
 }

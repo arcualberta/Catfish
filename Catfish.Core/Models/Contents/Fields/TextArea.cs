@@ -19,6 +19,18 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("cols", value);
         }
 
+        public int MaxWords
+        {
+            get => GetAttribute("max-words", 0);
+            set => SetAttribute("max-words", value);
+        }
+
+        public int MaxChars
+        {
+            get => GetAttribute("max-chars", 0);
+            set => SetAttribute("max-chars", value);
+        }
+
         public TextArea SetSize(int rows, int cols) { Rows = rows; Cols = cols; return this; }
 
         public TextArea() : base() { DisplayLabel = "Paragraph"; }
