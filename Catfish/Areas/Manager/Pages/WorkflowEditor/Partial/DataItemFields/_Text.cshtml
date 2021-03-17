@@ -1,8 +1,10 @@
 ﻿@model Catfish.Core.Models.Contents.Text
 
 <div id="@Model.Id" class="inline-editor">
-    <i class="far fa-edit float-right"></i>
+    <i class="far fa-edit float-right" onclick="setTableColEditable('@Model.Id');" id="btnEdit_@Model.Id"></i>
+    <i class="far fa-save float-right" onclick="saveEditedText('@Model.Id');" id="btnSave_@Model.Id" class="hide"></i>
+    <i class="far fa-window-close float-right" onclick="setTableColEditable('@Model.Id');" id="btnCancel_@Model.Id" class="hide"></i>
     <span class="view">@Html.Raw(Model.Value)</span>
-    <span class="editor"></span>
-    
+    @*<span class="editor"></span>*@
+
 </div>
