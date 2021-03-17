@@ -237,42 +237,24 @@ namespace Catfish.Services
                 Item newItem = template.Instantiate<Item>();
                 Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
 
+                User user = _workflowService.GetLoggedUser();
                 //We always pass on the next state with the state mapping irrespective of whether
                 //or not there is a "condition"
                 Guid statusId = stateMapping.Next; 
-
-                ////////if (string.IsNullOrWhiteSpace(stateMapping.Condition))
-                ////////{
-                    
-                ////////}
-                ////////else
-                ////////{
-
-                ////////    //TODO: Get all state mappings represented by the stateMappingId from the workflow.
-                ////////    //      Check if there are one or more state mappings of which the "Condition" is empty.
-                ////////    //          If only one mapping if found with empty condition, then the "next" state specified by
-                ////////    //          this condition should be used as the next state. If multiple such states found, throw an error.
-                ////////    //
-                ////////    //      If not states with empty condition is found, then see if there are at least one state mapping
-                ////////    //      that matchs with the current state and the condition. If found, then use the state of that mapping
-                ////////    //      as the new state. If multiple conditions satisfy, then throw an error.
-
-                ////////    //Guid stateId = Guid.Empty; //TODO: find this as described above.
-
-                ////////}
-
                 newItem.StatusId = statusId;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
                 newItem.GroupId = groupId;
-                newItem.UserEmail = _workflowService.GetLoggedUserEmail();
+                newItem.UserEmail = user.Email;
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
                 newDataItem.UpdateFieldValues(value);
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
+                newDataItem.OwnerId = user.Id.ToString();
+                newDataItem.OwnerName = user.UserName;
 
-                User user = _workflowService.GetLoggedUser();
+                //User user = _workflowService.GetLoggedUser();
                 var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
                 newItem.AddAuditEntry(user.Id,
                     fromState,
@@ -415,6 +397,8 @@ namespace Catfish.Services
                 // instantantiate a version of the child and update it
                 DataItem newChildItem = template.InstantiateDataItem(value.Id);
                 newChildItem.UpdateFieldValues(value);
+                newChildItem.OwnerId = user.Id.ToString();
+                newChildItem.OwnerName = user.UserName;
                 parentItem.DataContainer.Add(newChildItem);
 
                 return parentItem;
