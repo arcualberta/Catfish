@@ -10,5 +10,9 @@ namespace Catfish.Areas.Manager.Controllers.Api
     [ApiController]
     public class WorkflowController : Controller
     {
+        public JsonResult SaveText(Guid templateId, Guid dataItemId, Guid fieldId, Guid textId, string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
