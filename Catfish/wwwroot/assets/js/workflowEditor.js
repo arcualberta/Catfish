@@ -1,38 +1,61 @@
 ﻿$(function () {
     $(".fa-save").hide();
     $(".fa-window-close").hide();
-});
-function setTableColEditable(fieldId) {  //this method enabled row to be editable
    
-    $("#" + fieldId).find("span").each(function (index, c) {
+});
+function setTableColEditable(textFieldId) {  //this method enabled row to be editable
+   
+    $("#" + textFieldId).find("span").each(function (index, c) {
        
-      $(this).attr("contenteditable", true);
+      $(this).prop("contenteditable", true);
         $(this).addClass("editableText");
-        $("#btnEdit_" + fieldId).hide();
-        $("#btnSave_" + fieldId).show();
-        $("#btnCancel_" + fieldId).show();
+        $("#btnEdit_" + textFieldId).hide();
+        $("#btnSave_" + textFieldId).show();
+        $("#btnCancel_" + textFieldId).show();
      
     });
 }
 
-function saveEditedText(fieldId) {
+function saveEditedText(templateId, dataItemId, fieldId, textFieldId) {
 
-    let editedText = $("#" + fieldId + " span").text();
-    alert(editedText);
-
-
-    $("#" + fieldId + " span").prop("contenteditable", false);
-    $("#" + fieldId + " span").removeClass("editableText");
-    $("#btnEdit_" + fieldId).show();
-    $("#btnSave_" + fieldId).hide();
-    $("#btnCancel_" + fieldId).hide();
+    let editedText = $("#" + textFieldId + " span").text();
+   // alert(editedText);
+    let url = "/manager/api/Workflow/SaveText";
+    var data = {};
+    data.TemplateId = templateId;
+    data.DataItemId = dataItemId;
+    data.FieldId = fieldId;
+    data.TextFieldId = textFieldId;
+    data.textValue = editedText;
+   
+    $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            data: JSON.stringify(data),
+       // data: { 'templateId':templateId, 'dataItemId':dataItemId, 'fieldId':fieldId, 'textId':textFieldId, 'value':editedText },
+            success: function (data) {
+                location.reload();
+            },
+            error: function ( error) {
+                alert("Encounter problems while saving data.")
+            }
+    });
+    
+    /*   hide/show button */
+    $("#" + textFieldId + " span").prop("contenteditable", false); //remove content editable
+    $("#" + textFieldId + " span").removeClass("editableText");
+    $("#btnEdit_" + textFieldId).show();
+    $("#btnSave_" + textFieldId).hide();
+    $("#btnCancel_" + textFieldId).hide();
 }
-function cancelEditedText(fieldId) {
+function cancelEditedText(textFieldId) {
 
-    let editedText = $("#" + fieldId + " span").text();
+    let editedText = $("#" + textFieldId + " span").text();
     alert(editedText);
 
-    $("#btnEdit_" + fieldId).show();
-    $("#btnSave_" + fieldId).hide();
-    $("#btnCancel_" + fieldId).hide();
+    $("#btnEdit_" + textFieldId).show();
+    $("#btnSave_" + textFieldId).hide();
+    $("#btnCancel_" + textFieldId).hide();
 }

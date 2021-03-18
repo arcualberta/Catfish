@@ -4,6 +4,11 @@
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+@{ 
+    var templateId = ViewData["template-id"];
+    string temp = "";
+}
+
 <div class="field-description">
     @Html.Raw(Model.Description.ConcatenatedRichText)
 </div>
@@ -21,6 +26,8 @@
         <tbody>
             @foreach (var field in Model.Fields)
             {
+                ViewData["data-field-id"] = field.Id;
+
                 string template = "Partial/DataItemFields/_";
                 if (typeof(TextField).IsAssignableFrom(field.GetType()))
                     template += typeof(TextField).ToString();
@@ -32,7 +39,7 @@
                     template += field.GetType().ToString();
 
                 <tr>
-                    <partial name="@template" model="field" />
+                    <partial name="@template" model="field" view-data="ViewData" />
                 </tr>
             }
         </tbody>

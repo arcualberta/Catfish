@@ -1,10 +1,18 @@
 ﻿@model Catfish.Core.Models.Contents.Text
 
+@{ 
+
+    Guid templateId = Guid.Parse(ViewData["data-template-id"].ToString());
+    Guid dataItemId = Guid.Parse(ViewData["data-dataItem-id"].ToString());
+    Guid fieldId = Guid.Parse(ViewData["data-field-id"].ToString());
+}
 <div id="@Model.Id" class="inline-editor">
+    
     <i class="far fa-edit float-right" onclick="setTableColEditable('@Model.Id');" id="btnEdit_@Model.Id"></i>
-    <i class="far fa-save float-right" onclick="saveEditedText('@Model.Id');" id="btnSave_@Model.Id" class="hide"></i>
-    <i class="far fa-window-close float-right" onclick="setTableColEditable('@Model.Id');" id="btnCancel_@Model.Id" class="hide"></i>
+    <i class="far fa-save float-right" onclick="saveEditedText('@templateId','@dataItemId','@fieldId','@Model.Id');" id="btnSave_@Model.Id" ></i>
+    <i class="far fa-window-close float-right" onclick="setTableColEditable('@Model.Id');" id="btnCancel_@Model.Id" ></i>
+   
     <span class="view">@Html.Raw(Model.Value)</span>
-    @*<span class="editor"></span>*@
+   
 
 </div>

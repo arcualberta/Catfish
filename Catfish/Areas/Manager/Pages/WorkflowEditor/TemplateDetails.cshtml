@@ -11,10 +11,13 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
+
     ViewBag.Title = Localizer.Page["Workflow Templates"];
     var siteURL = _config.GetSiteURL();
 
     var template = Model.Template;
+
+    ViewData["data-template-id"] = template.Id;
 }
 
 @section script
@@ -23,6 +26,7 @@
     <script src="@Url.Content(Piranha.Manager.Editor.EditorScripts.EditorScriptUrl)"></script>
     <script src="~/manager/assets/js/piranha.contentedit.min.js"></script>
     <script src="~/manager/assets/js/piranha.siteedit.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 }
 
 
@@ -90,6 +94,10 @@
 
             var expanded = i == 0 ? "true" : "false";
             var show = i == 0 ? "show" : "";
+
+
+            ViewData["data-dataItem-id"] = child.Id;
+            //  ViewData["viewdata"] = viewData;
             <div class="card">
                 <div class="card-header" id="@headingId">
                     <h5 class="mb-0">
@@ -100,7 +108,7 @@
                 </div>
                 <div id="@dataTargetId" class="collapse @show" aria-labelledby="@headingId" data-parent="#form-templates">
                     <div class="card-body">
-                        <partial name="Partial/_DataItemTemplate" model="child" />
+                        <partial name="Partial/_DataItemTemplate" model="child" view-data="ViewData" />
                     </div>
                 </div>
             </div>
