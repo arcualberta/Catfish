@@ -1,9 +1,12 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Authorization.Requirements;
+using Catfish.Core.Models;
+using Catfish.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Catfish.Core.Authorization.Handlers
@@ -12,9 +15,12 @@ namespace Catfish.Core.Authorization.Handlers
         : AuthorizationHandler<OperationAuthorizationRequirement, Group>
     {
         public readonly IAuthorizationHelper _authHelper;
-        public GroupAuthorizationHandler(IAuthorizationHelper authHelper)
+        public readonly IGroupService _groupService;
+        public readonly AppDbContext _appDb;
+        public GroupAuthorizationHandler(IAuthorizationHelper authHelper, IGroupService groupService)
         {
             _authHelper = authHelper;
+            _groupService = groupService;
         }
 
         protected override Task HandleRequirementAsync(
@@ -38,8 +44,26 @@ namespace Catfish.Core.Authorization.Handlers
             {
                 return Task.CompletedTask; //Cannot proceed on without a group
             }
-            context.Succeed(requirement);
-            return Task.CompletedTask;
+            else
+            {
+                bool isSysAdmin = context.User.IsInRole("SysAdmin");
+                if (isSysAdmin)
+                {
+                    context.Succeed(requirement);
+                    return Task.CompletedTask;
+                }
+                if(requirement.Name == GroupOperations.UpdateGroup.Name)
+                {
+                    bool isGroupAdmin = _groupService.isGroupAdmin(Guid.Parse(context.User.FindFirst(ClaimTypes.NameIdentifier).Value), resource.Id);
+                    if (isGroupAdmin)
+                    {
+                        context.Succeed(requirement);
+                        return Task.CompletedTask;
+                    }
+                }
+                return Task.CompletedTask;
+            }
+            
         }
     }
 }

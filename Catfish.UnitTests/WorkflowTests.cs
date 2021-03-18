@@ -2528,6 +2528,7 @@ namespace Catfish.UnitTests
 
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(inReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)

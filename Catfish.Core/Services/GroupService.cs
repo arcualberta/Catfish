@@ -636,7 +636,10 @@ namespace Catfish.Core.Services
                 UserGroupRole usergroupRole = _appDb.UserGroupRoles
                                             .Include(gr => gr.GroupRole)
                                             .Where(gr => gr.GroupRoleId == groupRoleId && gr.UserId == userId).FirstOrDefault();
-                if (_piranhaDb.Roles.Where(r => r.Id == usergroupRole.GroupRole.RoleId && r.NormalizedName == "GROUPADMIN").Any() && usergroupRole.UserId == Guid.Parse(loggedUserId))
+                
+                if (_httpContextAccessor.HttpContext.User.IsInRole("SysAdmin"))
+                    return false;
+                else if (_piranhaDb.Roles.Where(r => r.Id == usergroupRole.GroupRole.RoleId && r.NormalizedName == "GROUPADMIN").Any() && usergroupRole.UserId == Guid.Parse(loggedUserId))
                     return true;
                 else
                     return false;
@@ -666,6 +669,26 @@ namespace Catfish.Core.Services
                 return null;
             }
             
+        }
+
+        public bool isGroupAdmin(Guid userId, Guid groupId)
+        {
+            try
+            {
+                Guid groupAdminRoleId = _piranhaDb.Roles.Where(r => r.NormalizedName == "GROUPADMIN").Select(r => r.Id).FirstOrDefault();
+                if (groupAdminRoleId == null || groupAdminRoleId == Guid.Empty)
+                    throw new Exception("Group Admin role cannot be found !");
+
+                bool isGroupAdmin = _appDb.UserGroupRoles.Include(gr => gr.GroupRole).Where(gr => gr.GroupRole.GroupId == groupId && gr.UserId == userId && gr.GroupRole.RoleId == groupAdminRoleId).Any();
+
+                return isGroupAdmin;
+            }
+            catch (Exception ex)
+            {
+
+                _errorLog.Log(new Error(ex));
+                return false;
+            }
         }
     }
 }

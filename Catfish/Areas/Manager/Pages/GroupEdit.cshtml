@@ -1,7 +1,9 @@
 ﻿@page "~/manager/groups/edit/{id:Guid?}"
 @model Catfish.Areas.Manager.Pages.GroupModel
-@inject Piranha.Manager.ManagerLocalizer Localizer
 @using Microsoft.AspNetCore.Authorization
+@using Catfish.Core.Authorization.Requirements;
+
+@inject Piranha.Manager.ManagerLocalizer Localizer
 @inject IAuthorizationService AuthorizationService
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using Catfish.Core.Models
@@ -13,7 +15,8 @@
     </script>
 }
 
-    @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Edit)).Succeeded)
+@if ((await AuthorizationService.AuthorizeAsync(User, Model.Group, new List<IAuthorizationRequirement>() { GroupOperations.UpdateGroup })).Succeeded)
+    //@if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Edit)).Succeeded)
     {
         <form id="item-edit-form" class="edit-form" method="post" novalidate>
             @Html.HiddenFor(m => m.Group.Id)
@@ -66,50 +69,54 @@
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="title">@Localizer.General["Configuration"]</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>@Localizer.General["Templates"]</label>
-                            <ul class="list-group">
-                                @{
-                                    for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
-                                    {
-                                        <li class="list-group-item">
-                                            <div class="row">
-                                                <span class="col-sm-4">
-                                                    @Html.EditorFor(model => model.Templates[cnt])
-                                                </span>
-                                            </div>
-                                        </li>
-                                    }
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>@Localizer.General["Roles"]</label>
-                            <ul class="list-group">
-                                @{
-                                    for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
-                                    {
-                                        <li class="list-group-item">
-                                            <div class="row">
-                                                <span class="col-sm-4">
-                                                    @Html.EditorFor(model => model.Roles[cnt])
 
-                                                </span>
-                                            </div>
-                                        </li>
+                @if ((await AuthorizationService.AuthorizeAsync(User, Model.Group, new List<IAuthorizationRequirement>() { GroupOperations.ReadSecurePost })).Succeeded)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="title">@Localizer.General["Configuration"]</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>@Localizer.General["Templates"]</label>
+                                <ul class="list-group">
+                                    @{
+                                        for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
+                                        {
+                                            <li class="list-group-item">
+                                                <div class="row">
+                                                    <span class="col-sm-4">
+                                                        @Html.EditorFor(model => model.Templates[cnt])
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        }
                                     }
-                                }
-                            </ul>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>@Localizer.General["Roles"]</label>
+                                <ul class="list-group">
+                                    @{
+                                        for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
+                                        {
+                                            <li class="list-group-item">
+                                                <div class="row">
+                                                    <span class="col-sm-4">
+                                                        @Html.EditorFor(model => model.Roles[cnt])
+
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
 
         </form>
