@@ -3826,6 +3826,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             listSubmissionsAction.AddStateReferances(inSupervisorReviewState.Id)
                 .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(inChairReviewState.Id)
@@ -3868,6 +3869,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
