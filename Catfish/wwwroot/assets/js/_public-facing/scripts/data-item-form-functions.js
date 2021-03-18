@@ -5,16 +5,23 @@ $(document).ready(function () {
 
     //Encoding inner-HTML of composite field templates into base 64 strings
     $.each($("form .composite-field-template"), function (idx, template) {
-        let html = $(template).html();
-        let encodedHtml = btoa(html);
-        $(template).html(encodedHtml);
+
+        if ($(template).attr("data-encoded") !== "true") {
+            let html = $(template).html();
+            let encodedHtml = btoa(html);
+            $(template).html(encodedHtml);
+            $(template).attr("data-encoded", "true");
+        }
     });
 
     //Encoding inner-HTML of table field templates into base 64 strings
     $.each($("form .tf-template"), function (idx, template) {
-        let html = $(template).html();
-        let encodedHtml = btoa(html);
-        $(template).html(encodedHtml);
+        if ($(template).attr("data-encoded") !== "true") {
+            let html = $(template).html();
+            let encodedHtml = btoa(html);
+            $(template).html(encodedHtml);
+            $(template).attr("data-encoded", "true");
+        }
     });
 
     setInterval(function () {
