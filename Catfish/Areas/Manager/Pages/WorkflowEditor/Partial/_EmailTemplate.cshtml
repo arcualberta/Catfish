@@ -3,6 +3,10 @@
 @using Catfish.Core.Models.Contents.Fields;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+@{
+    ViewData["metadata-set-id"] = Model.Id;
+}
+
 <div class="email-template">
     <div class="field-description">
         @Html.Raw(Model.Description.ConcatenatedRichText)
@@ -36,6 +40,7 @@
         @for (int i = 0; i < fieldList.Count; ++i)
         {
             var field = fieldList[i];
+                ViewData["data-field-id"] = field.Id;
             <div class="field">
                 <div class="control field-label">
                     <strong>@field.Name.ConcatenatedRichText</strong>
@@ -45,7 +50,7 @@
                     {
                         foreach (var txt in multiLingualVal.Values)
                         {
-                            <partial name="Partial/DataItemFields/_Text" model="txt" />
+                            <partial name="Partial/DataItemFields/_Text" model="txt" view-data="ViewData" />
                         }
                     }
                 </div>

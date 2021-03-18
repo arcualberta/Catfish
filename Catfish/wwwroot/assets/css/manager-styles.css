@@ -36,15 +36,16 @@
     .table-bordered tr .option-value {
         margin: 0 -12px;
         padding: 5px;
+        border-bottom: solid 1px #ccc;
     }
-        .table-bordered tr .option-value:nth-child(odd) {
-            background-color: #ebe39e !important;
+/*        .table-bordered tr .option-value:nth-child(odd) {
+           background-color: #ebe39e !important;
         }
 
         .table-bordered tr .option-value:nth-child(even) {
             background-color: #c2f2ef !important;
         }
-
+*/
         .table-bordered tr .option-value:first-child {
             margin-top: -12px !important;
         }
@@ -64,9 +65,19 @@
     position: relative;
     display: inline-block;
     margin: 1px;
-    border: 1px double lightblue;
+    border: 1px double blue;
+    width: 100%;
 }
 .inline-editor i{
-    margin-left:5px;
+    margin-left:10px;
 }
+
+.inline-editor .fa-window-close {
+    color: red;
+}
+
+.inline-editor .fa-save {
+    color: green;
+}
+
 /*=======================================================================================================================================================*/
