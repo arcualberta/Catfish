@@ -675,17 +675,24 @@ namespace Catfish.Core.Services
         {
             try
             {
-                Guid groupAdminRoleId = _piranhaDb.Roles.Where(r => r.NormalizedName == "GROUPADMIN").Select(r => r.Id).FirstOrDefault();
+                Guid groupAdminRoleId = _piranhaDb.Roles
+                    .Where(r => r.NormalizedName == "GROUPADMIN")
+                    .Select(r => r.Id)
+                    .FirstOrDefault();
+
                 if (groupAdminRoleId == null || groupAdminRoleId == Guid.Empty)
                     throw new Exception("Group Admin role cannot be found !");
 
-                bool isGroupAdmin = _appDb.UserGroupRoles.Include(gr => gr.GroupRole).Where(gr => gr.GroupRole.GroupId == groupId && gr.UserId == userId && gr.GroupRole.RoleId == groupAdminRoleId).Any();
+                bool isGroupAdmin = _appDb.UserGroupRoles.Include(gr => gr.GroupRole)
+                    .Where(gr => gr.GroupRole.GroupId == groupId 
+                              && gr.UserId == userId 
+                              && gr.GroupRole.RoleId == groupAdminRoleId)
+                    .Any();
 
                 return isGroupAdmin;
             }
             catch (Exception ex)
             {
-
                 _errorLog.Log(new Error(ex));
                 return false;
             }
