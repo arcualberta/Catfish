@@ -297,9 +297,9 @@ namespace Catfish.Services
 
                 DataItem dataItem = item.DataContainer
                                         .Where(di => di.IsRoot == true).FirstOrDefault();
-                item.DataContainer.Remove(dataItem);
+                //item.DataContainer.Remove(dataItem);
                 dataItem.UpdateFieldValues(value);
-                item.DataContainer.Add(dataItem);
+                //item.DataContainer.Add(dataItem);
 
                 User user = _workflowService.GetLoggedUser();
                 item.AddAuditEntry(user.Id,
