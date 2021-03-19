@@ -68,11 +68,11 @@
     border: 1px double blue;
     width: 100%;
 }
-.inline-editor i, .new-option-value i{
-    margin-left:10px;
+.inline-editor i, .new-option-value i, .option-value i{
+    margin-left: 10px;
 }
 
-.inline-editor .fa-window-close, .new-option-value > .fa-window-close {
+.inline-editor .fa-window-close, .option-value .fa-trash-alt, .new-option-value > .fa-window-close {
     color: red;
 }
 

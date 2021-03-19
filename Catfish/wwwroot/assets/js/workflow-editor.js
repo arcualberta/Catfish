@@ -89,17 +89,17 @@ function cancelAddOption(newOptId) {
 
 }
 
-function saveOptionVal(templateId,dataItemId,fieldId, newOptionId) {
+function saveOptionVal(templateId,dataItemId,fieldId, newOptionFieldId) {
 
-    let newValue = $("#input_" + newOptionId).val();
-    let lang = $("#select_" + newOptionId + " option:selected").val();
+    let newValue = $("#input_" + newOptionFieldId).val();
+    let lang = $("#select_" + newOptionFieldId + " option:selected").val();
 
     let url = "/manager/api/Workflow/AddOptionText";
     var data = {};
     data.TemplateId = templateId;
     data.DataItemId = dataItemId;
     data.FieldId = fieldId;
-    data.TextFieldId = newOptionId; //new GUID cr
+    data.TextFieldId = newOptionFieldId; //new GUID cr
     data.textValue = newValue;
     data.Language = lang;
 
@@ -116,6 +116,31 @@ function saveOptionVal(templateId,dataItemId,fieldId, newOptionId) {
             alert("Encounter problems while saving data.")
         }
     });
+}
+
+function removeOptionVal(templateId, dataItemId, fieldId, optionTextId, optionText) {
+
+    if (confirm("Are you sure you want to remove option: " + optionText + "?")) {
+        let url = "/manager/api/Workflow/RemoveOptionText";
+        var data = {};
+        data.TemplateId = templateId;
+        data.DataItemId = dataItemId;
+        data.FieldId = fieldId;
+        data.TextFieldId = optionTextId; //new GUID cr
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            success: function (data) {
+                location.reload();
+            },
+            error: function (error) {
+                alert("Encounter problems while saving data.")
+            }
+        });
+    }
 }
 
 //function displayNewOption(templateId, dataItemId, fieldId, newOptionId, newValue) {

@@ -126,8 +126,49 @@ namespace Catfish.Areas.Manager.Controllers.Api
 
              return result;
         }
-      
-        
+
+        [Route("RemoveOptionText")]
+        [HttpPost]
+        public ApiResult RemoveOptionText([FromBody] ItemParam data)
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                EntityTemplate template = _entityTemplateService.GetTemplate(data.TemplateId);
+                if (template == null)
+                    throw new Exception("Template not found");
+
+                FieldContainer form = null; ;
+                if (data.DataItemId != Guid.Empty)
+                    form = template.GetDataItem(data.DataItemId);
+
+                if (form != null)
+                {
+                    var field = form.Fields.Where(f => f.Id == data.FieldId).FirstOrDefault();
+                    if (field == null)
+                        throw new Exception("Field not found.");
+
+                    if (field != null)
+                    {
+                        Option option = (field as OptionsField).Options.Where(o => o.Id == data.TextFieldId).FirstOrDefault();
+                        if(option != null)
+                        {
+                            (field as OptionsField).RemoveOption(option.Id);
+                        }
+                        _appDb.SaveChanges();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return result;
+        }
+
+
     }
     public class ItemParam
     {

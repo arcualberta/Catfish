@@ -163,5 +163,19 @@ namespace Catfish.Core.Models.Contents.Fields
                 }
             }
         }
+
+        public bool RemoveOption(Guid optionId)
+        {
+            try
+            {
+                Option optionToRemove = Options.Where(o => o.Id == optionId).FirstOrDefault();
+                Options.Remove(optionToRemove);
+                return true;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            return false;
+        }
     }
 }

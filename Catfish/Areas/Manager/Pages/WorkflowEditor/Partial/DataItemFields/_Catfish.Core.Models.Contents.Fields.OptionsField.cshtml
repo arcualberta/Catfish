@@ -24,30 +24,32 @@
 <td>
     @foreach (var opt in Model.Options)
     {
-        <div id="@opt.Id" class="option-value">
-            @for (int i = 0; i < opt.OptionText.Values.Count; ++i)
+       
+    <div id="@opt.Id" class="option-value">
+        <i class="far fa-trash-alt float-right" onclick="removeOptionVal('@templateId', '@dataItemId', '@Model.Id', '@opt.Id', '@opt.OptionText.ConcatenatedContent');" id="btnEdit_@opt.Id"></i>
+        @for (int i = 0; i < opt.OptionText.Values.Count; ++i)
+        {
+            var txt = opt.OptionText.Values[i];
+            <partial name="Partial/DataItemFields/_Text" model="txt" />
+            if (i < opt.OptionText.Values.Count - 1)
             {
-                var txt = opt.OptionText.Values[i];
-                <partial name="Partial/DataItemFields/_Text" model="txt" />
-                if (i < opt.OptionText.Values.Count - 1)
-                {
-                    <span>|</span>
-                }
+                <span>|</span>
             }
-        </div>
+        }
+    </div>
     }
     @{ Guid newOptId = Guid.NewGuid(); }
-<div id="newOptionVal_@newOptId" class="new-option-value">
-    <!--Show the save and cancel buttons here. -->
-    <i class="fa fa-plus-square float-right" onclick="addNewOptionValue('@newOptId');" id="btnAddOption_@newOptId"></i>
-    <i class="far fa-window-close float-right" style="display:none" onclick="cancelAddOption('@newOptId');" id="btnCancel_@newOptId"></i>
-    <i class="far fa-save float-right" style="display:none" onclick="saveOptionVal('@templateId','@dataItemId','@Model.Id','@newOptId');" id="btnSave_@newOptId"></i>
-    <div style="display: none" class="addOptionText" >
-        <input id="input_@newOptId" type="text"  />
-        <select name="lang" class="btn btn-default" id="select_@newOptId">
-            <option value="en" selected="selected">English</option>
-        </select>
-    </div>
+    <div id="newOptionVal_@newOptId" class="new-option-value">
+        <!--Show the save and cancel buttons here. -->
+        <i class="fa fa-plus-square float-right" onclick="addNewOptionValue('@newOptId');" id="btnAddOption_@newOptId"></i>
+        <i class="far fa-window-close float-right" style="display:none" onclick="cancelAddOption('@newOptId');" id="btnCancel_@newOptId"></i>
+        <i class="far fa-save float-right" style="display:none" onclick="saveOptionVal('@templateId','@dataItemId','@Model.Id','@newOptId');" id="btnSave_@newOptId"></i>
+        <div style="display: none" class="addOptionText">
+            <input id="input_@newOptId" type="text" />
+            <select name="lang" class="btn btn-default" id="select_@newOptId">
+                <option value="en" selected="selected">English</option>
+            </select>
+        </div>
 
-</div>
+    </div>
 </td>
