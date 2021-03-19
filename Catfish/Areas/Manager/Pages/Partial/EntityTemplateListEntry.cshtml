@@ -5,8 +5,9 @@
 @{
     var id = Model.Id;
     var modelType = Model.ModelType;
-    string detailsPage = "/manager/schema/" + Model.Id;
-    string editorPage = "/manager/schema/edit/" + Model.Id;
+    string workflowTemplateDetailsPage = "/manager/workflow/templates/" + Model.Id;
+    string xmlDetailsPage = "/manager/schema/" + Model.Id;
+    string xmlEditorPage = "/manager/schema/edit/" + Model.Id;
 }
 <li class="dd-item expanded">
     <div class="sitemap-item">
@@ -16,11 +17,11 @@
         <div class="container">
             <div class="row">
                 <div class=" col-md-8">
-                    <a href="@detailsPage">@Model.TypeName</a>
+                    <a href="@workflowTemplateDetailsPage">@Model.TypeName</a>
                 </div>
                 <div class=" col-md-4 text-right">
-                    <a href="@detailsPage">View XML</a> |
-                    <a href="@editorPage">Edit XML</a>
+                    <a href="@xmlDetailsPage">View XML</a> |
+                    <a href="@xmlEditorPage">Edit XML</a>
                 </div>
             </div>
         </div>

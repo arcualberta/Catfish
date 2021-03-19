@@ -30,7 +30,7 @@ $(document).ready(function () {
             dataFormdModified = false;
         }
     },
-    10 * 60000); //execute every 10 minutes.
+    5 * 60000); //execute every 5 minutes.
 });
 
 function removeRequiredAttribute(form) {
@@ -85,3 +85,10 @@ function autoSaveForm(form) {
         }
     });
 }
+
+function createGuid() {
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+} 

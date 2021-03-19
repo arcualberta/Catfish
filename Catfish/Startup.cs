@@ -390,6 +390,8 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
 
+            App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
+
         }
         private static void RegisterCustomBlocks()
         {
