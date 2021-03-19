@@ -23,6 +23,7 @@
     <i class="far fa-window-close float-right" style="display:none" onclick="cancelInlineEditing('@Model.Id');" id="btnCancel_@Model.Id"></i>
     <i class="far fa-save float-right" style="display:none" onclick="saveEditedText('@templateId','@dataItemId','@fieldId','@Model.Id', '@metadataSetId');" id="btnSave_@Model.Id"></i>
     <span class="text-view">@Html.Raw(Model.Value)</span>
+    <input type="hidden" id="hidden_original_text_@Model.Id" />
 
 
 </div>

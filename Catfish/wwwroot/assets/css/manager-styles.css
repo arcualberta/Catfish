@@ -61,23 +61,45 @@
 .show{
     display: block;
 }
-.editableText {
+.editableText, .addOptionText {
     position: relative;
     display: inline-block;
     margin: 1px;
     border: 1px double blue;
     width: 100%;
 }
-.inline-editor i{
+.inline-editor i, .new-option-value i{
     margin-left:10px;
 }
 
-.inline-editor .fa-window-close {
+.inline-editor .fa-window-close, .new-option-value > .fa-window-close {
     color: red;
 }
 
-.inline-editor .fa-save {
+.inline-editor .fa-save, .new-option-value > .fa-plus-square, .new-option-value > .fa-save {
     color: green;
 }
-
+.new-option-value > .fa-plus-square {
+    font-size: 18px;
+    margin-right: -5px;
+  
+   /* margin-top: 5px; */
+}
+.new-option-value {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+}
+.addOptionText {
+    border-color: #80808012;
+   
+}
+.addOptionText select{
+    border: 1px solid Grey;
+    width:25%;
+}
+.addOptionText input {
+    
+    width: 74%;
+}
 /*=======================================================================================================================================================*/

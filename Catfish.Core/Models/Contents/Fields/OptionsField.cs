@@ -59,6 +59,15 @@ namespace Catfish.Core.Models.Contents.Fields
             Options.Add(opt);
         }
 
+        public void AddOption(string optionText, Guid newOptGuid,  string langs)
+        {
+            Option opt = new Option();      
+            opt.SetOptionText(optionText, langs);
+            opt.Id = newOptGuid;
+
+            Options.Add(opt);
+        }
+
         public void UpdateOptions(string[] optionText, string lang)
         {
             for (int i = 0; i < optionText.Length; ++i)

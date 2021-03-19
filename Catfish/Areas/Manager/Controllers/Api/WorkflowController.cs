@@ -93,7 +93,39 @@ namespace Catfish.Areas.Manager.Controllers.Api
             return result;
         }
 
+        [Route("AddOptionText")]
+        [HttpPost]
+        public ApiResult AddOptionText([FromBody] ItemParam data)
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                EntityTemplate template = _entityTemplateService.GetTemplate(data.TemplateId);
+                if (template == null)
+                    throw new Exception("Template not found");
 
+                FieldContainer form = null; ;
+                if (data.DataItemId != Guid.Empty)
+                    form = template.GetDataItem(data.DataItemId);
+              
+                if (form != null)
+                {
+                    var field = form.Fields.Where(f => f.Id == data.FieldId).FirstOrDefault();
+
+                    if(field != null)
+                    {
+                        (field as OptionsField).AddOption(data.TextValue,data.TextFieldId, data.Language);
+                        _appDb.SaveChanges();
+                    }
+
+                }
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+
+             return result;
+        }
       
         
     }
