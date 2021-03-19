@@ -7,6 +7,8 @@ using Catfish.Core.Services.Solr;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Piranha.Manager.Models;
+using Catfish.Core.Models.Contents.Fields.ViewModels;
+
 using AsyncResult = Piranha.Manager.Models.AsyncResult;
 
 namespace Catfish.Areas.Manager.Controllers
@@ -36,22 +38,38 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Get(Guid id)
         {
             var item = _srv.GetItem(id);
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-            string jsonString = JsonConvert.SerializeObject(item, settings);
+
+            //OLD: Serializing the full data object
+            ////JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            ////string jsonString = JsonConvert.SerializeObject(item, settings);
+
+
+            //New: Serializing the view model of the data object, also without using full JSON serialization
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
+            ItemVM vm = new ItemVM(item); 
+            string jsonString = JsonConvert.SerializeObject(vm, settings);
+
+
             return Content(jsonString, "application/json");
             //return Json(vm,, JsonRequestBehavior.AllowGet);
         }
 
         // POST: api/Items
         [HttpPost]
-        public AsyncResult Save(Item model)
+        public AsyncResult Save(ItemVM model)
         {
             try
             {
                 _srv.UpdateItemlDataModel(model);
-                
-                //TODO:SOLR update
-                //solrIndexService.AddUpdate(new SolrItemModel(model));
+
+                return new AsyncResult
+                {
+                    Status = new StatusMessage
+                    {
+                        Type = StatusMessage.Success,
+                        Body = "The Item was successfully saved"
+                    }
+                };
             }
             catch
             {
@@ -64,14 +82,6 @@ namespace Catfish.Areas.Manager.Controllers
                     }
                 };
             }
-            return new AsyncResult
-            {
-                Status = new StatusMessage
-                {
-                    Type = StatusMessage.Success,
-                    Body = "The Item was successfully saved"
-                }
-            };
         }
 
         //public async Task<IActionResult> EditSave(Item model)

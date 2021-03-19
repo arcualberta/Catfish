@@ -1,0 +1,25 @@
+﻿@model Catfish.Core.Models.Contents.Fields.BaseField
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<td>
+    @Model.GetType().Name
+</td>
+<td>
+    @if (Model.Name != null)
+    {
+        foreach (var txt in Model.Name.Values)
+        {
+            <partial name="Partial/DataItemFields/_Text" model="txt" />
+        }
+    }
+</td>
+<td>
+    @if (Model.Description != null)
+    {
+        foreach (var txt in Model.Description.Values)
+        {
+            <partial name="Partial/DataItemFields/_Text" model="txt" />
+        }
+    }
+</td>

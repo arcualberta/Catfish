@@ -1,0 +1,14 @@
+﻿@model Catfish.Core.Models.Contents.Fields.InfoSection
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<td>
+    @Model.GetType().Name
+</td>
+
+<td colspan="3">
+    @foreach (var txt in Model.Content.Values)
+    {
+        <partial name="Partial/DataItemFields/_Text" model="txt" />
+    }
+</td>

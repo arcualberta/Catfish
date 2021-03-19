@@ -40,6 +40,17 @@ namespace Catfish.Core.Models.Contents.Fields
             Values[valueIndex].SetContent(val, lang);
             return valueIndex;
         }
+        public void UpdateValue(Guid txtId, string value, string lang)
+        {
+            foreach (var multilingualVal in Values)
+            {
+                if (multilingualVal.Values.Any(txt => txt.Id == txtId))
+                {
+                    multilingualVal.UpdateValue(txtId, value, lang);
+                    break;
+                }
+            }
+        }
 
         public string GetValue(string lang, int valueIndex = 0)
         {

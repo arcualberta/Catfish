@@ -49,6 +49,12 @@
     <script src="~/assets/js/_public-facing/scripts/item-details-page-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/item-edit-page-functions.js"></script>
 
+    <script src="/assets/js/_public-facing/scripts/data-item-form-functions.js"></script>
+    <script src="/assets/js/_public-facing/scripts/attachment-functions.js"></script>
+    <script src="/assets/js/_public-facing/scripts/composite-field-functions.js"></script>
+    <script src="/assets/js/_public-facing/scripts/table-field-functions.js"></script>
+
+
     @foreach (var url in _appService.GetScriptUrls())
     {
         <script src="@url"></script>
@@ -180,7 +186,7 @@
                             @Html.Raw(currentSite.FooterContents.Text)
                         </div>
                         <div class="col-6 footer-arc-logo">
-                            Designed and engineered by  <img src="@Url.Content(currentSite.FooterContents.Logo)" />
+                            Designed and engineered by <img src="@Url.Content(currentSite.FooterContents.Logo)" />
                         </div>
 
                         @Html.Raw(javascriptCode)

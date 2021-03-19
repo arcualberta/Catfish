@@ -14,10 +14,14 @@
     var id = Html.IdFor(model => model.Values[i].DateValue);
     var required = Model.Required ? "required" : "";
     var fieldType = Model.IncludeTime ? "datetime-local" : "date";
+    string dateVal = Model.Values[i].DateValue.HasValue
+        ? Model.Values[i].DateValue.Value.ToString("yyyy-MM-dd")
+        : "";
+
     <input type="@fieldType"
            id="@id"
            name="@name"
-           value="@Model.Values[i].DateValue"
+           value="@dateVal"
            onchange="@ViewData["onchange"]"
            @required
            data-value-expression="@ViewData["data-value-expression"]"
