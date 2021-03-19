@@ -18,6 +18,7 @@
     let newNamePrefix = namePrefix + ".TableData[" + n + "]";
 
     $(row).attr("data-r", n);
+    $(row).addClass("data-row");
 
     //Example:
     //Blocks[1].Item.Fields[0]  <== example namePrefix
@@ -113,6 +114,9 @@ function deleteRow(tableFieldId, index) {
     //Re-indexing remaining elements
     let namePrefix = $(dataTable).data("name-prefix") + ".TableData";
     for (i = index; i < rows.length; ++i) {
+
+        $(rows[i]).attr("data-r", i);
+
         let elements = $(rows[i]).find("input, select, textarea");
 
         $.each(elements, function (idx, ele) {
@@ -123,6 +127,10 @@ function deleteRow(tableFieldId, index) {
 
             let id = name.split(/\[/).join('_').split(/\]/).join('_').split(/\./).join('_');
             $(ele).attr("id", id);
+
+            if ($(ele).attr("data-r")) {
+                $(ele).attr("data-r", i);
+            }
         });
 
         //Updating the delete button onclick action

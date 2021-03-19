@@ -175,6 +175,7 @@ namespace Catfish
             //Configuring authorization services
             services.AddScoped<IAuthorizationHelper, AuthorizationHelper>();
             services.AddScoped<IAuthorizationHandler, EntityTemplateAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, GroupAuthorizationHandler>();
             //services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationCrudHandler>();
             // Add custom policies
             services.AddAuthorization(o =>
@@ -389,7 +390,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
 
-            App.Modules.Manager().Scripts.Add("~/assets/js/workflowEditor.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
 
         }
         private static void RegisterCustomBlocks()
