@@ -18,6 +18,7 @@
     let newNamePrefix = namePrefix + ".TableData[" + n + "]";
 
     $(row).attr("data-r", n);
+    $(row).addClass("data-row");
 
     //Example:
     //Blocks[1].Item.Fields[0]  <== example namePrefix
