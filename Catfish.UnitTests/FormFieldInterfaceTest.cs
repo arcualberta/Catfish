@@ -8,6 +8,10 @@ using System.Text;
 using System.Linq;
 using System.Xml.Linq;
 using System.IO;
+using System.Configuration;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 namespace Catfish.UnitTests
 {
@@ -17,6 +21,9 @@ namespace Catfish.UnitTests
         private AppDbContext _db;
         private TestHelper _testHelper;
         private IAuthorizationService _auth;
+        private string siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
+        //IWebDriver driver = new ChromeDriver(".");
+        IWebDriver driver = new ChromeDriver();
 
         [SetUp]
         public void Setup()
@@ -62,6 +69,39 @@ namespace Catfish.UnitTests
         public void RefreshData()
         {
             RefreshDatabase();
+        }
+
+        public void LoginTest()
+        {
+            IWebElement element = driver.FindElement(By.Name("pageGroup"));
+            Assert.NotNull(element);
+        }
+
+        [Test]    
+        public void Login()
+        {
+            //driver.Navigate().GoToUrl(siteUrl + "/manager/");
+            driver.Navigate().GoToUrl("https://localhost:44385/manager/"); 
+            driver.FindElement(By.Name("username")).SendKeys("admin");
+            IWebElement element = driver.FindElement(By.Name("password"));
+            element.SendKeys("passwd");
+            element.Submit();
+
+        }
+
+        [Test]
+        public void SimpleFormSubmissionTest()
+        {
+
+            RefreshData();
+            //driver.Navigate().GoToUrl(siteUrl + "/simple-form/");
+            driver.Navigate().GoToUrl("https://localhost:44385/simple-form/");
+            
+            IWebElement element = driver.FindElement(By.Id("48cd8112-beea-4664-b5a9-739a79e652bc"));
+
+
+            //SelectElement selectDD1 = new SelectElement(element);
+            //element.SelectByIndex(1);
         }
 
     }
