@@ -102,4 +102,35 @@
     
     width: 74%;
 }
+
+/* jquery confirm dialog */
+.jconfirm-title-c{
+    border-bottom: 2px solid Grey;
+}
+.jconfirm-title-c .fa-exclamation-triangle {
+        color: #c70f0f;
+        padding-right: 5px;
+ }
+
+.jconfirm-content {
+    padding: 5px;
+    color: #582322;
+    background-color: #eedad9;
+    border-color: #e7cbca;
+    border-bottom: 2px solid grey;
+
+}
+
+.jconfirm-buttons button:nth-child(1) {
+    color: #fff !important;
+    background-color: #a94441 !important;
+    border-color: #a94441 !important;
+}
+
+.jconfirm-buttons .btn:nth-child(2) {
+    color: #fff !important;
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
 /*=======================================================================================================================================================*/

@@ -153,9 +153,12 @@ namespace Catfish.Areas.Manager.Controllers.Api
                         Option option = (field as OptionsField).Options.Where(o => o.Id == data.TextFieldId).FirstOrDefault();
                         if(option != null)
                         {
-                            (field as OptionsField).RemoveOption(option.Id);
+                            if (!ReferByVisibleIf(template, option.Id) && !ReferByRequiredIf(template, option.Id) && !ReferByExpressionValue(template, field.Id, option.Id))
+                                (field as OptionsField).RemoveOption(option.Id);
+                            else
+                                result.Message = "You can't delete this option field because it refers by other field(s).";
                         }
-                        _appDb.SaveChanges();
+                         _appDb.SaveChanges();
                     }
 
                 }
@@ -168,7 +171,77 @@ namespace Catfish.Areas.Manager.Controllers.Api
             return result;
         }
 
+        private bool ReferByVisibleIf(EntityTemplate template, Guid optionFieldId)
+        {
+            bool found = false;
 
+            foreach(DataItem dt in template.DataContainer)
+            {
+                foreach(var field in dt.Fields.Where(f=> f.VisibilityCondition !=null).ToList())
+                {
+                    if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+                    {
+                        foreach(Option opt in (field as OptionsField).Options.Where(v=> !string.IsNullOrWhiteSpace(v.VisibilityCondition.Value)).ToList())
+                        {
+                            if (opt.VisibilityCondition.Value.Contains(field.Id.ToString()) || opt.VisibilityCondition.Value.Contains(optionFieldId.ToString()))
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (found)
+                        break;
+                    if ((field as BaseField).VisibilityCondition.Value.Contains(optionFieldId.ToString()))
+                    {
+                        found = true;
+                        break;
+                    }
+                    
+                }
+                if (found)
+                    break;
+            }
+            return found;
+        }
+        private bool ReferByRequiredIf(EntityTemplate template, Guid optionFieldId)
+        {
+            bool found = false;
+
+            foreach (DataItem dt in template.DataContainer)
+            {
+                foreach (var field in dt.Fields.Where(f=> !string.IsNullOrWhiteSpace(f.RequiredCondition.Value)).ToList())
+                {
+                    
+                    if ((field as BaseField).RequiredCondition.Value.Contains(optionFieldId.ToString()))
+                    {
+                        found = true;
+                        break;
+                    }
+                    
+                }
+            }
+            return found;
+        }
+        private bool ReferByExpressionValue(EntityTemplate template, Guid fieldId, Guid optionFieldId)
+        {
+            bool found = false;
+
+            foreach (DataItem dt in template.DataContainer)
+            {
+                foreach (var field in dt.Fields.Where(f=> f.HasValueExpression).ToList())
+                {
+                   
+                    if ((field as BaseField).ValueExpression.Value.Contains(fieldId.ToString()) || (field as BaseField).ValueExpression.Value.Contains(optionFieldId.ToString()))
+                    {
+                        found = true;
+                        break;
+                    }
+                    
+                }
+            }
+            return found;
+        }
     }
     public class ItemParam
     {
@@ -180,5 +253,8 @@ namespace Catfish.Areas.Manager.Controllers.Api
         public string TextValue { get; set; }
         public string Language { get; set; }
     }
+
+    
+   
 
 }

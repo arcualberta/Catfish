@@ -120,27 +120,69 @@ function saveOptionVal(templateId,dataItemId,fieldId, newOptionFieldId) {
 
 function removeOptionVal(templateId, dataItemId, fieldId, optionTextId, optionText) {
 
-    if (confirm("Are you sure you want to remove option: " + optionText + "?")) {
-        let url = "/manager/api/Workflow/RemoveOptionText";
-        var data = {};
-        data.TemplateId = templateId;
-        data.DataItemId = dataItemId;
-        data.FieldId = fieldId;
-        data.TextFieldId = optionTextId; //new GUID cr
-        $.ajax({
-            type: 'POST',
-            url: url,
-            contentType: 'application/json; charset=utf-8',
-            dataType: 'json',
-            data: JSON.stringify(data),
-            success: function (data) {
-                location.reload();
+    //if (confirm("Are you sure you want to remove option: " + optionText + "?")) {
+    //    let url = "/manager/api/Workflow/RemoveOptionText";
+    //    var data = {};
+    //    data.TemplateId = templateId;
+    //    data.DataItemId = dataItemId;
+    //    data.FieldId = fieldId;
+    //    data.TextFieldId = optionTextId; //new GUID cr
+    //    $.ajax({
+    //        type: 'POST',
+    //        url: url,
+    //        contentType: 'application/json; charset=utf-8',
+    //        dataType: 'json',
+    //        data: JSON.stringify(data),
+    //        success: function (data) {
+    //            location.reload();
+    //        },
+    //        error: function (error) {
+    //            alert("Encounter problems while saving data.")
+    //        }
+    //    });
+    //}
+
+
+    $.confirm({
+        title: '<span class="fa fa-exclamation-triangle"></span> Delete Option',
+        content: 'You are about to delete option "' + optionText + '". Are you sure?',
+        buttons: {
+            confirm: function () {
+              
+                let url = "/manager/api/Workflow/RemoveOptionText";
+                var data = {};
+                data.TemplateId = templateId;
+                data.DataItemId = dataItemId;
+                data.FieldId = fieldId;
+                data.TextFieldId = optionTextId; //new GUID cr
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: JSON.stringify(data),
+                    success: function (result) {
+                        if (result.message !== null) {
+                            $.alert({
+                                title: 'Info',
+                                content: result.message,
+                            });
+                        } else {
+
+                            location.reload();
+                        }
+                    },
+                    error: function (error) {
+                        alert("Encounter problems while saving data.")
+                    }
+                });
             },
-            error: function (error) {
-                alert("Encounter problems while saving data.")
+            cancel: function () {
+                //$.alert('Canceled!');
             }
-        });
-    }
+        }
+    });
+   
 }
 
 //function displayNewOption(templateId, dataItemId, fieldId, newOptionId, newValue) {

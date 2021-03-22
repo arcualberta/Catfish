@@ -27,6 +27,8 @@
     <script src="~/manager/assets/js/piranha.contentedit.min.js"></script>
     <script src="~/manager/assets/js/piranha.siteedit.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 }
 
 
@@ -74,7 +76,7 @@
                 </div>
                 <div id="@dataTargetId" class="collapse @show" aria-labelledby="@headingId" data-parent="#email-templates">
                     <div class="card-body">
-                        <partial name="Partial/_EmailTemplate" model="child" view-data="ViewData"  />
+                        <partial name="Partial/_EmailTemplate" model="child" view-data="ViewData" />
                     </div>
                 </div>
             </div>
