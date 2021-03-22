@@ -7,27 +7,31 @@ using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Catfish.Areas.Manager.Controllers.Api
 {
     [Route("manager/api/[controller]")]
     [ApiController]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SysAdmin")] //TODO: remove this and implement authorization based on workflow.
     public class WorkflowController : Controller
     {
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly ISubmissionService _submissionService;
         private readonly IWorkflowService _workflowService;
         private readonly AppDbContext _appDb;
+        private readonly IBackupService _backupService;
         public WorkflowController(AppDbContext db,
             IEntityTemplateService entityTemplateService,
             ISubmissionService submissionService,
-           
-            IWorkflowService workflowService)
+            IWorkflowService workflowService,
+            IBackupService backupService)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
             _workflowService = workflowService;
             _appDb = db;
+            _backupService = backupService;
         }
 
         [Route("SaveText")]
@@ -40,6 +44,8 @@ namespace Catfish.Areas.Manager.Controllers.Api
             try
             {
                 EntityTemplate template = _entityTemplateService.GetTemplate(data.TemplateId);
+                string templateContentBeforeUpdate = template.Content;
+
                 if (template == null)
                     throw new Exception("Template not found");
 
@@ -75,7 +81,14 @@ namespace Catfish.Areas.Manager.Controllers.Api
                         else
                             throw new Exception("The element to be updated is not found within name, description, or other known field types.");
 
+                        if(templateContentBeforeUpdate !=  template.Content)
+                        {
+                            //reload the template from the database and back it up before saving the changes
+                            //back to the database.
+                            _backupService.Backup(_entityTemplateService.GetTemplate(data.TemplateId));
+
                             _appDb.SaveChanges();
+                        }
                     }
 
                 }
@@ -114,6 +127,9 @@ namespace Catfish.Areas.Manager.Controllers.Api
 
                     if(field != null)
                     {
+                        //Backing up the template before adding the option
+                        _backupService.Backup(template);
+
                         (field as OptionsField).AddOption(data.TextValue,data.TextFieldId, data.Language);
                         _appDb.SaveChanges();
                     }
@@ -151,16 +167,24 @@ namespace Catfish.Areas.Manager.Controllers.Api
                     if (field != null)
                     {
                         Option option = (field as OptionsField).Options.Where(o => o.Id == data.TextFieldId).FirstOrDefault();
-                        if(option != null)
+                        if (option != null)
                         {
-                            if (!ReferByVisibleIf(template, option.Id) && !ReferByRequiredIf(template, option.Id) && !ReferByExpressionValue(template, field.Id, option.Id))
-                                (field as OptionsField).RemoveOption(option.Id);
-                            else
-                                result.Message = "You can't delete this option field because it refers by other field(s).";
-                        }
-                         _appDb.SaveChanges();
-                    }
+                            var numGuidMatchs = Regex.Matches(template.Content, option.Id.ToString()).Count;
 
+                            //template.Content.ind
+                            if (numGuidMatchs > 1)
+                                result.Message = "You can't delete this option field because it refers by other field(s).";
+                            else
+                            {
+                                //Backing up the template before removing the option
+                                _backupService.Backup(template);
+
+                                (field as OptionsField).RemoveOption(option.Id);
+                                _appDb.SaveChanges();
+                            }
+                        }
+
+                    }
                 }
             }
             catch (Exception ex)
@@ -171,77 +195,77 @@ namespace Catfish.Areas.Manager.Controllers.Api
             return result;
         }
 
-        private bool ReferByVisibleIf(EntityTemplate template, Guid optionFieldId)
-        {
-            bool found = false;
+        ////private bool ReferByVisibleIf(EntityTemplate template, Guid optionFieldId)
+        ////{
+        ////    bool found = false;
 
-            foreach(DataItem dt in template.DataContainer)
-            {
-                foreach(var field in dt.Fields.Where(f=> f.VisibilityCondition !=null).ToList())
-                {
-                    if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
-                    {
-                        foreach(Option opt in (field as OptionsField).Options.Where(v=> !string.IsNullOrWhiteSpace(v.VisibilityCondition.Value)).ToList())
-                        {
-                            if (opt.VisibilityCondition.Value.Contains(field.Id.ToString()) || opt.VisibilityCondition.Value.Contains(optionFieldId.ToString()))
-                            {
-                                found = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (found)
-                        break;
-                    if ((field as BaseField).VisibilityCondition.Value.Contains(optionFieldId.ToString()))
-                    {
-                        found = true;
-                        break;
-                    }
+        ////    foreach(DataItem dt in template.DataContainer)
+        ////    {
+        ////        foreach(var field in dt.Fields.Where(f=> f.VisibilityCondition !=null).ToList())
+        ////        {
+        ////            if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+        ////            {
+        ////                foreach(Option opt in (field as OptionsField).Options.Where(v=> !string.IsNullOrWhiteSpace(v.VisibilityCondition.Value)).ToList())
+        ////                {
+        ////                    if (opt.VisibilityCondition.Value.Contains(field.Id.ToString()) || opt.VisibilityCondition.Value.Contains(optionFieldId.ToString()))
+        ////                    {
+        ////                        found = true;
+        ////                        break;
+        ////                    }
+        ////                }
+        ////            }
+        ////            if (found)
+        ////                break;
+        ////            if ((field as BaseField).VisibilityCondition.Value.Contains(optionFieldId.ToString()))
+        ////            {
+        ////                found = true;
+        ////                break;
+        ////            }
                     
-                }
-                if (found)
-                    break;
-            }
-            return found;
-        }
-        private bool ReferByRequiredIf(EntityTemplate template, Guid optionFieldId)
-        {
-            bool found = false;
+        ////        }
+        ////        if (found)
+        ////            break;
+        ////    }
+        ////    return found;
+        ////}
+        ////private bool ReferByRequiredIf(EntityTemplate template, Guid optionFieldId)
+        ////{
+        ////    bool found = false;
 
-            foreach (DataItem dt in template.DataContainer)
-            {
-                foreach (var field in dt.Fields.Where(f=> !string.IsNullOrWhiteSpace(f.RequiredCondition.Value)).ToList())
-                {
+        ////    foreach (DataItem dt in template.DataContainer)
+        ////    {
+        ////        foreach (var field in dt.Fields.Where(f=> !string.IsNullOrWhiteSpace(f.RequiredCondition.Value)).ToList())
+        ////        {
                     
-                    if ((field as BaseField).RequiredCondition.Value.Contains(optionFieldId.ToString()))
-                    {
-                        found = true;
-                        break;
-                    }
+        ////            if ((field as BaseField).RequiredCondition.Value.Contains(optionFieldId.ToString()))
+        ////            {
+        ////                found = true;
+        ////                break;
+        ////            }
                     
-                }
-            }
-            return found;
-        }
-        private bool ReferByExpressionValue(EntityTemplate template, Guid fieldId, Guid optionFieldId)
-        {
-            bool found = false;
+        ////        }
+        ////    }
+        ////    return found;
+        ////}
+        ////private bool ReferByExpressionValue(EntityTemplate template, Guid fieldId, Guid optionFieldId)
+        ////{
+        ////    bool found = false;
 
-            foreach (DataItem dt in template.DataContainer)
-            {
-                foreach (var field in dt.Fields.Where(f=> f.HasValueExpression).ToList())
-                {
+        ////    foreach (DataItem dt in template.DataContainer)
+        ////    {
+        ////        foreach (var field in dt.Fields.Where(f=> f.HasValueExpression).ToList())
+        ////        {
                    
-                    if ((field as BaseField).ValueExpression.Value.Contains(fieldId.ToString()) || (field as BaseField).ValueExpression.Value.Contains(optionFieldId.ToString()))
-                    {
-                        found = true;
-                        break;
-                    }
+        ////            if ((field as BaseField).ValueExpression.Value.Contains(fieldId.ToString()) || (field as BaseField).ValueExpression.Value.Contains(optionFieldId.ToString()))
+        ////            {
+        ////                found = true;
+        ////                break;
+        ////            }
                     
-                }
-            }
-            return found;
-        }
+        ////        }
+        ////    }
+        ////    return found;
+        ////}
     }
     public class ItemParam
     {

@@ -11,6 +11,7 @@
     $(span).addClass("editableText");
     $("#btnEdit_" + textFieldId).hide();
     $("#btnSave_" + textFieldId).show();
+    $("#btnSave_" + textFieldId).prop("disabled", false);
     $("#btnCancel_" + textFieldId).show();
 }
 
@@ -39,6 +40,9 @@ function cancelInlineEditing(textFieldId) {
 }
 
 function saveEditedText(templateId, dataItemId, fieldId, textFieldId, metadataSetId) {
+
+    //Disabling the save button
+    $("#btnSave_" + textFieldId).prop("disabled", true);
 
     let editedText = $("#" + textFieldId + " span").html();
    // alert(editedText);

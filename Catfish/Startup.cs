@@ -177,6 +177,9 @@ namespace Catfish
             services.AddScoped<IAuthorizationHandler, EntityTemplateAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, GroupAuthorizationHandler>();
             //services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationCrudHandler>();
+
+            services.AddScoped<IBackupService, BackupService>();
+
             // Add custom policies
             services.AddAuthorization(o =>
             {
