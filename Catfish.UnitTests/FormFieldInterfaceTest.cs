@@ -14,6 +14,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Support;
 using OpenQA.Selenium.Interactions;
+using System.Reflection;
 
 namespace Catfish.UnitTests
 {
@@ -25,7 +26,7 @@ namespace Catfish.UnitTests
         private IAuthorizationService _auth;
         private string siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
         //IWebDriver driver = new ChromeDriver(".");
-        IWebDriver driver = new ChromeDriver();
+        IWebDriver driver = new ChromeDriver(Environment.CurrentDirectory);
         private string itemAtrib;
 
         [SetUp]
