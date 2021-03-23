@@ -2573,7 +2573,7 @@ namespace Catfish.UnitTests
             //Defining state mappings
             editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
             editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inReviewState.Id, "Submit");
-            //editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, savedState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, savedState.Id, "Save");
             editSubmissionPostActionSubmit.AddStateMapping(inReviewState.Id, inReviewState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
@@ -3965,14 +3965,20 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                 applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[1]).First());
 
             //Document in supervisor's review can be saved without changing state
-            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Submit");
+            
+            //Document in supervisor's review can be saved without changing state
+            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, savedState.Id, "Save");
 
             //Saved document can be submitted for chair's review directly if appCat[0] (Faculty) is selected
             editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit", applicantCat,
                 applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First());
 
             //Document in chair's review can be saved without changing state
-            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "submit");
+
+            //Document in chair's review can be saved without changing state
+            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, savedState.Id, "Save");
 
 
             //Defining the pop-up for the above postActionSubmit action
