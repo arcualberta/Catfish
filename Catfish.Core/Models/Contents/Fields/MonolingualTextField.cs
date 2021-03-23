@@ -109,6 +109,16 @@ namespace Catfish.Core.Models.Contents.Fields
                     Values.Add(new Text(new XElement(srcVal.Data)));
             }
         }
+
+        public void UpdateValue(Guid txtId, string value, string lang)
+        {
+            var txt = Values.Where(txt => txt.Id == txtId).FirstOrDefault();
+            if (txt != null)
+                txt.Value = value;
+            else
+                Values.Add(new Text() { Value = value, Language = lang });
+        }
+
         public IEnumerable<Text> GetValues(string lang = null)
         {
             return Values;

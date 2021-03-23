@@ -2528,6 +2528,7 @@ namespace Catfish.UnitTests
 
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(inReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
@@ -2590,6 +2591,7 @@ namespace Catfish.UnitTests
 
             //Defining state referances
             editSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization();
             editSubmissionAction.GetStateReference(inReviewState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
@@ -3825,6 +3827,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             listSubmissionsAction.AddStateReferances(inSupervisorReviewState.Id)
                 .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(inChairReviewState.Id)
@@ -3867,6 +3870,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
@@ -3970,12 +3974,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Document in supervisor's review can be saved without changing state
             editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, savedState.Id, "Save");
 
+
             //Saved document can be submitted for chair's review directly if appCat[0] (Faculty) is selected
             editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit", applicantCat,
                 applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First());
 
             //Document in chair's review can be saved without changing state
             editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "submit");
+
 
             //Document in chair's review can be saved without changing state
             editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, savedState.Id, "Save");
@@ -3998,7 +4004,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining state referances
             editSubmissionAction.GetStateReference(savedState.Id, true)
-                .AddOwnerAuthorization();
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(gapAdmin.Id);
             editSubmissionAction.GetStateReference(inChairReviewState.Id, true)
                 .AddAuthorizedRole(gapAdmin.Id);
             editSubmissionAction.GetStateReference(inSupervisorReviewState.Id, true)

@@ -69,6 +69,24 @@ namespace Catfish.Core.Models.Contents.Fields
             }
         }
 
+        /// <summary>
+        /// This method updates the etxt of an existing option.
+        /// </summary>
+        /// <param name="txtId"></param>
+        /// <param name="value"></param>
+        /// <param name="lang"></param>
+        public void UpdateOption(Guid txtId, string value, string lang)
+        {
+            foreach (Option opt in Options)
+            {
+                if (opt.OptionText.Values.Any(v => v.Id == txtId))
+                {
+                    opt.OptionText.UpdateValue(txtId, value, lang);
+                    break;
+                }
+            }
+        }
+
         public override void UpdateValues(BaseField srcField)
         {
             OptionsField src = srcField as OptionsField;

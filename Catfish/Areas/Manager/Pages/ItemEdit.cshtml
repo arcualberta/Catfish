@@ -27,12 +27,12 @@
 	    </div>
     </div>
 
-    <form id="item-edit-form" class="edit-form" novalidate>
-        <div v-for="section in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }">
+    <form id="item-edit-form" ref="myForm" class="edit-form" novalidate>
+        <div v-for="(section, index) in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }">
             <div class="row">
                 <div class="col">
                     <div class="sitemap">
-                        <ol v-if="section.values">
+                        <ol v-if="section.value">
                             <li>
                                 <div class="sitemap-item">
                                     <div class="link">
@@ -42,24 +42,26 @@
                                 <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
                                     <!-- v-for="let set of entrySets" -->
                                     <ol class="dd-list">
-                                        <li v-for="(entry, index) in section.values" class="dd-item expanded">
+                                        <li  v-for="(entry, index) in section.value" class="dd-item expanded"> <!--  Need to talk to Kamal about the Name and Description elements being given to me are not arrays -->
                                             <div class="sitemap-item">
                                                 <div class="link">
                                                     <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]"
                                                            class="language-label" for="input-0">
-                                                        {{languageLabels[index]}}:
+                                                        {{entry.Language}} :
                                                     </label>
-                                                    <!--<div v-if="!isInPreviewMode" class="col-md-4 mb-3">
-                                                    <input
-                                                           required type="text" class="form-control"
-                                                           :id="[section.title + '-input-' + index]"
-                                                           aria-describedby="entry-label"
-                                                           v-model="entry.value">
-                                                    <div class="invalid-feedback">
-                                                        This field is required.
+                                                    <div v-if="!isInPreviewMode" class="width-100">
+                                                        <input
+                                                               required type="text" class="form-control"
+                                                               :id="[section.title + '-input-' + index]"
+                                                               aria-describedby="entry-label"
+                                                               v-model="entry.Value">
+                                                        <div class="invalid-feedback">
+                                                            This field is required.
+                                                        </div>
                                                     </div>
-                                                </div>-->
-                                                    <span>{{entry.Value}}</span>
+                                                    <div v-else>
+                                                        <span>{{entry.Value}}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </li>
@@ -96,7 +98,7 @@
                                :class="{show: index==0, active: index==0}"
                                :id="'meta-tab-' + index" data-toggle="tab" :href="'#tab-' + index" role="tab"
                                :aria-controls="'tab-' + index" :aria-selected="index==0 ? true : false">
-                                {{metadataSet.Name.Values.$values[0].Value}}
+                                {{metadataSet.Name}}
                             </a>
                         </div>
                     </nav>
@@ -106,10 +108,10 @@
                              :class="{active: metaIndex==0, show: metaIndex==0}">
 
                             <transition-group name="refresh">
-                                <div v-for="(field, fIndex) in metadataSet.Fields.$values"
+                                <div v-for="(field, fIndex) in metadataSet.Fields"
                                      class="tab-pane fade show field-section" :key="field.Id"
                                      id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                    <item-field-component :field-data="field" :is-in-preview-mode="isInPreviewMode" :language-labels="languageLabels"></item-field-component>
+                                    <item-field-component ref="itemFieldChild" :field-data="field" :is-in-preview-mode="isInPreviewMode" :language-labels="languageLabels"></item-field-component>
                                 </div>
                             </transition-group>
                         </div>

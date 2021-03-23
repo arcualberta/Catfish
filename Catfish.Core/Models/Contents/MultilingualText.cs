@@ -88,5 +88,14 @@ namespace Catfish.Core.Models.Contents
                 txt.Value = srcTxt.Value;
             }
         }
+
+        public void UpdateValue(Guid txtId, string value, string lang)
+        {
+            var text = Values.Where(txt => txt.Id == txtId).FirstOrDefault();
+            if (text != null)
+                text.Value = value;
+            else
+                Values.Add(new Text() { Value = value, Language = lang });
+        }
     }
 }

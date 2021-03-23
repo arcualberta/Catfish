@@ -2,10 +2,13 @@
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
 using NUnit.Framework;
+using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Catfish.UnitTests
 {
@@ -442,6 +445,117 @@ namespace Catfish.UnitTests
             template.Data.Save("..\\..\\..\\..\\Examples\\gridTableField_Workflow_generared.xml");
 
         }
+
+        [Test]
+        public void ReportTest()
+        {
+            string lang = "en";
+            string templateName = "Report Test Template";
+            string submissionFormName = "Report Test";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+            DataItem form = template.GetRootDataItem(false);
+            Assert.IsNotNull(form);
+            var txt1 = form.CreateField<TextField>("Text 1", lang, false);
+            var ta1 = form.CreateField<TextArea>("Area 1", lang, false);
+
+            string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
+            var dd1 = form.CreateField<SelectField>("DD 1", lang, options, false);
+            var rb1 = form.CreateField<RadioField>("RB 1", lang, options, false);
+            var chk1 = form.CreateField<CheckboxField>("CB 1", lang, options, false);
+
+            DataItem childForm = template.GetDataItem("Child Form", true, lang);
+            var childName = childForm.CreateField<TextField>("Child Name", lang, true);
+            childForm.CreateField<DateField>("DOB", lang, false);
+            //var cf1 = form.CreatedFied<CompositeField>("CF 1", lang);
+
+            CompositeField cf = form.CreateField<CompositeField>("Child Info", lang);
+            cf.Min = 1;
+            cf.Max = 1;
+            cf.AllowMultipleValues = false;
+            cf.ChildTemplate = childForm;
+
+            var report = template.GetReport<SubmissionReport>("Submission Report",template.Id,  true);
+            report
+                .AddField(form.Id, txt1.Id,"")
+                .AddField(form.Id, ta1.Id, "")
+                .AddField(form.Id, cf.Id, childName.Id, "Child's Name"); //adding compositeField's field ==> cf.Id = compositeFieldId, childName => field in composteField
+            //    .AddField(cf1, chidFormField);
+
+
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\reportTestFormWorkflow_generared.xml");
+
+        }
+
+        [Test]
+        public void SASReportTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\production\\_prod_sas.xml";
+            ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
+            var mainForm = template.GetRootDataItem(false);
+
+            //Pull the fields of Applicant Name, Email and Department out of the mainForm and build a report
+            //to show those entries + submission date + status in it.
+            //074fe283-40e8-43b2-b015-9a5221f856a1 -- template Id
+
+            var applicantName = mainForm.Fields.Where(f => f.Id.ToString() == "cd51f792-d01c-421f-a0b4-84c5e3c81482").FirstOrDefault();
+            var applicantEmail = mainForm.Fields.Where(f => f.Id.ToString() == "5c0403c1-1fa7-4281-853a-f8c2904ac825").FirstOrDefault();
+            var department = mainForm.Fields.Where(f => f.Id.ToString() == "ecd7a734-3d26-4794-99cb-c393ab0779f1").FirstOrDefault();
+            var report = template.GetReport<SubmissionReport>("SAS Report", template.Id, true);
+            report
+                .AddField(mainForm.Id, applicantName.Id, "")
+                .AddField(mainForm.Id, applicantEmail.Id, "")
+                .AddField(mainForm.Id, department.Id, "");
+               
+
+            template.Data.Save(file.Substring(0, file.LastIndexOf(".")) + "_with_report.xml");
+        }
+
+        [Test]
+        public void ConferenceFundReportTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\production\\_prod_conf.xml";
+            ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
+            var mainForm = template.GetRootDataItem(false);
+
+            var applicantName = mainForm.Fields.Where(f => f.Id.ToString() == "398350ea-a5dc-4fd8-9cf5-1c8aceca2f39").FirstOrDefault();
+            var applicantEmail = mainForm.Fields.Where(f => f.Id.ToString() == "14491728-17f4-45b4-87ce-5dccfd878c08").FirstOrDefault();
+            var department = mainForm.Fields.Where(f => f.Id.ToString() == "235a4d58-b6fc-4118-ad32-f4a93667ec3d").FirstOrDefault();
+            var report = template.GetReport<SubmissionReport>("GAP Conference Report", template.Id, true);
+            report
+                .AddField(mainForm.Id, applicantName.Id, "")
+                .AddField(mainForm.Id, applicantEmail.Id, "")
+                .AddField(mainForm.Id, department.Id, "");
+
+
+            template.Data.Save(file.Substring(0, file.LastIndexOf(".")) + "_with_report.xml");
+        }
+
+        [Test]
+        public void CovidInspectionReportTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\production\\_prod_covid_inspection.xml";
+            ItemTemplate template = ItemTemplate.Parse(XDocument.Parse(File.ReadAllText(file)).Root) as ItemTemplate;
+            var mainForm = template.GetRootDataItem(false);
+
+            var inspectionDate = mainForm.Fields.Where(f => f.Id.ToString() == "6fdef487-d218-497f-b5a3-95951a463e18").FirstOrDefault();
+            var building = mainForm.Fields.Where(f => f.Id.ToString() == "cb221ab8-a7b3-4a98-b206-d133daffd64a").FirstOrDefault();
+            var room     = mainForm.Fields.Where(f => f.Id.ToString() == "f50d20fe-4b3e-4039-aba5-49f969211148").FirstOrDefault();
+            var inspectedBy = mainForm.Fields.Where(f => f.Id.ToString() == "28ceba59-04f7-4224-b73d-c636ae95b9de").FirstOrDefault();
+            var report = template.GetReport<SubmissionReport>("GAP Conference Report", template.Id, true);
+            report
+                .AddField(mainForm.Id, inspectionDate.Id, "")
+                .AddField(mainForm.Id, building.Id, "")
+                .AddField(mainForm.Id, room.Id, "")
+                .AddField(mainForm.Id, inspectedBy.Id, "");
+
+
+
+            template.Data.Save(file.Substring(0, file.LastIndexOf(".")) + "_with_report.xml");
+        }
+
 
     }
 }
