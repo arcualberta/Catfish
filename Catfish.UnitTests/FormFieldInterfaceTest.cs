@@ -12,6 +12,8 @@ using System.Configuration;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Support;
+using OpenQA.Selenium.Interactions;
 
 namespace Catfish.UnitTests
 {
@@ -24,6 +26,7 @@ namespace Catfish.UnitTests
         private string siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
         //IWebDriver driver = new ChromeDriver(".");
         IWebDriver driver = new ChromeDriver();
+        private string itemAtrib;
 
         [SetUp]
         public void Setup()
@@ -92,16 +95,71 @@ namespace Catfish.UnitTests
         [Test]
         public void SimpleFormSubmissionTest()
         {
-
+  
             RefreshData();
+            // got to home page first to check if logged in (as otherwise forms to be tested not assessable)
+            driver.Navigate().GoToUrl("https://localhost:44385/");
+
+
+            List<IWebElement> elms = new List<IWebElement>();
+            elms.AddRange(driver.FindElements(By.Id("btnSignIn")));
+
+
+            if (elms.Count > 0)  // sign in element found -  so sign-in but via /manager/pages URL instead of where link goes
+            {
+                Login();
+            }
+
+            //else can assume loggged it
+
+
+
             //driver.Navigate().GoToUrl(siteUrl + "/simple-form/");
             driver.Navigate().GoToUrl("https://localhost:44385/simple-form/");
+          
+
+            //Dropdown test
+
             
-            IWebElement element = driver.FindElement(By.Id("48cd8112-beea-4664-b5a9-739a79e652bc"));
+            // IWebElement DDelement = driver.FindElement(By.Id("48cd8112-beea-4664-b5a9-739a79e652bc"));
 
 
-            //SelectElement selectDD1 = new SelectElement(element);
-            //element.SelectByIndex(1);
+            //SelectElement selectDD1 = new SelectElement(DDelement);
+            // select dropdowm option 2
+           // selectDD1.SelectByIndex(1);
+
+            //Radio button test
+            // 
+            //IWebElement RBElement = driver.FindElement(By.Id("ef1c777b-6e80-48f6-b742-548f5226239c"));
+
+            // first just select option 2 byID - could use index 1 after finding element.
+            IWebElement RBElement = driver.FindElement(By.Id("9e45b902-dba8-4828-b65d-9b8ac47a0954"));
+            RBElement.Click();
+
+            // test if radio button 2 selected 
+            //Boolean itemSlected = false;
+            //itemSlected = RBElement.isSelected();
+            
+            itemAtrib = RBElement.GetAttribute("checked");
+
+
+
+            //checkbox test
+            // test if check boxes 3,4 are selected 
+            IWebElement CBElement = driver.FindElement(By.Id("391d611d-d7f5-48a6-b8ae-e52053294616"));
+            CBElement.Click();
+            IWebElement CBElement2 = driver.FindElement(By.Id("c320b902-21f4-4bf1-ba7e-67890f7a0849"));
+            CBElement2.Click();
+
+            //test if selected
+
+
+
+            itemAtrib = CBElement.GetAttribute("checked");
+
+            itemAtrib = CBElement2.GetAttribute("checked");
+
+
         }
 
     }
