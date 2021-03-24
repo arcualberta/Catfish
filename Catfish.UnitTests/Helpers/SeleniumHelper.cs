@@ -4,10 +4,14 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Support;
+using OpenQA.Selenium.Interactions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
+using System.Threading;
 
 namespace Catfish.UnitTests.Helpers
 {
@@ -52,7 +56,9 @@ namespace Catfish.UnitTests.Helpers
 
             if (string.IsNullOrEmpty(password))
                 password = _configuration.GetSection("Login:LocalAdmin:Password").Value;
-
+            Thread.Sleep(5000);
+            Driver.Navigate().GoToUrl(_siteUrl);
+            Thread.Sleep(5000);
             Driver.Navigate().GoToUrl(_siteUrl + "/manager");
             Driver.FindElement(By.Name("username")).SendKeys(username);
             Driver.FindElement(By.Name("password")).SendKeys(password);
@@ -81,7 +87,16 @@ namespace Catfish.UnitTests.Helpers
         /// <returns></returns>
         public IWebElement GetElementByDataModelId(string id)
         {
-            throw new NotImplementedException();
+
+            string idString = "'" + id + "'";
+            string selectorString = "input[data-model-id=" + idString + "]";
+
+
+
+
+            IWebElement e = Driver.FindElement(By.CssSelector(selectorString));
+            return e;
+
         }
 
         /// <summary>
@@ -92,7 +107,10 @@ namespace Catfish.UnitTests.Helpers
         /// <returns></returns>
         public IWebElement GetElementByValue (string val)
         {
-            throw new NotImplementedException();
+            string valString = "'" + val + "'";
+            string selectorString = "input[value=" + valString + "]";
+            IWebElement e = Driver.FindElement(By.CssSelector(selectorString));
+            return e;
 
         }
 

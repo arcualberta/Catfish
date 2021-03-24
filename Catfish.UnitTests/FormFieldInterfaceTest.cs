@@ -98,7 +98,7 @@ namespace Catfish.UnitTests
         public void SimpleFormSubmissionTest()
         {
             RefreshData();
-            _seleniumHelper.LoginLocal();
+            _seleniumHelper.LoginLocal("admin", "passwd");
 
             //Navigating to the test page
             _seleniumHelper.GoToUrl("simple-form");
