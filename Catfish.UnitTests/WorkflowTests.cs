@@ -2528,6 +2528,7 @@ namespace Catfish.UnitTests
 
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(inReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
@@ -2590,6 +2591,7 @@ namespace Catfish.UnitTests
 
             //Defining state referances
             editSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization();
             editSubmissionAction.GetStateReference(inReviewState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
@@ -3825,6 +3827,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             listSubmissionsAction.AddStateReferances(inSupervisorReviewState.Id)
                 .AddAuthorizedDomain("@ualberta.ca")
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             listSubmissionsAction.AddStateReferances(inChairReviewState.Id)
@@ -3867,12 +3870,13 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(gapAdmin.Id)
                 .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
                 .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(gapChair.Id);
+                .AddAuthorizedRole(gapAdmin.Id)
+                .AddOwnerAuthorization();
 
             viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
                 .AddAuthorizedUserByEmailField(confForm.Id, supervisorEmail.Id)
@@ -3965,14 +3969,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                 applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[1]).First());
 
             //Document in supervisor's review can be saved without changing state
-            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Submit");
 
             //Saved document can be submitted for chair's review directly if appCat[0] (Faculty) is selected
             editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit", applicantCat,
                 applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First());
 
             //Document in chair's review can be saved without changing state
-            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "Submit");
 
 
             //Defining the pop-up for the above postActionSubmit action
@@ -3992,7 +3996,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining state referances
             editSubmissionAction.GetStateReference(savedState.Id, true)
-                .AddOwnerAuthorization();
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(gapAdmin.Id);
             editSubmissionAction.GetStateReference(inChairReviewState.Id, true)
                 .AddAuthorizedRole(gapAdmin.Id);
             editSubmissionAction.GetStateReference(inSupervisorReviewState.Id, true)
@@ -4126,7 +4131,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             changeStateAction.GetStateReference(reviewCompletedState.Id, true)
                 .AddAuthorizedRole(gapAdmin.Id);
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
-                .AddAuthorizedRole(gapAdjudication.Id);
+                .AddAuthorizedRole(gapAdmin.Id);
 
             // ========================================================
             // Adjudication Decision related workflow items
@@ -4148,7 +4153,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
 
             adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
-                .AddAuthorizedRole(gapAdjudication.Id);
+                .AddAuthorizedRole(gapAdmin.Id);
 
 
             db.SaveChanges();

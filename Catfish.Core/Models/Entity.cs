@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Reports;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Catfish.Core.Models
     {
         public static readonly string Tag = "entity";
         public static readonly string MetadataSetsRootTag = "metadata-sets";
+        public static readonly string ReportsRootTag = "reports";
         public static readonly string AuditTrailRootTag = "audit-trail";
         public static readonly string DataContainerRootTag = "data-container";
 
@@ -89,6 +91,10 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
+
+        [NotMapped]
+        public XmlModelList<BaseReport> Reports { get; protected set; }
+
 
         [NotMapped]
         public XmlModelList<AuditEntry> AuditTrail { get; protected set; }
@@ -173,6 +179,8 @@ namespace Catfish.Core.Models
             //Building the Metadata Set list
             MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
 
+            //Building the report list
+            Reports = new XmlModelList<BaseReport>(xml.GetElement(ReportsRootTag, true), true);
             //Building the Audit Trail Set list
             AuditTrail = new XmlModelList<AuditEntry>(xml.GetElement(AuditTrailRootTag, true), true);
 

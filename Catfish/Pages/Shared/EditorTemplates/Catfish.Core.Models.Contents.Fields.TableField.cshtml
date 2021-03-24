@@ -70,11 +70,11 @@
         <tbody>
             @for (var r = 0; r < Model.TableData.Count; ++r)
             {
-                @Html.HiddenFor(model => Model.TableData[r].Id)
-                @Html.HiddenFor(model => Model.TableData[r].ModelType)
-
                 var row = Model.TableData[r];
                 <tr data-r="@r" class="data-row">
+                    @Html.HiddenFor(model => Model.TableData[r].Id)
+                    @Html.HiddenFor(model => Model.TableData[r].ModelType)
+
                     @for (var c = 0; c < row.Fields.Count; ++c)
                     {
                         string fieldRootId = null;

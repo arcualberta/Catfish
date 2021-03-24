@@ -12,6 +12,7 @@ namespace Catfish.Services
     public interface IEntityTemplateService
     {
         IList<ItemTemplate> GetItemTemplates(ClaimsPrincipal user);
+        Task<EntityTemplate> GetTemplateAsync(Guid? templateId);
         EntityTemplate GetTemplate(Guid? templateId);
         SystemStatus GetSystemStatus(Guid entityTemplateId, string status);
         EntityTemplate GetTemplate(Guid? templateId, ClaimsPrincipal user);

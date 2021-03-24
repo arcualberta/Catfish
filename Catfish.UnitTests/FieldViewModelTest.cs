@@ -8,6 +8,8 @@ using System.Text;
 using System.Linq;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Models.Contents.Fields.ViewModels;
+using Newtonsoft.Json;
 
 namespace Catfish.UnitTests
 {
@@ -43,13 +45,21 @@ namespace Catfish.UnitTests
             DataItem form = CreateSampleForm();
 
             //Test creating a list view models for all fields in the form
+            Assert.IsNotNull(form);
 
+            var tmpList = new List<FieldVM>();
+            foreach(TextField f in form.Fields)
+            {
+                tmpList.Add(new FieldVM(f));
+            }
 
-
+            var json = JsonConvert.SerializeObject(tmpList);
             //Test re-instantiating data fields in the form using the view models
-
-
+            foreach(FieldVM f in tmpList)
+            {
+                //value groups/ids? i dont understand what this test is meaning
+                //f.UpdateTextValues(f);
+            }
         }
-
     }
 }

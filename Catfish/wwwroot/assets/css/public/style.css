@@ -482,3 +482,32 @@ input[readonly] {
 .pull-right {
     margin: 10px;
 }
+
+.item-details-view h1, .form-view h2, .form-view h3 {
+    margin-top: 20px;
+}
+.item-details-view h1 {
+    font-size: 2rem;
+    color: #2e2eaf;
+}
+
+.item-details-view h2 {
+    font-size: 1.7rem;
+}
+
+.item-details-view h3 {
+    font-size: 1.4rem;
+}
+
+.item-details-view h5 {
+    font-size: 1.2rem;
+}
+
+.item-details-view .row {
+    margin: 10px 0;
+    border-bottom: solid 1px #eef;
+}
+
+.item-details-view .card.child-data-item {
+    margin-bottom: 20px;
+}

@@ -34,29 +34,26 @@
     </div>
 
     <div class="container-fluid row">
-        @{ 
+        @{
             var suffix = (Model.ActiveBackupId == Guid.Empty) ? "" : "(Backup)";
         }
         <h2>@{@(string.IsNullOrWhiteSpace(Model.SchemaName) ? "Schema" : Model.SchemaName)} @suffix</h2>
-        <div id="schemaContent" class="col-md-10">
+        @if (Model.Backups != null && Model.Backups.Any())
+        {
+            <div class="col-md-12" style="margin-left:-15px;">
+            <strong>History: </strong>
+                @{ 
+                    List<string> links = new List<string>();
+                    foreach (var backup in Model.Backups)
+                        links.Add(string.Format("<a style='margin:20px;' href='/manager/schema/{0}?backupId={1}'>{2}</a>", Model.Id, backup.Id, backup.Timestamp));
+
+                    @Html.Raw(string.Join(" | ", links))
+                 }
+            </div>
+        }
+        <div id="schemaContent" class="col-md-12" style="margin-top:10px;">
             @Html.Raw(formattedString)
         </div>
-        <div class="col-md-2">
-            @if (Model.Backups != null)
-            {
-                <h4>Past Versions</h4>
-                foreach (var backup in Model.Backups)
-                {
-                    if (backup.Id == Model.ActiveBackupId)
-                    {
-                        <div style='margin-bottom:5px;font-weight:bold;'>@backup.Timestamp</div>
-                    }
-                    else
-                        @Html.Raw(string.Format("<div style='margin-bottom:5px;'><a href='/manager/schema/{0}?backupId={1}'>{2}</a></div>", Model.Id, backup.Id, backup.Timestamp))
-                }
-            }
-        </div>
-
     </div>
 </div>
 

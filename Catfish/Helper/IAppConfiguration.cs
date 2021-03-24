@@ -161,7 +161,7 @@ namespace Catfish.Helper
         }
         public string GetSiteURL()
         {
-            return _configuration["SiteConfig:SiteURL"];
+            return _configuration["SiteConfig:SiteURL"].TrimEnd('/');
         }
         public bool GetEnabledLocalLogin()
         {
