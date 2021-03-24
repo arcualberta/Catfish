@@ -107,10 +107,19 @@
 .jconfirm-title-c{
     border-bottom: 2px solid Grey;
 }
-.jconfirm-title-c .fa-exclamation-triangle {
+.jconfirm-title-c .danger.fa-exclamation-triangle {
         color: #c70f0f;
         padding-right: 5px;
- }
+}
+
+.jconfirm-title-c .warning.fa-exclamation-triangle {
+        color: #fdb051;
+        padding-right: 5px;
+}
+.jconfirm-title .success.fa-check {
+        color: forestgreen;
+        padding-right: 5px;
+}
 
 .jconfirm-content {
     padding: 5px;
@@ -132,5 +141,18 @@
     background-color: #6c757d !important;
     border-color: #6c757d !important;
 }
+.jconfirm-content .warning{
+    padding: 5px;
+    color: #856404;
+    background-color: #fff3cd;
+    margin: -7px;
+}
 
-/*=======================================================================================================================================================*/
+.jconfirm-content .success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    margin: -7px;
+    padding: 5px;
+}
+    /*=======================================================================================================================================================*/

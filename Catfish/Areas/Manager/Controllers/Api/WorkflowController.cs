@@ -88,6 +88,7 @@ namespace Catfish.Areas.Manager.Controllers.Api
                             _backupService.Backup(_entityTemplateService.GetTemplate(data.TemplateId));
 
                             _appDb.SaveChanges();
+                           
                         }
                     }
 
@@ -98,8 +99,8 @@ namespace Catfish.Areas.Manager.Controllers.Api
             }
             catch (Exception ex)
             {
-                throw ex;
-                //result.Message = ex.Message;
+                //throw ex;
+                result.Message = ex.Message;
                 //result.Success = false;
             }
 
@@ -132,12 +133,14 @@ namespace Catfish.Areas.Manager.Controllers.Api
 
                         (field as OptionsField).AddOption(data.TextValue,data.TextFieldId, data.Language);
                         _appDb.SaveChanges();
+                        result.Message = "Option has been added successfully.";
                     }
 
                 }
             }catch(Exception ex)
             {
-                throw ex;
+                result.Message = ex.Message;
+                //throw ex;
             }
 
              return result;
@@ -189,7 +192,8 @@ namespace Catfish.Areas.Manager.Controllers.Api
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
+                result.Message = ex.Message;
             }
 
             return result;

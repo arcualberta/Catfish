@@ -27,15 +27,26 @@ function resetInlineEditingButtons(textFieldId) {
 function cancelInlineEditing(textFieldId) {
 
     //This methods cancels the editing and restores the original value
-    let editedText = "Cancel your changes: " + $("#" + textFieldId + " span").text();
-    if (confirm(editedText)) {
-        let span = $("#" + textFieldId).find("span.text-view");
-       // $(span).html($(span).attr("data-original-val")); // restore the original value
-        let originalText = $("#hidden_original_text_" + textFieldId).val();
-        $(span).html(originalText); // restore the original value
+    let editedText =  $("#" + textFieldId + " span").text();
+ 
+    $.confirm({
+        title: '<span class="danger fa fa-exclamation-triangle"></span> Cancel Changes',
+        content: 'Cancel your changes: "' + editedText + '". Are you sure?',
+        buttons: {
+            ok: function () {
 
-        resetInlineEditingButtons(textFieldId);
-    }
+                let span = $("#" + textFieldId).find("span.text-view");
+              
+                let originalText = $("#hidden_original_text_" + textFieldId).val();
+                $(span).html(originalText); // restore the original value
+
+                resetInlineEditingButtons(textFieldId);
+            },
+            cancel: function () {
+                //$.alert('Canceled!');
+            }
+        }
+    });
 
 }
 
@@ -61,12 +72,20 @@ function saveEditedText(templateId, dataItemId, fieldId, textFieldId, metadataSe
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             data: JSON.stringify(data),
-            success: function (data) {
+            success: function (result) {
                 //location.reload();
                 //TODO:some sort of indication to show the success of saving.
+                $.alert({
+                    title: '<span class="success fa fa-check"></span> Success',
+                    content: '<div class="success">' + result.message + '</div>',
+                });
             },
             error: function (error) {
-                alert("Encounter problems while saving data.")
+               // alert("Encounter problems while saving data.")
+                $.alert({
+                    title: '<span class="danger fa fa-exclamation-triangle"></span> Error',
+                    content: error.message,
+                });
             }
     });
     
@@ -113,42 +132,27 @@ function saveOptionVal(templateId,dataItemId,fieldId, newOptionFieldId) {
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         data: JSON.stringify(data),
-        success: function (data) {
+        success: function (result) {
+            $.alert({
+                title: '<span class="info fa fa-check"></span> Success',
+                content: '<div class="success">' + result.message + '</div>',
+            });
             location.reload();
         },
         error: function (error) {
-            alert("Encounter problems while saving data.")
+            //alert("Encounter problems while saving data.")
+            $.alert({
+                title: '<span class="danger fa fa-exclamation-triangle"></span> Error',
+                content: error.message,
+            });
         }
     });
 }
 
 function removeOptionVal(templateId, dataItemId, fieldId, optionTextId, optionText) {
 
-    //if (confirm("Are you sure you want to remove option: " + optionText + "?")) {
-    //    let url = "/manager/api/Workflow/RemoveOptionText";
-    //    var data = {};
-    //    data.TemplateId = templateId;
-    //    data.DataItemId = dataItemId;
-    //    data.FieldId = fieldId;
-    //    data.TextFieldId = optionTextId; //new GUID cr
-    //    $.ajax({
-    //        type: 'POST',
-    //        url: url,
-    //        contentType: 'application/json; charset=utf-8',
-    //        dataType: 'json',
-    //        data: JSON.stringify(data),
-    //        success: function (data) {
-    //            location.reload();
-    //        },
-    //        error: function (error) {
-    //            alert("Encounter problems while saving data.")
-    //        }
-    //    });
-    //}
-
-
     $.confirm({
-        title: '<span class="fa fa-exclamation-triangle"></span> Delete Option',
+        title: '<span class="danger fa fa-exclamation-triangle"></span> Delete Option',
         content: 'You are about to delete option "' + optionText + '". Are you sure?',
         buttons: {
             confirm: function () {
@@ -168,8 +172,8 @@ function removeOptionVal(templateId, dataItemId, fieldId, optionTextId, optionTe
                     success: function (result) {
                         if (result.message !== null) {
                             $.alert({
-                                title: 'Info',
-                                content: result.message,
+                                title: '<span class="warning fa fa-exclamation-triangle"></span> Alert',
+                                content:'<div class="warning">' +  result.message + '</div>',
                             });
                         } else {
 
