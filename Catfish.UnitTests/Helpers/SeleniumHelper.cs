@@ -73,11 +73,23 @@ namespace Catfish.UnitTests.Helpers
             Driver.Navigate().GoToUrl(_siteUrl + path);
         }
 
+        /// <summary>
+        /// Use the "Driver" property of this instance and find the element that has the
+        /// "data-model-id" attribute to the value of the given "id" parameter and return it.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IWebElement GetElementByDataModelId(string id)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Use the "Driver" property of this instance and find the element that has the
+        /// "value" attribute to the value of the given "val" parameter and return it.
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
         public IWebElement GetElementByValue (string val)
         {
             throw new NotImplementedException();
