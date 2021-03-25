@@ -50,7 +50,7 @@ function cancelInlineEditing(textFieldId) {
 
 }
 
-function saveEditedText(templateId, dataItemId, fieldId, textFieldId, metadataSetId) {
+function saveEditedText(templateId, dataItemId, fieldId, textFieldId, metadataSetId, fieldType) {
 
     //Disabling the save button
     $("#btnSave_" + textFieldId).prop("disabled", true);
@@ -65,7 +65,7 @@ function saveEditedText(templateId, dataItemId, fieldId, textFieldId, metadataSe
     data.TextFieldId = textFieldId;
     data.MetadataSetId = metadataSetId;
     data.textValue = editedText;
-   
+    data.FieldType = fieldType;
     $.ajax({
             type: 'POST',
             url: url,

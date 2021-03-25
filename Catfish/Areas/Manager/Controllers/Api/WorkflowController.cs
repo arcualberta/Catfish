@@ -55,11 +55,19 @@ namespace Catfish.Areas.Manager.Controllers.Api
                 else if (data.MetadataSetId != Guid.Empty)
                     form = template.MetadataSets.Where(ms => ms.Id == data.MetadataSetId).FirstOrDefault();
 
+                //check if this textField is coming from a composite Field, if it's get the fild's Child-Template
+                FieldContainer compForm = GetCompositeFormTemplate(template, data.DataItemId, data.TextFieldId.ToString());
+
+                if ((compForm != null) && (compForm.Id == form.Id))
+                    form = compForm;
+
                 //DataItem dataItem = template.GetDataItem(data.DataItemId);
                 if (form != null)
                 {
                     var field = form.Fields.Where(f => f.Id == data.FieldId).FirstOrDefault();
 
+                    if (data.FieldType.Contains("TableRow"))
+                        field = ((Catfish.Core.Models.Contents.Fields.TableField)form.Fields[0]).TableHead.Fields.Where(f => f.Id == data.FieldId).FirstOrDefault();
                     if (field != null)
                     {
                         if (field.Name.Values.Any(v => v.Id == data.TextFieldId))
@@ -71,7 +79,13 @@ namespace Catfish.Areas.Manager.Controllers.Api
                         else if (typeof(InfoSection).IsAssignableFrom(field.GetType()))
                             (field as InfoSection).Content.UpdateValue(data.TextFieldId, data.TextValue, lang);
                         else if (typeof(TableField).IsAssignableFrom(field.GetType()))
-                            throw new NotImplementedException();
+                        {
+                            //throw new NotImplementedException();
+                            var tf = (field as TableField).TableHead.Fields.Where(f => f.Id == data.TextFieldId).FirstOrDefault();
+                            if(tf != null)
+                                tf.Name.UpdateValue(data.TextFieldId, data.TextValue, lang);
+                        }
+                            
                         else if (typeof(CompositeField).IsAssignableFrom(field.GetType()))
                             throw new NotImplementedException();
                         else if (typeof(TextField).IsAssignableFrom(field.GetType()))
@@ -199,6 +213,28 @@ namespace Catfish.Areas.Manager.Controllers.Api
             return result;
         }
 
+        private DataItem GetCompositeFormTemplate(EntityTemplate template,Guid dataItemId, string textFieldId)
+        {
+            DataItem compositeForm = null;
+
+            foreach (DataItem d in template.DataContainer)
+            {
+
+                if (d.Fields.Any(f => (typeof(CompositeField).IsAssignableFrom(f.GetType()))))
+                {
+                    var cf = d.Fields.Where(f => f.Content.Contains(textFieldId)).FirstOrDefault();
+                    if (typeof(CompositeField).IsAssignableFrom(cf.GetType()))
+                    {
+                        compositeForm = (cf as CompositeField).ChildTemplate;
+                        break;
+                    }
+                }
+
+            }
+
+            return compositeForm;
+        }
+
         ////private bool ReferByVisibleIf(EntityTemplate template, Guid optionFieldId)
         ////{
         ////    bool found = false;
@@ -280,6 +316,7 @@ namespace Catfish.Areas.Manager.Controllers.Api
         public Guid TextFieldId { get; set; }
         public string TextValue { get; set; }
         public string Language { get; set; }
+        public string FieldType{ get; set; }
     }
 
     

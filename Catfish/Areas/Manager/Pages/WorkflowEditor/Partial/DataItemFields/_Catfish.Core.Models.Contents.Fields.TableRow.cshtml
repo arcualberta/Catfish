@@ -1,0 +1,24 @@
+﻿@model Catfish.Core.Models.Contents.Fields.TableRow;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["field-type"] = Model.ModelType;
+}
+
+<tr>
+    <td colspan="4">
+        <h5>Table Headers</h5>
+    </td>
+</tr>
+            @foreach (var field in Model.Fields)
+            {
+                ViewData["data-field-id"] = field.Id;
+
+                <tr>
+
+                    <partial name="Partial/DataItemFields/_BaseField" model="field" />
+
+                </tr>
+            }
+      
+   
