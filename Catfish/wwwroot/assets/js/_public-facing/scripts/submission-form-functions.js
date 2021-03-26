@@ -118,29 +118,30 @@ function createGuid() {
     return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 } 
 
-$(document).ready(function () {
 
-    // Safari 3.0+ "[object HTMLElementConstructor]" 
-    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+////////$(document).ready(function () {
 
-    // Internet Explorer 6-11
-    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+////////    // Safari 3.0+ "[object HTMLElementConstructor]" 
+////////    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
 
-    // Edge 20+
-    var isEdge = !isIE && !!window.StyleMedia;
+////////    // Internet Explorer 6-11
+////////    var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
-    if (isSafari || isIE || isEdge) //IF IE or SAFARI
-    {
-        alert("safari, IE or Edge");
-        $("input[type='date']").datepicker(
-            {
-                dateFormat: 'yy-mm-dd',
-                onSelect: function () {
-                    selectedDate = $(this).datepicker.formatDate("yy-mm-dd", $(this).datepicker('getDate'));
-                }
-            }
-        );
-    }
+////////    // Edge 20+
+////////    var isEdge = !isIE && !!window.StyleMedia;
 
-});
+////////    if (isSafari || isIE || isEdge) //IF IE or SAFARI
+////////    {
+////////        //alert("safari, IE or Edge");
+////////        $("input[type='date']").datepicker(
+////////            {
+////////                dateFormat: 'yy-mm-dd',
+////////                onSelect: function () {
+////////                    selectedDate = $(this).datepicker.formatDate("yy-mm-dd", $(this).datepicker('getDate'));
+////////                }
+////////            }
+////////        );
+
+////////    }
+////////});
 
