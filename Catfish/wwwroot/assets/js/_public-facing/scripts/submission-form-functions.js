@@ -119,29 +119,30 @@ function createGuid() {
 } 
 
 
-////////$(document).ready(function () {
+$(document).ready(function () {
 
-////////    // Safari 3.0+ "[object HTMLElementConstructor]" 
-////////    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+    // Safari 3.0+ "[object HTMLElementConstructor]" 
+    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
 
-////////    // Internet Explorer 6-11
-////////    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+    // Internet Explorer 6-11
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
-////////    // Edge 20+
-////////    var isEdge = !isIE && !!window.StyleMedia;
+    // Edge 20+
+    var isEdge = !isIE && !!window.StyleMedia;
 
-////////    if (isSafari || isIE || isEdge) //IF IE or SAFARI
-////////    {
-////////        //alert("safari, IE or Edge");
-////////        $("input[type='date']").datepicker(
-////////            {
-////////                dateFormat: 'yy-mm-dd',
-////////                onSelect: function () {
-////////                    selectedDate = $(this).datepicker.formatDate("yy-mm-dd", $(this).datepicker('getDate'));
-////////                }
-////////            }
-////////        );
+    if (isSafari || isIE || isEdge) //IF IE or SAFARI
+    {
+        $("input[type='date']").removeClass('hasDatepicker').datepicker({ onSelect: function () { $(".ui-datepicker a").removeAttr("href"); } });
+        //alert("safari, IE or Edge");
+        $("input[type='date']").datepicker(
+            {
+                dateFormat: 'yy-mm-dd',
+                onSelect: function () {
+                    selectedDate = $(this).datepicker.formatDate("yy-mm-dd", $(this).datepicker('getDate'));
+                }
+            }
+        );
 
-////////    }
-////////});
+    }
+});
 
