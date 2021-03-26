@@ -131,17 +131,17 @@ namespace Catfish.UnitTests
             //Setting value of INT1 to 250
             var intId = "2ce85370-5277-4d5a-baea-ac5a2ea435f1";
             var intVal = "250";
-            _seleniumHelper.SetTextFieldValue(intId, intVal);
+            _seleniumHelper.SetNumberValue(intId, intVal);
 
             //Setting value of DEC1 to 12.50
             var decId = "8628d84f-d209-4440-9fed-0e1ecef17c54";
             var decVal = "12.50";
-            _seleniumHelper.SetTextFieldValue(decId, decVal);
+            _seleniumHelper.SetNumberValue(decId, decVal);
 
             //Setting value of DATE1 to 2021-03-05
             var dateId = "7d5f4efc-624b-4ba7-998b-6ec7fe48745d";
             var dateVal = new DateTime(2021, 3, 25);
-            _seleniumHelper.SetTextFieldValue(dateId, dateVal);
+            _seleniumHelper.SetDateValue(dateId, dateVal);
 
             //Clicking on the submit button
             var dataItemTemplateId = "b8ca1de3-a6ce-4693-aadc-9e32a322b6ba";
