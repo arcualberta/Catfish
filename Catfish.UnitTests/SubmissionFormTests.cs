@@ -67,6 +67,13 @@ namespace Catfish.UnitTests
             form.CreateField<SelectField>("DD 1", lang, options, false);
             form.CreateField<RadioField>("RB 1", lang, options, false);
             form.CreateField<CheckboxField>("CB 1", lang, options, false);
+            form.CreateField<TextField>("TF 1", lang);
+            form.CreateField<TextArea>("TA 1", lang).Cols = 22;
+            form.CreateField<IntegerField>("INT 1", lang);
+            form.CreateField<DecimalField>("DEC 1", lang);
+            form.CreateField<DateField>("DATE 1", lang);
+
+
 
             _db.SaveChanges();
             template.Data.Save("..\\..\\..\\..\\Examples\\simpleFormWorkflow_generared.xml");

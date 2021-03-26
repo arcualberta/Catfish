@@ -18,6 +18,25 @@ namespace Catfish.UnitTests.Helpers
     public class SeleniumHelper
     {
         public enum eDriverType { Chrome, Firefox, Edge };
+        public enum eElementType 
+        {
+            Button,
+            Checkbox,
+            Date,
+            Div,
+            Hidden,
+            Label,
+            Li,
+            Number,
+            Option,
+            Radio,
+            Span,
+            Select,
+            Submit,
+            TextArea,
+            TextBox,
+            Ul
+        }
 
         private readonly IConfiguration _configuration;
         private readonly string _siteUrl;
@@ -29,6 +48,40 @@ namespace Catfish.UnitTests.Helpers
             _configuration = configuration;
             _siteUrl = _configuration.GetSection("SiteUrl").Value.TrimEnd('/');
         }
+        public string GetTagName(eElementType type)
+        {
+            switch (type)
+            {
+                case eElementType.Button:
+                    return "button";
+                case eElementType.Checkbox:
+                case eElementType.Date:
+                case eElementType.Number:
+                case eElementType.Radio:
+                case eElementType.Submit:
+                case eElementType.TextBox:
+                    return "input";
+                case eElementType.Div:
+                    return "div";
+                case eElementType.Select:
+                    return "select";
+                case eElementType.Option:
+                    return "option";
+                case eElementType.Label:
+                    return "label";
+                case eElementType.Li:
+                    return "li";
+                case eElementType.Span:
+                    return "span";
+                case eElementType.TextArea:
+                    return "textarea";
+                case eElementType.Ul:
+                    return "ul";
+            }
+
+            throw new Exception(string.Format("Unknown element type: {0}", type.ToString()));
+        }
+
         public IWebDriver SetDriver(eDriverType driverType)
         {
             switch (driverType)
@@ -81,39 +134,19 @@ namespace Catfish.UnitTests.Helpers
 
         /// <summary>
         /// Use the "Driver" property of this instance and find the element that has the
-        /// "data-model-id" attribute to the value of the given "id" parameter and return it.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public IWebElement GetElementByDataModelId(string id)
-        {
-
-            string idString = "'" + id + "'";
-            string selectorString = "input[data-model-id=" + idString + "]";
-
-
-
-
-            IWebElement e = Driver.FindElement(By.CssSelector(selectorString));
-            return e;
-
-        }
-
-        /// <summary>
-        /// Use the "Driver" property of this instance and find the element that has the
         /// "value" attribute to the value of the given "val" parameter and return it.
         /// </summary>
         /// <param name="val"></param>
         /// <returns></returns>
-        public IWebElement GetElementByValue (string val)
+        public IWebElement GetElementByValue (string val, eElementType elementType, IWebElement parent = null)
         {
-            string valString = "'" + val + "'";
-            string selectorString = "input[value=" + valString + "]";
-            IWebElement e = Driver.FindElement(By.CssSelector(selectorString));
+            string tag = GetTagName(elementType);
+            string selectorString = string.Format("{0}[value='{1}']", tag, val);
+            IWebElement e = parent == null
+               ? Driver.FindElement(By.CssSelector(selectorString))
+               : parent.FindElement(By.CssSelector(selectorString));
             return e;
-
         }
-
 
         /// <summary>
         /// Select the field identified by data-model-id=fieldId and then selects its option
@@ -123,41 +156,63 @@ namespace Catfish.UnitTests.Helpers
         /// <param name="optionId"></param>
         public void SelectDropdownOption(string fieldId, string optionId)
         {
-            var dd = GetElementByDataModelId(fieldId);
-
-            var option = GetElementByValue(optionId);
-
+            string selectorString = string.Format("select[data-model-id='{0}'] option[value='{1}']", fieldId, optionId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
         }
 
-        public void SelectCheckboxOption(string fieldId, string optionId)
+        public void SelectCheckOption(string fieldId, string optionId)
         {
-            var chk = GetElementByDataModelId(fieldId);
+            string selectorString = string.Format("input[data-model-id='{0}'][data-option-id='{1}']", fieldId, optionId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
+        }
 
-            var option = GetElementByValue(optionId);
-
+        public void SelectCheckOptions(string fieldId, string[] optionIds)
+        {
+            for (int i = 0; i < optionIds.Length; ++i)
+                SelectCheckOption(fieldId, optionIds[i]);
         }
 
         public void SelectRadioOption(string fieldId, string optionId)
         {
-            var dd = GetElementByDataModelId(fieldId);
-
-            var option = GetElementByValue(optionId);
-
+            string selectorString = string.Format("input[data-model-id='{0}'][value='{1}']", fieldId, optionId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
         }
 
         public void SetTextFieldValue(string fieldId, string value)
         {
-
+            string selectorString = string.Format("input[data-model-id='{0}']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Clear();
+            ele.SendKeys(value);
+        }
+        public void SetTextFieldValue(string fieldId, DateTime date)
+        {
+            string selectorString = string.Format("input[data-model-id='{0}']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Clear();
+            ele.SendKeys(date.Year.ToString());
+            ele.SendKeys("\t");
+            ele.SendKeys(date.Month.ToString());
+            ele.SendKeys(date.Day.ToString());
         }
 
         public void SetTextAreaValue(string fieldId, string value)
         {
+            string selectorString = string.Format("textarea[data-model-id='{0}']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Clear();
+            ele.SendKeys(value);
 
         }
 
-        public void ClickButton (string buttonId)
+        public void ClickSubmitButton (string dataItemTemplateId, string buttonValue)
         {
-
+            string selectorString = string.Format("form[data-template-id='{0}'] input[type='button'][value='{1}']", dataItemTemplateId, buttonValue);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
         }
 
     }

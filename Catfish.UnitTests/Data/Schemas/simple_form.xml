@@ -94,6 +94,50 @@
             </option>
           </options>
         </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="50850ee4-2686-4f84-b8b7-5c2b66d70185">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a347c02e-4697-4aa4-aaaa-4b0f1eee51cd">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c87b3dc3-150e-4950-bfab-1f17c2c22e39" xml:lang="en">TF 1</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="81af05a9-48ff-4536-a5e9-3f88717ce538" />
+          <values>
+            <value model-type="Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b8b490d4-0932-4dfb-ae0c-f0df28784e97">
+              <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="88dece9d-1e22-4330-8a53-bf25e904791b" xml:lang="en"></text>
+            </value>
+          </values>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8016425b-c632-49fc-8d72-32d294ee429b" rows="5" cols="22">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="44ad8ecc-640f-4543-ab3a-f02b388d5fe3">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="1743470d-112d-4a60-b2f8-074d7869035c" xml:lang="en">TA 1</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="51a55d0c-4762-4026-9fd0-29c5fb14aa5f" />
+          <values>
+            <value model-type="Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="cdad2977-47d0-4827-8107-d4b41e456223">
+              <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="fa928b5f-3c2b-4e1a-95e3-d7816fc488b8" xml:lang="en"></text>
+            </value>
+          </values>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.IntegerField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2ce85370-5277-4d5a-baea-ac5a2ea435f1">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0929f564-e14b-49e1-99e4-1eceefd36cd4">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6545f1b4-0a98-4ca4-92d8-7ee9dd920c79" xml:lang="en">INT 1</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="29705973-64db-4734-81ab-25aec0b63e6a" />
+          <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="973793a1-d704-48c6-a0cd-e7b407200a4a"></text>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.DecimalField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8628d84f-d209-4440-9fed-0e1ecef17c54">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="42e43f5d-f307-4354-9db8-81f7f597e01b">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="df7f9c34-6fe0-4424-828a-28366f3e1d65" xml:lang="en">DEC 1</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d18728bb-20ab-405d-bfa9-492aa01881f2" />
+          <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="423670d4-1ad1-4678-89f4-ce8f9a17b3d9"></text>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.DateField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="7d5f4efc-624b-4ba7-998b-6ec7fe48745d">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="36678108-dd64-4ebd-8cda-33be015c2391">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a1376631-e2e5-4f6b-a79d-313b2ea6acb8" xml:lang="en">DATE 1</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a41e9205-0eda-49fa-9ae5-96fb1887e7ee" />
+          <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6c23679e-4b42-4663-87f1-1d22eb708a7c">0001-01-01 12:00:00 AM</text>
+        </field>
+		
       </fields>
       <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="18617b7f-a818-44f5-93a3-dee6337eb899">
         <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="374b382e-67cd-45d4-a35f-d2ad4a4f2bbc" xml:lang="en">Simple Form</text>
