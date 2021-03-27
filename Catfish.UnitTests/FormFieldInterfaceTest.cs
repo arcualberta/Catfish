@@ -135,7 +135,7 @@ namespace Catfish.UnitTests
 
             //Setting value of DEC1 to 12.50
             var decId = "8628d84f-d209-4440-9fed-0e1ecef17c54";
-            var decVal = "12.50";
+            var decVal = "1250";
             _seleniumHelper.SetNumberValue(decId, decVal);
 
             //Setting value of DATE1 to 2021-03-05
@@ -146,6 +146,8 @@ namespace Catfish.UnitTests
             //Clicking on the submit button
             var dataItemTemplateId = "b8ca1de3-a6ce-4693-aadc-9e32a322b6ba";
             _seleniumHelper.ClickSubmitButton(dataItemTemplateId, "Submit");
+
+            _seleniumHelper.ModalSubmit(dataItemTemplateId);
 
         }
 

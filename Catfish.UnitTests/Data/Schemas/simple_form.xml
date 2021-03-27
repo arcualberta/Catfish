@@ -161,7 +161,7 @@
       <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="68e94fbe-b186-4c60-b85b-1dfa530476fb" link-lable="Start Submission" function="Instantiate" group="Home" access="Restricted">
         <params />
         <post-actions>
-          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="57a4ab7f-1011-4426-b918-0ddcd8f871fa" button-lable="Submit" function="Update">
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="57a4ab7f-1011-4426-b918-0ddcd8f871fa" button-lable="Submit" function="Update" success-message="&lt;p&gt;Your Conference Fund application saved successfully. &#xD;&#xA;                                                                                You can view/edit by &lt;a href='@SiteUrl/items/@Item.Id'&gt;click on here&lt;/a&gt;&lt;/p&gt;">>
             <state-mappings>
               <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="deaa18bd-1cd2-4310-bc7a-332da9d76b99" current="60b52ac5-9f72-4616-ba86-54e35111eb36" next="8b3aef53-3708-4593-82c7-2208beb7dd7b" button-label="Submit" />
             </state-mappings>

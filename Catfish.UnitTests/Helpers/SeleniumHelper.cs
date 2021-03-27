@@ -224,5 +224,14 @@ namespace Catfish.UnitTests.Helpers
             ele.Click();
         }
 
+        public void ModalSubmit(string dataItemTemplateId)
+        {
+
+             string selectorString = string.Format("form[data-template-id='{0}'] div#buttonLayer button.btn-success", dataItemTemplateId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+
+            ele.Click();
+        }
+
     }
 }
