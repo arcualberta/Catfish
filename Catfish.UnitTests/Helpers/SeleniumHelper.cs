@@ -226,10 +226,10 @@ namespace Catfish.UnitTests.Helpers
 
         public void ModalSubmit(string dataItemTemplateId)
         {
-
-             string selectorString = string.Format("form[data-template-id='{0}'] div#buttonLayer button.btn-success", dataItemTemplateId);
-            var ele = Driver.FindElement(By.CssSelector(selectorString));
-
+            Thread.Sleep(2000);
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            string selectorString = string.Format("form[data-template-id='{0}'] div[id='buttonLayer'] button[class='btn btn-success']", dataItemTemplateId);
+            var ele = wait.Until(drv => drv.FindElement(By.CssSelector(selectorString)));
             ele.Click();
         }
 
