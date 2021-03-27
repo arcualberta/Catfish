@@ -147,7 +147,11 @@ namespace Catfish.UnitTests
             var dataItemTemplateId = "b8ca1de3-a6ce-4693-aadc-9e32a322b6ba";
             _seleniumHelper.ClickSubmitButton(dataItemTemplateId, "Submit");
 
-            _seleniumHelper.ModalSubmit(dataItemTemplateId);
+            //Clicking on the modal confirmation button
+            _seleniumHelper.CkickModalSubmit(dataItemTemplateId, "btn btn-success");
+
+            //Clicking on the link to view detail view
+            _seleniumHelper.ClickOnALink("click on here");
 
         }
 

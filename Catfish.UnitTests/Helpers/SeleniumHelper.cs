@@ -224,12 +224,20 @@ namespace Catfish.UnitTests.Helpers
             ele.Click();
         }
 
-        public void ModalSubmit(string dataItemTemplateId)
+        public void CkickModalSubmit(string dataItemTemplateId, string cssClass)
         {
             Thread.Sleep(2000);
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
-            string selectorString = string.Format("form[data-template-id='{0}'] div[id='buttonLayer'] button[class='btn btn-success']", dataItemTemplateId);
+            string selectorString = string.Format("form[data-template-id='{0}'] div[id='buttonLayer'] button[class='{1}']", dataItemTemplateId, cssClass);
             var ele = wait.Until(drv => drv.FindElement(By.CssSelector(selectorString)));
+            ele.Click();
+        }
+
+        public void ClickOnALink(string linkText)
+        {
+            Thread.Sleep(2000);
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            var ele = wait.Until(drv => drv.FindElement(By.LinkText(linkText)));
             ele.Click();
         }
 
