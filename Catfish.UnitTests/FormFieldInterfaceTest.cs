@@ -41,7 +41,8 @@ namespace Catfish.UnitTests
             _db = _testHelper.Db;
             IAuthorizationService _auth = _testHelper.AuthorizationService;
 
-            _seleniumHelper.SetDriver(SeleniumHelper.eDriverType.Chrome);
+            //_seleniumHelper.SetDriver(SeleniumHelper.eDriverType.Chrome);
+            _seleniumHelper.SetDriver(SeleniumHelper.eDriverType.Firefox);
         }
 
         public XElement LoadXml(string fileName)

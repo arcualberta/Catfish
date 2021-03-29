@@ -42,6 +42,7 @@ namespace Catfish.UnitTests.Helpers
         private readonly string _siteUrl;
 
         public IWebDriver Driver { get; protected set; }
+        //public FirefoxProfile ffp { get; private set; }
 
         public SeleniumHelper(IConfiguration configuration)
         {
@@ -89,12 +90,22 @@ namespace Catfish.UnitTests.Helpers
                 case eDriverType.Chrome:
                     Driver = new ChromeDriver();
                     break;
+
                 case eDriverType.Firefox:
-                    Driver = new FirefoxDriver();
+
+                    FirefoxOptions ffopt = new FirefoxOptions();
+                    ffopt.AcceptInsecureCertificates = true;
+                    FirefoxProfile ffprofile = new FirefoxProfile();
+                    ffprofile.AcceptUntrustedCertificates = true;
+                    ffopt.Profile = ffprofile;
+
+                    Driver = new FirefoxDriver(ffopt);
                     break;
+
                 case eDriverType.Edge:
                     Driver = new EdgeDriver();
                     break;
+
                 default:
                     throw new Exception("No driver found");
             }
