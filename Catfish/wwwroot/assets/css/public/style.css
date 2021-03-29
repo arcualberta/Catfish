@@ -511,3 +511,9 @@ input[readonly] {
 .item-details-view .card.child-data-item {
     margin-bottom: 20px;
 }
+
+
+
+
+/* keep this is very end of this file */
+@import url("custom.css");
