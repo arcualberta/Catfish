@@ -6,18 +6,8 @@ Vue.component("calendar-block", {
     methods: {
         onBlur: function (e) {
             var elName = e.target.name;
-            if (elName === "apiKey") {
 
-                this.model.apiKey.value = e.target.value;
-                var content = this.model.apiKey.value;
-                if (content.length > 0) {
-                    this.$emit('update-content', {
-                        uid: this.uid,
-                        apiKey: content
-                    });
-                }
-            }
-            else if (elName === "calendarId") {
+            if (elName === "calendarId") {
 
                 this.model.calendarId.value = e.target.value;
                 var content = this.model.calendarId.value;
@@ -56,14 +46,19 @@ Vue.component("calendar-block", {
                     });
                 }
             }
+            else if (elName == "displayCalendarUI") {
+                this.model.displayCalendarUIValue.value = e.target.value;
+                var content = this.model.displayCalendarUIValue.value;
+                if (content.length > 0) {
+                    this.$emit('update-content', {
+                        uid: this.uid,
+                        displayCalendarUI: content
+                    });
+                }
+            }
         }
     },
     computed: {
-        apiKeyValue: {
-            get: function () {
-                return this.model.apiKey.value;
-            }
-        },
         cidValue: {
             get: function () {
                 return this.model.calendarId.value;
@@ -84,19 +79,23 @@ Vue.component("calendar-block", {
                 return this.model.maxEvents.value;
             }
         },
-        isApiKeyEmpty: function () {
-            return piranha.utils.isEmptyText(this.model.apiKey.value);
+        displayCalendarUIValue: {
+            get: function () {
+                return this.model.displayCalendarUIValue.value;
+            }
         },
         isCalendarIdEmpty: function () {
             return piranha.utils.isEmptyText(this.model.calendarId.value);
         }
     },
-    template: "<div  class= 'block-body calendar-block'>" +
-        "<div class='lead row'><label class='form-label col-md-3 required'>API Key: </label><input class='form-control col-md-8' type='text' name='apiKey' v-model='model.apiKey.value' contenteditable='true' v-on:blur='onBlur' value='apiKeyValue'  :class='{ requiredField: isApiKeyEmpty }' /></div>" +
-        "<div class='lead row'><label class='form-label col-md-3 required'>Calendar Id: </label><input  class='form-control col-md-8' type='text' name='calendarId' v-model='model.calendarId.value' contenteditable='true' v-on:blur='onBlur' value='cidValue'  :class='{ requiredField: isCalendarIdEmpty }' /></div>" +
-        "<div class='lead row' ><label class='form-label col-md-3'>Numb. Past Days:</label> <input type='number' class='form-control col-md-4' name='pastDays' v-model='model.daysRangePast.value' contenteditable='true' v-on:blur='onBlur' value='pastDaysValue' /></div>" +
-        "<div class='lead row'><label class='form-label col-md-3'>Number of Future Days:</label> <input type='number' class='form-control col-md-4' name='futureDays' v-model='model.daysRangeFuture.value' contenteditable='true' v-on:blur='onBlur' value='futureDaysValue'  /></div>" +
-        "<div class='lead row'><label class='form-label col-md-3'>Max Events:</label> <input type='number' class='form-control col-md-4' name='maxEvents' v-model='model.maxEvents.value' contenteditable='true' v-on:blur='onBlur' value='maxEventsValue'  /></div>" +
-      
-    "</div>"
+    template: `
+    <div  class= 'block-body calendar-block'>
+        <div class='lead row'><label class='form-label col-md-3 required'>Calendar Id: </label><input  class='form-control col-md-8' type='text' name='calendarId' v-model='model.calendarId.value' contenteditable='true' v-on:blur='onBlur' value='cidValue'  :class='{ requiredField: isCalendarIdEmpty }' /></div>
+        <div class='lead row' ><label class='form-label col-md-3'>Numb. Past Days:</label> <input type='number' class='form-control col-md-4' name='pastDays' v-model='model.daysRangePast.value' contenteditable='true' v-on:blur='onBlur' value='pastDaysValue' /></div>
+        <div class='lead row'><label class='form-label col-md-3'>Number of Future Days:</label> <input type='number' class='form-control col-md-4' name='futureDays' v-model='model.daysRangeFuture.value' contenteditable='true' v-on:blur='onBlur' value='futureDaysValue'  /></div>
+        <div class='lead row'><label class='form-label col-md-3'>Max Events:</label> <input type='number' class='form-control col-md-4' name='maxEvents' v-model='model.maxEvents.value' contenteditable='true' v-on:blur='onBlur' value='maxEventsValue'  /></div>
+        <div class='lead row'><label class='form-label col-md-3'>Display a Calendar:</label> <input type='checkbox' class='form-control col-md-4' name='displayCalendarUI' v-model='model.displayCalendarUI.value' contenteditable='true' v-on:blur='onBlur' value='displayCalendarUIValue'/></div>
+
+    </div>
+    `
 });

@@ -25,11 +25,12 @@ namespace Catfish.Models.Blocks
     public class CalendarBlock : Block
     {
        
-        public TextField ApiKey { get; set; }
         public TextField CalendarId { get; set; }
         public NumberField DaysRangePast { get; set; }
         public NumberField DaysRangeFuture { get; set; }
         public NumberField MaxEvents { get; set; }
+        public CheckBoxField DisplayCalendarUI { get; set; }
+
         public CalendarBlock()
         {
         }
@@ -46,15 +47,6 @@ namespace Catfish.Models.Blocks
             {
 
                 return CalendarId.Value;
-            }
-            return "";
-        }
-        public string GetApiKey()
-        {
-            if (ApiKey != null)
-            {
-
-                return ApiKey.Value;
             }
             return "";
         }
@@ -84,6 +76,16 @@ namespace Catfish.Models.Blocks
                 return MaxEvents.Value;
             }
             return 100; //default value
+        }
+
+        public bool? GetDisplayCalendarUI()
+        {
+            if (DisplayCalendarUI != null)
+            {
+
+                return DisplayCalendarUI;
+            }
+            return false; //default value
         }
 
         public List<CalendarEvent> GetCalendarEvents()
@@ -126,7 +128,7 @@ namespace Catfish.Models.Blocks
             request.MaxResults = GetMaxEvents();
             request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
 
-            Events events = request.Execute();
+            Events events = request.Execute(); //this line is suuuuper slow, task gives up so thats why
             CalendarEvents = events.Items.Select(m => new CalendarEvent(m)).ToList();
              
             return CalendarEvents;
@@ -141,7 +143,7 @@ namespace Catfish.Models.Blocks
         public CatfishAppConfig(ICatfishAppConfiguration config)
         {
             _catfishConfig = config;
-            ApiKey = _catfishConfig.GetGoogleCalendarAPIKey();
+            //ApiKey = _catfishConfig.GetGoogleCalendarAPIKey();
         }
 
     }

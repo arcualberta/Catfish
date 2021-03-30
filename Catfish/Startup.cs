@@ -363,6 +363,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
+            //App.Modules.Manager().Scripts.Add("~/assets/js/calendar-event-list-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
@@ -398,6 +399,7 @@ namespace Catfish
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
             App.Blocks.Register<CalendarBlock>();
+            //App.Blocks.Register<CalendarEventListBlock>();
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
             App.Blocks.Register<ContactFormBlock>();

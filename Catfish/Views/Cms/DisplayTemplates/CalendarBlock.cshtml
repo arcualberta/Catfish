@@ -17,7 +17,9 @@
 
 <div  class="container container-fluid google-calendar-panel calendar-events calendar-default">
     
-
+    @if (Model.DisplayCalendarUI != null && Model.DisplayCalendarUI) { 
+        <div>Hello world</div>
+    }
 
     @if (CalendarEventList != null)
     {
