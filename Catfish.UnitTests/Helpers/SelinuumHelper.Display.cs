@@ -15,6 +15,37 @@ namespace Catfish.UnitTests.Helpers
             string val = ele.Text;
             return val;
         }
+        public string GetTextAreaDisplayValue(string fieldId)
+        {
+            string selectorString = string.Format("div[data-model-id='{0}'] div[class='multilingual-input-block']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+
+        public string GetIntegerDisplayValue(string fieldId)
+        {
+            string selectorString = string.Format("div[data-model-id='{0}']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+
+        public string GetDecimalDisplayValue(string fieldId)
+        {
+            string selectorString = string.Format("div[data-model-id='{0}']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+
+        public string GetDateDisplayValue(string fieldId)
+        {
+            string selectorString = string.Format("div[data-model-id='{0}'] span", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
 
         public string GetSelectDisplayValue(string fieldId)
         {

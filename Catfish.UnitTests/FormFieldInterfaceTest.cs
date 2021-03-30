@@ -129,7 +129,11 @@ namespace Catfish.UnitTests
 
             //Setting value of TA1 to Hello World
             var taId = "8016425b-c632-49fc-8d72-32d294ee429b";
-            var taVal = "Hello World 123";
+            var taVal = "Identity configuration in ASP.NET can be quite confusing, especially if you want to customize setup properties." +
+                "When you use a code - first approach using Entity Framework, you have full control over your user identity options. However when " +
+                "developers deal with bigger projects, they typically prefer to use a table - first approach in which they create the database, then consume " +
+                "the information in the API, and lastly shape it in a way that it makes sense on the front end." +
+                "So, configuring identity might work best with a mixed approach.";
             _seleniumHelper.SetTextAreaValue(taId, taVal);
 
             //Setting value of INT1 to 250
@@ -177,9 +181,23 @@ namespace Catfish.UnitTests
             var tfDispVal = _seleniumHelper.GetTextFieldDisplayValue(tfId);
             Assert.AreEqual(tfVal, tfDispVal, "TF1 value is not correctly saved");
 
+            //Validating TA1
+            var taDispVal = _seleniumHelper.GetTextFieldDisplayValue(taId);
+            Assert.AreEqual(taVal, taDispVal, "TA1 value is not correctly saved");
 
+            //Validating INT1
+            var intDispVal = _seleniumHelper.GetIntegerDisplayValue(intId);
+            Assert.AreEqual(intVal, intDispVal, "INT1 value is not correctly saved");
 
-            _seleniumHelper.Driver.Close();
+            //Validating DEC1
+            var decDispVal = _seleniumHelper.GetDecimalDisplayValue(decId);
+            Assert.AreEqual(decVal, decDispVal, "DEC1 value is not correctly saved");
+
+            //Validating DATE1
+            var dateDispVal = _seleniumHelper.GetDateDisplayValue(dateId);
+            Assert.AreEqual(dateVal.ToString("yyyy-MM-dd"), dateDispVal, "DATE1 value is not correctly saved");
+
+             _seleniumHelper.Driver.Close();
         }
 
     }
