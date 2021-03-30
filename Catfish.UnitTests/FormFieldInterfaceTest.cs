@@ -41,8 +41,8 @@ namespace Catfish.UnitTests
             _db = _testHelper.Db;
             IAuthorizationService _auth = _testHelper.AuthorizationService;
 
-            //_seleniumHelper.SetDriver(SeleniumHelper.eDriverType.Chrome);
-            _seleniumHelper.SetDriver(SeleniumHelper.eDriverType.Firefox);
+            _seleniumHelper.SetDriver(SeleniumHelper.eDriverType.Chrome);
+            //_seleniumHelper.SetDriver(SeleniumHelper.eDriverType.Firefox);
         }
 
         public XElement LoadXml(string fileName)
@@ -106,17 +106,20 @@ namespace Catfish.UnitTests
 
             //Selecting Option2 for DD1
             var ddId = "48cd8112-beea-4664-b5a9-739a79e652bc";
-            var opOptId = "b8068a1b-a184-47f5-9da1-625e3eb4a2f4";
-            _seleniumHelper.SelectDropdownOption(ddId, opOptId);
+            var ddOptId = "b8068a1b-a184-47f5-9da1-625e3eb4a2f4";
+            var dd1OptVal = "Option 2";
+            _seleniumHelper.SelectDropdownOption(ddId, ddOptId);
 
             //Selecting Option 3 for RB1
             var rbId = "ef1c777b-6e80-48f6-b742-548f5226239c";
             var rbOptId = "cd99d343-7901-4a1e-a3a3-052a53d737b7";
+            var rbOptVal = "Option 3";
             _seleniumHelper.SelectRadioOption(rbId, rbOptId);
 
             //Selecting Option 3 and Option 4 for the CB1
             var chkId = "f69a2661-a375-47ea-a46c-9009a76c08eb";
             var chkOptIds = new string[] { "391d611d-d7f5-48a6-b8ae-e52053294616", "c320b902-21f4-4bf1-ba7e-67890f7a0849" };
+            var chkOptVals = new string[] { "Option 3", "Option 4"};
             _seleniumHelper.SelectCheckOptions(chkId, chkOptIds);
 
             //Setting value of TF1 to Hello World
@@ -154,6 +157,29 @@ namespace Catfish.UnitTests
             //Clicking on the link to view detail view
             _seleniumHelper.ClickOnALink("click on here");
 
+
+            //Validating DD1
+            var ddDispOpVal = _seleniumHelper.GetSelectDisplayValue(ddId);
+            Assert.AreEqual(dd1OptVal, ddDispOpVal, "DD1 value is not correctly saved");
+
+            //Validating RB1
+            var rbDispVal = _seleniumHelper.GetRadioDisplayValue(rbId);
+            Assert.AreEqual(rbOptVal, rbDispVal, "RB1 value is not correctly saved");
+
+            //Validating TF1
+            var chkDispVal = _seleniumHelper.GetCheckboxDisplayValue(chkId);
+            var valuesMissing = chkOptVals.Except(chkDispVal).Any();
+            Assert.IsFalse(valuesMissing, "At least one value was not saved in CB1");
+            var WrongValuesSaved = chkDispVal.Except(chkOptVals).Any();
+            Assert.IsFalse(WrongValuesSaved, "Wrong values saved in CB1");
+
+            //Validating TF1
+            var tfDispVal = _seleniumHelper.GetTextFieldDisplayValue(tfId);
+            Assert.AreEqual(tfVal, tfDispVal, "TF1 value is not correctly saved");
+
+
+
+            _seleniumHelper.Driver.Close();
         }
 
     }

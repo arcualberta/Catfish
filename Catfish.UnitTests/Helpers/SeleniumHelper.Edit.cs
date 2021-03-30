@@ -15,28 +15,9 @@ using System.Threading;
 
 namespace Catfish.UnitTests.Helpers
 {
-    public class SeleniumHelper
+    public partial class SeleniumHelper
     {
         public enum eDriverType { Chrome, Firefox, Edge };
-        ////public enum eElementType 
-        ////{
-        ////    Button,
-        ////    Checkbox,
-        ////    Date,
-        ////    Div,
-        ////    Hidden,
-        ////    Label,
-        ////    Li,
-        ////    Number,
-        ////    Option,
-        ////    Radio,
-        ////    Span,
-        ////    Select,
-        ////    Submit,
-        ////    TextArea,
-        ////    TextBox,
-        ////    Ul
-        ////}
 
         private readonly IConfiguration _configuration;
         private readonly string _siteUrl;
@@ -49,39 +30,6 @@ namespace Catfish.UnitTests.Helpers
             _configuration = configuration;
             _siteUrl = _configuration.GetSection("SiteUrl").Value.TrimEnd('/');
         }
-        ////public string GetTagName(eElementType type)
-        ////{
-        ////    switch (type)
-        ////    {
-        ////        case eElementType.Button:
-        ////            return "button";
-        ////        case eElementType.Checkbox:
-        ////        case eElementType.Date:
-        ////        case eElementType.Number:
-        ////        case eElementType.Radio:
-        ////        case eElementType.Submit:
-        ////        case eElementType.TextBox:
-        ////            return "input";
-        ////        case eElementType.Div:
-        ////            return "div";
-        ////        case eElementType.Select:
-        ////            return "select";
-        ////        case eElementType.Option:
-        ////            return "option";
-        ////        case eElementType.Label:
-        ////            return "label";
-        ////        case eElementType.Li:
-        ////            return "li";
-        ////        case eElementType.Span:
-        ////            return "span";
-        ////        case eElementType.TextArea:
-        ////            return "textarea";
-        ////        case eElementType.Ul:
-        ////            return "ul";
-        ////    }
-
-        ////    throw new Exception(string.Format("Unknown element type: {0}", type.ToString()));
-        ////}
 
         public IWebDriver SetDriver(eDriverType driverType)
         {
@@ -142,22 +90,6 @@ namespace Catfish.UnitTests.Helpers
                 path = "/" + path;
             Driver.Navigate().GoToUrl(_siteUrl + path);
         }
-
-        /////// <summary>
-        /////// Use the "Driver" property of this instance and find the element that has the
-        /////// "value" attribute to the value of the given "val" parameter and return it.
-        /////// </summary>
-        /////// <param name="val"></param>
-        /////// <returns></returns>
-        ////public IWebElement GetElementByValue (string val, eElementType elementType, IWebElement parent = null)
-        ////{
-        ////    string tag = GetTagName(elementType);
-        ////    string selectorString = string.Format("{0}[value='{1}']", tag, val);
-        ////    IWebElement e = parent == null
-        ////       ? Driver.FindElement(By.CssSelector(selectorString))
-        ////       : parent.FindElement(By.CssSelector(selectorString));
-        ////    return e;
-        ////}
 
         /// <summary>
         /// Select the field identified by data-model-id=fieldId and then selects its option
