@@ -5,6 +5,10 @@
     See CalendarBlock.cshtml or CalendarBlock.cs for more info.
  */
 
+import dayjs from "dayjs";
+const weekday = require("dayjs/plugin/weekday");
+const weekOfYear = require("dayjs/plugin/weekOfYear");
+
 Vue.component('calendar-block', {
     props: ["uid", "model"],
     ////template: 
@@ -23,5 +27,7 @@ Vue.component('calendar-block', {
 
     created () {
         console.log("this code is running ok");
+        dayjs.extend(weekday);
+        dayjs.extend(weekOfYear);
     }
 });

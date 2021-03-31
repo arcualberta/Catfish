@@ -28,9 +28,10 @@ const managerSideEntryPaths = {
     editItemBundle: "./wwwroot/assets/js/catfish.edititem.js",
 };
 
-/*const publicFacingEntryPaths = {
-    //keywordsSearchBundle: "./wwwroot/assets/js/_public-facing/keywords-search-block-public.js"
-};*/
+//const publicFacingEntryPaths = {
+//    //keywordsSearchBundle: "./wwwroot/assets/js/_public-facing/keywords-search-block-public.js"
+//    calendarUIBundle: "./wwwroot/assets/js/_public-facing/calendar-block.js"
+//};
 
 ///////////////////////////////////////////////////////////////////////////////////
 

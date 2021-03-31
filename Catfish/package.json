@@ -23,6 +23,7 @@
     "@babel/preset-env": "^7.11.0",
     "dayjs": "^1.10.4",
     "node-sass": "^5.0.0",
+    "uuid": "^8.3.2",
     "vue": "^2.6.12",
     "vue-quill-editor": "^3.0.6",
     "vuedraggable": "^2.23.2",
