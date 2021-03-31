@@ -22,7 +22,7 @@ namespace Catfish.Models.Blocks
 
 
     [BlockType(Name = "Calendar Block", Category = "Content", Component = "calendar-block", Icon = "fas fa-calendar-alt")]
-    public class CalendarBlock : Block
+    public class CalendarBlock : VueComponent
     {
        
         public TextField CalendarId { get; set; }

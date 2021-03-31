@@ -1,4 +1,5 @@
 ﻿@model Catfish.Models.Blocks.CalendarBlock
+@using Newtonsoft.Json;
 
 @{
     ViewData["Title"] = "Calendar Block";
@@ -11,14 +12,28 @@
     bool showDescription = true;
     bool showLocation = true;
 
+    var jsonData = JsonConvert.SerializeObject(Model);
+
 }
 
 
 
-<div  class="container container-fluid google-calendar-panel calendar-events calendar-default">
-    
-    @if (Model.DisplayCalendarUI != null && Model.DisplayCalendarUI) { 
-        <div>Hello world</div>
+<div class="container container-fluid google-calendar-panel calendar-events calendar-default">
+
+    @if (Model.DisplayCalendarUI.Value != null && Model.DisplayCalendarUI.Value)
+    {
+        <calendar-block v-bind:model='@Html.Raw(jsonData)' inline-template>
+            <div class="calendar-container">
+                <div class="month-header-container">
+                    <div>Left Arrow Here</div>
+                    <h4>Month</h4>
+                    <div>Right Arrow Here</div>
+                </div>
+                <div class="calendar-days-container">
+
+                </div>
+            </div>
+        </calendar-block>
     }
 
     @if (CalendarEventList != null)
@@ -49,37 +64,37 @@
                     @if (calendarEvent.StartDateTime != null)
                     {
 
-                    <div class="date-time date-time-start">
-                        @calendarEvent.StartMonth @calendarEvent.StartDay @calendarEvent.StartYear
-                        @*<div class="date-month">@calendarEvent.StartMonth</div>
-        <div class="date-day">@calendarEvent.StartDay</div>
-        <div class="date-year">@calendarEvent.StartYear</div>*@
+                        <div class="date-time date-time-start">
+                            @calendarEvent.StartMonth @calendarEvent.StartDay @calendarEvent.StartYear
+                            @*<div class="date-month">@calendarEvent.StartMonth</div>
+                                <div class="date-day">@calendarEvent.StartDay</div>
+                                <div class="date-year">@calendarEvent.StartYear</div>*@
 
-                        @if (calendarEvent.StartTime != null)
-                        {
-                            <div class="date-hour">@calendarEvent.StartTime</div>
-                        }
+                            @if (calendarEvent.StartTime != null)
+                            {
+                                <div class="date-hour">@calendarEvent.StartTime</div>
+                            }
 
-                    </div>
+                        </div>
                     }
 
 
 
                     @*@if (calendarEvent.EndDateTime != null)
-                    {
-                        <div class="date-separator glyphicon glyphicon-chevron-right"> </div>
-                        <div class="date-time date-time-end">
-                            <div class="date-month">@calendarEvent.EndMonth</div>
-                            <div class="date-day">@calendarEvent.EndDay</div>
-                            <div class="date-year">@calendarEvent.EndYear</div>
+                        {
+                            <div class="date-separator glyphicon glyphicon-chevron-right"> </div>
+                            <div class="date-time date-time-end">
+                                <div class="date-month">@calendarEvent.EndMonth</div>
+                                <div class="date-day">@calendarEvent.EndDay</div>
+                                <div class="date-year">@calendarEvent.EndYear</div>
 
-                            @if (calendarEvent.EndTime != null)
-                            {
-                                <div class="date-hour">@calendarEvent.EndTime</div>
-                            }
+                                @if (calendarEvent.EndTime != null)
+                                {
+                                    <div class="date-hour">@calendarEvent.EndTime</div>
+                                }
 
-                        </div>
-                    }*@
+                            </div>
+                        }*@
 
 
                 </div>

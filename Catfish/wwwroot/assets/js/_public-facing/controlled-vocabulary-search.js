@@ -160,7 +160,6 @@ Vue.component('controlled-vocabulary-search', {
 		}
 	},
     created() {
-        console.log("this code is running ok");
         this.searchResults = [];
         //assign static values
         this.searchResultsLabel = this.keywordsSearchBlockPublicLabels.SEARCH_RESULTS_LABEL;
