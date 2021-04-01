@@ -23,3 +23,6 @@ dotnet_diagnostic.CA1055.severity = none
 
 # CA1307: Specify StringComparison
 dotnet_diagnostic.CA1307.severity = none
+
+# IDE0043: Invalid format string
+dotnet_diagnostic.IDE0043.severity = none

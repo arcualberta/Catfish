@@ -72,5 +72,20 @@ namespace Catfish.UnitTests.Helpers
             return values;
         }
 
+        public string GetTableColumnDisplayValue(string fieldId, string className)
+        {
+            string selectorString = string.Format("table[class='{0}'] tbody tr td[data-model-id='{1}'] span", className, fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+        public string GetTableFooterColumnDisplayValue(string fieldId, string className)
+        {
+            string selectorString = string.Format("table[class='{0}'] tbody tr[class='footer-row'] td[data-model-id='{1}'] span", className, fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+
     }
 }

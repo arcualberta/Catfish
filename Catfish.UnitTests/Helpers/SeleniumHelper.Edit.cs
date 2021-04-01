@@ -138,6 +138,7 @@ namespace Catfish.UnitTests.Helpers
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             ele.Clear();
             ele.SendKeys(value);
+            ele.SendKeys("\t");
         }
 
         public void SetDateValue(string fieldId, DateTime date)
@@ -160,7 +161,7 @@ namespace Catfish.UnitTests.Helpers
 
         }
 
-        public void ClickSubmitButton (string dataItemTemplateId, string buttonValue)
+        public void ClickSubmitButton(string dataItemTemplateId, string buttonValue)
         {
             string selectorString = string.Format("form[data-template-id='{0}'] input[type='button'][value='{1}']", dataItemTemplateId, buttonValue);
             var ele = Driver.FindElement(By.CssSelector(selectorString));
@@ -182,6 +183,15 @@ namespace Catfish.UnitTests.Helpers
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             var ele = wait.Until(drv => drv.FindElement(By.LinkText(linkText)));
             ele.Click();
+        }
+
+        public string GetTablecolumnSum(string fieldId)
+        {
+            Thread.Sleep(2000);
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            string selectorString = string.Format("table[class='table table-field tf-data'] tbody tr[class='footer-row first-footer-row'] td input[data-model-id='{0}']", fieldId);
+            var ele = wait.Until(drv => drv.FindElement(By.CssSelector(selectorString))); 
+            return ele.GetAttribute("value");
         }
 
     }

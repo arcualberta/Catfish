@@ -99,7 +99,7 @@ namespace Catfish.UnitTests
         public void SimpleFormSubmissionTest()
         {
             RefreshData();
-            _seleniumHelper.LoginLocal("admin", "passwd");
+            Login();
 
             //Navigating to the test page
             _seleniumHelper.GoToUrl("simple-form");
@@ -200,5 +200,54 @@ namespace Catfish.UnitTests
              _seleniumHelper.Driver.Close();
         }
 
+        [Test]
+        public void TableFieldFormTest()
+        {
+            RefreshData();
+            Login();
+
+            //Navigating to the test page
+            _seleniumHelper.GoToUrl("table-field-form");
+
+            //Setting value of DEC1 to 12.50
+            var decId1 = "b958ef1f-229f-4a60-a4b0-140e482938b1";
+            var decVal1 = "200";
+            _seleniumHelper.SetNumberValue(decId1, decVal1);
+
+            //Setting value of DEC1 to 12.50
+            var decId2 = "1e7ba58f-32b0-44b7-ae32-3f2365cceeb2";
+            var decVal2 = "100";
+            _seleniumHelper.SetNumberValue(decId2, decVal2);
+
+            //Validating column sum
+            var totalActualValue = Decimal.Parse(decVal1) + Decimal.Parse(decVal2);
+            var totalId = "1fbff568-d9b3-4e1f-a51c-6b65800ec290";
+            var totalDisplayValue = _seleniumHelper.GetTablecolumnSum("1fbff568-d9b3-4e1f-a51c-6b65800ec290");
+            Assert.AreEqual(totalActualValue.ToString(), totalDisplayValue, "Table feild column summation is wrong");
+            
+            //Clicking on sumbit button
+            var dataItemTemplateId = "8cc8bb7f-9c50-41d6-b87f-cbf53889d44e";
+            _seleniumHelper.ClickSubmitButton(dataItemTemplateId, "Submit");
+
+            //Clicking on the modal confirmation button
+            _seleniumHelper.CkickModalSubmit(dataItemTemplateId, "btn btn-success");
+
+            //Clicking on the link to view detail view
+            _seleniumHelper.ClickOnALink("click on here");
+
+           //Valicating column 1 enterd value and saved value.
+            var colVal1 = _seleniumHelper.GetTableColumnDisplayValue(decId1, "table");
+            Assert.AreEqual(colVal1, decVal1, "table column 1 value is not correctly saved");
+
+            //Valicating column 1 enterd value and saved value.
+            var colVal2 = _seleniumHelper.GetTableColumnDisplayValue(decId2, "table");
+            Assert.AreEqual(colVal2, decVal2, "table column 2 value is not correctly saved");
+
+            //Valicating total value and saved value.
+            var colTotal = _seleniumHelper.GetTableFooterColumnDisplayValue(totalId, "table");
+            Assert.AreEqual(colTotal, totalActualValue.ToString(), "table total value is not correctly saved");
+
+            _seleniumHelper.Driver.Close();
+        }
     }
 }
