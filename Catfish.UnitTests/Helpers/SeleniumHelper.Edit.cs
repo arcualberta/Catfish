@@ -51,7 +51,10 @@ namespace Catfish.UnitTests.Helpers
                     break;
 
                 case eDriverType.Edge:
-                    Driver = new EdgeDriver();
+                    EdgeOptions Edgeopts = new EdgeOptions();
+                    Edgeopts.AcceptInsecureCertificates = true;
+                    Edgeopts.UseChromium = true;
+                    Driver = new EdgeDriver(Edgeopts);
                     break;
 
                 default:
