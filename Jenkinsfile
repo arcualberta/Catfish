@@ -15,5 +15,10 @@ pipeline{
 				git url: 'https://github.com/arcualberta/Catfish.git', branch: 'Catfish-2.0-master'
 			}
 		}
+		stage('Restore packages'){
+			steps{
+				bat "dotnet restore Catfish\\Catfish.csproj"
+			}
+		}		
 	}
  }
