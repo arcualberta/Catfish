@@ -23,17 +23,17 @@ pipeline{
 		}
 		stage('Restore packages'){
 			steps{
-				bat "dotnet restore Catfish\\Catfish.csproj"
+				bat "dotnet restore Catfish.sln"
 			}
 		}
 		stage('Clean'){
 			steps{
-				bat "dotnet clean Catfish\\Catfish.csproj"
+				bat "dotnet clean Catfish.sln"
 			}
 		}
 		stage('Debug Build'){
 		   steps{
-			  bat "dotnet build Catfish\\Catfish.csproj --configuration Debug"
+			  bat "dotnet build Catfish.sln --configuration Debug"
 		   }
 		}		
 	}
