@@ -45,7 +45,7 @@ pipeline{
 		   	steps{
 				//bat 'cp ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
 				//bat 'cd Catfish && dotnet run' //Publishing the code to the default folder
-				bat 'C:\Windows\System32\inetsrv\appcmd stop site catfish-test.artsrn.ualberta.ca'
+				bat 'C:\\Windows\\System32\\inetsrv\\appcmd stop site catfish-test.artsrn.ualberta.ca'
 			}
 		}		
 	}
