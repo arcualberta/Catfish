@@ -39,7 +39,7 @@ pipeline{
 		}
 		stage('Copy Config Files'){
 		   	steps{
-				bat 'copy ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json /Q/Y' //Restoring the appsettings.json file
+				bat 'copy ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
 			}
 		}		
 		stage('Test'){
