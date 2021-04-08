@@ -74,6 +74,7 @@ namespace Catfish.UnitTests
             _db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("table_field.xml")) as ItemTemplate);
             _db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("table_field2.xml")) as ItemTemplate);
             _db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("grid_table.xml")) as ItemTemplate);
+            _db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("SASform.xml")) as ItemTemplate);
 
             _db.SaveChanges();
         }
@@ -355,6 +356,13 @@ namespace Catfish.UnitTests
             var chk2OptIds = new string[] { "73ae522c-fd4f-4aeb-9cb7-af92b709646f", "9845cc34-7020-44a9-bf3d-98f075c36f41" };
             var chk2OptVals = new string[] { "Prescription", "Nutrition" };
             _seleniumHelper.SelectCheckOptions(chk2OptIds, 1, 9);
+        }
+
+        [Test]
+        public void SASForm()
+        {
+            RefreshData();
+            Login();
         }
     }
 }
