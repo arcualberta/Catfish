@@ -18,7 +18,8 @@ pipeline{
 	stages{
 		stage('Checkout'){
 			steps{
-				git url: 'https://github.com/arcualberta/Catfish.git', branch: 'Catfish-2.0-master'
+				//git url: 'https://github.com/arcualberta/Catfish.git', branch: 'Catfish-2.0-master'
+				git branch: 'Catfish-2.0-master'
 			}
 		}
 		stage('Restore packages'){
@@ -38,12 +39,12 @@ pipeline{
 		}
 		stage('Copy Config Files'){
 		   	steps{
-				bat 'xcopy ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json /Q/Y' //Restoring the appsettings.json file
+				bat 'copy ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json /Q/Y' //Restoring the appsettings.json file
 			}
 		}		
 		stage('Testing'){
 		   	steps{
-				bat 'cp ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
+				//bat 'cp ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
 				bat 'cd Catfish && dotnet run' //Publishing the code to the default folder
 			}
 		}		
