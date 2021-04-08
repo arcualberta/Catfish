@@ -9,14 +9,9 @@ import dayjs from "dayjs";
 const weekday = require("dayjs/plugin/weekday");
 const weekOfYear = require("dayjs/plugin/weekOfYear");
 
-Vue.component('calendar-block', {
+Vue.component('calendaruibundle', {
     props: ["uid", "model"],
-    ////template: 
-    ////`<div>
-    ////    <div>Hello there ... </div>
-    ////    <div v-if="searchResults.length > 0">Hello</div>
-    ////    <div v-else>World</div>
-    //// </div>`,
+
     data: function () {
         return {}
     },

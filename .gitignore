@@ -199,3 +199,6 @@ Plugins
 /Examples/compositeFormFieldTest_generared.json
 /Examples/compositeFormFieldTest_generared.xml
 /Examples/AttachmentTest_generared.xml
+
+#public-facing built bundles 
+/Catfish/wwwroot/assets/js/_public-facing/calendaruibundle.js

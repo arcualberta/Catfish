@@ -6,7 +6,8 @@
   "author": "Håkan Edling",
   "license": "MIT",
   "scripts": {
-    "build": "webpack --mode=development --config webpack.config.js"
+    "build": "webpack --mode=development --config webpack.config.js",
+    "copy": "copy wwwroot\\assets\\dist\\calendaruibundle.js wwwroot\\assets\\js\\_public-facing"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

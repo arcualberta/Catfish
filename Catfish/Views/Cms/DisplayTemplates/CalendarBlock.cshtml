@@ -17,23 +17,31 @@
 }
 
 
-
 <div class="container container-fluid google-calendar-panel calendar-events calendar-default">
 
     @if (Model.DisplayCalendarUI.Value != null && Model.DisplayCalendarUI.Value)
     {
-        <calendar-block v-bind:model='@Html.Raw(jsonData)' inline-template>
+        <calendaruibundle v-bind:model='@Html.Raw(jsonData)' inline-template>
             <div class="calendar-container">
                 <div class="month-header-container">
                     <div>Left Arrow Here</div>
                     <h4>Month</h4>
                     <div>Right Arrow Here</div>
                 </div>
-                <div class="calendar-days-container">
-
+                <div class="calendar-month-container">
+                    <div class="calendar-weekday-container">
+                        <div>Sunday</div>
+                        <div>Monday</div>
+                        <div>Tuesday</div>
+                        <div>Wednesday</div>
+                        <div>Thursday</div>
+                        <div>Friday</div>
+                        <div>Saturday</div>
+                    </div>
+                    <div class="week-container"></div>
                 </div>
             </div>
-        </calendar-block>
+        </calendaruibundle>
     }
 
     @if (CalendarEventList != null)
