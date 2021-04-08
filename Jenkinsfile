@@ -35,6 +35,13 @@ pipeline{
 		   steps{
 			  bat "dotnet build Catfish.sln --configuration Debug"
 		   }
+		}
+		stage('Publish'){
+		   	steps{
+				bat 'dotnet publish Catfish\\Catfish.csproj -c Release' //Publishing the code to the default folder
+				bat 'rm Catfish\\bin\\Release\\netcoreapp3.1\\appsettings.json' //Deleting the published appsettings.json file since we don't want to coppy it to the deployed site.
+				
+			}
 		}		
 	}
  }
