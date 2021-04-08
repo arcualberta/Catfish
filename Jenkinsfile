@@ -36,10 +36,10 @@ pipeline{
 			  bat "dotnet build Catfish.sln --configuration Debug"
 		   }
 		}
-		//stage('Publish to Test Site'){
-		//   	steps{
-		//		bat 'dotnet publish Catfish\\Catfish.csproj -c Release' //Publishing the code to the default folder
-		//	}
-		//}		
+		stage('Testing'){
+		   	steps{
+				bat 'cd Catfish && dotnet run' //Publishing the code to the default folder
+			}
+		}		
 	}
  }
