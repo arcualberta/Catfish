@@ -36,6 +36,11 @@ pipeline{
 			  bat "dotnet build Catfish.sln --configuration Debug"
 		   }
 		}
+		stage('Copy Config Files'){
+		   	steps{
+				bat 'xcopy ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json /Q/Y' //Restoring the appsettings.json file
+			}
+		}		
 		stage('Testing'){
 		   	steps{
 				bat 'cp ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
