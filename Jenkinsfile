@@ -39,8 +39,7 @@ pipeline{
 		stage('Publish'){
 		   	steps{
 				bat 'dotnet publish Catfish\\Catfish.csproj -c Release' //Publishing the code to the default folder
-				bat 'del Catfish\\bin\\Release\\netcoreapp3.1\\appsettings.json' //Deleting the published appsettings.json file since we don't want to coppy it to the deployed site.
-				
+				bat 'xcopy Catfish\\bin\\Release\\netcoreapp3.1 \\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca /E //Copying publsihed files to the deployed test sit
 			}
 		}		
 	}
