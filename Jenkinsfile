@@ -31,22 +31,27 @@ pipeline{
 				bat "dotnet clean Catfish.sln"
 			}
 		}
-		stage('Debug Build'){
-		   steps{
-			  bat "dotnet build Catfish.sln --configuration Debug"
-		   }
-		}
 		stage('Copy Config Files'){
 		   	steps{
 				bat 'copy ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
 			}
 		}		
-		stage('Test'){
-		   	steps{
-				//bat 'cp ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
-				//bat 'cd Catfish && dotnet run' //Publishing the code to the default folder
-				bat 'C:\\Windows\\System32\\inetsrv\\appcmd stop site catfish-test.artsrn.ualberta.ca'
-			}
+		stage('Debug Build'){
+		   steps{
+			  bat "dotnet build Catfish.sln --configuration Release"
+		   }
+		}
+		stage('Publish'){
+		     steps{
+		       	bat "dotnet publish Catfish\\Catfish.csproj "
+		     }
+		}		
+		stage('Deploy'){
+		     steps{
+		       	bat 'C:\\Windows\\System32\\inetsrv\\appcmd stop site catfish-test.artsrn.ualberta.ca' //Stopping the catfish-test site
+			bat 'xcopy Catfish\\bin\\Release\\netcoreapp3.1 E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca\\ /S/Y/Q' //copy all published files
+			bat 'C:\\Windows\\System32\\inetsrv\\appcmd start site catfish-test.artsrn.ualberta.ca' //Starting the catfish-test site
+		     }
 		}		
 	}
  }
