@@ -38,6 +38,7 @@ pipeline{
 		}
 		stage('Testing'){
 		   	steps{
+				bat 'cp ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
 				bat 'cd Catfish && dotnet run' //Publishing the code to the default folder
 			}
 		}		
