@@ -39,7 +39,6 @@ pipeline{
 		stage('Publish to Test Site'){
 		   	steps{
 				bat 'dotnet publish Catfish\\Catfish.csproj -c Release' //Publishing the code to the default folder
-				bat 'xcopy Catfish\\bin\\Release\\netcoreapp3.1 \\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca /E/Q/Y'  //Copying publsihed files to the deployed test sit
 			}
 		}		
 	}
