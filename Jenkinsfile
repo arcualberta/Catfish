@@ -43,7 +43,7 @@ pipeline{
 		}*/
 		stage('Publish'){
 		     	steps{
-			     bat "dotnet publish Catfish\\Catfish.csproj  --configuration Release -p:PublishSingleFile=true"
+			     bat "dotnet publish Catfish\\Catfish.csproj"
 		     	}
 		}		
 		stage('Deploy'){
