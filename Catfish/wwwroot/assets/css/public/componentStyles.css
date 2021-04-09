@@ -95,6 +95,14 @@
     background-color: lightgrey;
 }
 
+.today-is-the-day{
+    background-color: lightblue;
+}
+
+.clickable:hover{
+    cursor:pointer;
+}
+
 /* Extended Gallery carousel*/
 .extended-gallery-block .carousel-indicators {
     position: static;

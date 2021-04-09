@@ -21,7 +21,8 @@ Vue.component('calendar-block-vue', {
             currentMonthDays: [],
             previousMonthDays: [],
             nextMonthDays: [],
-            selectedMonth: null
+            selectedMonth: null,
+            today: null
         }
     },
 
@@ -87,7 +88,7 @@ Vue.component('calendar-block-vue', {
             const lastDayOfTheMonthWeekday = this.getWeekday(`${year}-${month}-${this.currentMonthDays.length}`)
 
 
-            const visibleNumberOfDaysFromNextMonth = lastDayOfTheMonthWeekday;// ? 7 - lastDayOfTheMonthWeekday : lastDayOfTheMonthWeekday
+            const visibleNumberOfDaysFromNextMonth = lastDayOfTheMonthWeekday ? 6 - lastDayOfTheMonthWeekday : lastDayOfTheMonthWeekday
 
 
             return [...Array(visibleNumberOfDaysFromNextMonth)].map((day, index) => {
@@ -123,7 +124,7 @@ Vue.component('calendar-block-vue', {
         },
 
         goToPresentMonth() {
-            dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
+            this.selectedMonth = dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
             this.createCalendar(this.selectedMonth.format("YYYY"), this.selectedMonth.format("M"));
 
         }
@@ -140,6 +141,7 @@ Vue.component('calendar-block-vue', {
         this.currentMonthDays = this.createDaysForCurrentMonth(this.initialYear, this.initialMonth);
         this.previousMonthDays = this.createDaysForPreviousMonth(this.initialYear, this.initialMonth, this.currentMonthDays[0]);
         this.nextMonthDays = this.createDaysForNextMonth(this.initialYear, this.initialMonth);
+        this.today = dayjs().format("YYYY-MM-DD");
 
 
         this.days = [...this.previousMonthDays, ...this.currentMonthDays, ...this.nextMonthDays]
