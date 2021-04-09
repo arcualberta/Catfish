@@ -46,12 +46,12 @@ pipeline{
 			     bat "dotnet publish Catfish\\Catfish.csproj "
 		     	}
 		}		
-		stage('Stop Test Site'){
+		/* stage('Stop Test Site'){
 		     	steps{
 			     //bat 'C:\\Windows\\System32\\inetsrv\\appcmd recycle apppool catfish-test.artsrn.ualberta.ca'
 			     //bat 'C:\\Windows\\System32\\inetsrv\\appcmd stop site catfish-test.artsrn.ualberta.ca' //Stopping the catfish-test site
 		     	}
-		}		
+		} */		
 		stage('Deploy'){
 		    	 steps{
 				//bat 'xcopy Catfish\\bin\\Release\\netcoreapp3.1 E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca\\ /Q /Y /S' //copy all published files
