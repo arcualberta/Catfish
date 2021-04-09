@@ -51,12 +51,12 @@ pipeline{
 				bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:iisApp="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:iisApp="catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
 				//bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:contentPath="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:contentPath="E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
 		     }
-		}		
+		}/*		
 		stage('Load Homepage'){
 		     	steps{
 				def response = httpRequest 'http://catfish-test.artsrn.ualberta.ca'
-				//println("Status: "+response.status)
+				println("Status: "+response.status)
 		     	}
-		}		
+		}*/		
 	}
  }
