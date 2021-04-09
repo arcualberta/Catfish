@@ -54,7 +54,7 @@ pipeline{
 		}		
 		stage('Load Homepage'){
 		     	steps{
-				def get = new URL("https://httpbin.org/get").openConnection();
+				def get = new URL("https://catfish-test.artsrn.ualberta.ca").openConnection();
 				def getRC = get.getResponseCode();
 				println(getRC);
 				//if(getRC.equals(200)) {
