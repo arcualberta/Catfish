@@ -48,13 +48,14 @@ pipeline{
 		}		
 		stage('Stop Test Site'){
 		     	steps{
-			     bat 'C:\\Windows\\System32\\inetsrv\\appcmd recycle apppool catfish-test.artsrn.ualberta.ca'
+			     //bat 'C:\\Windows\\System32\\inetsrv\\appcmd recycle apppool catfish-test.artsrn.ualberta.ca'
 			     //bat 'C:\\Windows\\System32\\inetsrv\\appcmd stop site catfish-test.artsrn.ualberta.ca' //Stopping the catfish-test site
 		     	}
 		}		
 		stage('Deploy'){
 		    	 steps{
-			bat 'xcopy Catfish\\bin\\Release\\netcoreapp3.1 E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca\\ /Q /Y /S' //copy all published files
+				//bat 'xcopy Catfish\\bin\\Release\\netcoreapp3.1 E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca\\ /Q /Y /S' //copy all published files
+				bat '"C:\\Program Files (x86)\\IIS\Microsoft Web Deploy V3\\msdeploy.exe" -AllowUntrusted -verb:sync -source:contentPath="Catfish\\bin\\Release\\netcoreapp3.1" -dest:contentPath="E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca"' //copy all published files
 		     }
 		}		
 		stage('Start Test Site'){
