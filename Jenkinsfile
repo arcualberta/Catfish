@@ -55,7 +55,7 @@ pipeline{
 		stage('Load Homepage'){
 		     	steps{
 				def response = httpRequest 'http://catfish-test.artsrn.ualberta.ca'
-				println("Status: "+response.status)
+				//println("Status: "+response.status)
 		     	}
 		}		
 	}
