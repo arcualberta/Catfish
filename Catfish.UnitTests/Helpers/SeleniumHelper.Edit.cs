@@ -234,6 +234,13 @@ namespace Catfish.UnitTests.Helpers
             ele.Click();
         }
 
+        public void ClickSaveButton(string dataItemTemplateId, string buttonValue)
+        {
+            string selectorString = string.Format("form[data-template-id='{0}'] input[type='submit'][value='{1}']", dataItemTemplateId, buttonValue);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
+        }
+
         public void CkickModalSubmit(string dataItemTemplateId, string cssClass)
         {
             Thread.Sleep(2000);
