@@ -20,18 +20,12 @@ Vue.component('calendaruibundle', {
             days: [],
             currentMonthDays: [],
             previousMonthDays: [],
-            nextMonthDays: []
+            nextMonthDays: [],
+            selectedMonth: null
         }
     },
 
     methods: {
-        getYear() {
-
-        },
-
-        getMonth() {
-
-        },
 
         //code from Css-Tricks monthly Calendar with real data
         //https://css-tricks.com/how-to-make-a-monthly-calendar-with-real-data/
@@ -103,6 +97,35 @@ Vue.component('calendaruibundle', {
                     isCurrentMonth: false
                 }
             })
+        },
+
+        createCalendar(year = this.initialYear, month = this.initialMonth) {
+            this.days = [];
+            this.currentMonthDays = this.createDaysForCurrentMonth(
+                year,
+                month,
+                dayjs(`${year}-${month}-01`).daysInMonth()
+            );
+
+            this.previousMonthDays = this.createDaysForPreviousMonth(year, month);
+            this.nextMonthDays = this.createDaysForNextMonth(year, month);
+            this.days = [...this.previousMonthDays, ...this.currentMonthDays, ...this.nextMonthDays];
+        },
+
+        goToPreviousMonth() {
+            this.selectedMonth = dayjs(this.selectedMonth).subtract(1, "month");
+            this.createCalendar(this.selectedMonth.format("YYYY"), this.selectedMonth.format("M"));
+        },
+
+        goToNextMonth() {
+            this.selectedMonth = dayjs(this.selectedMonth).add(1, "month");
+            this.createCalendar(this.selectedMonth.format("YYYY"), this.selectedMonth.format("M"));
+        },
+
+        goToPresentMonth() {
+            dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
+            this.createCalendar(this.selectedMonth.format("YYYY"), this.selectedMonth.format("M"));
+
         }
     },
 
@@ -112,6 +135,7 @@ Vue.component('calendaruibundle', {
 
         this.initialYear = dayjs().format("YYYY");
         this.initialMonth = dayjs().format("M");
+        this.selectedMonth = dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
         //this.daysInMonth = this.getDaysInMonth(this.initialYear, this.initialMonth); 
 
         this.currentMonthDays = this.createDaysForCurrentMonth(this.initialYear, this.initialMonth);

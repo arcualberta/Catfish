@@ -24,9 +24,9 @@
         <calendaruibundle v-bind:model='@Html.Raw(jsonData)' inline-template>
             <div class="calendar-container">
                 <div class="month-header-container">
-                    <div><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
-                    <h4>Month</h4>
-                    <div><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    <div v-on:click="goToPreviousMonth()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    <h4>{{selectedMonth.format("MMMM")}}</h4>
+                    <div v-on:click="goToNextMonth()"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                 </div>
                 <div class="calendar-month-container">
                     <div class="calendar-weekday-container">
