@@ -18,7 +18,7 @@ using Catfish.UnitTests.Helpers;
 
 namespace Catfish.UnitTests
 {
-    class FormFieldInterfaceTest
+    public class FormFieldInterfaceTest
     {
         private string _dataRoot = "..\\..\\..\\Data\\Schemas\\";
         private AppDbContext _db;
