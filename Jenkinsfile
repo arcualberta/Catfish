@@ -20,7 +20,7 @@ pipeline{
 			steps{
 				git url: 'https://github.com/arcualberta/Catfish.git', branch: 'Catfish-2.0-master'
 			}
-		}
+		}/*
 		stage('Restore packages'){
 			steps{
 				bat "dotnet restore Catfish.sln"
@@ -45,7 +45,7 @@ pipeline{
 		     	steps{
 			     bat "dotnet publish Catfish\\Catfish.csproj "
 		     	}
-		}		
+		}*/		
 		stage('Deploy'){
 		    	 steps{
 				//bat 'xcopy Catfish\\bin\\Release\\netcoreapp3.1 E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca\\ /Q /Y /S' //copy all published files
