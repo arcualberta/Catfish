@@ -35,7 +35,7 @@ pipeline{
 		   	steps{
 				bat 'copy ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
 			}
-		}*/		
+		}		
 		stage('Build'){
 		   	steps{
 			  	bat "dotnet build Catfish\\Catfish.csproj --configuration Release"
@@ -45,13 +45,19 @@ pipeline{
 		     	steps{
 			     bat "dotnet publish Catfish\\Catfish.csproj -c Release --no-build"
 		     	}
-		}		
+		}*/		
 		stage('Deploy'){
 		    	 steps{
 				//bat 'xcopy Catfish\\bin\\Release\\netcoreapp3.1 E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca\\ /Q /Y /S' //copy all published files
 				//bat '"C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe" -verb=sync -source:contentPath=Catfish\\bin\\Release\\netcoreapp3.1 -dest:contentPath=E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca' 
 				//bat """ "C:\\Program Files (x86)\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe" -verb:sync -source:iisApp="${WORKSPACE}\\${publishedPath}" -enableRule:AppOffline  
-				bat """ "C:\\Program Files (x86)\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe" -verb:sync -source:iisApp="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1" -enableRule:AppOffline -dest:iisApp="catfish-test.artsrn.ualberta.ca" """   
+				bat """ 
+					"C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe" 
+					-verb:sync -source:iisApp="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1" 
+					-enableRule:AppOffline 
+					-dest:iisApp="catfish-test.artsrn.ualberta.ca" 
+					-usechecksum 
+					"""   
 		     }
 		}		
 		stage('Start Test Site'){
