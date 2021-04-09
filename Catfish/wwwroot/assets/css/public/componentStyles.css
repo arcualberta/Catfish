@@ -55,6 +55,46 @@
     padding: 10px;
 }*/
 
+/* Google Calendar Visual UI */
+.month-header-container{
+    display:flex;
+    justify-content: space-evenly;
+}
+
+.calendar-month-container{
+    border: solid black 1px;
+}
+
+.calendar-weekday-container{
+    display:flex;
+    justify-content:space-evenly;
+    color:white;
+    background-color: black;
+    font-weight:bold;
+}
+
+.week-container{
+    display:flex;
+}
+
+.days-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.calendar-day {
+    background-color: white;
+    flex-grow: 1;
+    width: 100%;
+    height: 80px;
+    border: solid black 1px;
+    flex: 1 7 14%;
+}
+
+.day-not-current-month{
+    background-color: lightgrey;
+}
+
 /* Extended Gallery carousel*/
 .extended-gallery-block .carousel-indicators {
     position: static;

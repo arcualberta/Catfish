@@ -13,16 +13,114 @@ Vue.component('calendaruibundle', {
     props: ["uid", "model"],
 
     data: function () {
-        return {}
+        return {
+            WEEKDAYS: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            initialYear: null,
+            initialMonth: null,
+            days: [],
+            currentMonthDays: [],
+            previousMonthDays: [],
+            nextMonthDays: []
+        }
     },
 
     methods: {
+        getYear() {
 
+        },
+
+        getMonth() {
+
+        },
+
+        //code from Css-Tricks monthly Calendar with real data
+        //https://css-tricks.com/how-to-make-a-monthly-calendar-with-real-data/
+        //Accessed April 8 2021
+        getDaysInMonth(year, month) {
+            return [...Array(this.getNumberOfDaysInMonth(year, month))].map((day, index) => {
+                return {
+                    date: dayjs(`${year}-${month}-${index + 1}`).format("YYYY-MM-DD"),
+                    dayOfMonth: index + 1,
+                    isCurrentMonth: true
+                };
+            });
+        },
+
+        getNumberOfDaysInMonth(year, month) {
+            return dayjs(`${year}-${month}-01`).daysInMonth();
+        },
+
+        //returns what day of the week the date is (Mon/Tues/Weds/etc)
+        getWeekday(date) {
+            return dayjs(date).weekday()
+        },
+
+        createDaysForCurrentMonth(year, month) {
+            return [...Array(this.getNumberOfDaysInMonth(year, month))].map((day, index) => {
+                return {
+                    date: dayjs(`${year}-${month}-${index + 1}`).format("YYYY-MM-DD"),
+                    dayOfMonth: index + 1,
+                    isCurrentMonth: true
+                };
+            });
+        },
+
+        createDaysForPreviousMonth(year, month) {
+            const firstDayOfTheMonthWeekday = this.getWeekday(this.currentMonthDays[0].date);
+
+            const previousMonth = dayjs(`${year}-${month}-01`).subtract(1, "month");
+
+            // Account for first day of the month on a Sunday (firstDayOfTheMonthWeekday === 0)
+            const visibleNumberOfDaysFromPreviousMonth = firstDayOfTheMonthWeekday ? firstDayOfTheMonthWeekday - 1 : 6
+
+
+          const previousMonthLastMondayDayOfMonth = dayjs(
+                this.currentMonthDays[0].date
+            ).subtract(visibleNumberOfDaysFromPreviousMonth, "day").date();
+
+            return [...Array(visibleNumberOfDaysFromPreviousMonth)].map((day, index) => {
+                return {
+                    date: dayjs(
+                        `${previousMonth.year()}-${previousMonth.month() + 1}-${previousMonthLastMondayDayOfMonth + index}`
+                    ).format("YYYY-MM-DD"),
+                    dayOfMonth: previousMonthLastMondayDayOfMonth + index,
+                    isCurrentMonth: false
+                };
+            });
+        },
+
+        createDaysForNextMonth(year, month) {
+            const lastDayOfTheMonthWeekday = this.getWeekday(`${year}-${month}-${this.currentMonthDays.length}`)
+
+
+            const visibleNumberOfDaysFromNextMonth = lastDayOfTheMonthWeekday ? 7 - lastDayOfTheMonthWeekday : lastDayOfTheMonthWeekday
+
+
+            return [...Array(visibleNumberOfDaysFromNextMonth)].map((day, index) => {
+                return {
+                    date: dayjs(`${year}-${Number(month) + 1}-${index + 1}`).format("YYYY-MM-DD"),
+                    dayOfMonth: index + 1,
+                    isCurrentMonth: false
+                }
+            })
+        }
     },
 
     created () {
-        console.log("this code is running ok");
         dayjs.extend(weekday);
         dayjs.extend(weekOfYear);
+
+        this.initialYear = dayjs().format("YYYY");
+        this.initialMonth = dayjs().format("M");
+        //this.daysInMonth = this.getDaysInMonth(this.initialYear, this.initialMonth); 
+
+        this.currentMonthDays = this.createDaysForCurrentMonth(this.initialYear, this.initialMonth);
+        this.previousMonthDays = this.createDaysForPreviousMonth(this.initialYear, this.initialMonth, this.currentMonthDays[0]);
+        this.nextMonthDays = this.createDaysForNextMonth(this.initialYear, this.initialMonth);
+
+
+        this.days = [...this.previousMonthDays, ...this.currentMonthDays, ...this.nextMonthDays]
+
+        console.log("dayjs working?", this.days);
     }
 });

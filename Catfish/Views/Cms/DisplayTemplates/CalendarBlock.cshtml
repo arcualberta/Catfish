@@ -24,21 +24,22 @@
         <calendaruibundle v-bind:model='@Html.Raw(jsonData)' inline-template>
             <div class="calendar-container">
                 <div class="month-header-container">
-                    <div>Left Arrow Here</div>
+                    <div><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                     <h4>Month</h4>
-                    <div>Right Arrow Here</div>
+                    <div><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                 </div>
                 <div class="calendar-month-container">
                     <div class="calendar-weekday-container">
-                        <div>Sunday</div>
-                        <div>Monday</div>
-                        <div>Tuesday</div>
-                        <div>Wednesday</div>
-                        <div>Thursday</div>
-                        <div>Friday</div>
-                        <div>Saturday</div>
+                        <template v-for="weekday in WEEKDAYS">
+                            <div>{{weekday}}</div>
+                        </template>
+                        
                     </div>
-                    <div class="week-container"></div>
+                    <div class="days-container">
+                        <template v-for="(day, index) in days">
+                            <div class="calendar-day" :class="{'day-not-current-month': !day.isCurrentMonth}">{{day.dayOfMonth}}</div>
+                        </template>
+                    </div>
                 </div>
             </div>
         </calendaruibundle>
