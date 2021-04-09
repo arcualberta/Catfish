@@ -80,11 +80,15 @@
     <Content Update="Views\Cms\DisplayTemplates\ControlledVocabularySearchBlock.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\assets\js\_public-facing\calendar-block.js">
+    <Content Update="wwwroot\assets\js\_public-facing\calendar-block-vue.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Update="wwwroot\assets\js\_public-facing\calendaruibundle.js">
+    <Content Update="wwwroot\assets\js\_public-facing\calendar-block-vue.js.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\assets\js\_public-facing\calendar-block.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

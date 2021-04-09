@@ -30,7 +30,7 @@ const managerSideEntryPaths = {
 
 const publicFacingEntryPaths = {
     //keywordsSearchBundle: "./wwwroot/assets/js/_public-facing/keywords-search-block-public.js"
-    calendaruibundle: "./wwwroot/assets/js/_public-facing/calendar-block.js"
+    'calendar-block-vue': "./wwwroot/assets/js/_public-facing/calendar-block.js"
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

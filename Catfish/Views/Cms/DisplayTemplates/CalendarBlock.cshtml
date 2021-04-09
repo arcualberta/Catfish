@@ -21,7 +21,7 @@
 
     @if (Model.DisplayCalendarUI.Value != null && Model.DisplayCalendarUI.Value)
     {
-        <calendaruibundle v-bind:model='@Html.Raw(jsonData)' inline-template>
+        <calendar-block-vue v-bind:model='@Html.Raw(jsonData)' inline-template>
             <div class="calendar-container">
                 <div class="month-header-container">
                     <div v-on:click="goToPreviousMonth()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-        </calendaruibundle>
+        </calendar-block-vue>
     }
 
     @if (CalendarEventList != null)

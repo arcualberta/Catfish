@@ -21,7 +21,7 @@ namespace Catfish.Models.Blocks
 {
 
 
-    [BlockType(Name = "Calendar Block", Category = "Content", Component = "calendarUIBundle", Icon = "fas fa-calendar-alt")] //calendar-block
+    [BlockType(Name = "Calendar Block", Category = "Content", Component = "calendar-block-vue", Icon = "fas fa-calendar-alt")] //calendar-block
     public class CalendarBlock : VueComponent
     {
        

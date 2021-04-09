@@ -1,6 +1,6 @@
 ﻿/* global piranha component registration */
 /* 1st parameter is the component name */
-Vue.component("calendar-block", {
+Vue.component("calendar-block-vue", {
     props: ["uid", "toolbar", "model"],
     
     methods: {
@@ -95,7 +95,6 @@ Vue.component("calendar-block", {
         <div class='lead row'><label class='form-label col-md-3'>Number of Future Days:</label> <input type='number' class='form-control col-md-4' name='futureDays' v-model='model.daysRangeFuture.value' contenteditable='true' v-on:blur='onBlur' value='futureDaysValue'  /></div>
         <div class='lead row'><label class='form-label col-md-3'>Max Events:</label> <input type='number' class='form-control col-md-4' name='maxEvents' v-model='model.maxEvents.value' contenteditable='true' v-on:blur='onBlur' value='maxEventsValue'  /></div>
         <div class='lead row'><label class='form-label col-md-3'>Display a Calendar:</label> <input type='checkbox' class='form-control col-md-4' name='displayCalendarUI' v-model='model.displayCalendarUI.value' contenteditable='true' v-on:blur='onBlur' value='displayCalendarUIValue'/></div>
-
     </div>
     `
 });
