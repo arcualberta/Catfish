@@ -18,7 +18,7 @@ pipeline{
 	stages{
 		/*stage('Checkout'){
 			steps{
-				git url: 'https://github.com/arcualberta/Catfish.git', branch: 'Catfish-2.0-master'
+				git url: 'https://github.com/arcualberta/Catfish.git', branch: 'Catfish-2.0-dev'
 			}
 		}*/
 		stage('Restore packages'){
@@ -31,10 +31,31 @@ pipeline{
 				bat "dotnet clean Catfish.sln"
 			}
 		}
-		stage('Debug Build'){
-		   steps{
-			  bat "dotnet build Catfish.sln --configuration Debug"
-		   }
+		stage('Copy Config Files'){
+		   	steps{
+				bat 'copy ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
+			}
+		}		
+		stage('Build'){
+		   	steps{
+			  	bat "dotnet build Catfish\\Catfish.csproj --configuration Release"
+		   	}
+		}
+		stage('Publish'){
+		     	steps{
+			     bat "dotnet publish Catfish\\Catfish.csproj -c Release --no-build"
+		     	}
+		}		
+		stage('Deploy'){
+		    	 steps{
+				bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:iisApp="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:iisApp="catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
+				//bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:contentPath="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:contentPath="E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
+		     }
+		}		
+		stage('Load Test'){
+		     	steps{
+				bat "dotnet test Catfish.Test"
+		     	}
 		}		
 	}
  }
