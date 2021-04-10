@@ -55,12 +55,6 @@ pipeline{
 		stage('Load Test'){
 		     	steps{
 				bat "dotnet test Catfish.Test"
-				//def get = new URL("https://catfish-test.artsrn.ualberta.ca").openConnection();
-				//def getRC = get.getResponseCode();
-				println('Not implemented yet');
-				//if(getRC.equals(200)) {
-				//    println(get.getInputStream().getText());
-				//}				
 		     	}
 		}		
 	}
