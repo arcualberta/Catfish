@@ -52,8 +52,9 @@ pipeline{
 				//bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:contentPath="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:contentPath="E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
 		     }
 		}		
-		stage('Load Homepage'){
+		stage('Load Test'){
 		     	steps{
+				bat "dotnet test Catfish.Test"
 				//def get = new URL("https://catfish-test.artsrn.ualberta.ca").openConnection();
 				//def getRC = get.getResponseCode();
 				println('Not implemented yet');
