@@ -18,7 +18,7 @@ using Catfish.UnitTests.Helpers;
 
 namespace Catfish.UnitTests
 {
-    class FormFieldInterfaceTest
+    public class FormFieldInterfaceTest
     {
         private string _dataRoot = "..\\..\\..\\Data\\Schemas\\";
         private AppDbContext _db;
@@ -363,6 +363,22 @@ namespace Catfish.UnitTests
         {
             RefreshData();
             Login();
+            _seleniumHelper.GoToUrl("sas-form");
+
+            //Setting value of TF1 to Hello World
+            var tfId = "8e33c004-1864-46ec-b279-b5541b7adffe";
+            var tfVal = "Isuru Wickramasinghe";
+            _seleniumHelper.SetTextFieldValue(tfId, tfVal);
+
+            //Clicking on the submit button
+            var dataItemTemplateId = "f31602f0-1002-4e35-8c2c-90a03a8d3a93";
+            _seleniumHelper.ClickSaveButton(dataItemTemplateId, "Save");
+
+            //Clicking on the link to view detail view
+            _seleniumHelper.ClickOnALink("click on here");
+
+            //Clicking on the link to view detail view
+            _seleniumHelper.ClickOnALink("Edit");
         }
     }
 }
