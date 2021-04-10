@@ -18,7 +18,7 @@ pipeline{
 	stages{
 		stage('Checkout'){
 			steps{
-				git url: 'https://github.com/arcualberta/Catfish.git', branch: 'Catfish-2.0-master'
+				git url: 'https://github.com/arcualberta/Catfish.git', branch: 'Catfish-2.0-dev'
 			}
 		}
 		stage('Restore packages'){
