@@ -361,24 +361,60 @@ namespace Catfish.UnitTests
         [Test]
         public void SASForm()
         {
-            RefreshData();
-            Login();
+            RefreshDatabase();
+            _seleniumHelper.LoginLocal();
             _seleniumHelper.GoToUrl("sas-form");
 
-            //Setting value of TF1 to Hello World
-            var tfId = "8e33c004-1864-46ec-b279-b5541b7adffe";
-            var tfVal = "Isuru Wickramasinghe";
-            _seleniumHelper.SetTextFieldValue(tfId, tfVal);
+            //Setting value applicant's name
+            var applNameId = "8e33c004-1864-46ec-b279-b5541b7adffe";
+            var applNameVal = "Arc Guy";
+            _seleniumHelper.SetTextFieldValue(applNameId, applNameVal);
+
+            //applicant's email
+            var emailId = "d191085e-7ecf-4be6-8d69-56c3cfa9da51";
+            var emailVal = "arcguya@ualberta.ca";
+            _seleniumHelper.SetTextFieldValue(emailId, emailVal);
+
+            //Selecting in  Dept dropdown
+            var deptddId = "18133fb5-285d-47b3-8fa4-5a63cf37e723";
+            var deptddOptId = "6a8689b8-3c17-4b31-8378-3584766f1940";
+            //var deptdd1OptVal = "Arts Resources Centre";
+            _seleniumHelper.SelectDropdownOption(deptddId, deptddOptId);
+
+            //Selecting in  Rank dropdown
+            var rankddId = "3cbfe358-8d4d-4f20-a84c-53ba4b450141";
+            var rankddOptId = "6c0bc3c7-344f-46e1-8100-b18416ed228f";
+            //var rankdd1OptVal = "Professor";
+            _seleniumHelper.SelectDropdownOption(rankddId, rankddOptId);
+
+            //Selecting "No" Option  for "are you a dept. chair" RB
+            var chairrbId = "5ada22d2-2b7b-42aa-a449-79b04115af12";
+            var chairrbOptId = "fc6bf9a5-b0c7-44de-8cff-6f2eee8b3f91";
+            //var chairrbOptVal = "No";
+            _seleniumHelper.SelectRadioOption(chairrbId, chairrbOptId);
+
+            //Setting project name
+            var projNameId = "58b39ab2-fbf7-43df-ba76-59b7d04bc32f";
+            var projNameVal = "Project Arc1";
+            _seleniumHelper.SetTextFieldValue(projNameId, projNameVal);
+
+            var projDescId = "f89e70fa-14c2-495b-89cc-e98307f05bf5";
+            var projDescVal = "Officials with Alberta parks and environment sampled, or went fishing in the pond where the catfish was discovered and caught thirty catfish, from three generations — or catfish that have lived in the lake for about three years.";
+            _seleniumHelper.SetTextFieldValue(projDescId, projDescVal);
+
+
+
+            // ---------------------submit section
 
             //Clicking on the submit button
-            var dataItemTemplateId = "f31602f0-1002-4e35-8c2c-90a03a8d3a93";
+            var dataItemTemplateId = "button_wrapper_d5d50e2c-726e-4ba4-a512-635ad66ba8ea";
             _seleniumHelper.ClickSaveButton(dataItemTemplateId, "Save");
 
             //Clicking on the link to view detail view
-            _seleniumHelper.ClickOnALink("click on here");
+            //_seleniumHelper.ClickOnALink("click on here");
 
             //Clicking on the link to view detail view
-            _seleniumHelper.ClickOnALink("Edit");
+            //_seleniumHelper.ClickOnALink("Edit");
         }
     }
 }
