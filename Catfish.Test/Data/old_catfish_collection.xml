@@ -1,0 +1,115 @@
+<collection updated="2019-05-28 3:16:26 PM" created="2019-01-09 3:40:56 PM" model-type="Catfish.Core.Models.CFCollection, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="e065f09a-a841-4502-8d7e-f33f9e7a0b42" created-by-guid="311a421a-d874-4fdf-98f0-c9b6adbefb4c" created-by-name="Mark McKellar" entity-type="Collection">
+  <metadata>
+    <metadata-set updated="2019-02-06 10:41:57 AM" created="2019-01-09 3:15:22 PM" model-type="Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="46e940d0-8925-4920-ba7f-e7e19bd7e65c" created-by-guid="311a421a-d874-4fdf-98f0-c9b6adbefb4c" created-by-name="Mark McKellar">
+      <fields>
+        <field updated="2019-02-06 10:41:57 AM" created="2019-01-09 3:17:00 PM" model-type="Catfish.Core.Models.Forms.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="dfffead5-11a3-4da1-bb10-42b86ac972f1" created-by-guid="311a421a-d874-4fdf-98f0-c9b6adbefb4c" created-by-name="Mark McKellar" rank="1" page="1" IsMultiple="false">
+          <name>
+            <text xml:lang="en">Credit</text>
+            <text xml:lang="fr">Credit</text>
+            <text xml:lang="uk">Credit</text>
+          </name>
+          <description>
+            <text xml:lang="en" />
+            <text xml:lang="fr" />
+            <text xml:lang="uk" />
+          </description>
+          <files />
+          <value>
+            <text xml:lang="en" />
+            <text xml:lang="fr" />
+          </value>
+          <help>
+            <text xml:lang="en" />
+          </help>
+        </field>
+        <field updated="2019-02-06 10:41:57 AM" created="2019-01-09 3:17:00 PM" model-type="Catfish.Core.Models.Forms.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="36c5c104-4895-4617-8f64-1fd9129ec298" created-by-guid="311a421a-d874-4fdf-98f0-c9b6adbefb4c" created-by-name="Mark McKellar" rank="2" page="1" IsMultiple="false">
+          <name>
+            <text xml:lang="en">Title</text>
+            <text xml:lang="fr">Title</text>
+            <text xml:lang="uk">Title</text>
+          </name>
+          <description>
+            <text xml:lang="en" />
+            <text xml:lang="fr" />
+            <text xml:lang="uk" />
+          </description>
+          <files />
+          <value>
+            <text xml:lang="en">Sections</text>
+            <text xml:lang="fr" />
+          </value>
+          <help>
+            <text xml:lang="en" />
+          </help>
+        </field>
+      </fields>
+      <name>
+        <text xml:lang="en">Basic</text>
+      </name>
+      <description>
+        <text xml:lang="en">Data used for all items.</text>
+      </description>
+    </metadata-set>
+  </metadata>
+  <access blockInheritance="false">
+    <access-group updated="2019-03-29 3:29:27 PM" created="2019-03-29 3:29:27 PM" model-type="Catfish.Core.Models.Access.CFAccessGroup, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="21fb07d2-2e83-41d8-a718-55a0660646af" created-by-guid="311a421a-d874-4fdf-98f0-c9b6adbefb4c" created-by-name="Mark McKellar">
+      <access-guid>00000000-0000-0000-0000-000000000001</access-guid>
+      <access-definition updated="2019-03-29 3:29:27 PM" created="2019-03-29 3:29:27 PM" model-type="Catfish.Core.Models.Access.CFAccessDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="4588d888-a908-4ef8-959c-900a8ca7dc36" created-by-guid="311a421a-d874-4fdf-98f0-c9b6adbefb4c" created-by-name="Mark McKellar">
+        <access-modes>1</access-modes>
+        <name>
+          <text xml:lang="en">Public </text>
+        </name>
+      </access-definition>
+    </access-group>
+  </access>
+  <audit>
+    <entry action="Create" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-01-09T15:40:56.8555688-07:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-01-09T15:47:21.7992405-07:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-01-09T15:47:21.9086185-07:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-01-09T15:47:21.9867482-07:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-01-22T10:27:43.808793-07:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-01-22T10:27:43.8869183-07:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-01-22T10:27:43.965043-07:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-02-06T10:41:42.5699974-07:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-02-06T10:41:57.9894982-07:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-03-21T14:14:09.9624713-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-03-21T14:14:10.2593591-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-03-21T14:14:10.4312739-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:22:19.4807957-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:22:42.7791987-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:23:34.5981602-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:24:19.9761043-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:24:30.2424023-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:24:39.3367318-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:24:55.2284124-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:25:06.9010459-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:25:17.792415-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:25:25.5272875-06:00" />
+    <entry action="Update" actor="e6250362-1e3e-4d01-8c87-d9668910e2b1" timestamp="2019-04-01T13:25:38.2312502-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-01T13:58:48.9827731-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-01T13:59:50.1118155-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-01T14:00:44.5841708-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-01T14:01:34.5718227-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-01T14:02:30.2473763-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-01T14:03:02.2564129-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-01T14:03:04.19405-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:08:58.3203216-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:09:19.2121866-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:09:35.7756735-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:09:46.3856861-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:09:59.4333343-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:10:09.4495542-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:10:25.7786531-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:10:38.4981645-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:10:52.8896424-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:11:02.4058343-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-04-02T15:11:11.2813679-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-05-28T13:41:02.0887688-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-05-28T13:41:14.9984158-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-05-28T15:15:37.5273301-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-05-28T15:15:41.3468154-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-05-28T15:15:46.376459-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-05-28T15:15:57.8819298-06:00" />
+    <entry action="Update" actor="311a421a-d874-4fdf-98f0-c9b6adbefb4c" timestamp="2019-05-28T15:16:26.2335491-06:00" />
+  </audit>
+</collection>

@@ -540,33 +540,20 @@ namespace Catfish.Core.Services
             WorkflowRole adminRole = workflow.AddRole(_auth.GetRole("Admin", true));
             WorkflowRole creatorRole = workflow.AddRole(_auth.GetRole("Creator", true));
 
-            // Submitting a form
-            //Only creators can submit this form
+            
+            // ================================================
+            // Create submission-instances related workflow items
+            // ================================================
+
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(creatorRole.Id);
-
-            //Listing form submissions.
-            //Creators can list their own submissions.
-            //Admins can list all submissions.
-            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
-            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(adminRole.Id);
-
-            //Detailed submission inspection forms.
-            //Creators can view their own submissions.
-            //Admins can view all submissions.
-            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
-            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
-            viewSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(adminRole.Id);
-
+            
             //Post action for submitting the form
-            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit",
+                                                                                nameof(TemplateOperations.Update),
+                                                                                @"<p>Your Conference Fund application saved successfully. 
+                                                                                You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above submitPostAction action
@@ -574,19 +561,46 @@ namespace Catfish.Core.Services
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
-            // Edit submission related workflow items
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(creatorRole.Id);
+
+            // ================================================
+            // List submission-instances related workflow items
+            // ================================================
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
+            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
+            viewSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+            // ================================================
+            // Edit submission-instances related workflow items
+            // ================================================
             //Defining actions
             GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
-
-            //Submissions can only be edited by admins
-            editSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id);
 
             //Defining post actions
             PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
             editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
 
-            // Delete submission related workflow items
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+
+
+            // ================================================
+            // Delete submission-instances related workflow items
+            // ================================================
             //Defining actions. Only admin can delete a submission
             GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
             deleteSubmissionAction.AddStateReferances(submittedState.Id)

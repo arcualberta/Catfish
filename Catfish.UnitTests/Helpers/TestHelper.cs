@@ -18,7 +18,7 @@ using System;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 
-namespace Catfish.Tests.Helpers
+namespace Catfish.UnitTests.Helpers
 {
     public class TestHelper
     {
@@ -110,6 +110,11 @@ namespace Catfish.Tests.Helpers
         {
             get => Seviceprovider.GetService<IAuthorizationService>();
         }
+        public IConfiguration Configuration
+        {
+            get => Seviceprovider.GetService<IConfiguration>();
+        }
+
     }
 
     public class MockupErrorLog : ErrorLog
