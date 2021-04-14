@@ -1,8 +1,7 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.SelectField;
 
-
 <div class="control field-label @Model.FieldLabelCssClass">@Html.DisplayFor(model => model.Name, Model.Name.GetType().ToString())</div>
-<div class="multilingual-input-block field-value @Model.CssClass @Model.FieldValueCssClass">
+<div data-model-id="@Model.Id" class="multilingual-input-block field-value @Model.CssClass @Model.FieldValueCssClass">
     @{
         var selectedOptionNames = Model.Options.Where(op => op.Selected).Select(op => op.OptionText).FirstOrDefault();
 

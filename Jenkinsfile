@@ -16,11 +16,6 @@ pipeline{
     }
 	
 	stages{
-		stage('Checkout'){
-			steps{
-				git url: 'https://github.com/arcualberta/Catfish.git', branch: 'Catfish-2.0-master'
-			}
-		}
 		stage('Restore packages'){
 			steps{
 				bat "dotnet restore Catfish.sln"
@@ -34,6 +29,7 @@ pipeline{
 		stage('Copy Config Files'){
 		   	steps{
 				bat 'copy ..\\_ConfigFiles\\catfish_appsettings.json Catfish\\appsettings.json' //Restoring the appsettings.json file
+				bat 'copy ..\\_ConfigFiles\\catfish_appsettings.test.json Catfish.Test\\appsettings.test.json' //Restoring the appsettings.test.json file
 			}
 		}		
 		stage('Build'){
@@ -42,25 +38,20 @@ pipeline{
 		   	}
 		}
 		stage('Publish'){
-		     	steps{
+		     steps{
 			     bat "dotnet publish Catfish\\Catfish.csproj -c Release --no-build"
-		     	}
-		}		
-		stage('Deploy'){
-		    	 steps{
-				bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:iisApp="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:iisApp="catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
-				//bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:contentPath="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:contentPath="E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
 		     }
 		}		
-		stage('Load Homepage'){
-		     	steps{
-				//def get = new URL("https://catfish-test.artsrn.ualberta.ca").openConnection();
-				//def getRC = get.getResponseCode();
-				println('Not implemented yet');
-				//if(getRC.equals(200)) {
-				//    println(get.getInputStream().getText());
-				//}				
-		     	}
+		stage('Deploy'){
+		    steps{
+				bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:iisApp="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:iisApp="catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
+				//bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:contentPath="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:contentPath="E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
+		    }
+		}		
+		stage('Test'){
+		     steps{
+				bat "dotnet test Catfish.Test"
+		     }
 		}		
 	}
  }
