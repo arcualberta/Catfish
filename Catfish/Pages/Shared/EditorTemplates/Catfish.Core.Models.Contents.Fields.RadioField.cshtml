@@ -35,21 +35,22 @@
         }
 <div id="@Model.Options[i].Id" class="@Model.FieldValueCssClass">
 
-     @{string inputAttr = "";
+     @{
+         string inputAttr = "";
 
          foreach (var key in ViewData.Keys)
          {
              if (ViewData[key] == null)
                  inputAttr += key + " ";
              else
-                 inputAttr += key + "=" + ViewData[key] + " ";
+                 inputAttr += key + "='" + ViewData[key] + "' ";
          }
          if(Model.Options[i].Selected)
              inputAttr += "checked ";
 
          inputAttr += "value= " + Model.Options[i].Id.ToString() + " ";
      }
-    <input type="radio" @inputAttr id="@fieldId" name="@fieldName"/>
+    <input type="radio" @Html.Raw(inputAttr) id="@fieldId" name="@fieldName"/>
     @*@Html.RadioButtonFor(model => model, Model.Options[i].Id.ToString(), _viewData)*@
     @Html.Raw(string.Format("<span class='radio-option-label' data-option-id='{0}'>{1}</span>",
         Model.Options[i].Id, Model.Options[i].OptionText.GetConcatenatedContent(" | ")))
