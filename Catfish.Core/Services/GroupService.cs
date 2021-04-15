@@ -164,13 +164,18 @@ namespace Catfish.Core.Services
         {
             try
             {
-                UserGroupRole ugr = new UserGroupRole()
+                UserGroupRole ugr = _appDb.UserGroupRoles.Where(ugr => ugr.UserId == userId && ugr.GroupRoleId == groupRoleId).FirstOrDefault();
+
+                if (ugr == null)
                 {
-                    Id = Guid.NewGuid(),
-                    GroupRoleId = groupRoleId,
-                    UserId = userId,
-                };
-                _appDb.UserGroupRoles.Add(ugr);
+                    ugr = new UserGroupRole()
+                    {
+                        Id = Guid.NewGuid(),
+                        GroupRoleId = groupRoleId,
+                        UserId = userId,
+                    };
+                    _appDb.UserGroupRoles.Add(ugr);
+                }
 
                 return ugr;
             }

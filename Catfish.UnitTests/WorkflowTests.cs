@@ -1552,9 +1552,11 @@ namespace Catfish.UnitTests
 
             var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
             eyeWashFlushed.FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
-                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
-            
+            var eyewashInfo = inspectionForm.CreateField<TextArea>("Eye Wash Station Info", lang, false);
+            eyewashInfo.SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
+             eyewashInfo.Rows = 5;
+            eyewashInfo.Cols = 30;
+           
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Other", lang);
             inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText, true)
@@ -1655,7 +1657,7 @@ namespace Catfish.UnitTests
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
 
-            db.SaveChanges();
+            //db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.xml");
 
