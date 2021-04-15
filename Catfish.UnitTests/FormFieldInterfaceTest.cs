@@ -359,7 +359,7 @@ namespace Catfish.UnitTests
         }
 
         [Test]
-        public void SASForm()
+        public void UnitSASForm()
         {
             RefreshDatabase();
             _seleniumHelper.LoginLocal();

@@ -21,6 +21,7 @@ namespace Catfish.Test
     public class FormFieldInterfaceTest
     {
         private string _dataRoot = "..\\..\\..\\Data\\Schemas\\";
+        private string _attachmentPath = "..\\..\\..\\Data\\Attachments\\";
         private AppDbContext _db;
         private TestHelper _testHelper;
         private SeleniumHelper _seleniumHelper;
@@ -368,6 +369,10 @@ namespace Catfish.Test
             _seleniumHelper.LoginLocal();
             _seleniumHelper.GoToUrl("sas-form");
 
+
+            // first part - applicant - project identified
+            #region applicant_part
+
             //Setting value applicant's name
             var applNameId = "8e33c004-1864-46ec-b279-b5541b7adffe";
             var applNameVal = "Arc Guy";
@@ -401,13 +406,286 @@ namespace Catfish.Test
             var projNameVal = "Project Arc1";
             _seleniumHelper.SetTextFieldValue(projNameId, projNameVal);
 
+            //Setting project description
             var projDescId = "f89e70fa-14c2-495b-89cc-e98307f05bf5";
             var projDescVal = "Officials with Alberta parks and environment sampled, or went fishing in the pond where the catfish was discovered and caught thirty catfish, from three generations — or catfish that have lived in the lake for about three years.";
-            _seleniumHelper.SetTextFieldValue(projDescId, projDescVal);
+            _seleniumHelper.SetTextAreaValue(projDescId, projDescVal);
+
+
+           
+
+            //Option  for involving subjects RB
+            var involveSubjectsrbId = "bc5e74c6-3586-434e-aad4-e2bd92a2fabb";
+            var involveSubjectsnoOptId = "b26717d3-c8e2-49d1-bb27-e98542ce748b";
+            //var chairrbOptVal = "No";
+            _seleniumHelper.SelectRadioOption(involveSubjectsrbId, involveSubjectsnoOptId);
+
+            #endregion applicant_part
+
+            // Start of Budget details
+
+            //Conference travel
+            #region conference_part
+
+            //Conference name
+            var confNameId = "0eea8ef1-16d2-4ef3-be9c-65b947b329a9";
+            var confNameVal = "Catfish Annual";
+            _seleniumHelper.SetTextFieldValue(confNameId, confNameVal);
+
+
+
+            //Setting conf Date 1 to 2021-05-05
+            var confDate1Id = "5d0d1ee2-16a7-4fef-84d6-f0bc8ba26ad0";
+            var confDate1Val = new DateTime(2021, 5, 5);
+            _seleniumHelper.SetDateValue(confDate1Id, confDate1Val);
+
+
+            //Setting conf Date 2 to 2021-05-25
+            var confDate2Id = "2d5eab48-dd99-41ca-a8f1-cd29271d2779";
+            var confDate2Val = new DateTime(2021, 5, 25);
+            _seleniumHelper.SetDateValue(confDate2Id, confDate2Val);
+
+            //Travel destination
+            var destinationId = "22b3f496-c444-4ea2-8114-1d1feaff9813";
+            var destinationVal = "Winnipeg";
+            _seleniumHelper.SetTextFieldValue(destinationId, destinationVal);
+
+
+
+            //Setting travel Date 1 to 2021-05-01
+            var travDate1Id = "5fc6c8b7-9c8f-48d0-ab22-d0baa3db20c1";
+            var travDate1Val = new DateTime(2021, 5, 1);
+            _seleniumHelper.SetDateValue(travDate1Id, travDate1Val);
+
+            //Setting travel Date 2 to 2021-05-30
+            var travDate2Id = "cb9ae842-12b2-416d-9042-d6ed7420ac4e";
+            var travDate2Val = new DateTime(2021, 5, 30);
+            _seleniumHelper.SetDateValue(travDate2Id, travDate2Val);
+
+
+            //Setting Participation checkbox
+
+            var participationgroupId = "64678688-16bd-41a9-8738-3ded02bc374f";
+            var participationIds = new string[] { "491e8b2f-4ddd-46ae-b589-f108cc80ac13", "f43a07df-9d58-4a02-bf30-2c9a2af9566e" };
+            var participationVals = new string[] { "Invited Speaker", "Other" };
+            _seleniumHelper.SelectCheckOptions(participationgroupId, participationIds);
+
+            // input other option ...
+            var participationOtherId = "47c956cc-2c9a-4ace-a6bc-d374b8d83566";
+            var participationOtherVal = "Catfish Expert";
+            _seleniumHelper.SetTextFieldValue(participationOtherId, participationOtherVal);
+
+
+            //Setting airfare value 700.50
+            var airfareId = "8f938a04-2900-4ea6-a361-b1534c5199ec";
+            var airfareVal = "700.50";
+            _seleniumHelper.SetNumberValue(airfareId, airfareVal);
+
+
+            // accomadation
+            var accomadationId = "8eb97013-f4a9-4dad-98c4-7903bd07344e";
+            var accomadationVal = "1050.50";
+            _seleniumHelper.SetNumberValue(accomadationId, accomadationVal);
+
+            // per diem
+            var perdiemId = "fbea4d01-a890-492d-b0b7-abb5af7f1c41";
+            var perdiemVal = "80.00";
+            _seleniumHelper.SetNumberValue(perdiemId, perdiemVal);
+
+            // Confrenece Registration
+            var confRegId = "a71a23c1-a58c-4e6e-b374-e4c782cf5371";
+            var confRegVal = "200.00";
+            _seleniumHelper.SetNumberValue(confRegId, confRegVal);
+
+            // Ground transport
+            var groundId = "1ebc5b43-fdef-44f4-bdfb-e533a5bb4f11";
+            var groundVal = "50.00";
+            _seleniumHelper.SetNumberValue(groundId, groundVal);
+
+            //Additional expenses
+            var addExpId = "32538c9b-09b2-409b-8593-9f59ed04668a";
+            var addExpVal = "100.00";
+            _seleniumHelper.SetNumberValue(addExpId, addExpVal);
+
+            //Details Additional expenses
+            var addExpDetailsId = "7b2c801b-25cb-48ed-9cb1-669d5067b360";
+            var addExpDetailsVal = "Catfish food: $90.00 \r\n" +
+                                    "dental floss: $0.99 \r\n" +
+                                    "Eyedrops: $9.00";
+            _seleniumHelper.SetTextAreaValue(addExpDetailsId, addExpDetailsVal);
+
+
+            //Supporting Documentation - upload one pdf file
+            //Blocks_0__Item_Fields_35__btn
+            //name="Blocks[0].Item.Fields[35]_btn"   
+            // ???some other value -- 7c0578e5-948f-4eed-a2d3-ba1baf11edfa
+            //var btnId = "Blocks_0__Item_Fields_35__btn"; 
+            var btnName = "#Blocks_0__Item_Fields_35__btn";
+            //var btnName = '//*[@id="Blocks_0__Item_Fields_35__btn"]';
+            var uploadedFile = _attachmentPath + "SAStestingdoc1.pdf";
+            //_seleniumHelper.UpLoadFile(btnName, uploadedFile);
+
+            //Justification test area
+            //e929d9f2-4d0b-4771-8643-00138336a072
+            var justificationId = "e929d9f2-4d0b-4771-8643-00138336a072";
+            var justificationVal = "Based on observations, up to 60% of catfish farmers make little or no profit, " +
+                                    "and a reasonable majority even run at loss. In order to encourage and protect the " +
+                                    "passion of both existing and incoming catfish farmers, this series is necessary as an eye opener " +
+                                    "to what catfish farmers do wrong in their day to day running of their businesses ";
+            _seleniumHelper.SetTextAreaValue(justificationId, justificationVal);
+
+
+            #endregion conference_part
+
+
+
+
+            //Research and Creative Activity
+            #region research_part
+
+            // input destination ...
+            var destination2Id = "7afa5795-b4fa-4fc5-a442-e5e0676e3c3d";
+            var destination2Val = "Quebec City";
+            _seleniumHelper.SetTextFieldValue(destination2Id, destination2Val);
+
+
+            //Setting travel Date 1-departure 
+            var travDateQ1Id = "8fbe3b14-4243-445c-8b5c-ca5ecd30dd34";
+            var travDateQ1Val = new DateTime(2021, 7, 1);
+            _seleniumHelper.SetDateValue(travDateQ1Id, travDateQ1Val);
+
+            //Setting travel Date 2-return 
+            var travDateQ2Id = "cc98603e-fed2-4c24-8fb5-74a19bc91b1f";
+            var travDateQ2Val = new DateTime(2021, 7, 29);
+            _seleniumHelper.SetDateValue(travDateQ2Id, travDateQ2Val);
+
+            //air fare
+            //c949503a-4fda-4fa3-aefc-252aff92ab1d
+            var qairfareId = "c949503a-4fda-4fa3-aefc-252aff92ab1d";
+            var qairfareVal = "707.50";
+            _seleniumHelper.SetNumberValue(qairfareId, qairfareVal);
+
+            //accomadations
+            //bcea11d7-17a8-44dd-aeed-e221041f5714
+            var qaccomadationId = "bcea11d7-17a8-44dd-aeed-e221041f5714";
+            var qaccomadationVal = "1057.50";
+            _seleniumHelper.SetNumberValue(qaccomadationId, qaccomadationVal);
+
+            //perdiem
+            //7bb1de5e-9cef-4318-a0fc-3d04afdb73b7
+            var qperdiemId = "7bb1de5e-9cef-4318-a0fc-3d04afdb73b7";
+            var qperdiemVal = "87.00";
+            _seleniumHelper.SetNumberValue(qperdiemId, qperdiemVal);
+
+            //ground
+            //7f30da14-70df-4762-a0ca-aa78e78e1df7
+            var qgroundId = "7f30da14-70df-4762-a0ca-aa78e78e1df7";
+            var qgroundVal = "57.00";
+            _seleniumHelper.SetNumberValue(qgroundId, qgroundVal);
+
+            //addition expenses
+            //02908600-b5e1-49ff-9890-434d9a8bc587
+            var qaddExpId = "02908600-b5e1-49ff-9890-434d9a8bc587";
+            var qaddExpVal = "107.00";
+            _seleniumHelper.SetNumberValue(qaddExpId, qaddExpVal);
+
+
+
+            //addition expenses details
+            //9d45c24e-e28b-487b-ae9c-857fb192b547
+
+            var qaddExpDetailsId = "9d45c24e-e28b-487b-ae9c-857fb192b547";
+            var qaddExpDetailsVal = "Catfish pate: $90.00 \r\n" +
+                                    "Catfish eggs: $10.00 \r\n" +
+                                    "Catfish whiskers: $7.00";
+            _seleniumHelper.SetTextAreaValue(qaddExpDetailsId, qaddExpDetailsVal);
+
+
+            //file upload - supporting documents
+            //#Blocks_0__Item_Fields_47__btn
+
+            var uploadedFile2 = _attachmentPath + "SAStestingdoc2.pdf";
+            var uploadBtn2 = "#Blocks_0__Item_Fields_47__btn";
+            //_seleniumHelper.UpLoadFile(uploadBtn2, uploadedFile2);
+
+
+
+            // q justifiation
+            //a181bebd-8212-410c-8672-985a98d70831
+            var qjustificationId = "a181bebd-8212-410c-8672-985a98d70831";
+            var qjustificationVal = "Over the next few weeks, I will be revealing major reasons  " +
+                                    "for poor returns on catfish farming investment. Below is an outline of these  " +
+                                    "reasons, details to be posted in subsequent research activities. " +
+                                    "I am not really surprised with the popularity of this research.  ";
+            _seleniumHelper.SetTextAreaValue(qjustificationId, qjustificationVal);
+
+            //---
+
+            #endregion research_part
+
+            // Personnel and Services
+
+            #region personal_part
+            //description
+            //e503d887-7115-4405-80e5-2a0b6437c728
+            var descriptionId = "e503d887-7115-4405-80e5-2a0b6437c728";
+            var descriptionVal = "One student will be helping us, teaching time release required,   " +
+                                    "possible contracted work and necessary equipment  will be needed. \r\n" +
+                                    "Finishing later this year. " +
+                                    "Or maybe beginning of following year.  ";
+            _seleniumHelper.SetTextAreaValue(descriptionId, descriptionVal);
+
+            //----------------------Estimate for Hiring Students
+            // click add button - assume first button
+            //#Blocks_0__Item_Fields_54__addChildButton > input:nth-child(1)
+
+
+            var addBtnSelecton = "#Blocks_0__Item_Fields_54__addChildButton > input:nth-child(1)";
+            _seleniumHelper.ClickAddButton(addBtnSelecton);
+
+            // enter infomation in new area
+            // b4e2939e-3504-421a-8e37-a37df7756c3f
+            var studentDetailsId = "b4e2939e-3504-421a-8e37-a37df7756c3f";
+            var studentDetailsVal = "One Undergraduate student, \r\n  " +
+                                 "10 hours * 55 days * 10.00 \r\n" +
+                                 "July, august of this year.  ";
+            _seleniumHelper.SetTextAreaValue(studentDetailsId, studentDetailsVal);
+
+            // cost of student
+            //d1e6d321-18c8-476d-bf41-9376bbbe331d
+            var studentcostId = "d1e6d321-18c8-476d-bf41-9376bbbe331d";
+            var studentcostVal = "5500.00";
+            _seleniumHelper.SetNumberValue(studentcostId, studentcostVal);
+
+
+            //-------------------Estimates for Contracted Services
+            //#Blocks_0__Item_Fields_57__addChildButton > input
+
+            var addContractedServicesSelecton = "#Blocks_0__Item_Fields_57__addChildButton > input";
+            _seleniumHelper.ClickAddButton(addContractedServicesSelecton);
+
+            // contract servisces description
+            //ca9d88ba-9e18-4aa9-b21f-3c52b4b51111
+            var contractDetailsId = "ca9d88ba-9e18-4aa9-b21f-3c52b4b51111";
+            var contractDetailsVal = "Drain ponds, Fill up ponds  " +
+                                 "reroute river. \r\n" +
+                                 "Restock catfish population.";
+            _seleniumHelper.SetTextAreaValue(contractDetailsId, contractDetailsVal);
+
+
+            // contract prices
+            //45de8e34-9ced-4ae2-b2b8-e7135559bd01
+            var contractedcostId = "45de8e34-9ced-4ae2-b2b8-e7135559bd01";
+            var contractedcostVal = "4400.00";
+            _seleniumHelper.SetNumberValue(contractedcostId, contractedcostVal);
+
+            #endregion personal_part
+
 
 
 
             // ---------------------submit section
+            // --------------------------
 
             //Clicking on the submit button
             var dataItemTemplateId = "button_wrapper_d5d50e2c-726e-4ba4-a512-635ad66ba8ea";
@@ -418,6 +696,11 @@ namespace Catfish.Test
 
             //Clicking on the link to view detail view
             //_seleniumHelper.ClickOnALink("Edit");
+
+
+
+            //--------------------------validation section
+            // --------------------------
         }
     }
 }

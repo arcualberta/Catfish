@@ -2,16 +2,12 @@
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
-using OpenQA.Selenium.Support;
-using OpenQA.Selenium.Interactions;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
 using System.Threading;
-using OpenQA.Selenium.Edge;
 
 namespace Catfish.Test.Helpers
 {
@@ -93,6 +89,37 @@ namespace Catfish.Test.Helpers
                 path = "/" + path;
             Driver.Navigate().GoToUrl(_siteUrl + path);
         }
+
+
+        // upload file when accessing button by Id.
+        // 
+
+
+
+        public void UpLoadFile(string selectorName, string fileName)
+        {
+
+            //WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            //var ele = wait.Until(drv => drv.FindElement(By.Id(id)));
+            
+            var ele = Driver.FindElement(By.CssSelector(selectorName));
+            ele.Click();
+            Thread.Sleep(2000);
+            ele.SendKeys(fileName);
+            ele.SendKeys("\r");
+
+            Thread.Sleep(2000);
+
+        }
+
+        //ClickAddButton
+        public void ClickAddButton(string selectorName)
+        {
+            var ele = Driver.FindElement(By.CssSelector(selectorName));
+            ele.Click();
+        }
+
+
 
         /// <summary>
         /// Select the field identified by data-model-id=fieldId and then selects its option
