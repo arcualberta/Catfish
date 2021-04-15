@@ -240,6 +240,12 @@ namespace Catfish.UnitTests.Helpers
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             ele.Click();
         }
+        public void ClickTableRowDeleteButton(int rawNumber)
+        {
+            string selectorString = string.Format("table[class='table table-field tf-data'] tbody tr[data-r='{0}'] th div span", rawNumber);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
+        }
 
         public void CkickModalSubmit(string dataItemTemplateId, string cssClass)
         {

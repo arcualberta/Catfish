@@ -18,12 +18,12 @@
         @for (var r = 0; r < Model.TableData.Count; ++r)
         {
             var row = Model.TableData[r];
-            <tr>
+            <tr data-r="@r" >
                 @for (var c = 0; c < row.Fields.Count; ++c)
                 {
                     var fieldId = Model.TableData[r].Fields[c].Id;
                     string templateName = "Values/" + Model.TableData[r].Fields[c].GetType().ToString();
-                    <td data-model-id="@fieldId">
+                    <td data-model-id="@fieldId" data-c="@c">
                         @Html.DisplayFor(model => Model.TableData[r].Fields[c], templateName)
                     </td>
                 }
