@@ -5,17 +5,8 @@
 
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @inject IAuthorizationService AuthorizationService
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using Catfish.Core.Models
-@{
-    bool sysAdmin = _httpContextAccessor.HttpContext.User.IsInRole("SysAdmin");
-    string attrDisabled = "";
-    if (!sysAdmin)
-    {
-        attrDisabled = "disabled";
-    }
-}
 
 @section script {
     <script src="~/manager/identity/piranha.useredit.js"></script>
@@ -40,7 +31,7 @@
 
             <div class="container-fluid">
                 <div class="top-nav">
-                    @if (sysAdmin && (await AuthorizationService.AuthorizeAsync(User, Model.Group, new List<IAuthorizationRequirement>() { GroupOperations.UpdateGroup })).Succeeded)
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Model.Group, new List<IAuthorizationRequirement>() { GroupOperations.UpdateGroup })).Succeeded)
                     {
                         <button type="submit" class="btn btn-labeled btn-success pull-left">
                             <span class="btn-label">
@@ -52,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid" >
+        <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
                     <span class="title">@Localizer.General["General"]</span>
@@ -62,14 +53,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>@Localizer.General["Name"]</label>
-                                @if (sysAdmin)
-                                {
-                                    @Html.TextBoxFor(m => m.Group.Name, new { @class = "form-control small", maxlength = 128, required = "" })
-                                }
-                                else
-                                {
-                                    @Html.TextBoxFor(m => m.Group.Name, new { @class = "form-control small", maxlength = 128, required = "", @Disabled=attrDisabled })
-                                }
+                                @Html.TextBoxFor(m => m.Group.Name, new { @class = "form-control small", maxlength = 128, required = "" })
                                 <div class="invalid-feedback">
                                     @Localizer.General["Name is mandatory."]
                                 </div>
@@ -78,14 +62,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>@Localizer.General["Status"]</label>
-                                @if (sysAdmin)
-                                {
-                                    @Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(Group.eGroupStatus))), "Select Status", new { @class = "form-control small" })
-                                }
-                                else
-                                {
-                                    @Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(Group.eGroupStatus))), "Select Status", new { @class = "form-control small", @Disabled = @attrDisabled })
-                                }
+                                @Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(Group.eGroupStatus))), "Select Status", new { @class = "form-control small" })
 
                             </div>
                         </div>
