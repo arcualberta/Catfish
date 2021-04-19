@@ -86,6 +86,13 @@ namespace Catfish.Test.Helpers
             string val = ele.Text;
             return val;
         }
+        public string GetAttachmentFieldDisplayValue(string fieldId)
+        {
+            string selectorString = string.Format("div[data-model-id='{0}'] a", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
 
     }
 }

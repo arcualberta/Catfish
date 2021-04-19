@@ -26,6 +26,7 @@ namespace Catfish.Test
         private SeleniumHelper _seleniumHelper;
         private IAuthorizationService _auth;
         private string siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
+        //private string attachmentPath = ConfigurationManager.AppSettings["AttachmentPath"];
         //private string _attachmentPath = "C:/CodeBase/CatfishTest/Catfish.Test/Data/Attachments/";
         private string _attachmentPath = @"..\\..\\..\\Data\\Attachments\\";
         private string itemAtrib;
@@ -156,10 +157,9 @@ namespace Catfish.Test
             var dateVal = new DateTime(2021, 3, 25);
             _seleniumHelper.SetDateValue(dateId, dateVal);
 
+            var fileName = "SAStestingdoc1.pdf";
             var fileId = "3cdb4841-b9c2-4614-b0d8-7b08adbd9e5a";
-            var path = Path.Combine(_attachmentPath, "SAStestingdoc1.pdf");
-            //var uploadedFile = _attachmentPath + "SAStestingdoc1.pdf";
-            _seleniumHelper.UpLoadFile(fileId, path);
+            _seleniumHelper.UpLoadFile(fileId, fileName);
 
             //Clicking on the submit button
             var dataItemTemplateId = "d46d777e-66aa-45d8-867a-c51d50c6fa7c";
@@ -207,7 +207,10 @@ namespace Catfish.Test
             var dateDispVal = _seleniumHelper.GetDateDisplayValue(dateId);
             Assert.AreEqual(dateVal.ToString("yyyy-MM-dd"), dateDispVal, "DATE1 value is not correctly saved");
 
-             _seleniumHelper.Driver.Close();
+
+            var attachmentFileDisplayValue = _seleniumHelper.GetAttachmentFieldDisplayValue("3cdb4841-b9c2-4614-b0d8-7b08adbd9e5a");
+            Assert.AreEqual(fileName, attachmentFileDisplayValue, "Attachment is not correctly saved");
+            _seleniumHelper.Driver.Close();
         }
 
         [Test]
