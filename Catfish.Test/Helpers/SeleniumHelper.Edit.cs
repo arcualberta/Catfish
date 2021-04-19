@@ -101,8 +101,11 @@ namespace Catfish.Test.Helpers
 
             //WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             //var ele = wait.Until(drv => drv.FindElement(By.Id(id)));
+
+
             string selectorString = string.Format("input[type='file'][data-model-id='{0}']", fieldId);
             var ele = Driver.FindElement(By.CssSelector(selectorString));
+
             //ele.Click();
             //Thread.Sleep(2000);
             ele.SendKeys(fileName);

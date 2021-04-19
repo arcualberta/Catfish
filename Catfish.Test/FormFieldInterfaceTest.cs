@@ -523,13 +523,12 @@ namespace Catfish.Test
 
             //Supporting Documentation - upload one pdf file
             //Blocks_0__Item_Fields_35__btn
-            //name="Blocks[0].Item.Fields[35]_btn"   
-            // ???some other value -- 7c0578e5-948f-4eed-a2d3-ba1baf11edfa
-            //var btnId = "Blocks_0__Item_Fields_35__btn"; 
-            var btnName = "#Blocks_0__Item_Fields_35__btn";
-            //var btnName = '//*[@id="Blocks_0__Item_Fields_35__btn"]';
-            var uploadedFile = _attachmentPath + "SAStestingdoc1.pdf";
-            //_seleniumHelper.UpLoadFile(btnName, uploadedFile);
+            
+
+            var chooseButtonId_1 = "7c0578e5-948f-4eed-a2d3-ba1baf11edfa";
+            
+            //var uploadPath = Path.Combine(_attachmentPath, "SAStestingdoc1.pdf");
+            _seleniumHelper.UpLoadFile(chooseButtonId_1, "SAStestingdoc1.pdf");
 
             //Justification test area
             //e929d9f2-4d0b-4771-8643-00138336a072
