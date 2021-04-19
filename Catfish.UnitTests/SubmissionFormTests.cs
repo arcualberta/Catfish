@@ -66,7 +66,7 @@ namespace Catfish.UnitTests
             string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
             form.CreateField<SelectField>("DD 1", lang, options, true);
             form.CreateField<RadioField>("RB 1", lang, options, true);
-            form.CreateField<CheckboxField>("CB 1", lang, options, true);
+            form.CreateField<CheckboxField>("CB 1", lang, options, false);
             form.CreateField<TextField>("TF 1", lang);
             form.CreateField<TextArea>("TA 1", lang).Cols = 22;
             form.CreateField<IntegerField>("INT 1", lang);

@@ -7,6 +7,7 @@ using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 
 namespace Catfish.Test.Helpers
@@ -98,7 +99,8 @@ namespace Catfish.Test.Helpers
 
         public void UpLoadFile(string fieldId, string fileName)
         {
-
+            var attachmentPath = _configuration.GetSection("AttachmentPath").Value;
+            var path = Path.Combine(attachmentPath, fileName);
             //WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             //var ele = wait.Until(drv => drv.FindElement(By.Id(id)));
 
@@ -108,7 +110,7 @@ namespace Catfish.Test.Helpers
 
             //ele.Click();
             //Thread.Sleep(2000);
-            ele.SendKeys(fileName);
+            ele.SendKeys(path);
             //ele.SendKeys("\r");
 
             //Thread.Sleep(2000);

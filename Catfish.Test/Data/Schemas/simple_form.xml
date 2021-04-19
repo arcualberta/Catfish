@@ -66,7 +66,7 @@
             </option>
           </options>
         </field>
-        <field model-type="Catfish.Core.Models.Contents.Fields.CheckboxField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="cd53c8c7-3893-42e1-b8d6-4a7ce7899a84" required="true">
+        <field model-type="Catfish.Core.Models.Contents.Fields.CheckboxField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="cd53c8c7-3893-42e1-b8d6-4a7ce7899a84" required="false">
           <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9d34e1f3-b01e-457b-9c1f-8a80a0896357">
             <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="276196fa-0bb7-42d8-a071-dbdd0bcc3e80" xml:lang="en">CB 1</text>
           </name>

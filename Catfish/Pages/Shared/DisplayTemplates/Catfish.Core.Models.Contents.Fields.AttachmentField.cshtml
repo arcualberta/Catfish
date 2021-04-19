@@ -9,6 +9,6 @@
     @foreach (var f in Model.Files)
     {
         string link = string.Format("<a href='/api/items/{0}/{1}/{2}/{3}'>{4}</a>", itemId, dataItemId, Model.Id, f.FileName, f.OriginalFileName);
-        <div>@Html.Raw(link)</div>
+        <div data-model-id="@Model.Id">@Html.Raw(link)</div>
     }
 </div>
