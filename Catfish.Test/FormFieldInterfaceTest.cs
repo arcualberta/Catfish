@@ -21,12 +21,13 @@ namespace Catfish.Test
     public class FormFieldInterfaceTest
     {
         private string _dataRoot = "..\\..\\..\\Data\\Schemas\\";
-        private string _attachmentPath = "..\\..\\..\\Data\\Attachments\\";
         private AppDbContext _db;
         private TestHelper _testHelper;
         private SeleniumHelper _seleniumHelper;
         private IAuthorizationService _auth;
         private string siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
+        //private string _attachmentPath = "C:/CodeBase/CatfishTest/Catfish.Test/Data/Attachments/";
+        private string _attachmentPath = @"..\\..\\..\\Data\\Attachments\\";
         private string itemAtrib;
 
         public FormFieldInterfaceTest()
@@ -109,30 +110,30 @@ namespace Catfish.Test
             _seleniumHelper.GoToUrl("simple-form");
 
             //Selecting Option2 for DD1
-            var ddId = "48cd8112-beea-4664-b5a9-739a79e652bc";
-            var ddOptId = "b8068a1b-a184-47f5-9da1-625e3eb4a2f4";
+            var ddId = "a7f5aa8f-b9a5-4619-8d33-eb5d232bfcf0";
+            var ddOptId = "97f12c67-0f0e-4e9d-bad3-e5a4f425230e";
             var dd1OptVal = "Option 2";
             _seleniumHelper.SelectDropdownOption(ddId, ddOptId);
 
             //Selecting Option 3 for RB1
-            var rbId = "ef1c777b-6e80-48f6-b742-548f5226239c";
-            var rbOptId = "cd99d343-7901-4a1e-a3a3-052a53d737b7";
+            var rbId = "f5860dc9-8d50-4332-980b-fc6e4f230332";
+            var rbOptId = "451a4cea-0d30-4ce7-b6c2-6a6311351595";
             var rbOptVal = "Option 3";
             _seleniumHelper.SelectRadioOption(rbId, rbOptId);
 
             //Selecting Option 3 and Option 4 for the CB1
-            var chkId = "f69a2661-a375-47ea-a46c-9009a76c08eb";
-            var chkOptIds = new string[] { "391d611d-d7f5-48a6-b8ae-e52053294616", "c320b902-21f4-4bf1-ba7e-67890f7a0849" };
+            var chkId = "cd53c8c7-3893-42e1-b8d6-4a7ce7899a84";
+            var chkOptIds = new string[] { "0720136e-d8a4-4995-af87-575487310555", "dd2a3bb9-1dd9-4253-bf4d-19f53d1a18ed" };
             var chkOptVals = new string[] { "Option 3", "Option 4"};
             _seleniumHelper.SelectCheckOptions(chkId, chkOptIds);
 
             //Setting value of TF1 to Hello World
-            var tfId = "50850ee4-2686-4f84-b8b7-5c2b66d70185";
+            var tfId = "d4165f46-1443-4dba-b10c-ce77ac7c1925";
             var tfVal = "Hello World";
             _seleniumHelper.SetTextFieldValue(tfId, tfVal);
 
             //Setting value of TA1 to Hello World
-            var taId = "8016425b-c632-49fc-8d72-32d294ee429b";
+            var taId = "bbb9fb03-b5a1-4ba8-bfde-3f75d4130bc0";
             var taVal = "Identity configuration in ASP.NET can be quite confusing, especially if you want to customize setup properties." +
                 "When you use a code - first approach using Entity Framework, you have full control over your user identity options. However when " +
                 "developers deal with bigger projects, they typically prefer to use a table - first approach in which they create the database, then consume " +
@@ -141,22 +142,27 @@ namespace Catfish.Test
             _seleniumHelper.SetTextAreaValue(taId, taVal);
 
             //Setting value of INT1 to 250
-            var intId = "2ce85370-5277-4d5a-baea-ac5a2ea435f1";
+            var intId = "bc9e041f-1948-407c-b5fa-db4106e47e2d";
             var intVal = "250";
             _seleniumHelper.SetNumberValue(intId, intVal);
 
             //Setting value of DEC1 to 12.50
-            var decId = "8628d84f-d209-4440-9fed-0e1ecef17c54";
+            var decId = "715692a9-ae70-4746-87f2-76c3a81a397a";
             var decVal = "1250";
             _seleniumHelper.SetNumberValue(decId, decVal);
 
             //Setting value of DATE1 to 2021-03-05
-            var dateId = "7d5f4efc-624b-4ba7-998b-6ec7fe48745d";
+            var dateId = "73a2258c-7430-405e-9f04-c9ddcf19f076";
             var dateVal = new DateTime(2021, 3, 25);
             _seleniumHelper.SetDateValue(dateId, dateVal);
 
+            var fileId = "3cdb4841-b9c2-4614-b0d8-7b08adbd9e5a";
+            var path = Path.Combine(_attachmentPath, "SAStestingdoc1.pdf");
+            //var uploadedFile = _attachmentPath + "SAStestingdoc1.pdf";
+            _seleniumHelper.UpLoadFile(fileId, path);
+
             //Clicking on the submit button
-            var dataItemTemplateId = "b8ca1de3-a6ce-4693-aadc-9e32a322b6ba";
+            var dataItemTemplateId = "d46d777e-66aa-45d8-867a-c51d50c6fa7c";
             _seleniumHelper.ClickSubmitButton(dataItemTemplateId, "Submit");
 
             //Clicking on the modal confirmation button

@@ -64,14 +64,16 @@ namespace Catfish.UnitTests
             Assert.IsNotNull(form);
 
             string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
-            form.CreateField<SelectField>("DD 1", lang, options, false);
-            form.CreateField<RadioField>("RB 1", lang, options, false);
-            form.CreateField<CheckboxField>("CB 1", lang, options, false);
+            form.CreateField<SelectField>("DD 1", lang, options, true);
+            form.CreateField<RadioField>("RB 1", lang, options, true);
+            form.CreateField<CheckboxField>("CB 1", lang, options, true);
             form.CreateField<TextField>("TF 1", lang);
             form.CreateField<TextArea>("TA 1", lang).Cols = 22;
             form.CreateField<IntegerField>("INT 1", lang);
             form.CreateField<DecimalField>("DEC 1", lang);
             form.CreateField<DateField>("DATE 1", lang);
+            form.CreateField<AttachmentField>("Supporting Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
+
 
 
 

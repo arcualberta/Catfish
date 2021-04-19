@@ -96,19 +96,19 @@ namespace Catfish.Test.Helpers
 
 
 
-        public void UpLoadFile(string selectorName, string fileName)
+        public void UpLoadFile(string fieldId, string fileName)
         {
 
             //WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             //var ele = wait.Until(drv => drv.FindElement(By.Id(id)));
-            
-            var ele = Driver.FindElement(By.CssSelector(selectorName));
-            ele.Click();
-            Thread.Sleep(2000);
+            string selectorString = string.Format("input[type='file'][data-model-id='{0}']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            //ele.Click();
+            //Thread.Sleep(2000);
             ele.SendKeys(fileName);
-            ele.SendKeys("\r");
+            //ele.SendKeys("\r");
 
-            Thread.Sleep(2000);
+            //Thread.Sleep(2000);
 
         }
 

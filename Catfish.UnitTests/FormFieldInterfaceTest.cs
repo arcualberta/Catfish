@@ -113,10 +113,10 @@ namespace Catfish.UnitTests
             _seleniumHelper.SelectDropdownOption(ddId, ddOptId);
 
             //Selecting Option 3 for RB1
-            var rbId = "ef1c777b-6e80-48f6-b742-548f5226239c";
-            var rbOptId = "cd99d343-7901-4a1e-a3a3-052a53d737b7";
-            var rbOptVal = "Option 3";
-            _seleniumHelper.SelectRadioOption(rbId, rbOptId);
+            //var rbId = "ef1c777b-6e80-48f6-b742-548f5226239c";
+            //var rbOptId = "cd99d343-7901-4a1e-a3a3-052a53d737b7";
+            //var rbOptVal = "Option 3";
+            //_seleniumHelper.SelectRadioOption(rbId, rbOptId);
 
             //Selecting Option 3 and Option 4 for the CB1
             var chkId = "f69a2661-a375-47ea-a46c-9009a76c08eb";
@@ -169,8 +169,8 @@ namespace Catfish.UnitTests
             Assert.AreEqual(dd1OptVal, ddDispOpVal, "DD1 value is not correctly saved");
 
             //Validating RB1
-            var rbDispVal = _seleniumHelper.GetRadioDisplayValue(rbId);
-            Assert.AreEqual(rbOptVal, rbDispVal, "RB1 value is not correctly saved");
+            //var rbDispVal = _seleniumHelper.GetRadioDisplayValue(rbId);
+            //Assert.AreEqual(rbOptVal, rbDispVal, "RB1 value is not correctly saved");
 
             //Validating TF1
             var chkDispVal = _seleniumHelper.GetCheckboxDisplayValue(chkId);
@@ -199,7 +199,7 @@ namespace Catfish.UnitTests
             var dateDispVal = _seleniumHelper.GetDateDisplayValue(dateId);
             Assert.AreEqual(dateVal.ToString("yyyy-MM-dd"), dateDispVal, "DATE1 value is not correctly saved");
 
-             _seleniumHelper.Driver.Close();
+             //_seleniumHelper.Driver.Close();
         }
 
         [Test]
