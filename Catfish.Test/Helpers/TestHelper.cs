@@ -17,6 +17,9 @@ using SolrNet;
 using System;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
+using System.Xml.Linq;
+using System.IO;
+using System.Linq;
 
 namespace Catfish.Test.Helpers
 {
@@ -115,6 +118,64 @@ namespace Catfish.Test.Helpers
             get => Seviceprovider.GetService<IConfiguration>();
         }
 
+        public XElement LoadXml(string fileName)
+        {
+            string dataRoot = Configuration.GetSection("SchemaPath").Value;
+            var path = Path.Combine(dataRoot, fileName);
+            if (!File.Exists(path))
+                throw new Exception("File not found at " + path);
+
+            XElement xml = XElement.Parse(File.ReadAllText(path));
+            return xml;
+        }
+
+        public bool RefreshSchema(string fileName, IWorkflowService ws)
+        {
+            var xml = LoadXml(fileName);
+            Guid id = Guid.Parse(xml.Attribute("id").Value);
+            string message;
+            return ws.UpdateItemTemplateSchema(id, xml.ToString(), out message);
+        }
+
+        public void RefreshDatabase()
+        {
+            var _db = Db;
+
+            //Deleting all entities in the Entity table
+            var entities = _db.Entities.ToList();
+            _db.Entities.RemoveRange(entities);
+
+            //Deleting all system statuses
+            var statuses = _db.SystemStatuses.ToList();
+            _db.SystemStatuses.RemoveRange(statuses);
+
+            _db.SaveChanges();
+
+            //Reloading default collection
+            _db.Collections.Add(Collection.Parse(LoadXml("collection_1.xml")) as Collection);
+
+            //Reloading Item Templates
+            var ws = WorkflowService;
+            RefreshSchema("simple_form.xml", ws);
+            RefreshSchema("visibleIf_requiredIf.xml", ws);
+            RefreshSchema("visibleIf_options.xml", ws);
+            RefreshSchema("composite_field.xml", ws);
+            RefreshSchema("table_field.xml", ws);
+            RefreshSchema("table_field2.xml", ws);
+            RefreshSchema("grid_table.xml", ws);
+            RefreshSchema("SASform.xml", ws);
+
+            ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("simple_form.xml")) as ItemTemplate);
+            ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("visibleIf_requiredIf.xml")) as ItemTemplate);
+            ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("visibleIf_options.xml")) as ItemTemplate);
+            ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("composite_field.xml")) as ItemTemplate);
+            ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("table_field.xml")) as ItemTemplate);
+            ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("table_field2.xml")) as ItemTemplate);
+            ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("grid_table.xml")) as ItemTemplate);
+            ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("SASform.xml")) as ItemTemplate);
+
+            _db.SaveChanges();
+        }
     }
 
     public class MockupErrorLog : ErrorLog

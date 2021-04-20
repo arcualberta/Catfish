@@ -100,99 +100,13 @@ namespace Catfish.Areas.Manager.Pages
 
         public IActionResult OnPost(Guid id)
         {
-            string successMessage = null;
-            try
+            string message;
+            if (_workflowService.UpdateItemTemplateSchema(id, SchemaXml, out message))
+                return RedirectToPage(new { id, message });
+            else
             {
-                if (string.IsNullOrWhiteSpace(SchemaXml))
-                    throw new Exception("The schema cannot be empty");
-
-                //Make sure the schemaXML represents a valid xml string
-                XElement xml = XElement.Parse(SchemaXml);
-                Entity entity = _db.Entities.Where(et => et.Id == id).FirstOrDefault();
-                bool changed = false;
-                if (entity == null)
-                {
-                    string typeString = xml.Attribute("model-type").Value;
-                    var type = Type.GetType(typeString);
-                    entity = Entity.Parse(xml, true) as Entity;
-                    _db.Entities.Add(entity);
-                    id = entity.Id;
-                    changed = true;
-                }
-                else if(Regex.Replace(entity.Content, @"\s+", "") != Regex.Replace(SchemaXml, @"\s+", ""))
-                {
-                    var user = _authorizationService.GetLoggedUser();
-                    Backup backup = new Backup(entity.Id,
-                        entity.GetType().ToString(),
-                        entity.Content,
-                        user.Id,
-                        user.UserName);
-                    _db.Backups.Add(backup);
-                    
-                    var dbEntityId = entity.Id;
-
-                    entity.Content = SchemaXml;
-                    entity.Updated = DateTime.Now;
-
-                    //restoring the ID
-                    entity.Id = dbEntityId;
-
-                    changed = true;
-                }
-
-                if (changed)
-                {
-                    List<string> oldGuids = new List<string>();
-                    List<string> newGuids = new List<string>();
-                    if (typeof(EntityTemplate).IsAssignableFrom(entity.GetType()))
-                    {
-                        EntityTemplate template = entity as EntityTemplate;
-                        template.TemplateName = (entity as EntityTemplate).Name.GetConcatenatedContent(" | ");
-                        if (template.Workflow != null)
-                        {
-
-                            //Making sure the state values defined in the workflow matches with state values stored in 
-                            //the database (and creating new state values in the database if matching ones are not available.
-                            foreach (var state in template.Workflow.States)
-                            {
-                                var dbState = _workflowService.GetStatus(template.Id, state.Value, true);
-                                if (state.Id != dbState.Id)
-                                {
-                                    oldGuids.Add(state.Id.ToString());
-                                    newGuids.Add(dbState.Id.ToString());
-                                }
-                            }
-
-                            //Making sure the roles defined in the workflow matches with roles stored in 
-                            //the database (and creating new roles in the database if matching ones are not available.
-                            foreach (var role in template.Workflow.Roles)
-                            {
-                                var dbRole = _authorizationService.GetRole(role.Value, true);
-                                if (role.Id != dbRole.Id)
-                                {
-                                    oldGuids.Add(role.Id.ToString());
-                                    newGuids.Add(dbRole.Id.ToString());
-                                }
-                            }
-                        }
-                    }
-
-                    //Globally replace all oldGuids in the schema content with the corresponding newGuids.
-                    for (int i = 0; i < oldGuids.Count; ++i)
-                        entity.Content = entity.Content.Replace(oldGuids[i], newGuids[i], StringComparison.InvariantCultureIgnoreCase);
-                    _db.SaveChanges();
-
-                    successMessage = "Schema saved successfully.";
-                }
-                else
-                    successMessage = "Nothing to save. Schema wasn't changed.";
-
-                return RedirectToPage(new { id, successMessage });
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-                ErrorMessage = ex.Message;
+                _errorLog.Log(new Error(new Exception(message)));
+                ErrorMessage = message;
                 return null;
             }
         }
