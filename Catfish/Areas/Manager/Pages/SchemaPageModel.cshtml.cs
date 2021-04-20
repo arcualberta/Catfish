@@ -114,10 +114,11 @@ namespace Catfish.Areas.Manager.Pages
                 {
                     string typeString = xml.Attribute("model-type").Value;
                     var type = Type.GetType(typeString);
-                    entity = Entity.Parse(xml, true) as Entity;
+                    entity = Entity.Parse(xml, false) as Entity;
                     _db.Entities.Add(entity);
                     id = entity.Id;
                     changed = true;
+
                 }
                 else if(Regex.Replace(entity.Content, @"\s+", "") != Regex.Replace(SchemaXml, @"\s+", ""))
                 {
@@ -155,8 +156,23 @@ namespace Catfish.Areas.Manager.Pages
                             //the database (and creating new state values in the database if matching ones are not available.
                             foreach (var state in template.Workflow.States)
                             {
-                                var dbState = _workflowService.GetStatus(template.Id, state.Value, true);
-                                if (state.Id != dbState.Id)
+                                var dbState = _workflowService.GetStatus(template.Id, state.Value, false);
+                                if(dbState == null)
+                                {
+                                    if (_db.SystemStatuses.Where(st => st.Id == state.Id).Any())
+                                        throw new Exception(string.Format("Error: the System Status with ID {0} already exist associated with another template in the system.", state.Id));
+
+                                    //Creating a new status with the same GUID
+                                    dbState = new SystemStatus() 
+                                    {
+                                        Status = state.Value, 
+                                        NormalizedStatus = state.Value.ToUpper(),
+                                        Id = state.Id,
+                                        EntityTemplateId = template.Id
+                                    };
+                                    _db.SystemStatuses.Add(dbState);
+                                }
+                                else if (state.Id != dbState.Id)
                                 {
                                     oldGuids.Add(state.Id.ToString());
                                     newGuids.Add(dbState.Id.ToString());
@@ -167,8 +183,13 @@ namespace Catfish.Areas.Manager.Pages
                             //the database (and creating new roles in the database if matching ones are not available.
                             foreach (var role in template.Workflow.Roles)
                             {
-                                var dbRole = _authorizationService.GetRole(role.Value, true);
-                                if (role.Id != dbRole.Id)
+                                var dbRole = _authorizationService.GetRole(role.Value, false);
+                                if(dbRole == null)
+                                {
+                                    //Creating a new role with the given name and the Guid.
+                                    _authorizationService.CreateRole(role.Value, role.Id);
+                                }
+                                else if (role.Id != dbRole.Id)
                                 {
                                     oldGuids.Add(role.Id.ToString());
                                     newGuids.Add(dbRole.Id.ToString());

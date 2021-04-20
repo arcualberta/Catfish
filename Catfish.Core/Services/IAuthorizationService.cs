@@ -54,5 +54,6 @@ namespace Catfish.Core.Services
 
         Role GetRole(string roleName, bool createIfNotExist);
 
+        public Role CreateRole(string roleName, Guid roleId);
     }
 }
