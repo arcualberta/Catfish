@@ -525,8 +525,6 @@ namespace Catfish.Test
 
 
             //Supporting Documentation - upload one pdf file
-            //Blocks_0__Item_Fields_35__btn
-            
 
             var chooseButtonId_1 = "7c0578e5-948f-4eed-a2d3-ba1baf11edfa";
             
@@ -609,12 +607,11 @@ namespace Catfish.Test
             _seleniumHelper.SetTextAreaValue(qaddExpDetailsId, qaddExpDetailsVal);
 
 
-            //file upload - supporting documents
-            //#Blocks_0__Item_Fields_47__btn
+            //file upload - supporting documents - upload one pdf file
+            
 
-            var uploadedFile2 = _attachmentPath + "SAStestingdoc2.pdf";
-            var uploadBtn2 = "#Blocks_0__Item_Fields_47__btn";
-            //_seleniumHelper.UpLoadFile(uploadBtn2, uploadedFile2);
+            var chooseButtonId_2 =  "641e57e0-e878-414c-ab48-fc4de14739cd";
+            _seleniumHelper.UpLoadFile(chooseButtonId_2, "SAStestingdoc2.pdf");
 
 
 
@@ -631,7 +628,7 @@ namespace Catfish.Test
 
             #endregion research_part
 
-            // Personnel and Services
+            // Personnel and Services ------------------------------------------------------------------------
 
             #region personal_part
             //description
@@ -686,6 +683,76 @@ namespace Catfish.Test
             var contractedcostId = "45de8e34-9ced-4ae2-b2b8-e7135559bd01";
             var contractedcostVal = "4400.00";
             _seleniumHelper.SetNumberValue(contractedcostId, contractedcostVal);
+
+
+            //file upload - supporting documents - upload one pdf file
+            var chooseButtonId_3 ="b768fde3-3565-41fb-b0e3-59e63ced439e";
+            // for now reuse file 2
+            _seleniumHelper.UpLoadFile(chooseButtonId_3, "SAStestingdoc3.pdf");
+
+
+
+
+
+            // p justifiation
+            //74edda56-f5d5-46c5-b9af-249e6b9a928a
+            var pjustificationId = "74edda56-f5d5-46c5-b9af-249e6b9a928a";
+            var pjustificationVal = "Only ARC personnel can restock the ponds professionally  " +
+                                    "They keep the water clean and the fish safe   " +
+                                    "for any  subsequent research activities. " +
+                                    "I am not going to let just anyone restock the fish.  ";
+            _seleniumHelper.SetTextAreaValue(pjustificationId, pjustificationVal);
+
+            // p equipment and materials
+            //11705d20-5203-44ae-af0f-68459355e4dd
+            var equipId = "11705d20-5203-44ae-af0f-68459355e4dd";
+            var equipVal = "fishing rods - $500.00  " +
+                           "gloves - $50.00   " +
+                           "A good pair of gloves needed. " +
+                           "to handle the  catfish.  ";
+            _seleniumHelper.SetTextAreaValue(equipId, equipVal);
+
+
+            //file upload - supporting documents - upload one pdf file
+            var chooseButtonId_4 = "8a868079-ac08-4dbf-a649-493edda47c96";
+            // for now reuse file 2
+            _seleniumHelper.UpLoadFile(chooseButtonId_4, "SAStestingdoc4.pdf");
+
+
+
+
+            // 1st term release
+
+            // click  add button  for course release in first term - assume first button
+            //# Blocks_0__Item_Fields_68__addChildButton > input
+            //#Blocks_0__Item_Fields_68__addChildButton > input:nth-child(1)
+
+
+            var addBtnFirstTerm = "#Blocks_0__Item_Fields_68__addChildButton > input:nth-child(1)";
+            _seleniumHelper.ClickAddButton(addBtnFirstTerm);
+
+
+            //cousre name
+            var course_1_Id = "a8c263b1-f098-4fb9-a266-1b4213cc8548";
+            var course_1_Val = "Fish 201";
+            _seleniumHelper.SetTextFieldValue(course_1_Id, course_1_Val);
+
+
+            //Selecting "Yes" Option  for "Release Required?" RB
+            // 46e8482f-f1d4-4d95-a8e8-907fac9e84f0 for set. 
+            
+            var relasese_1_Id = "46e8482f-f1d4-4d95-a8e8-907fac9e84f0";
+            var relasese_1_OptId = "e96bfb6e-2bda-4e35-b12a-7debdf17154e";
+         
+            _seleniumHelper.SelectRadioOption(relasese_1_Id, relasese_1_OptId);
+
+            // relaese amount.  f512e48c-6073-49ef-95b0-ec88576d01ef
+            var releaseAmount_1_Id = "f512e48c-6073-49ef-95b0-ec88576d01ef";
+            var releaseAmount_1_Val = "7700.00";
+            _seleniumHelper.SetNumberValue(releaseAmount_1_Id, releaseAmount_1_Val);
+
+
+
 
             #endregion personal_part
 
