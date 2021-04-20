@@ -33,26 +33,35 @@
             _viewData.Add(visibleIfKey, Model.Options[i].VisibilityCondition.Value);
             _viewData.Add(dataFieldIdKey, Model.Options[i].Id);
         }
-<div id="@Model.Options[i].Id" class="@Model.FieldValueCssClass">
 
-     @{string inputAttr = "";
+        ////if (Model.Options[i].Selected)
+        ////    _viewData.Add("checked", Model.Options[i].Selected);
+        ////else if(_viewData.ContainsKey("checked"))
+        ////{
+        ////    _viewData.Remove("checked");
+        ////}
 
-         foreach (var key in ViewData.Keys)
-         {
-             if (ViewData[key] == null)
-                 inputAttr += key + " ";
-             else
-                 inputAttr += key + "=" + ViewData[key] + " ";
-         }
-         if(Model.Options[i].Selected)
-             inputAttr += "checked ";
+        <div id="@Model.Options[i].Id" class="@Model.FieldValueCssClass">
 
-         inputAttr += "value= " + Model.Options[i].Id.ToString() + " ";
-     }
-    <input type="radio" @inputAttr id="@fieldId" name="@fieldName"/>
-    @*@Html.RadioButtonFor(model => model, Model.Options[i].Id.ToString(), _viewData)*@
-    @Html.Raw(string.Format("<span class='radio-option-label' data-option-id='{0}'>{1}</span>",
-        Model.Options[i].Id, Model.Options[i].OptionText.GetConcatenatedContent(" | ")))
-</div>
+             @{
+                 string inputAttr = "";
+
+                 foreach (var key in _viewData.Keys)
+                 {
+                     if (_viewData[key] == null)
+                         inputAttr += key + " ";
+                     else
+                         inputAttr += key + "=\"" + _viewData[key] + "\" ";
+                 }
+                 if(Model.Options[i].Selected)
+                     inputAttr += "checked ";
+
+                 inputAttr += "value= " + Model.Options[i].Id.ToString() + " ";
+             }
+            <input type="radio" @Html.Raw(inputAttr) id="@fieldId" name="@fieldName"/>
+            @*@Html.RadioButtonFor(model => model, Model.Options[i].Id.ToString(), _viewData)*@
+            @Html.Raw(string.Format("<span class='radio-option-label' data-option-id='{0}'>{1}</span>",
+                Model.Options[i].Id, Model.Options[i].OptionText.GetConcatenatedContent(" | ")))
+        </div>
     }
 }
