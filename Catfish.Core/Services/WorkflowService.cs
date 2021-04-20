@@ -618,5 +618,124 @@ namespace Catfish.Core.Services
 
             return template;
         }
+
+        public bool UpdateItemTemplateSchema(Guid id, string SchemaXml, out string successMessage)
+        {
+            try
+            {
+
+                if (string.IsNullOrWhiteSpace(SchemaXml))
+                    throw new Exception("The schema cannot be empty");
+
+                //Make sure the schemaXML represents a valid xml string
+                XElement xml = XElement.Parse(SchemaXml);
+                Entity entity = _db.Entities.Where(et => et.Id == id).FirstOrDefault();
+
+                if (entity != null && System.Text.RegularExpressions.Regex.Replace(entity.Content, @"\s+", "") == System.Text.RegularExpressions.Regex.Replace(SchemaXml, @"\s+", ""))
+                {
+                    //Nothing changed
+                    successMessage = "Nothing to save. Schema wasn't changed.";
+                    return true;
+                }
+
+                if (entity == null)
+                {
+                    string typeString = xml.Attribute("model-type").Value;
+                    var type = Type.GetType(typeString);
+                    entity = Entity.Parse(xml, false) as Entity;
+                    _db.Entities.Add(entity);
+                    id = entity.Id;
+                }
+                else
+                {
+                    var user = _auth.GetLoggedUser();
+                    Guid userId = user != null ? user.Id : Guid.Empty;
+                    string userName = user != null ? user.UserName : "";
+                    Backup backup = new Backup(entity.Id,
+                        entity.GetType().ToString(),
+                        entity.Content,
+                        userId,
+                        userName);
+                    _db.Backups.Add(backup);
+
+                    var dbEntityId = entity.Id;
+
+                    entity.Content = SchemaXml;
+                    entity.Updated = DateTime.Now;
+
+                    //restoring the ID
+                    entity.Id = dbEntityId;
+                }
+
+                List<string> oldGuids = new List<string>();
+                List<string> newGuids = new List<string>();
+                if (typeof(EntityTemplate).IsAssignableFrom(entity.GetType()))
+                {
+                    EntityTemplate template = entity as EntityTemplate;
+                    template.TemplateName = (entity as EntityTemplate).Name.GetConcatenatedContent(" | ");
+                    if (template.Workflow != null)
+                    {
+
+                        //Making sure the state values defined in the workflow matches with state values stored in 
+                        //the database (and creating new state values in the database if matching ones are not available.
+                        foreach (var state in template.Workflow.States)
+                        {
+                            var dbState = GetStatus(template.Id, state.Value, false);
+                            if (dbState == null)
+                            {
+                                if (_db.SystemStatuses.Where(st => st.Id == state.Id).Any())
+                                    throw new Exception(string.Format("Error: the System Status with ID {0} already exist associated with another template in the system.", state.Id));
+
+                                //Creating a new status with the same GUID
+                                dbState = new SystemStatus()
+                                {
+                                    Status = state.Value,
+                                    NormalizedStatus = state.Value.ToUpper(),
+                                    Id = state.Id,
+                                    EntityTemplateId = template.Id
+                                };
+                                _db.SystemStatuses.Add(dbState);
+                            }
+                            else if (state.Id != dbState.Id)
+                            {
+                                oldGuids.Add(state.Id.ToString());
+                                newGuids.Add(dbState.Id.ToString());
+                            }
+                        }
+
+                        //Making sure the roles defined in the workflow matches with roles stored in 
+                        //the database (and creating new roles in the database if matching ones are not available.
+                        foreach (var role in template.Workflow.Roles)
+                        {
+                            var dbRole = _auth.GetRole(role.Value, false);
+                            if (dbRole == null)
+                            {
+                                //Creating a new role with the given name and the Guid.
+                                _auth.CreateRole(role.Value, role.Id);
+                            }
+                            else if (role.Id != dbRole.Id)
+                            {
+                                oldGuids.Add(role.Id.ToString());
+                                newGuids.Add(dbRole.Id.ToString());
+                            }
+                        }
+                    }
+                }
+
+                //Globally replace all oldGuids in the schema content with the corresponding newGuids.
+                for (int i = 0; i < oldGuids.Count; ++i)
+                    entity.Content = entity.Content.Replace(oldGuids[i], newGuids[i], StringComparison.InvariantCultureIgnoreCase);
+                _db.SaveChanges();
+
+                successMessage = "Schema saved successfully.";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                successMessage = ex.Message;
+                return false;
+            }
+        }
     }
 }
