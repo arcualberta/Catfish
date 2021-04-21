@@ -164,13 +164,18 @@ namespace Catfish.Core.Services
         {
             try
             {
-                UserGroupRole ugr = new UserGroupRole()
+                UserGroupRole ugr = _appDb.UserGroupRoles.Where(ugr => ugr.UserId == userId && ugr.GroupRoleId == groupRoleId).FirstOrDefault();
+
+                if (ugr == null)
                 {
-                    Id = Guid.NewGuid(),
-                    GroupRoleId = groupRoleId,
-                    UserId = userId,
-                };
-                _appDb.UserGroupRoles.Add(ugr);
+                    ugr = new UserGroupRole()
+                    {
+                        Id = Guid.NewGuid(),
+                        GroupRoleId = groupRoleId,
+                        UserId = userId,
+                    };
+                    _appDb.UserGroupRoles.Add(ugr);
+                }
 
                 return ugr;
             }
@@ -437,51 +442,54 @@ namespace Catfish.Core.Services
 
                 dbGroup.Name = group.Name;
                 dbGroup.GroupStatus = group.GroupStatus;
-                //get group roles details from GroupRoles table
-                List<GroupRole> dbGroupRoles = _appDb.GroupRoles.Where(r => r.GroupId == group.Id).ToList();
-                //get roles associate data from interface 
-                List<GroupRoleAssignmentVM> newList = roles;
-                List<GroupRole> selectedGroupRoles = new List<GroupRole>();
-                //get all selected roles list
-                foreach (var role in newList)
-                {
-                    try
+
+                if (roles.Count > 0) 
+                { 
+                    //get group roles details from GroupRoles table
+                    List<GroupRole> dbGroupRoles = _appDb.GroupRoles.Where(r => r.GroupId == group.Id).ToList();
+                    //get roles associate data from interface 
+                    List<GroupRoleAssignmentVM> newList = roles;
+                    List<GroupRole> selectedGroupRoles = new List<GroupRole>();
+                    //get all selected roles list
+                    foreach (var role in newList)
                     {
-                        if (role.Assigned)
+                        try
                         {
-                            var newGroupRole = new GroupRole();
-                            if (role.RoleGroupId == null)
-                                newGroupRole.Id = Guid.NewGuid();
-                            else
-                                newGroupRole.Id = (Guid)role.RoleGroupId;
+                            if (role.Assigned)
+                            {
+                                var newGroupRole = new GroupRole();
+                                if (role.RoleGroupId == null)
+                                    newGroupRole.Id = Guid.NewGuid();
+                                else
+                                    newGroupRole.Id = (Guid)role.RoleGroupId;
 
-                            newGroupRole.RoleId = role.RoleId;
-                            newGroupRole.Group = dbGroup;
-                            newGroupRole.GroupId = dbGroup.Id;
-                            selectedGroupRoles.Add(newGroupRole);
+                                newGroupRole.RoleId = role.RoleId;
+                                newGroupRole.Group = dbGroup;
+                                newGroupRole.GroupId = dbGroup.Id;
+                                selectedGroupRoles.Add(newGroupRole);
+                            }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        _errorLog.Log(new Error(ex));
-                    }
+                        catch (Exception ex)
+                        {
+                            _errorLog.Log(new Error(ex));
+                        }
                     
+                    }
+                    //get all newly added roles to a list
+                    List<GroupRole> newlyAddedRoles = selectedGroupRoles.Except(dbGroupRoles, new GroupRoleComparer()).ToList();
+                    //get all deleted roles to a list
+                    List<GroupRole> deletedRoles = dbGroupRoles.Except(selectedGroupRoles, new GroupRoleComparer()).ToList();
+
+
+                    //add newly added roles to GroupRoles table
+                    if (newlyAddedRoles.Count > 0)
+                        foreach (var groupRole in newlyAddedRoles)
+                            _appDb.GroupRoles.Add(groupRole);
+                    //remove deleted roles from GroupRoles table
+                    if (deletedRoles.Count > 0)
+                        foreach (var groupRole in deletedRoles)
+                            _appDb.GroupRoles.Remove(groupRole);
                 }
-                //get all newly added roles to a list
-                List<GroupRole> newlyAddedRoles = selectedGroupRoles.Except(dbGroupRoles, new GroupRoleComparer()).ToList();
-                //get all deleted roles to a list
-                List<GroupRole> deletedRoles = dbGroupRoles.Except(selectedGroupRoles, new GroupRoleComparer()).ToList();
-
-
-                //add newly added roles to GroupRoles table
-                if (newlyAddedRoles.Count > 0)
-                    foreach (var groupRole in newlyAddedRoles)
-                        _appDb.GroupRoles.Add(groupRole);
-                //remove deleted roles from GroupRoles table
-                if (deletedRoles.Count > 0)
-                    foreach (var groupRole in deletedRoles)
-                        _appDb.GroupRoles.Remove(groupRole);
-
                 return dbGroup;
             }
             catch (Exception ex)
