@@ -769,5 +769,119 @@ namespace Catfish.Test
             //--------------------------validation section
             // --------------------------
         }
+        [Test]
+        public void RequiredIfTest()
+        {
+            RefreshDatabase();
+            _seleniumHelper.LoginLocal();
+
+            //Navigating to the test page
+            _seleniumHelper.GoToUrl("visible-if-/-required-if-fields");
+
+            //==========================================================
+            //====================Dropdown test=====================
+            //==========================================================
+
+            //Selecting Option1 for DD1
+            var ddId = "942601c6-1cb7-4508-a5e6-577dcb475a4b";
+            var ddOpt1Id = "21142581-074f-4638-96df-d550df60f8cc";
+            var ddOpt1Val = "Option 1";
+            _seleniumHelper.SelectDropdownOption(ddId, ddOpt1Id);
+            //check opt1 has required fields
+            bool ddOption1Required = _seleniumHelper.IsTextFieldRequired("ee794c7d-5ccd-4ff5-bf21-40cbd09519cd");
+            Assert.AreEqual(false, ddOption1Required, "DD1 option 1, required if function not working properly");
+            
+            //Selecting Option2 for DD1
+            var ddOpt2Id = "48aa27ca-b8aa-47fc-a8c4-22addebd3e0f";
+            var ddOpt2Val = "Option 2";
+            _seleniumHelper.SelectDropdownOption(ddId, ddOpt2Id);
+            //check opt1 has required fields
+            bool ddOption2Required = _seleniumHelper.IsTextFieldRequired("ee794c7d-5ccd-4ff5-bf21-40cbd09519cd");
+            Assert.AreEqual(true, ddOption2Required, "DD1 option 2 required if function not working properly");
+
+            //Selecting Option3 for DD1
+            var ddOpt3Id = "05c5dab2-7e56-411d-9af0-03598d5ab5e4";
+            var ddOpt3Val = "Option 3";
+            _seleniumHelper.SelectDropdownOption(ddId, ddOpt3Id);
+            //check opt1 has required fields
+            bool ddOption3Required = _seleniumHelper.IsTextFieldRequired("ee794c7d-5ccd-4ff5-bf21-40cbd09519cd");
+            Assert.AreEqual(false, ddOption3Required, "DD1 option 3 required if function not working properly");
+
+            //Selecting Option4 for DD1
+            var ddOpt4Id = "43b71beb-b69f-416a-9e68-f46027cf726e";
+            var ddOpt4Val = "Option 4";
+            _seleniumHelper.SelectDropdownOption(ddId, ddOpt4Id);
+            //check opt1 has required fields
+            bool ddOption4Required = _seleniumHelper.IsTextFieldRequired("ee794c7d-5ccd-4ff5-bf21-40cbd09519cd");
+            Assert.AreEqual(false, ddOption4Required, "DD1 option 4 required if function not working properly");
+
+            //==========================================================
+            //====================Radio button test=====================
+            //==========================================================
+
+            //Selecting Option 1 for RB1
+            var rbId = "19c12f23-6ec9-403e-8b28-d56e1bd70a7e";
+            var rbOpt1Id = "6f773564-e198-4b6e-92cc-8f179ccfbf7d";
+            var rbOpt1Val = "Option 1";
+            _seleniumHelper.SelectRadioOption(rbId, rbOpt1Id);
+            bool rbOption1Required = _seleniumHelper.IsTextFieldRequired("21c05a53-2a03-451f-a228-e67baa020fc5");
+            Assert.AreEqual(true, rbOption1Required, "RB1 option 1, required if function not working properly");
+
+            //Selecting Option 2 for RB1
+            var rbOpt2Id = "f335e0cd-a2b0-40d8-9ad9-b93e8cae11b4";
+            var rbOpt2Val = "Option 2";
+            _seleniumHelper.SelectRadioOption(rbId, rbOpt2Id);
+            bool rbOption2Required = _seleniumHelper.IsTextFieldRequired("21c05a53-2a03-451f-a228-e67baa020fc5");
+            Assert.AreEqual(true, rbOption2Required, "RB1 option 2, required if function not working properly");
+
+            //Selecting Option 3 for RB1
+            var rbOpt3Id = "a1014373-2936-4b27-a263-1195cd159b2e";
+            var rbOpt3Val = "Option 3";
+            _seleniumHelper.SelectRadioOption(rbId, rbOpt3Id);
+            bool rbOption3Required = _seleniumHelper.IsTextFieldRequired("21c05a53-2a03-451f-a228-e67baa020fc5");
+            Assert.AreEqual(false, rbOption3Required, "RB1 option 3, required if function not working properly");
+
+            //Selecting Option 4 for RB1
+            var rbOpt4Id = "e9683b37-6a72-4d13-8381-9c8c9bab8fdf";
+            var rbOpt4Val = "Option 4";
+            _seleniumHelper.SelectRadioOption(rbId, rbOpt4Id);
+            bool rbOption4Required = _seleniumHelper.IsTextFieldRequired("21c05a53-2a03-451f-a228-e67baa020fc5");
+            Assert.AreEqual(false, rbOption4Required, "RB1 option 4, required if function not working properly");
+
+            //==========================================================
+            //========================Checkbox test=====================
+            //==========================================================
+
+            //Selecting Option 1 for the CB1
+            var chkId = "412211a2-ca2a-4332-a92a-9aa931523285";
+            var chkTextFieldId = "59a6aa64-b51b-466d-a157-1a051f6ac6ed";
+            var chkOptCombination1Ids = new string[] { "2da93223-7ca2-403c-855f-4ffa0fdaf6e3" };
+            var chkOptCombination1Vals = new string[] { "Option 1"};
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination1Ids);
+            bool cbCombination1Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbCombination1Required, "RB1 option 1, required if function not working properly");
+            
+            //Selecting Option 2 for the CB1
+            var chkOptCombination2Ids = new string[] { "6f591878-4c95-49b2-b5c4-b5517c25d293" };
+            var chkOptCombination2Vals = new string[] { "Option 2" };
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination2Ids);
+            bool cbCombination2Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbCombination2Required, "RB1 option 2, required if function not working properly");
+
+            //Selecting Option 3 for the CB1
+            var chkOptCombination3Ids = new string[] { "eff3d260-f988-43a9-9a64-a35bc8639613" };
+            var chkOptCombination3Vals = new string[] { "Option 3" };
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination3Ids);
+            bool cbCombination3Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbCombination3Required, "RB1 option 3, required if function not working properly");
+
+            //Selecting Option 4 for the CB1
+            var chkOptCombination4Ids = new string[] { "bd0fdd18-ce6f-407d-8fe4-0ba71b334daf" };
+            var chkOptCombination4Vals = new string[] { "Option 4" };
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination4Ids);
+            bool cbCombination4Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbCombination4Required, "RB1 option 4, required if function not working properly");
+        }
+
     }
 }
