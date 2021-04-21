@@ -888,13 +888,15 @@ namespace Catfish.Test
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination1Ids);
             bool cbCombination1Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
             Assert.AreEqual(false, cbCombination1Required, "RB1 option 1, required if function not working properly");
-            
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination1Ids);
+
             //Selecting Option 2 for the CB1
             var chkOptCombination2Ids = new string[] { "6f591878-4c95-49b2-b5c4-b5517c25d293" };
             var chkOptCombination2Vals = new string[] { "Option 2" };
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination2Ids);
             bool cbCombination2Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
             Assert.AreEqual(false, cbCombination2Required, "RB1 option 2, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination2Ids);
 
             //Selecting Option 3 for the CB1
             var chkOptCombination3Ids = new string[] { "eff3d260-f988-43a9-9a64-a35bc8639613" };
@@ -902,6 +904,7 @@ namespace Catfish.Test
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination3Ids);
             bool cbCombination3Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
             Assert.AreEqual(false, cbCombination3Required, "RB1 option 3, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination3Ids);
 
             //Selecting Option 4 for the CB1
             var chkOptCombination4Ids = new string[] { "bd0fdd18-ce6f-407d-8fe4-0ba71b334daf" };
@@ -909,6 +912,15 @@ namespace Catfish.Test
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination4Ids);
             bool cbCombination4Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
             Assert.AreEqual(false, cbCombination4Required, "RB1 option 4, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination4Ids);
+
+            //Selecting Option 1 & option 2 for the CB1
+            var chkOptCombination5Ids = new string[] { "2da93223-7ca2-403c-855f-4ffa0fdaf6e3", "6f591878-4c95-49b2-b5c4-b5517c25d293" };
+            var chkOptCombination5Vals = new string[] { "Option 1", "Option 2" };
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination5Ids);
+            bool cbCombination5Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbCombination5Required, "RB1 option 1 & option 2, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination5Ids);
         }
 
     }

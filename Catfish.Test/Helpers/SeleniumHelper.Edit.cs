@@ -310,6 +310,7 @@ namespace Catfish.Test.Helpers
 
         public bool IsTextFieldRequired(string fieldId)
         {
+            Thread.Sleep(2000);
             string selectorString = string.Format("input[data-model-id='{0}']", fieldId);
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             string isRequired = ele.GetAttribute("required");
