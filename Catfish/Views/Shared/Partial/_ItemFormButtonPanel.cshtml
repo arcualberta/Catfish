@@ -42,7 +42,8 @@
                     foreach (var popup in postAction.PopUps)
                     {
                         string popupTragetId = "model_" + Guid.NewGuid().ToString();
-                        <input data-visible-if="@stateMapping.Condition"
+                        <input onclick="return false;"
+                               data-visible-if="@stateMapping.Condition"
                                data-field-id="@wrapperId"
                                id="@postAction.ButtonLabel"
                                class="btn btn-success launch-modal"
