@@ -59,10 +59,21 @@
 .month-header-container{
     display:flex;
     justify-content: space-evenly;
+    padding-bottom: 10px;
 }
 
 .calendar-month-container{
     border: solid black 1px;
+}
+
+.month-title-container{
+    width:100%;
+    text-align:center;
+}
+
+.events-title{
+    padding-bottom:10px;
+    padding-top: 10px;
 }
 
 .calendar-weekday-container{
@@ -99,9 +110,52 @@
     background-color: lightblue;
 }
 
+.event-day-color{
+    background-color:darkseagreen;
+}
+
 .clickable:hover{
     cursor:pointer;
 }
+
+.days-container{
+    background-color: white;
+}
+
+/* Calendar style for rounded theme - put for Future of the Past only later? */
+
+.rounded-theme .calendar-day {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    border: unset;
+}
+
+.rounded-theme .day-number{
+    text-align:center;
+    font-weight:bold;
+}
+
+.rounded-theme .calendar-month-container{
+    border: unset;
+}
+
+.rounded-theme .days-container {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.rounded-theme .month-header-container {
+    background-color: black;
+    color: white;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 
 /* Extended Gallery carousel*/
 .extended-gallery-block .carousel-indicators {

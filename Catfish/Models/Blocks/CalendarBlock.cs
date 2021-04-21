@@ -165,7 +165,7 @@ namespace Catfish.Models.Blocks
         public string EndDay { get; set; }
         public string EndTime { get; set; } = null;
         public DateTime StartDateTime;
-        public DateTime? EndDateTime;
+        public DateTime EndDateTime;
         public bool IsWholeDay = false;
 
         private static string YearFormat = "yyyy";

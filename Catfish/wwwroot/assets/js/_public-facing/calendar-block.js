@@ -10,7 +10,7 @@ const weekday = require("dayjs/plugin/weekday");
 const weekOfYear = require("dayjs/plugin/weekOfYear");
 
 Vue.component('calendar-block-vue', {
-    props: ["uid", "model"],
+    props: ["uid", "model", "googlecalendardata", "datesDict"],
 
     data: function () {
         return {
@@ -31,15 +31,15 @@ Vue.component('calendar-block-vue', {
         //code from Css-Tricks monthly Calendar with real data
         //https://css-tricks.com/how-to-make-a-monthly-calendar-with-real-data/
         //Accessed April 8 2021
-        getDaysInMonth(year, month) {
-            return [...Array(this.getNumberOfDaysInMonth(year, month))].map((day, index) => {
-                return {
-                    date: dayjs(`${year}-${month}-${index + 1}`).format("YYYY-MM-DD"),
-                    dayOfMonth: index + 1,
-                    isCurrentMonth: true
-                };
-            });
-        },
+        //getDaysInMonth(year, month) {
+        //    return [...Array(this.getNumberOfDaysInMonth(year, month))].map((day, index) => {
+        //        return {
+        //            date: dayjs(`${year}-${month}-${index + 1}`).format("YYYY-MM-DD"),
+        //            dayOfMonth: index + 1,
+        //            isCurrentMonth: true
+        //        };
+        //    });
+        //},
 
         getNumberOfDaysInMonth(year, month) {
             return dayjs(`${year}-${month}-01`).daysInMonth();
@@ -50,16 +50,19 @@ Vue.component('calendar-block-vue', {
             return dayjs(date).weekday()
         },
 
+        //note: index is the day (index + 1), day is undefined
         createDaysForCurrentMonth(year, month) {
             return [...Array(this.getNumberOfDaysInMonth(year, month))].map((day, index) => {
                 return {
                     date: dayjs(`${year}-${month}-${index + 1}`).format("YYYY-MM-DD"),
                     dayOfMonth: index + 1,
-                    isCurrentMonth: true
+                    isCurrentMonth: true,
+                    hasEvent: this.checkIfEventDay(index + 1, month, year)
                 };
             });
         },
 
+        //note: index is the day (index + 1), day is undefined
         createDaysForPreviousMonth(year, month) {
             const firstDayOfTheMonthWeekday = this.getWeekday(this.currentMonthDays[0].date);
 
@@ -73,17 +76,19 @@ Vue.component('calendar-block-vue', {
                   this.currentMonthDays[0].date
               ).subtract(visibleNumberOfDaysFromPreviousMonth, "day").date();
 
-            return [...Array(visibleNumberOfDaysFromPreviousMonth)].map((day, index) => {
+            return [...Array(visibleNumberOfDaysFromPreviousMonth)].map((day, index) => { 
                 return {
                     date: dayjs(
                         `${previousMonth.year()}-${previousMonth.month() + 1}-${previousMonthLastMondayDayOfMonth + index}`
                     ).format("YYYY-MM-DD"),
                     dayOfMonth: previousMonthLastMondayDayOfMonth + index,
-                    isCurrentMonth: false
+                    isCurrentMonth: false,
+                    hasEvent: this.checkIfEventDay(index + 1, month, year)
                 };
             });
         },
 
+        //note: index is the day (index + 1), day is undefined
         createDaysForNextMonth(year, month) {
             const lastDayOfTheMonthWeekday = this.getWeekday(`${year}-${month}-${this.currentMonthDays.length}`)
 
@@ -95,9 +100,20 @@ Vue.component('calendar-block-vue', {
                 return {
                     date: dayjs(`${year}-${Number(month) + 1}-${index + 1}`).format("YYYY-MM-DD"),
                     dayOfMonth: index + 1,
-                    isCurrentMonth: false
+                    isCurrentMonth: false,
+                    hasEvent: this.checkIfEventDay(index + 1, month, year)
                 }
             })
+        },
+
+        //for now only works for start day, not multiple days
+        checkIfEventDay(day, month, year) {
+            for (let calendarEvent of this.googlecalendardata) {
+                if (calendarEvent.StartDay == day.toString() && calendarEvent.StartMonth == dayjs(month).format('MMM') && calendarEvent.StartYear == year) {
+                    return true;
+                }
+            }
+            return false;
         },
 
         createCalendar(year = this.initialYear, month = this.initialMonth) {
@@ -127,6 +143,10 @@ Vue.component('calendar-block-vue', {
             this.selectedMonth = dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
             this.createCalendar(this.selectedMonth.format("YYYY"), this.selectedMonth.format("M"));
 
+        },
+
+        callFunction(test) {
+            console.log("does this work?", test);
         }
     },
 
@@ -145,7 +165,6 @@ Vue.component('calendar-block-vue', {
 
 
         this.days = [...this.previousMonthDays, ...this.currentMonthDays, ...this.nextMonthDays]
+    },
 
-        console.log("dayjs working?", this.days);
-    }
 });
