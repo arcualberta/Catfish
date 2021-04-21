@@ -738,18 +738,46 @@ namespace Catfish.Test
          
             _seleniumHelper.SelectRadioOption(relasese_1_Id, relasese_1_OptId);
 
-            // relaese amount.  f512e48c-6073-49ef-95b0-ec88576d01ef
+            // release amount.  f512e48c-6073-49ef-95b0-ec88576d01ef
             var releaseAmount_1_Id = "f512e48c-6073-49ef-95b0-ec88576d01ef";
             var releaseAmount_1_Val = "7700.00";
             _seleniumHelper.SetNumberValue(releaseAmount_1_Id, releaseAmount_1_Val);
 
+            // release amount, first term, justification
+
+            // 2nd term release
+            //add button ...
 
 
 
             #endregion personal_part
 
 
+            // ------------------------ checkout results overview funds ..
 
+            //Conference Travel Amount Requested
+            var ctar_id = "7c623048-859a-438e-9ace-3d11517cd38f";
+            var ctar_OnForm = _seleniumHelper.GetDecimalDisplayValue(ctar_id);
+            var ctar_required = airfareVal + accomadationVal + perdiemVal + confRegVal + groundVal + addExpVal;
+            Assert.AreEqual(ctar_OnForm, ctar_required, "Conference Travel Amount Requested value is not correctly indicated");
+
+            //Research / Creativity Activity Travel Amount Requested
+
+
+
+            //Support for Research and Creative Activity Equipment and Materials
+
+
+            //Teaching release time
+
+
+            //Personnel and Services
+
+
+            //TOTAL ASK OF GRANT
+
+
+            //Other and Previous Funding
 
             // ---------------------submit section
             // --------------------------
@@ -766,7 +794,7 @@ namespace Catfish.Test
 
 
 
-            //--------------------------validation section
+            //--------------------------validation section 2
             // --------------------------
         }
     }
