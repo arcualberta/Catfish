@@ -102,7 +102,12 @@
     flex: 1 7 14%;
 }
 
-.day-not-current-month{
+.weekday-label-container {
+    width: 100%;
+    text-align: center;
+}
+
+.day-not-current-month {
     background-color: lightgrey;
 }
 

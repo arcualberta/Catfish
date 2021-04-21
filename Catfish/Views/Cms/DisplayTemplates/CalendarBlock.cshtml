@@ -44,9 +44,9 @@
                     </div>
                     <div class="calendar-month-container">
                         <div class="calendar-weekday-container">
-                            <template v-for="weekday in WEEKDAYS">
+                            <div v-for="weekday in WEEKDAYS" class="weekday-label-container">
                                 <div>{{weekday}}</div>
-                            </template>
+                            </div>
 
                         </div>
                         <div class="days-container">
