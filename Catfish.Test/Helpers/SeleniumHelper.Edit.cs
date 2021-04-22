@@ -307,5 +307,27 @@ namespace Catfish.Test.Helpers
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             return ele.GetAttribute("value");
         }
+
+        public bool IsTextFieldRequired(string fieldId)
+        {
+            Thread.Sleep(2000);
+            string selectorString = string.Format("input[data-model-id='{0}']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string isRequired = ele.GetAttribute("required");
+            if (isRequired == "true")
+                return true;
+            else
+                return false;
+        }
+
+        //public bool IsTextFieldNotRequired(string fieldId)
+        //{
+        //    string selectorString = string.Format("input[data-model-id='{0}']", fieldId);
+        //    var ele = Driver.FindElement(By.CssSelector(selectorString));
+        //    if (!string.IsNullOrWhiteSpace(ele.ToString()))
+        //        return true;
+        //    else
+        //        return false;
+        //}
     }
 }
