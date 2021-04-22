@@ -56,6 +56,16 @@ Vue.component("calendar-block-vue", {
                     });
                 }
             }
+            else if (elName == "calendarStyle") {
+                this.model.calendarStyle.value = e.target.value;
+                var content = this.model.calendarStyle.value;
+                if (content.length > 0) {
+                    this.$emit('update-content', {
+                        uid: this.uid,
+                        calendarStyle: content
+                    });
+                }
+            }
         }
     },
     computed: {
@@ -84,6 +94,11 @@ Vue.component("calendar-block-vue", {
                 return this.model.displayCalendarUIValue.value;
             }
         },
+        calendarStyleValue: {
+            get: function () {
+                return this.model.calendarStyle.value;
+            }
+        },
         isCalendarIdEmpty: function () {
             return piranha.utils.isEmptyText(this.model.calendarId.value);
         }
@@ -95,6 +110,12 @@ Vue.component("calendar-block-vue", {
         <div class='lead row'><label class='form-label col-md-3'>Number of Future Days:</label> <input type='number' class='form-control col-md-4' name='futureDays' v-model='model.daysRangeFuture.value' contenteditable='true' v-on:blur='onBlur' value='futureDaysValue'  /></div>
         <div class='lead row'><label class='form-label col-md-3'>Max Events:</label> <input type='number' class='form-control col-md-4' name='maxEvents' v-model='model.maxEvents.value' contenteditable='true' v-on:blur='onBlur' value='maxEventsValue'  /></div>
         <div class='lead row'><label class='form-label col-md-3'>Display a Calendar:</label> <input type='checkbox' class='form-control col-md-4' name='displayCalendarUI' v-model='model.displayCalendarUI.value' contenteditable='true' v-on:blur='onBlur' value='displayCalendarUIValue'/></div>
+        <div class='lead row'><label class='form-label col-md-3'>Calendar Style:</label>
+            <select class='form-control col-md-4' name="calendarStyle" v-on:blur='onBlur' :value='calendarStyleValue' id="calendar-style-select">
+                <option value="0">Simple</option>
+                <option value="1">Rounded</option>
+           </select>
+        </div>
     </div>
     `
 });

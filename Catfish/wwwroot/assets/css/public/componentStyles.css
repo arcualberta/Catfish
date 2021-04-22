@@ -129,7 +129,7 @@
 
 /* Calendar style for rounded theme - put for Future of the Past only later? */
 
-.rounded-theme .calendar-day {
+.rounded-style .calendar-day {
     justify-content: center;
     display: flex;
     flex-direction: column;
@@ -137,21 +137,21 @@
     border: unset;
 }
 
-.rounded-theme .day-number{
+.rounded-style .day-number{
     text-align:center;
     font-weight:bold;
 }
 
-.rounded-theme .calendar-month-container{
+.rounded-style .calendar-month-container{
     border: unset;
 }
 
-.rounded-theme .days-container {
+.rounded-style .days-container {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-.rounded-theme .month-header-container {
+.rounded-style .month-header-container {
     background-color: black;
     color: white;
     border-top-right-radius: 10px;

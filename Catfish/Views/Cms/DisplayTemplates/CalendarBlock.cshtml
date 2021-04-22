@@ -15,17 +15,30 @@
     var jsonData = JsonConvert.SerializeObject(Model);
     var googleCalendarData = JsonConvert.SerializeObject(CalendarEventList);
 
-    Dictionary<DateTime, int> datesDict = new Dictionary<DateTime, int>();
-    //create list of dates to mark as events
-    foreach (var calendarEvent in CalendarEventList)
-    {
-        //need to be able to catch multiple dates and also watch out for different months/years
-        //multiple events can ocur on the same date in this case since this is just to show on the calendar that there is something happening at all
-                datesDict.Add( calendarEvent.StartDateTime,
-            Math.Abs((calendarEvent.StartDateTime.Date - calendarEvent.EndDateTime.Date).Days) );
-    }
-    //THIS WONT WORK ITS A DICT DOESNT CONVERT TO JSON var datesDictJson = JsonConvert.SerializeObject(datesDict);
+    //Dictionary<DateTime, int> datesDict = new Dictionary<DateTime, int>();
+    ////create list of dates to mark as events
+    //foreach (var calendarEvent in CalendarEventList)
+    //{
+    //    //need to be able to catch multiple dates and also watch out for different months/years
+    //    //multiple events can ocur on the same date in this case since this is just to show on the calendar that there is something happening at all
+    //    datesDict.Add( calendarEvent.StartDateTime,
+    //Math.Abs((calendarEvent.StartDateTime.Date - calendarEvent.EndDateTime.Date).Days) );
+    //}
 
+    //THIS WONT WORK ITS A DICT DOESNT CONVERT TO JSON var datesDictJson = JsonConvert.SerializeObject(datesDict);
+    string calendarStyling;
+    switch (Model.CalendarStyle.Value.ToString())
+    {
+        case "Simple":
+            calendarStyling = "simple-style";
+            break;
+        case "Rounded":
+            calendarStyling = "rounded-style";
+            break;
+        default:
+            calendarStyling = "simple-style";
+            break;
+    }
 }
 
 
@@ -34,7 +47,7 @@
     @if (Model.DisplayCalendarUI.Value != null && Model.DisplayCalendarUI.Value)
     {
         <calendar-block-vue v-bind:model='@Html.Raw(jsonData)' :googlecalendardata='@googleCalendarData' inline-template>
-            <div class="calendar-container">
+            <div class="calendar-container @calendarStyling" >
                     <div class="month-header-container">
                         <div class="clickable" v-on:click="goToPreviousMonth()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                         <div class="month-title-container">
@@ -64,7 +77,7 @@
     @if (CalendarEventList != null)
     {
         <h3 class="events-title">Events</h3>
-        <hr />
+        <hr /> @*would need to convert this to Vue stuff for it to be reactive with it*@
 
         foreach (var calendarEvent in CalendarEventList)
         {

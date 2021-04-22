@@ -31,6 +31,15 @@ namespace Catfish.Models.Blocks
         public NumberField MaxEvents { get; set; }
         public CheckBoxField DisplayCalendarUI { get; set; }
 
+        public SelectField<CalendarStyles> CalendarStyle { get; set; }
+
+        public enum CalendarStyles
+        {
+            [Display(Description = "Simple")]
+            Simple,
+            [Display(Description = "Rounded")]
+            Rounded
+        }
         public CalendarBlock()
         {
         }
