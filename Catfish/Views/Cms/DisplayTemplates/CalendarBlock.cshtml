@@ -42,105 +42,60 @@
 }
 
 
-<div class="container container-fluid google-calendar-panel calendar-events calendar-default">
-
-    @if (Model.DisplayCalendarUI.Value != null && Model.DisplayCalendarUI.Value)
-    {
-        <calendar-block-vue v-bind:model='@Html.Raw(jsonData)' :googlecalendardata='@googleCalendarData' inline-template>
-            <div class="calendar-container @calendarStyling" >
-                    <div class="month-header-container">
-                        <div class="clickable left-arrow" v-on:click="goToPreviousMonth()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
-                        <div class="month-title-container">
-                            <h3 class="clickable" v-on:click="goToPresentMonth()">{{selectedMonth.format("MMMM")}} {{selectedMonth.format("YYYY")}}</h3>
-                        </div>
-                        <div class="clickable right-arrow" v-on:click="goToNextMonth()"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
-                    </div>
-                    <div class="calendar-month-container">
-                        <div class="calendar-weekday-container">
-                            <div v-for="weekday in WEEKDAYS" class="weekday-label-container">
-                                <div>{{weekday}}</div>
-                            </div>
-
-                        </div>
-                        <div class="days-container">
-                            <template v-for="(day, index) in days">
-                                <div class="calendar-day" :class="{'day-not-current-month': !day.isCurrentMonth, 'today-is-the-day': day.date == today, 'event-day-color': day.hasEvent }">
-                                    <div class="day-number">{{day.dayOfMonth}}</div>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                </div>
-        </calendar-block-vue>
-    }
-
-    @if (CalendarEventList != null)
-    {
-        <h3 class="events-title">Events</h3>
-        <hr /> @*would need to convert this to Vue stuff for it to be reactive with it*@
-
-        foreach (var calendarEvent in CalendarEventList)
+<calendar-block-vue v-bind:model='@Html.Raw(jsonData)' :googlecalendardata='@googleCalendarData' inline-template class="container container-fluid google-calendar-panel calendar-events calendar-default">
+    <div>
+        @if (Model.DisplayCalendarUI.Value != null && Model.DisplayCalendarUI.Value)
         {
-            <div class="row well calendar-event">
 
-                <div class="col-md-10">
-                    @if (showSummary && calendarEvent.Summary != null)
-                    {
-                        <div class="summary">
-                            <h4>@calendarEvent.Summary</h4>
-                        </div>
-                    }
-
-                    @if (showDescription && calendarEvent.Description != null)
-                    {
-                        <div class="description">@Html.Raw(calendarEvent.Description)</div>
-                    }
-
-                    @if (showLocation && calendarEvent.Location != null)
-                    {
-                        <div class="location">@calendarEvent.Location</div>
-                    }
+            <div class="calendar-container @calendarStyling">
+                <div class="month-header-container">
+                    <div class="clickable left-arrow" v-on:click="goToPreviousMonth()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    <div class="month-title-container">
+                        <h3 class="clickable" v-on:click="goToPresentMonth()">{{selectedMonth.format("MMMM")}} {{selectedMonth.format("YYYY")}}</h3>
+                    </div>
+                    <div class="clickable right-arrow" v-on:click="goToNextMonth()"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                 </div>
-                <div class="col-md-2 calendar-event-dates">
-                    @if (calendarEvent.StartDateTime != null)
-                    {
-
-                        <div class="date-time date-time-start">
-                            @calendarEvent.StartMonth @calendarEvent.StartDay @calendarEvent.StartYear
-                            @*<div class="date-month">@calendarEvent.StartMonth</div>
-                                <div class="date-day">@calendarEvent.StartDay</div>
-                                <div class="date-year">@calendarEvent.StartYear</div>*@
-
-                            @if (calendarEvent.StartTime != null)
-                            {
-                                <div class="date-hour">@calendarEvent.StartTime</div>
-                            }
-
+                <div class="calendar-month-container">
+                    <div class="calendar-weekday-container">
+                        <div v-for="weekday in WEEKDAYS" class="weekday-label-container">
+                            <div>{{weekday}}</div>
                         </div>
-                    }
 
-
-
-                    @*@if (calendarEvent.EndDateTime != null)
-                        {
-                            <div class="date-separator glyphicon glyphicon-chevron-right"> </div>
-                            <div class="date-time date-time-end">
-                                <div class="date-month">@calendarEvent.EndMonth</div>
-                                <div class="date-day">@calendarEvent.EndDay</div>
-                                <div class="date-year">@calendarEvent.EndYear</div>
-
-                                @if (calendarEvent.EndTime != null)
-                                {
-                                    <div class="date-hour">@calendarEvent.EndTime</div>
-                                }
-
+                    </div>
+                    <div class="days-container">
+                        <template v-for="(day, index) in days">
+                            <div class="calendar-day" :class="{'day-not-current-month': !day.isCurrentMonth, 'today-is-the-day': day.date == today, 'event-day-color': day.hasEvent }">
+                                <div class="day-number">{{day.dayOfMonth}}</div>
                             </div>
-                        }*@
-
-
+                        </template>
+                    </div>
                 </div>
             </div>
-        }
-    }
 
-</div>
+        }
+        @*code was here*@
+        <h3 class="events-title">Events</h3>
+        <hr />
+
+        <div v-for="calendarEvent of googlecalendardata" v-if="calendarEvent.StartMonth == selectedMonth.format('MMM')" class="row well calendar-event">
+
+            <div class="col-md-10">
+                <div class="summary">
+                    <h4>{{calendarEvent.Summary}}</h4>
+                </div>
+
+                <div class="description">{{calendarEvent.Description}}</div>
+                <div class="location">{{calendarEvent.Location}}</div>
+            </div>
+            <div class="col-md-2 calendar-event-dates">
+                <div class="date-time date-time-start">
+                    <div class="date-month">{{calendarEvent.StartMonth}}</div>
+                    <div class="date-day">{{calendarEvent.StartDay}}</div>
+                    <div class="date-year">{{calendarEvent.StartYear}}</div>
+                    <div class="date-hour">{{calendarEvent.StartTime}}</div>
+                </div>
+            </div>
+        </div>
+
+
+</calendar-block-vue>
