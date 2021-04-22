@@ -190,7 +190,7 @@ namespace Catfish.Helper
 
         public string[] GetAccessRestrictionAllowedDomains()
         {
-            var allowedD = _configuration.GetSection("SiteConfig:AccessRestriction:AllowedDomain");
+            var allowedD = _configuration.GetSection("SiteConfig:AccessRestriction:AllowedDomains");
             string[] _domains = allowedD.Get<string[]>();
 
             return _domains;
