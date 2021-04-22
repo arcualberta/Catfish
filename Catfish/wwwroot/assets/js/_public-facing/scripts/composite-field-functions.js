@@ -34,6 +34,9 @@
 
         let id = name.split(/\[/).join('_').split(/\]/).join('_').split(/\./).join('_');
         $(ele).attr("id", id);
+
+        $(ele).attr("data-cf-item-index", idx);
+
     });
 
     // Setting the newChildGuid as the ID of the DataItem of the templateClone
