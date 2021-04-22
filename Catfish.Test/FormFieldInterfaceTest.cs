@@ -880,14 +880,17 @@ namespace Catfish.Test
             //========================Checkbox test=====================
             //==========================================================
 
-            //Selecting Option 1 for the CB1
+            //Selecting Options for the CB1 and  testing for required on text box 3
             var chkId = "412211a2-ca2a-4332-a92a-9aa931523285";
+            // text box 3 ID
             var chkTextFieldId = "59a6aa64-b51b-466d-a157-1a051f6ac6ed";
+
+            //Selecting Option 1 for the CB1
             var chkOptCombination1Ids = new string[] { "2da93223-7ca2-403c-855f-4ffa0fdaf6e3" };
             var chkOptCombination1Vals = new string[] { "Option 1"};
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination1Ids);
             bool cbCombination1Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
-            Assert.AreEqual(false, cbCombination1Required, "RB1 option 1, required if function not working properly");
+            Assert.AreEqual(false, cbCombination1Required, "CB1 option 1, required if function not working properly");
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination1Ids);
 
             //Selecting Option 2 for the CB1
@@ -895,7 +898,7 @@ namespace Catfish.Test
             var chkOptCombination2Vals = new string[] { "Option 2" };
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination2Ids);
             bool cbCombination2Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
-            Assert.AreEqual(false, cbCombination2Required, "RB1 option 2, required if function not working properly");
+            Assert.AreEqual(false, cbCombination2Required, "CB1 option 2, required if function not working properly");
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination2Ids);
 
             //Selecting Option 3 for the CB1
@@ -903,7 +906,7 @@ namespace Catfish.Test
             var chkOptCombination3Vals = new string[] { "Option 3" };
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination3Ids);
             bool cbCombination3Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
-            Assert.AreEqual(false, cbCombination3Required, "RB1 option 3, required if function not working properly");
+            Assert.AreEqual(false, cbCombination3Required, "CB1 option 3, required if function not working properly");
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination3Ids);
 
             //Selecting Option 4 for the CB1
@@ -911,16 +914,107 @@ namespace Catfish.Test
             var chkOptCombination4Vals = new string[] { "Option 4" };
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination4Ids);
             bool cbCombination4Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
-            Assert.AreEqual(false, cbCombination4Required, "RB1 option 4, required if function not working properly");
+            Assert.AreEqual(false, cbCombination4Required, "CB1 option 4, required if function not working properly");
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination4Ids);
 
             //Selecting Option 1 & option 2 for the CB1
+            //  --- Test required  for when selecting        Opt1 & Opt2         of CB1
             var chkOptCombination5Ids = new string[] { "2da93223-7ca2-403c-855f-4ffa0fdaf6e3", "6f591878-4c95-49b2-b5c4-b5517c25d293" };
             var chkOptCombination5Vals = new string[] { "Option 1", "Option 2" };
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination5Ids);
             bool cbCombination5Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
-            Assert.AreEqual(false, cbCombination5Required, "RB1 option 1 & option 2, required if function not working properly");
+            Assert.AreEqual(false, cbCombination5Required, "CB1 option 1 & option 2, required if function not working properly");
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination5Ids);
+
+
+            // assign data-model-id's to strings
+            var opt_1_dmi = "2da93223-7ca2-403c-855f-4ffa0fdaf6e3";
+            var opt_2_dmi = "6f591878-4c95-49b2-b5c4-b5517c25d293";
+            var opt_3_dmi = "eff3d260-f988-43a9-9a64-a35bc8639613";
+            var opt_4_dmi = "bd0fdd18-ce6f-407d-8fe4-0ba71b334daf";
+
+
+
+            //  --- Test required  for when selecting  Opt1 & Opt3  of CB1 - should result in Text box3 requirement
+            var cbComb_6_Ids = new string[] { opt_1_dmi, opt_3_dmi };
+            var cbComb_6_Vals = new string[] { "Option 1", "Option 3" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_6_Ids);
+            bool cbComb_6_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(true, cbComb_6_Required, "CB1 option 1 & option 3, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_6_Ids);
+
+            //  --- Test required  for when selecting  Opt1 & Opt4     of CB1
+            var cbComb_7_Ids = new string[] { opt_1_dmi, opt_4_dmi };
+            var cbComb_7_Vals = new string[] { "Option 1", "Option 4" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_7_Ids);
+            bool cbComb_7_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbComb_7_Required, "CB1 option 1 & option 4, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_7_Ids);
+
+            //  --- Test required  for when selecting  Opt2 & Opt3     of CB1
+            var cbComb_8_Ids = new string[] { opt_2_dmi, opt_3_dmi };
+            var cbComb_8_Vals = new string[] { "Option 2", "Option 3" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_8_Ids);
+            bool cbComb_8_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbComb_8_Required, "CB1 option 2 & option 3, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_8_Ids);
+
+
+            //  --- Test required  for when selecting  Opt2 & Opt4     of CB1
+            var cbComb_9_Ids = new string[] { opt_2_dmi, opt_4_dmi };
+            var cbComb_9_Vals = new string[] { "Option 2", "Option 4" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_9_Ids);
+            bool cbComb_9_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbComb_9_Required, "CB1 option 2 & option 4, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_9_Ids);
+
+            //  --- Test required  for when selecting  Opt3 & Opt4      of CB1
+            var cbComb_10_Ids = new string[] { opt_3_dmi, opt_4_dmi };
+            var cbComb_10_Vals = new string[] { "Option 3", "Option 4" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_10_Ids);
+            bool cbComb_10_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbComb_10_Required, "CB1 option 3 & option 4, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_10_Ids);
+
+            //  --- Test required  for when selecting  Opt1 & Opt2 & Opt3   of CB1 - should result in Text box3 requirement
+            var cbComb_11_Ids = new string[] { opt_1_dmi, opt_2_dmi, opt_3_dmi };
+            var cbComb_11_Vals = new string[] { "Option 1", "Option 2", "Option 3" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_11_Ids);
+            bool cbComb_11_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(true, cbComb_11_Required, "CB1 option 1, option 2 & option 3, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_11_Ids);
+
+            //  --- Test required  for when selecting  Opt1 & Opt2 & Opt4   of CB1
+            var cbComb_12_Ids = new string[] { opt_1_dmi, opt_2_dmi, opt_4_dmi };
+            var cbComb_12_Vals = new string[] { "Option 1", "Option 2", "Option 4" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_12_Ids);
+            bool cbComb_12_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbComb_12_Required, "CB1 option 1, option 2 & option 4, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_12_Ids);
+
+            //  --- Test required  for when selecting  Opt1 & Opt3 & Opt4   of CB1 - should result in Text box3 requirement
+            var cbComb_13_Ids = new string[] { opt_1_dmi, opt_3_dmi, opt_4_dmi };
+            var cbComb_13_Vals = new string[] { "Option 1", "Option 3", "Option 4" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_13_Ids);
+            bool cbComb_13_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(true, cbComb_13_Required, "CB1 option 1, option 3 & option 4, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_13_Ids);
+
+            //  --- Test required  for when selecting  Opt2 & Opt3 & Opt4   of CB1
+            var cbComb_14_Ids = new string[] { opt_2_dmi, opt_3_dmi, opt_4_dmi };
+            var cbComb_14_Vals = new string[] { "Option 2", "Option 3", "Option 4" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_14_Ids);
+            bool cbComb_14_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(false, cbComb_14_Required, "CB1 option 2, option 3 & option 4, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_14_Ids);
+
+            //  --- Test required  for when selecting  Opt1 & Opt2 & Opt3 & Opt4  of CB1 - should result in Text box3 requirement
+            var cbComb_15_Ids = new string[] { opt_1_dmi, opt_2_dmi, opt_3_dmi, opt_4_dmi };
+            var cbComb_15_Vals = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_15_Ids);
+            bool cbComb_15_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
+            Assert.AreEqual(true, cbComb_15_Required, "CB1 option 1, option 2, option 3 & option 4, required if function not working properly");
+            _seleniumHelper.SelectCheckOptions(chkId, cbComb_15_Ids);
         }
 
     }
