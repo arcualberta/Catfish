@@ -320,6 +320,13 @@ namespace Catfish.Test.Helpers
                 return false;
         }
 
+        public string GetSummaryFieldValue(string fieldId)
+        {
+            string selectorString = string.Format("input[data-model-id='{0}']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            return ele.GetAttribute("value");
+        }
+
         //public bool IsTextFieldNotRequired(string fieldId)
         //{
         //    string selectorString = string.Format("input[data-model-id='{0}']", fieldId);
