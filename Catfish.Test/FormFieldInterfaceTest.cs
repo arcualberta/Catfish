@@ -757,9 +757,11 @@ namespace Catfish.Test
 
             //Conference Travel Amount Requested
             var ctar_id = "7c623048-859a-438e-9ace-3d11517cd38f";
-            var ctar_OnForm = _seleniumHelper.GetDecimalDisplayValue(ctar_id);
-            var ctar_required = airfareVal + accomadationVal + perdiemVal + confRegVal + groundVal + addExpVal;
-            Assert.AreEqual(ctar_OnForm, ctar_required, "Conference Travel Amount Requested value is not correctly indicated");
+            //var ctar_OnForm = _seleniumHelper.GetDecimalDisplayValue(ctar_id);
+            var ctar_OnForm = _seleniumHelper.GetSummaryFieldValue(ctar_id);
+            var ctar_required = decimal.Parse(airfareVal) + decimal.Parse(accomadationVal) + decimal.Parse(perdiemVal) + 
+                decimal.Parse(confRegVal) + decimal.Parse(groundVal) + decimal.Parse(addExpVal);
+            Assert.AreEqual(decimal.Parse(ctar_OnForm), ctar_required, "Conference Travel Amount Requested value is not correctly indicated");
 
             //Research / Creativity Activity Travel Amount Requested
 
@@ -783,8 +785,8 @@ namespace Catfish.Test
             // --------------------------
 
             //Clicking on the submit button
-            var dataItemTemplateId = "button_wrapper_d5d50e2c-726e-4ba4-a512-635ad66ba8ea";
-            _seleniumHelper.ClickSaveButton(dataItemTemplateId, "Save");
+            //var dataItemTemplateId = "button_wrapper_d5d50e2c-726e-4ba4-a512-635ad66ba8ea";
+            //_seleniumHelper.ClickSaveButton(dataItemTemplateId, "Save");
 
             //Clicking on the link to view detail view
             //_seleniumHelper.ClickOnALink("click on here");
@@ -796,6 +798,7 @@ namespace Catfish.Test
 
             //--------------------------validation section 2
             // --------------------------
+            
         }
         [Test]
         public void RequiredIfTest()
@@ -1015,6 +1018,8 @@ namespace Catfish.Test
             bool cbComb_15_Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
             Assert.AreEqual(true, cbComb_15_Required, "CB1 option 1, option 2, option 3 & option 4, required if function not working properly");
             _seleniumHelper.SelectCheckOptions(chkId, cbComb_15_Ids);
+
+
         }
 
     }
