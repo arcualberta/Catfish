@@ -143,10 +143,6 @@ Vue.component('calendar-block-vue', {
             this.selectedMonth = dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
             this.createCalendar(this.selectedMonth.format("YYYY"), this.selectedMonth.format("M"));
 
-        },
-
-        callFunction(test) {
-            console.log("does this work?", test);
         }
     },
 
@@ -162,7 +158,7 @@ Vue.component('calendar-block-vue', {
         this.previousMonthDays = this.createDaysForPreviousMonth(this.initialYear, this.initialMonth, this.currentMonthDays[0]);
         this.nextMonthDays = this.createDaysForNextMonth(this.initialYear, this.initialMonth);
         this.today = dayjs().format("YYYY-MM-DD");
-
+        console.log(this.googlecalendardata);
 
         this.days = [...this.previousMonthDays, ...this.currentMonthDays, ...this.nextMonthDays]
     },

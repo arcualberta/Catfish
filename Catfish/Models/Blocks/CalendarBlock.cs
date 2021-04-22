@@ -176,6 +176,7 @@ namespace Catfish.Models.Blocks
         public DateTime StartDateTime;
         public DateTime EndDateTime;
         public bool IsWholeDay = false;
+        public List<EventAttachment> Attachments { get; }
 
         private static string YearFormat = "yyyy";
         private static string MonthFormat = "MMM";
@@ -187,6 +188,14 @@ namespace Catfish.Models.Blocks
             Summary = currentEvent.Summary;
             Description = currentEvent.Description;
             Location = currentEvent.Location;
+            Attachments = new List<EventAttachment>();
+            if (currentEvent.Attachments != null)
+            {
+                foreach (var attachment in currentEvent.Attachments)
+                {
+                    Attachments.Add(attachment);
+                }
+            }
             ParseStart(currentEvent);
             ParseEnd(currentEvent);
         }

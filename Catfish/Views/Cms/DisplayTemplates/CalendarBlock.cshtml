@@ -15,15 +15,15 @@
     var jsonData = JsonConvert.SerializeObject(Model);
     var googleCalendarData = JsonConvert.SerializeObject(CalendarEventList);
 
-    //Dictionary<DateTime, int> datesDict = new Dictionary<DateTime, int>();
-    ////create list of dates to mark as events
-    //foreach (var calendarEvent in CalendarEventList)
-    //{
-    //    //need to be able to catch multiple dates and also watch out for different months/years
-    //    //multiple events can ocur on the same date in this case since this is just to show on the calendar that there is something happening at all
-    //    datesDict.Add( calendarEvent.StartDateTime,
-    //Math.Abs((calendarEvent.StartDateTime.Date - calendarEvent.EndDateTime.Date).Days) );
-    //}
+    Dictionary<DateTime, int> datesDict = new Dictionary<DateTime, int>();
+    //create list of dates to mark as events
+    foreach (var calendarEvent in CalendarEventList)
+    {
+        //need to be able to catch multiple dates and also watch out for different months/years
+        //multiple events can ocur on the same date in this case since this is just to show on the calendar that there is something happening at all
+        datesDict.Add(calendarEvent.StartDateTime,
+    Math.Abs((calendarEvent.StartDateTime.Date - calendarEvent.EndDateTime.Date).Days));
+    }
 
     //THIS WONT WORK ITS A DICT DOESNT CONVERT TO JSON var datesDictJson = JsonConvert.SerializeObject(datesDict);
     string calendarStyling;
@@ -73,7 +73,6 @@
             </div>
 
         }
-        @*code was here*@
         <h3 class="events-title">Events</h3>
         <hr />
 
@@ -83,8 +82,8 @@
                 <div class="summary">
                     <h4>{{calendarEvent.Summary}}</h4>
                 </div>
-
-                <div class="description">{{calendarEvent.Description}}</div>
+                <div v-if="calendarEvent.Description" class="description">{{calendarEvent.Description}}</div>
+                <div v-else class="description">No description provided.</div>
                 <div class="location">{{calendarEvent.Location}}</div>
             </div>
             <div class="col-md-2 calendar-event-dates">
@@ -95,7 +94,9 @@
                     <div class="date-hour">{{calendarEvent.StartTime}}</div>
                 </div>
             </div>
+            <div v-if="calendarEvent.Attachments.length > 0"><img :src="calendarEvent.Attachments[0].fileUrl" /></div>
         </div>
 
-
+    </div>
 </calendar-block-vue>
+</div> @*This doesn't match to anything but it's required to run... there's a problem somewhere else*@
