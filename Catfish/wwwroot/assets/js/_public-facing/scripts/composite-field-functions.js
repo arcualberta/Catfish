@@ -35,7 +35,7 @@
         let id = name.split(/\[/).join('_').split(/\]/).join('_').split(/\./).join('_');
         $(ele).attr("id", id);
 
-        $(ele).attr("data-cf-item-index", idx);
+        
 
     });
 
@@ -75,6 +75,7 @@ function removeDataItem(childListContainerId, wrappperId, min, childrenNamePrefi
 
             let id = name.split(/\[/).join('_').split(/\]/).join('_').split(/\./).join('_');
             $(ele).attr("id", id);
+            $(ele).attr("data-cf-item-index", childIdx);
         });
     });
 
