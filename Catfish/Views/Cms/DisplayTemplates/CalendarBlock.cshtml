@@ -25,26 +25,44 @@
     Math.Abs((calendarEvent.StartDateTime.Date - calendarEvent.EndDateTime.Date).Days));
     }
 
-    //THIS WONT WORK ITS A DICT DOESNT CONVERT TO JSON var datesDictJson = JsonConvert.SerializeObject(datesDict);
+
     string calendarStyling;
-    switch (Model.CalendarStyle.Value.ToString())
+    switch (Model.CalendarStyle.Value)
     {
-        case "Simple":
+        case Catfish.Models.Blocks.CalendarStyles.Simple:
             calendarStyling = "simple-style";
             break;
-        case "Rounded":
+        case Catfish.Models.Blocks.CalendarStyles.Rounded:
             calendarStyling = "rounded-style";
             break;
         default:
             calendarStyling = "simple-style";
             break;
     }
+
+    //int displayCalendarSetting;
+
+    //switch ((int)Model.DisplayCalendarUI.Value)
+    //{
+    //    case (int)Catfish.Models.Blocks.CalendarTypes.DoNotDisplayCalendar:
+    //        displayCalendarSetting = 0;
+    //        break;
+    //    case (int)Catfish.Models.Blocks.CalendarTypes.RegularCalendar:
+    //        displayCalendarSetting = 1;
+    //        break;
+    //    case (int)Catfish.Models.Blocks.CalendarTypes.WeeklyStrip:
+    //        displayCalendarSetting = 2;
+    //        break;
+    //    default:
+    //        displayCalendarSetting = 0;
+    //        break;
+    //}
 }
 
 
 <calendar-block-vue v-bind:model='@Html.Raw(jsonData)' :googlecalendardata='@googleCalendarData' inline-template class="container container-fluid google-calendar-panel calendar-events calendar-default">
     <div>
-        @if (Model.DisplayCalendarUI.Value != null && Model.DisplayCalendarUI.Value)
+        @if (Model.DisplayCalendarUI.Value == Catfish.Models.Blocks.CalendarTypes.RegularCalendar)
         {
 
             <div class="calendar-container @calendarStyling">
@@ -72,7 +90,11 @@
                 </div>
             </div>
 
+        }else if(Model.DisplayCalendarUI.Value == Catfish.Models.Blocks.CalendarTypes.WeeklyStrip)
+        {
+            <div>Weekly calendar goes here</div>
         }
+
         <h3 class="events-title">Events</h3>
         <hr />
 

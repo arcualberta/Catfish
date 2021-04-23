@@ -19,7 +19,23 @@ using Google.Apis.Util.Store;
 
 namespace Catfish.Models.Blocks
 {
+    public enum CalendarStyles
+    {
+        [Display(Description = "Simple")]
+        Simple,
+        [Display(Description = "Rounded")]
+        Rounded
+    }
 
+    public enum CalendarTypes: int
+    {
+        [Display(Description = "Do Not Display Calendar")]
+        DoNotDisplayCalendar = 0,
+        [Display(Description = "Regular Calendar")]
+        RegularCalendar = 1,
+        [Display(Description = "Weekly Strip")]
+        WeeklyStrip = 2
+    }
 
     [BlockType(Name = "Calendar Block", Category = "Content", Component = "calendar-block-vue", Icon = "fas fa-calendar-alt")] //calendar-block
     public class CalendarBlock : VueComponent
@@ -29,17 +45,11 @@ namespace Catfish.Models.Blocks
         public NumberField DaysRangePast { get; set; }
         public NumberField DaysRangeFuture { get; set; }
         public NumberField MaxEvents { get; set; }
-        public CheckBoxField DisplayCalendarUI { get; set; }
+        public SelectField<CalendarTypes> DisplayCalendarUI { get; set; }
 
         public SelectField<CalendarStyles> CalendarStyle { get; set; }
 
-        public enum CalendarStyles
-        {
-            [Display(Description = "Simple")]
-            Simple,
-            [Display(Description = "Rounded")]
-            Rounded
-        }
+        
         public CalendarBlock()
         {
         }
@@ -87,15 +97,15 @@ namespace Catfish.Models.Blocks
             return 100; //default value
         }
 
-        public bool? GetDisplayCalendarUI()
-        {
-            if (DisplayCalendarUI != null)
-            {
+        //public bool? GetDisplayCalendarUI()
+        //{
+        //    if (DisplayCalendarUI != null)
+        //    {
 
-                return DisplayCalendarUI;
-            }
-            return false; //default value
-        }
+        //        return DisplayCalendarUI;
+        //    }
+        //    return false; //default value
+        //}
 
         public List<CalendarEvent> GetCalendarEvents()
         {
