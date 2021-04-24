@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Helper;
 using System;
@@ -20,27 +21,50 @@ namespace Catfish.Services
         }
         public void Index(Entity entity)
         {
-            XElement doc = GetSampleDoc();
-            _ = PostAsync(doc.ToString());
+            //XElement xml = GetSampleDoc();
+            //AddUpdateAsync(xml);
+
+            SolrDoc doc = new SolrDoc(entity);
+            AddUpdateAsync(doc);
         }
 
         public void Commit()
         {
-            CommitAsync();
+            _ = CommitAsync();
         }
 
-        public async Task PostAsync(string doc, string contentType = "text/xml")
+        public void AddUpdateAsync(SolrDoc doc)
         {
-            var uri = new Uri(_solrCoreUrl + "/update");
-            using var content = new StringContent(doc, Encoding.UTF8, contentType);
+            XElement payload = new XElement("add");
+            payload.Add(doc.Root);
+
+            _ = AddUpdateAsync(payload);
+        }
+
+        public void AddUpdateAsync(List<SolrDoc> docs)
+        {
+            XElement payload = new XElement("add");
+            foreach (var doc in docs)
+                payload.Add(doc.Root);
+
+            _ = AddUpdateAsync(payload);
+        }
+
+        public async Task AddUpdateAsync(XElement payload)
+        {
+            var uri = new Uri(_solrCoreUrl + "/update?commit=true");
+
+            using var content = new StringContent(payload.ToString(SaveOptions.DisableFormatting), Encoding.UTF8, "text/xml");
             using var client = new HttpClient();
             using var httpResponse = await client.PostAsync(uri, content).ConfigureAwait(false);
 
             httpResponse.EnsureSuccessStatusCode();
         }
 
-        public async void CommitAsync()
+        public async Task CommitAsync()
         {
+            return;
+
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
             using var client = new HttpClient();
