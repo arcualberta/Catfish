@@ -12,7 +12,7 @@ namespace Catfish.Helper
         string GetGoogleClientId();
         string GetDefaultUserRole();
         string GetGoogleCalendarAPIKey();
-        string GetSolrUrl();
+        string GetSolrCoreUrl();
         bool DisplayCarouselThumbnails();
         string GetAllowDomain();
         string GetUnauthorizedLoginMessage();
@@ -125,9 +125,9 @@ namespace Catfish.Helper
              return _configuration["EmailServer:Recipient"];
         }
 
-        public string GetSolrUrl()
+        public string GetSolrCoreUrl()
         {
-            return _configuration["SolarConfiguration:solrItemURL"];
+            return _configuration["SolarConfiguration:solrCore"];
         }
 
         public string GetLogoUrl()

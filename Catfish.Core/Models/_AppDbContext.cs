@@ -15,16 +15,18 @@ namespace Catfish.Core.Models
 {
     public class AppDbContext : DbContext
     {
+        private readonly ISolrService _indexingService;
         /// <summary>
         /// The application config.
         /// </summary>
         public IConfiguration Configuration { get; set; }
 
         //public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
-        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
+        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration, ISolrService indexingService)
             : base(options)
         {
             Configuration = configuration;
+            _indexingService = indexingService;
         }
 
         protected override void OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder optionsBuilder)
@@ -38,6 +40,7 @@ namespace Catfish.Core.Models
 
         public override int SaveChanges()
         {
+            bool indexUpdated = false;
             foreach (var entry in ChangeTracker.Entries())
             {
                 foreach (var prop in entry.Entity.GetType().GetProperties().Where(p => p.CustomAttributes.Count() > 0))
@@ -49,7 +52,16 @@ namespace Catfish.Core.Models
                         entry.Property(prop.Name).IsModified = true;
                     }
                 }
+
+                if(typeof(Item).IsAssignableFrom(entry.Entity.GetType()))
+                {
+                    _indexingService.Index(entry.Entity as Item);
+                    indexUpdated = true;
+                }
             }
+
+            if(indexUpdated)
+                _indexingService.Commit();
 
             return base.SaveChanges();
         }
