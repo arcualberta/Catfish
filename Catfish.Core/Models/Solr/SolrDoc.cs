@@ -6,6 +6,7 @@ using System.Linq;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
+using Newtonsoft.Json;
 
 namespace Catfish.Core.Models.Solr
 {
@@ -45,31 +46,31 @@ namespace Catfish.Core.Models.Solr
 
         public SolrDoc(BaseField src)
         {
-            bool status = false;
+            bool status = true;
 
-            if (typeof(TextField).IsAssignableFrom(src.GetType()))
-                status = Initialize(src as TextField);
+            if (typeof(TextField).IsAssignableFrom(src.GetType())) { }
+                //AddField(src as TextField);
             else if (typeof(OptionsField).IsAssignableFrom(src.GetType()))
-                status = Initialize(src as OptionsField);
+                AddField(src.Id + "_ss", (src as OptionsField).GetSelectedOptionTexts());
             else if (typeof(IntegerField).IsAssignableFrom(src.GetType()))
-                status = Initialize(src as IntegerField);
-            else if (typeof(DecimalField).IsAssignableFrom(src.GetType()))
-                status = Initialize(src as DecimalField);
-            else if (typeof(DateField).IsAssignableFrom(src.GetType()))
-                status = Initialize(src as DateField);
-            else if (typeof(MonolingualTextField).IsAssignableFrom(src.GetType()))
-                status = Initialize(src as MonolingualTextField);
+                AddField(src.Id + "_is", (src as IntegerField).GetValues());
+            //else if (typeof(DecimalField).IsAssignableFrom(src.GetType()))
+            //    AddField(src.Id+"_ds", (src as DecimalField).GetValues());
+            //else if (typeof(DateField).IsAssignableFrom(src.GetType()))
+            //    AddField(src.Id+"_dts", (src as DateField).GetValues());
+            //else if (typeof(MonolingualTextField).IsAssignableFrom(src.GetType()))
+            //    AddField(src.Id+"_ss", (src as MonolingualTextField).GetValues());
             else if (typeof(TableField).IsAssignableFrom(src.GetType()))
-                status = Initialize(src as TableField);
+                AddField(src as TableField);
             else if (typeof(CompositeField).IsAssignableFrom(src.GetType()))
-                status = Initialize(src as CompositeField);
+                AddField(src as CompositeField);
+            else
+                status = false;
 
             if (status)
             {
                 AddId(src.Id);
-
             }
-
         }
 
         public override string ToString()
@@ -77,50 +78,90 @@ namespace Catfish.Core.Models.Solr
             return _root == null ? null : _root.ToString();
         }
 
-        public bool Initialize(TextField src)
+        public void AddField(TextField src)
         {
-            return true;
+            var firstValueSet = src.Values.FirstOrDefault();
+            if (firstValueSet == null)
+                return;
+
+            var languages = firstValueSet.Values.Select(v => v.Language).ToList();
+            foreach(var lang in languages)
+                AddField(string.Format("{0}_{1}_ss", src.Id, lang), src.GetStrValues(lang));
         }
 
-        public bool Initialize(OptionsField src)
+        ////public void AddField(OptionsField src)
+        ////{
+        ////    AddField(src.Id + "_ss", src.GetSelectedOptionTexts());
+        ////}
+
+        ////public void AddField(IntegerField src)
+        ////{
+        ////    var vals = src.GetValues();
+        ////    if (src.AllowMultipleValues)
+        ////        AddField(src.Id + "_is", vals);
+        ////    else if (vals.Length > 0)
+        ////        AddField(src.Id + "_i", vals[0]);
+        ////}
+
+        ////public void AddField(DecimalField src)
+        ////{
+        ////    var vals = src.GetValues();
+        ////    if (src.AllowMultipleValues)
+        ////        AddField(src.Id + "_ds", vals);
+        ////    else if (vals.Length > 0)
+        ////        AddField(src.Id + "_d", vals[0]);
+        ////}
+
+        ////public void AddField(DateField src)
+        ////{
+        ////    var vals = src.GetValues();
+        ////    if (src.AllowMultipleValues)
+        ////        AddField(src.Id + "_dts", vals);
+        ////    else if (vals.Length > 0)
+        ////        AddField(src.Id + "_dt", vals[0]);
+        ////}
+
+        ////public void AddField(MonolingualTextField src)
+        ////{
+        ////    var vals = src.GetValues();
+        ////    if (src.AllowMultipleValues)
+        ////        AddField(src.Id + "_ss", vals);
+        ////    else if (vals.Length > 0)
+        ////        AddField(src.Id + "_s", vals[0]);
+        ////}
+
+        public void AddField(TableField src)
         {
-            return true;
         }
 
-        public bool Initialize(IntegerField src)
+        public void AddField(CompositeField src)
         {
-            return true;
-        }
-
-        public bool Initialize(DecimalField src)
-        {
-            return true;
-        }
-
-        public bool Initialize(DateField src)
-        {
-            return true;
-        }
-
-        public bool Initialize(MonolingualTextField src)
-        {
-            return true;
-        }
-
-        public bool Initialize(TableField src)
-        {
-            return true;
-        }
-
-        public bool Initialize(CompositeField src)
-        {
-            return true;
         }
 
         public void AddId(Guid id)
         {
             _root.Add(NewField("id", id.ToString()));
         }
+
+        public void AddField(string name, object val)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
+            string jsonString = JsonConvert.SerializeObject(val, settings);
+            _root.Add(NewField(name, jsonString));
+        }
+
+        ////public void AddField(string name, int[] values)
+        ////{
+        ////    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
+        ////    string jsonString = JsonConvert.SerializeObject(values, settings);
+        ////    _root.Add(NewField(name, jsonString));
+        ////}
+        ////public void AddField(string name, int value)
+        ////{
+        ////    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
+        ////    string jsonString = JsonConvert.SerializeObject(value, settings);
+        ////    _root.Add(NewField(name, jsonString));
+        ////}
 
         protected XElement NewField(string name, string value = null)
         {

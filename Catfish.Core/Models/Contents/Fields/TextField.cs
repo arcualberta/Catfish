@@ -98,6 +98,15 @@ namespace Catfish.Core.Models.Contents.Fields
             return vals;
         }
 
+        public string[] GetStrValues(string lang = null)
+        {
+            var vals = GetValues(lang);
+            return vals.Where(v => !string.IsNullOrEmpty(v.Value))
+                .Select(v => v.Value)
+                .ToArray();
+        }
+
+
         public string GetValues(string separator, string lang = null)
         {
             IEnumerable<Text> texts = GetValues(lang);
