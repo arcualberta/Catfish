@@ -25,12 +25,12 @@ namespace Catfish.Core.Models.Solr
 
             XElement metadataSetContainer = NewField("metadata-set-container");
             _root.Add(metadataSetContainer);
-            foreach(var child in src.DataContainer)
+            foreach(var child in src.MetadataSets)
                 metadataSetContainer.Add(new SolrDoc(child).Root);
 
             XElement dataContainer = NewField("data-container");
             _root.Add(dataContainer);
-            foreach (var child in src.MetadataSets)
+            foreach (var child in src.DataContainer)
                 dataContainer.Add(new SolrDoc(child).Root);
         }
 
@@ -38,10 +38,28 @@ namespace Catfish.Core.Models.Solr
         {
             AddId(src.Id);
 
-            XElement fieldContainer = NewField("data-container");
-            _root.Add(fieldContainer);
+            ////XElement fieldContainer = NewField("data-container");
+            ////_root.Add(fieldContainer);
+            ////foreach (var field in src.Fields)
+            ////    fieldContainer.Add(new SolrDoc(field).Root);
+            
             foreach (var field in src.Fields)
-                fieldContainer.Add(new SolrDoc(field).Root);
+            {
+                if (typeof(TextField).IsAssignableFrom(field.GetType()))
+                {
+                    var firstValueSet = (field as TextField).Values.FirstOrDefault();
+                    if (firstValueSet != null)
+                    {
+                        var languages = firstValueSet.Values.Select(v => v.Language).ToList();
+                        
+                        foreach (var lang in languages)
+                            AddField(string.Format("{0}_{1}_ss", field.Id, lang), (field as TextField).GetStrValues(lang));
+                    }
+                }
+                else if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+                    AddField(field.Id +"_ss", (field as OptionsField).GetSelectedOptionTexts());
+            }
+
         }
 
         public SolrDoc(BaseField src)
@@ -51,9 +69,9 @@ namespace Catfish.Core.Models.Solr
             if (typeof(TextField).IsAssignableFrom(src.GetType())) { }
                 //AddField(src as TextField);
             else if (typeof(OptionsField).IsAssignableFrom(src.GetType()))
-                AddField(src.Id + "_ss", (src as OptionsField).GetSelectedOptionTexts());
+                AddField("value_ss", (src as OptionsField).GetSelectedOptionTexts());
             else if (typeof(IntegerField).IsAssignableFrom(src.GetType()))
-                AddField(src.Id + "_is", (src as IntegerField).GetValues());
+                AddField("value_ss", (src as IntegerField).GetValues());
             //else if (typeof(DecimalField).IsAssignableFrom(src.GetType()))
             //    AddField(src.Id+"_ds", (src as DecimalField).GetValues());
             //else if (typeof(DateField).IsAssignableFrom(src.GetType()))
@@ -163,15 +181,26 @@ namespace Catfish.Core.Models.Solr
         ////    _root.Add(NewField(name, jsonString));
         ////}
 
-        protected XElement NewField(string name, string value = null)
+        ////protected XElement NewField(string name, string value = null)
+        ////{
+        ////    XElement field = new XElement("field");
+        ////    field.SetAttributeValue("name", name);
+        ////    if (!string.IsNullOrEmpty(value))
+        ////        field.SetValue(value);
+        ////    return field;
+        ////}
+
+        protected XElement NewField(string name, object value = null)
         {
             XElement field = new XElement("field");
             field.SetAttributeValue("name", name);
-            if (!string.IsNullOrEmpty(value))
+            if (value != null)
+            {
+                JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
+                string jsonString = JsonConvert.SerializeObject(value, settings);
                 field.SetValue(value);
+            }
             return field;
         }
-
-
     }
 }
