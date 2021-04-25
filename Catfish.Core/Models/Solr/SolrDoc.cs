@@ -17,77 +17,62 @@ namespace Catfish.Core.Models.Solr
 
         public SolrDoc()
         {
-
         }
         public SolrDoc(Entity src)
         {
             AddId(src.Id);
 
-            XElement metadataSetContainer = NewField("metadata-set-container");
-            _root.Add(metadataSetContainer);
-            foreach(var child in src.MetadataSets)
-                metadataSetContainer.Add(new SolrDoc(child).Root);
+            foreach (var child in src.MetadataSets)
+                AddContainerFields("metadata", child);
 
-            XElement dataContainer = NewField("data-container");
-            _root.Add(dataContainer);
             foreach (var child in src.DataContainer)
-                dataContainer.Add(new SolrDoc(child).Root);
+                AddContainerFields("data", child);
         }
 
-        public SolrDoc(FieldContainerBase src)
+        protected void AddContainerFields(string containerPrefix, FieldContainer container)
         {
-            AddId(src.Id);
-
-            ////XElement fieldContainer = NewField("data-container");
-            ////_root.Add(fieldContainer);
-            ////foreach (var field in src.Fields)
-            ////    fieldContainer.Add(new SolrDoc(field).Root);
-            
-            foreach (var field in src.Fields)
+            foreach(var field in container.Fields)
             {
+                string solrFieldName = string.Format("{0}_{1}_{2}", containerPrefix, container.Id, field.Id);
                 if (typeof(TextField).IsAssignableFrom(field.GetType()))
                 {
-                    var firstValueSet = (field as TextField).Values.FirstOrDefault();
-                    if (firstValueSet != null)
-                    {
-                        var languages = firstValueSet.Values.Select(v => v.Language).ToList();
-                        
-                        foreach (var lang in languages)
-                            AddField(string.Format("{0}_{1}_ss", field.Id, lang), (field as TextField).GetStrValues(lang));
-                    }
+                    solrFieldName += "_ss";
+                    foreach (var val in (field as TextField).Values)
+                        foreach (var txt in val.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
+                            AddField(solrFieldName, txt.Value);
                 }
                 else if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
-                    AddField(field.Id +"_ss", (field as OptionsField).GetSelectedOptionTexts());
-            }
+                {
+                    solrFieldName += "_ss";
+                    foreach (var option in (field as OptionsField).Options.Where(op => op.Selected))
+                        foreach (var txt in option.OptionText.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
+                            AddField(solrFieldName, txt.Value);
+                }
+                else if (typeof(IntegerField).IsAssignableFrom(field.GetType()))
+                {
+                    solrFieldName += "_is";
+                    foreach (var txt in (field as IntegerField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
+                        AddField(solrFieldName, int.Parse(txt.Value));
+                }
+                else if (typeof(DecimalField).IsAssignableFrom(field.GetType()))
+                {
+                    solrFieldName += "_ds";
+                    foreach (var txt in (field as DecimalField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
+                        AddField(solrFieldName, decimal.Parse(txt.Value));
+                }
+                else if (typeof(DateField).IsAssignableFrom(field.GetType()))
+                {
+                    solrFieldName += "_dts";
+                    foreach (var txt in (field as DateField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
+                        AddField(solrFieldName, DateTime.Parse(txt.Value));
+                }
+                else if (typeof(MonolingualTextField).IsAssignableFrom(field.GetType()))
+                {
+                    solrFieldName += "_ss";
+                    foreach (var txt in (field as MonolingualTextField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
+                        AddField(solrFieldName, txt.Value);
+                }
 
-        }
-
-        public SolrDoc(BaseField src)
-        {
-            bool status = true;
-
-            if (typeof(TextField).IsAssignableFrom(src.GetType())) { }
-                //AddField(src as TextField);
-            else if (typeof(OptionsField).IsAssignableFrom(src.GetType()))
-                AddField("value_ss", (src as OptionsField).GetSelectedOptionTexts());
-            else if (typeof(IntegerField).IsAssignableFrom(src.GetType()))
-                AddField("value_ss", (src as IntegerField).GetValues());
-            //else if (typeof(DecimalField).IsAssignableFrom(src.GetType()))
-            //    AddField(src.Id+"_ds", (src as DecimalField).GetValues());
-            //else if (typeof(DateField).IsAssignableFrom(src.GetType()))
-            //    AddField(src.Id+"_dts", (src as DateField).GetValues());
-            //else if (typeof(MonolingualTextField).IsAssignableFrom(src.GetType()))
-            //    AddField(src.Id+"_ss", (src as MonolingualTextField).GetValues());
-            else if (typeof(TableField).IsAssignableFrom(src.GetType()))
-                AddField(src as TableField);
-            else if (typeof(CompositeField).IsAssignableFrom(src.GetType()))
-                AddField(src as CompositeField);
-            else
-                status = false;
-
-            if (status)
-            {
-                AddId(src.Id);
             }
         }
 
@@ -95,58 +80,6 @@ namespace Catfish.Core.Models.Solr
         {
             return _root == null ? null : _root.ToString();
         }
-
-        public void AddField(TextField src)
-        {
-            var firstValueSet = src.Values.FirstOrDefault();
-            if (firstValueSet == null)
-                return;
-
-            var languages = firstValueSet.Values.Select(v => v.Language).ToList();
-            foreach(var lang in languages)
-                AddField(string.Format("{0}_{1}_ss", src.Id, lang), src.GetStrValues(lang));
-        }
-
-        ////public void AddField(OptionsField src)
-        ////{
-        ////    AddField(src.Id + "_ss", src.GetSelectedOptionTexts());
-        ////}
-
-        ////public void AddField(IntegerField src)
-        ////{
-        ////    var vals = src.GetValues();
-        ////    if (src.AllowMultipleValues)
-        ////        AddField(src.Id + "_is", vals);
-        ////    else if (vals.Length > 0)
-        ////        AddField(src.Id + "_i", vals[0]);
-        ////}
-
-        ////public void AddField(DecimalField src)
-        ////{
-        ////    var vals = src.GetValues();
-        ////    if (src.AllowMultipleValues)
-        ////        AddField(src.Id + "_ds", vals);
-        ////    else if (vals.Length > 0)
-        ////        AddField(src.Id + "_d", vals[0]);
-        ////}
-
-        ////public void AddField(DateField src)
-        ////{
-        ////    var vals = src.GetValues();
-        ////    if (src.AllowMultipleValues)
-        ////        AddField(src.Id + "_dts", vals);
-        ////    else if (vals.Length > 0)
-        ////        AddField(src.Id + "_dt", vals[0]);
-        ////}
-
-        ////public void AddField(MonolingualTextField src)
-        ////{
-        ////    var vals = src.GetValues();
-        ////    if (src.AllowMultipleValues)
-        ////        AddField(src.Id + "_ss", vals);
-        ////    else if (vals.Length > 0)
-        ////        AddField(src.Id + "_s", vals[0]);
-        ////}
 
         public void AddField(TableField src)
         {
@@ -163,32 +96,8 @@ namespace Catfish.Core.Models.Solr
 
         public void AddField(string name, object val)
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
-            string jsonString = JsonConvert.SerializeObject(val, settings);
-            _root.Add(NewField(name, jsonString));
+            _root.Add(NewField(name, val));
         }
-
-        ////public void AddField(string name, int[] values)
-        ////{
-        ////    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
-        ////    string jsonString = JsonConvert.SerializeObject(values, settings);
-        ////    _root.Add(NewField(name, jsonString));
-        ////}
-        ////public void AddField(string name, int value)
-        ////{
-        ////    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
-        ////    string jsonString = JsonConvert.SerializeObject(value, settings);
-        ////    _root.Add(NewField(name, jsonString));
-        ////}
-
-        ////protected XElement NewField(string name, string value = null)
-        ////{
-        ////    XElement field = new XElement("field");
-        ////    field.SetAttributeValue("name", name);
-        ////    if (!string.IsNullOrEmpty(value))
-        ////        field.SetValue(value);
-        ////    return field;
-        ////}
 
         protected XElement NewField(string name, object value = null)
         {
