@@ -151,8 +151,10 @@ Vue.component('calendar-block-vue', {
                 this.goToNextMonth();
                 this.weekSliceNum = 0;
                 this.daysSection = this.days.slice((this.weekSliceNum), this.weekSliceNum + 7);
+                this.weekSliceNum += 7; 
             } else {
-                //just a regular week
+
+                //checks if changed direction
                 if (this.lastAction < 0) {
                     this.weekSliceNum += 7;
                 }
@@ -172,7 +174,10 @@ Vue.component('calendar-block-vue', {
                 this.goToPreviousMonth();
                 this.weekSliceNum = this.days.length;
                 this.daysSection = this.days.slice(this.weekSliceNum - 7, this.weekSliceNum);
+                this.weekSliceNum -= 7; 
             } else {
+
+                //checks if changed direction
                 if (this.lastAction > 0) {
                     this.weekSliceNum -= 7;
                 }
