@@ -399,9 +399,20 @@ namespace Catfish.Test
 
             //Selecting "No" Option  for "are you a dept. chair" RB
             var chairrbId = "5ada22d2-2b7b-42aa-a449-79b04115af12";
-            var chairrbOptId = "fc6bf9a5-b0c7-44de-8cff-6f2eee8b3f91";
+
             //var chairrbOptVal = "No";
-            _seleniumHelper.SelectRadioOption(chairrbId, chairrbOptId);
+            var chairrbOptNoId = "fc6bf9a5-b0c7-44de-8cff-6f2eee8b3f91";
+            _seleniumHelper.SelectRadioOption(chairrbId, chairrbOptNoId);
+
+            // opps - make that a yes
+            //var chairrbOptYesId = "799bb23c-7137-4b9a-a150-77359e8a3e90";
+            //_seleniumHelper.SelectRadioOption(chairrbId, chairrbOptYesId);
+
+            // enter chair info  36c2aabc-44b9-4a6c-8172-1bb9c199c276, d8afbf19-a9ec-4da2-9077-4a0c63effa66
+
+            var chairId = "36c2aabc-44b9-4a6c-8172-1bb9c199c276";
+            var chairOptId = "2e506b72-dd18-4fa4-9843-49a9c6657fa8";
+            _seleniumHelper.SelectDropdownOption(chairId, chairOptId);
 
             //Setting project name
             var projNameId = "58b39ab2-fbf7-43df-ba76-59b7d04bc32f";
@@ -478,15 +489,17 @@ namespace Catfish.Test
             _seleniumHelper.SetTextFieldValue(participationOtherId, participationOtherVal);
 
 
-            //Setting airfare value 700.50
+            //Setting airfare value 700.57
             var airfareId = "8f938a04-2900-4ea6-a361-b1534c5199ec";
-            var airfareVal = "700.57";
+            //var airfareVal = "700.57";  // unless round number, item flagged at sumbit stage.
+            var airfareVal = "700";
             _seleniumHelper.SetNumberValue(airfareId, airfareVal);
 
 
             // accomadation
             var accomadationId = "8eb97013-f4a9-4dad-98c4-7903bd07344e";
-            var accomadationVal = "1050.55";
+            //var accomadationVal = "1050.55"; // unless round number, item flagged at sumbit stage.
+            var accomadationVal = "1050";
             _seleniumHelper.SetNumberValue(accomadationId, accomadationVal);
 
             // per diem
@@ -561,13 +574,15 @@ namespace Catfish.Test
             //air fare
             //c949503a-4fda-4fa3-aefc-252aff92ab1d
             var qairfareId = "c949503a-4fda-4fa3-aefc-252aff92ab1d";
-            var qairfareVal = "707.50";
+            //var qairfareVal = "707.50";// unless round number, item flagged at sumbit stage.
+            var qairfareVal = "707";
             _seleniumHelper.SetNumberValue(qairfareId, qairfareVal);
 
             //accomadations
             //bcea11d7-17a8-44dd-aeed-e221041f5714
             var qaccomadationId = "bcea11d7-17a8-44dd-aeed-e221041f5714";
-            var qaccomadationVal = "1057.50";
+            //var qaccomadationVal = "1057.50";// unless round number, item flagged at sumbit stage.
+            var qaccomadationVal = "1057";
             _seleniumHelper.SetNumberValue(qaccomadationId, qaccomadationVal);
 
             //perdiem
@@ -730,7 +745,8 @@ namespace Catfish.Test
             // estimate prices
             //7a5467df-7326-48ae-99ff-58bf1751f3eb
             var estCostId = "7a5467df-7326-48ae-99ff-58bf1751f3eb";
-            var estCostVal = "550.55";
+            //var estCostVal = "550.55";  // unless round number, item flagged at sumbit stage.
+            var estCostVal = "550";
             _seleniumHelper.SetNumberValue(estCostId, estCostVal);
 
 
@@ -789,62 +805,119 @@ namespace Catfish.Test
 
 
             // ------------------------ checkout results overview funds ..
+            #region summary_part
 
             //Conference Travel Amount Requested
             var ctar_id = "7c623048-859a-438e-9ace-3d11517cd38f";
             //var ctar_OnForm = _seleniumHelper.GetDecimalDisplayValue(ctar_id);
+            //var ctar_required = airfareVal + accomadationVal + perdiemVal + confRegVal + groundVal + addExpVal;
+            //Assert.AreEqual(ctar_OnForm, ctar_required, "Conference Travel Amount Requested value is not correctly indicated");
+
+
             var ctar_OnForm = _seleniumHelper.GetSummaryFieldValue(ctar_id);
             var ctar_required = decimal.Parse(airfareVal) + decimal.Parse(accomadationVal) + decimal.Parse(perdiemVal) + 
                 decimal.Parse(confRegVal) + decimal.Parse(groundVal) + decimal.Parse(addExpVal);
             Assert.AreEqual(decimal.Parse(ctar_OnForm), ctar_required, "Conference Travel Amount Requested value is not correctly indicated");
-            //Conference Travel Amount Requested  7c623048-859a-438e-9ace-3d11517cd38f
-
-            #region summary_part
-            //Thread.Sleep(2000);
-
-            //var ctar_id = "7c623048-859a-438e-9ace-3d11517cd38f";
-            //var ctar_OnForm = _seleniumHelper.GetDecimalDisplayValue(ctar_id);
-            //var ctar_required = airfareVal + accomadationVal + perdiemVal + confRegVal + groundVal + addExpVal;
-            //Assert.AreEqual(ctar_OnForm, ctar_required, "Conference Travel Amount Requested value is not correctly indicated");
-
-            //Research / Creativity Activity Travel Amount Requested
 
 
 
-            //Support for Research and Creative Activity Equipment and Materials
+            //Research / Creativity Activity Travel Amount Requested 38bde356-dd5c-47b4-b0ba-97dd86cadf58
+            var rcatr_id = "38bde356-dd5c-47b4-b0ba-97dd86cadf58";
+            var rcatr_onForm = _seleniumHelper.GetSummaryFieldValue(rcatr_id);
+            var rcatr_required = decimal.Parse(qairfareVal) + decimal.Parse(qaccomadationVal) + decimal.Parse(qperdiemVal) +
+                 decimal.Parse(qgroundVal) + decimal.Parse(qaddExpVal);
+            Assert.AreEqual(decimal.Parse(rcatr_onForm), rcatr_required, "Research - Creativity Activity Travel Amount Requested is not correctly indicated");
 
+            //Support for Research and Creative Activity Equipment and Materials - 2ebe044b-ed64-4ceb-b7b2-0f37a5851c69
+            var rcaem_id = "2ebe044b-ed64-4ceb-b7b2-0f37a5851c69";
+            var rcaem_onForm = _seleniumHelper.GetSummaryFieldValue(rcaem_id);
+            var rcaem_required = decimal.Parse(estCostVal);
+            Assert.AreEqual(decimal.Parse(rcaem_onForm), rcaem_required, "Support for Research and Creative Activity Equipment and Materials is not correctly indicated");
 
-            //Teaching release time
-
+            //Teaching release time  5e71a356-cd02-4bd3-8ab1-629c2b81c45a
+            var releaseAmount_2_Val = "0.0";
+            var ttr_id = "5e71a356-cd02-4bd3-8ab1-629c2b81c45a";
+            var ttr_onForm = _seleniumHelper.GetSummaryFieldValue(ttr_id);
+            var ttr_required = decimal.Parse(releaseAmount_1_Val)+ decimal.Parse(releaseAmount_2_Val);
+            Assert.AreEqual(decimal.Parse(ttr_onForm), ttr_required, "Teaching release time  is not correctly indicated");
 
             //Personnel and Services
+            var ps_id = "38ddbde7-e34a-432c-a4c8-18714115f6b2";
+            var ps_onForm = _seleniumHelper.GetSummaryFieldValue(ps_id);
+            var ps_required = decimal.Parse(studentcostVal) + decimal.Parse(contractedcostVal);
+            Assert.AreEqual(decimal.Parse(ps_onForm), ps_required, "Personnel and Services costs  are not correctly indicated");
 
+            //TOTAL ASK OF GRANT   7890332e-bc9b-4365-8402-299ac7645e69
 
-            //TOTAL ASK OF GRANT
+            var total_id = "7890332e-bc9b-4365-8402-299ac7645e69";
+            var total_onForm = _seleniumHelper.GetSummaryFieldValue(total_id);
+            var total_required = ctar_required + rcatr_required + rcaem_required +
+                 ttr_required + ps_required;
+            Assert.AreEqual(decimal.Parse(total_onForm), total_required, "TOTAL ASK OF GRANT is not correctly indicated");
+
 
             #endregion summary_part
 
 
             //Other and Previous Funding
+            //Selecting "No" Option  for "previous SAS funding 5 years" 
+            var prevSAS5Id = "471e3fbb-2034-447c-80ad-9d61f33829f9";
+            var prevSAS5rbOptId = "46dc91e8-895a-41ef-be78-a1eff9fe6257";
+            //
+            _seleniumHelper.SelectRadioOption(prevSAS5Id, prevSAS5rbOptId);
+
+         
+             //Selecting "No" Option  for "previous SAS funding this project" 
+             var prevthisSASId = "8247d88d-01dc-42ea-b726-4f851dca888d";
+            var prevthisSASrbOptId = "c61d30fc-f850-4769-8c4c-5650f0d05801";
+            //
+            _seleniumHelper.SelectRadioOption(prevthisSASId, prevthisSASrbOptId);
+
+            //Selecting "No" Option  for "previous SAS funding this project" 
+            var otherSASFundingId = "1f3631c4-14e3-4c45-b268-203c3bd2d65c";
+            var otherSASFundingOptId = "6488cfa7-8921-4e2d-b86e-e7b5df830642";
+            //
+            _seleniumHelper.SelectRadioOption(otherSASFundingId, otherSASFundingOptId);
+
+            // other funding fab1e156-776c-4616-aaad-789419065ee6
+            var otherFundingId = "fab1e156-776c-4616-aaad-789419065ee6";
+            var otherFundingVal = "Funds from catfish sales to local groceries.";
+            _seleniumHelper.SetTextAreaValue(otherFundingId, otherFundingVal);
+
+            // Scholarly Publications b9cf535d-5445-4a94-8e35-c132afd26579
+            var scholarlyPubId = "b9cf535d-5445-4a94-8e35-c132afd26579";
+            var scholarlyPubVal = "Arcguy, Main. “Are Catfish good? Something about taste.” Catfish  & Fresh Water Fish 21.4 (2016): 280-295.\r\n" +
+                                    "Arcguy, Main, Arcperson, Other. “Are Catfish edible? Maybe.” Catfish  & Commonsense 10.12 (2008): 400-462. ";
+            _seleniumHelper.SetTextAreaValue(scholarlyPubId, scholarlyPubVal);
+
+
 
             // ---------------------submit section
             // --------------------------
 
             //Clicking on the submit button
+
+
+
             //var dataItemTemplateId = "button_wrapper_d5d50e2c-726e-4ba4-a512-635ad66ba8ea";
-            //_seleniumHelper.ClickSaveButton(dataItemTemplateId, "Save");
+            //_seleniumHelper.ClickSubmitButton(dataItemTemplateId, "Submit");
+
+            _seleniumHelper.ClickSimpleSubmitButton();
+
+            //Clicking on the modal confirmation button
+            var modalTemplateId = "f31602f0-1002-4e35-8c2c-90a03a8d3a93";
+            _seleniumHelper.CkickModalSubmit(modalTemplateId, "btn btn-success");
+
+            //_seleniumHelper.ClickModalSubmitButton();
 
             //Clicking on the link to view detail view
-            //_seleniumHelper.ClickOnALink("click on here");
-
-            //Clicking on the link to view detail view
-            //_seleniumHelper.ClickOnALink("Edit");
+            _seleniumHelper.ClickOnALink("click on here");
 
 
 
             //--------------------------validation section 2
             // --------------------------
-            
+
         }
         [Test]
         public void RequiredIfTest()

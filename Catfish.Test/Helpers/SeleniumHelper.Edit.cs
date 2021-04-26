@@ -314,10 +314,28 @@ namespace Catfish.Test.Helpers
             ele.Click();
         }
 
+
+        public void ClickSimpleSubmitButton()
+        {
+            string selectorString = string.Format("#Submit");
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
+        }
+
+        public void ClickModalSubmitButton()
+        {
+            Thread.Sleep(2000);
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(55));
+            //string selectorString = string.Format("form[data-template-id='{0}'] div[id='buttonLayer'] button[class='{1}']", dataItemTemplateId, cssClass);
+            var ele = wait.Until(drv => drv.FindElement(By.ClassName("btn-success")));
+
+            ele.Click();
+        }
+
         public void ClickOnALink(string linkText)
         {
             Thread.Sleep(2000);
-            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(50));
             var ele = wait.Until(drv => drv.FindElement(By.LinkText(linkText)));
             ele.Click();
         }
