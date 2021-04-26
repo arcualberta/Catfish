@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --mode=development --config webpack.config.js",
-    "copy": "copy wwwroot\\assets\\dist\\calendar-block-vue.js wwwroot\\assets\\js\\_public-facing"
+    "copy": "copy wwwroot\\assets\\dist\\calendar-block-vue.js wwwroot\\assets\\js\\_public-facing && copy wwwroot\\assets\\dist\\calendar-block-vue.js.map wwwroot\\assets\\js\\_public-facing"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

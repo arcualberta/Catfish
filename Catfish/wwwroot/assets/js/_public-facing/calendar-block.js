@@ -10,7 +10,7 @@ const weekday = require("dayjs/plugin/weekday");
 const weekOfYear = require("dayjs/plugin/weekOfYear");
 
 Vue.component('calendar-block-vue', {
-    props: ["uid", "model", "googlecalendardata", "datesDict"],
+    props: ["uid", "model", "googlecalendardata", "calendardisplay"],
 
     data: function () {
         return {
@@ -22,7 +22,14 @@ Vue.component('calendar-block-vue', {
             previousMonthDays: [],
             nextMonthDays: [],
             selectedMonth: null,
-            today: null
+            today: null,
+
+            //for weekly strip
+            daysSection: [],
+            weekSliceNum: 7,
+            //not the best solution, figure out something else
+            //0 = neutral, -1 = backwards, 1 = forwards
+            lastAction: 0,
         }
     },
 
@@ -31,15 +38,6 @@ Vue.component('calendar-block-vue', {
         //code from Css-Tricks monthly Calendar with real data
         //https://css-tricks.com/how-to-make-a-monthly-calendar-with-real-data/
         //Accessed April 8 2021
-        //getDaysInMonth(year, month) {
-        //    return [...Array(this.getNumberOfDaysInMonth(year, month))].map((day, index) => {
-        //        return {
-        //            date: dayjs(`${year}-${month}-${index + 1}`).format("YYYY-MM-DD"),
-        //            dayOfMonth: index + 1,
-        //            isCurrentMonth: true
-        //        };
-        //    });
-        //},
 
         getNumberOfDaysInMonth(year, month) {
             return dayjs(`${year}-${month}-01`).daysInMonth();
@@ -93,7 +91,7 @@ Vue.component('calendar-block-vue', {
             const lastDayOfTheMonthWeekday = this.getWeekday(`${year}-${month}-${this.currentMonthDays.length}`)
 
 
-            const visibleNumberOfDaysFromNextMonth = lastDayOfTheMonthWeekday ? 6 - lastDayOfTheMonthWeekday : lastDayOfTheMonthWeekday
+            const visibleNumberOfDaysFromNextMonth = lastDayOfTheMonthWeekday ? 6 - lastDayOfTheMonthWeekday : 6//lastDayOfTheMonthWeekday;
 
 
             return [...Array(visibleNumberOfDaysFromNextMonth)].map((day, index) => {
@@ -143,6 +141,52 @@ Vue.component('calendar-block-vue', {
             this.selectedMonth = dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
             this.createCalendar(this.selectedMonth.format("YYYY"), this.selectedMonth.format("M"));
 
+        },
+
+        goToNextWeek() {
+            //if week exceeds the current month
+            let lastWeekInMonth = this.days.slice(-7);
+            let isSameWeek = this.compareWeeks(lastWeekInMonth);
+            if (isSameWeek) {
+                this.goToNextMonth();
+                this.weekSliceNum = 7;
+            } else if (this.lastAction < 0) {
+                this.weekSliceNum -= 7;
+            }
+
+            this.weekSliceNum += 7;
+            this.daysSection = this.days.slice((this.weekSliceNum - 7), this.weekSliceNum);
+            this.lastAction = 1;
+        },
+
+        goToPreviousWeek() {
+            //if week exceeds the current month
+            let firstWeekInMonth = this.days.slice(0, 7);
+            let isSameWeek = this.compareWeeks(firstWeekInMonth);
+            if (isSameWeek) {
+                this.goToPreviousMonth();
+                this.weekSliceNum = this.days.length;
+                console.log(this.weekSliceNum);
+            } else if(this.lastAction > 0) {
+                this.weekSliceNum -= 7;
+            }
+
+            this.weekSliceNum -= 7;
+            this.daysSection = this.days.slice(this.weekSliceNum, this.weekSliceNum + 7);
+            this.lastAction = -1;
+        },
+
+        /**
+         * Object comparison of day objects
+         * @returns boolean true/false value
+         * */
+        compareWeeks(week) {
+            for (const [i, day] of this.daysSection.entries()) {
+                if (day !== week[i]) {
+                    return false;
+                }
+            }
+            return true;
         }
     },
 
@@ -154,13 +198,43 @@ Vue.component('calendar-block-vue', {
         this.initialMonth = dayjs().format("M");
         this.selectedMonth = dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
 
+        /*
+         CalendarUI Enum values
+         0 - do not display calendar
+         1 - regular calendar
+         2 - weekyl strip calendar
+         */
+        //switch (this.calendarDisplay) {
+        //    //no calendar
+        //    case 0:
+        //        break;
+        //    //regular calendar
+        //    case 1:
+        //        this.currentMonthDays = this.createDaysForCurrentMonth(this.initialYear, this.initialMonth);
+        //        this.previousMonthDays = this.createDaysForPreviousMonth(this.initialYear, this.initialMonth, this.currentMonthDays[0]);
+        //        this.nextMonthDays = this.createDaysForNextMonth(this.initialYear, this.initialMonth);
+        //        break;
+        //    //weekly strip calendar
+        //    case 2:
+        //        //this.currentWeekDays = this.createDaysForCurrentWeek(this.initialYear, this.initialMonth, this.initialDay);
+        //        //this.previousMonthDays = this.
+        //        break;
+        //    //no calendar
+        //    default:
+        //        break;
+        //}
+        
+
         this.currentMonthDays = this.createDaysForCurrentMonth(this.initialYear, this.initialMonth);
         this.previousMonthDays = this.createDaysForPreviousMonth(this.initialYear, this.initialMonth, this.currentMonthDays[0]);
         this.nextMonthDays = this.createDaysForNextMonth(this.initialYear, this.initialMonth);
         this.today = dayjs().format("YYYY-MM-DD");
-        console.log(this.googlecalendardata);
 
-        this.days = [...this.previousMonthDays, ...this.currentMonthDays, ...this.nextMonthDays]
+        this.days = [...this.previousMonthDays, ...this.currentMonthDays, ...this.nextMonthDays];
+
+        if (this.calendardisplay == 2) {
+            this.daysSection = this.days.slice(0, this.weekSliceNum);
+        }
     },
 
 });
