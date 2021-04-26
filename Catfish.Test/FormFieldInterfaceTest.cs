@@ -156,7 +156,7 @@ namespace Catfish.Test
 
             //Clicking on the submit button
             var dataItemTemplateId = "d46d777e-66aa-45d8-867a-c51d50c6fa7c";
-            _seleniumHelper.ClickSubmitButton(dataItemTemplateId, "Submit");
+            _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "Submit");
 
             //Clicking on the modal confirmation button
             _seleniumHelper.CkickModalSubmit(dataItemTemplateId, "btn btn-success");
@@ -233,7 +233,7 @@ namespace Catfish.Test
             
             //Clicking on sumbit button
             var dataItemTemplateId = "8cc8bb7f-9c50-41d6-b87f-cbf53889d44e";
-            _seleniumHelper.ClickSubmitButton(dataItemTemplateId, "Submit");
+            _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "Submit");
 
             //Clicking on the modal confirmation button
             _seleniumHelper.CkickModalSubmit(dataItemTemplateId, "btn btn-success");
@@ -312,7 +312,7 @@ namespace Catfish.Test
 
             //Clicking on the add row button
             var dataItemTemplateId = "5ee03f43-8b8e-4853-b993-32de0a4d7da9";
-            _seleniumHelper.ClickSubmitButton(dataItemTemplateId, "+ Row");
+            _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "+ Row");
 //=======================================================================================
 //===================New Row=============================================================
 //=======================================================================================
@@ -1067,6 +1067,90 @@ namespace Catfish.Test
 
 
         }
+
+        [Test]
+        public void CompositeFieldTest()
+        {
+            RefreshDatabase();
+            _seleniumHelper.LoginLocal();
+
+            //Navigating to the test page
+            _seleniumHelper.GoToUrl("composite-field");
+
+
+            var child1TextFieldValue = "Test User1";
+            _seleniumHelper.SetCompositeTextFieldValue(child1TextFieldValue, 0, 0);
+
+            var dateVal = new DateTime(2021, 3, 25);
+            _seleniumHelper.SetCompositeDateValue(dateVal,0,1);
+
+            var child1EmailFieldValue = "testuser1@example.com";
+            _seleniumHelper.SetCompositeTextFieldValue(child1EmailFieldValue, 0, 2);
+
+            var child1TextAreaValue = @"Identity configuration in ASP.NET can be quite confusing, especially if you want to customize setup properties.
+                                      When you use a code - first approach using Entity Framework, you have full control over your user identity options.
+                                      However when developers deal with bigger projects, they typically prefer to use a table - first approach in which they 
+                                      create the database, then consume the information in the API, and lastly shape it in a way that it makes sense on the front end.
+                                       
+                                      So, configuring identity might work best with a mixed approach.";
+            _seleniumHelper.SetCompositeTextFieldValue(child1TextAreaValue, 0, 3);
+
+            var rbOptId = "558ca21b-3062-4773-9966-2cdace171c21";
+            var rbOptVal = "Citizen";
+            _seleniumHelper.SelectCompositeRadioOption(rbOptId,0, 4);
+
+            //Selecting English and Spanish for the CB1
+            var chkOptIds = new string[] { "036afb53-f284-4671-9534-feeecdd52394", "915c10c2-4e54-49ec-9857-92a37e1e749e" };
+            var chkOptVals = new string[] { "English", "Spanish" };
+            _seleniumHelper.SelectCompositeCheckOptions(chkOptIds,0,5);
+
+            //Clicking on the add button
+            var dataItemTemplateId = "69abec30-69e0-4f60-891a-5df4d7ba1993";
+            _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "Add");
+
+
+            //====================================================
+            //================Fill User 2 Details=================
+            //====================================================
+
+            var child2TextFieldValue = "Test User2";
+            _seleniumHelper.SetCompositeTextFieldValue(child2TextFieldValue, 1, 0);
+
+            var date2Val = new DateTime(2021, 4, 21);
+            _seleniumHelper.SetCompositeDateValue(date2Val, 1, 1);
+
+            var child2EmailFieldValue = "testuser2@example.com";
+            _seleniumHelper.SetCompositeTextFieldValue(child2EmailFieldValue, 1, 2);
+
+            var child2TextAreaValue = @"However when developers deal with bigger projects, they typically prefer to use a table - first approach in which they 
+                                      create the database, then consume the information in the API, and lastly shape it in a way that it makes sense on the front end.
+                                      ";
+            _seleniumHelper.SetCompositeTextFieldValue(child2TextAreaValue, 1, 3);
+
+            var rbOpt2Id = "816a822b-71df-4fc9-ac5f-cd071cffc222";
+            var rbOpt2Val = "Permenant Resident";
+            _seleniumHelper.SelectCompositeRadioOption(rbOpt2Id, 1, 4);
+
+            //Selecting English and Spanish for the CB1
+            var chkOpt2Id = "036afb53-f284-4671-9534-feeecdd52394";
+            var chkOpt2Val =  "French";
+            _seleniumHelper.SelectCompositeCheckOption(chkOpt2Id, 0, 5);
+
+            //Clicking on the add button
+            _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "Add");
+
+            _seleniumHelper.ClickOnRowDeleteButton(2, "fa fa-trash");
+
+            //Clicking on sumbit button
+            _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "Submit");
+
+            //Clicking on the modal confirmation button
+            _seleniumHelper.CkickModalSubmit(dataItemTemplateId, "btn btn-success");
+
+            //Clicking on the link to view detail view
+            _seleniumHelper.ClickOnALink("click on here");
+        }
+
 
     }
 }

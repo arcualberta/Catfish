@@ -222,7 +222,7 @@
       <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2b1cb22a-3978-4bfa-9a50-8babb580a2ed" link-lable="Start Submission" function="Instantiate" group="Home" access="Restricted">
         <params />
         <post-actions>
-          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c53e49c8-dbd2-4845-994c-77d4b0372f03" button-lable="Submit" function="Update">
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c53e49c8-dbd2-4845-994c-77d4b0372f03" button-lable="Submit" function="Update" success-message="&lt;p&gt;Your Composite-field application saved successfully. &#xD;&#xA;                                                                                You can view/edit by &lt;a href='@SiteUrl/items/@Item.Id'&gt;click on here&lt;/a&gt;&lt;/p&gt;">
             <state-mappings>
               <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c67d1b5a-2718-4a16-bac9-08a4d373d0b8" current="13ab70ce-7513-42c7-94ff-acaf8dc6eeb5" next="19dfd94b-437a-4174-94d2-9de631d5136b" button-label="Submit" />
             </state-mappings>

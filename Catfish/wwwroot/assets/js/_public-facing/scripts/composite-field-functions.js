@@ -16,7 +16,7 @@
 
     $(templateClone).removeClass("composite-field-template");
     $(templateClone).addClass("composite-field-child");
-    $(templateClone).attr("data-cf-item-index", numItems+1);
+    $(templateClone).attr("data-cf-item-index", numItems);
 
     $(childListContainer).append(templateClone);
 

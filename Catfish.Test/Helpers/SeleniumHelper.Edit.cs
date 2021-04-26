@@ -165,6 +165,18 @@ namespace Catfish.Test.Helpers
                 SelectCheckOption(optionIds[i], rowNumber, columnNumber);
         }
 
+        public void SelectCompositeCheckOption(string optionId, int childNumber, int rowNumber)
+        {
+            string selectorString = string.Format("[data-cf-item-index='{0}'] [data-field-index='{1}'][data-option-id='{2}']", childNumber, rowNumber, optionId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
+        }
+        public void SelectCompositeCheckOptions(string[] optionIds, int childNumber, int rowNumber)
+        {
+            for (int i = 0; i < optionIds.Length; ++i)
+                SelectCompositeCheckOption(optionIds[i], childNumber, rowNumber);
+        }
+
         public void SelectRadioOption(string fieldId, string optionId)
         {
             string selectorString = string.Format("input[type='radio'][data-model-id='{0}'][value='{1}']", fieldId, optionId);
@@ -175,6 +187,13 @@ namespace Catfish.Test.Helpers
         public void SelectRadioOption(string optionId, int rowNumber, int columnNumber)
         {
             string selectorString = string.Format("table[class='table table-field tf-data'] tbody tr[data-r='{0}'] td div[id='{2}'] input[type='radio'][data-c='{1}'][value='{2}']", rowNumber, columnNumber, optionId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
+        }
+
+        public void SelectCompositeRadioOption(string optionId, int childNumber, int rowNumber)
+        {
+            string selectorString = string.Format("[data-cf-item-index='{0}'] [data-field-index='{1}'][value='{2}']", childNumber, rowNumber, optionId);
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             ele.Click();
         }
@@ -195,6 +214,14 @@ namespace Catfish.Test.Helpers
         public void SetTextFieldValue(string value, int rowNumber, int columnNumber)
         {
             string selectorString = string.Format("table[class='table table-field tf-data'] tbody tr[data-r='{0}'] td input[data-c='{1}'][type='text']", rowNumber, columnNumber);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Clear();
+            ele.SendKeys(value);
+        }
+
+        public void SetCompositeTextFieldValue(string value, int childNumber, int rowNumber)
+        {
+            string selectorString = string.Format("[data-cf-item-index='{0}'] [data-field-index='{1}']", childNumber, rowNumber);
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             ele.Clear();
             ele.SendKeys(value);
@@ -222,17 +249,22 @@ namespace Catfish.Test.Helpers
         public void SetDateValue(string fieldId, DateTime date)
         {
             string selectorString = string.Format("input[type='date'][data-model-id='{0}']", fieldId);
-            var ele = Driver.FindElement(By.CssSelector(selectorString));
-            ele.Clear();
-            ele.SendKeys(date.Year.ToString());
-            ele.SendKeys("\t");
-            ele.SendKeys(date.Month.ToString());
-            ele.SendKeys(date.Day.ToString());
+            SetDate(selectorString, date);
         }
         public void SetDateValue(DateTime date, int rowNumber, int columnNumber)
         {
             string selectorString = string.Format("table[class='table table-field tf-data'] tbody tr[data-r='{0}'] td input[data-c='{1}'][type='date']", rowNumber, columnNumber);
-            
+            SetDate(selectorString, date);
+        }
+
+        public void SetCompositeDateValue(DateTime date, int childNumber, int rowNumber)
+        {
+            string selectorString = string.Format("[data-cf-item-index='{0}'] [data-field-index='{1}']", childNumber, rowNumber);
+            SetDate(selectorString, date);
+        }
+
+        private void SetDate(string selectorString, DateTime date)
+        {
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             ele.Clear();
             ele.SendKeys(date.Year.ToString());
@@ -259,9 +291,9 @@ namespace Catfish.Test.Helpers
 
         }
 
-        public void ClickSubmitButton(string dataItemTemplateId, string buttonValue)
+        public void ClickOnButtonType(string dataItemTemplateId, string buttonValue)
         {
-            string selectorString = string.Format("form[data-template-id='{0}'] input[type='button'][value='{1}']", dataItemTemplateId, buttonValue);
+            string selectorString = string.Format("[data-template-id='{0}'] [type='button'][value='{1}']", dataItemTemplateId, buttonValue);
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             ele.Click();
         }
@@ -287,6 +319,13 @@ namespace Catfish.Test.Helpers
             Thread.Sleep(2000);
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             var ele = wait.Until(drv => drv.FindElement(By.LinkText(linkText)));
+            ele.Click();
+        }
+
+        public void ClickOnRowDeleteButton(int childNumber, string cssClass)
+        {
+            string selectorString = string.Format("[data-cf-item-index='{0}'] [class='{1}']", childNumber, cssClass);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
             ele.Click();
         }
 
