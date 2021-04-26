@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
@@ -18,7 +19,11 @@ namespace Catfish.UnitTests
     {
         private protected AppDbContext _db;
         private protected TestHelper _testHelper;
-       
+
+        string _templateName = "Resounding Culture Form Template";
+        string _metadataSetName = "Resounding Culture Metadata Set";
+        string lang = "en";
+
 
         [SetUp]
         public void Setup()
@@ -30,15 +35,13 @@ namespace Catfish.UnitTests
         [Test]
         public void ResoundingCultureFormTest()
         {
-            string lang = "en";
-            string templateName = "Resounding Cultures Form Template";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
             ItemTemplate template = db.ItemTemplates
-                .Where(et => et.TemplateName == templateName)
+                .Where(et => et.TemplateName == _templateName)
                 .FirstOrDefault();
 
             if (template == null)
@@ -53,8 +56,8 @@ namespace Catfish.UnitTests
                 template.Data = t.Data;
                 template.Initialize(false);
             }
-            template.TemplateName = templateName;
-            template.Name.SetContent(templateName);
+            template.TemplateName = _templateName;
+            template.Name.SetContent(_templateName);
 
           
 
@@ -62,15 +65,17 @@ namespace Catfish.UnitTests
             Workflow workflow = template.Workflow;
 
             //Defininig states
-           
+
             //Defining email templates
 
             //Defininig the inspection form
-            DataItem rcForm = template.GetDataItem(templateName, true, lang);
-            rcForm.IsRoot = true;
+
+            MetadataSet rcForm = template.GetMetadataSet(_metadataSetName, true, lang);
+
+            //DataItem rcForm = template.GetDataItem(templateName, true, lang);
+            //rcForm.IsRoot = true;
             rcForm.SetDescription("This template is designed for Resounding Culture Form", lang);
 
-           
             rcForm.CreateField<TextField>("Source Collection", lang, false);
             rcForm.CreateField<TextField>("Source Collection ID", lang, false);
             rcForm.CreateField<TextField>("URL", lang, false);
@@ -218,6 +223,48 @@ namespace Catfish.UnitTests
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
             */
 
+        }
+
+        [Test]
+        public void ImportData()
+        {
+            bool clearCurrentData = true;
+
+            if(clearCurrentData)
+            {
+                var entities = _db.Items.ToList();
+                _db.Entities.RemoveRange(entities);
+            }
+
+
+            //Filling the form
+            var template = _db.ItemTemplates.Where(it => it.TemplateName == _templateName).FirstOrDefault();
+            Assert.IsNotNull(template);
+
+
+            //For each row in the table
+            {
+                //Create a new item
+                var item = template.Instantiate<Item>();
+
+                //retrieve and populate metadat fields
+                var ms = item.GetMetadataSet(_metadataSetName, false, lang);
+                Assert.IsNotNull(ms);
+
+                List<string> textAreaHeadings = new List<string>() { "Description", "Notes" };
+                //for each column in the selected row
+                {
+                    string colHeading = "";
+                    string colValue = "";
+
+                    if (textAreaHeadings.Contains(colHeading))
+                        ms.SetFieldValue<TextArea>(colHeading, lang, colValue, lang);
+                }
+
+                _db.Items.Add(item);
+            }
+
+            _db.SaveChanges();
         }
 
     }
