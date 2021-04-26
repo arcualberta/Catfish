@@ -405,13 +405,13 @@ namespace Catfish.Test
             _seleniumHelper.SelectRadioOption(chairrbId, chairrbOptNoId);
 
             // opps - make that a yes
-            var chairrbOptYesId = "799bb23c-7137-4b9a-a150-77359e8a3e90";
-            _seleniumHelper.SelectRadioOption(chairrbId, chairrbOptYesId);
+            //var chairrbOptYesId = "799bb23c-7137-4b9a-a150-77359e8a3e90";
+            //_seleniumHelper.SelectRadioOption(chairrbId, chairrbOptYesId);
 
             // enter chair info  36c2aabc-44b9-4a6c-8172-1bb9c199c276, d8afbf19-a9ec-4da2-9077-4a0c63effa66
 
             var chairId = "36c2aabc-44b9-4a6c-8172-1bb9c199c276";
-            var chairOptId = "d8afbf19-a9ec-4da2-9077-4a0c63effa66";
+            var chairOptId = "2e506b72-dd18-4fa4-9843-49a9c6657fa8";
             _seleniumHelper.SelectDropdownOption(chairId, chairOptId);
 
             //Setting project name
@@ -905,7 +905,7 @@ namespace Catfish.Test
             _seleniumHelper.ClickSimpleSubmitButton();
 
             //Clicking on the modal confirmation button
-            var modalTemplateId = "0ff3dc2b-6ce8-4fbd-a493-51074ed5cb31";
+            var modalTemplateId = "f31602f0-1002-4e35-8c2c-90a03a8d3a93";
             _seleniumHelper.CkickModalSubmit(modalTemplateId, "btn btn-success");
 
             //_seleniumHelper.ClickModalSubmitButton();

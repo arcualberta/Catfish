@@ -303,7 +303,7 @@ namespace Catfish.Test.Helpers
         public void ClickOnALink(string linkText)
         {
             Thread.Sleep(2000);
-            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(50));
             var ele = wait.Until(drv => drv.FindElement(By.LinkText(linkText)));
             ele.Click();
         }
