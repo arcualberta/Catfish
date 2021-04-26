@@ -911,7 +911,7 @@ namespace Catfish.Test
             //_seleniumHelper.ClickModalSubmitButton();
 
             //Clicking on the link to view detail view
-            _seleniumHelper.ClickOnALink("click on here");
+            _seleniumHelper.ClickOnALink("click on here.");
 
 
 
