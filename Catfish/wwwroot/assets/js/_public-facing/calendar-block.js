@@ -149,14 +149,19 @@ Vue.component('calendar-block-vue', {
             let isSameWeek = this.compareWeeks(lastWeekInMonth);
             if (isSameWeek) {
                 this.goToNextMonth();
-                this.weekSliceNum = 7;
-            } else if (this.lastAction < 0) {
-                this.weekSliceNum -= 7;
-            }
+                this.weekSliceNum = 0;
+                this.daysSection = this.days.slice((this.weekSliceNum), this.weekSliceNum + 7);
+            } else {
+                //just a regular week
+                if (this.lastAction < 0) {
+                    this.weekSliceNum += 7;
+                }
 
-            this.weekSliceNum += 7;
-            this.daysSection = this.days.slice((this.weekSliceNum - 7), this.weekSliceNum);
-            this.lastAction = 1;
+                this.weekSliceNum += 7;
+                
+                this.daysSection = this.days.slice((this.weekSliceNum - 7), this.weekSliceNum);
+                this.lastAction = 1;
+            }
         },
 
         goToPreviousWeek() {
@@ -166,14 +171,17 @@ Vue.component('calendar-block-vue', {
             if (isSameWeek) {
                 this.goToPreviousMonth();
                 this.weekSliceNum = this.days.length;
-                console.log(this.weekSliceNum);
-            } else if(this.lastAction > 0) {
-                this.weekSliceNum -= 7;
-            }
+                this.daysSection = this.days.slice(this.weekSliceNum - 7, this.weekSliceNum);
+            } else {
+                if (this.lastAction > 0) {
+                    this.weekSliceNum -= 7;
+                }
 
-            this.weekSliceNum -= 7;
-            this.daysSection = this.days.slice(this.weekSliceNum, this.weekSliceNum + 7);
-            this.lastAction = -1;
+                this.weekSliceNum -= 7;
+                this.daysSection = this.days.slice(this.weekSliceNum, this.weekSliceNum + 7);
+                this.lastAction = -1;
+            }
+            
         },
 
         /**
