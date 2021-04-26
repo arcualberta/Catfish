@@ -7,11 +7,20 @@ using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Test.Helpers;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Util.Store;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Catfish.UnitTests
 {
@@ -20,7 +29,7 @@ namespace Catfish.UnitTests
         private protected AppDbContext _db;
         private protected TestHelper _testHelper;
 
-        string _templateName = "Resounding Culture Form Template";
+        string _templateName = "Resounding Culture Item Template";
         string _metadataSetName = "Resounding Culture Metadata Set";
         string lang = "en";
 
@@ -59,61 +68,34 @@ namespace Catfish.UnitTests
             template.TemplateName = _templateName;
             template.Name.SetContent(_templateName);
 
-          
+
 
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
-
-            //Defininig states
-
-            //Defining email templates
 
             //Defininig the inspection form
 
             MetadataSet rcForm = template.GetMetadataSet(_metadataSetName, true, lang);
 
-            //DataItem rcForm = template.GetDataItem(templateName, true, lang);
+            //create Item Template
+           //  DataItem rcForm = template.GetDataItem(_templateName, true, lang);
             //rcForm.IsRoot = true;
             rcForm.SetDescription("This template is designed for Resounding Culture Form", lang);
 
-            rcForm.CreateField<TextField>("Source Collection", lang, false);
-            rcForm.CreateField<TextField>("Source Collection ID", lang, false);
-            rcForm.CreateField<TextField>("URL", lang, false);
-            rcForm.CreateField<TextField>("Title", lang, false);
-            rcForm.CreateField<TextField>("Title (alt)", lang, false);
-            rcForm.CreateField<TextField>("Creator(s)", lang, false, true);
-            rcForm.CreateField<TextField>("Contributor(s)", lang, false, true);
-            rcForm.CreateField<TextField>("Publisher", lang, false);
-            rcForm.CreateField<TextField>("Type", lang, false);
-            rcForm.CreateField<TextField>("Format (medium physical)", lang, false);
-
-
-            rcForm.CreateField<TextField>("Format (medium digital)", lang, false);
-            rcForm.CreateField<TextField>("Format (extent)", lang, false);
-            rcForm.CreateField<TextField>("subject-English", lang, false, true);
-            rcForm.CreateField<TextField>("suject - French", lang, false, true);
-            rcForm.CreateField<TextField>("Medium of Performance", lang, false, true);
-            rcForm.CreateField<TextField>("Thematic Areas", lang, false, true);
-            rcForm.CreateField<TextField>("Keyword", lang, false, true);
-            var desc = rcForm.CreateField<TextArea>("Description", lang, true);
-            desc.Cols = 30;
-            desc.Rows = 5;
-            rcForm.CreateField<TextField>("Coverage (spatial)", lang, true);
-            rcForm.CreateField<TextField>("Language", lang, true);
-            rcForm.CreateField<TextField>("Date", lang, true);
-
-            var access = rcForm.CreateField<TextArea>("Rights/Access Statements", lang, false);
-            access.Cols = 30;
-            access.Rows = 5;
-
-            var notes = rcForm.CreateField<TextArea>("Notes/Problems", lang, false);
-            notes.Cols = 30;
-            notes.Rows = 5;
-
-
-            rcForm.CreateField<TextField>("Related Records", lang, true);
+            foreach(string label in GetColHeaders())
+            {
+                if (label.Equals("Description") || label.Equals("Rights/Access Statements") || label.Equals("Notes/Problems"))
+                {
+                    var desc = rcForm.CreateField<TextArea>(label, lang, true);
+                    desc.Cols = 30;
+                    desc.Rows = 5;
+                }
+                else {
+                    rcForm.CreateField<TextField>(label, lang, false, true);
+                }
+            }
            
-            
+
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,6 +109,8 @@ namespace Catfish.UnitTests
             //string json = JsonConvert.SerializeObject(template);
             //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
+
+        
 
         private void Define_RC_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template)
         {
@@ -146,7 +130,7 @@ namespace Catfish.UnitTests
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             startSubmissionAction.Access = GetAction.eAccess.Public;//.Restricted;
             startSubmissionAction.AddStateReferances(emptyState.Id);
-               // .AddAuthorizedRole(inspectorRole.Id);
+            // .AddAuthorizedRole(inspectorRole.Id);
 
             //Listing bcp forms.
             //Admins and Inspectors can run the item-list report to list instances.
@@ -230,7 +214,7 @@ namespace Catfish.UnitTests
         {
             bool clearCurrentData = true;
 
-            if(clearCurrentData)
+            if (clearCurrentData)
             {
                 var entities = _db.Items.ToList();
                 _db.Entities.RemoveRange(entities);
@@ -242,30 +226,131 @@ namespace Catfish.UnitTests
             Assert.IsNotNull(template);
 
 
-            //For each row in the table
+
+            int rowCount = 1;
+            foreach (RowData row in ReadGoogleSheet())
             {
                 //Create a new item
                 var item = template.Instantiate<Item>();
 
                 //retrieve and populate metadat fields
                 var ms = item.GetMetadataSet(_metadataSetName, false, lang);
-                Assert.IsNotNull(ms);
+               // Assert.IsNotNull(ms);
 
-                List<string> textAreaHeadings = new List<string>() { "Description", "Notes" };
-                //for each column in the selected row
+                string[] colHeadings = GetColHeaders();
+
+                int i = 0;
+                foreach (var col in row.Values)
                 {
-                    string colHeading = "";
-                    string colValue = "";
+                    string colHeading = colHeadings[i];
+                    string colValue = col.FormattedValue;
 
-                    if (textAreaHeadings.Contains(colHeading))
-                        ms.SetFieldValue<TextArea>(colHeading, lang, colValue, lang);
+                    if (!string.IsNullOrEmpty(colValue))
+                    {
+                        if (colHeadings[i].Equals("Description") || colHeadings[i].Equals("Rights/Access Statements") || colHeadings[i].Equals("Notes/Problems"))
+                        {
+                            ms.SetFieldValue<TextArea>(colHeading, lang, colValue, lang);
+                        }
+                        else
+                        {
+                            ms.SetFieldValue<TextField>(colHeading, lang, colValue, lang);
+                        }
+                    }
+                    i++;
                 }
-
                 _db.Items.Add(item);
+
+                //for DEBUG only INSERT 2
+                //if (rowCount == 2)
+                //    break;
+
+               // rowCount++;
             }
 
             _db.SaveChanges();
         }
 
+        // [Test]
+        public List<RowData> ReadGoogleSheet()
+        {
+
+            string apiKey = "AIzaSyA6LhLmkjcpqbq4Dpl9RwE_1QYi7BVUmX0"; //Google api key
+
+            String spreadsheetId = "1YFS3QXGpNUtakBRXxsFmqqTYMYNv8bL-XbzZ3n6LRsI";//==>google sheet Id
+            String ranges = "A2:Y";// read from col A to Y, starting 2nd row
+
+            SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-Sheets",
+                ApiKey = apiKey
+            });
+
+
+            bool includeGridData = true;
+
+            SpreadsheetsResource.GetRequest request = sheetsService.Spreadsheets.Get(spreadsheetId);
+            request.Ranges = ranges;
+            request.IncludeGridData = includeGridData;
+
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Google.Apis.Sheets.v4.Data.Spreadsheet response = request.Execute(); //await request.ExecuteAsync();
+          
+
+            // Read all the rows
+            var values = response.Sheets[0].Data.Select(d => d).ToList();
+          
+            List<RowData> rows = values[0].RowData.ToList();
+
+            return rows;
+        }
+        public static UserCredential GetCredential()
+        {
+            // TODO: Change placeholder below to generate authentication credentials. See:
+            // https://developers.google.com/sheets/quickstart/dotnet#step_3_set_up_the_sample
+            //
+            // Authorize using one of the following scopes:
+            //     "https://www.googleapis.com/auth/drive"
+            //     "https://www.googleapis.com/auth/drive.file"
+            //     "https://www.googleapis.com/auth/drive.readonly"
+            //     "https://www.googleapis.com/auth/spreadsheets"
+            //     "https://www.googleapis.com/auth/spreadsheets.readonly"
+            return null;
+        }
+
+
+        private string[] GetColHeaders()
+        {
+            return new string[] {
+                "Source Collection",
+                "Source Collection ID",
+                "URL",
+                "Title",
+                "Title (alt)",
+                "Creator(s)",
+                "Contributor(s)",
+                "Publisher",
+                "Type",
+                "Format (medium physical)",
+                "Format (medium digital)",
+                "Format (extent)",
+                "Genre/Form",
+                "subject-English",
+                "suject - French",
+                "Medium of Performance",
+                "Thematic Areas",
+                "Keyword",
+                "Description",
+                "Coverage (spatial)",
+                "Language",
+                "Date",
+                "Rights/Access Statements",
+                "Notes/Problems",
+                "Related Records"
+            };
+
+        }
     }
 }
+
