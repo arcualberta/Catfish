@@ -73,54 +73,52 @@ namespace Catfish.Services
             httpResponse.EnsureSuccessStatusCode();
         }
 
-        private XElement GetSampleDoc()
-        {
-            var id = Guid.NewGuid().ToString();
-            return XElement.Parse(string.Format(@"
-            <add><doc><field name='id'>{0}</field><field name='name_s'>change.me {1}</field></doc></add>
-                ", id, DateTime.Now.ToString()));
 
-            ////return XElement.Parse(@"<add>
-            ////          <doc>
-            ////            <field name='id'>P11!prod</field>
-            ////            <field name='name_s'>Swingline Stapler</field>
-            ////            <field name='description_t'>The Cadillac of office staplers ...</field>
-            ////            <field name='skus'>
-            ////              <doc>
-            ////                <field name='id'>P11!S21</field>
-            ////                <field name='color_s'>RED</field>
-            ////                <field name='price_i'>42</field>
-            ////                <field name='manuals'>
-            ////                  <doc>
-            ////                    <field name='id'>P11!D41</field>
-            ////                    <field name='name_s'>Red Swingline Brochure</field>
-            ////                    <field name='pages_i'>1</field>
-            ////                    <field name='content_t'>...</field>
-            ////                  </doc>
-            ////                </field>
-            ////              </doc>
-            ////              <doc>
-            ////                <field name='id'>P11!S31</field>
-            ////                <field name='color_s'>BLACK</field>
-            ////                <field name='price_i'>3</field>
-            ////              </doc>
-            ////            </field>
-            ////            <field name='manuals'>
-            ////              <doc>
-            ////                <field name='id'>P11!D51</field>
-            ////                <field name='name_s'>Quick Reference Guide</field>
-            ////                <field name='pages_i'>1</field>
-            ////                <field name='content_t'>How to use your stapler ...</field>
-            ////              </doc>
-            ////              <doc>
-            ////                <field name='id'>P11!D61</field>
-            ////                <field name='name_s'>Warranty Details</field>
-            ////                <field name='pages_i'>42</field>
-            ////                <field name='content_t'>... lifetime guarantee ...</field>
-            ////              </doc>
-            ////            </field>
-            ////          </doc>
-            ////        </add>");
+        ////private XElement GetSampleDoc()
+        ////{
+        ////    var id = Guid.NewGuid().ToString();
+        ////    return XElement.Parse(string.Format(@"
+        ////    <add><doc><field name='id'>{0}</field><field name='name_s'>change.me {1}</field></doc></add>
+        ////        ", id, DateTime.Now.ToString()));
+
+        ////}
+
+
+        /// <summary>
+        /// Simple search
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <returns></returns>
+        public SearchResult Search(string searchText)
+        {
+            string query = "";
+            return ExecuteSearchQuery(query);
         }
+
+        /// <summary>
+        /// Advanced search
+        /// </summary>
+        /// <param name="constraints"></param>
+        /// <returns></returns>
+        public SearchResult Search(SearchFieldConstraint[] constraints, int offset, int pageSize)
+        {
+            //Build the query by "and"ing all constraints and execute it.
+            //Get the results and return them through the SearchResult object.
+
+            string query = "";
+            return ExecuteSearchQuery(query);
+
+        }
+
+        /// <summary>
+        /// Executes a given valid solr query.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        protected SearchResult ExecuteSearchQuery(string query)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
