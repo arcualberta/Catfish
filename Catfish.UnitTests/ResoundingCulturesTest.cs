@@ -139,9 +139,9 @@ namespace Catfish.UnitTests
             // Submitting an bcp form
             //Only safey inspectors can submit this form
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
-            startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(inspectorRole.Id);
+            startSubmissionAction.Access = GetAction.eAccess.Public;//.Restricted;
+            startSubmissionAction.AddStateReferances(emptyState.Id);
+               // .AddAuthorizedRole(inspectorRole.Id);
 
             //Listing bcp forms.
             //Admins and Inspectors can run the item-list report to list instances.
@@ -151,7 +151,7 @@ namespace Catfish.UnitTests
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
             listSubmissionsAction.AddStateReferances(submittedState.Id)
                    .AddOwnerAuthorization()
-                   .AddAuthorizedRole(inspectorRole.Id)
+                  // .AddAuthorizedRole(inspectorRole.Id)
                   .AddAuthorizedRole(adminRole.Id);
 
 
