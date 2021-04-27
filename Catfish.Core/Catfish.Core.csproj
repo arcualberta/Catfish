@@ -29,6 +29,10 @@
     <Compile Remove="Migrations\20200619222003_CreatedXmlModelInDatabase.Designer.cs" />
     <Compile Remove="Migrations\20200619223416_AddedXmlModelToDbSet.cs" />
     <Compile Remove="Migrations\20200619223416_AddedXmlModelToDbSet.Designer.cs" />
+    <Compile Remove="Migrations\20210427143955_CreatedIndexingHitory.cs" />
+    <Compile Remove="Migrations\20210427143955_CreatedIndexingHitory.Designer.cs" />
+    <Compile Remove="Migrations\20210427144241_CreatedIndexingHitory.cs" />
+    <Compile Remove="Migrations\20210427144241_CreatedIndexingHitory.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
