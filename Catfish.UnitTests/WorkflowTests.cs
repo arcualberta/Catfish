@@ -7,7 +7,7 @@ using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
-using Catfish.UnitTests.Helpers;
+using Catfish.Test.Helpers;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;

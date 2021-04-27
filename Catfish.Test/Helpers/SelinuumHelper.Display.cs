@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Catfish.Test.Helpers
 {
-    public partial class SeleniumHelper
+    partial class SeleniumHelper
     {
         public string GetTextFieldDisplayValue(string fieldId)
         {
@@ -15,9 +15,30 @@ namespace Catfish.Test.Helpers
             string val = ele.Text;
             return val;
         }
+        /// <summary>
+        /// This method can use to get text display fields in a table. Need to pass the row number and column number as parameters.
+        /// </summary>
+        /// <param name="rowNumber"></param>
+        /// <param name="columnNumber"></param>
+        /// <returns></returns>
+        public string GetTextFieldDisplayValue(int rowNumber, int columnNumber)
+        {
+            string selectorString = string.Format("table[class='table'] tbody tr[data-r='{0}'] td[data-c='{1}'] div", rowNumber, columnNumber);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
         public string GetTextAreaDisplayValue(string fieldId)
         {
             string selectorString = string.Format("div[data-model-id='{0}'] div[class='multilingual-input-block']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+
+        public string GetTextAreaDisplayValue(int rowNumber, int columnNumber)
+        {
+            string selectorString = string.Format("table[class='table'] tbody tr[data-r='{0}'] td[data-c='{1}'] div p", rowNumber, columnNumber);
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             string val = ele.Text;
             return val;
@@ -31,6 +52,14 @@ namespace Catfish.Test.Helpers
             return val;
         }
 
+        public string GetIntegerDisplayValue(int rowNumber, int columnNumber)
+        {
+            string selectorString = string.Format("table[class='table'] tbody tr[data-r='{0}'] td[data-c='{1}'] span", rowNumber, columnNumber);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+
         public string GetDecimalDisplayValue(string fieldId)
         {
             string selectorString = string.Format("div[data-model-id='{0}']", fieldId);
@@ -39,9 +68,25 @@ namespace Catfish.Test.Helpers
             return val;
         }
 
+        public string GetDecimalDisplayValue(int rowNumber, int columnNumber)
+        {
+            string selectorString = string.Format("table[class='table'] tbody tr[data-r='{0}'] td[data-c='{1}'] span", rowNumber, columnNumber);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+
         public string GetDateDisplayValue(string fieldId)
         {
             string selectorString = string.Format("div[data-model-id='{0}'] span", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+
+        public string GetDateDisplayValue(int rowNumber, int columnNumber)
+        {
+            string selectorString = string.Format("table[class='table'] tbody tr[data-r='{0}'] td[data-c='{1}'] span", rowNumber, columnNumber);
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             string val = ele.Text;
             return val;

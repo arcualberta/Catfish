@@ -22,6 +22,8 @@ namespace Catfish.Core.Services.Solr
 
 		public bool AddUpdateEntity(Entity entity)
 		{
+			return true;
+
             try
             {
 				bool status = true;

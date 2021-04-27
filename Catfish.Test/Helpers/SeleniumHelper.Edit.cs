@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace Catfish.Test.Helpers
 {
-    public partial class SeleniumHelper
+    partial class SeleniumHelper
     {
         public enum eDriverType { Chrome, Firefox, Edge };
 
@@ -301,6 +301,13 @@ namespace Catfish.Test.Helpers
         public void ClickSaveButton(string dataItemTemplateId, string buttonValue)
         {
             string selectorString = string.Format("form[data-template-id='{0}'] input[type='submit'][value='{1}']", dataItemTemplateId, buttonValue);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            ele.Click();
+        }
+
+        public void ClickTableRowDeleteButton(int rawNumber)
+        {
+            string selectorString = string.Format("table[class='table table-field tf-data'] tbody tr[data-r='{0}'] th div span", rawNumber);
             var ele = Driver.FindElement(By.CssSelector(selectorString));
             ele.Click();
         }
