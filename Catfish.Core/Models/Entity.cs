@@ -63,7 +63,6 @@ namespace Catfish.Core.Models
             set => Data.SetAttributeValue("created", value);
         }
 
-        [NotMapped]
         public DateTime? Updated
         {
             get => GetDateTimeAttribute("updated");
