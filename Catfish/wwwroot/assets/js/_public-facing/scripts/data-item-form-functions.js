@@ -29,8 +29,33 @@ $(document).ready(function () {
             autoSaveDataItemForms();
             dataFormdModified = false;
         }
-    },
-    5 * 60000); //execute every 5 minutes.
+    }, 5 * 60000); //execute every 5 minutes.
+
+    /*
+    $('.data-item-form').validate(
+        {
+            rules:
+            {
+            //    Color: { required: true }
+            },
+            messages:
+            {
+            //    Color:
+            //    {
+            //        required: "Please select a Color<br/>"
+            //    }
+            },
+            errorPlacement: function (error, element) {
+                if (element.is(":radio") || element.is(":checkbox")) {
+                    error.appendTo(element.parents('.field-value'));
+                }
+                else { // This is the default behavior 
+                    error.insertAfter(element);
+                }
+            }
+        });
+    */
+
 });
 
 function removeRequiredAttribute(form) {
