@@ -259,11 +259,11 @@ namespace Catfish.UnitTests
                 }
                 _db.Items.Add(item);
 
-                //for DEBUG only INSERT 2
-                if (rowCount == 2)
-                        break;
+                ////for DEBUG only INSERT 2
+               // if (rowCount == 2)
+               //         break;
 
-                rowCount++;
+              //  rowCount++;
             }
 
             _db.SaveChanges();
