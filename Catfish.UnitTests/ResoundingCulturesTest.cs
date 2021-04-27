@@ -32,13 +32,15 @@ namespace Catfish.UnitTests
         string _templateName = "Resounding Culture Item Template";
         string _metadataSetName = "Resounding Culture Metadata Set";
         string lang = "en";
-
+        string _apiKey = "";
 
         [SetUp]
         public void Setup()
         {
             _testHelper = new TestHelper();
             _db = _testHelper.Db;
+
+            _apiKey = _testHelper.Configuration.GetSection("GoogleApiKey").Value;
         }
 
         [Test]
@@ -105,9 +107,6 @@ namespace Catfish.UnitTests
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\ResoundingCultureTemplate_generared.xml");
-
-            //string json = JsonConvert.SerializeObject(template);
-            //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
 
         
@@ -261,21 +260,18 @@ namespace Catfish.UnitTests
                 _db.Items.Add(item);
 
                 //for DEBUG only INSERT 2
-                //if (rowCount == 2)
-                //    break;
+                if (rowCount == 2)
+                        break;
 
-               // rowCount++;
+                rowCount++;
             }
 
             _db.SaveChanges();
         }
 
-        // [Test]
-        public List<RowData> ReadGoogleSheet()
+       //  [Test]
+        public List<RowData>  ReadGoogleSheet()
         {
-
-            string apiKey = "AIzaSyA6LhLmkjcpqbq4Dpl9RwE_1QYi7BVUmX0"; //Google api key
-
             String spreadsheetId = "1YFS3QXGpNUtakBRXxsFmqqTYMYNv8bL-XbzZ3n6LRsI";//==>google sheet Id
             String ranges = "A2:Y";// read from col A to Y, starting 2nd row
 
@@ -283,7 +279,7 @@ namespace Catfish.UnitTests
             {
                 HttpClientInitializer = GetCredential(),
                 ApplicationName = "Google-Sheets",
-                ApiKey = apiKey
+                ApiKey = _apiKey
             });
 
 
