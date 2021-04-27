@@ -5,6 +5,7 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Test.Helpers;
 using Google.Apis.Auth.OAuth2;
@@ -260,8 +261,8 @@ namespace Catfish.UnitTests
                 _db.Items.Add(item);
 
                 //for DEBUG only INSERT 2
-                if (rowCount == 2)
-                        break;
+                //if (rowCount == 2)
+                //        break;
 
                 rowCount++;
             }
@@ -269,7 +270,15 @@ namespace Catfish.UnitTests
             _db.SaveChanges();
         }
 
+        [Test]
+        public void ReIndex()
+        {
+            bool reindexAll = false;
+            _testHelper.SolrBatchService.IndexItems(reindexAll);
+        }
+
        //  [Test]
+
         public List<RowData>  ReadGoogleSheet()
         {
             String spreadsheetId = "1YFS3QXGpNUtakBRXxsFmqqTYMYNv8bL-XbzZ3n6LRsI";//==>google sheet Id
