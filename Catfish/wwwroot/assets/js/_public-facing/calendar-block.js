@@ -33,6 +33,51 @@ Vue.component('calendar-block-vue', {
         }
     },
 
+    computed: {
+        isEventsInMonth() {
+            for (let calendarEvent of this.googlecalendardata) {
+                if (calendarEvent.StartMonth == this.selectedMonth.format('MMM')
+                    && calendarEvent.StartYear == this.selectedMonth.format("YYYY")) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        isEventsInWeek() {
+            for (let calendarEvent of this.googlecalendardata) {
+                if (calendarEvent.StartMonth == this.selectedMonth.format('MMM')
+                    && this.isDayInWeek(calendarEvent)
+                    && calendarEvent.StartYear == this.selectedMonth.format("YYYY")) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        //the events for the currently selected month (in year)
+        eventsForTheMonth() {
+            let currentEvents = [];
+            for (let calendarEvent of this.googlecalendardata) {
+                if (calendarEvent.StartMonth == this.selectedMonth.format("MMM")
+                    && calendarEvent.StartYear == this.selectedMonth.format("YYYY")) {
+                    currentEvents.push(calendarEvent);
+                }
+            }
+            return currentEvents;
+        },
+        //the events for the currently selected week (in year)
+        eventsForTheWeek() {
+            let currentEvents = [];
+            for (let calendarEvent of this.googlecalendardata) {
+                if (calendarEvent.StartMonth == this.selectedMonth.format("MMM")
+                    && calendarEvent.StartYear == this.selectedMonth.format("YYYY")
+                    && this.isDayInWeek(calendarEvent)) {
+                    currentEvents.push(calendarEvent);
+                }
+            }
+            return currentEvents;
+        }
+    },
+
     methods: {
 
         //code from Css-Tricks monthly Calendar with real data
@@ -200,6 +245,31 @@ Vue.component('calendar-block-vue', {
                 }
             }
             return true;
+        },
+
+        /**
+         * Gets the event's title for the provided day
+         * @param {any} day
+         */
+        getEventDayTitle(day) {
+            for (let calendarEvent of this.googlecalendardata) {
+                if (dayjs(calendarEvent.StartDateTime).format("YYYY-MM-DD") == day.date) {
+                    return calendarEvent.Summary;
+                }
+            }
+        },
+
+        /**
+         * Checks if the provided event day is in the section of the week
+         * @param {any} calendarDay event from google calendar
+         */
+        isDayInWeek(calendarDay) {
+            for (let sectionDay of this.daysSection) {
+                if (dayjs(calendarDay.StartDateTime).format("YYYY-MM-DD") == sectionDay.date ) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
 
@@ -211,31 +281,7 @@ Vue.component('calendar-block-vue', {
         this.initialMonth = dayjs().format("M");
         this.selectedMonth = dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
 
-        /*
-         CalendarUI Enum values
-         0 - do not display calendar
-         1 - regular calendar
-         2 - weekyl strip calendar
-         */
-        //switch (this.calendarDisplay) {
-        //    //no calendar
-        //    case 0:
-        //        break;
-        //    //regular calendar
-        //    case 1:
-        //        this.currentMonthDays = this.createDaysForCurrentMonth(this.initialYear, this.initialMonth);
-        //        this.previousMonthDays = this.createDaysForPreviousMonth(this.initialYear, this.initialMonth, this.currentMonthDays[0]);
-        //        this.nextMonthDays = this.createDaysForNextMonth(this.initialYear, this.initialMonth);
-        //        break;
-        //    //weekly strip calendar
-        //    case 2:
-        //        //this.currentWeekDays = this.createDaysForCurrentWeek(this.initialYear, this.initialMonth, this.initialDay);
-        //        //this.previousMonthDays = this.
-        //        break;
-        //    //no calendar
-        //    default:
-        //        break;
-        //}
+        console.log(this.googlecalendardata);
         
 
         this.currentMonthDays = this.createDaysForCurrentMonth(this.initialYear, this.initialMonth);
