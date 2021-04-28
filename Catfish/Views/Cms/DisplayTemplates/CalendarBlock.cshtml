@@ -76,7 +76,7 @@
         {
             <div class="calendar-container @calendarStyling">
                 <div class="strip-month-header-container">
-                    <h3 class="clickable" v-on:click="goToPresentMonth()">{{selectedMonth.format("MMMM")}} {{selectedMonth.format("YYYY")}}</h3>
+                    <h3 class="clickable month-year-title" v-on:click="goToPresentWeekMonth()">{{selectedMonth.format("MMMM")}} {{selectedMonth.format("YYYY")}}</h3>
                 </div>
                 <div class="strip-week-and-arrow-container">
                     <div class="clickable left-arrow" v-on:click="goToPreviousWeek()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>

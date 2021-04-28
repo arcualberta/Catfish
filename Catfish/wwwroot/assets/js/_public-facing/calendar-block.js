@@ -196,7 +196,18 @@ Vue.component('calendar-block-vue', {
         goToPresentMonth() {
             this.selectedMonth = dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
             this.createCalendar(this.selectedMonth.format("YYYY"), this.selectedMonth.format("M"));
-            //TODO: add support here for clicking on this for the weekly strip if it is affected
+        },
+
+        goToPresentWeekMonth() {
+            this.goToPresentMonth();
+            //get correct week to display
+            this.totalWeeksInMonth = Math.floor(this.days.length / 7);
+            let trueToday = this.previousMonthDays.length + parseInt(dayjs(this.today).format("DD"));
+            let weekOfToday = Math.floor(trueToday / 7);
+            this.currentWeekNum = weekOfToday;
+
+
+            this.daysSection = this.days.slice(weekOfToday * 7, (weekOfToday * 7) + 7);
         },
 
         goToNextWeek() {
