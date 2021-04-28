@@ -277,7 +277,6 @@ namespace Catfish.UnitTests
             _testHelper.SolrBatchService.IndexItems(reindexAll);
         }
 
-       //  [Test]
 
         public List<RowData>  ReadGoogleSheet()
         {

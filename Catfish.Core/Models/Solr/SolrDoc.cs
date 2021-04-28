@@ -21,7 +21,8 @@ namespace Catfish.Core.Models.Solr
         public SolrDoc(Entity src)
         {
             AddId(src.Id);
-            AddField("status__id", src.StatusId);
+            AddField("status_s", src.StatusId);
+            AddField("template_s", src.TemplateId);
 
 
             foreach (var child in src.MetadataSets)
