@@ -1628,6 +1628,7 @@ namespace Catfish.Test
             _seleniumHelper.SelectCheckOptions(chkId, cbComb_15_Ids);
 
 
+            _seleniumHelper.Driver.Close();
         }
 
         [Test]
