@@ -263,7 +263,6 @@ namespace Catfish.UnitTests
                 //for DEBUG only INSERT 2
                 //if (rowCount == 2)
                 //        break;
-
                 rowCount++;
             }
 
