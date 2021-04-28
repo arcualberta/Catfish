@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Helper;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,13 @@ namespace Catfish.Services
 {
     public class SolrService : ISolrService
     {
+        protected readonly IConfiguration _config;
         private readonly string _solrCoreUrl;
-        public SolrService(ICatfishAppConfiguration config)
+
+        public SolrService(IConfiguration config)
         {
-            _solrCoreUrl = config.GetSolrCoreUrl().TrimEnd('/');
+            _config = config;
+            _solrCoreUrl = config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
         }
         public void Index(Entity entity)
         {
@@ -28,11 +32,6 @@ namespace Catfish.Services
             AddUpdateAsync(doc);
         }
 
-        public void Commit()
-        {
-            _ = CommitAsync();
-        }
-
         public void AddUpdateAsync(SolrDoc doc)
         {
             XElement payload = new XElement("add");
@@ -41,7 +40,15 @@ namespace Catfish.Services
             _ = AddUpdateAsync(payload);
         }
 
-        public void AddUpdateAsync(List<SolrDoc> docs)
+        public void Index(IList<Entity> entities)
+        {
+            //XElement xml = GetSampleDoc();
+            //AddUpdateAsync(xml);
+            var docs = entities.Select(entity => new SolrDoc(entity)).ToList();
+            Index(docs);
+        }
+
+        public void Index(List<SolrDoc> docs)
         {
             XElement payload = new XElement("add");
             foreach (var doc in docs)
@@ -61,6 +68,11 @@ namespace Catfish.Services
             httpResponse.EnsureSuccessStatusCode();
         }
 
+        public void Commit()
+        {
+            _ = CommitAsync();
+        }
+
         public async Task CommitAsync()
         {
             return;
@@ -72,16 +84,6 @@ namespace Catfish.Services
 
             httpResponse.EnsureSuccessStatusCode();
         }
-
-
-        ////private XElement GetSampleDoc()
-        ////{
-        ////    var id = Guid.NewGuid().ToString();
-        ////    return XElement.Parse(string.Format(@"
-        ////    <add><doc><field name='id'>{0}</field><field name='name_s'>change.me {1}</field></doc></add>
-        ////        ", id, DateTime.Now.ToString()));
-
-        ////}
 
 
         /// <summary>
