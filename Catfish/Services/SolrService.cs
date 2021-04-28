@@ -107,7 +107,20 @@ namespace Catfish.Services
             //Build the query by "and"ing all constraints and execute it.
             //Get the results and return them through the SearchResult object.
 
-            string query = "";
+            List<string> queryParams = new List<string>();
+            foreach (var constraint in constraints)
+            {
+                string solrFieldType = "ss";
+                var fieldName = string.Format("{0}_{1}_{2}_{3}",
+                    SearchFieldConstraint.ScopeStr(constraint.Scope),
+                    constraint.ContainerId,
+                    constraint.FieldId,
+                    solrFieldType);
+
+                queryParams.Add(string.Format("{0}={1}", fieldName, constraint.SearchText));
+            }
+
+            string query = string.Join("&", queryParams);
             return ExecuteSearchQuery(query);
 
         }
@@ -119,6 +132,7 @@ namespace Catfish.Services
         /// <returns></returns>
         protected SearchResult ExecuteSearchQuery(string query)
         {
+            string queryUri = "http://localhost:8983/solr/resoundingculture/select?" + query + "&q=*%3A*";
             throw new NotImplementedException();
         }
 
