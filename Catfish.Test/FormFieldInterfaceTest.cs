@@ -524,9 +524,15 @@ namespace Catfish.Test
 
             //Details Additional expenses
             var addExpDetailsId = "7b2c801b-25cb-48ed-9cb1-669d5067b360";
-            var addExpDetailsVal = "Catfish food: $90.00 \r\n" +
-                                    "dental floss: $0.99 \r\n" +
+            // note space before \r may produce failed asserts
+            //var addExpDetailsVal = "Catfish food: $90.00 \r\n" +
+            //                        "dental floss: $0.99 \r\n" +
+            //                        "Eyedrops: $9.00";
+
+            var addExpDetailsVal = "Catfish food: $90.00\r\n" +
+                                    "dental floss: $0.99\r\n" +
                                     "Eyedrops: $9.00";
+
             _seleniumHelper.SetTextAreaValue(addExpDetailsId, addExpDetailsVal);
 
 
@@ -917,6 +923,155 @@ namespace Catfish.Test
 
             //--------------------------validation section 2
             // --------------------------
+
+            //  --- name  8e33c004-1864-46ec-b279-b5541b7adffe   applNameId applNameVal = "Arc Guy";
+            var dispAppName = _seleniumHelper.GetSelectDisplayValue(applNameId);
+            Assert.AreEqual(applNameVal, dispAppName, "application name is not correctly saved");
+
+            //  --- email address ---    emailVal = "arcguya@ualberta.ca" emailId
+            //var emailVal = "arcguya@ualberta.ca";
+            var dispEmailVal = _seleniumHelper.GetSelectDisplayValue(emailId);
+            Assert.AreEqual(emailVal, dispEmailVal, "Applicants email name is not correctly saved");
+
+
+            //  --- dept  18133fb5-285d-47b3-8fa4-5a63cf37e723  deptdd1OptVal = "Arts Resources Centre";
+            // var deptddOptId = "6a8689b8-3c17-4b31-8378-3584766f1940";
+
+            var deptdd1OptVal = "Arts Resources Centre";
+            var deptDispOpVal = _seleniumHelper.GetSelectDisplayValue(deptddId);
+            Assert.AreEqual(deptdd1OptVal, deptDispOpVal, "Dept dropdown value is not correctly saved");
+
+            //  --- rank  3cbfe358-8d4d-4f20-a84c-53ba4b450141   rankdd1OptVal = "Professor";
+            var rankdd1OptVal = "Professor";
+            var rankDispVal = _seleniumHelper.GetSelectDisplayValue(rankddId);
+            Assert.AreEqual(rankdd1OptVal, rankDispVal, "Rank dropdown value is not correctly saved");
+
+
+            //  --- not a chair   5ada22d2-2b7b-42aa-a449-79b04115af12    chairrbOptVal = "No";
+            var chairrbOptVal = "No";
+            var chairrbDispVal = _seleniumHelper.GetRadioDisplayValue(chairrbId);
+            Assert.AreEqual(chairrbOptVal, chairrbDispVal, "RB1 value is not correctly saved");
+
+
+            // chair name    8441d358-4296-45b8-8c29-8e31b94ff2c0
+            var chairnameOptVal = "arcAdmin";
+            var altChairOptID = "8441d358-4296-45b8-8c29-8e31b94ff2c0";
+            var chairDispVal = _seleniumHelper.GetSelectDisplayValue(altChairOptID);
+            Assert.AreEqual(chairnameOptVal, chairDispVal, "Chair name dropdown value is not correctly saved");
+
+            // chair email  a8fdfd9d-9395-4485-b40f-d931016f5bf8
+            var chairEmailvalue = "iwickram@ualberta.ca";
+            var altChairEmailOptID = "a8fdfd9d-9395-4485-b40f-d931016f5bf8";
+            var chairemailDispVal = _seleniumHelper.GetSelectDisplayValue(altChairEmailOptID);
+            Assert.AreEqual(chairEmailvalue, chairemailDispVal, "Chair email  dropdown value is not correctly saved");
+
+            //  --- project title 58b39ab2-fbf7-43df-ba76-59b7d04bc32f projNameVal = "Project Arc1";
+
+            var projectNameDispVal = _seleniumHelper.GetTextFieldDisplayValue(projNameId);
+            Assert.AreEqual(projNameVal, projectNameDispVal, "Project name value is not correctly saved");
+
+            //  --- Project Description:  f89e70fa-14c2-495b-89cc-e98307f05bf5  projDescVal = "
+
+            var projectDescDispVal = _seleniumHelper.GetTextFieldDisplayValue(projDescId);
+            Assert.AreEqual(projDescVal, projectDescDispVal, "Project description value is not correctly saved");
+
+
+            //  --- human animal subjects   bc5e74c6-3586-434e-aad4-e2bd92a2fabb  val = "No";
+
+            var involveSubjects = "No";
+            var dispInvolveSubjects = _seleniumHelper.GetRadioDisplayValue(involveSubjectsrbId);
+            Assert.AreEqual(involveSubjects, dispInvolveSubjects, "Radio BUtton for Involve Subjects  is not correctly saved");
+
+            //  --- ethics approval    not selected ??   9a857bd0-369c-45e8-984e-ef1aefc9f368
+
+            //  --- ethics expriry date 3b762808-b1b5-4d0a-9ed8-3c54e5510be3
+
+            //  --- name of conf 0eea8ef1-16d2-4ef3-be9c-65b947b329a9   confNameVal = "Catfish Annual";
+            var confNameDispVal = _seleniumHelper.GetTextFieldDisplayValue(confNameId);
+            Assert.AreEqual(confNameVal, confNameDispVal, "Conference Name is not correctly saved");
+
+
+            //  --- conf start date 5d0d1ee2-16a7-4fef-84d6-f0bc8ba26ad0   confDate1Val = new DateTime(2021, 5, 5);
+
+            var confDate1DispVal = _seleniumHelper.GetDateDisplayValue(confDate1Id);
+            Assert.AreEqual(confDate1Val.ToString("yyyy-MM-dd"), confDate1DispVal, "conference start date is not correctly saved");
+
+            // --- confr end date 2d5eab48-dd99-41ca-a8f1-cd29271d2779    confDate2Val = new DateTime(2021, 5, 25);
+
+            var confDate2DispVal = _seleniumHelper.GetDateDisplayValue(confDate2Id);
+            Assert.AreEqual(confDate2Val.ToString("yyyy-MM-dd"), confDate2DispVal, "conference start date is not correctly saved");
+
+            // --- destination 22b3f496-c444-4ea2-8114-1d1feaff9813    destinationVal = "Winnipeg";
+
+            var dispDestinationName = _seleniumHelper.GetSelectDisplayValue(destinationId);
+            Assert.AreEqual(destinationVal, dispDestinationName, "Conference destination name is not correctly saved");
+
+
+            //  --- deptarture date  5fc6c8b7-9c8f-48d0-ab22-d0baa3db20c1   travDate1Val = new DateTime(2021, 5, 1);
+
+            var travDate1DispVal = _seleniumHelper.GetDateDisplayValue(travDate1Id);
+            Assert.AreEqual(travDate1Val.ToString("yyyy-MM-dd"), travDate1DispVal, "traval start date is not correctly saved");
+
+
+            //  --- return to date cb9ae842-12b2-416d-9042-d6ed7420ac4e  travDate2Val = new DateTime(2021, 5, 30);
+
+            var travDate2DispVal = _seleniumHelper.GetDateDisplayValue(travDate2Id);
+            Assert.AreEqual(travDate2Val.ToString("yyyy-MM-dd"), travDate2DispVal, "traval end date is not correctly saved");
+            
+            //  --- conf participation  64678688-16bd-41a9-8738-3ded02bc374f  participationVals = new string[] { "Invited Speaker", "Other" };
+            
+            var participationDispVals = _seleniumHelper.GetCheckboxDisplayValue(participationgroupId);
+            Assert.AreEqual(participationVals, participationDispVals, "Participation by check box is not correctly saved");
+
+
+            //  --- other participation 47c956cc-2c9a-4ace-a6bc-d374b8d83566
+
+            var participationOtherDispVal = _seleniumHelper.GetSelectDisplayValue(participationOtherId);
+            Assert.AreEqual(participationOtherVal, participationOtherDispVal, "participation other name is not correctly saved");
+
+            //  --- airfare 8f938a04-2900-4ea6-a361-b1534c5199ec
+
+            var dispAirfareVal = _seleniumHelper.GetDecimalDisplayValue(airfareId);
+            Assert.AreEqual(airfareVal, dispAirfareVal, "Airfare value is not correctly saved");
+
+            //  --- accomodation
+
+            var accomadationDispVal = _seleniumHelper.GetDecimalDisplayValue(accomadationId);
+            Assert.AreEqual(accomadationVal, accomadationDispVal, "Accomadation value is not correctly saved");
+
+            //  --- per diem
+
+            var perdiemDispVal = _seleniumHelper.GetDecimalDisplayValue(perdiemId);
+            Assert.AreEqual(perdiemVal, perdiemDispVal, "Per diem value is not correctly saved");
+
+            //  --- ground transport
+
+            var groundDispVal = _seleniumHelper.GetDecimalDisplayValue(groundId);
+            Assert.AreEqual(groundVal, groundDispVal, "Ground value is not correctly saved");
+
+
+            //  --- conference registration
+
+            var confRegDispVal = _seleniumHelper.GetDecimalDisplayValue(confRegId);
+            Assert.AreEqual(confRegVal, confRegDispVal, "Conference Registration value is not correctly saved");
+
+
+            //  --- addition expenses value
+
+            var addExpDispVal = _seleniumHelper.GetDecimalDisplayValue(addExpId);
+            Assert.AreEqual(addExpVal, addExpDispVal, "Additional expenses value is not correctly saved");
+
+
+            //  --- addition expenses details   7b2c801b-25cb-48ed-9cb1-669d5067b360
+
+            var addExpDetailsDispVal = _seleniumHelper.GetTextFieldDisplayValue(addExpDetailsId);
+            Assert.AreEqual(addExpDetailsVal, addExpDetailsDispVal, "addition expenses details in text is not correctly saved");
+
+
+
+
+
+
 
         }
         [Test]
