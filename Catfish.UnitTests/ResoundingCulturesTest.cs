@@ -25,6 +25,7 @@ using System.Threading;
 
 namespace Catfish.UnitTests
 {
+
     public class ResoundingCulturesTest
     {
         private protected AppDbContext _db;
@@ -272,7 +273,7 @@ namespace Catfish.UnitTests
         [Test]
         public void ReIndex()
         {
-            bool reindexAll = false;
+            bool reindexAll = true;
             _testHelper.SolrBatchService.IndexItems(reindexAll);
         }
 

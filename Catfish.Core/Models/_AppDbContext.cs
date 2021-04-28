@@ -54,16 +54,26 @@ namespace Catfish.Core.Models
                 }
 
                 if (typeof(Entity).IsAssignableFrom(entry.Entity.GetType()))
-                    (entry.Entity as Entity).Updated = DateTime.Now;
-
-                if (typeof(Item).IsAssignableFrom(entry.Entity.GetType()))
                 {
-                    if (Configuration.GetSection("IndexItemsOnSave").Value == "true")
+                    if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
                     {
-                        _indexingService.Index(entry.Entity as Item);
-                        indexUpdated = true;
+                        (entry.Entity as Entity).Updated = DateTime.Now;
+                        if (Configuration.GetSection("IndexItemsOnSave").Value == "true")
+                        {
+                            _indexingService.Index(entry.Entity as Item);
+                            indexUpdated = true;
+                        }
+                    }
+                    else if (entry.State == EntityState.Deleted)
+                    {
+                        //TODO: remove entry from the index.
                     }
                 }
+
+                //if (typeof(Entity).IsAssignableFrom(entry.Entity.GetType()))
+                //    (entry.Entity as Entity).Updated = DateTime.Now;
+
+
             }
 
             if(indexUpdated)
