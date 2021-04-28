@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services.Solr;
+using Catfish.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -83,6 +84,20 @@ namespace Catfish.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AdvanceSearch(AdvanceSearchViewModel advanceSearchVM)
         {
             try
             {

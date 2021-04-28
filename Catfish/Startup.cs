@@ -32,8 +32,7 @@ using Piranha.Services;
 using SolrNet;
 using System;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+
 
 namespace Catfish
 {
@@ -363,7 +362,7 @@ namespace Catfish
             //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
-            //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
@@ -414,6 +413,7 @@ namespace Catfish
             App.Blocks.Register<VueList>();
             App.Blocks.Register<VueCarousel>();
             App.Blocks.Register<ExtendedColumnBlock>();
+            App.Blocks.Register<AdvanceSearchBlock>();
         }
         private static void RegisterCustomStyles()
         {

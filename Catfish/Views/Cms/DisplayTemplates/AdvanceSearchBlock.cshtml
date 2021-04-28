@@ -1,0 +1,47 @@
+﻿@model Catfish.Models.Blocks.AdvanceSearchBlock
+
+@using Catfish.Core.Authorization.Requirements;
+@using Microsoft.AspNetCore.Authorization;
+@using Catfish.Core.Models;
+
+
+@*@inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;*@
+@inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+@*@inject Catfish.Services.ISubmissionService _submissionService;*@
+@{
+    var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
+    var metadatasetId = Guid.Parse(Model.SelectedMetadataset);
+
+    var fields = _entityTemplateService.GetTemplateMetadataSetFields(entityTemplateId, metadatasetId);
+
+}
+
+<h2>Advance Search</h2>
+@Html.BeginForm(""){ 
+<div class="row">
+    <div>
+        <label>Scope</label>
+        <select class="form-control">
+            <option>Data</option>
+            <option>Metadataset</option>
+        </select>
+    </div>
+    <div>
+        <label>Item per Page</label>
+        <input type="text" />
+    </div>
+</div>
+@foreach (var f in fields)
+{
+    <div class="row">
+   
+        <label>@((f as Catfish.Core.Models.Contents.Fields.TextField).Name.ConcatenatedContent)</label>
+        <input type="text" class="form-control" />
+  
+    
+    </div>
+}
+<input type="submit" value="Search" />
+}
+
+
