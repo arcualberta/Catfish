@@ -121,10 +121,21 @@ namespace Catfish.Services
             }
 
             string query = string.Join("&", queryParams);
-            return ExecuteSearchQuery(query);
+            //return ExecuteSearchQuery(query);
+           var search = ExecuteSearch(query);
+
+            //return search;
 
         }
 
+        public async Task ExecuteSearch(string query)
+        {
+            string queryUri = "http://localhost:8983/solr/resoundingculture/select?" + query + "&q=*%3A*";
+            using var client = new HttpClient();
+            using var httpResponse = await client.GetAsync(queryUri).ConfigureAwait(false);
+
+            httpResponse.EnsureSuccessStatusCode();
+        }
         /// <summary>
         /// Executes a given valid solr query.
         /// </summary>
