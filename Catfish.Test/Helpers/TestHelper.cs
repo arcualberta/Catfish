@@ -67,6 +67,7 @@ namespace Catfish.Test.Helpers
             services.AddScoped<IStorage, Piranha.Local.FileStorage>();
             services.AddScoped<ISiteService, SiteService>();
             services.AddScoped<ISolrService, SolrService>();
+            services.AddScoped<ISolrBatchService, SolrBatchService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
 
 
@@ -103,6 +104,7 @@ namespace Catfish.Test.Helpers
         public IAuthorizationService AuthorizationService => Seviceprovider.GetService<IAuthorizationService>();
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>();
         public ISolrService SolrService => Seviceprovider.GetService<ISolrService>();
+        public ISolrBatchService SolrBatchService => Seviceprovider.GetService<ISolrBatchService>();
        
         public XElement LoadXml(string fileName)
         {
