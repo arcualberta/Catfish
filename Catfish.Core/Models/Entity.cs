@@ -63,7 +63,6 @@ namespace Catfish.Core.Models
             set => Data.SetAttributeValue("created", value);
         }
 
-        [NotMapped]
         public DateTime? Updated
         {
             get => GetDateTimeAttribute("updated");
@@ -248,6 +247,29 @@ namespace Catfish.Core.Models
             }
             return dataItem;
         }
+
+        public MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists, string nameLang = "en")
+        {
+            MetadataSet metadatSet = MetadataSets
+                .Where(di => di.GetName(nameLang) == metadataSetName)
+                .FirstOrDefault();
+
+            if (metadatSet == null && createIfNotExists)
+            {
+                metadatSet = new MetadataSet();
+                metadatSet.SetName(metadataSetName, nameLang);
+                MetadataSets.Add(metadatSet);
+            }
+            return metadatSet;
+        }
+
+        public MetadataSet GetMetadataSet(Guid metadataSetId)
+        {
+            return MetadataSets
+                .Where(di => di.Id == metadataSetId)
+                .FirstOrDefault();
+        }
+
 
         public Entity AddAuditEntry(Guid? userId, Guid statusFrom, Guid statusTo, string action)
         {

@@ -4,7 +4,7 @@ using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Services;
-using Catfish.UnitTests.Helpers;
+using Catfish.Test.Helpers;
 using NUnit.Framework;
 using System.IO;
 using System.Linq;

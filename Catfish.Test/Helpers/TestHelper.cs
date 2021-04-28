@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System.IO;
 using System.Linq;
+using Catfish.Helper;
 
 namespace Catfish.Test.Helpers
 {
@@ -65,6 +66,8 @@ namespace Catfish.Test.Helpers
             services.AddScoped<IMediaService, Piranha.Services.MediaService>();
             services.AddScoped<IStorage, Piranha.Local.FileStorage>();
             services.AddScoped<ISiteService, SiteService>();
+            services.AddScoped<ISolrService, SolrService>();
+            services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
 
 
             //Registering other services
@@ -94,30 +97,13 @@ namespace Catfish.Test.Helpers
             Seviceprovider = services.BuildServiceProvider();
         }
 
-        public AppDbContext Db
-        {
-            get => Seviceprovider.GetService<AppDbContext>();
-        }
-
-        public IdentitySQLServerDb PiranhaDb
-        {
-            get => Seviceprovider.GetService<IdentitySQLServerDb>();
-        }
-
-        public IWorkflowService WorkflowService
-        {
-            get => Seviceprovider.GetService<IWorkflowService>();
-        }
-
-        public IAuthorizationService AuthorizationService
-        {
-            get => Seviceprovider.GetService<IAuthorizationService>();
-        }
-        public IConfiguration Configuration
-        {
-            get => Seviceprovider.GetService<IConfiguration>();
-        }
-
+        public AppDbContext Db => Seviceprovider.GetService<AppDbContext>();
+        public IdentitySQLServerDb PiranhaDb => Seviceprovider.GetService<IdentitySQLServerDb>();
+        public IWorkflowService WorkflowService => Seviceprovider.GetService<IWorkflowService>();
+        public IAuthorizationService AuthorizationService => Seviceprovider.GetService<IAuthorizationService>();
+        public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>();
+        public ISolrService SolrService => Seviceprovider.GetService<ISolrService>();
+       
         public XElement LoadXml(string fileName)
         {
             string dataRoot = Configuration.GetSection("SchemaPath").Value;
