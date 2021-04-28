@@ -30,6 +30,8 @@ Vue.component('calendar-block-vue', {
             //not the best solution, figure out something else
             //0 = neutral, -1 = backwards, 1 = forwards
             lastAction: 0,
+
+            myWeek: 1
         }
     },
 
@@ -126,7 +128,7 @@ Vue.component('calendar-block-vue', {
                     ).format("YYYY-MM-DD"),
                     dayOfMonth: previousMonthLastMondayDayOfMonth + index,
                     isCurrentMonth: false,
-                    hasEvent: this.checkIfEventDay(index + 1, month, year)
+                    hasEvent: false//this.checkIfEventDay(index + 1, month, year)
                 };
             });
         },
@@ -144,7 +146,7 @@ Vue.component('calendar-block-vue', {
                     date: dayjs(`${year}-${Number(month) + 1}-${index + 1}`).format("YYYY-MM-DD"),
                     dayOfMonth: index + 1,
                     isCurrentMonth: false,
-                    hasEvent: this.checkIfEventDay(index + 1, month, year)
+                    hasEvent: false//this.checkIfEventDay(index + 1, month, year)
                 }
             })
         },
@@ -152,7 +154,15 @@ Vue.component('calendar-block-vue', {
         //for now only works for start day, not multiple days
         checkIfEventDay(day, month, year) {
             for (let calendarEvent of this.googlecalendardata) {
-                if (calendarEvent.StartDay == day.toString() && calendarEvent.StartMonth == dayjs(month).format('MMM') && calendarEvent.StartYear == year) {
+                //google calendar puts a 0 in front of single digits, ie 01, 02, 03...
+                //need to remove that to properly compare
+                let startDay = "";
+                if (calendarEvent.StartDay[0] == "0") {
+                    startDay = calendarEvent.StartDay.slice(1);
+                } else {
+                    startDay = calendarEvent.StartDay;
+                }
+                if (startDay == day.toString() && calendarEvent.StartMonth == dayjs(month).format('MMM') && calendarEvent.StartYear == year) {
                     return true;
                 }
             }
@@ -185,52 +195,66 @@ Vue.component('calendar-block-vue', {
         goToPresentMonth() {
             this.selectedMonth = dayjs(new Date(this.initialYear, this.initialMonth - 1, 1));
             this.createCalendar(this.selectedMonth.format("YYYY"), this.selectedMonth.format("M"));
-
+            //TODO: add support here for clicking on this for the weekly strip if it is affected
         },
 
         goToNextWeek() {
+            
+
+
             //if week exceeds the current month
             let lastWeekInMonth = this.days.slice(-7);
             let isSameWeek = this.compareWeeks(lastWeekInMonth);
             if (isSameWeek) {
                 this.goToNextMonth();
-                this.weekSliceNum = 0;
-                this.daysSection = this.days.slice((this.weekSliceNum), this.weekSliceNum + 7);
-                this.weekSliceNum += 7; 
             } else {
+                this.daysSection = this.days.slice();
 
-                //checks if changed direction
-                if (this.lastAction < 0) {
-                    this.weekSliceNum += 7;
-                }
-
-                this.weekSliceNum += 7;
-                
-                this.daysSection = this.days.slice((this.weekSliceNum - 7), this.weekSliceNum);
-                this.lastAction = 1;
             }
+
+
+            //if week exceeds the current month
+            //let lastWeekInMonth = this.days.slice(-7);
+            //let isSameWeek = this.compareWeeks(lastWeekInMonth);
+            //if (isSameWeek) {
+            //    this.goToNextMonth();
+            //    this.weekSliceNum = 0;
+            //    this.daysSection = this.days.slice((this.weekSliceNum), this.weekSliceNum + 7);
+            //    this.weekSliceNum += 7; 
+            //} else {
+
+            //    //checks if changed direction
+            //    if (this.lastAction < 0) {
+            //        this.weekSliceNum += 7;
+            //    }
+
+            //    this.weekSliceNum += 7;
+                
+            //    this.daysSection = this.days.slice((this.weekSliceNum - 7), this.weekSliceNum);
+            //    this.lastAction = 1;
+            //}
         },
 
         goToPreviousWeek() {
             //if week exceeds the current month
-            let firstWeekInMonth = this.days.slice(0, 7);
-            let isSameWeek = this.compareWeeks(firstWeekInMonth);
-            if (isSameWeek) {
-                this.goToPreviousMonth();
-                this.weekSliceNum = this.days.length;
-                this.daysSection = this.days.slice(this.weekSliceNum - 7, this.weekSliceNum);
-                this.weekSliceNum -= 7; 
-            } else {
+            //let firstWeekInMonth = this.days.slice(0, 7);
+            //let isSameWeek = this.compareWeeks(firstWeekInMonth);
+            //if (isSameWeek) {
+            //    this.goToPreviousMonth();
+            //    this.weekSliceNum = this.days.length;
+            //    this.daysSection = this.days.slice(this.weekSliceNum - 7, this.weekSliceNum);
+            //    this.weekSliceNum -= 7; 
+            //} else {
 
-                //checks if changed direction
-                if (this.lastAction > 0) {
-                    this.weekSliceNum -= 7;
-                }
+            //    //checks if changed direction
+            //    if (this.lastAction > 0) {
+            //        this.weekSliceNum -= 7;
+            //    }
 
-                this.weekSliceNum -= 7;
-                this.daysSection = this.days.slice(this.weekSliceNum, this.weekSliceNum + 7);
-                this.lastAction = -1;
-            }
+            //    this.weekSliceNum -= 7;
+            //    this.daysSection = this.days.slice(this.weekSliceNum, this.weekSliceNum + 7);
+            //    this.lastAction = -1;
+            //}
             
         },
 
@@ -291,8 +315,15 @@ Vue.component('calendar-block-vue', {
 
         this.days = [...this.previousMonthDays, ...this.currentMonthDays, ...this.nextMonthDays];
 
+        //for weekly calendar strip
         if (this.calendardisplay == 2) {
-            this.daysSection = this.days.slice(0, this.weekSliceNum);
+            //get correct week to display
+            let totalWeeks = this.days.length / 7;
+            let trueToday = this.previousMonthDays.length + parseInt(dayjs(this.today).format("DD"));
+            let weekOfToday = Math.floor(trueToday / 7);
+            
+
+            this.daysSection = this.days.slice(weekOfToday * 7, (weekOfToday * 7) + 7);
         }
     },
 
