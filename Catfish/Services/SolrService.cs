@@ -3,6 +3,7 @@ using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Helper;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace Catfish.Services
         protected readonly IConfiguration _config;
         private readonly string _solrCoreUrl;
 
+        private SearchResult _result;
         public SolrService(IConfiguration config)
         {
             _config = config;
@@ -94,7 +96,8 @@ namespace Catfish.Services
         public SearchResult Search(string searchText)
         {
             string query = "";
-            return ExecuteSearchQuery(query);
+            _ = ExecuteSearchQuery(query);
+            return _result;
         }
 
         /// <summary>
@@ -117,34 +120,44 @@ namespace Catfish.Services
                     constraint.FieldId,
                     solrFieldType);
 
-                queryParams.Add(string.Format("{0}={1}", fieldName, constraint.SearchText));
+                queryParams.Add(string.Format("{0}:*{1}*", fieldName, constraint.SearchText));
             }
 
             string query = string.Join("&", queryParams);
-            //return ExecuteSearchQuery(query);
-           var search = ExecuteSearch(query);
-
-            //return search;
-
+            _result = null;
+            var task = ExecuteSearchQuery(query);
+            task.Wait(60000);//Wait for a maximum of 1 minute
+            return _result;
         }
 
-        public async Task ExecuteSearch(string query)
-        {
-            string queryUri = "http://localhost:8983/solr/resoundingculture/select?" + query + "&q=*%3A*";
-            using var client = new HttpClient();
-            using var httpResponse = await client.GetAsync(queryUri).ConfigureAwait(false);
+        ////public async Task ExecuteSearch(string query)
+        ////{
+        ////    string queryUri = "http://localhost:8983/solr/resoundingculture/select?" + query + "&q=*%3A*";
+        ////    using var client = new HttpClient();
+        ////    using var httpResponse = await client.GetAsync(queryUri).ConfigureAwait(false);
 
-            httpResponse.EnsureSuccessStatusCode();
-        }
+        ////    httpResponse.EnsureSuccessStatusCode();
+        ////}
+        
         /// <summary>
         /// Executes a given valid solr query.
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        protected SearchResult ExecuteSearchQuery(string query)
+        protected async Task ExecuteSearchQuery(string query)
         {
-            string queryUri = "http://localhost:8983/solr/resoundingculture/select?" + query + "&q=*%3A*";
-            throw new NotImplementedException();
+            string queryUri = "http://localhost:8983/solr/resoundingculture/select?hl=on&q=" + query +
+                "&hl.fl=*" + "&hl.snippets=5" + "&wt=xml";
+
+            //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
+            using var client = new HttpClient();
+            using var httpResponse = await client.GetAsync(new Uri(queryUri)).ConfigureAwait(false);
+
+            httpResponse.EnsureSuccessStatusCode();
+
+            string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+            _result = new SearchResult(response);
+
         }
 
     }

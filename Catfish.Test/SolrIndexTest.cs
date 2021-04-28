@@ -46,7 +46,7 @@ namespace Catfish.Test
             constraints.Add(new SearchFieldConstraint()
             {
                 Scope = SearchFieldConstraint.eScope.Metadata,
-                ContainerId = Guid.Parse("3a138ce0-4e36-4a16-926b-243dd9447b0f"),
+                ContainerId = Guid.Parse("bde40d2f-f477-4fc3-82a0-a66a36c1d39f"),
                 FieldId = Guid.Parse("4bfa0d9e-4b1c-4357-93b3-038eaafcf990"),
                 SearchText = "Alberta"
             });
@@ -54,7 +54,7 @@ namespace Catfish.Test
             constraints.Add(new SearchFieldConstraint()
             {
                 Scope = SearchFieldConstraint.eScope.Metadata,
-                ContainerId = Guid.Parse("3a138ce0-4e36-4a16-926b-243dd9447b0f"),
+                ContainerId = Guid.Parse("bde40d2f-f477-4fc3-82a0-a66a36c1d39f"),
                 FieldId = Guid.Parse("8c767bc4-0456-43fa-898d-7a2f74f25061"),
                 SearchText = "Cast"
             });
@@ -62,12 +62,12 @@ namespace Catfish.Test
             constraints.Add(new SearchFieldConstraint()
             {
                 Scope = SearchFieldConstraint.eScope.Metadata,
-                ContainerId = Guid.Parse("3a138ce0-4e36-4a16-926b-243dd9447b0f"),
+                ContainerId = Guid.Parse("bde40d2f-f477-4fc3-82a0-a66a36c1d39f"),
                 FieldId = Guid.Parse("de0b29eb-b08b-43e8-9f15-ab80b09f3f81"),
                 SearchText = "Sound"
             });
 
-            var result = _solr.Search(constraints.ToArray(), 0, 100);
+            var result = _solr.Search(constraints.ToArray(), 50, 50);
 
         }
     }

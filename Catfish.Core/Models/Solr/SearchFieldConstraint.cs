@@ -25,5 +25,16 @@ namespace Catfish.Core.Models.Solr
                     throw new Exception("Unknown scope: " + scope.ToString());
             }
         }
+
+        public static eScope Str2Scope(string str)
+        {
+            if (str == "data")
+                return eScope.Data;
+            if(str == "metadata")
+                return eScope.Metadata;
+
+            throw new Exception("Unknown scope: " + str);
+        }
+
     }
 }
