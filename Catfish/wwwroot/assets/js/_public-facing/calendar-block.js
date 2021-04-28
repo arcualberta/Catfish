@@ -31,7 +31,8 @@ Vue.component('calendar-block-vue', {
             //0 = neutral, -1 = backwards, 1 = forwards
             lastAction: 0,
 
-            myWeek: 1
+            currentWeekNum: 0,
+            totalWeeksInMonth: 5
         }
     },
 
@@ -199,18 +200,19 @@ Vue.component('calendar-block-vue', {
         },
 
         goToNextWeek() {
-            
-
 
             //if week exceeds the current month
-            let lastWeekInMonth = this.days.slice(-7);
-            let isSameWeek = this.compareWeeks(lastWeekInMonth);
-            if (isSameWeek) {
-                this.goToNextMonth();
-            } else {
-                this.daysSection = this.days.slice();
+            this.currentWeekNum += 1;
 
-            }
+            if (this.currentWeekNum >= this.totalWeeksInMonth) {
+                //goto next month, recalculate weeks in month etc
+                this.goToNextMonth();
+                this.totalWeeksInMonth = Math.floor(this.days.length / 7);
+                this.currentWeekNum = 0;
+            } //else {
+                this.daysSection = this.days.slice(this.currentWeekNum * 7, (this.currentWeekNum * 7) + 7);
+
+            //}
 
 
             //if week exceeds the current month
@@ -236,6 +238,23 @@ Vue.component('calendar-block-vue', {
         },
 
         goToPreviousWeek() {
+            //if week exceeds the current month
+            //this.currentWeekNum -= 1;
+            let tmp = this.currentWeekNum - 1;
+
+            if (tmp < 0) {
+                //goto next month, recalculate weeks in month etc
+                this.goToPreviousMonth();
+                this.totalWeeksInMonth = Math.floor(this.days.length / 7);
+                this.currentWeekNum = this.totalWeeksInMonth;
+            } //else {
+            this.daysSection = this.days.slice((this.currentWeekNum * 7) - 7, this.currentWeekNum * 7);
+            this.currentWeekNum -= 1;
+            //}
+
+
+
+
             //if week exceeds the current month
             //let firstWeekInMonth = this.days.slice(0, 7);
             //let isSameWeek = this.compareWeeks(firstWeekInMonth);
@@ -318,9 +337,10 @@ Vue.component('calendar-block-vue', {
         //for weekly calendar strip
         if (this.calendardisplay == 2) {
             //get correct week to display
-            let totalWeeks = this.days.length / 7;
+            this.totalWeeksInMonth = Math.floor(this.days.length / 7);
             let trueToday = this.previousMonthDays.length + parseInt(dayjs(this.today).format("DD"));
             let weekOfToday = Math.floor(trueToday / 7);
+            this.currentWeekNum = weekOfToday;
             
 
             this.daysSection = this.days.slice(weekOfToday * 7, (weekOfToday * 7) + 7);
