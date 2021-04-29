@@ -550,7 +550,7 @@ namespace Catfish.Test
             var chairrbOptNoId = "fc6bf9a5-b0c7-44de-8cff-6f2eee8b3f91";
             _seleniumHelper.SelectRadioOption(chairrbId, chairrbOptNoId);
 
-            // opps - make that a yes
+            // opps - make that a yes -- leave back to no so  can select alt contact
             //var chairrbOptYesId = "799bb23c-7137-4b9a-a150-77359e8a3e90";
             //_seleniumHelper.SelectRadioOption(chairrbId, chairrbOptYesId);
 
@@ -570,14 +570,25 @@ namespace Catfish.Test
             var projDescVal = "Officials with Alberta parks and environment sampled, or went fishing in the pond where the catfish was discovered and caught thirty catfish, from three generations — or catfish that have lived in the lake for about three years.";
             _seleniumHelper.SetTextAreaValue(projDescId, projDescVal);
 
-
-           
-
-            //Option  for involving subjects RB
+            //Option  for involving subjects RB 575
             var involveSubjectsrbId = "bc5e74c6-3586-434e-aad4-e2bd92a2fabb";
-            var involveSubjectsnoOptId = "b26717d3-c8e2-49d1-bb27-e98542ce748b";
-            //var chairrbOptVal = "No";
-            _seleniumHelper.SelectRadioOption(involveSubjectsrbId, involveSubjectsnoOptId);
+            //var involveSubjectsnoOptId = "b26717d3-c8e2-49d1-bb27-e98542ce748b";
+            var involveSubjectsyesOptId = "bcb08bd5-5e35-4139-abc6-5bda5264e490";
+            //yes-option-id="bcb08bd5-5e35-4139-abc6-5bda5264e490"
+            //var chairrbOptVal = "Yes";
+            _seleniumHelper.SelectRadioOption(involveSubjectsrbId, involveSubjectsyesOptId);
+
+            //Option approval Obtained
+            var approvalObtainedrbId = "9a857bd0-369c-45e8-984e-ef1aefc9f368";
+            var approvalObtainedYesOptId = "376bbad9-670d-483b-afff-1e825d25f2a1";
+            _seleniumHelper.SelectRadioOption(approvalObtainedrbId, approvalObtainedYesOptId);
+
+            //approval expiry date
+            var approvalExpireDateId = "3b762808-b1b5-4d0a-9ed8-3c54e5510be3";
+            var approvalExpireDateVal = new DateTime(2024, 7, 27);
+            _seleniumHelper.SetDateValue(approvalExpireDateId, approvalExpireDateVal);
+
+
 
             #endregion applicant_part
 
@@ -940,10 +951,38 @@ namespace Catfish.Test
             var releaseAmount_1_Val = "7700.00";
             _seleniumHelper.SetNumberValue(releaseAmount_1_Id, releaseAmount_1_Val);
 
-            // release amount, first term, justification
+            // release amount, 2nd term, justification
 
-            // 2nd term release
-            //add button ...
+            // 2nd term release 940
+
+            // click  add button  for course release in second term - assume Second button
+            //#Blocks_0__Item_Fields_70__addChildButton > input:nth-child(1)
+
+
+            var addBtnSecondTerm = "#Blocks_0__Item_Fields_70__addChildButton > input:nth-child(1)";
+            _seleniumHelper.ClickAddButton(addBtnSecondTerm);
+
+
+            //cousre name
+            var course_2_Id = "dcda46dd-ef40-4aac-8d45-210ae2a14636";
+            var course_2_Val = "Squid 409";
+            _seleniumHelper.SetTextFieldValue(course_2_Id, course_2_Val);
+
+
+            //Selecting "No" Option  for "Release Required?" RB
+            // f3f58a5b-34ee-4a4c-82b7-9dbf5255de1f for set. 
+
+            var relasese_2_Id = "f3f58a5b-34ee-4a4c-82b7-9dbf5255de1f";
+            var relasese_2_OptId = "1cc57361-7fc8-4485-94c9-c0879f2bc33b";
+
+            _seleniumHelper.SelectRadioOption(relasese_2_Id, relasese_2_OptId);
+
+            // release amount.  9e97372e-76f8-45ba-bc2e-0cc2a69c13c1
+            var releaseAmount_2_Id = "9e97372e-76f8-45ba-bc2e-0cc2a69c13c1";
+            var releaseAmount_2_Val = "0.00";
+            _seleniumHelper.SetNumberValue(releaseAmount_2_Id, releaseAmount_2_Val);
+
+
 
             // release amount, both possible  terms, justification
             //24625214-3d47-45ae-a7fa-017d60f1e608
@@ -987,7 +1026,7 @@ namespace Catfish.Test
             Assert.AreEqual(decimal.Parse(rcaem_onForm), rcaem_required, "Support for Research and Creative Activity Equipment and Materials is not correctly indicated");
 
             //Teaching release time  5e71a356-cd02-4bd3-8ab1-629c2b81c45a
-            var releaseAmount_2_Val = "0.0";
+            //var releaseAmount_2_Val = "0.0";
             var ttr_id = "5e71a356-cd02-4bd3-8ab1-629c2b81c45a";
             var ttr_onForm = _seleniumHelper.GetSummaryFieldValue(ttr_id);
             var ttr_required = decimal.Parse(releaseAmount_1_Val)+ decimal.Parse(releaseAmount_2_Val);
@@ -1010,32 +1049,95 @@ namespace Catfish.Test
 
             #endregion summary_part
 
-
+            //---------------------------------------------------------------------------------
             //Other and Previous Funding
+            //   
             //Selecting "No" Option  for "previous SAS funding 5 years" 
+            // no option var prevSAS5rbOptId = "46dc91e8-895a-41ef-be78-a1eff9fe6257";
             var prevSAS5Id = "471e3fbb-2034-447c-80ad-9d61f33829f9";
-            var prevSAS5rbOptId = "46dc91e8-895a-41ef-be78-a1eff9fe6257";
-            //
+            var prevSAS5rbOptId = "8fd8c6b1-73a7-4cd7-91a0-a336753215eb";
+
             _seleniumHelper.SelectRadioOption(prevSAS5Id, prevSAS5rbOptId);
 
-         
-             //Selecting "No" Option  for "previous SAS funding this project" 
-             var prevthisSASId = "8247d88d-01dc-42ea-b726-4f851dca888d";
-            var prevthisSASrbOptId = "c61d30fc-f850-4769-8c4c-5650f0d05801";
-            //
+            // if yes add button
+            var addprevSASBtnSelecton = "#Blocks_0__Item_Fields_81__addChildButton > input:nth-child(1)";
+            _seleniumHelper.ClickAddButton(addprevSASBtnSelecton);
+
+            // desc SAS previous 5 years
+
+            //name of type of funding
+            var pSASId = "a1cb9808-ab28-4d8f-aefe-a36df9ef40d6";
+            var pSASVal = "SAS TypeOne";
+            _seleniumHelper.SetTextFieldValue(pSASId, pSASVal);
+
+            // value of award
+            var awardValueId = "47c6f57e-e547-4e32-bc9a-7ff39a1e42bf";
+            var awardValueVal = "4000.00";
+            _seleniumHelper.SetNumberValue(awardValueId, awardValueVal);
+
+            //Year of application
+            var applYearId = "717e09ed-928d-4e28-9389-b90dad48da60";
+            var applYearVal = "2018";
+            _seleniumHelper.SetNumberValue(applYearId, applYearVal);
+
+            // for Competition Applied To -- choose Spring
+            var compSeasonId = "a08b7227-848c-4b16-b26d-c8cc94ffbbca";
+            var compSeasonSpringOptId = "8890dff5-3cb3-4b5f-964e-75c673ff0a32";
+            var compSeasonVal = "Spring";
+            _seleniumHelper.SelectRadioOption(compSeasonId, compSeasonSpringOptId);
+
+            //Setting Title of Project value 
+            var PATitleId = "384e010a-c819-4639-9cd9-7305053b91cd";
+            var PATitleVal = "Fresh Water Catfish";
+            _seleniumHelper.SetTextFieldValue(PATitleId, PATitleVal);
+
+            //Setting description of previous Award
+            var PAdescId = "f9284ed5-9811-4532-b4be-03b2c799f75b";
+            var PAdescVal = "We looked at Fresh water Fish. " +
+                "In particular Catfish";
+            _seleniumHelper.SetTextAreaValue(PAdescId, PAdescVal);
+
+            //--
+            //Selecting "Yes" Option  for "previous SAS funding this project" 
+            //8247d88d-01dc-42ea-b726-4f851dca888d,e2e5a69e-8f54-47cd-af1e-f425e75be726
+            var prevthisSASId = "8247d88d-01dc-42ea-b726-4f851dca888d";
+            var prevthisSASrbOptId = "e2e5a69e-8f54-47cd-af1e-f425e75be726";
+            var prevthisSASVal = "Yes";
             _seleniumHelper.SelectRadioOption(prevthisSASId, prevthisSASrbOptId);
 
-            //Selecting "No" Option  for "previous SAS funding this project" 
+            //Setting how this relates
+            var howRelatesId = "9f1175ff-9761-4a8a-b604-98d6743f9e8d";
+            var howRelatesVal = "Study of similar aquatic life " +
+                "like Catfish etc.";
+            _seleniumHelper.SetTextAreaValue(howRelatesId, howRelatesVal);
+
+
+            //Selecting "Yes" Option  for "previous SAS funding this project" 
+            //1f3631c4-14e3-4c45-b268-203c3bd2d65c, 9327cd92-94d7-40df-a2ec-15b5fd693099
             var otherSASFundingId = "1f3631c4-14e3-4c45-b268-203c3bd2d65c";
-            var otherSASFundingOptId = "6488cfa7-8921-4e2d-b86e-e7b5df830642";
-            //
+            var otherSASFundingOptId = "9327cd92-94d7-40df-a2ec-15b5fd693099";
+            var otherSASFundingOptVal = "Yes";
             _seleniumHelper.SelectRadioOption(otherSASFundingId, otherSASFundingOptId);
+
+            //Setting funding reasons9f1175ff-9761-4a8a-b604-98d6743f9e8d
+            var reasonFundingId = "9f1175ff-9761-4a8a-b604-98d6743f9e8d";
+            var reasonFundingVal = "There is other  Funding from " +
+                "Alberta.";
+            _seleniumHelper.SetTextAreaValue(reasonFundingId, reasonFundingVal);
+
+            //Setting funding reasons2 44b89364-87fa-4a3b-87af-cfb116d53214
+            var reasonFunding2Id = "44b89364-87fa-4a3b-87af-cfb116d53214";
+            var reasonFunding2Val = "For sure, Other Funding will be " +
+                "applied.";
+            _seleniumHelper.SetTextAreaValue(reasonFunding2Id, reasonFunding2Val);
 
             // other funding fab1e156-776c-4616-aaad-789419065ee6
             var otherFundingId = "fab1e156-776c-4616-aaad-789419065ee6";
             var otherFundingVal = "Funds from catfish sales to local groceries";
             _seleniumHelper.SetTextAreaValue(otherFundingId, otherFundingVal);
 
+
+            //---------
             // Scholarly Publications b9cf535d-5445-4a94-8e35-c132afd26579
             var scholarlyPubId = "b9cf535d-5445-4a94-8e35-c132afd26579";
             var scholarlyPubVal = "Arcguy, Main. “Are Catfish good? Something about taste.” Catfish & Fresh Water Fish 21.4 (2016): 280-295\r\n" +
@@ -1057,6 +1159,8 @@ namespace Catfish.Test
             _seleniumHelper.ClickSimpleSubmitButton();
 
             //Clicking on the modal confirmation button
+            // modalTemplateId can be found as the "data-template-id" as an attribute of the form - look at 
+            // beginning of form after the id.
             var modalTemplateId = "f31602f0-1002-4e35-8c2c-90a03a8d3a93";
             _seleniumHelper.CkickModalSubmit(modalTemplateId, "btn btn-success");
 
@@ -1121,16 +1225,22 @@ namespace Catfish.Test
             var projectDescDispVal = _seleniumHelper.GetTextFieldDisplayValue(projDescId);
             Assert.AreEqual(projDescVal, projectDescDispVal, "Project description value is not correctly saved");
 
+            //subjects and ethics validation
+            //  --- human animal subjects   bc5e74c6-3586-434e-aad4-e2bd92a2fabb  val = "No"; 1130+
 
-            //  --- human animal subjects   bc5e74c6-3586-434e-aad4-e2bd92a2fabb  val = "No";
-
-            var involveSubjects = "No";
+            var involveSubjects = "Yes";
             var dispInvolveSubjects = _seleniumHelper.GetRadioDisplayValue(involveSubjectsrbId);
             Assert.AreEqual(involveSubjects, dispInvolveSubjects, "Radio BUtton for Involve Subjects  is not correctly saved");
 
-            //  --- ethics approval    not selected ??   9a857bd0-369c-45e8-984e-ef1aefc9f368
+            //  --- ethics approval     9a857bd0-369c-45e8-984e-ef1aefc9f368
+            var approvalObtained = "Yes";
+            var dispEthicsApprovalObtained = _seleniumHelper.GetRadioDisplayValue(approvalObtainedrbId);
+            Assert.AreEqual(approvalObtained, dispEthicsApprovalObtained, "Radio BUtton for ethics approval is not correctly saved");
 
-            //  --- ethics expriry date 3b762808-b1b5-4d0a-9ed8-3c54e5510be3
+            //  --- ethics expriry date 3b762808-b1b5-4d0a-9ed8-3c54e5510be3 validaation
+            var approvalExpiredateDispVal = _seleniumHelper.GetDateDisplayValue(approvalExpireDateId);
+            Assert.AreEqual(approvalExpireDateVal.ToString("yyyy-MM-dd"), approvalExpiredateDispVal, "approval expiry date value is not correctly saved");
+
 
             //  --- name of conf 0eea8ef1-16d2-4ef3-be9c-65b947b329a9   confNameVal = "Catfish Annual";
             var confNameDispVal = _seleniumHelper.GetTextFieldDisplayValue(confNameId);
@@ -1355,6 +1465,20 @@ namespace Catfish.Test
             var releaseAmount_1_DispVal = _seleniumHelper.GetDecimalDisplayValue(releaseAmount_1_Id);
             Assert.AreEqual(releaseAmount_1_Val, releaseAmount_1_DispVal, "Release time cost  is not correctly saved");
 
+
+            // 2nd term release validation 1370
+            //cousre name    "dcda46dd-ef40-4aac-8d45-210ae2a14636";
+            var course_2Disp_Val = _seleniumHelper.GetTextFieldDisplayValue(course_2_Id);
+            Assert.AreEqual(course_2Disp_Val, course_2_Val, "second term course name is not correctly saved");
+
+            //"Yes" Option  for "Release Required?" RB    
+            var rbRelease2Val = "No";
+            var rbRelease2DispVal = _seleniumHelper.GetRadioDisplayValue(relasese_2_Id);
+            Assert.AreEqual(rbRelease2Val, rbRelease2DispVal, "Release yes or no radio button is not correctly saved");
+
+            // release amount.  
+            var releaseAmount_2_DispVal = _seleniumHelper.GetDecimalDisplayValue(releaseAmount_2_Id);
+            Assert.AreEqual(releaseAmount_2_Val, releaseAmount_2_DispVal, "Release time cost 2nd term is not correctly saved");
             // release   justification   24625214-3d47-45ae-a7fa-017d60f1e608
 
             var releasePleaDispVal = _seleniumHelper.GetTextFieldDisplayValue(releasePleaId);
@@ -1388,13 +1512,13 @@ namespace Catfish.Test
 
             // after overview form part
 
-            //Selecting "No" Option  for "previous SAS funding 5 years"  
-            var rbprevSAS5Val = "No";
+            //Selecting "yes" Option  for "previous SAS funding 5 years"  
+            var rbprevSAS5Val = "Yes";
             var rbprevSAS5dispVal = _seleniumHelper.GetRadioDisplayValue(prevSAS5Id);
             Assert.AreEqual(rbprevSAS5Val, rbprevSAS5dispVal, "previous SAS funding, past 5 years, yes or no radio button is not correctly saved");
 
-            //Selecting "No" Option  for "previous SAS funding this project"  
-            var rbprevthisSASVal = "No";
+            //Selecting "yes" Option  for "previous SAS funding this project"  
+            var rbprevthisSASVal = "Yes";
             var rbprevthisSASdispVal = _seleniumHelper.GetRadioDisplayValue(prevthisSASId);
             Assert.AreEqual(rbprevthisSASVal, rbprevthisSASdispVal, "previous SAS funding, this project, yes or no radio button is not correctly saved");
 
