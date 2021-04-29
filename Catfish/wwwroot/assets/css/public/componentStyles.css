@@ -140,6 +140,7 @@
     display: flex;
     flex: 1 7 14%;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .month-year-title {
@@ -150,13 +151,24 @@
     flex: unset;
 }
 
+.title-spacing {
+    padding-left: 10px;
+    padding-right: 10px;
+    /*white-space: nowrap;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
 .calendar-day-title {
     height: 50px;
     background-color: black;
     color: white;
     font-weight: bold;
-    word-wrap: break-word;
-    text-overflow: ellipsis;
+    display:flex;
+    min-width: 0;
 }
 
 .strip-month-header-container{

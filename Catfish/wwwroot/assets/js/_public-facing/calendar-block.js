@@ -6,6 +6,7 @@
  */
 
 import dayjs from "dayjs";
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 const weekday = require("dayjs/plugin/weekday");
 const weekOfYear = require("dayjs/plugin/weekOfYear");
 
@@ -163,7 +164,12 @@ Vue.component('calendar-block-vue', {
                 } else {
                     startDay = calendarEvent.StartDay;
                 }
-                if (startDay == day.toString() && calendarEvent.StartMonth == dayjs(month).format('MMM') && calendarEvent.StartYear == year) {
+                //FF issue with formatting, need to convert to ISO format due to the way FF handles Date objects
+                let regCalendarDate = new Date(`${year}-${month}-${day}`).toISOString();
+                let regCalendarDateConverted = dayjs(regCalendarDate, "YYYY-MM-DD").format("YYYY-MM-DD");
+                let calendarDateConverted = dayjs(calendarEvent.StartDateTime, "YYYY-MM-DD").format("YYYY-MM-DD");
+
+                if (regCalendarDateConverted === calendarDateConverted) {
                     return true;
                 }
             }
@@ -330,6 +336,8 @@ Vue.component('calendar-block-vue', {
     created () {
         dayjs.extend(weekday);
         dayjs.extend(weekOfYear);
+        //for Firefox date parsing support
+        dayjs.extend(customParseFormat);
 
         this.initialYear = dayjs().format("YYYY");
         this.initialMonth = dayjs().format("M");
