@@ -695,7 +695,7 @@ namespace Catfish.Test
             var justificationVal = "Based on observations, up to 60% of catfish farmers make little or no profit, " +
                                     "and a reasonable majority even run at loss. In order to encourage and protect the " +
                                     "passion of both existing and incoming catfish farmers, this series is necessary as an eye opener " +
-                                    "to what catfish farmers do wrong in their day to day running of their businesses ";
+                                    "to what catfish farmers do wrong in their day to day running of their businesses";
             _seleniumHelper.SetTextAreaValue(justificationId, justificationVal);
 
 
@@ -761,8 +761,8 @@ namespace Catfish.Test
             //9d45c24e-e28b-487b-ae9c-857fb192b547
 
             var qaddExpDetailsId = "9d45c24e-e28b-487b-ae9c-857fb192b547";
-            var qaddExpDetailsVal = "Catfish pate: $90.00 \r\n" +
-                                    "Catfish eggs: $10.00 \r\n" +
+            var qaddExpDetailsVal = "Catfish pate: $90.00\r\n" +
+                                    "Catfish eggs: $10.00\r\n" +
                                     "Catfish whiskers: $7.00";
             _seleniumHelper.SetTextAreaValue(qaddExpDetailsId, qaddExpDetailsVal);
 
@@ -778,8 +778,8 @@ namespace Catfish.Test
             // q justifiation
             //a181bebd-8212-410c-8672-985a98d70831
             var qjustificationId = "a181bebd-8212-410c-8672-985a98d70831";
-            var qjustificationVal = "Over the next few weeks, I will be revealing major reasons  " +
-                                    "for poor returns on catfish farming investment. Below is an outline of these  " +
+            var qjustificationVal = "Over the next few weeks, I will be revealing major reasons " +
+                                    "for poor returns on catfish farming investment. Below is an outline of these " +
                                     "reasons, details to be posted in subsequent research activities. " +
                                     "I am not really surprised with the popularity of this research.";
             _seleniumHelper.SetTextAreaValue(qjustificationId, qjustificationVal);
@@ -794,8 +794,8 @@ namespace Catfish.Test
             //description
             //e503d887-7115-4405-80e5-2a0b6437c728
             var descriptionId = "e503d887-7115-4405-80e5-2a0b6437c728";
-            var descriptionVal = "One student will be helping us, teaching time release required" +
-                                    "possible contracted work and necessary equipment  will be needed.\r\n" +
+            var descriptionVal = "One student will be helping us, teaching time release required " +
+                                    "possible contracted work and necessary equipment will be needed\r\n" +
                                     "Finishing later this year." +
                                     "Or maybe beginning of following year.";
             _seleniumHelper.SetTextAreaValue(descriptionId, descriptionVal);
@@ -811,8 +811,8 @@ namespace Catfish.Test
             // enter infomation in new area
             // b4e2939e-3504-421a-8e37-a37df7756c3f
             var studentDetailsId = "b4e2939e-3504-421a-8e37-a37df7756c3f";
-            var studentDetailsVal = "One Undergraduate student, \r\n" +
-                                 "10 hours * 55 days * 10.00 \r\n" +
+            var studentDetailsVal = "One Undergraduate student,\r\n" +
+                                 "10 hours * 55 days * 10.00\r\n" +
                                  "July, august of this year.";
             _seleniumHelper.SetTextAreaValue(studentDetailsId, studentDetailsVal);
 
@@ -832,8 +832,8 @@ namespace Catfish.Test
             // contract servisces description
             //ca9d88ba-9e18-4aa9-b21f-3c52b4b51111
             var contractDetailsId = "ca9d88ba-9e18-4aa9-b21f-3c52b4b51111";
-            var contractDetailsVal = "Drain ponds, Fill up ponds  " +
-                                 "reroute river. \r\n" +
+            var contractDetailsVal = "Drain ponds, Fill up ponds " +
+                                 "reroute river.\r\n" +
                                  "Restock catfish population.";
             _seleniumHelper.SetTextAreaValue(contractDetailsId, contractDetailsVal);
 
@@ -857,19 +857,19 @@ namespace Catfish.Test
             // p justifiation
             //74edda56-f5d5-46c5-b9af-249e6b9a928a
             var pjustificationId = "74edda56-f5d5-46c5-b9af-249e6b9a928a";
-            var pjustificationVal = "Only ARC personnel can restock the ponds professionally" +
-                                    "They keep the water clean and the fish safe" +
-                                    "for any  subsequent research activities." +
+            var pjustificationVal = "Only ARC personnel can restock the ponds professionally " +
+                                    "They keep the water clean and the fish safe " +
+                                    "for any subsequent research activities." +
                                     "I am not going to let just anyone restock the fish.";
             _seleniumHelper.SetTextAreaValue(pjustificationId, pjustificationVal);
 
             // p equipment and materials
             //11705d20-5203-44ae-af0f-68459355e4dd
             var equipId = "11705d20-5203-44ae-af0f-68459355e4dd";
-            var equipVal = "fishing rods - $500.00  " +
-                           "gloves - $50.00   " +
-                           "A good pair of gloves needed." +
-                           "to handle the  catfish.";
+            var equipVal = "fishing rods - $500.00 " +
+                           "gloves - $50.00 " +
+                           "A good pair of gloves needed. " +
+                           "to handle the catfish.";
             _seleniumHelper.SetTextAreaValue(equipId, equipVal);
 
 
@@ -888,8 +888,8 @@ namespace Catfish.Test
             // estimate description
             //fd24add9-d593-4120-aa0d-8341a964ddf7
             var estDetailsId = "fd24add9-d593-4120-aa0d-8341a964ddf7";
-            var estDetailsVal = "time it takes to fix ponds  " +
-                                 "fix river. \r\n" +
+            var estDetailsVal = "time it takes to fix ponds " +
+                                 "fix river.\r\n" +
                                  "fix catfish population.";
             _seleniumHelper.SetTextAreaValue(estDetailsId, estDetailsVal);
 
@@ -948,8 +948,8 @@ namespace Catfish.Test
             // release amount, both possible  terms, justification
             //24625214-3d47-45ae-a7fa-017d60f1e608
             var releasePleaId = "24625214-3d47-45ae-a7fa-017d60f1e608";
-            var releasePleaVal = "I need release time  " +
-                                 "because, \r\n" +
+            var releasePleaVal = "I need release time " +
+                                 "because,\r\n" +
                                  "I'm a very busy person.";
             _seleniumHelper.SetTextAreaValue(releasePleaId, releasePleaVal);
 
@@ -1038,8 +1038,8 @@ namespace Catfish.Test
 
             // Scholarly Publications b9cf535d-5445-4a94-8e35-c132afd26579
             var scholarlyPubId = "b9cf535d-5445-4a94-8e35-c132afd26579";
-            var scholarlyPubVal = "Arcguy, Main. “Are Catfish good? Something about taste.” Catfish  & Fresh Water Fish 21.4 (2016): 280-295\r\n" +
-                                    "Arcguy, Main, Arcperson, Other. “Are Catfish edible? Maybe.” Catfish  & Commonsense 10.12 (2008): 400-462. ";
+            var scholarlyPubVal = "Arcguy, Main. “Are Catfish good? Something about taste.” Catfish & Fresh Water Fish 21.4 (2016): 280-295\r\n" +
+                                    "Arcguy, Main, Arcperson, Other. “Are Catfish edible? Maybe.” Catfish & Commonsense 10.12 (2008): 400-462.";
             _seleniumHelper.SetTextAreaValue(scholarlyPubId, scholarlyPubVal);
 
 
@@ -1307,7 +1307,7 @@ namespace Catfish.Test
             Assert.AreEqual(contractDetailsVal, contractDetailsDispVal, "Contract servisces description Description  is not correctly saved");
 
             // contract prices   45de8e34-9ced-4ae2-b2b8-e7135559bd01
-            var contractedcostDispVal = _seleniumHelper.GetTextFieldDisplayValue(contractedcostId);
+            var contractedcostDispVal = _seleniumHelper.GetDecimalDisplayValue(contractedcostId);
             Assert.AreEqual(contractedcostVal, contractedcostDispVal, "contract prices are not correctly saved");
 
             //file upload - supporting documents - SAStestingdoc3.pdf
@@ -1347,7 +1347,7 @@ namespace Catfish.Test
             Assert.AreEqual(course_1Disp_Val, course_1_Val, "First term course name is not correctly saved");
 
             //"Yes" Option  for "Release Required?" RB   46e8482f-f1d4-4d95-a8e8-907fac9e84f0  
-            var rbReleaseVal = "Yes";
+            var rbReleaseVal = "yes";
             var rbReleaseDispVal = _seleniumHelper.GetRadioDisplayValue(relasese_1_Id);
             Assert.AreEqual(rbReleaseVal, rbReleaseDispVal, "Release yes or no radio button is not correctly saved");
 
@@ -1404,7 +1404,7 @@ namespace Catfish.Test
 
             // Scholarly Publications b9cf535d-5445-4a94-8e35-c132afd26579
             var scholarlyPubDispVal = _seleniumHelper.GetTextFieldDisplayValue(scholarlyPubId);
-            Assert.AreEqual(otherFundingDispVal, scholarlyPubDispVal, "Scholarly Publications area is not correctly saved");
+            Assert.AreEqual(scholarlyPubVal, scholarlyPubDispVal, "Scholarly Publications area is not correctly saved");
 
             //End of Validation tests
         }
