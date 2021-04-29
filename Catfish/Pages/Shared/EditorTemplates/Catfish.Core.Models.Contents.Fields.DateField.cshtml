@@ -22,10 +22,14 @@
            id="@id"
            name="@name"
            value="@dateVal"
+           data-model-id="@Model.Id"
            onchange="@ViewData["onchange"]"
            @required
            data-value-expression="@ViewData["data-value-expression"]"
            data-required-if="@ViewData["data-required-if"]"
            data-visible-if="@ViewData["data-visible-if"]"
-           data-field-id="@ViewData["data-field-id"]">
+           data-c="@ViewData["data-c"]"
+           data-r="@ViewData["data-r"]"
+           data-field-id="@ViewData["data-field-id"]"
+           data-field-index="@ViewData["data-field-index"]">
 }

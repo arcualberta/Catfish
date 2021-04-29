@@ -511,3 +511,10 @@ input[readonly] {
 .item-details-view .card.child-data-item {
     margin-bottom: 20px;
 }
+
+/* Form Validation */
+.field-value label.error {
+    margin-left: 5px;
+    color: #dc3545 !important;
+    font-weight: bold;
+}

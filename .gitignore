@@ -205,3 +205,6 @@ Plugins
 /Catfish/wwwroot/assets/js/_public-facing/calendaruibundle.js.map
 /Catfish/wwwroot/assets/js/_public-facing/calendar-block-vue.js.map
 /Catfish/wwwroot/assets/js/_public-facing/calendar-block-vue.js
+
+/Catfish.Test/appsettings.test.json
+

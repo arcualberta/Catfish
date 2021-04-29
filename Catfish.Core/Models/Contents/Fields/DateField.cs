@@ -22,5 +22,13 @@ namespace Catfish.Core.Models.Contents.Fields
         {
             return string.Join(separator, Values.Select(txt => string.IsNullOrEmpty(txt.Value) ? "" : txt.Value.Substring(0, 10)));
         }
+
+        public DateTime[] GetValues()
+        {
+            return Values.Where(v => !string.IsNullOrEmpty(v.Value))
+                .Select(v => DateTime.Parse(v.Value))
+                .ToArray();
+        }
+
     }
 }

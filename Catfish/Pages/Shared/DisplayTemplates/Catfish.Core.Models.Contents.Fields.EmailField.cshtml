@@ -5,6 +5,6 @@
 @{
     var values = string.Join(", ", Model.Values.Select(val => "<span>" + val.Value + "</span>"));
 }
-<div class="field-value @Model.CssClass @Model.FieldValueCssClass">
+<div data-model-id="@Model.Id" class="field-value @Model.CssClass @Model.FieldValueCssClass">
     @Html.Raw(values)
 </div>

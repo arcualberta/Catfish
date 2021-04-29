@@ -3,7 +3,7 @@ using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
 using Catfish.Models.ViewModels;
-using Catfish.Tests.Helpers;
+using Catfish.Test.Helpers;
 using NUnit.Framework;
 using Piranha.AspNetCore.Identity.SQLServer;
 using SolrNet;

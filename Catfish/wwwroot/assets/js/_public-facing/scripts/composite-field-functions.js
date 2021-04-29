@@ -16,7 +16,8 @@
 
     $(templateClone).removeClass("composite-field-template");
     $(templateClone).addClass("composite-field-child");
-    
+    $(templateClone).attr("data-cf-item-index", numItems);
+
     $(childListContainer).append(templateClone);
 
     let newChildGuid = createGuid();
@@ -34,6 +35,9 @@
 
         let id = name.split(/\[/).join('_').split(/\]/).join('_').split(/\./).join('_');
         $(ele).attr("id", id);
+
+        
+
     });
 
     // Setting the newChildGuid as the ID of the DataItem of the templateClone
@@ -72,6 +76,7 @@ function removeDataItem(childListContainerId, wrappperId, min, childrenNamePrefi
 
             let id = name.split(/\[/).join('_').split(/\]/).join('_').split(/\./).join('_');
             $(ele).attr("id", id);
+            $(ele).attr("data-cf-item-index", childIdx);
         });
     });
 

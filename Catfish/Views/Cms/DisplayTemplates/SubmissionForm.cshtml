@@ -76,7 +76,12 @@
     if (authorizationSuccessful)
     {
         <div class="submission-form-block @Model.CssClass.Value">
-            <form id="submissionForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data" class="data-item-form">
+            <form id="submissionForm_@suffix" 
+                  method="post" 
+                  action="@formPostUrl" 
+                  enctype="multipart/form-data" 
+                  class="data-item-form"
+                  data-template-id="@Item.TemplateId">
                 <input data-val="true" data-val-required="The TemplateId field is required."
                        id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
                        value="@entityTemplateId">

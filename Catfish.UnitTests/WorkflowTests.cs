@@ -7,7 +7,7 @@ using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
-using Catfish.Tests.Helpers;
+using Catfish.Test.Helpers;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
@@ -1552,9 +1552,11 @@ namespace Catfish.UnitTests
 
             var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
             eyeWashFlushed.FieldValueCssClass = "radio-inline"; ;
-            inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
-                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
-            
+            var eyewashInfo = inspectionForm.CreateField<TextArea>("Eye Wash Station Info", lang, false);
+            eyewashInfo.SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
+             eyewashInfo.Rows = 5;
+            eyewashInfo.Cols = 30;
+           
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Other", lang);
             inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText, true)
@@ -1655,7 +1657,7 @@ namespace Catfish.UnitTests
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
 
-            db.SaveChanges();
+            //db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.xml");
 
@@ -2574,7 +2576,7 @@ namespace Catfish.UnitTests
             //Defining state mappings
             editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
             editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inReviewState.Id, "Submit");
-            //editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, savedState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, savedState.Id, "Save");
             editSubmissionPostActionSubmit.AddStateMapping(inReviewState.Id, inReviewState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
@@ -3970,13 +3972,21 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Document in supervisor's review can be saved without changing state
             editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Submit");
+            
+            //Document in supervisor's review can be saved without changing state
+            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, savedState.Id, "Save");
+
 
             //Saved document can be submitted for chair's review directly if appCat[0] (Faculty) is selected
             editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit", applicantCat,
                 applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First());
 
             //Document in chair's review can be saved without changing state
-            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "Submit");
+            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "submit");
+
+
+            //Document in chair's review can be saved without changing state
+            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, savedState.Id, "Save");
 
 
             //Defining the pop-up for the above postActionSubmit action

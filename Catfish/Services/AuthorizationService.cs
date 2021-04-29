@@ -110,7 +110,24 @@ namespace Catfish.Services
                 _errorLog.Log(new Error(ex));
                 return null;
             }
-            
+        }
+
+        public Role CreateRole(string roleName, Guid roleId)
+        {
+            if(_piranhaDb.Roles.Where(r => r.Id == roleId).Any())
+                throw new Exception(string.Format("Error: the Role with ID {0} already exist in the system.", roleId));
+           
+            //Creating a new status with the given GUID
+            var role = new Role()
+            {
+                Name = roleName,
+                NormalizedName = roleName.ToUpper(),
+                Id = roleId
+            };
+            _piranhaDb.Roles.Add(role);
+
+            _piranhaDb.SaveChanges();
+            return role;
         }
 
         /// <summary>

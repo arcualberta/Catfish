@@ -6,6 +6,7 @@
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 @inject Catfish.Services.IAppService _appService;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
 
 @{
     if (ViewBag.Title == null)
@@ -22,20 +23,20 @@
     {
         vueComponentNames = pageModel.Blocks
             .Where(b => typeof(IVueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type IVueConponent or its derived type.*@
-        .Select(b => (b as IVueComponent).Component) @*Selecting all those blocks as IVueConponent blocks and getting their names.*@
-        .Distinct()
-        .ToList();
-
-        cssBlocks = pageModel.Blocks
-            .Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
-            .Select(b => (b as CssBlock))
+            .Select(b => (b as IVueComponent).Component) @*Selecting all those blocks as IVueConponent blocks and getting their names.*@
+            .Distinct()
             .ToList();
 
-        javascriptBlocks = pageModel.Blocks
-            .Where(b => typeof(JavascriptBlock).IsAssignableFrom(b.GetType()))
-            .Select(b => (b as JavascriptBlock))
-            .ToList();
-    }
+            cssBlocks = pageModel.Blocks
+                .Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
+                .Select(b => (b as CssBlock))
+                .ToList();
+
+            javascriptBlocks = pageModel.Blocks
+                .Where(b => typeof(JavascriptBlock).IsAssignableFrom(b.GetType()))
+                .Select(b => (b as JavascriptBlock))
+                .ToList();
+        }
 }
 
 <!doctype html>
@@ -137,7 +138,44 @@
 <body>
     <div id="vueApp">
         <partial name="/Views/Shared/Partial/VueComponents/_Header.cshtml" />
-        @RenderBody()
+        @*@RenderBody()*@
+        @{
+            //Mr April 22 2021 -- Add ability to lockdown the whole site to limit access to Uofa users only (CAT-883)
+            bool domainUser = false;
+            string[] allowedDomains = _catfishAppConfig.GetAccessRestrictionAllowedDomains();
+            if (allowedDomains != null && allowedDomains.Length > 0)
+            {
+                if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                {
+                    foreach (string d in allowedDomains)
+                    {
+                        if (_httpContextAccessor.HttpContext.User.Identity.Name.Contains(d))
+                        {
+                            domainUser = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (allowedDomains.Contains("*"))
+                    domainUser = true;
+            }
+
+
+            bool allowedUser = domainUser || _httpContextAccessor.HttpContext.User.IsInRole("SysAdmin");
+
+
+            if (!allowedUser && allowedDomains != null)//allowedDomain !=null this to make sure it won't crashed of this section sections is not in the appSettings.jason
+            {
+                <div class="container alert alert-danger">@_catfishAppConfig.GetValue("SiteConfig:AccessRestriction:Message", "")</div>
+                IgnoreBody();
+                return;
+            }
+            else
+            {
+                @RenderBody();
+            }
+        }
 
         @{
             var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
@@ -151,7 +189,7 @@
                ? "" : currentSite.FooterContents.Css.Value;
         }
         <partial name="/Views/Shared/Partial/VueComponents/_Footer.cshtml" />
-        
+
 
     </div>@*End of vueApp div *@
 
@@ -187,7 +225,7 @@
 
     @RenderSection("script", required: false)
 
-<script>
+    <script>
     function onLoad() {
         gapi.load('auth2', function () {
             gapi.auth2.init();
@@ -228,7 +266,7 @@
         }
     });
 
-</script>
+    </script>
     @*<script src="~/assets/dist/vendorsPublicFacingSide.js"></script>*@
 </body>
 
