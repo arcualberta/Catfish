@@ -1,13 +1,8 @@
 ﻿@model Catfish.Models.Blocks.AdvanceSearchBlock
+@using Catfish.Core.Models.Solr;
 
-@using Catfish.Core.Authorization.Requirements;
-@using Microsoft.AspNetCore.Authorization;
-@using Catfish.Core.Models;
-
-
-@*@inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;*@
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
-@*@inject Catfish.Services.ISubmissionService _submissionService;*@
+
 @{
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var metadatasetId = Guid.Parse(Model.SelectedMetadataset);
@@ -17,31 +12,33 @@
 }
 
 <h2>Advance Search</h2>
-@Html.BeginForm(""){ 
-<div class="row">
-    <div>
-        <label>Scope</label>
-        <select class="form-control">
-            <option>Data</option>
-            <option>Metadataset</option>
-        </select>
-    </div>
-    <div>
-        <label>Item per Page</label>
-        <input type="text" />
-    </div>
-</div>
-@foreach (var f in fields)
-{
+@using (Html.BeginForm()) { 
+    @Html.AntiForgeryToken()
     <div class="row">
+        <div>
+            <label>Scope</label>
+            <select class="" id="advanceSearchScope">
+                <option value="@SearchFieldConstraint.eScope.Data">Data</option>
+                <option value="@SearchFieldConstraint.eScope.Metadata">Metadataset</option>
+            </select>
+        </div>
+        <div>
+            <label>Item per Page</label>
+            <input type="text" />
+        </div>
+    </div>
+    foreach (var f in fields)
+    {
+        Catfish.Core.Models.Contents.Fields.TextField field = (f as Catfish.Core.Models.Contents.Fields.TextField);
+        <div class="row">
    
-        <label>@((f as Catfish.Core.Models.Contents.Fields.TextField).Name.ConcatenatedContent)</label>
-        <input type="text" class="form-control" />
+            <label>@field.Name.ConcatenatedContent</label> 
+            <input type="text" class="form-control advanceSearchInput" id="@field.Id"/>
   
     
-    </div>
-}
-<input type="submit" value="Search" />
+        </div>
+    }
+    <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput');" />
 }
 
 

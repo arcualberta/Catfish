@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Solr;
+﻿using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Solr;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,12 @@ namespace Catfish.Models.ViewModels
 
         public int ItemPerPage { get; set; }
        
-        List<SearchFieldConstraint> SearchConstrains { get; set; }
+        public List<SearchFieldConstraint> SearchConstrains { get; set; }
+        public FieldList Fields { get; set; }
 
+        public AdvanceSearchViewModel()
+        {
+            SearchConstrains = new List<SearchFieldConstraint>();
+        }
     }
 }

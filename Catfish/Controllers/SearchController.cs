@@ -95,9 +95,9 @@ namespace Catfish.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult AdvanceSearch(AdvanceSearchViewModel advanceSearchVM)
+        [HttpGet]
+        // [ValidateAntiForgeryToken]
+        public ActionResult AdvanceSearch([FromForm] SearchFieldConstraint[] constraints, int itemPerPage)
         {
             try
             {
@@ -107,6 +107,17 @@ namespace Catfish.Controllers
             {
                 return View();
             }
+        }
+
+        public class SearchFieldParam
+        {
+            public string Scope { get; set; }
+            public string ContainerId { get; set; }
+           // public string FieldId { get; set; }
+            //public string SearchText { get; set; }
+
+            public Dictionary<string, string> Fields { get; set; }
+            
         }
     }
 }
