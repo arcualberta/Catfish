@@ -77,18 +77,26 @@ function advanceSearch(containerId, scopeId, textInputClass) {
         
        // alert("ok")
         $(".searchResults").empty();
-
         $(".searchResults").append("<h2>Results</h2>");
        
         $(data.resultEntries).each(function (i, e) {
+            var itemId = e.id;
 
-            let entry = `<div class="result-entry">Id:` + e.id;
+            let entry = `<div class="result-entry">`;
             $(e.snippets).each(function (j, s) {
+                if (s.fieldName) {
+                    entry += "<div class='field-name'>" + s.FieldName + "</div>";
+                }
+                entry += "<div class='field-highlight'><b>Matched Term:</b> "
                 $(s.highlights).each(function (k, h) {
-
-                    entry += h + " ";
+                    entry += h + "<br />";
                 });
-
+                entry += "</div>";
+                entry += "<div class='field-value'><b>Matched Field Content:</b> "
+                $(s.fieldContent).each(function (k, h) {
+                    entry += h + "<br />";
+                });
+                entry += "</div>";
             });
 
             entry += "</div>";
