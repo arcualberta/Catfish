@@ -10,35 +10,44 @@
     var fields = _entityTemplateService.GetTemplateMetadataSetFields(entityTemplateId, metadatasetId);
 
 }
-
-<h2>Advance Search</h2>
-@using (Html.BeginForm()) { 
-    @Html.AntiForgeryToken()
+<div class="container container-fluid">
+    <h2>Advance Search</h2>
     <div class="row">
-        <div>
-            <label>Scope</label>
-            <select class="" id="advanceSearchScope">
-                <option value="@SearchFieldConstraint.eScope.Data">Data</option>
-                <option value="@SearchFieldConstraint.eScope.Metadata">Metadataset</option>
-            </select>
+        <div class="col-4">
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div>
+                        <label>Scope</label>
+                        <select class="form-control" id="advanceSearchScope">
+                            <option value="@SearchFieldConstraint.eScope.Data">Data</option>
+                            <option value="@SearchFieldConstraint.eScope.Metadata" selected>Metadataset</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Item per Page</label>
+                        <input type="text" class="form-control" id="advanceSearchItemPerPage" />
+                    </div>
+                </div>
+                foreach (var f in fields)
+                {
+                    Catfish.Core.Models.Contents.Fields.TextField field = (f as Catfish.Core.Models.Contents.Fields.TextField);
+                    <div class="row">
+
+                        <label>@field.Name.ConcatenatedContent</label>
+                        <input type="text" class="form-control advanceSearchInput" id="@field.Id" />
+
+
+                    </div>
+                }
+                <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput'); return false;" />
+            }
         </div>
-        <div>
-            <label>Item per Page</label>
-            <input type="text" />
+        <div class="col-7 searchResults">
+
         </div>
     </div>
-    foreach (var f in fields)
-    {
-        Catfish.Core.Models.Contents.Fields.TextField field = (f as Catfish.Core.Models.Contents.Fields.TextField);
-        <div class="row">
-   
-            <label>@field.Name.ConcatenatedContent</label> 
-            <input type="text" class="form-control advanceSearchInput" id="@field.Id"/>
-  
-    
-        </div>
-    }
-    <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput');" />
-}
-
+</div>
 
