@@ -6,6 +6,7 @@ using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
 using Catfish.Models.ViewModels;
+using ElmahCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -16,11 +17,13 @@ namespace Catfish.Controllers
     {
         private readonly IQueryService _queryService;
         private readonly ISolrService _solr;
+        private readonly ErrorLog _errorLog;
 
-        public SearchController(IQueryService srv, ISolrService solr)
+        public SearchController(IQueryService srv, ISolrService solr, ErrorLog errorLog)
         {
             _queryService = srv;
             _solr = solr;
+            _errorLog = errorLog;
         }
         // GET: SearchController
         public ActionResult Index(string searchTerm)
@@ -102,7 +105,7 @@ namespace Catfish.Controllers
 
         [HttpGet]
         // [ValidateAntiForgeryToken]
-        public ActionResult AdvanceSearch([FromForm] List<SearchFieldConstraint> constraints, int itemPerPage)
+        public SearchResult AdvanceSearch([FromForm] List<SearchFieldConstraint> constraints, int itemPerPage)
         {
             try
             {
@@ -112,12 +115,12 @@ namespace Catfish.Controllers
 
                 var result = _solr.Search(_contraint.ToArray(), 0, itemPerPage);
 
-                ViewBag.SearchResult = result;
-                return Ok(result);
+                return result;
             }
             catch (Exception ex)
             {
-                return View();
+                _errorLog.Log(new Error(ex));
+                throw new Exception("An internal error occurred");
             }
         }
 

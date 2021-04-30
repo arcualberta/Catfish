@@ -165,7 +165,6 @@ namespace Catfish.Services
 
             string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             _result = new SearchResult(response);
-
         }
 
         protected string[] GetFieldNames(string[] acceptedFieldPrefixes = null)

@@ -82,7 +82,7 @@ function advanceSearch(containerId, scopeId, textInputClass) {
        
         $(data.resultEntries).each(function (i, e) {
 
-            let entry = `<div>Id:` + e.id;
+            let entry = `<div class="result-entry">Id:` + e.id;
             $(e.snippets).each(function (j, s) {
                 $(s.highlights).each(function (k, h) {
 
