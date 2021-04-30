@@ -239,6 +239,15 @@
     margin-top: 15px;
 }
 
+
+/* Advance Search Block*/
+
+.searchResults {
+    border-left: 1px solid Grey;
+    margin-left: 20px;
+    padding-left: 30px;
+}
+
 /* Carousel: Overrides the user's set width when the screen is narrow, for mobile devices */
 @media screen and (max-width: 991px) {
     .image-in-carousel {

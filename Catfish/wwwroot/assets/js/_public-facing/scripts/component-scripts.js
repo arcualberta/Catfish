@@ -10,8 +10,9 @@ function searchText() {
 //conatinerId is MetadatasetId or DataItem id -- need to confirmed
 function advanceSearch(containerId, scopeId, textInputClass) {
     let name;
-    let values = {};
+   
     let selectedScope = $("#" + scopeId + " option:selected").val();
+    let itemPerPage = $("#advanceSearchItemPerPage").val();
     let params = {};
     let constraints = [];
 
@@ -24,21 +25,21 @@ function advanceSearch(containerId, scopeId, textInputClass) {
         let fieldId = $(f).attr("id");
         if (inputVal !== "") {
 
-            let _constraint = {
-                Scope: selectedScope,
-                ContainerId: containerId,
-                FieldId: fieldId,
-                SearchText: inputVal   
-            };
+            //let _constraint = {
+            //    Scope: selectedScope,
+            //    ContainerId: containerId,
+            //    FieldId: fieldId,
+            //    SearchText: inputVal   
+            //};
 
-            
+            let values = {};
             values["Scope"] = selectedScope;
             values["ContainerId"] = containerId;
             
             values["FieldId"] = fieldId;
            
             values["SearchText"]= inputVal;
-            constraints.push(values);
+            constraints.push( values );
            
         }
 
@@ -68,17 +69,34 @@ function advanceSearch(containerId, scopeId, textInputClass) {
 /* Send the data using post with element id name and name2*/
 
     params["constraints"] = JSON.stringify(constraints);
-    params["itemPerPage"] = 10;
+    params["itemPerPage"] = itemPerPage;
     var result = $.get(url, params);
     var message = "";
 
     result.done(function (data) {
-        if (data.success) {
-            //message = data.message ? data.message : "Auto-save succesful";
-        }
-        else {
-            //message = data.message ? data.message : "Auto-save failed";
-        }
+        
+       // alert("ok")
+        $(".searchResults").empty();
+
+        $(".searchResults").append("<h2>Results</h2>");
+       
+        $(data.resultEntries).each(function (i, e) {
+
+            let entry = `<div>Id:` + e.id;
+            $(e.snippets).each(function (j, s) {
+                $(s.highlights).each(function (k, h) {
+
+                    entry += h + " ";
+                });
+
+            });
+
+            entry += "</div>";
+            $(".searchResults").append(entry);
+
+        });
+
+         
     });
 
 }

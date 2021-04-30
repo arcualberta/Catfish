@@ -126,7 +126,7 @@ namespace Catfish.Services
             string query = string.Join("&", queryParams);
             _result = null;
             var task = ExecuteSearchQuery(query);
-            task.Wait(60000);//Wait for a maximum of 1 minute
+            task.Wait(600000);//Wait for a maximum of 1 minute
             return _result;
         }
 
@@ -146,7 +146,8 @@ namespace Catfish.Services
         /// <returns></returns>
         protected async Task ExecuteSearchQuery(string query)
         {
-            string queryUri = "http://localhost:8983/solr/resoundingculture/select?hl=on&q=" + query +
+
+            string queryUri = _solrCoreUrl + "/select?hl=on&q=" + query +
                 "&hl.fl=*" + "&hl.snippets=5" + "&wt=xml";
 
             //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat

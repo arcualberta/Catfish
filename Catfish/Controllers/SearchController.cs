@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models.Solr;
+using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
 using Catfish.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Catfish.Controllers
 {
     public class SearchController : Controller
     {
         private readonly IQueryService _queryService;
-        public SearchController(IQueryService srv)
+        private readonly ISolrService _solr;
+
+        public SearchController(IQueryService srv, ISolrService solr)
         {
             _queryService = srv;
+            _solr = solr;
         }
         // GET: SearchController
         public ActionResult Index(string searchTerm)
@@ -97,13 +102,20 @@ namespace Catfish.Controllers
 
         [HttpGet]
         // [ValidateAntiForgeryToken]
-        public ActionResult AdvanceSearch([FromForm] SearchFieldConstraint[] constraints, int itemPerPage)
+        public ActionResult AdvanceSearch([FromForm] List<SearchFieldConstraint> constraints, int itemPerPage)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                //List<SearchFieldConstraint> _constraints = new List<SearchFieldConstraint>();
+                string jsonConst = HttpContext.Request.Query["constraints"][0];
+                var _contraint = JsonConvert.DeserializeObject<List<SearchFieldConstraint>>(jsonConst);
+
+                var result = _solr.Search(_contraint.ToArray(), 0, itemPerPage);
+
+                ViewBag.SearchResult = result;
+                return Ok(result);
             }
-            catch
+            catch (Exception ex)
             {
                 return View();
             }
@@ -111,13 +123,12 @@ namespace Catfish.Controllers
 
         public class SearchFieldParam
         {
-            public string Scope { get; set; }
-            public string ContainerId { get; set; }
-           // public string FieldId { get; set; }
+            //public string Scope { get; set; }
+            //public string ContainerId { get; set; }
+            //public string FieldId { get; set; }
             //public string SearchText { get; set; }
 
-            public Dictionary<string, string> Fields { get; set; }
-            
+            public SearchFieldConstraint[] Fields { get; set; }
         }
     }
 }
