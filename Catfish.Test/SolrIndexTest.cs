@@ -47,8 +47,8 @@ namespace Catfish.Test
             {
                 Scope = SearchFieldConstraint.eScope.Metadata,
                 ContainerId = Guid.Parse("bde40d2f-f477-4fc3-82a0-a66a36c1d39f"),
-                FieldId = Guid.Parse("4bfa0d9e-4b1c-4357-93b3-038eaafcf990"),
-                SearchText = "Alberta"
+                FieldId = Guid.Parse("28ffe50b-4ec9-41b3-996f-39a5d8771dfc"),
+                SearchText = "of alberta"
             });
 
             constraints.Add(new SearchFieldConstraint()
@@ -67,8 +67,14 @@ namespace Catfish.Test
                 SearchText = "Sound"
             });
 
-            var result = _solr.Search(constraints.ToArray(), 50, 50);
+            var result = _solr.Search(constraints.ToArray(), 0, 50);
+        }
 
+        [Test]
+        public void SolrSimpleSearchTest()
+        {
+            //var result = _solr.Search("of alberta", 0, 50);
+            var result = _solr.Search("Alberta Folklore and Local History Collection", 0, 50);
         }
     }
 }
