@@ -105,11 +105,10 @@ namespace Catfish.Controllers
 
         [HttpGet]
         // [ValidateAntiForgeryToken]
-        public SearchResult AdvanceSearch([FromForm] List<SearchFieldConstraint> constraints, int itemPerPage)
+        public SearchResult AdvanceSearch([FromForm] List<SearchFieldConstraint> constraints, int itemPerPage = 25)
         {
             try
             {
-                //List<SearchFieldConstraint> _constraints = new List<SearchFieldConstraint>();
                 string jsonConst = HttpContext.Request.Query["constraints"][0];
                 var _contraint = JsonConvert.DeserializeObject<List<SearchFieldConstraint>>(jsonConst);
 
@@ -122,16 +121,6 @@ namespace Catfish.Controllers
                 _errorLog.Log(new Error(ex));
                 throw new Exception("An internal error occurred");
             }
-        }
-
-        public class SearchFieldParam
-        {
-            //public string Scope { get; set; }
-            //public string ContainerId { get; set; }
-            //public string FieldId { get; set; }
-            //public string SearchText { get; set; }
-
-            public SearchFieldConstraint[] Fields { get; set; }
         }
     }
 }

@@ -251,8 +251,8 @@ namespace Catfish.UnitTests
                     {
                         bool multivalued = colHeadings[i].Equals("Creator(s)") 
                             || colHeadings[i].Equals("Contributor(s)") 
-                            || colHeadings[i].Equals("subject - English") 
-                            || colHeadings[i].Equals("suject - French") 
+                            || colHeadings[i].Equals("Subject - English") 
+                            || colHeadings[i].Equals("Subject - French") 
                             || colHeadings[i].Equals("Medium of Performance")
                             || colHeadings[i].Equals("Thematic Areas")
                             || colHeadings[i].Equals("Keyword") 
@@ -357,8 +357,8 @@ namespace Catfish.UnitTests
                 "Format (medium digital)",
                 "Format (extent)",
                 "Genre/Form",
-                "subject-English",
-                "suject - French",
+                "Subject-English",
+                "Subject - French",
                 "Medium of Performance",
                 "Thematic Areas",
                 "Keyword",

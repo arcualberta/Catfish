@@ -10,11 +10,10 @@
     var fields = _entityTemplateService.GetTemplateMetadataSetFields(entityTemplateId, metadatasetId);
 
 }
-<div class="container container-fluid">
+<div class="container container-fluid advanced-search">
     <h2>Advance Search</h2>
     <div class="row">
-        <div class="col-4">
-
+        <div class="col-md-12 container">
             @using (Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
@@ -28,20 +27,22 @@
                     </div>
                     <div>
                         <label>Item per Page</label>
-                        <input type="text" class="form-control" id="advanceSearchItemPerPage" />
+                        <input type="text" class="form-control" id="advanceSearchItemPerPage" placeholder="25" />
                     </div>
                 </div>
-                foreach (var f in fields)
-                {
-                    Catfish.Core.Models.Contents.Fields.TextField field = (f as Catfish.Core.Models.Contents.Fields.TextField);
-                    <div class="row">
+                <div class="row">
+                    @foreach (var f in fields)
+                    {
+                        Catfish.Core.Models.Contents.Fields.TextField field = (f as Catfish.Core.Models.Contents.Fields.TextField);
+                        <div class="item col-md-3 search-field">
 
-                        <label>@field.Name.ConcatenatedContent</label>
-                        <input type="text" class="form-control advanceSearchInput" id="@field.Id" />
+                            <label>@field.Name.ConcatenatedContent</label>
+                            <input type="text" class="form-control advanceSearchInput" id="@field.Id" />
 
 
-                    </div>
-                }
+                        </div>
+                    }
+                </div>
                 <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput'); return false;" />
             }
         </div>
