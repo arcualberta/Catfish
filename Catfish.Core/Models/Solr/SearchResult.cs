@@ -17,6 +17,8 @@ namespace Catfish.Core.Models.Solr
         /// </summary>
         public int TotalMatches { get; set; }
 
+        public int ItemsPerPage { get; set; }
+
 
         public SearchResult(string response)
         {

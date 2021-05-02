@@ -95,7 +95,7 @@ namespace Catfish.Services
         /// <returns></returns>
         public SearchResult Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1)
         {
-            string query = "*:*";
+            string query = "doc_type_ss:item";
 
             if (!string.IsNullOrEmpty(searchText))
             {
@@ -105,6 +105,7 @@ namespace Catfish.Services
                     queryParams.Add(string.Format("{0}:\"{1}\"", name, searchText));
 
                 query = string.Join(" OR ", queryParams);
+                query = string.Format("({0}) AND doc_type_ss:item", query);
             }
 
             _result = null;
@@ -135,6 +136,7 @@ namespace Catfish.Services
 
                 queryParams.Add(string.Format("{0}:\"{1}\"", fieldName, constraint.SearchText));
             }
+            queryParams.Add("doc_type_ss:item");
             string query = string.Join(" AND ", queryParams);
 
             _result = null;
@@ -170,6 +172,7 @@ namespace Catfish.Services
 
             string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             _result = new SearchResult(response);
+            _result.ItemsPerPage = max;
         }
 
         protected string[] GetFieldNames(string[] acceptedFieldPrefixes = null)

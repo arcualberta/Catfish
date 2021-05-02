@@ -105,12 +105,15 @@ namespace Catfish.Controllers
 
         [HttpGet]
         // [ValidateAntiForgeryToken]
-        public SearchResult AdvanceSearch([FromForm] List<SearchFieldConstraint> constraints, int start = 0, int itemPerPage = 25)
+        public SearchResult AdvanceSearch([FromForm] List<SearchFieldConstraint> constraints, string simpleSearchTerm, string searchMode, int start = 0, int itemPerPage = 25)
         {
             try
             {
                 string jsonConst = HttpContext.Request.Query["constraints"][0];
                 var _contraint = JsonConvert.DeserializeObject<List<SearchFieldConstraint>>(jsonConst);
+
+                if (searchMode == "simple")
+                    return _solr.Search(simpleSearchTerm, start, itemPerPage);
 
                 if (_contraint.Count > 0)
                     return _solr.Search(_contraint.ToArray(), start, itemPerPage);

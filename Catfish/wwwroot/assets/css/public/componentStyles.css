@@ -247,8 +247,19 @@
     /*border: solid 1px blue;*/
 }
 
+.advanced-search .search-mode{
+    margin: 10px 0 20px 0;
+}
+.advanced-search .search-mode span {
+    margin: -5px 20px 0 5px;
+}
+
+.advanced-search .search-field label {
+    margin-bottom: 0;
+}
+
 .advanced-search .search-field input {
-    margin: 10px 0;
+    margin-bottom: 10px;
     font-weight: bold;
     /*border: solid 1px blue;*/
 }
@@ -273,6 +284,9 @@
     margin-top: 25px;
 }
 
+.advanced-search .search-controls{
+    margin-top: 25px;
+}
 /* Carousel: Overrides the user's set width when the screen is narrow, for mobile devices */
 @media screen and (max-width: 991px) {
     .image-in-carousel {

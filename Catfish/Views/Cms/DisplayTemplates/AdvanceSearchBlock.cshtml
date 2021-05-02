@@ -13,30 +13,46 @@
 }
 
 <div class="container container-fluid advanced-search">
-    <h2>Advance Search</h2>
+    <h2>Search</h2>
     <div class="row">
         <div class="col-md-12 container">
             @using (Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
-                <div class="row">
+                <div class="row search-mode">
+                    <input type="radio" class="searchMode" name="searchMode" value="simple" checked
+                           onclick="$('#simpleSearch').show(); $('#advancedSearch').hide();"
+                           onchange="$('.searchResults').hide()"/> 
+                    <span class="searchMode">Simple</span>
+
+                    <input type="radio" class="searchMode" name="searchMode" value="advanced" 
+                           onclick="$('#simpleSearch').hide(); $('#advancedSearch').show();"
+                           onchange="$('.searchResults').hide()"/>
+                    <span class="searchMode">Advanced</span>
+                </div>
+                <div class="row col-md-12" id="simpleSearch">
+                    <input type="text" class="form-control" id="simpleSearchTerm" />
+                </div>
+                <div class="row" id="advancedSearch" style="display:none">
                     @foreach (var f in fields)
                     {
                         Catfish.Core.Models.Contents.Fields.TextField field = (f as Catfish.Core.Models.Contents.Fields.TextField);
                         <div class="item col-md-3 search-field">
 
-                            @*<label>@field.Name.ConcatenatedContent</label>*@
+                            <label>@field.Name.ConcatenatedContent</label>
                             <input type="text"
                                    class="form-control advanceSearchInput"
-                                   id="@field.Id"
-                                   placeholder="@field.Name.ConcatenatedContent"
-                                   data-toggle="tooltip"
-                                   title="@field.Name.ConcatenatedContent" />
-                            @*<input type="text" class="form-control advanceSearchInput" id="@field.Id" />*@
+                                   id="@field.Id" />
+                            @*<input type="text"
+                        class="form-control advanceSearchInput"
+                        id="@field.Id"
+                        placeholder="@field.Name.ConcatenatedContent"
+                        data-toggle="tooltip"
+                        title="@field.Name.ConcatenatedContent" />*@
                         </div>
                     }
                 </div>
-                <div class="row">
+                <div class="row search-controls col-md-12">
                     <div style="display:none">
                         <label>Scope</label>
                         <select class="form-control" id="advanceSearchScope">
@@ -47,24 +63,37 @@
                     <div>
                         <label>Item per Page</label>
                         <input type="text" id="advanceSearchItemPerPage" placeholder="25" style="width:50px;margin-right:25px;" />
-                        <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput'); return false;" />
+                        <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', 0); return false;" />
                     </div>
                 </div>
             }
         </div>
-        <div class="searchResults" style="@*display:none*@">
+        <div class="searchResults" style="display:none">
             <h3>Results</h3>
+            
+            
+            <div class="pageLinks">
+                <input type="hidden" id="previousPageOffset" value="0" />
+                <input type="hidden" id="nextPageOffset" value="25" />
+                <input id="prevPageBtn" type="submit" value="<< Previous" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#previousPageOffset').val()); return false;" />
+                <label id="currentPageInfo" style="width:250px; text-align:center"></label>
+                <input id="nextPageBtn" type="submit" value="Next >>" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#nextPageOffset').val()); return false;" />
+                
+                <span style="margin-left:100px;">
+                    <label>Row Height: </label> 
+                    <input type="number" id="max-row-height" value="10" style="width:75px;" onchange="resizeRowHeight($(this).val());" />
+                </span>
+            </div>
             <table class="table">
                 <thead>
                     <tr>
-                        @for(int i=0; i<fields.Length; ++i)
+                        @for (int i = 0; i < fields.Length; ++i)
                         {
                             <th scope="col" id="@fields[i].Id" data-col="@i">@fields[i].Name.ConcatenatedContent</th>
                         }
                     </tr>
                 </thead>
                 <tbody>
-
                 </tbody>
             </table>
 

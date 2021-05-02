@@ -15,25 +15,30 @@ namespace Catfish.Core.Models.Solr
         public ResultEntry(XElement doc)
         {
             //set the item ID
-            Id = doc.Elements("str")
+            string idStr = doc.Elements("str")
                 .Where(ele => ele.Attribute("name").Value == "id")
-                .Select(ele => Guid.Parse(ele.Value))
-                .First();
+                .Select(ele => ele.Value)
+                .FirstOrDefault();
+            Id = string.IsNullOrEmpty(idStr) ? Guid.Empty : Guid.Parse(idStr);
 
             //set the item template ID
-            TemplateId = doc.Elements("str")
+            idStr = doc.Elements("str")
                 .Where(ele => ele.Attribute("name").Value == "template_s")
-                .Select(ele => Guid.Parse(ele.Value))
-                .First();
+                .Select(ele => ele.Value)
+                .FirstOrDefault();
+            TemplateId = string.IsNullOrEmpty(idStr) ? Guid.Empty : Guid.Parse(idStr);
 
             //Populating result fields
-            Fields = doc.Elements("arr").Select(arr => new ResultEntryField(arr)).ToList();
+            Fields = doc.Elements("arr")
+                .Where(arr => arr.Attribute("name").Value != "doc_type_ss")
+                .Select(arr => new ResultEntryField(arr))
+                .ToList();
 
         }
 
         public void SetFieldHighlights(XElement highlights)
         {
-            foreach (var highlightFieldEntry in highlights.Elements("arr"))
+            foreach (var highlightFieldEntry in highlights.Elements("arr").Where(ele => ele.Attribute("name").Value != "doc_type_ss"))
             {
                 var fieldKey = highlightFieldEntry.Attribute("name").Value;
                 string[] fieldKeyParts = fieldKey.Split("_");
