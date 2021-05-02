@@ -20,6 +20,23 @@
             {
                 @Html.AntiForgeryToken()
                 <div class="row">
+                    @foreach (var f in fields)
+                    {
+                        Catfish.Core.Models.Contents.Fields.TextField field = (f as Catfish.Core.Models.Contents.Fields.TextField);
+                        <div class="item col-md-3 search-field">
+
+                            @*<label>@field.Name.ConcatenatedContent</label>*@
+                            <input type="text"
+                                   class="form-control advanceSearchInput"
+                                   id="@field.Id"
+                                   placeholder="@field.Name.ConcatenatedContent"
+                                   data-toggle="tooltip"
+                                   title="@field.Name.ConcatenatedContent" />
+                            @*<input type="text" class="form-control advanceSearchInput" id="@field.Id" />*@
+                        </div>
+                    }
+                </div>
+                <div class="row">
                     <div style="display:none">
                         <label>Scope</label>
                         <select class="form-control" id="advanceSearchScope">
@@ -29,23 +46,10 @@
                     </div>
                     <div>
                         <label>Item per Page</label>
-                        <input type="text" class="form-control" id="advanceSearchItemPerPage" placeholder="25" />
+                        <input type="text" id="advanceSearchItemPerPage" placeholder="25" style="width:50px;margin-right:25px;" />
+                        <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput'); return false;" />
                     </div>
                 </div>
-                <div class="row">
-                    @foreach (var f in fields)
-                    {
-                        Catfish.Core.Models.Contents.Fields.TextField field = (f as Catfish.Core.Models.Contents.Fields.TextField);
-                        <div class="item col-md-3 search-field">
-
-                            <label>@field.Name.ConcatenatedContent</label>
-                            <input type="text" class="form-control advanceSearchInput" id="@field.Id" />
-
-
-                        </div>
-                    }
-                </div>
-                <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput'); return false;" />
             }
         </div>
         <div class="col-7 searchResults">

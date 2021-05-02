@@ -95,12 +95,17 @@ namespace Catfish.Services
         /// <returns></returns>
         public SearchResult Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1)
         {
-            string[] fieldNames = GetFieldNames();
-            List<string> queryParams = new List<string>();
-            foreach (var name in fieldNames)
-                queryParams.Add(string.Format("{0}:\"{1}\"", name, searchText));
+            string query = "*:*";
 
-            string query = string.Join(" OR ", queryParams);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                string[] fieldNames = GetFieldNames();
+                List<string> queryParams = new List<string>();
+                foreach (var name in fieldNames)
+                    queryParams.Add(string.Format("{0}:\"{1}\"", name, searchText));
+
+                query = string.Join(" OR ", queryParams);
+            }
 
             _result = null;
             var task = ExecuteSearchQuery(query, start, maxRows, maxHighlightsPerEntry);
