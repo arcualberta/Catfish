@@ -76,31 +76,47 @@ function advanceSearch(containerId, scopeId, textInputClass) {
     result.done(function (data) {
         
        // alert("ok")
-        $(".searchResults").empty();
-        $(".searchResults").append("<h2>Results</h2>");
-       
-        $(data.resultEntries).each(function (i, e) {
-            var itemId = e.id;
+        $(".searchResults").show();
+        var tbody = $(".searchResults table tbody");
+        $(tbody).empty();
 
-            let entry = `<div class="result-entry">`;
-            $(e.snippets).each(function (j, s) {
-                if (s.fieldName) {
-                    entry += "<div class='field-name'>" + s.FieldName + "</div>";
-                }
-                entry += "<div class='field-highlight'><b>Matched Term:</b> "
-                $(s.highlights).each(function (k, h) {
-                    entry += h + "<br />";
-                });
-                entry += "</div>";
-                entry += "<div class='field-value'><b>Matched Field Content:</b> "
-                $(s.fieldContent).each(function (k, h) {
-                    entry += h + "<br />";
-                });
-                entry += "</div>";
+        var colIds = $.map($("table thead tr th"), (x) => { return $(x).attr("id") });
+
+        $(data.resultEntries).each((i, e) => {
+            let itemId = e.id;
+
+            //inserting a new row and adding td elements for each column in that row
+            let tr = $("<tr/>")
+            $(tbody).append(tr);
+            $(colIds).each((k, id) => {
+                $(tr).append($(`<td class='${id}' style="max-height:100px;"></td>`))
             });
 
-            entry += "</div>";
-            $(".searchResults").append(entry);
+            //Populating field data into appropriate columns in the new row
+            $(e.fields).each((k, f) => {
+                let td = $(tr).children(`.${f.fieldId}`);
+                $(td).html(f.fieldContent);
+            });
+
+            ////let entry = `<div class="result-entry">`;
+            ////$(e.fields).each(function (j, s) {
+            ////    if (s.fieldName) {
+            ////        entry += "<div class='field-name'>" + s.FieldName + "</div>";
+            ////    }
+            ////    entry += "<div class='field-highlight'><b>Matched Term:</b> "
+            ////    $(s.highlights).each(function (k, h) {
+            ////        entry += h + "<br />";
+            ////    });
+            ////    entry += "</div>";
+            ////    entry += "<div class='field-value'><b>Matched Field Content:</b> "
+            ////    $(s.fieldContent).each(function (k, h) {
+            ////        entry += h + "<br />";
+            ////    });
+            ////    entry += "</div>";
+            ////});
+
+            ////entry += "</div>";
+            ////$(".searchResults").append(entry);
 
         });
 

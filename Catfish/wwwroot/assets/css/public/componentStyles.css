@@ -269,6 +269,9 @@
     font-weight: normal;
 }
 
+.advanced-search .searchResults {
+    margin-top: 25px;
+}
 
 /* Carousel: Overrides the user's set width when the screen is narrow, for mobile devices */
 @media screen and (max-width: 991px) {

@@ -52,7 +52,21 @@
                 </div>
             }
         </div>
-        <div class="col-7 searchResults">
+        <div class="searchResults" style="@*display:none*@">
+            <h3>Results</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        @for(int i=0; i<fields.Length; ++i)
+                        {
+                            <th scope="col" id="@fields[i].Id" data-col="@i">@fields[i].Name.ConcatenatedContent</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
 
         </div>
     </div>
