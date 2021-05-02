@@ -1,5 +1,6 @@
 ﻿@model Catfish.Models.Blocks.AdvanceSearchBlock
 @using Catfish.Core.Models.Solr;
+@using Catfish.Core.Models.Contents.Fields;
 
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
 
@@ -7,9 +8,10 @@
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var metadatasetId = Guid.Parse(Model.SelectedMetadataset);
 
-    var fields = _entityTemplateService.GetTemplateMetadataSetFields(entityTemplateId, metadatasetId);
-
+    var fields = _entityTemplateService.GetTemplateMetadataSetFields(entityTemplateId, metadatasetId).ToArray();
+    Array.Sort(fields, delegate (BaseField x, BaseField y) { return x.GetName().CompareTo(y.GetName()); });
 }
+
 <div class="container container-fluid advanced-search">
     <h2>Advance Search</h2>
     <div class="row">
@@ -18,7 +20,7 @@
             {
                 @Html.AntiForgeryToken()
                 <div class="row">
-                    <div>
+                    <div style="display:none">
                         <label>Scope</label>
                         <select class="form-control" id="advanceSearchScope">
                             <option value="@SearchFieldConstraint.eScope.Data">Data</option>
