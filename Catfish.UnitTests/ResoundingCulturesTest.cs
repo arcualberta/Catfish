@@ -5,6 +5,7 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Test.Helpers;
 using Google.Apis.Auth.OAuth2;
@@ -24,6 +25,7 @@ using System.Threading;
 
 namespace Catfish.UnitTests
 {
+
     public class ResoundingCulturesTest
     {
         private protected AppDbContext _db;
@@ -32,13 +34,15 @@ namespace Catfish.UnitTests
         string _templateName = "Resounding Culture Item Template";
         string _metadataSetName = "Resounding Culture Metadata Set";
         string lang = "en";
-
+        string _apiKey = "";
 
         [SetUp]
         public void Setup()
         {
             _testHelper = new TestHelper();
             _db = _testHelper.Db;
+
+            _apiKey = _testHelper.Configuration.GetSection("GoogleApiKey").Value;
         }
 
         [Test]
@@ -105,9 +109,6 @@ namespace Catfish.UnitTests
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\ResoundingCultureTemplate_generared.xml");
-
-            //string json = JsonConvert.SerializeObject(template);
-            //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
 
         
@@ -262,20 +263,23 @@ namespace Catfish.UnitTests
 
                 //for DEBUG only INSERT 2
                 //if (rowCount == 2)
-                //    break;
-
-               // rowCount++;
+                //        break;
+                rowCount++;
             }
 
             _db.SaveChanges();
         }
 
-        // [Test]
-        public List<RowData> ReadGoogleSheet()
+        [Test]
+        public void ReIndex()
         {
+            bool reindexAll = true;
+            _testHelper.SolrBatchService.IndexItems(reindexAll);
+        }
 
-            string apiKey = "AIzaSyA6LhLmkjcpqbq4Dpl9RwE_1QYi7BVUmX0"; //Google api key
 
+        public List<RowData>  ReadGoogleSheet()
+        {
             String spreadsheetId = "1YFS3QXGpNUtakBRXxsFmqqTYMYNv8bL-XbzZ3n6LRsI";//==>google sheet Id
             String ranges = "A2:Y";// read from col A to Y, starting 2nd row
 
@@ -283,7 +287,7 @@ namespace Catfish.UnitTests
             {
                 HttpClientInitializer = GetCredential(),
                 ApplicationName = "Google-Sheets",
-                ApiKey = apiKey
+                ApiKey = _apiKey
             });
 
 

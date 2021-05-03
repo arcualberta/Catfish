@@ -168,7 +168,8 @@ namespace Catfish
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IPageIndexingService, PageIndexingService>();
             services.AddScoped<ISolrService, SolrService>();
-            
+            services.AddScoped<ISolrBatchService, SolrBatchService>();
+
 
             //Configure policy claims
             CatfishSecurity.BuildAllPolicies(services);

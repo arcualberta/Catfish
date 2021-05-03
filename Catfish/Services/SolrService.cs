@@ -2,6 +2,8 @@
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Helper;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +16,14 @@ namespace Catfish.Services
 {
     public class SolrService : ISolrService
     {
+        protected readonly IConfiguration _config;
         private readonly string _solrCoreUrl;
-        public SolrService(ICatfishAppConfiguration config)
+
+        private SearchResult _result;
+        public SolrService(IConfiguration config)
         {
-            _solrCoreUrl = config.GetSolrCoreUrl().TrimEnd('/');
+            _config = config;
+            _solrCoreUrl = config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
         }
         public void Index(Entity entity)
         {
@@ -28,11 +34,6 @@ namespace Catfish.Services
             AddUpdateAsync(doc);
         }
 
-        public void Commit()
-        {
-            _ = CommitAsync();
-        }
-
         public void AddUpdateAsync(SolrDoc doc)
         {
             XElement payload = new XElement("add");
@@ -41,7 +42,15 @@ namespace Catfish.Services
             _ = AddUpdateAsync(payload);
         }
 
-        public void AddUpdateAsync(List<SolrDoc> docs)
+        public void Index(IList<Entity> entities)
+        {
+            //XElement xml = GetSampleDoc();
+            //AddUpdateAsync(xml);
+            var docs = entities.Select(entity => new SolrDoc(entity)).ToList();
+            Index(docs);
+        }
+
+        public void Index(List<SolrDoc> docs)
         {
             XElement payload = new XElement("add");
             foreach (var doc in docs)
@@ -61,6 +70,11 @@ namespace Catfish.Services
             httpResponse.EnsureSuccessStatusCode();
         }
 
+        public void Commit()
+        {
+            _ = CommitAsync();
+        }
+
         public async Task CommitAsync()
         {
             return;
@@ -74,16 +88,6 @@ namespace Catfish.Services
         }
 
 
-        ////private XElement GetSampleDoc()
-        ////{
-        ////    var id = Guid.NewGuid().ToString();
-        ////    return XElement.Parse(string.Format(@"
-        ////    <add><doc><field name='id'>{0}</field><field name='name_s'>change.me {1}</field></doc></add>
-        ////        ", id, DateTime.Now.ToString()));
-
-        ////}
-
-
         /// <summary>
         /// Simple search
         /// </summary>
@@ -92,7 +96,8 @@ namespace Catfish.Services
         public SearchResult Search(string searchText)
         {
             string query = "";
-            return ExecuteSearchQuery(query);
+            _ = ExecuteSearchQuery(query);
+            return _result;
         }
 
         /// <summary>
@@ -105,19 +110,54 @@ namespace Catfish.Services
             //Build the query by "and"ing all constraints and execute it.
             //Get the results and return them through the SearchResult object.
 
-            string query = "";
-            return ExecuteSearchQuery(query);
+            List<string> queryParams = new List<string>();
+            foreach (var constraint in constraints)
+            {
+                string solrFieldType = "ss";
+                var fieldName = string.Format("{0}_{1}_{2}_{3}",
+                    SearchFieldConstraint.ScopeStr(constraint.Scope),
+                    constraint.ContainerId,
+                    constraint.FieldId,
+                    solrFieldType);
 
+                queryParams.Add(string.Format("{0}:*{1}*", fieldName, constraint.SearchText));
+            }
+
+            string query = string.Join("&", queryParams);
+            _result = null;
+            var task = ExecuteSearchQuery(query);
+            task.Wait(60000);//Wait for a maximum of 1 minute
+            return _result;
         }
 
+        ////public async Task ExecuteSearch(string query)
+        ////{
+        ////    string queryUri = "http://localhost:8983/solr/resoundingculture/select?" + query + "&q=*%3A*";
+        ////    using var client = new HttpClient();
+        ////    using var httpResponse = await client.GetAsync(queryUri).ConfigureAwait(false);
+
+        ////    httpResponse.EnsureSuccessStatusCode();
+        ////}
+        
         /// <summary>
         /// Executes a given valid solr query.
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        protected SearchResult ExecuteSearchQuery(string query)
+        protected async Task ExecuteSearchQuery(string query)
         {
-            throw new NotImplementedException();
+            string queryUri = "http://localhost:8983/solr/resoundingculture/select?hl=on&q=" + query +
+                "&hl.fl=*" + "&hl.snippets=5" + "&wt=xml";
+
+            //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
+            using var client = new HttpClient();
+            using var httpResponse = await client.GetAsync(new Uri(queryUri)).ConfigureAwait(false);
+
+            httpResponse.EnsureSuccessStatusCode();
+
+            string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+            _result = new SearchResult(response);
+
         }
 
     }

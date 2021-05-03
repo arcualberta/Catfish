@@ -8,5 +8,6 @@ namespace Catfish.Core.Models.Solr
     {
         public Guid Id { get; set; }
 
+        public List<ResultEntrySnippet> Snippets { get; set; } = new List<ResultEntrySnippet>();
     }
 }
