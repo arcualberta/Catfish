@@ -150,6 +150,7 @@ namespace Catfish.Test.Helpers
             RefreshSchema("table_field2.xml", ws);
             RefreshSchema("grid_table.xml", ws);
             RefreshSchema("SASform.xml", ws);
+            RefreshSchema("covidWeeklyInspection.xml", ws);
 
             ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("simple_form.xml")) as ItemTemplate);
             ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("visibleIf_requiredIf.xml")) as ItemTemplate);
