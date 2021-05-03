@@ -50,7 +50,7 @@ namespace Catfish.Test.Helpers
                 case eDriverType.Edge:
                     EdgeOptions Edgeopts = new EdgeOptions();
                     Edgeopts.AcceptInsecureCertificates = true;
-                    //Edgeopts.UseChromium = true;
+                    //Edgeopts.UseChromium = true;   //if using older version of edge or explorer
                     Driver = new EdgeDriver(Edgeopts);
                     break;
 

@@ -191,7 +191,7 @@ namespace Catfish.Test
 
             var attachmentFileDisplayValue = _seleniumHelper.GetAttachmentFieldDisplayValue("3cdb4841-b9c2-4614-b0d8-7b08adbd9e5a");
             Assert.AreEqual(fileName, attachmentFileDisplayValue, "Attachment is not correctly saved");
-            _seleniumHelper.Driver.Close();
+           // _seleniumHelper.Driver.Close();
         }
 
         [Test]
