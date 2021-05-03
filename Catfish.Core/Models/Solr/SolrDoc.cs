@@ -23,7 +23,7 @@ namespace Catfish.Core.Models.Solr
             AddId(src.Id);
             AddField("status_s", src.StatusId);
             AddField("template_s", src.TemplateId);
-
+            AddField("doc_type_ss", typeof(Item).IsAssignableFrom(src.GetType()) ? "item" : "entity");
 
             foreach (var child in src.MetadataSets)
                 AddContainerFields("metadata", child);
@@ -39,14 +39,14 @@ namespace Catfish.Core.Models.Solr
                 string solrFieldName = string.Format("{0}_{1}_{2}", containerPrefix, container.Id, field.Id);
                 if (typeof(TextField).IsAssignableFrom(field.GetType()))
                 {
-                    solrFieldName += "_ss";
+                    solrFieldName += "_ts";
                     foreach (var val in (field as TextField).Values)
                         foreach (var txt in val.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
                             AddField(solrFieldName, txt.Value);
                 }
                 else if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
                 {
-                    solrFieldName += "_ss";
+                    solrFieldName += "_ts";
                     foreach (var option in (field as OptionsField).Options.Where(op => op.Selected))
                         foreach (var txt in option.OptionText.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
                             AddField(solrFieldName, txt.Value);

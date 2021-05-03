@@ -192,5 +192,30 @@ namespace Catfish.Services
             return workflow.Actions;
          
         }
+
+        public XmlModelList<MetadataSet> GetTemplateMetadataSets(Guid? templateId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+
+            //XmlModel xml = new XmlModel(template.MetadataSets);
+            //XElement element = xml.GetElement(Workflow.TagName, false);// false -- don't cretae if not existed'
+            //Workflow workflow = new Workflow(element);
+
+            return template.MetadataSets;
+
+        }
+
+        public FieldList GetTemplateMetadataSetFields(Guid? templateId, Guid? metadatasetId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+            MetadataSet ms = template.MetadataSets.Where(m => m.Id == metadatasetId).FirstOrDefault();
+
+            //XmlModel xml = new XmlModel(template.MetadataSets);
+            //XElement element = xml.GetElement(Workflow.TagName, false);// false -- don't cretae if not existed'
+            //Workflow workflow = new Workflow(element);
+
+            return ms.Fields;
+
+        }
     }
 }
