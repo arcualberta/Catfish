@@ -13,5 +13,8 @@ namespace Catfish.Core.Services
         public void Index(Entity entity);
         public void Index(List<SolrDoc> docs);
         public void Commit();
+        public SearchResult Search(string searchText);
+        public SearchResult Search(SearchFieldConstraint[] constraints, int offset, int pageSize);
+
     }
 }
