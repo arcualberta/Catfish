@@ -17,6 +17,8 @@ namespace Catfish.Core.Models.Solr
         /// </summary>
         public int TotalMatches { get; set; }
 
+        public int ItemsPerPage { get; set; }
+
 
         public SearchResult(string response)
         {
@@ -31,34 +33,19 @@ namespace Catfish.Core.Models.Solr
                 .FirstOrDefault();
 
             ResultEntries = new List<ResultEntry>();
-
-            foreach (var itemEntry in highlightsContainer.Elements("lst"))
+            foreach (var doc in result.Elements("doc"))
             {
-                ResultEntry resultEntry = new ResultEntry();
+                //create a new entry for the doc (Item)
+                ResultEntry resultEntry = new ResultEntry(doc);
                 ResultEntries.Add(resultEntry);
 
-                resultEntry.Id = Guid.Parse(itemEntry.Attribute("name").Value);
-                foreach (var fieldEntry in itemEntry.Elements("arr"))
-                {
-                    var fieldKey = fieldEntry.Attribute("name").Value.Split("_");
-                    var filedContainerType = SearchFieldConstraint.Str2Scope(fieldKey[0]);
-                    var filedContainerId = Guid.Parse(fieldKey[1]);
-                    var filedId = Guid.Parse(fieldKey[2]);
+                //Setting field highlights
+                var highlightFieldList = highlightsContainer.Elements("lst")
+                    .Where(ele => ele.Attribute("name").Value == resultEntry.Id.ToString())
+                    .FirstOrDefault();
 
-                    var resultSnippet = new ResultEntrySnippet()
-                    {
-                        Scope = filedContainerType,
-                        ContainerId = filedContainerId,
-                        FieldId = filedId
-                    };
-
-                    foreach (var snippet in fieldEntry.Elements("str"))
-                    {
-                        resultSnippet.Highlights.Add(snippet.Value);
-                    }
-
-                    resultEntry.Snippets.Add(resultSnippet);
-                }
+                if (highlightFieldList != null)
+                    resultEntry.SetFieldHighlights(highlightFieldList);
             }
         }
 

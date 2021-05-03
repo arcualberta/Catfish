@@ -18,5 +18,9 @@ namespace Catfish.Services
         EntityTemplate GetTemplate(Guid? templateId, ClaimsPrincipal user);
         //MR Jan 4 2020
         XmlModelList<GetAction> GetTemplateActions(Guid? templateId);
+
+        //MR April 28 2021
+        XmlModelList<MetadataSet> GetTemplateMetadataSets(Guid? templateId);
+        FieldList GetTemplateMetadataSetFields(Guid? templateId, Guid? metadatasetId);
     }
 }

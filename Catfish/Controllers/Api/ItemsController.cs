@@ -418,20 +418,38 @@ namespace Catfish.Controllers.Api
         /// This method's called from Submission Block to get Function/group name from selected Item Template workflow
         /// </summary>
         /// <param name="id">This is Item Template Id</param>
+        /// 
+        /// Modified : April 28 2021 -- add option to retrieve sets of metadatasets instead of action/function that on the ItemTemplate
         /// <returns></returns>
-        [HttpGet("getSelectListItem/{id}")]
-        public List<SelectListItem> GetSelectListItem(string id)
+        [HttpGet("getSelectListItem/{id}/{metadataset}")]
+        public List<SelectListItem> GetSelectListItem(string id, bool metadataset=false)
         {
            
             List<SelectListItem> result = new List<SelectListItem>();
-            if (!string.IsNullOrEmpty(id) && id.ToLower() != "null")
+            if (!metadataset)
             {
-                var actions = _entityTemplateService.GetTemplateActions(Guid.Parse(id));
-            
-                foreach(Core.Models.Contents.Workflow.GetAction action in actions)
+                if (!string.IsNullOrEmpty(id) && id.ToLower() != "null")
                 {
-                   result.Add(new SelectListItem { Text = action.Function, Value = action.Function + "|" + action.Group });
-                 
+                    var actions = _entityTemplateService.GetTemplateActions(Guid.Parse(id));
+
+                    foreach (Core.Models.Contents.Workflow.GetAction action in actions)
+                    {
+                        result.Add(new SelectListItem { Text = action.Function, Value = action.Function + "|" + action.Group });
+
+                    }
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(id) && id.ToLower() != "null")
+                {
+                    var metadataSets = _entityTemplateService.GetTemplateMetadataSets(Guid.Parse(id));
+
+                    foreach (MetadataSet ms in metadataSets)
+                    {
+                        result.Add(new SelectListItem { Text = ms.Name.GetConcatenatedContent("|"), Value = ms.Id.ToString() });
+
+                    }
                 }
             }
 
