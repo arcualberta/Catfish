@@ -33,11 +33,11 @@
             if (ViewData[key] == null)
                 inputAttr += key + " ";
             else
-                inputAttr += key + "=" + ViewData[key] + " ";
+                inputAttr += key + "=\"" + ViewData[key] + "\" ";
         }
 
 
-        <select @inputAttr id="@fieldId" name="@fieldName">
+        <select @Html.Raw(inputAttr) id="@fieldId" name="@fieldName">
             @foreach (var opt in options)
             {
                 if (opt.Selected)

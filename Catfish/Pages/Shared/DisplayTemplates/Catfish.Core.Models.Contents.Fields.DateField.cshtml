@@ -7,6 +7,6 @@
         ? Model.Values.Select(val => "<span>" + val.DateValue +"</span>")
         : Model.Values.Select(val => "<span>" + (val.DateValue.HasValue ? val.DateValue.Value.ToString("yyyy-MM-dd") : "") + "</span>"));
 }
-<div class="field-value @Model.CssClass @Model.FieldValueCssClass">
+<div data-model-id="@Model.Id" class="field-value @Model.CssClass @Model.FieldValueCssClass">
     @Html.Raw(values)
 </div>

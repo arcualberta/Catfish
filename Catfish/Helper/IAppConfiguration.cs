@@ -12,7 +12,7 @@ namespace Catfish.Helper
         string GetGoogleClientId();
         string GetDefaultUserRole();
         string GetGoogleCalendarAPIKey();
-        string GetSolrUrl();
+        string GetSolrCoreUrl();
         bool DisplayCarouselThumbnails();
         string GetAllowDomain();
         string GetUnauthorizedLoginMessage();
@@ -36,7 +36,7 @@ namespace Catfish.Helper
         string GetValue(string key, string defaultValue);
         string[] GetValue(string key, string[] defaultValue);
         int GetValue(string key, int defaultValue);
-
+        string[] GetAccessRestrictionAllowedDomains();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -125,9 +125,9 @@ namespace Catfish.Helper
              return _configuration["EmailServer:Recipient"];
         }
 
-        public string GetSolrUrl()
+        public string GetSolrCoreUrl()
         {
-            return _configuration["SolarConfiguration:solrItemURL"];
+            return _configuration["SolarConfiguration:solrCore"];
         }
 
         public string GetLogoUrl()
@@ -186,6 +186,14 @@ namespace Catfish.Helper
             return string.IsNullOrEmpty(configVal)
                 ? ICatfishAppConfiguration.ePanelLocation.Header
                 : (ICatfishAppConfiguration.ePanelLocation)Enum.Parse(typeof(ICatfishAppConfiguration.ePanelLocation), configVal);
+        }
+
+        public string[] GetAccessRestrictionAllowedDomains()
+        {
+            var allowedD = _configuration.GetSection("SiteConfig:AccessRestriction:AllowedDomains");
+            string[] _domains = allowedD.Get<string[]>();
+
+            return _domains;
         }
     }
 }

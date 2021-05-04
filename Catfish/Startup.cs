@@ -32,8 +32,7 @@ using Piranha.Services;
 using SolrNet;
 using System;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+
 
 namespace Catfish
 {
@@ -167,6 +166,8 @@ namespace Catfish
             services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IPageIndexingService, PageIndexingService>();
+            services.AddScoped<ISolrService, SolrService>();
+            services.AddScoped<ISolrBatchService, SolrBatchService>();
 
 
             //Configure policy claims
@@ -361,7 +362,7 @@ namespace Catfish
             //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
-            //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
@@ -412,6 +413,7 @@ namespace Catfish
             App.Blocks.Register<VueList>();
             App.Blocks.Register<VueCarousel>();
             App.Blocks.Register<ExtendedColumnBlock>();
+            App.Blocks.Register<AdvanceSearchBlock>();
         }
         private static void RegisterCustomStyles()
         {

@@ -9,7 +9,7 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Fields.ViewModels;
 using Newtonsoft.Json;
-using Catfish.UnitTests.Helpers;
+using Catfish.Test.Helpers;
 
 namespace Catfish.UnitTests
 {

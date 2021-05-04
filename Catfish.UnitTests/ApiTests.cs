@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
-using Catfish.UnitTests.Helpers;
+using Catfish.Test.Helpers;
 
 namespace Catfish.UnitTests
 {
