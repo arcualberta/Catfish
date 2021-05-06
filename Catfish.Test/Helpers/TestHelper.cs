@@ -87,6 +87,8 @@ namespace Catfish.Test.Helpers
             services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
 
 
+            services.AddScoped<IGoogleApiService, GoogleApiService>();
+
             //Adding an empty mock-up error logger instance to the service. This is to replace the actuall
             //Elmah error-log functionality used in the web application.
             services.AddScoped<ErrorLog, MockupErrorLog>();
@@ -105,7 +107,8 @@ namespace Catfish.Test.Helpers
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>();
         public ISolrService SolrService => Seviceprovider.GetService<ISolrService>();
         public ISolrBatchService SolrBatchService => Seviceprovider.GetService<ISolrBatchService>();
-       
+
+        public IGoogleApiService GoogleApiService => Seviceprovider.GetService<IGoogleApiService>();
         public XElement LoadXml(string fileName)
         {
             string dataRoot = Configuration.GetSection("SchemaPath").Value;
