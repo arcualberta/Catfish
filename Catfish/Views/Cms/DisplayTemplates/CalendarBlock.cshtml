@@ -1,8 +1,11 @@
 ﻿@model Catfish.Models.Blocks.CalendarBlock
 @using Newtonsoft.Json;
 
+@inject Catfish.Services.IAppService _appService;
+
 @{
     ViewData["Title"] = "Calendar Block";
+    _appService.RegisterScript("/assets/js/_public-facing/calendar-block-vue.js");
 }
 
 @{
@@ -72,7 +75,8 @@
                 </div>
             </div>
 
-        }else if(Model.DisplayCalendarUI.Value == Catfish.Models.Blocks.CalendarTypes.WeeklyStrip)
+        }
+        else if (Model.DisplayCalendarUI.Value == Catfish.Models.Blocks.CalendarTypes.WeeklyStrip)
         {
             <div class="calendar-container @calendarStyling">
                 <div class="strip-month-header-container">
@@ -94,7 +98,7 @@
                                         <div class="day-number">{{day.dayOfMonth}}</div>
                                     </div>
                                     <div class="calendar-day-title">
-                                        <div class="title-spacing" v-if="day.hasEvent" >{{getEventDayTitle(day)}}</div>
+                                        <div class="title-spacing" v-if="day.hasEvent">{{getEventDayTitle(day)}}</div>
                                     </div>
                                 </div>
                             </template>
