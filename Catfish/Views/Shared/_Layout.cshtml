@@ -6,6 +6,7 @@
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 @inject Catfish.Services.IAppService _appService;
+@inject Catfish.Helper.IBlockHelper _blockHelper;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
 
 @{
@@ -21,22 +22,18 @@
 
     if (pageModel != null)
     {
-        vueComponentNames = pageModel.Blocks
-            .Where(b => typeof(IVueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type IVueConponent or its derived type.*@
-            .Select(b => (b as IVueComponent).Component) @*Selecting all those blocks as IVueConponent blocks and getting their names.*@
-            .Distinct()
+        vueComponentNames = _blockHelper.GetVueComponentNames(pageModel.Blocks).ToList();
+
+        cssBlocks = pageModel.Blocks
+            .Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
+            .Select(b => (b as CssBlock))
             .ToList();
 
-            cssBlocks = pageModel.Blocks
-                .Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
-                .Select(b => (b as CssBlock))
-                .ToList();
-
-            javascriptBlocks = pageModel.Blocks
-                .Where(b => typeof(JavascriptBlock).IsAssignableFrom(b.GetType()))
-                .Select(b => (b as JavascriptBlock))
-                .ToList();
-        }
+        javascriptBlocks = pageModel.Blocks
+            .Where(b => typeof(JavascriptBlock).IsAssignableFrom(b.GetType()))
+            .Select(b => (b as JavascriptBlock))
+            .ToList();
+    }
 }
 
 <!doctype html>

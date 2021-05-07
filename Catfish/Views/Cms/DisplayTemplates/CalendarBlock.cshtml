@@ -1,12 +1,15 @@
 ﻿@model Catfish.Models.Blocks.CalendarBlock
 @using Newtonsoft.Json;
+@inject Catfish.Services.IAppService _appService;
 
 @inject Catfish.Services.IAppService _appService;
 
 @{
     ViewData["Title"] = "Calendar Block";
-    _appService.RegisterScript("/assets/js/_public-facing/calendar-block-vue.js");
-}
+
+    //Register any additional javascript files that are needed for this components as follows
+    //_appService.RegisterScript("/assets/js/MY-JS-FILE.js");
+ }
 
 @{
 

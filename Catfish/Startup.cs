@@ -157,6 +157,7 @@ namespace Catfish
             services.AddScoped<ICatfishSiteService, CatfishSiteService>();
             services.AddScoped<IJobService, JobService>();
             services.AddSingleton<IAppService, AppService>();
+            services.AddSingleton<IBlockHelper, BlockHelper>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
