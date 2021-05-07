@@ -214,6 +214,7 @@ namespace Catfish.UnitTests
         public void ImportData()
         {
             bool clearCurrentData = true;
+            string multiValueSeparator = ";";
 
             if (clearCurrentData)
             {
@@ -248,13 +249,29 @@ namespace Catfish.UnitTests
 
                     if (!string.IsNullOrEmpty(colValue))
                     {
+                        bool multivalued = colHeadings[i].Equals("Creator(s)") 
+                            || colHeadings[i].Equals("Contributor(s)") 
+                            || colHeadings[i].Equals("subject - English") 
+                            || colHeadings[i].Equals("suject - French") 
+                            || colHeadings[i].Equals("Medium of Performance")
+                            || colHeadings[i].Equals("Thematic Areas")
+                            || colHeadings[i].Equals("Keyword") 
+                            || colHeadings[i].Equals("Coverage (spatial)") 
+                            || colHeadings[i].Equals("Language");
+
+                        var vals = multivalued
+                            ? colValue.Split(multiValueSeparator, StringSplitOptions.RemoveEmptyEntries)
+                            : new string[] { colValue };
+
                         if (colHeadings[i].Equals("Description") || colHeadings[i].Equals("Rights/Access Statements") || colHeadings[i].Equals("Notes/Problems"))
                         {
-                            ms.SetFieldValue<TextArea>(colHeading, lang, colValue, lang);
+                            for (int n = 0; n < vals.Length; ++n)
+                                ms.SetFieldValue<TextArea>(colHeading, lang, vals[n], lang, false, n);
                         }
                         else
                         {
-                            ms.SetFieldValue<TextField>(colHeading, lang, colValue, lang);
+                            for (int n = 0; n < vals.Length; ++n)
+                                ms.SetFieldValue<TextField>(colHeading, lang, vals[n], lang, false, n);
                         }
                     }
                     i++;

@@ -106,6 +106,12 @@ namespace Catfish.Core.Models.Contents.Fields
                 mSourceFieldReference = new FieldReference(GetElement(FieldReference.TagName, true));
             return mSourceFieldReference;
         }
+
+        public string GetName()
+        {
+            return Name.GetConcatenatedContent(" | ");
+        }
+
         public string GetName(string lang)
         {
             Text val = Name.Values.Where(val => val.Language == lang).FirstOrDefault();

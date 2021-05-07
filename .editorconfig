@@ -29,3 +29,6 @@ dotnet_diagnostic.IDE0043.severity = none
 
 # CA1822: Mark members as static
 dotnet_diagnostic.CA1822.severity = none
+
+# Default severity for analyzer diagnostics with category 'Globalization'
+dotnet_analyzer_diagnostic.category-Globalization.severity = none

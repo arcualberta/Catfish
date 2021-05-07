@@ -93,10 +93,24 @@ namespace Catfish.Services
         /// </summary>
         /// <param name="searchText"></param>
         /// <returns></returns>
-        public SearchResult Search(string searchText)
+        public SearchResult Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1)
         {
-            string query = "";
-            _ = ExecuteSearchQuery(query);
+            string query = "doc_type_ss:item";
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                string[] fieldNames = GetFieldNames();
+                List<string> queryParams = new List<string>();
+                foreach (var name in fieldNames)
+                    queryParams.Add(string.Format("{0}:\"{1}\"", name, searchText));
+
+                query = string.Join(" OR ", queryParams);
+                query = string.Format("({0}) AND doc_type_ss:item", query);
+            }
+
+            _result = null;
+            var task = ExecuteSearchQuery(query, start, maxRows, maxHighlightsPerEntry);
+            task.Wait(60000);//Wait for a maximum of 1 minute
             return _result;
         }
 
@@ -105,7 +119,7 @@ namespace Catfish.Services
         /// </summary>
         /// <param name="constraints"></param>
         /// <returns></returns>
-        public SearchResult Search(SearchFieldConstraint[] constraints, int offset, int pageSize)
+        public SearchResult Search(SearchFieldConstraint[] constraints, int start, int maxRows, int maxHighlightsPerEntry = 1)
         {
             //Build the query by "and"ing all constraints and execute it.
             //Get the results and return them through the SearchResult object.
@@ -113,19 +127,20 @@ namespace Catfish.Services
             List<string> queryParams = new List<string>();
             foreach (var constraint in constraints)
             {
-                string solrFieldType = "ss";
+                string solrFieldType = "ts";
                 var fieldName = string.Format("{0}_{1}_{2}_{3}",
                     SearchFieldConstraint.ScopeStr(constraint.Scope),
                     constraint.ContainerId,
                     constraint.FieldId,
                     solrFieldType);
 
-                queryParams.Add(string.Format("{0}:*{1}*", fieldName, constraint.SearchText));
+                queryParams.Add(string.Format("{0}:\"{1}\"", fieldName, constraint.SearchText));
             }
+            queryParams.Add("doc_type_ss:item");
+            string query = string.Join(" AND ", queryParams);
 
-            string query = string.Join("&", queryParams);
             _result = null;
-            var task = ExecuteSearchQuery(query);
+            var task = ExecuteSearchQuery(query, start, maxRows, maxHighlightsPerEntry);
             task.Wait(60000);//Wait for a maximum of 1 minute
             return _result;
         }
@@ -144,10 +159,10 @@ namespace Catfish.Services
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        protected async Task ExecuteSearchQuery(string query)
+        protected async Task ExecuteSearchQuery(string query, int start, int max, int maxHiglightSnippets)
         {
-            string queryUri = "http://localhost:8983/solr/resoundingculture/select?hl=on&q=" + query +
-                "&hl.fl=*" + "&hl.snippets=5" + "&wt=xml";
+            string queryUri = _solrCoreUrl + "/select?hl=on&q=" + query +
+                string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
 
             //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
             using var client = new HttpClient();
@@ -157,8 +172,31 @@ namespace Catfish.Services
 
             string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             _result = new SearchResult(response);
-
+            _result.ItemsPerPage = max;
         }
+
+        protected string[] GetFieldNames(string[] acceptedFieldPrefixes = null)
+        {
+            string queryUri = _solrCoreUrl + "/select?q=*:*&wt=csv&rows=0&facet";
+            if (acceptedFieldPrefixes == null)
+                acceptedFieldPrefixes = new string[] { "data", "metadata" };
+
+            //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
+            using var client = new HttpClient();
+            string[] fieldNames = null;
+            using (var task = client.GetAsync(new Uri(queryUri)))
+            {
+                task.Wait(60000);
+                var task2 = task.Result.Content.ReadAsStringAsync();
+                task2.Wait(60000);
+                fieldNames = task2.Result
+                    .Split(",")
+                    .Where(f => acceptedFieldPrefixes.Contains(f.Split("_")[0]))
+                    .ToArray();
+            };
+            return fieldNames;
+        }
+
 
     }
 }
