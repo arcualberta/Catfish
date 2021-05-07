@@ -404,7 +404,6 @@ namespace Catfish
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
             App.Blocks.Register<CalendarBlock>();
-            //App.Blocks.Register<CalendarEventListBlock>();
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
             App.Blocks.Register<ContactFormBlock>();
@@ -420,6 +419,8 @@ namespace Catfish
             App.Blocks.Register<VueCarousel>();
             App.Blocks.Register<ExtendedColumnBlock>();
             App.Blocks.Register<AdvanceSearchBlock>();
+            //App.Blocks.Register<SingleListItem>();
+            App.Blocks.Register<ListDisplay>();
         }
         private static void RegisterCustomStyles()
         {

@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Piranha.Extend.Fields;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
+using Catfish.Models.Fields;
 
 namespace Catfish.Models.Blocks
 {
-    public enum ColumnOptions : int
+    public enum ColumnOption : int
     {
-        [Display(Description = "50-50 Column")]
+        [Display(Description = "1/2 Item Column, 1/2 Display Column")]
         EvenColumns = 0,
         [Display(Description = "1/3 Item Column, 2/3 Display Column")]
         MoreDisplayThanItem = 1,
@@ -20,7 +20,7 @@ namespace Catfish.Models.Blocks
         [Display(Description = "1/4 Item Column, 3/4 Display Calendar")]
         MoreDisplayThanItem2 = 3,
         [Display(Description = "3/4 Item Column, 1/4 Display Calendar")]
-        MoreItemThanDisplay2 = 4,
+        MoreItemThanDisplay2 = 4
     }
 
     public enum ItemPanelDirection : int
@@ -39,7 +39,10 @@ namespace Catfish.Models.Blocks
     [BlockItemType(Type = typeof(SingleListItem))]
     public class ListDisplay : VueComponentGroup
     {
-        public SelectField<ItemPanelDirection> ItemList { get; set; }
-        public SelectField<ColumnOptions> ColumnWidth { get; set; }
+        public TextField DisplayListTitle { get; set; }
+        public SelectField<ItemPanelDirection> ItemListPosition { get; set; }
+        public SelectField<ColumnOption> ColumnWidth { get; set; }
+        //note, Piranha added their own ColorField but it isn't in this version yet as far as I know
+        public ColorPicker SelectedColor { get; set; } 
     }
 }
