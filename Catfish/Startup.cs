@@ -157,6 +157,7 @@ namespace Catfish
             services.AddScoped<ICatfishSiteService, CatfishSiteService>();
             services.AddScoped<IJobService, JobService>();
             services.AddSingleton<IAppService, AppService>();
+            services.AddSingleton<IBlockHelper, BlockHelper>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
@@ -362,8 +363,12 @@ namespace Catfish
             //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
+
+            //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block-vue.js");
+
             App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
+
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
@@ -399,6 +404,7 @@ namespace Catfish
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
             App.Blocks.Register<CalendarBlock>();
+            //App.Blocks.Register<CalendarEventListBlock>();
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
             App.Blocks.Register<ContactFormBlock>();
