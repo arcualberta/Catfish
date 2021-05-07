@@ -175,6 +175,8 @@ Plugins
 /Catfish/wwwroot/uploads
 /Catfish/wwwroot/log
 
+.sonarqube/
+
 .vs/
 /Catfish.UnitTests/appsettings.test.json
 /*.tgitconfig
@@ -208,3 +210,5 @@ Plugins
 
 /Catfish.Test/appsettings.test.json
 
+
+/SonarQubeCommands.txt
