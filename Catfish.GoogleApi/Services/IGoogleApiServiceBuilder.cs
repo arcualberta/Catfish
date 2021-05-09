@@ -4,10 +4,11 @@ using System.Text;
 
 namespace Catfish.GoogleApi.Services
 {
-    public interface IServiceBuilder
+    public interface IGoogleApiServiceBuilder
     {
         public void Init(string credentialsFile, string[] scopes, string appName);
         public IGoogleDriveService CreateDriveService();
-        public IGoogleSpreadsheetService CreateSheetService();
+        public IGoogleSheetsService CreateSheetService();
+        public IGoogleDocsService CreateDocsService();
     }
 }

@@ -39,8 +39,15 @@ namespace Catfish.UnitTests
         [Test]
         public void CreateEventOrderForms()
         {
-            var driveService = _testHelper.GoogleDriveService;
-            var sheetsService = _testHelper.GoogleSpreadsheetService;
+            string credentialFile = "_CatfishGoogleApiDesktopCredentials.json";
+            string[] scopes = new string[] { DriveService.Scope.Drive };
+
+            var serviceBuilder = _testHelper.GoogleApiServiceBuilder;
+            serviceBuilder.Init(credentialFile, scopes, "Congress 2021 Billing");
+
+            IGoogleDriveService driveService = serviceBuilder.CreateDriveService();
+            IGoogleSheetsService sheetsService = serviceBuilder.CreateSheetService();
+            IGoogleDocsService docsService = serviceBuilder.CreateDocsService();
 
             string sheetNamePrefix = "Assoc";
 
@@ -48,13 +55,7 @@ namespace Catfish.UnitTests
             string templateId = "1KcKj8b4NGJDVMTCoxztgGzmv9yc0kU5vi26lnEBHLFs";
             string outputRootId = "16lxbYpBFufGKMbz6mgyfXs47C2WCh6z4";
 
-            string credentialFile = "_CatfishGoogleApiDesktopCredentials.json";
-
-
-            string[] scopes = new string[] { DriveService.Scope.Drive };
-            driveService.Init(credentialFile, scopes, "Congress 2021 Billing");
-
-            var src = driveService.LoadSpreadSheet(srcId);
+            var src = sheetsService.LoadSpreadSheet(srcId);
 
             string outputFolderName = string.Format("Output_{0}", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
             var outputFolder = driveService.CreateFolder(outputRootId, outputFolderName);
@@ -103,7 +104,7 @@ namespace Catfish.UnitTests
                         else if (packageType.ToLower().StartsWith("additional av"))
                             ++additionalPackageCount;
 
-                        var detailsSheet = driveService.DuplicateSheet(orderForm.Id, "DetailsTemplate", string.Format("R-{0}", r + 1));
+                        var detailsSheet = sheetsService.DuplicateSheet(orderForm.Id, "DetailsTemplate", string.Format("R-{0}", r + 1));
 
                         if (string.IsNullOrEmpty(packageType))
                             LogError(sheetName, r, "No package type");
@@ -145,6 +146,7 @@ namespace Catfish.UnitTests
                     LogError(sheetName, ex.Message);
                 }
 
+                break;
             }
 
             if(_errorLog.Count > 0)
@@ -155,7 +157,7 @@ namespace Catfish.UnitTests
                     string details = string.Join("\n", entry.Value);
                     errors.Add(string.Format("{0}:\n{1}\n\n", entry.Key, details));
                 }
-                driveService.CreateDoc(outputFolder.Id, "_error-log", errors);
+                docsService.CreateDoc(outputFolder.Id, "_error-log", errors);
             }
         }
     }

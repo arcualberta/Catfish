@@ -21,7 +21,7 @@ namespace Catfish.Test
         [Test]
         public void ColumnLetterConversionTest()
         {
-            var sheetsService = _testHelper.GoogleSpreadsheetService;
+            var sheetsService = _testHelper.GoogleApiServiceBuilder.CreateSheetService();
 
             Assert.AreEqual(1, sheetsService.Letter2Column("A"));
             Assert.AreEqual(2, sheetsService.Letter2Column("B"));

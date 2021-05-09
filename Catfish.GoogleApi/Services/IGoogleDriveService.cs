@@ -11,11 +11,7 @@ namespace Catfish.GoogleApi.Services
     public interface IGoogleDriveService
     {
         public void Init(UserCredential credential, string appName);
-        public void Init(string credentialsFile, string[] scopes, string appName);
         public File CreateFolder(string parentFolderId, string childFolderName);
         public File Clone(string srcId, string outputFolderId, string cloneName);
-        public Google.Apis.Docs.v1.Data.Document CreateDoc(string parentFolderId, string docName, List<string> content);
-        public Spreadsheet LoadSpreadSheet(string spreadSheetId);
-        public SheetProperties DuplicateSheet(string spreadsheetId, string srcSheetName, string dstSheetName);
     }
 }

@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Catfish.GoogleApi.Services
 {
-    public class ServiceBuilder : IServiceBuilder
+    public class GoogleApiServiceBuilder : IGoogleApiServiceBuilder
     {
         public UserCredential UserCredential { get; private set; }
         private string _CredentialTokenFile;
@@ -39,9 +39,16 @@ namespace Catfish.GoogleApi.Services
             return service;
         }
 
-        public IGoogleSpreadsheetService CreateSheetService()
+        public IGoogleSheetsService CreateSheetService()
         {
-            IGoogleSpreadsheetService service = new GoogleSpreadsheetService();
+            IGoogleSheetsService service = new GoogleSheetsService();
+            service.Init(UserCredential, _AppName);
+            return service;
+        }
+
+        public IGoogleDocsService CreateDocsService()
+        {
+            IGoogleDocsService service = new GoogleDocsService();
             service.Init(UserCredential, _AppName);
             return service;
         }

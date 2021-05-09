@@ -90,8 +90,7 @@ namespace Catfish.Test.Helpers
 
             services.AddScoped<IGoogleApiService, GoogleApiService>();
 
-            services.AddTransient<IGoogleDriveService, GoogleDriveService>();
-            services.AddTransient<IGoogleSpreadsheetService, GoogleSpreadsheetService>();
+            services.AddTransient<IGoogleApiServiceBuilder, GoogleApiServiceBuilder>();
 
             //Adding an empty mock-up error logger instance to the service. This is to replace the actuall
             //Elmah error-log functionality used in the web application.
@@ -113,8 +112,8 @@ namespace Catfish.Test.Helpers
         public ISolrBatchService SolrBatchService => Seviceprovider.GetService<ISolrBatchService>();
 
         public IGoogleApiService GoogleApiService => Seviceprovider.GetService<IGoogleApiService>();
-        public IGoogleDriveService GoogleDriveService => Seviceprovider.GetService<IGoogleDriveService>();
-        public IGoogleSpreadsheetService GoogleSpreadsheetService => Seviceprovider.GetService<IGoogleSpreadsheetService>();
+        public IGoogleApiServiceBuilder GoogleApiServiceBuilder => Seviceprovider.GetService<IGoogleApiServiceBuilder>();
+        //public IGoogleSpreadsheetService GoogleSpreadsheetService => Seviceprovider.GetService<IGoogleSpreadsheetService>();
         public XElement LoadXml(string fileName)
         {
             string dataRoot = Configuration.GetSection("SchemaPath").Value;
