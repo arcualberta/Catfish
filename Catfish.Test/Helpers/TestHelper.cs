@@ -21,6 +21,7 @@ using System.Xml.Linq;
 using System.IO;
 using System.Linq;
 using Catfish.Helper;
+using Catfish.GoogleApi.Services;
 
 namespace Catfish.Test.Helpers
 {
@@ -89,6 +90,9 @@ namespace Catfish.Test.Helpers
 
             services.AddScoped<IGoogleApiService, GoogleApiService>();
 
+            services.AddTransient<IGoogleDriveService, GoogleDriveService>();
+            services.AddTransient<IGoogleSpreadsheetService, GoogleSpreadsheetService>();
+
             //Adding an empty mock-up error logger instance to the service. This is to replace the actuall
             //Elmah error-log functionality used in the web application.
             services.AddScoped<ErrorLog, MockupErrorLog>();
@@ -109,6 +113,8 @@ namespace Catfish.Test.Helpers
         public ISolrBatchService SolrBatchService => Seviceprovider.GetService<ISolrBatchService>();
 
         public IGoogleApiService GoogleApiService => Seviceprovider.GetService<IGoogleApiService>();
+        public IGoogleDriveService GoogleDriveService => Seviceprovider.GetService<IGoogleDriveService>();
+        public IGoogleSpreadsheetService GoogleSpreadsheetService => Seviceprovider.GetService<IGoogleSpreadsheetService>();
         public XElement LoadXml(string fileName)
         {
             string dataRoot = Configuration.GetSection("SchemaPath").Value;
