@@ -65,16 +65,15 @@ namespace Catfish.UnitTests
                 .Select(sh => sh.Properties.Title)
                 .ToList();
 
-            foreach (var sheet in src.Sheets)
+            var srcDataSets = sheetsService.LoadData(srcId, assocSheetNames, "A:AZ");
+
+            for(int assocIndex = 0; assocIndex<assocSheetNames.Count; ++assocIndex)
             {
-                string sheetName = sheet.Properties.Title;
-                if (!sheetName.StartsWith(sheetNamePrefix))
-                    continue;
+                var sheetName = assocSheetNames[assocIndex];
+                var range = srcDataSets.ValueRanges[assocIndex];
 
                 try
                 {
-                    var range = sheetsService.LoadData(srcId, sheetName, "A:AZ");
-
                     var assocNameNum = range.Values[0][1] as string; //B1
                     Assert.IsNotNull(assocNameNum);
 

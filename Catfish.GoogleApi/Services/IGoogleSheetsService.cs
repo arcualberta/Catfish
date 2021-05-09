@@ -14,6 +14,7 @@ namespace Catfish.GoogleApi.Services
         public int Letter2Column(string col);
         public string Column2Letter(int col);
         public ValueRange LoadData(string spreadSheetId, string sheetName, string range);
+        public BatchGetValuesResponse LoadData(string spreadSheetId, IList<string> sheetNames, string range);
         public Spreadsheet LoadSpreadSheet(string spreadSheetId);
         public SheetProperties DuplicateSheet(string spreadsheetId, string srcSheetName, string dstSheetName);
     }

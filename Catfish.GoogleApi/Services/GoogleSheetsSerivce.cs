@@ -64,6 +64,14 @@ namespace Catfish.GoogleApi.Services
             return _sheetsService.Spreadsheets.Get(spreadSheetId).Execute();
         }
 
+        public BatchGetValuesResponse LoadData(string spreadSheetId, IList<string> sheetNames, string range)
+        {
+            List<string> dataRanges = sheetNames.Select(sn => string.Format("{0}!{1}", sn, range)).ToList();
+            var req = _sheetsService.Spreadsheets.Values.BatchGet(spreadSheetId);
+            req.Ranges = new Google.Apis.Util.Repeatable<string>(dataRanges);
+            return req.Execute();
+        }
+
         public ValueRange LoadData(string spreadSheetId, string sheetName, string range)
         {
             string dataRange = string.Format("{0}!{1}", sheetName, range);
