@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Catfish.GoogleApi.Services
 {
-    public interface IGoogleSheetsService
+    public interface IGoogleSheetsService : ISheetService
     {
         public void Init(UserCredential credential, string appName);
         public string GetCellValue(ValueRange range, int oneBasedRowIndex, int oneBasedColIndex, string defaultVal);
@@ -16,6 +16,6 @@ namespace Catfish.GoogleApi.Services
         public ValueRange LoadData(string spreadSheetId, string sheetName, string range);
         public BatchGetValuesResponse LoadData(string spreadSheetId, IList<string> sheetNames, string range);
         public Spreadsheet LoadSpreadSheet(string spreadSheetId);
-        public SheetProperties DuplicateSheet(string spreadsheetId, string srcSheetName, string dstSheetName);
+        //public void WriteBatch(string spreadsheetId)
     }
 }

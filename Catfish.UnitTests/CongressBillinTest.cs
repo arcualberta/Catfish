@@ -1,11 +1,14 @@
 ﻿using Catfish.GoogleApi.Services;
 using Catfish.Test.Helpers;
 using Google.Apis.Drive.v3;
+using Google.Apis.Sheets.v4.Data;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Catfish.UnitTests
 {
@@ -36,8 +39,146 @@ namespace Catfish.UnitTests
             _errorLog[sectionName].Add(message);
         }
 
+        ////[Test]
+        ////public void CreateEventOrderForms()
+        ////{
+        ////    string credentialFile = "_CatfishGoogleApiDesktopCredentials.json";
+        ////    string[] scopes = new string[] { DriveService.Scope.Drive };
+
+        ////    var serviceBuilder = _testHelper.GoogleApiServiceBuilder;
+        ////    serviceBuilder.Init(credentialFile, scopes, "Congress 2021 Billing");
+
+        ////    IGoogleDriveService driveService = serviceBuilder.CreateDriveService();
+        ////    IGoogleSheetsService sheetsService = serviceBuilder.CreateSheetService();
+        ////    IGoogleDocsService docsService = serviceBuilder.CreateDocsService();
+
+        ////    string sheetNamePrefix = "Assoc";
+
+        ////    string srcId = "1Rt6C2Unna5CLAhwLD6RROO_Vb5m2uCiQGRbhd2Rjez8";
+        ////    string templateId = "1KcKj8b4NGJDVMTCoxztgGzmv9yc0kU5vi26lnEBHLFs";
+        ////    string outputRootId = "16lxbYpBFufGKMbz6mgyfXs47C2WCh6z4";
+
+        ////    var src = sheetsService.LoadSpreadSheet(srcId);
+
+        ////    string outputFolderName = string.Format("Output_{0}", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+        ////    var outputFolder = driveService.CreateFolder(outputRootId, outputFolderName);
+
+        ////    var assocSheetNames = src.Sheets
+        ////        .Where(sh => sh.Properties.Title.StartsWith(sheetNamePrefix))
+        ////        .Select(sh => sh.Properties.Title)
+        ////        .ToList();
+
+        ////    var srcDataSets = sheetsService.LoadData(srcId, assocSheetNames, "A:AZ");
+
+        ////    for(int assocIndex = 0; assocIndex<assocSheetNames.Count; ++assocIndex)
+        ////    {
+        ////        var sheetName = assocSheetNames[assocIndex];
+        ////        var range = srcDataSets.ValueRanges[assocIndex];
+
+        ////        try
+        ////        {
+        ////            var assocNameNum = range.Values[0][1] as string; //B1
+        ////            Assert.IsNotNull(assocNameNum);
+
+        ////            var bookingCode = range.Values[2][1] as string; //B3
+        ////            Assert.IsNotNull(bookingCode);
+
+        ////            if (!bookingCode.StartsWith("21-"))
+        ////                throw new Exception("Booking code must start with \"21-\"");
+
+        ////            //Creating a clone of the template
+        ////            var orderFormId = driveService.Clone(templateId, outputFolder.Id, bookingCode);
+        ////            Assert.IsNotNull(orderFormId);
+
+        ////            int fullDayPackageCount = 0;
+        ////            int halfDayPackageCount = 0;
+        ////            int additionalPackageCount = 0;
+
+        ////            //Repeat from row #7 onwards (note the 0-basd index)
+        ////            for (int r = 7; r < range.Values.Count; ++r)
+        ////            {
+        ////                string packageType = sheetsService.GetCellValue(range, "A", r, "");
+
+        ////                if (packageType.ToLower().StartsWith("full-day av"))
+        ////                    ++fullDayPackageCount;
+        ////                else if (packageType.ToLower().StartsWith("half-day av"))
+        ////                    ++halfDayPackageCount;
+        ////                else if (packageType.ToLower().StartsWith("additional av"))
+        ////                    ++additionalPackageCount;
+
+        ////                bool status = false;
+        ////                do
+        ////                {
+        ////                    try
+        ////                    {
+        ////                        status = sheetsService.DuplicateSheet(orderFormId, "DetailsTemplate", string.Format("R-{0}", r));
+        ////                    }
+        ////                    catch (Exception ex)
+        ////                    {
+        ////                        status = false;
+        ////                        Thread.Sleep(60000);
+        ////                    }
+        ////                }
+        ////                while (!status);
+                        
+
+        ////                if (string.IsNullOrEmpty(packageType))
+        ////                    LogError(sheetName, r, "No package type");
+
+        ////                string sessionId = sheetsService.GetCellValue(range, "C", r, ""); 
+        ////                if (string.IsNullOrEmpty(sessionId))
+        ////                    LogError(sheetName, r, "No session id");
+
+        ////                string sesstionTitle = sheetsService.GetCellValue(range, "D", r, "");
+        ////                if (string.IsNullOrEmpty(sesstionTitle))
+        ////                    LogError(sheetName, r, "No session title");
+
+        ////                string date = sheetsService.GetCellValue(range, "E", r, "");
+        ////                if (string.IsNullOrEmpty(date))
+        ////                    LogError(sheetName, r, "No session date");
+
+        ////                string startTime = sheetsService.GetCellValue(range, "F", r, "");
+        ////                if (string.IsNullOrEmpty(startTime))
+        ////                    LogError(sheetName, r, "No start time");
+
+        ////                string endTime = sheetsService.GetCellValue(range, "F", r, "");
+        ////                if (string.IsNullOrEmpty(endTime))
+        ////                    LogError(sheetName, r, "No end time");
+
+        ////                string virtualFormat = sheetsService.GetCellValue(range, "F", r, "");
+        ////                if (string.IsNullOrEmpty(virtualFormat))
+        ////                    LogError(sheetName, r, "No virtual format");
+
+        ////                string zoomOption = sheetsService.GetCellValue(range, "F", r, "");
+        ////                if (string.IsNullOrEmpty(zoomOption))
+        ////                    LogError(sheetName, r, "No zoom option");
+        ////            }
+
+
+
+        ////        }
+        ////        catch(Exception ex)
+        ////        {
+        ////            LogError(sheetName, ex.Message);
+        ////        }
+
+        ////        //break;
+        ////    }
+
+        ////    if(_errorLog.Count > 0)
+        ////    {
+        ////        List<string> errors = new List<string>();
+        ////        foreach(var entry in _errorLog)
+        ////        {
+        ////            string details = string.Join("\n", entry.Value);
+        ////            errors.Add(string.Format("{0}:\n{1}\n\n", entry.Key, details));
+        ////        }
+        ////        docsService.CreateDoc(outputFolder.Id, "_error-log", errors);
+        ////    }
+        ////}
+
         [Test]
-        public void CreateEventOrderForms()
+        public void CreateEventOrderFormsLocal()
         {
             string credentialFile = "_CatfishGoogleApiDesktopCredentials.json";
             string[] scopes = new string[] { DriveService.Scope.Drive };
@@ -45,29 +186,30 @@ namespace Catfish.UnitTests
             var serviceBuilder = _testHelper.GoogleApiServiceBuilder;
             serviceBuilder.Init(credentialFile, scopes, "Congress 2021 Billing");
 
-            IGoogleDriveService driveService = serviceBuilder.CreateDriveService();
-            IGoogleSheetsService sheetsService = serviceBuilder.CreateSheetService();
-            IGoogleDocsService docsService = serviceBuilder.CreateDocsService();
+            IGoogleSheetsService googleSheetsService = serviceBuilder.CreateSheetService();
+            IDriveService driveService = new WindowsDriveService(); //serviceBuilder.CreateDriveService();
+            IDocsService docsService = new WindowsTextDocService(); //serviceBuilder.CreateDocsService();
+            ISheetService excelSheetService = new ExcelSheetService();
 
             string sheetNamePrefix = "Assoc";
 
             string srcId = "1Rt6C2Unna5CLAhwLD6RROO_Vb5m2uCiQGRbhd2Rjez8";
-            string templateId = "1KcKj8b4NGJDVMTCoxztgGzmv9yc0kU5vi26lnEBHLFs";
-            string outputRootId = "16lxbYpBFufGKMbz6mgyfXs47C2WCh6z4";
+            string outputRootId = @"C:\Projects\Catfish-2.0-Congress21_Data";
+            string templateId = Path.Combine(outputRootId, "Template.xlsx");
 
-            var src = sheetsService.LoadSpreadSheet(srcId);
+            var src = googleSheetsService.LoadSpreadSheet(srcId);
 
             string outputFolderName = string.Format("Output_{0}", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
-            var outputFolder = driveService.CreateFolder(outputRootId, outputFolderName);
+            var outputFolderId = driveService.CreateFolder(outputRootId, outputFolderName);
 
             var assocSheetNames = src.Sheets
                 .Where(sh => sh.Properties.Title.StartsWith(sheetNamePrefix))
                 .Select(sh => sh.Properties.Title)
                 .ToList();
 
-            var srcDataSets = sheetsService.LoadData(srcId, assocSheetNames, "A:AZ");
+            var srcDataSets = googleSheetsService.LoadData(srcId, assocSheetNames, "A:AZ");
 
-            for(int assocIndex = 0; assocIndex<assocSheetNames.Count; ++assocIndex)
+            for (int assocIndex = 0; assocIndex < assocSheetNames.Count; ++assocIndex)
             {
                 var sheetName = assocSheetNames[assocIndex];
                 var range = srcDataSets.ValueRanges[assocIndex];
@@ -84,8 +226,8 @@ namespace Catfish.UnitTests
                         throw new Exception("Booking code must start with \"21-\"");
 
                     //Creating a clone of the template
-                    var orderForm = driveService.Clone(templateId, outputFolder.Id, bookingCode);
-                    Assert.IsNotNull(orderForm);
+                    var orderFormId = driveService.Clone(templateId, outputFolderId, bookingCode + ".xlsx");
+                    Assert.IsNotNull(orderFormId);
 
                     int fullDayPackageCount = 0;
                     int halfDayPackageCount = 0;
@@ -94,7 +236,7 @@ namespace Catfish.UnitTests
                     //Repeat from row #7 onwards (note the 0-basd index)
                     for (int r = 7; r < range.Values.Count; ++r)
                     {
-                        string packageType = sheetsService.GetCellValue(range, "A", r, "");
+                        string packageType = googleSheetsService.GetCellValue(range, "A", r, "");
 
                         if (packageType.ToLower().StartsWith("full-day av"))
                             ++fullDayPackageCount;
@@ -103,36 +245,40 @@ namespace Catfish.UnitTests
                         else if (packageType.ToLower().StartsWith("additional av"))
                             ++additionalPackageCount;
 
-                        var detailsSheet = sheetsService.DuplicateSheet(orderForm.Id, "DetailsTemplate", string.Format("R-{0}", r + 1));
+                        if(!excelSheetService.DuplicateSheet(orderFormId, "DetailsTemplate", string.Format("R-{0}", r)))
+                        {
+                            LogError(sheetName, r, "Couldn't create the worksheet");
+                            continue;
+                        }
 
                         if (string.IsNullOrEmpty(packageType))
                             LogError(sheetName, r, "No package type");
 
-                        string sessionId = sheetsService.GetCellValue(range, "C", r, ""); 
+                        string sessionId = googleSheetsService.GetCellValue(range, "C", r, "");
                         if (string.IsNullOrEmpty(sessionId))
                             LogError(sheetName, r, "No session id");
 
-                        string sesstionTitle = sheetsService.GetCellValue(range, "D", r, "");
+                        string sesstionTitle = googleSheetsService.GetCellValue(range, "D", r, "");
                         if (string.IsNullOrEmpty(sesstionTitle))
                             LogError(sheetName, r, "No session title");
 
-                        string date = sheetsService.GetCellValue(range, "E", r, "");
+                        string date = googleSheetsService.GetCellValue(range, "E", r, "");
                         if (string.IsNullOrEmpty(date))
                             LogError(sheetName, r, "No session date");
 
-                        string startTime = sheetsService.GetCellValue(range, "F", r, "");
+                        string startTime = googleSheetsService.GetCellValue(range, "F", r, "");
                         if (string.IsNullOrEmpty(startTime))
                             LogError(sheetName, r, "No start time");
 
-                        string endTime = sheetsService.GetCellValue(range, "F", r, "");
+                        string endTime = googleSheetsService.GetCellValue(range, "F", r, "");
                         if (string.IsNullOrEmpty(endTime))
                             LogError(sheetName, r, "No end time");
 
-                        string virtualFormat = sheetsService.GetCellValue(range, "F", r, "");
+                        string virtualFormat = googleSheetsService.GetCellValue(range, "F", r, "");
                         if (string.IsNullOrEmpty(virtualFormat))
                             LogError(sheetName, r, "No virtual format");
 
-                        string zoomOption = sheetsService.GetCellValue(range, "F", r, "");
+                        string zoomOption = googleSheetsService.GetCellValue(range, "F", r, "");
                         if (string.IsNullOrEmpty(zoomOption))
                             LogError(sheetName, r, "No zoom option");
                     }
@@ -140,23 +286,22 @@ namespace Catfish.UnitTests
 
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     LogError(sheetName, ex.Message);
                 }
 
-                break;
             }
 
-            if(_errorLog.Count > 0)
+            if (_errorLog.Count > 0)
             {
                 List<string> errors = new List<string>();
-                foreach(var entry in _errorLog)
+                foreach (var entry in _errorLog)
                 {
                     string details = string.Join("\n", entry.Value);
                     errors.Add(string.Format("{0}:\n{1}\n\n", entry.Key, details));
                 }
-                docsService.CreateDoc(outputFolder.Id, "_error-log", errors);
+                docsService.CreateDoc(outputFolderId, "_error-log.txt", errors);
             }
         }
     }

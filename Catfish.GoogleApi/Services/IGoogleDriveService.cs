@@ -8,10 +8,8 @@ using System.Text;
 
 namespace Catfish.GoogleApi.Services
 {
-    public interface IGoogleDriveService
+    public interface IGoogleDriveService : IDriveService
     {
         public void Init(UserCredential credential, string appName);
-        public File CreateFolder(string parentFolderId, string childFolderName);
-        public File Clone(string srcId, string outputFolderId, string cloneName);
     }
 }

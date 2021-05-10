@@ -66,7 +66,7 @@ namespace Catfish.GoogleApi.Services
         ////    });
         ////}
 
-        public File CreateFolder(string parentFolderId, string childFolderName)
+        public string CreateFolder(string parentFolderId, string childFolderName)
         {
             File child = new File();
             child.Name = childFolderName;
@@ -82,10 +82,10 @@ namespace Catfish.GoogleApi.Services
 
             var result = task.Result;
 
-            return result;
+            return result.Id;
         }
 
-        public File Clone(string srcId, string outputFolderId, string cloneName)
+        public string Clone(string srcId, string outputFolderId, string cloneName)
         {
             File clone = new File()
             {
@@ -94,7 +94,7 @@ namespace Catfish.GoogleApi.Services
                 MimeType = "application/vnd.google-apps.spreadsheet"
             };
 
-            return _driveService.Files.Copy(clone, srcId).Execute();
+            return _driveService.Files.Copy(clone, srcId).Execute().Id;
         }
 
 

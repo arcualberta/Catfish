@@ -29,7 +29,7 @@ namespace Catfish.GoogleApi.Services
             });
         }
 
-        public Document CreateDoc(string parentFolderId, string docName, List<string> content)
+        public string CreateDoc(string parentFolderId, string docName, List<string> content)
         {
             File file = new File()
             {
@@ -54,7 +54,7 @@ namespace Catfish.GoogleApi.Services
             body.Requests = new List<Google.Apis.Docs.v1.Data.Request>() { request };
             _docsService.Documents.BatchUpdate(body, doc.DocumentId).Execute();
 
-            return doc;
+            return doc.DocumentId;
         }
     }
 }

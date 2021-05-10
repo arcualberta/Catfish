@@ -79,7 +79,7 @@ namespace Catfish.GoogleApi.Services
             return request.Execute();
         }
 
-        public SheetProperties DuplicateSheet(string spreadsheetId, string srcSheetName, string dstSheetName)
+        public bool DuplicateSheet(string spreadsheetId, string srcSheetName, string dstSheetName)
         {
             var spreadsheet = _sheetsService.Spreadsheets.Get(spreadsheetId).Execute(); ;
             var srcSheet = spreadsheet.Sheets.FirstOrDefault(sh => sh.Properties.Title == srcSheetName);
@@ -116,7 +116,7 @@ namespace Catfish.GoogleApi.Services
             var bur = _sheetsService.Spreadsheets.BatchUpdate(updateRequest, spreadsheetId);
             bur.Execute();
 
-            return newSheetProps;
+            return newSheetProps != null;
         }
     }
 }
