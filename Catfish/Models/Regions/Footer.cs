@@ -24,6 +24,9 @@ namespace Catfish.Models.Regions
         [Field(Title = "Javascript")]
         public TextField Javascript { get; set; }
 
+        [Field(Title = "Google Analytics Code")]
+        public TextField GoogleAnalyticsCode { get; set; }
+
         [Field(Title = "Css")]
         public TextField Css { get; set; }
 
