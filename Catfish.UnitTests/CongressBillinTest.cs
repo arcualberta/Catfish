@@ -1,5 +1,6 @@
 ﻿using Catfish.GoogleApi.Services;
 using Catfish.Test.Helpers;
+using ClosedXML.Excel;
 using Google.Apis.Drive.v3;
 using Google.Apis.Sheets.v4.Data;
 using NUnit.Framework;
@@ -228,6 +229,7 @@ namespace Catfish.UnitTests
                     //Creating a clone of the template
                     var orderFormId = driveService.Clone(templateId, outputFolderId, bookingCode + ".xlsx");
                     Assert.IsNotNull(orderFormId);
+                    var orderForm = excelSheetService.LoadSpreadsheet(orderFormId);
 
                     int fullDayPackageCount = 0;
                     int halfDayPackageCount = 0;
@@ -245,7 +247,7 @@ namespace Catfish.UnitTests
                         else if (packageType.ToLower().StartsWith("additional av"))
                             ++additionalPackageCount;
 
-                        if(!excelSheetService.DuplicateSheet(orderFormId, "DetailsTemplate", string.Format("R-{0}", r)))
+                        if(!excelSheetService.DuplicateSheet(orderForm, "DetailsTemplate", string.Format("R-{0}", r)))
                         {
                             LogError(sheetName, r, "Couldn't create the worksheet");
                             continue;
@@ -283,7 +285,7 @@ namespace Catfish.UnitTests
                             LogError(sheetName, r, "No zoom option");
                     }
 
-
+                    excelSheetService.SaveSpreadsheet(orderForm);
 
                 }
                 catch (Exception ex)

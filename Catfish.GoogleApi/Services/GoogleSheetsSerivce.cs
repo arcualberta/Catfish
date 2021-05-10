@@ -79,8 +79,20 @@ namespace Catfish.GoogleApi.Services
             return request.Execute();
         }
 
-        public bool DuplicateSheet(string spreadsheetId, string srcSheetName, string dstSheetName)
+        public object LoadSpreadsheet(string spreadsheetRef)
         {
+            return spreadsheetRef;
+        }
+
+        public bool SaveSpreadsheet(object spreadsheet)
+        {
+            return true;
+        }
+
+        public bool DuplicateSheet(object spreadsheetRef, string srcSheetName, string dstSheetName)
+        {
+            string spreadsheetId = spreadsheetRef as string;
+
             var spreadsheet = _sheetsService.Spreadsheets.Get(spreadsheetId).Execute(); ;
             var srcSheet = spreadsheet.Sheets.FirstOrDefault(sh => sh.Properties.Title == srcSheetName);
             if (srcSheet == null)

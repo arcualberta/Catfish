@@ -1,13 +1,36 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Catfish.GoogleApi.Services
 {
     public class ExcelSheetService : ISheetService
     {
-        public bool DuplicateSheet(string spreadsheetId, string srcSheetName, string dstSheetName)
+        public object LoadSpreadsheet(string spreadsheetRef)
         {
+            return new XLWorkbook(spreadsheetRef);
+        }
+
+        public bool SaveSpreadsheet(object spreadsheet)
+        {
+            (spreadsheet as XLWorkbook).Save();
+            return true;
+        }
+
+        public bool DuplicateSheet(object spreadsheetRef, string srcSheetName, string dstSheetName)
+        {
+            var workbook = spreadsheetRef is string ? new XLWorkbook(spreadsheetRef as string) : spreadsheetRef as XLWorkbook;
+
+            var srcSheet = workbook.Worksheets.FirstOrDefault(sh => sh.Name == srcSheetName);
+            srcSheet.CopyTo(dstSheetName);
+
+            if (spreadsheetRef is string)
+                workbook.Save();
+
+            return true;
+
             ////using (var package = new ExcelPackage(new FileInfo("Book.xlsx")))
             ////{
             ////    var firstSheet = package.Workbook.Worksheets["First Sheet"];
@@ -24,7 +47,7 @@ namespace Catfish.GoogleApi.Services
             ////    Console.WriteLine($"Cell A2 Formula : {secondSheet.Cells["A2"].Formula}");
             ////    Console.WriteLine($"Cell A2 Value   : {secondSheet.Cells["A2"].Text}");
             ////}
-            throw new NotImplementedException();
+            ////throw new NotImplementedException();
         }
     }
 }
