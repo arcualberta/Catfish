@@ -191,7 +191,8 @@ namespace Catfish.UnitTests
 
             string sheetNamePrefix = "Assoc";
 
-            string srcId = "1Rt6C2Unna5CLAhwLD6RROO_Vb5m2uCiQGRbhd2Rjez8";
+            //string srcId = "1Rt6C2Unna5CLAhwLD6RROO_Vb5m2uCiQGRbhd2Rjez8";
+            string srcId = "13UubQzpRSyin9-bfaK0YVr3rBY3t1ofMp2ALxKbqrHg";
             string outputRootId = @"C:\Projects\Catfish-2.0-Congress21_Data";
             string templateId = Path.Combine(outputRootId, "Template.xlsx");
 
@@ -221,13 +222,19 @@ namespace Catfish.UnitTests
                     var bookingCode = googleSheetsService.GetCellValue(range, "B", 3, ""); //range.Values[2][1] as string; //B3
                     if (string.IsNullOrEmpty(bookingCode))
                         LogError(sheetName, "Booking code not specified");
-
-                    if (!bookingCode.StartsWith("21-"))
+                    else if (!bookingCode.StartsWith("21-"))
                         LogError(sheetName, "Booking code must start with \"21-\"");
 
                     //Creating a clone of the template
-                    var orderFormId = driveService.Clone(templateId, outputFolderId, bookingCode + ".xlsx");
-                    Assert.IsNotNull(orderFormId);
+                    string workbookFileName = (string.IsNullOrEmpty(bookingCode) ? sheetName.Replace("#", "") : bookingCode) + ".xlsx";
+                    workbookFileName = Path.Combine(outputFolderId, workbookFileName);
+                    var orderFormId = driveService.Clone(templateId, outputFolderId, workbookFileName);
+                    if (string.IsNullOrEmpty(orderFormId))
+                    {
+                        LogError(sheetName, "Could not create the workbook");
+                        continue;
+                    }
+
                     var workbook = excelSheetService.LoadSpreadsheet(orderFormId);
 
                     int fullDayPackageCount = 0;

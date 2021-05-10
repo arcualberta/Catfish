@@ -25,7 +25,7 @@ namespace Catfish.GoogleApi.Services
 
         public string GetCellValue(ValueRange range, int oneBasedRowIndex, int oneBasedColIndex, string defaultVal)
         {
-            if (range.Values.Count < oneBasedRowIndex || range.Values[oneBasedRowIndex].Count < oneBasedColIndex)
+            if (range.Values.Count < oneBasedRowIndex || range.Values[oneBasedRowIndex-1].Count < oneBasedColIndex)
                 return defaultVal;
 
             return range.Values[oneBasedRowIndex-1][oneBasedColIndex-1] as string;
