@@ -35,11 +35,11 @@ namespace Catfish.Models.Blocks
         BottomOfScreen = 3
     }
 
-    [BlockGroupType(Name = "ListDisplay", Category = "Content", Component = "vue-list-display", Icon = "fas fa-images")]
+    [BlockGroupType(Name = "ListDisplay", Category = "Content", Icon = "fas fa-images")]
     [BlockItemType(Type = typeof(SingleListItem))]
     public class ListDisplay : VueComponentGroup
     {
-        public TextField DisplayListTitle { get; set; }
+        public StringField DisplayListTitle { get; set; }
         public SelectField<ItemPanelDirection> ItemListPosition { get; set; }
         public SelectField<ColumnOption> ColumnWidth { get; set; }
         //note, Piranha added their own ColorField but it isn't in this version yet as far as I know
