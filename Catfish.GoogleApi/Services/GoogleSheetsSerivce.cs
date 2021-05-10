@@ -1,4 +1,5 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using Catfish.GoogleApi.Helpers;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
@@ -32,31 +33,7 @@ namespace Catfish.GoogleApi.Services
 
         public string GetCellValue(ValueRange range, string col, int oneBasedRowIndex, string defaultVal)
         {
-            return GetCellValue(range, oneBasedRowIndex, Letter2Column(col.ToUpper()), defaultVal);
-        }
-
-        public int Letter2Column(string col)
-        {
-            col = col.ToUpper();
-            int column = 0, length = col.Length;
-            for (var i = 0; i < length; i++)
-            {
-                column += (col[i] - 64) * (int) Math.Pow(26, length - i - 1);
-            }
-            return column;
-        }
-
-        public string Column2Letter(int col)
-        {
-            int temp;
-            string letter = "";
-            while (col > 0)
-            {
-                temp = (col - 1) % 26;
-                letter = ((char)(temp + 65)) + letter;
-                col = (col - temp - 1) / 26;
-            }
-            return letter;
+            return GetCellValue(range, oneBasedRowIndex, SheetHelper.Letter2Column(col.ToUpper()), defaultVal);
         }
 
         public Spreadsheet LoadSpreadSheet(string spreadSheetId)
@@ -89,7 +66,7 @@ namespace Catfish.GoogleApi.Services
             return true;
         }
 
-        public bool DuplicateSheet(object spreadsheetRef, string srcSheetName, string dstSheetName)
+        public object DuplicateSheet(object spreadsheetRef, string srcSheetName, string dstSheetName)
         {
             string spreadsheetId = spreadsheetRef as string;
 
@@ -128,7 +105,17 @@ namespace Catfish.GoogleApi.Services
             var bur = _sheetsService.Spreadsheets.BatchUpdate(updateRequest, spreadsheetId);
             bur.Execute();
 
-            return newSheetProps != null;
+            return newSheetProps;
+        }
+
+        public bool SetCellVal(object sheet, int row, int col, object val)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetSheet(object spreadsheetRef, string workSheetName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

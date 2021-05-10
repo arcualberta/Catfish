@@ -19,17 +19,24 @@ namespace Catfish.GoogleApi.Services
             return true;
         }
 
-        public bool DuplicateSheet(object spreadsheetRef, string srcSheetName, string dstSheetName)
+        public object GetSheet(object spreadsheetRef, string workSheetName)
+        {
+            var workbook = spreadsheetRef is string ? new XLWorkbook(spreadsheetRef as string) : spreadsheetRef as XLWorkbook;
+            var sheet = workbook.Worksheets.FirstOrDefault(sh => sh.Name == workSheetName);
+            return sheet;
+        }
+
+        public object DuplicateSheet(object spreadsheetRef, string srcSheetName, string dstSheetName)
         {
             var workbook = spreadsheetRef is string ? new XLWorkbook(spreadsheetRef as string) : spreadsheetRef as XLWorkbook;
 
             var srcSheet = workbook.Worksheets.FirstOrDefault(sh => sh.Name == srcSheetName);
-            srcSheet.CopyTo(dstSheetName);
+            var newSheet = srcSheet.CopyTo(dstSheetName);
 
             if (spreadsheetRef is string)
                 workbook.Save();
 
-            return true;
+            return newSheet;
 
             ////using (var package = new ExcelPackage(new FileInfo("Book.xlsx")))
             ////{
@@ -48,6 +55,13 @@ namespace Catfish.GoogleApi.Services
             ////    Console.WriteLine($"Cell A2 Value   : {secondSheet.Cells["A2"].Text}");
             ////}
             ////throw new NotImplementedException();
+        }
+
+        public bool SetCellVal(object sheet, int row, int col, object val)
+        {
+            IXLWorksheet worksheet = sheet as IXLWorksheet;
+            worksheet.Row(row).Cell(col).Value = val;
+            return true;
         }
     }
 }
