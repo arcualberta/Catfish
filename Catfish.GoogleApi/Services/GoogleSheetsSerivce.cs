@@ -117,5 +117,10 @@ namespace Catfish.GoogleApi.Services
         {
             throw new NotImplementedException();
         }
+
+        public object DeleteSheet(object spreadsheet, string sheetName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

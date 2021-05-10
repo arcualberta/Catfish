@@ -10,6 +10,7 @@ namespace Catfish.GoogleApi.Services
 
         public object LoadSpreadsheet(string spreadsheetRef);
         public bool SaveSpreadsheet(object spreadsheet);
+        public object DeleteSheet(object spreadsheet, string sheetName);
         public object GetSheet(object spreadsheetRef, string workSheetName);
         public bool SetCellVal(object sheet, int row, int col, object val);
     }

@@ -63,5 +63,12 @@ namespace Catfish.GoogleApi.Services
             worksheet.Row(row).Cell(col).Value = val;
             return true;
         }
+
+        public object DeleteSheet(object spreadsheet, string sheetName)
+        {
+            IXLWorkbook workbook = spreadsheet as IXLWorkbook;
+            workbook.Worksheets.Delete(sheetName);
+            return workbook;
+        }
     }
 }

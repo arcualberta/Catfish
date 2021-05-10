@@ -181,6 +181,9 @@ namespace Catfish.UnitTests
             string credentialFile = "_CatfishGoogleApiDesktopCredentials.json";
             string[] scopes = new string[] { DriveService.Scope.Drive };
 
+            string templateSheetName = "Details";
+            string sheetNamePrefix = "Assoc";
+
             var serviceBuilder = _testHelper.GoogleApiServiceBuilder;
             serviceBuilder.Init(credentialFile, scopes, "Congress 2021 Billing");
 
@@ -189,10 +192,13 @@ namespace Catfish.UnitTests
             IDocsService docsService = new WindowsTextDocService(); //serviceBuilder.CreateDocsService();
             ISheetService excelSheetService = new ExcelSheetService();
 
-            string sheetNamePrefix = "Assoc";
 
             //string srcId = "1Rt6C2Unna5CLAhwLD6RROO_Vb5m2uCiQGRbhd2Rjez8";
-            string srcId = "13UubQzpRSyin9-bfaK0YVr3rBY3t1ofMp2ALxKbqrHg";
+            //string srcId = "13UubQzpRSyin9-bfaK0YVr3rBY3t1ofMp2ALxKbqrHg";
+            //string srcId = "1z-CsWWq36U1D6oe1bv7ZdIooZy-SUYqSAvwjHEsmIVs"; //May 10 at 9:50 AM
+            string srcId = "1I91TGA8pTciQyeK5nqCNLr7eQZgH4ZEbGqy0WHBlA88"; //May 10 at 10:50 AM
+          
+
             string outputRootId = @"C:\Projects\Catfish-2.0-Congress21_Data";
             string templateId = Path.Combine(outputRootId, "Template.xlsx");
 
@@ -244,7 +250,7 @@ namespace Catfish.UnitTests
                     //Repeat from row #7 onwards (note the 0-basd index)
                     for (int r = 7; r < range.Values.Count; ++r)
                     {
-                        var sheet = excelSheetService.DuplicateSheet(workbook, "Details", string.Format("R-{0}", r));
+                        var sheet = excelSheetService.DuplicateSheet(workbook, templateSheetName, string.Format("R-{0}", r));
                         if (sheet == null)
                         {
                             LogError(sheetName, r, "Couldn't create the worksheet");
@@ -308,10 +314,10 @@ namespace Catfish.UnitTests
                         ///Begin: Accessibility Section
                         int outRow = 24;
                         int outrowMax = 30;
-                        string[] itemCols = { "N", "P", "T", "U", "W", "Y", "AA" };
-                        string[] costCols = { "O", "Q", "", "V", "X", "Z", "AB" };
+                        string[] itemCols = { "O", "Q", "U", "V", "X", "Z", "AB" };
+                        string[] costCols = { "P", "R", "", "W", "Y", "AA", "AC" };
 
-                        for(int i=0; i<itemCols.Length; ++i)
+                        for (int i=0; i<itemCols.Length; ++i)
                         {
                             string item = googleSheetsService.GetCellValue(range, itemCols[i], r, "");
                             if (!string.IsNullOrEmpty(item))
@@ -323,6 +329,9 @@ namespace Catfish.UnitTests
                                     string cost = googleSheetsService.GetCellValue(range, costCols[i], r, "");
                                     excelSheetService.SetCellVal(sheet, outRow, SheetHelper.Letter2Column("G"), cost);
                                 }
+                                else
+                                    excelSheetService.SetCellVal(sheet, outRow, SheetHelper.Letter2Column("G"), 0);
+
                                 ++outRow;
                             }
                         }
@@ -354,6 +363,9 @@ namespace Catfish.UnitTests
                                     string cost = googleSheetsService.GetCellValue(range, costCols[i], r, "");
                                     excelSheetService.SetCellVal(sheet, outRow, SheetHelper.Letter2Column("G"), cost);
                                 }
+                                else
+                                    excelSheetService.SetCellVal(sheet, outRow, SheetHelper.Letter2Column("G"), 0);
+
                                 ++outRow;
                             }
                         }
@@ -376,8 +388,10 @@ namespace Catfish.UnitTests
                         excelSheetService.SetCellVal(summarySheet, 23, SheetHelper.Letter2Column("D"), fullDayPackageCount);
                     if (additionalPackageCount > 0)
                         excelSheetService.SetCellVal(summarySheet, 26, SheetHelper.Letter2Column("D"), additionalPackageCount);
+                    
 
-
+                    //Deleting the template sheet from the workbook
+                    excelSheetService.DeleteSheet(workbook, templateSheetName);
                     excelSheetService.SaveSpreadsheet(workbook);
                 }
                 catch (Exception ex)
