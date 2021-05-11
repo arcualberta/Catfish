@@ -175,6 +175,8 @@ Plugins
 /Catfish/wwwroot/uploads
 /Catfish/wwwroot/log
 
+.sonarqube/
+
 .vs/
 /Catfish.UnitTests/appsettings.test.json
 /*.tgitconfig
@@ -199,4 +201,14 @@ Plugins
 /Examples/compositeFormFieldTest_generared.json
 /Examples/compositeFormFieldTest_generared.xml
 /Examples/AttachmentTest_generared.xml
+
+#public-facing built bundles 
+/Catfish/wwwroot/assets/js/_public-facing/calendaruibundle.js
+/Catfish/wwwroot/assets/js/_public-facing/calendaruibundle.js.map
+/Catfish/wwwroot/assets/js/_public-facing/calendar-block-vue.js.map
+/Catfish/wwwroot/assets/js/_public-facing/calendar-block-vue.js
+
 /Catfish.Test/appsettings.test.json
+
+
+/SonarQubeCommands.txt

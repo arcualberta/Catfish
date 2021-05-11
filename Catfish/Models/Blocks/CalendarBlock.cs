@@ -19,17 +19,37 @@ using Google.Apis.Util.Store;
 
 namespace Catfish.Models.Blocks
 {
+    public enum CalendarStyles
+    {
+        [Display(Description = "Simple")]
+        Simple,
+        [Display(Description = "Rounded")]
+        Rounded
+    }
 
+    public enum CalendarTypes: int
+    {
+        [Display(Description = "Do Not Display Calendar")]
+        DoNotDisplayCalendar = 0,
+        [Display(Description = "Regular Calendar")]
+        RegularCalendar = 1,
+        [Display(Description = "Weekly Strip")]
+        WeeklyStrip = 2
+    }
 
-    [BlockType(Name = "Calendar Block", Category = "Content", Component = "calendar-block", Icon = "fas fa-calendar-alt")]
-    public class CalendarBlock : Block
+    [BlockType(Name = "Calendar Block", Category = "Content", Component = "calendar-block-vue", Icon = "fas fa-calendar-alt")] //calendar-block
+    public class CalendarBlock : VueComponent
     {
        
-        public TextField ApiKey { get; set; }
         public TextField CalendarId { get; set; }
         public NumberField DaysRangePast { get; set; }
         public NumberField DaysRangeFuture { get; set; }
         public NumberField MaxEvents { get; set; }
+        public SelectField<CalendarTypes> DisplayCalendarUI { get; set; }
+
+        public SelectField<CalendarStyles> CalendarStyle { get; set; }
+
+        
         public CalendarBlock()
         {
         }
@@ -46,15 +66,6 @@ namespace Catfish.Models.Blocks
             {
 
                 return CalendarId.Value;
-            }
-            return "";
-        }
-        public string GetApiKey()
-        {
-            if (ApiKey != null)
-            {
-
-                return ApiKey.Value;
             }
             return "";
         }
@@ -85,6 +96,16 @@ namespace Catfish.Models.Blocks
             }
             return 100; //default value
         }
+
+        //public bool? GetDisplayCalendarUI()
+        //{
+        //    if (DisplayCalendarUI != null)
+        //    {
+
+        //        return DisplayCalendarUI;
+        //    }
+        //    return false; //default value
+        //}
 
         public List<CalendarEvent> GetCalendarEvents()
         {
@@ -126,7 +147,7 @@ namespace Catfish.Models.Blocks
             request.MaxResults = GetMaxEvents();
             request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
 
-            Events events = request.Execute();
+            Events events = request.Execute(); //this line is suuuuper slow, task gives up so thats why
             CalendarEvents = events.Items.Select(m => new CalendarEvent(m)).ToList();
              
             return CalendarEvents;
@@ -141,7 +162,7 @@ namespace Catfish.Models.Blocks
         public CatfishAppConfig(ICatfishAppConfiguration config)
         {
             _catfishConfig = config;
-            ApiKey = _catfishConfig.GetGoogleCalendarAPIKey();
+            //ApiKey = _catfishConfig.GetGoogleCalendarAPIKey();
         }
 
     }
@@ -163,8 +184,9 @@ namespace Catfish.Models.Blocks
         public string EndDay { get; set; }
         public string EndTime { get; set; } = null;
         public DateTime StartDateTime;
-        public DateTime? EndDateTime;
+        public DateTime EndDateTime;
         public bool IsWholeDay = false;
+        public List<EventAttachment> Attachments { get; }
 
         private static string YearFormat = "yyyy";
         private static string MonthFormat = "MMM";
@@ -176,6 +198,14 @@ namespace Catfish.Models.Blocks
             Summary = currentEvent.Summary;
             Description = currentEvent.Description;
             Location = currentEvent.Location;
+            Attachments = new List<EventAttachment>();
+            if (currentEvent.Attachments != null)
+            {
+                foreach (var attachment in currentEvent.Attachments)
+                {
+                    Attachments.Add(attachment);
+                }
+            }
             ParseStart(currentEvent);
             ParseEnd(currentEvent);
         }

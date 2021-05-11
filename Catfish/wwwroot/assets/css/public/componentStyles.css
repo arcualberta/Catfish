@@ -55,6 +55,179 @@
     padding: 10px;
 }*/
 
+/* Google Calendar Visual UI */
+.month-header-container{
+    display:flex;
+    justify-content: space-evenly;
+    padding-bottom: 10px;
+}
+
+    .month-header-container .fa.fa-chevron-right, .strip-week-and-arrow-container .fa.fa-chevron-right {
+        float: right;
+    }
+
+.calendar-month-container {
+    border: solid black 1px;
+}
+
+.month-title-container, .left-arrow, .right-arrow {
+    width: 100%;
+}
+
+.month-title-container{
+    text-align:center;
+}
+
+.events-title{
+    padding-bottom:10px;
+    padding-top: 10px;
+}
+
+.calendar-weekday-container{
+    display:flex;
+    justify-content:space-evenly;
+    color:white;
+    background-color: black;
+    font-weight:bold;
+}
+
+.week-container{
+    display:flex;
+}
+
+.days-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.calendar-day {
+    background-color: white;
+    flex-grow: 1;
+    width: 100%;
+    height: 80px;
+    border: solid black 1px;
+    flex: 1 7 14%;
+}
+
+.weekday-label-container {
+    width: 100%;
+    text-align: center;
+}
+
+.day-not-current-month {
+    background-color: lightgrey;
+}
+
+.today-is-the-day{
+    background-color: lightblue;
+}
+
+.event-day-color{
+    background-color:darkseagreen;
+}
+
+.clickable:hover{
+    cursor:pointer;
+}
+
+.days-container{
+    background-color: white;
+}
+
+/* Weekly strip calendar */
+
+.strip-week-container .calendar-day-container {
+    display: flex;
+    flex: 1 7 14%;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.month-year-title {
+    padding: 10px 20px 15px 15px;
+}
+
+.strip-calendar-day{
+    flex: unset;
+}
+
+.title-spacing {
+    padding-left: 10px;
+    padding-right: 10px;
+    /*white-space: nowrap;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.calendar-day-title {
+    height: 50px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    display:flex;
+    min-width: 0;
+}
+
+.strip-month-header-container{
+    background-color: black;
+    color: white;
+}
+
+.strip-week-and-arrow-container {
+    display: flex;
+}
+
+    .strip-week-and-arrow-container .left-arrow, .strip-week-and-arrow-container .right-arrow {
+        width: 5%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        background-color: black;
+        color: white;
+    }
+
+.strip-week-container{
+    width:100%;
+}
+
+/* Calendar style for rounded theme */
+.rounded-style .calendar-day {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    border: white solid 1px;
+}
+
+.rounded-style .day-number{
+    text-align:center;
+    font-weight:bold;
+}
+
+.rounded-style .calendar-month-container{
+    border: unset;
+}
+
+.rounded-style .days-container {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.rounded-style .month-header-container {
+    background-color: black;
+    color: white;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
 /* Extended Gallery carousel*/
 .extended-gallery-block .carousel-indicators {
     position: static;
