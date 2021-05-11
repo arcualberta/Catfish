@@ -184,9 +184,6 @@
                 ? "" : currentSite.FooterContents.Javascript.Value;
             var cssCodeFooter = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
                ? "" : currentSite.FooterContents.Css.Value;
-
-            var googleAnalytics = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.GoogleAnalyticsCode == null)
-               ? "" : currentSite.FooterContents.GoogleAnalyticsCode.Value;
         }
         <partial name="/Views/Shared/Partial/VueComponents/_Footer.cshtml" />
 
@@ -194,12 +191,12 @@
     </div>@*End of vueApp div *@
 
     @* Header/Footer additional scripts/css *@
-    <script>
+    
     @Html.Raw(javascriptCodeHeader)
     @Html.Raw(javascriptCodeFooter)
-    </script>
+   
 
-    @Html.Raw(googleAnalytics)
+   
 
     <style>
     @Html.Raw(cssCodeHeader)
