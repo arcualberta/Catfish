@@ -196,7 +196,7 @@ namespace Catfish.UnitTests
             //string srcId = "1Rt6C2Unna5CLAhwLD6RROO_Vb5m2uCiQGRbhd2Rjez8";
             //string srcId = "13UubQzpRSyin9-bfaK0YVr3rBY3t1ofMp2ALxKbqrHg";
             //string srcId = "1z-CsWWq36U1D6oe1bv7ZdIooZy-SUYqSAvwjHEsmIVs"; //May 10 at 9:50 AM
-            string srcId = "1rmAKWC9D9KPyL9Fi4eK2CMIPWX0_ajhtMtcGtSjDDkA";// "1I91TGA8pTciQyeK5nqCNLr7eQZgH4ZEbGqy0WHBlA88"; //May 10 at 10:50 AM
+            string srcId = "12mYaiYCO-mUd-w27fkeHTbTPA03VaT3WDCD-mpT5Fy4"; //May 11 at 1:50 PM
           
 
             string outputRootId = @"C:\Projects\Catfish-2.0-Congress21_Data";
@@ -248,12 +248,8 @@ namespace Catfish.UnitTests
                     int additionalPackageCount = 0;
 
                     //Repeat from row #7 onwards (note the 0-basd index)
-                    for (int r = 7; r < range.Values.Count; ++r)
+                    for (int r = 7; r <= range.Values.Count; ++r)
                     {
-                        string packageType = googleSheetsService.GetCellValue(range, "A", r, "");
-                        if (string.IsNullOrEmpty(packageType))
-                            continue;
-
                         var sheet = excelSheetService.DuplicateSheet(workbook, templateSheetName, string.Format("R-{0}", r));
                         if (sheet == null)
                         {
@@ -264,14 +260,16 @@ namespace Catfish.UnitTests
                         excelSheetService.SetCellVal(sheet, 11, SheetHelper.Letter2Column("C"), assocNameNum);
                         excelSheetService.SetCellVal(sheet, 13, SheetHelper.Letter2Column("C"), bookingCode);
 
-                        if (packageType.ToLower().StartsWith("full-day av"))
-                            ++fullDayPackageCount;
-                        else if (packageType.ToLower().StartsWith("half-day av"))
-                            ++halfDayPackageCount;
-                        else if (packageType.ToLower().StartsWith("additional av"))
-                            ++additionalPackageCount;
-
-
+                        string packageType = googleSheetsService.GetCellValue(range, "A", r, "");
+                        if (!string.IsNullOrEmpty(packageType))
+                        {
+                            if (packageType.ToLower().StartsWith("full-day av"))
+                                ++fullDayPackageCount;
+                            else if (packageType.ToLower().StartsWith("half-day av"))
+                                ++halfDayPackageCount;
+                            else if (packageType.ToLower().StartsWith("additional av"))
+                                ++additionalPackageCount;
+                        }
 
                         string sessionId = googleSheetsService.GetCellValue(range, "C", r, "");
                         if (string.IsNullOrEmpty(sessionId))
