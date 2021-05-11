@@ -196,7 +196,7 @@ namespace Catfish.UnitTests
             //string srcId = "1Rt6C2Unna5CLAhwLD6RROO_Vb5m2uCiQGRbhd2Rjez8";
             //string srcId = "13UubQzpRSyin9-bfaK0YVr3rBY3t1ofMp2ALxKbqrHg";
             //string srcId = "1z-CsWWq36U1D6oe1bv7ZdIooZy-SUYqSAvwjHEsmIVs"; //May 10 at 9:50 AM
-            string srcId = "1I91TGA8pTciQyeK5nqCNLr7eQZgH4ZEbGqy0WHBlA88"; //May 10 at 10:50 AM
+            string srcId = "1rmAKWC9D9KPyL9Fi4eK2CMIPWX0_ajhtMtcGtSjDDkA";// "1I91TGA8pTciQyeK5nqCNLr7eQZgH4ZEbGqy0WHBlA88"; //May 10 at 10:50 AM
           
 
             string outputRootId = @"C:\Projects\Catfish-2.0-Congress21_Data";
@@ -250,6 +250,10 @@ namespace Catfish.UnitTests
                     //Repeat from row #7 onwards (note the 0-basd index)
                     for (int r = 7; r < range.Values.Count; ++r)
                     {
+                        string packageType = googleSheetsService.GetCellValue(range, "A", r, "");
+                        if (string.IsNullOrEmpty(packageType))
+                            continue;
+
                         var sheet = excelSheetService.DuplicateSheet(workbook, templateSheetName, string.Format("R-{0}", r));
                         if (sheet == null)
                         {
@@ -260,19 +264,13 @@ namespace Catfish.UnitTests
                         excelSheetService.SetCellVal(sheet, 11, SheetHelper.Letter2Column("C"), assocNameNum);
                         excelSheetService.SetCellVal(sheet, 13, SheetHelper.Letter2Column("C"), bookingCode);
 
-                        string packageType = googleSheetsService.GetCellValue(range, "A", r, "");
-                        if (string.IsNullOrEmpty(packageType))
-                            LogError(sheetName, r, "No package type");
-                        else
-                        {
-                            if (packageType.ToLower().StartsWith("full-day av"))
-                                ++fullDayPackageCount;
-                            else if (packageType.ToLower().StartsWith("half-day av"))
-                                ++halfDayPackageCount;
-                            else if (packageType.ToLower().StartsWith("additional av"))
-                                ++additionalPackageCount;
+                        if (packageType.ToLower().StartsWith("full-day av"))
+                            ++fullDayPackageCount;
+                        else if (packageType.ToLower().StartsWith("half-day av"))
+                            ++halfDayPackageCount;
+                        else if (packageType.ToLower().StartsWith("additional av"))
+                            ++additionalPackageCount;
 
-                        }
 
 
                         string sessionId = googleSheetsService.GetCellValue(range, "C", r, "");
@@ -285,7 +283,7 @@ namespace Catfish.UnitTests
                         if (string.IsNullOrEmpty(sesstionTitle))
                             LogError(sheetName, r, "No session title");
                         else
-                            excelSheetService.SetCellVal(sheet, 15, SheetHelper.Letter2Column("F"), sesstionTitle);
+                            excelSheetService.SetCellVal(sheet, 18, SheetHelper.Letter2Column("B"), sesstionTitle);
 
                         string dateStr = googleSheetsService.GetCellValue(range, "E", r, "");
                         if (string.IsNullOrEmpty(dateStr))
@@ -303,7 +301,7 @@ namespace Catfish.UnitTests
                         if (string.IsNullOrEmpty(startTime))
                             LogError(sheetName, r, "No start time");
                         else
-                            excelSheetService.SetCellVal(sheet, 17, SheetHelper.Letter2Column("B"), startTime);
+                            excelSheetService.SetCellVal(sheet, 15, SheetHelper.Letter2Column("F"), startTime);
 
                         string endTime = googleSheetsService.GetCellValue(range, "G", r, "");
                         if (string.IsNullOrEmpty(endTime))
