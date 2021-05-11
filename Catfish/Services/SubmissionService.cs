@@ -264,7 +264,7 @@ namespace Catfish.Services
 
                 if (groupId.HasValue)
                     newItem.GroupId = groupId;
-
+                
                 return newItem;
             }
             catch (Exception ex)
