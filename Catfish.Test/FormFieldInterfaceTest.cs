@@ -210,7 +210,7 @@ namespace Catfish.Test
 
             //Setting value of DEC1 to 12.50
             var decId2 = "1e7ba58f-32b0-44b7-ae32-3f2365cceeb2";
-            var decVal2 = "100";
+            var decVal2 = "100.5";
             _seleniumHelper.SetNumberValue(decId2, decVal2);
 
             //Validating column sum
@@ -674,7 +674,7 @@ namespace Catfish.Test
 
             // Ground transport
             var groundId = "1ebc5b43-fdef-44f4-bdfb-e533a5bb4f11";
-            var groundVal = "50.00";
+            var groundVal = "50.99";
             _seleniumHelper.SetNumberValue(groundId, groundVal);
 
             //Additional expenses
@@ -912,7 +912,8 @@ namespace Catfish.Test
             //7a5467df-7326-48ae-99ff-58bf1751f3eb
             var estCostId = "7a5467df-7326-48ae-99ff-58bf1751f3eb";
             //var estCostVal = "550.55";  // unless round number, item flagged at sumbit stage.
-            var estCostVal = "550";
+            //To see how to resolve above  issue look at adding step attribute in Catfish.Core.Models.Contents.Fields.DecimalField.cshtml
+            var estCostVal = "550.55";
             _seleniumHelper.SetNumberValue(estCostId, estCostVal);
 
 
@@ -951,7 +952,7 @@ namespace Catfish.Test
 
             // release amount.  f512e48c-6073-49ef-95b0-ec88576d01ef
             var releaseAmount_1_Id = "f512e48c-6073-49ef-95b0-ec88576d01ef";
-            var releaseAmount_1_Val = "7700.00";
+            var releaseAmount_1_Val = "7700.15";
             _seleniumHelper.SetNumberValue(releaseAmount_1_Id, releaseAmount_1_Val);
 
             // release amount, 2nd term, justification
