@@ -37,7 +37,7 @@ namespace Catfish.Models.Blocks
 
     [BlockGroupType(Name = "ListDisplay", Category = "Content", Icon = "fas fa-images")]
     [BlockItemType(Type = typeof(SingleListItem))]
-    public class ListDisplay : VueComponentGroup
+    public class ListDisplayBlock : VueComponentGroup
     {
         public StringField DisplayListTitle { get; set; }
         public SelectField<ItemPanelDirection> ItemListPosition { get; set; }

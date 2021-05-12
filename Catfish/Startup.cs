@@ -422,7 +422,7 @@ namespace Catfish
             App.Blocks.Register<ExtendedColumnBlock>();
             App.Blocks.Register<AdvanceSearchBlock>();
             App.Blocks.Register<SingleListItem>();
-            App.Blocks.Register<ListDisplay>();
+            App.Blocks.Register<ListDisplayBlock>();
         }
         private static void RegisterCustomStyles()
         {
