@@ -55,6 +55,15 @@ Vue.component("vue-single-list-item", {
     },
     mounted() {
         console.log(this.model);
+
+        //this doesnt do anything, not sure how to set the 'not implemented' thing rn
+        //this.model.getTitle = function () {
+        //    if (this.model.media != null) {
+        //        return this.model.media.filename;
+        //    } else {
+        //        return "No image selected";
+        //    }
+        //};
     },
     computed: {
         isEmpty: function () {
@@ -106,7 +115,7 @@ Vue.component("vue-single-list-item", {
 </div>
             <div class='lead col'>
                 <label class='form-label col-md-3'>Content:</label>
-                <textarea rows='3' cols='100' :id="uid + '-tiny-content-editor'" class='form-control' name='linkText' v-model='model.itemContents.value' contenteditable='true' v-on:blur='onBlur' value='model.itemContents.value'></textarea>
+                <textarea rows='10' cols='100' :id="uid + '-tiny-content-editor'" class='form-control' name='linkText' v-model='model.itemContents.value' contenteditable='true' v-on:blur='onBlur' value='model.itemContents.value'></textarea>
             </div>
         </div>`
 });
