@@ -205,12 +205,12 @@ namespace Catfish.Test
 
             //Setting value of DEC1 to 12.50
             var decId1 = "b958ef1f-229f-4a60-a4b0-140e482938b1";
-            var decVal1 = "200";
+            var decVal1 = "2.2";
             _seleniumHelper.SetNumberValue(decId1, decVal1);
 
             //Setting value of DEC1 to 12.50
             var decId2 = "1e7ba58f-32b0-44b7-ae32-3f2365cceeb2";
-            var decVal2 = "100.5";
+            var decVal2 = "2.36";
             _seleniumHelper.SetNumberValue(decId2, decVal2);
 
             //Validating column sum
@@ -244,7 +244,68 @@ namespace Catfish.Test
             _seleniumHelper.Driver.Close();
         }
 
+        [Test]
+        public void TableFieldFormTestMultipleValues()
+        {
+            RefreshDatabase();
+            _seleniumHelper.LoginLocal();
 
+            //Navigating to the test page
+            _seleniumHelper.GoToUrl("table-field-form");
+
+            //Setting value of DEC1 to 12.50
+            var decId1 = "b958ef1f-229f-4a60-a4b0-140e482938b1";
+            var decVal1 = "2.17";
+            _seleniumHelper.SetNumberValue(decId1, decVal1);
+
+            string decVal2 = "";
+            decimal totalActualValue = 0.0M;
+            string totalDisplayValue = "";
+
+            string decId2 = "1e7ba58f-32b0-44b7-ae32-3f2365cceeb2";
+            string totalId = "1fbff568-d9b3-4e1f-a51c-6b65800ec290";
+
+            //Setting value of DEC1 to 12.50
+            for ( int iCent = 1; iCent <= 100; iCent += 1) {
+
+                 decVal2 = (iCent/100.0).ToString();
+
+                _seleniumHelper.SetNumberValue(decId2, decVal2);
+
+                //Validating column sum
+                 totalActualValue = Decimal.Parse(decVal1) + Decimal.Parse(decVal2);
+
+                 totalDisplayValue = _seleniumHelper.GetTableSummaryColumnSum(totalId);
+
+                
+                Assert.AreEqual(totalActualValue.ToString(), totalDisplayValue, "Table feild column summation is wrong");
+            }
+
+                //Clicking on sumbit button
+                var dataItemTemplateId = "8cc8bb7f-9c50-41d6-b87f-cbf53889d44e";
+                _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "Submit");
+
+                //Clicking on the modal confirmation button
+                _seleniumHelper.CkickModalSubmit(dataItemTemplateId, "btn btn-success");
+
+                //Clicking on the link to view detail view
+                _seleniumHelper.ClickOnALink("click on here");
+
+                //Valicating column 1 enterd value and saved value.
+                var colVal1 = _seleniumHelper.GetTableColumnDisplayValue(decId1, "table");
+                Assert.AreEqual(colVal1, decVal1, "table column 1 value is not correctly saved");
+
+                //Valicating column 1 enterd value and saved value.
+                var colVal2 = _seleniumHelper.GetTableColumnDisplayValue(decId2, "table");
+                Assert.AreEqual(colVal2, decVal2, "table column 2 value is not correctly saved");
+
+                //Valicating total value and saved value.
+                var colTotal = _seleniumHelper.GetTableFooterColumnDisplayValue(totalId, "table");
+                Assert.AreEqual(colTotal, totalActualValue.ToString(), "table total value is not correctly saved");
+           
+
+            _seleniumHelper.Driver.Close();
+        }
         ////////[Test]
         ////////public void TableFieldFormOriginalTest()
         ////////{
