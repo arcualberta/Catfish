@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.Blocks
 {
-    [BlockType(Name = "Dont Choose Me", Component = "vue-single-list-item")]
+    [BlockType(Name = "Dont Choose Me", Component = "vue-single-list-item", IsUnlisted = true)]
     public class SingleListItem : Block
     {
         public ImageField Body { get; set; }

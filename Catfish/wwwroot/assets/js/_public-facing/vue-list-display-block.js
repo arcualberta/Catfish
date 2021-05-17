@@ -3,15 +3,13 @@
     See ListDisplayBlock.cshtml or SingleListItem.cs/ListDisplay.cs for more info.
  */
 
-const weekday = require("dayjs/plugin/weekday");
-const weekOfYear = require("dayjs/plugin/weekOfYear");
-
 Vue.component('vue-list-display-block', {
     props: ["uid", "model"],
 
     data: function () {
         return {
-            
+            items: [],
+            selectedItem: null
         }
     },
 
@@ -19,10 +17,15 @@ Vue.component('vue-list-display-block', {
     },
 
     methods: {
+        selectItem(index) {
+            this.selectedItem = this.model.Items[index];
+        }
     },
 
     created() {
-        console.log("hi");
+        console.log("hi", this.model);
+
+        this.items = this.model.Items;
     },
 
 });

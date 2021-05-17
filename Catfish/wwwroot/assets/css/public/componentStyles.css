@@ -227,7 +227,52 @@
     padding-right: 10px;
 }
 
+/*****************************************************/
 
+/* ListDisplay styles */
+
+.list-display-block-container{
+    min-height: 700px;
+}
+
+.item-list-image {
+    width: 30%;
+    height: auto;
+}
+
+.item-list-text-container{
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    padding-left: 10px;
+}
+
+.single-list-item {
+    display: flex;
+    margin: 4px;
+    border: solid black 1px;
+    border-radius: 5px;
+    background-color:white;
+    min-height:100px;
+}
+
+.list-display-block-container{
+    display:flex;
+}
+
+.items-top-title {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.itemlist-scroller-container{
+    min-height:inherit;
+    overflow-y: auto;
+    max-height:700px;
+}
+
+
+/*****************************************************/
 /* Extended Gallery carousel*/
 .extended-gallery-block .carousel-indicators {
     position: static;

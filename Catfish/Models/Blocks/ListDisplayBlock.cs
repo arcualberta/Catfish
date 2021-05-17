@@ -35,7 +35,7 @@ namespace Catfish.Models.Blocks
         BottomOfScreen = 3
     }
 
-    [BlockGroupType(Name = "ListDisplay", Category = "Content", Icon = "fas fa-images")]
+    [BlockGroupType(Name = "ListDisplay", Category = "Content", Icon = "fas fa-images", Component = "vue-list-display-block")]
     [BlockItemType(Type = typeof(SingleListItem))]
     public class ListDisplayBlock : VueComponentGroup
     {
