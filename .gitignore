@@ -212,3 +212,6 @@ Plugins
 /Catfish.UnitTests/*.json
 
 /SonarQubeCommands.txt
+
+# Future of the Past custom CSS
+/Catfish/wwwroot/assets/css/public/custom-future-of-the-past.css
