@@ -9,7 +9,8 @@ Vue.component('vue-list-display-block', {
     data: function () {
         return {
             items: [],
-            selectedItem: null
+            selectedItem: null,
+            selectedItemIndex: null
         }
     },
 
@@ -19,6 +20,7 @@ Vue.component('vue-list-display-block', {
     methods: {
         selectItem(index) {
             this.selectedItem = this.model.Items[index];
+            this.selectedItemIndex = index;
         }
     },
 
