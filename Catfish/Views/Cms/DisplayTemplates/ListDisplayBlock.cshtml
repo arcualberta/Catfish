@@ -7,32 +7,61 @@
 
 <vue-list-display-block v-bind:model='@Html.Raw(jsonData)' inline-template>
     <div class="container list-display-block-container">
-        @if (Model.ItemListPosition.Value == Catfish.Models.Blocks.ItemPanelDirection.Left)
-        {
+        @{
+            switch (Model.ItemListPosition.Value)
+            {
+                case Catfish.Models.Blocks.ItemPanelDirection.Left:
+                    <div class="items-column col-md-4">
 
+                        <h3 v-if="model.DisplayListTitle.Value != null" class="items-top-title">{{model.DisplayListTitle.Value}}</h3>
 
-<div class="items-column col-md-4">
-
-                <h3 v-if="model.DisplayListTitle.Value != null" class="items-top-title">{{model.DisplayListTitle.Value}}</h3>
-
-                <div class="itemlist-scroller-container">
-                    <div v-for="(item, index) of items" class="single-list-item" v-on:click="selectItem(index)">
-                        <div v-if="selectedItemIndex == index" class="selected-indicator" :style="[model.SelectedColor.Value ? {'background-color': model.SelectedColor.Value} : {'background-color':'lightgreen'}]"></div>
-                        <img v-if="item.Body.HasValue" :src="item.Body.Media.PublicUrl.substring(2)" class="item-list-image" />
-                        <div class="item-list-text-container" :class="{ 'no-image-extra-padding' : !item.Body.HasValue}">
-                            <h4 v-if="item.ItemTitle.Value != null">{{item.ItemTitle.Value}}</h4>
-                            <h6 v-if="item.ItemSubtitle.Value != null">{{item.ItemSubtitle.Value}}</h6>
+                        <div class="itemlist-scroller-container">
+                            <div v-for="(item, index) of items" class="single-list-item" v-on:click="selectItem(index)">
+                                <div v-if="selectedItemIndex == index" class="selected-indicator" :style="[model.SelectedColor.Value ? {'background-color': model.SelectedColor.Value} : {'background-color':'lightgreen'}]"></div>
+                                <img v-if="item.Body.HasValue" :src="item.Body.Media.PublicUrl.substring(2)" class="item-list-image" />
+                                <div class="item-list-text-container" :class="{ 'no-image-extra-padding' : !item.Body.HasValue}">
+                                    <h4 v-if="item.ItemTitle.Value != null">{{item.ItemTitle.Value}}</h4>
+                                    <h6 v-if="item.ItemSubtitle.Value != null">{{item.ItemSubtitle.Value}}</h6>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="display-column col-md-8">
-                <div v-if="selectedItem == null">
-                    <h2>Please select an item</h2>
-                </div>
-                <div v-else v-html="selectedItem.ItemContents.Value">
-                </div>
-            </div>
-        }
-    </div>
+                    <div class="display-column col-md-8">
+                        <div v-if="selectedItem == null">
+                            <h2>Please select an item</h2>
+                        </div>
+                        <div v-else v-html="selectedItem.ItemContents.Value">
+                        </div>
+                    </div>
+                    break;
+                case Catfish.Models.Blocks.ItemPanelDirection.Right:
+                    <div class="display-column col-md-8">
+                        <div v-if="selectedItem == null">
+                            <h2>Please select an item</h2>
+                        </div>
+                        <div v-else v-html="selectedItem.ItemContents.Value">
+                        </div>
+                    </div>
+                    <div class="items-column col-md-4">
+
+                        <h3 v-if="model.DisplayListTitle.Value != null" class="items-top-title">{{model.DisplayListTitle.Value}}</h3>
+
+                        <div class="itemlist-scroller-container">
+                            <div v-for="(item, index) of items" class="single-list-item" v-on:click="selectItem(index)">
+                                <div v-if="selectedItemIndex == index" class="selected-indicator" :style="[model.SelectedColor.Value ? {'background-color': model.SelectedColor.Value} : {'background-color':'lightgreen'}]"></div>
+                                <img v-if="item.Body.HasValue" :src="item.Body.Media.PublicUrl.substring(2)" class="item-list-image" />
+                                <div class="item-list-text-container" :class="{ 'no-image-extra-padding' : !item.Body.HasValue}">
+                                    <h4 v-if="item.ItemTitle.Value != null">{{item.ItemTitle.Value}}</h4>
+                                    <h6 v-if="item.ItemSubtitle.Value != null">{{item.ItemSubtitle.Value}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+        </div>
 </vue-list-display-block>
