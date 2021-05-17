@@ -5,6 +5,15 @@ Catfish 2.0 is still in the migration phase from the initial version of Catfish.
 
 Catfish is developed by the Arts Resource Centre, University of Alberta.
 
+# Vue JS / WebPack Building
+
+On Catfish web project, run the following commands on the package-manager console:
+
+```
+npm install
+npm run build
+npm copy
+```
 
    
    
