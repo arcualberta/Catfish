@@ -21,6 +21,11 @@ Vue.component('vue-list-display-block', {
         selectItem(index) {
             this.selectedItem = this.model.Items[index];
             this.selectedItemIndex = index;
+        },
+
+        closeSelectedItemMobile() {
+            this.selectedItem = null;
+            this.selectedItemIndex = null;
         }
     },
 

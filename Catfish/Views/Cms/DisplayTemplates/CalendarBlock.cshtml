@@ -119,9 +119,9 @@
                 <div class="row well calendar-event">
                     <div class="col-md-10">
                         <div class="summary">
-                            <h4>{{calendarEvent.Summary}}</h4>
+                            <h4 v-html="calendarEvent.Summary"></h4>
                         </div>
-                        <div v-if="calendarEvent.Description" class="description">{{calendarEvent.Description}}</div>
+                        <div v-if="calendarEvent.Description" class="description" v-html="calendarEvent.Description"></div>
                         <div v-else class="description">No description provided.</div>
                         <div class="location">{{calendarEvent.Location}}</div>
                     </div>
@@ -142,9 +142,9 @@
                 <div class="row well calendar-event">
                     <div class="col-md-10">
                         <div class="summary">
-                            <h4>{{calendarEvent.Summary}}</h4>
+                            <h4 v-html="calendarEvent.Summary"></h4>
                         </div>
-                        <div v-if="calendarEvent.Description" class="description">{{calendarEvent.Description}}</div>
+                        <div v-if="calendarEvent.Description" class="description" v-html="calendarEvent.Description"></div>
                         <div v-else class="description">No description provided.</div>
                         <div class="location">{{calendarEvent.Location}}</div>
                     </div>

@@ -237,7 +237,9 @@
 
 .item-list-image {
     width: 30%;
-    height: auto;
+    height: 100%;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
 }
@@ -253,7 +255,6 @@
     position: relative;
     display: flex;
     margin: 4px;
-    border: solid black 1px;
     border-radius: 5px;
     background-color:white;
     height:120px;
@@ -288,6 +289,21 @@
     padding-left: 35px;
 }
 
+.mobile-list-display-button {
+    float: right;
+    margin: 20px;
+}
+
+.mobile-display-column {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.list-display-content-space {
+    padding:20px;
+}
 
 /*****************************************************/
 /* Extended Gallery carousel*/

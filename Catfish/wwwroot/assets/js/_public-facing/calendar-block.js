@@ -165,7 +165,7 @@ Vue.component('calendar-block-vue', {
                     startDay = calendarEvent.StartDay;
                 }
                 //FF issue with formatting, need to convert to ISO format due to the way FF handles Date objects
-                let regCalendarDate = new Date(`${year}-${month}-${day}`).toISOString();
+                let regCalendarDate = new Date(`${year}/${month}/${day}`).toISOString();
                 let regCalendarDateConverted = dayjs(regCalendarDate, "YYYY-MM-DD").format("YYYY-MM-DD");
                 let calendarDateConverted = dayjs(calendarEvent.StartDateTime, "YYYY-MM-DD").format("YYYY-MM-DD");
 
