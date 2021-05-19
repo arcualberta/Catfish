@@ -8,7 +8,7 @@ function searchText() {
 }
 
 //conatinerId is MetadatasetId or DataItem id -- need to confirmed
-function advanceSearch(containerId, scopeId, textInputClass, start) {
+function advanceSearch(containerId, scopeId, textInputClass, start, resultRenderingType) {
     let name;
    
     let selectedScope = $("#" + scopeId + " option:selected").val();
@@ -112,6 +112,7 @@ function advanceSearch(containerId, scopeId, textInputClass, start) {
         ///BEGIN: Displaying Result Entries
         ///================================
 
+        //if (resultRenderingType == "tabular")
         showResultTable(data.resultEntries);
 
         ///END: Displaying Result Entries
@@ -123,8 +124,8 @@ function resizeRowHeight(height) {
     $('tbody tr td div').css('max-height', height + 'em');
 }
 
-function showResultSlips1(dataEntries) {
-
+function getSupportedResultRenderers() {
+    return ["showResultTable", "showResultSlips1"];
 }
 
 function showResultTable(dataEntries) {
