@@ -84,6 +84,12 @@
                     <input type="number" id="max-row-height" value="10" style="width:75px;" onchange="resizeRowHeight($(this).val());" />
                 </span>
             </div>
+
+           @*TODO: 
+               If the "result format" is set to t"table" in the block's settings, then show the following table skeleton.
+               Otherwise, if it is set to "Slip1, slip2, ", show the basic encloure for a list of slips
+               Show the following table if the "result format" is set to "table" in the block's settings,
+           *@
             <table class="table">
                 <thead>
                     <tr>

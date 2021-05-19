@@ -109,56 +109,46 @@ function advanceSearch(containerId, scopeId, textInputClass, start) {
             $("#nextPageBtn").attr("disabled", true);
         }
 
-        var colIds = $.map($("table thead tr th"), (x) => { return $(x).attr("id") });
+        ///BEGIN: Displaying Result Entries
+        ///================================
 
-        $(data.resultEntries).each((i, e) => {
-            let itemId = e.id;
+        showResultTable(data.resultEntries);
 
-            //inserting a new row and adding td elements for each column in that row
-            let tr = $("<tr/>")
-            $(tbody).append(tr);
-            let maxRowHeight = $('#max-row-height').val()
-            if (!maxRowHeight) {
-                $('#max-row-height').val(10)
-                maxRowHeight
-            }
-            $(colIds).each((k, id) => {
-                $(tr).append($(`<td class='${id}'><div  style="width:100%; max-height:${maxRowHeight}em; overflow-y: auto" /></td>`))
-            });
-
-            //Populating field data into appropriate columns in the new row
-            $(e.fields).each((k, f) => {
-                let td = $(tr).children(`.${f.fieldId}`);
-                $(td).children('div').html(f.fieldContent);
-            });
-
-            ////let entry = `<div class="result-entry">`;
-            ////$(e.fields).each(function (j, s) {
-            ////    if (s.fieldName) {
-            ////        entry += "<div class='field-name'>" + s.FieldName + "</div>";
-            ////    }
-            ////    entry += "<div class='field-highlight'><b>Matched Term:</b> "
-            ////    $(s.highlights).each(function (k, h) {
-            ////        entry += h + "<br />";
-            ////    });
-            ////    entry += "</div>";
-            ////    entry += "<div class='field-value'><b>Matched Field Content:</b> "
-            ////    $(s.fieldContent).each(function (k, h) {
-            ////        entry += h + "<br />";
-            ////    });
-            ////    entry += "</div>";
-            ////});
-
-            ////entry += "</div>";
-            ////$(".searchResults").append(entry);
-
-        });
-
-         
+        ///END: Displaying Result Entries
+        ///================================
     });
-
 }
 
 function resizeRowHeight(height) {
     $('tbody tr td div').css('max-height', height + 'em');
+}
+
+function showResultSlips1(dataEntries) {
+
+}
+
+function showResultTable(dataEntries) {
+    var colIds = $.map($("table thead tr th"), (x) => { return $(x).attr("id") });
+    //$(data.resultEntries).each((i, e) => {
+    $(dataEntries).each((i, e) => {
+        let itemId = e.id;
+
+        //inserting a new row and adding td elements for each column in that row
+        let tr = $("<tr/>")
+        $(tbody).append(tr);
+        let maxRowHeight = $('#max-row-height').val()
+        if (!maxRowHeight) {
+            $('#max-row-height').val(10)
+            maxRowHeight
+        }
+        $(colIds).each((k, id) => {
+            $(tr).append($(`<td class='${id}'><div  style="width:100%; max-height:${maxRowHeight}em; overflow-y: auto" /></td>`))
+        });
+
+        //Populating field data into appropriate columns in the new row
+        $(e.fields).each((k, f) => {
+            let td = $(tr).children(`.${f.fieldId}`);
+            $(td).children('div').html(f.fieldContent);
+        });
+    });
 }
