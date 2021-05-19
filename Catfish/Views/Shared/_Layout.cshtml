@@ -32,6 +32,8 @@
             blocks = (Model as MediaPage).Blocks;
         else if (typeof(StandardArchive).IsAssignableFrom(Model.GetType()))
             blocks = (Model as StandardArchive).Blocks;
+        else if (typeof(StartPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as StandardArchive).Blocks;
         else
             blocks = new List<Block>();
 
