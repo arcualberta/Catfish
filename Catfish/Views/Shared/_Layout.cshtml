@@ -33,7 +33,7 @@
         else if (typeof(StandardArchive).IsAssignableFrom(Model.GetType()))
             blocks = (Model as StandardArchive).Blocks;
         else if (typeof(StartPage).IsAssignableFrom(Model.GetType()))
-            blocks = (Model as StandardArchive).Blocks;
+            blocks = (Model as StartPage).Blocks;
         else
             blocks = new List<Block>();
 
