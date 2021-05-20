@@ -35,7 +35,7 @@ pipeline{
 		stage('Build'){
 		   	steps{
 			  	bat "dotnet build Catfish\\Catfish.csproj --configuration Release"
-				bat "cd Catfish & npm install & npm run build & npm run copy"
+				bat "cd Catfish && npm install && npm run build && npm run copy"
 		   	}
 		}
 		stage('Build Vue'){
