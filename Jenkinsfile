@@ -55,7 +55,7 @@ pipeline{
 		    steps{
 				script{
 					if (env.BRANCH_NAME == 'Catfish-2.0-calendar-el-block'){
-						bat "del Catfish\\appsettings.json"
+						bat "del ${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish\\appsettings.json"
 						bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:iisApp="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:iisApp="catfish-dev.artsrn.ualberta.ca" -enableRule:AppOffline """   	
 					}
 					if (env.BRANCH_NAME == 'Catfish-2.0-Interface-Testing'){
