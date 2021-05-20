@@ -8,6 +8,7 @@ Vue.component("advance-search", {
         return {
            // functionOptions: [],
            // selectedFunctionTemplate,
+            renderingTypes: ['Tabular','Slip'],
             metadatasetOptions: []
         }
     },
@@ -77,6 +78,14 @@ Vue.component("advance-search", {
                 <option v-for="item in this.metadatasetOptions" :value="item.value">{{item.text}}</option>
                  
          </select></div>
+
+        <div class='lead row'><label class='form-label col-md-3 required'>Result Rendering Type: </label>
+           <select v-model="model.selectedRenderingType.value" class="form-control" style="width:auto;">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in this.renderingTypes" :value="item">{{item}}</option>
+                 
+         </select></div>
+
 
      
      

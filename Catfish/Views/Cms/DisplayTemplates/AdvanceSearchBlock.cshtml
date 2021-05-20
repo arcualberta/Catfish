@@ -10,6 +10,8 @@
 
     var fields = _entityTemplateService.GetTemplateMetadataSetFields(entityTemplateId, metadatasetId).ToArray();
     Array.Sort(fields, delegate (BaseField x, BaseField y) { return x.GetName().CompareTo(y.GetName()); });
+
+    string renderingType = Model.SelectedRenderingType.Value;
 }
 
 <div class="container container-fluid advanced-search">
@@ -63,7 +65,7 @@
                     <div>
                         <label>Item per Page</label>
                         <input type="text" id="advanceSearchItemPerPage" placeholder="25" style="width:50px;margin-right:25px;" />
-                        <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', 0); return false;" />
+                        <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', 0, '@renderingType'); return false;" />
                     </div>
                 </div>
             }
@@ -91,19 +93,28 @@
                Show the following table if the "result format" is set to "table" in the block's settings.
                Please also pass on the result-rendering type to the search function.
            *@
-            <table class="table">
+            @if (renderingType.Equals("Tabular"))
+            {
+            <table class="table" id="tabularRendering">
                 <thead>
                     <tr>
                         @for (int i = 0; i < fields.Length; ++i)
                         {
                             <th scope="col" id="@fields[i].Id" data-col="@i">@fields[i].Name.ConcatenatedContent</th>
                         }
+
+
+
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
-
+            }
+            else
+            {
+                <div id="slipRendering"></div>
+            }
         </div>
     </div>
 </div>

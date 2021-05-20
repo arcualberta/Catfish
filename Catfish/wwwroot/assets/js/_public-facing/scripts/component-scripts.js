@@ -10,7 +10,7 @@ function searchText() {
 //conatinerId is MetadatasetId or DataItem id -- need to confirmed
 function advanceSearch(containerId, scopeId, textInputClass, start, resultRenderingType) {
     let name;
-   
+
     let selectedScope = $("#" + scopeId + " option:selected").val();
     let itemPerPage = $("#advanceSearchItemPerPage").val();
     let simpleSearchTerm = $("#simpleSearchTerm").val();
@@ -21,7 +21,7 @@ function advanceSearch(containerId, scopeId, textInputClass, start, resultRender
 
     //params["scope"] = selectedScope;
     //params["containerId"] = containerId;
-   
+
 
     $("." + textInputClass).each(function (i, f) {
         let inputVal = $(f).val();
@@ -38,12 +38,12 @@ function advanceSearch(containerId, scopeId, textInputClass, start, resultRender
             let values = {};
             values["Scope"] = selectedScope;
             values["ContainerId"] = containerId;
-            
+
             values["FieldId"] = fieldId;
-           
-            values["SearchText"]= inputVal;
-            constraints.push( values );
-           
+
+            values["SearchText"] = inputVal;
+            constraints.push(values);
+
         }
 
     });
@@ -69,7 +69,7 @@ function advanceSearch(containerId, scopeId, textInputClass, start, resultRender
 
     let url = "../../Search/AdvanceSearch";
 
-/* Send the data using post with element id name and name2*/
+    /* Send the data using post with element id name and name2*/
 
     params["constraints"] = JSON.stringify(constraints);
     params["itemPerPage"] = itemPerPage;
@@ -80,8 +80,8 @@ function advanceSearch(containerId, scopeId, textInputClass, start, resultRender
     var message = "";
 
     result.done(function (data) {
-        
-       // alert("ok")
+
+        // alert("ok")
         $(".searchResults").show();
         var tbody = $(".searchResults table tbody");
         $(tbody).empty();
@@ -111,10 +111,11 @@ function advanceSearch(containerId, scopeId, textInputClass, start, resultRender
 
         ///BEGIN: Displaying Result Entries
         ///================================
-
-        //if (resultRenderingType == "tabular")
-        showResultTable(data.resultEntries);
-
+        //'Tabular', 'Slip'
+        if (resultRenderingType == "Tabular")
+            showResultTable(data.resultEntries);
+        else if (resultRenderingType == "Slip")
+            showResultSlip(data.resultEntries);
         ///END: Displaying Result Entries
         ///================================
     });
@@ -124,9 +125,6 @@ function resizeRowHeight(height) {
     $('tbody tr td div').css('max-height', height + 'em');
 }
 
-function getSupportedResultRenderers() {
-    return ["showResultTable", "showResultSlips1"];
-}
 
 function showResultTable(dataEntries) {
     var colIds = $.map($("table thead tr th"), (x) => { return $(x).attr("id") });
@@ -136,7 +134,7 @@ function showResultTable(dataEntries) {
 
         //inserting a new row and adding td elements for each column in that row
         let tr = $("<tr/>")
-        $(tbody).append(tr);
+        $('tbody').append(tr);
         let maxRowHeight = $('#max-row-height').val()
         if (!maxRowHeight) {
             $('#max-row-height').val(10)
@@ -150,6 +148,43 @@ function showResultTable(dataEntries) {
         $(e.fields).each((k, f) => {
             let td = $(tr).children(`.${f.fieldId}`);
             $(td).children('div').html(f.fieldContent);
+        });
+    });
+}
+
+
+function showResultSlip(resultEntries) {
+    $(resultEntries).each((i, e) => {
+        let itemId = e.id;
+        //Resounding culture 4TH COL = TITLE,17th=Keywords, 18TH=Description,
+
+        //Populating field data into appropriate columns in the new row
+        let entry = '';
+        let keywords = '';
+        let description = '';
+        let title = '';
+        $(e.fields).each((i, f) => {
+
+
+            if (i == 3) //4th col is Title
+                title = f.fieldContent;
+            else if (i == 15)
+                keywords = f.fieldContent;
+            else if (i == 16) {
+                description = f.fieldContent;
+                let detailLink = '<br/><a href="#"><b>More</b></a>';
+
+                let content = `<div class="col-md-10 entryContent"><div class="entryDescription">` + description + detailLink + `</div> <div class="entryTags">` + keywords + `</div></div>`;
+                let imgHolder = `<div class=" col-md-2 entryImg"></div>`
+
+                entry = "<div class='slipEntry'><h3>" + title + "</h3>";
+                entry += "<div class='row'>" + content + imgHolder + "</div>";
+                entry += "</div>";
+                $("#slipRendering").append(entry);
+                entry = '';
+                //break; 
+            }
+
         });
     });
 }

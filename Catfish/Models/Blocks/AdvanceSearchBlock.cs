@@ -17,5 +17,7 @@ namespace Catfish.Models.Blocks
 
         public TextField SelectedItemTemplate { get; set; }
 
+        public TextField SelectedRenderingType { get; set; }
+
     }
 }
