@@ -50,7 +50,12 @@ pipeline{
 		}		
 		stage('Test'){
 		     steps{
-				bat "dotnet test Catfish.Test"
+			     if (scm.branches[0].name == 'Catfish-2.0-dev') {
+				     echo 'Testing ...'
+				     bat "dotnet test Catfish.Test"
+			     } else {
+				     echo 'Skip testing ...'
+        		     }
 		     }
 		}		
 	}
