@@ -60,6 +60,8 @@ pipeline{
 					else{					
 						bat "del ${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish\\appsettings.json"
 						if (env.BRANCH_NAME == 'Catfish-2.0-calendar-el-block'){
+							bat "xcopy ..\\_Test_Data\\futureofthepast.arts.ualberta.ca\\wwwroot ${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish"
+							bat "copy ..\\_Test_Data\\futureofthepast.arts.ualberta.ca\\appsettings.json ${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish\\appsettings.json"
 							bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:iisApp="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:iisApp="catfish-dev.artsrn.ualberta.ca" -enableRule:AppOffline """   	
 						}
 					}
