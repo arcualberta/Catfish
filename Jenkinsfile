@@ -48,15 +48,15 @@ pipeline{
 				//bat """ "C:\\Program Files\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"  -verb:sync -source:contentPath="${WORKSPACE}\\Catfish\\bin\\Release\\netcoreapp3.1\\publish" -dest:contentPath="E:\\inetpub\\wwwroot2\\catfish-test.artsrn.ualberta.ca" -enableRule:AppOffline """   
 		    }
 		}		
-		stage('Test'){
-		     steps{
+		//stage('Test'){
+		//     steps{
 			//     if (scm.branches[0].name == 'Catfish-2.0-dev') {
 			//	     echo 'Testing ...'
 			//	     //bat "dotnet test Catfish.Test"
 			//     } else {
 			//	     echo 'Skip testing ...'
         		//     }
-		     }
-		}		
+		 //    }
+		//}		
 	}
  }
