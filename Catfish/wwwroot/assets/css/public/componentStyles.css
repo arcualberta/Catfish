@@ -17,6 +17,11 @@
 }
 /*Google calendar panel*/
 
+.google-calendar-panel {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
 .calendar-default .calendar-event-dates {
     display: flex;
     justify-content: flex-end;
@@ -145,7 +150,9 @@
 
 .month-year-title {
     padding: 10px 20px 15px 15px;
+    margin-bottom: 0;
 }
+
 
 .strip-calendar-day{
     flex: unset;
@@ -190,6 +197,11 @@
         color: white;
     }
 
+.left-arrow, .right-arrow {
+    padding-top: 24px;
+    padding-bottom: 50px;
+}
+
 .strip-week-container{
     width:100%;
 }
@@ -226,6 +238,20 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.rounded-style .clickable.left-arrow {
+    border-bottom-left-radius: 5px;
+}
+
+.rounded-style .clickable.right-arrow {
+    border-bottom-right-radius: 5px;
+}
+
+.rounded-style .strip-month-header-container {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
 
 /*****************************************************/
 
@@ -267,6 +293,7 @@
 .items-top-title {
     padding-top: 20px;
     padding-bottom: 20px;
+    padding-left: 20px;
 }
 
 .itemlist-scroller-container{
