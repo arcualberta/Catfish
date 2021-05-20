@@ -162,3 +162,5 @@ function advanceSearch(containerId, scopeId, textInputClass, start) {
 function resizeRowHeight(height) {
     $('tbody tr td div').css('max-height', height + 'em');
 }
+
+
