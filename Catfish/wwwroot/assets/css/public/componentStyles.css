@@ -198,9 +198,19 @@
         color: white;
     }
 
-.left-arrow, .right-arrow {
+.weekly-arrow {
     padding-top: 24px;
     padding-bottom: 50px;
+}
+
+.monthly-arrow {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.monthly-arrow.right-arrow {
+    align-items: flex-end;
 }
 
 .strip-week-container{

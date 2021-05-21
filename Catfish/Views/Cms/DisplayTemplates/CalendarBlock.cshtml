@@ -53,11 +53,11 @@
 
             <div class="calendar-container @calendarStyling">
                 <div class="month-header-container">
-                    <div class="clickable left-arrow" v-on:click="goToPreviousMonth()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    <div class="clickable left-arrow monthly-arrow" v-on:click="goToPreviousMonth()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                     <div class="month-title-container">
                         <h3 class="clickable" v-on:click="goToPresentMonth()">{{selectedMonth.format("MMMM")}} {{selectedMonth.format("YYYY")}}</h3>
                     </div>
-                    <div class="clickable right-arrow" v-on:click="goToNextMonth()"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    <div class="clickable right-arrow monthly-arrow" v-on:click="goToNextMonth()"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                 </div>
                 <div class="calendar-month-container">
                     <div class="calendar-weekday-container">
@@ -84,7 +84,7 @@
                     <h3 class="clickable month-year-title" v-on:click="goToPresentWeekMonth()">{{selectedMonth.format("MMMM")}} {{selectedMonth.format("YYYY")}}</h3>
                 </div>
                 <div class="strip-week-and-arrow-container">
-                    <div class="clickable left-arrow" v-on:click="goToPreviousWeek()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    <div class="clickable left-arrow weekly-arrow" v-on:click="goToPreviousWeek()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                     <div class="strip-week-container">
                         <div class="calendar-weekday-container">
                             <div v-for="weekday in WEEKDAYS" class="weekday-label-container">
@@ -105,7 +105,7 @@
                             </template>
                         </div>
                     </div>
-                    <div class="clickable right-arrow" v-on:click="goToNextWeek()"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                    <div class="clickable right-arrow weekly-arrow" v-on:click="goToNextWeek()"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
                 </div>
             </div>
         }
