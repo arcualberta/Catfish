@@ -123,10 +123,12 @@
                 @*Hidden Slip Template*@
                 <div id='slipTemplate' class='slipEntry' style='display:none'>
                     <h3 class="title" data-field-id="@titleFieldId"></h3>
-                    <div class="row">
+                    <div class="row entryContentContainer">
                         <div class="col-md-10 entryContent">
-                            <div class="entryDescription" data-field-id="@descriptionFieldId"></div>
-                            <div><a href="#" data-details-view-link><b>More</b></a></div>
+                            <div class="entryDescription" data-field-id="@descriptionFieldId">
+
+                            </div>
+                            <div class="entryDetailLink"><a href="#" data-details-view-link><b>More</b></a></div>
                             <div class="entryTags"><b>Tags:</b> <span data-field-id="@keywordFieldId" data-val-separator=", "></span></div>
                         </div>
                         <div class="col-md-2 entryImg" data-field-id="@thumbnailFieldId" data-thumbnail></div>
