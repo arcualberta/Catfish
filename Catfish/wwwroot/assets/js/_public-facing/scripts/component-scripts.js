@@ -154,6 +154,7 @@ function showResultTable(dataEntries) {
 
 
 function showResultSlip(resultEntries) {
+    $("#slipRendering").empty();
     let slipTemplate = $("#slipTemplate");
     if (!slipTemplate) {
         alert("No template is found to render results.")

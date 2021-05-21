@@ -77,9 +77,9 @@
             <div class="pageLinks">
                 <input type="hidden" id="previousPageOffset" value="0" />
                 <input type="hidden" id="nextPageOffset" value="25" />
-                <input id="prevPageBtn" type="submit" value="<< Previous" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#previousPageOffset').val()); return false;" />
+                <input id="prevPageBtn" type="submit" value="<< Previous" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#previousPageOffset').val(), '@renderingType'); return false;" />
                 <label id="currentPageInfo" style="width:250px; text-align:center"></label>
-                <input id="nextPageBtn" type="submit" value="Next >>" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#nextPageOffset').val()); return false;" />
+                <input id="nextPageBtn" type="submit" value="Next >>" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#nextPageOffset').val(),'@renderingType'); return false;" />
                 
                 <span style="margin-left:100px;">
                     <label>Row Height: </label> 
