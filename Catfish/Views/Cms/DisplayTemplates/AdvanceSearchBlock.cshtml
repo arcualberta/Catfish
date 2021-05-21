@@ -118,18 +118,18 @@
                 var titleFieldId = "293dc836-901f-421a-9e02-64f333086db9";
                 var descriptionFieldId = "567dd7ae-2c58-4791-8800-d4312a91c912";
                 var keywordFieldId = "77383740-4080-4570-b35e-3bde57580da5";
-                var thumbnailFieldId = "n/a"; //not yet specified in the schema
+                var thumbnailFieldId = ""; //not yet specified in the schema
 
                 @*Hidden Slip Template*@
-                <div id="slipTemplate" class="slipEntry" style="display:none">
+                <div id='slipTemplate' class='slipEntry' style='display:none'>
                     <h3 class="title" data-field-id="@titleFieldId"></h3>
                     <div class="row">
                         <div class="col-md-10 entryContent">
-                            <div class="entryDescription" data-field-id="@descriptionFieldId"></div>>
-                            <div><a  class="more-link" href="#"><b>More</b></a></div>
-                            <div class="entryTags" data-field-id="@keywordFieldId"></div>
+                            <div class="entryDescription" data-field-id="@descriptionFieldId"></div>
+                            <div><a href="#" data-details-view-link><b>More</b></a></div>
+                            <div class="entryTags"><b>Tags:</b> <span data-field-id="@keywordFieldId" data-val-separator=", "></span></div>
                         </div>
-                        <div class="col-md-2 entryImg" data-field-id="@thumbnailFieldId"></div>
+                        <div class="col-md-2 entryImg" data-field-id="@thumbnailFieldId" data-thumbnail></div>
                     </div>
                 </div>
 

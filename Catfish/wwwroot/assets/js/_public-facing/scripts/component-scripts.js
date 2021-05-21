@@ -164,49 +164,46 @@ function showResultSlip(resultEntries) {
         let itemId = e.id;
 
         let slip = slipTemplate.clone();
+        $(slip).show();
+        $(slip).attr("id", "slip-" + i);
 
         //iterating through all children with a data-field-id attribute
         $(slip).find("[data-field-id]").each((k, slipElement) => {
             let fieldId = $(slipElement).data("field-id");
             let field = e.fields.filter(f => f.fieldId === fieldId)[0];
             if (field) {
-                let fieldContent = field.fieldContent.join("<br />");
+                let separator = $(field).data("val-separator");
+                if (!separator)
+                    separator = "<br />";
+
+                let fieldContent = field.fieldContent.join(separator);
                 $(slipElement).html(fieldContent);
             }
-        });        
+        }); 
 
+        //setting any links to the detailed view of the item
+        $(slip).find("a[data-details-view-link]").each((k, anchor) => {
+            //TODO: Set the the appropriate url
+            let url = "#"
 
-
-
-        //Resounding culture 4TH COL = TITLE,17th=Keywords, 18TH=Description,
-
-        //Populating field data into appropriate columns in the new row
-        let entry = '';
-        let keywords = '';
-        let description = '';
-        let title = '';
-        $(e.fields).each((i, f) => {
-
-
-            if (i == 3) //4th col is Title
-                title = f.fieldContent;
-            else if (i == 15)
-                keywords = f.fieldContent;
-            else if (i == 16) {
-                description = f.fieldContent;
-                let detailLink = '<br/><a href="#"><b>More</b></a>';
-
-                let content = `<div class="col-md-10 entryContent"><div class="entryDescription">` + description + detailLink + `</div> <div class="entryTags">` + keywords + `</div></div>`;
-                let imgHolder = `<div class=" col-md-2 entryImg"></div>`
-
-                entry = "<div class='slipEntry'><h3>" + title + "</h3>";
-                entry += "<div class='row'>" + content + imgHolder + "</div>";
-                entry += "</div>";
-                $("#slipRendering").append(entry);
-                entry = '';
-                //break; 
-            }
-
+            $(anchor).attr("href", url);
         });
+
+        let thumbnailDiv = $(slip).find("div[data-details-view-link]")[0];
+        if (thumbnailDiv) {
+            let fieldId = $(slipElement).data("field-id");
+            if (fieldId !== "") {
+                let field = e.fields.filter(f => f.fieldId === fieldId)[0];
+                if (field) {
+                    let thumbFileName = field.fieldContent[0];
+                    if (thumbFileName) {
+                        let urlSpecs = "url(BASE-PATH-REPLACE-THIS/" + thumbFileName + ")";
+                        $(thumbnailDiv).css("background-image", urlSpecs)
+                    }
+                }
+            }
+        }
+
+        $("#slipRendering").append(slip);
     });
 }
