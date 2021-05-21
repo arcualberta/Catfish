@@ -114,9 +114,9 @@
         <hr />
 
         <div v-if="isEventsInMonth && calendardisplay == 1">
-            <div v-for="calendarEvent of eventsForTheMonth">
+            <div class="calendar-events-container-holder" v-for="calendarEvent of eventsForTheMonth">
                 <!-- v-if="calendarEvent.StartMonth == selectedMonth.format('MMM') && calendardisplay == 1" -->
-                <div class="row well calendar-event">
+                <div class="row no-gutters well calendar-event">
                     <div class="col-md-10">
                         <div class="summary">
                             <h4 v-html="calendarEvent.Summary"></h4>
@@ -139,7 +139,7 @@
         </div>
         <div v-else-if="isEventsInWeek && calendardisplay == 2">
             <div v-for="calendarEvent of eventsForTheWeek">
-                <div class="row well calendar-event">
+                <div class="row well no-gutters calendar-event">
                     <div class="col-md-10">
                         <div class="summary">
                             <h4 v-html="calendarEvent.Summary"></h4>

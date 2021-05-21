@@ -30,7 +30,8 @@
 }
 
 .calendar-event {
-    padding: 8px !important;
+    padding: 20px;
+    margin-bottom: 15px;
 }
 
 .date-month {
