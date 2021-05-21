@@ -16,6 +16,10 @@
     <div class="container-fluid">
         <h2>Custom Styles</h2>
         
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Html.Raw(Model.ErrorMessage)</div>
+        }
         <form method="post">
             @Html.EditorFor(model => model.Styles, new { htmlAttributes = new { @class = "col-md-12", style = "Width:100%,", rows = "20" } })
             <input type="submit" value="Update" class="btn btn-primary" />
