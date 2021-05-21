@@ -154,8 +154,30 @@ function showResultTable(dataEntries) {
 
 
 function showResultSlip(resultEntries) {
+    let slipTemplate = $("#slipTemplate");
+    if (!slipTemplate) {
+        alert("No template is found to render results.")
+        return;
+    }
+
     $(resultEntries).each((i, e) => {
         let itemId = e.id;
+
+        let slip = slipTemplate.clone();
+
+        //iterating through all children with a data-field-id attribute
+        $(slip).find("[data-field-id]").each((k, slipElement) => {
+            let fieldId = $(slipElement).data("field-id");
+            let field = e.fields.filter(f => f.fieldId === fieldId)[0];
+            if (field) {
+                let fieldContent = field.fieldContent.join("<br />");
+                $(slipElement).html(fieldContent);
+            }
+        });        
+
+
+
+
         //Resounding culture 4TH COL = TITLE,17th=Keywords, 18TH=Description,
 
         //Populating field data into appropriate columns in the new row
