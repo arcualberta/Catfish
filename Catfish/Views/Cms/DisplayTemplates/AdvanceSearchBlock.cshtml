@@ -115,14 +115,24 @@
             {
                 @*Creating a slip template.*@
                 @*TODO specify the field IDs in the block configuration*@
-                var titleFieldId = "293dc836-901f-421a-9e02-64f333086db9";
-                var descriptionFieldId = "567dd7ae-2c58-4791-8800-d4312a91c912";
-                var keywordFieldId = "77383740-4080-4570-b35e-3bde57580da5";
+                // resounding culture -- prod server 
+                @* var titleFieldId =   "293dc836-901f-421a-9e02-64f333086db9";
+                    var descriptionFieldId = "567dd7ae-2c58-4791-8800-d4312a91c912";
+                    var keywordFieldId = "77383740-4080-4570-b35e-3bde57580da5";*@
+
+            //local test
+                var titleFieldId = Model.SelectedTitleFieldId.Value; //  "d2fc4a65-84d9-47c3-800e-cf2cce27303d";
+                var descriptionFieldId = Model.SelectedBodyFieldId.Value; //"1fa5da8c-7995-4c6e-afc3-476b2ab2e1ca";
+                var keywordFieldId = Model.SelectedFooterFieldId.Value; //"dce5c801-77e8-4f7e-a6f7-70beeb5a8d85";
+                var subTitleId1 = Model.SelectedFirstSubTitleFieldId.Value;
+                 var subTitleId2 = Model.SelectedSecondSubTitleFieldId.Value;
+                var titleLinkId = Model.SelectedUrlFieldId.Value;
                 var thumbnailFieldId = ""; //not yet specified in the schema
 
                 @*Hidden Slip Template*@
                 <div id='slipTemplate' class='slipEntry' style='display:none'>
-                    <h3 class="title" data-field-id="@titleFieldId"></h3>
+                    <a href="#" data-field-link="@titleLinkId"><h3 class="title" data-field-id="@titleFieldId"></h3></a>
+                    <div class="subTitle"><span data-field-id="@subTitleId1"></span> <span> - </span> <span data-field-id="@subTitleId2"></span></div>
                     <div class="row entryContentContainer">
                         <div class="col-md-10 entryContent">
                             <div class="entryDescription" data-field-id="@descriptionFieldId">

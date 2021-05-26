@@ -181,6 +181,16 @@ function showResultSlip(resultEntries) {
                 $(slipElement).html(fieldContent);
             }
         }); 
+        //data-field-link
+        //setting any links to the item title
+        $(slip).find("a[data-field-link]").each((k, anchor) => {
+            //TODO: Set the the appropriate url
+            //let url = anchor;
+            let fieldId = $(anchor).data("field-link");
+            let field = e.fields.filter(f => f.fieldId === fieldId)[0];
+            let url = field.fieldContent;
+            $(anchor).attr("href", url);
+        });
 
         //setting any links to the detailed view of the item
         $(slip).find("a[data-details-view-link]").each((k, anchor) => {
