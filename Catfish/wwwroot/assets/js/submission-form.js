@@ -30,7 +30,7 @@ Vue.component("submission-form", {
 
         selectItemTemplate: function (selected) {
           
-            fetch('/api/Items/GetSelectListItem/' + selected)
+            fetch('/api/Items/GetSelectListItem/' + selected +'/false')
                 .then(response => response.json())
                 .then((data) => {
                     this.functionOptions = data;
@@ -57,7 +57,7 @@ Vue.component("submission-form", {
 
     },*/
     mounted() {
-        fetch('/api/Items/GetSelectListItem/' + this.model.selectedItemTemplate.value)
+        fetch('/api/Items/GetSelectListItem/' + this.model.selectedItemTemplate.value + '/false')
             .then(response => response.json())
             .then((data) => {
                 this.functionOptions = data;
