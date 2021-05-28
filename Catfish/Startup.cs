@@ -399,6 +399,8 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/card-block.js");
+
 
         }
         private static void RegisterCustomBlocks()
@@ -423,6 +425,7 @@ namespace Catfish
             App.Blocks.Register<AdvanceSearchBlock>();
             App.Blocks.Register<SingleListItem>();
             App.Blocks.Register<ListDisplayBlock>();
+            App.Blocks.Register<CardBlock>();
         }
         private static void RegisterCustomStyles()
         {
