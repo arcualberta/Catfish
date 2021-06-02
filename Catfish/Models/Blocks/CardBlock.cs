@@ -39,7 +39,7 @@ namespace Catfish.Models.Blocks
     [BlockType(Name = "Card Block", Category = "Content", Component = "card-block", Icon = "far fa-square")]
     public class CardBlock:Block
     {
-        public ImageField Body { get; set; }
+        public ImageField CardImage { get; set; }
         public TextField CardTitle { get; set; }
         public TextField CardSubTitle { get; set; }
         public CheckBoxField HasAModal { get; set; }
@@ -49,12 +49,12 @@ namespace Catfish.Models.Blocks
         public CheckBoxField IsModalCenteredOnTheScreen { get; set; }
         public ImageField ModalImage { get; set; }
         public SelectField<Positioning> ImagePosition { get; set; }
-        public TextField ModalTitle { get; set; }
+        public TextField ModalTitle { get; set; } 
         public TextField ModalSubTitle { get; set; }
         public TextField EmailAddress { get; set; }
         public TextField ButtonLink { get; set; }
         public TextField ButtonText { get; set; }
-        public CheckBoxField PreventUserFromExitingOnOutsideClick { get; set; }
+        public CheckBoxField PreventUserFromExitingOnOutsideClick { get; set; } 
         //public SelectField<Styling> ModalStyling { get; set; }
 
     }
