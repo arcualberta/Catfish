@@ -1,5 +1,94 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model Catfish.Models.Blocks.CardBlock
+
+@{      //TODO: make ids for each modal unique or modals will open each other!
+}
+
+<div class="card">
+    @if (Model.CardImage.Media != null)
+    {
+        <div class="card-image">
+            @if (Model.HasAModal.Value)
+            {
+                <button id="btn_myModal_0" class="btn" data-toggle="modal" data-target="#myModal_0">
+                    <img src="@Model.CardImage.Media.PublicUrl.Substring(2)" /> //TODO put check for image!
+                </button>
+            }
+            else
+            {
+                <button id="btn_myModal_0" class="btn">
+                    <img src="@Model.CardImage.Media.PublicUrl.Substring(2)" />
+                </button>
+            }
+        </div>
+        <div class="card-body">
+            <h4>@Model.CardTitle.Value</h4>
+            <p>@Model.CardSubTitle.Value</p>
+        </div>
+    }
+    else
+    {
+        @*No picture, but could still have a modal*@
+        @if (Model.HasAModal.Value)
+        {
+        <div id="no-img-myModal_0" class="card-body" data-toggle="modal" data-target="#myModal_0">
+            <h4>@Model.CardTitle.Value</h4>
+            <p>@Model.CardSubTitle.Value</p>
+        </div>
+        }
+
+        else
+        {
+        <div class="card-body">
+            <h4>@Model.CardTitle.Value</h4>
+            <p>@Model.CardSubTitle.Value</p>
+        </div>
+        }
+
+    }
+
+</div>
+
+@if (Model.HasAModal.Value)
+{
+    <!-- Modal -->
+    <div id="myModal_0" class="modal" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal body -->
+                <div class="modal-body" style="display: flex; padding: 0;">
+                    <div class="modal-image-container">
+                        <div class="modal-image-fitting" style="background-image: url('/uploads/0e732205-2f23-4dd2-9a6e-cdf534aa0856-Haagsma.jpg');">&nbsp;</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; flex-grow: 1; flex-basis: 66%;">
+                        <div class="modal-top-style-piece">
+                            <button class="close close-modal-button" type="button" data-dismiss="modal">&times;</button>
+                            <div class="color-trio-container">
+                                <div class="gold-color-section">&nbsp;</div>
+                                <div class="green-color-section">&nbsp;</div>
+                                <div class="blue-color-section">&nbsp;</div>
+                            </div>
+                        </div>
+                        <div class="description-container">
+                            <div class="personelName">
+                                <h4>Dr. Margriet Haagsma</h4>
+                            </div>
+                            <div class="personelInstitution"><em>Professor of Classics. History, Classics, and Religious Studies.</em></div>
+                            <div class="personnelBio">
+                                <p>&nbsp;</p>
+                                <p>Margriet Haagsma teaches the archaeology and history of ancient Greece. She is co-director of the Kastro Kallithea Archaeological Project (KKAP) and, most recently, the Central Achaia Phthiotis Survey (CAPS), a SSHRC-funded archaeological fieldwork project on mainland Greece with a strong focus on community participation and experiential learning in an international setting. She supervised more than 20 graduate students, has published widely in her field, organized conferences, exhibitions, and co-edited a book critically assessing the impact of Ancient Greek culture on the formation of European Identities. She is Co-Director of The Future of the Past signature area in the Faculty of Arts, along with Professor Pamela Willoughby of the Department of Anthropology.</p>
+                                <p><a href="mailto: margriet.haagsma@ualberta.ca">margriet.haagsma@ualberta.ca</a></p>
+                                <p><a class="btn btn-lg" style="background-color: #92c178; color: unset; font-weight: bold;" href="https://apps.ualberta.ca/directory/person/haagsma" target="_blank" rel="noopener">Website</a></p>
+                            </div>
+                            <!-- personnel Bio -->
+                        </div>
+                        <!-- description-container -->
+                    </div>
+                    <!-- modal body -->
+                </div>
+                <!-- modal content -->
+            </div>
+            <!-- modal dialog -->
+        </div>
+        <!-- modal 0 -->
+    </div>
 }

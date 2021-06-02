@@ -240,16 +240,16 @@ Vue.component("card-block", {
             <label class='form-label col-md-3' for="has-modal-checkbox">Card has a popup when clicked?</label>        
             <input type="checkbox" id="has-modal-checkbox" v-model="model.hasAModal.value">
         </div>
+
+        <hr>
+        <h4>Pop-up Contents</h4>
+        <p>The pop-up, if enabled in the above options, will appear when viewers of the website click the card.</p>
         <div class='lead row'><label class='form-label col-md-3'>Modal Size:</label>
             <select class='form-control col-md-4' name="modalSize" v-on:blur='onBlur' :value='model.modalSize.value' id="modal-size-select">
                 <option value="0">Small</option>
                 <option value="1">Large</option>
            </select>
         </div>
-
-        <hr>
-        <h4>Pop-up Contents</h4>
-        <p>The pop-up, if enabled in the above options, will appear when viewers of the website click the card.</p>
         <div class='lead row'>
             <label class='form-label col-md-3' for="center-modal-checkbox">Is the popup centered on the screen?</label>        
             <input type="checkbox" id="center-modal-checkbox" v-model="model.isModalCenteredOnTheScreen.value">
