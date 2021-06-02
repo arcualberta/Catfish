@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Catfish.Models.Blocks
 {
     // Category = "Media", Icon = "fas fa-image",
-    [BlockType(Name = "Extended Image",  Component = "extended-image-block")]
+    [BlockType(Name = "Extended Image",  Component = "extended-image-block", IsUnlisted = true)]
     public class ExtendedImageBlock : Block
     {
         /// <summary>

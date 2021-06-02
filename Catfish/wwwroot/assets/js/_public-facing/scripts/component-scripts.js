@@ -152,6 +152,10 @@ function showResultTable(dataEntries) {
     });
 }
 
+function resizeRowHeight(height) {
+    $('tbody tr td div').css('max-height', height + 'em');
+}
+
 
 function showResultSlip(resultEntries) {
     $("#slipRendering").empty();

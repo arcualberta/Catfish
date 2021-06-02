@@ -2,6 +2,7 @@
 @using Catfish.Models.SiteTypes
 @using Catfish.Helper
 @using Catfish.Models.Blocks;
+@using Piranha.Extend;
 
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
@@ -15,21 +16,35 @@
         ViewBag.Title = Model.Title;
     }
 
-    var pageModel = Model == null ? null : typeof(StandardPage).IsAssignableFrom(Model.GetType()) ? Model as StandardPage : null;
     List<string> vueComponentNames = new List<string>();
     List<CssBlock> cssBlocks = new List<CssBlock>();
     List<JavascriptBlock> javascriptBlocks = new List<JavascriptBlock>();
 
-    if (pageModel != null)
+    if (Model != null)
     {
-        vueComponentNames = _blockHelper.GetVueComponentNames(pageModel.Blocks).ToList();
+        IList<Block> blocks;
 
-        cssBlocks = pageModel.Blocks
+        if (typeof(StandardPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as StandardPage).Blocks;
+        else if (typeof(StandardPost).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as StandardPost).Blocks;
+        else if (typeof(MediaPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as MediaPage).Blocks;
+        else if (typeof(StandardArchive).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as StandardArchive).Blocks;
+        else if (typeof(StartPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as StartPage).Blocks;
+        else
+            blocks = new List<Block>();
+
+        vueComponentNames = _blockHelper.GetVueComponentNames(blocks).ToList();
+
+        cssBlocks = blocks
             .Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
             .Select(b => (b as CssBlock))
             .ToList();
 
-        javascriptBlocks = pageModel.Blocks
+        javascriptBlocks = blocks
             .Where(b => typeof(JavascriptBlock).IsAssignableFrom(b.GetType()))
             .Select(b => (b as JavascriptBlock))
             .ToList();

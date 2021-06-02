@@ -17,6 +17,11 @@
 }
 /*Google calendar panel*/
 
+.google-calendar-panel {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
 .calendar-default .calendar-event-dates {
     display: flex;
     justify-content: flex-end;
@@ -25,7 +30,8 @@
 }
 
 .calendar-event {
-    padding: 8px !important;
+    padding: 20px;
+    margin-bottom: 15px;
 }
 
 .date-month {
@@ -145,7 +151,9 @@
 
 .month-year-title {
     padding: 10px 20px 15px 15px;
+    margin-bottom: 0;
 }
+
 
 .strip-calendar-day{
     flex: unset;
@@ -190,6 +198,21 @@
         color: white;
     }
 
+.weekly-arrow {
+    padding-top: 24px;
+    padding-bottom: 50px;
+}
+
+.monthly-arrow {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.monthly-arrow.right-arrow {
+    align-items: flex-end;
+}
+
 .strip-week-container{
     width:100%;
 }
@@ -227,7 +250,100 @@
     padding-right: 10px;
 }
 
+.rounded-style .clickable.left-arrow {
+    border-bottom-left-radius: 5px;
+}
 
+.rounded-style .clickable.right-arrow {
+    border-bottom-right-radius: 5px;
+}
+
+.rounded-style .strip-month-header-container {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+
+/*****************************************************/
+
+/* ListDisplay styles */
+
+.list-display-block-container{
+    min-height: 700px;
+}
+
+.item-list-image {
+    width: 30%;
+    height: 100%;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.item-list-text-container{
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    padding-left: 10px;
+}
+
+.single-list-item {
+    position: relative;
+    display: flex;
+    margin: 4px;
+    border-radius: 5px;
+    background-color:white;
+    height:120px;
+}
+
+.list-display-block-container{
+    display:flex;
+}
+
+.items-top-title {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+}
+
+.itemlist-scroller-container{
+    min-height:inherit;
+    overflow-y: auto;
+    max-height:700px;
+}
+
+.selected-indicator {
+    width: 20px;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    position: absolute;
+}
+
+.no-image-extra-padding{
+    padding-left: 35px;
+}
+
+.mobile-list-display-button {
+    float: right;
+    margin: 20px;
+}
+
+.mobile-display-column {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.list-display-content-space {
+    padding:20px;
+}
+
+/*****************************************************/
 /* Extended Gallery carousel*/
 .extended-gallery-block .carousel-indicators {
     position: static;

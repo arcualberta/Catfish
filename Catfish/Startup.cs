@@ -398,13 +398,14 @@ namespace Catfish
 
             App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
 
+            App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
+
         }
         private static void RegisterCustomBlocks()
         {
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
             App.Blocks.Register<CalendarBlock>();
-            //App.Blocks.Register<CalendarEventListBlock>();
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
             App.Blocks.Register<ContactFormBlock>();
@@ -420,6 +421,8 @@ namespace Catfish
             App.Blocks.Register<VueCarousel>();
             App.Blocks.Register<ExtendedColumnBlock>();
             App.Blocks.Register<AdvanceSearchBlock>();
+            App.Blocks.Register<SingleListItem>();
+            App.Blocks.Register<ListDisplayBlock>();
         }
         private static void RegisterCustomStyles()
         {
