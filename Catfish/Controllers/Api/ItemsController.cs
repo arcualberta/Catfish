@@ -524,5 +524,28 @@ namespace Catfish.Controllers.Api
 
             return NotFound();
         }
+
+        [HttpGet("getMetadatasetFields/{templateId}/{metadatasetId}")]
+        public List<SelectListItem> GetMetadatasetFields(string templateId, string metadatasetId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+           
+                if (!string.IsNullOrEmpty(templateId) && !string.IsNullOrEmpty(metadatasetId))
+                {
+                var fields = _entityTemplateService.GetTemplateMetadataSetFields(Guid.Parse(templateId), Guid.Parse(metadatasetId));
+
+                    foreach (BaseField field in fields)
+                    {
+                        result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString()});
+
+                    }
+                }
+           
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+
     }
 }

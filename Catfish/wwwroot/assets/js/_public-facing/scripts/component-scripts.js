@@ -8,9 +8,9 @@ function searchText() {
 }
 
 //conatinerId is MetadatasetId or DataItem id -- need to confirmed
-function advanceSearch(containerId, scopeId, textInputClass, start) {
+function advanceSearch(containerId, scopeId, textInputClass, start, resultRenderingType) {
     let name;
-   
+
     let selectedScope = $("#" + scopeId + " option:selected").val();
     let itemPerPage = $("#advanceSearchItemPerPage").val();
     let simpleSearchTerm = $("#simpleSearchTerm").val();
@@ -21,7 +21,7 @@ function advanceSearch(containerId, scopeId, textInputClass, start) {
 
     //params["scope"] = selectedScope;
     //params["containerId"] = containerId;
-   
+
 
     $("." + textInputClass).each(function (i, f) {
         let inputVal = $(f).val();
@@ -38,12 +38,12 @@ function advanceSearch(containerId, scopeId, textInputClass, start) {
             let values = {};
             values["Scope"] = selectedScope;
             values["ContainerId"] = containerId;
-            
+
             values["FieldId"] = fieldId;
-           
-            values["SearchText"]= inputVal;
-            constraints.push( values );
-           
+
+            values["SearchText"] = inputVal;
+            constraints.push(values);
+
         }
 
     });
@@ -69,7 +69,7 @@ function advanceSearch(containerId, scopeId, textInputClass, start) {
 
     let url = "../../Search/AdvanceSearch";
 
-/* Send the data using post with element id name and name2*/
+    /* Send the data using post with element id name and name2*/
 
     params["constraints"] = JSON.stringify(constraints);
     params["itemPerPage"] = itemPerPage;
@@ -80,8 +80,8 @@ function advanceSearch(containerId, scopeId, textInputClass, start) {
     var message = "";
 
     result.done(function (data) {
-        
-       // alert("ok")
+
+        // alert("ok")
         $(".searchResults").show();
         var tbody = $(".searchResults table tbody");
         $(tbody).empty();
@@ -109,54 +109,16 @@ function advanceSearch(containerId, scopeId, textInputClass, start) {
             $("#nextPageBtn").attr("disabled", true);
         }
 
-        var colIds = $.map($("table thead tr th"), (x) => { return $(x).attr("id") });
-
-        $(data.resultEntries).each((i, e) => {
-            let itemId = e.id;
-
-            //inserting a new row and adding td elements for each column in that row
-            let tr = $("<tr/>")
-            $(tbody).append(tr);
-            let maxRowHeight = $('#max-row-height').val()
-            if (!maxRowHeight) {
-                $('#max-row-height').val(10)
-                maxRowHeight
-            }
-            $(colIds).each((k, id) => {
-                $(tr).append($(`<td class='${id}'><div  style="width:100%; max-height:${maxRowHeight}em; overflow-y: auto" /></td>`))
-            });
-
-            //Populating field data into appropriate columns in the new row
-            $(e.fields).each((k, f) => {
-                let td = $(tr).children(`.${f.fieldId}`);
-                $(td).children('div').html(f.fieldContent);
-            });
-
-            ////let entry = `<div class="result-entry">`;
-            ////$(e.fields).each(function (j, s) {
-            ////    if (s.fieldName) {
-            ////        entry += "<div class='field-name'>" + s.FieldName + "</div>";
-            ////    }
-            ////    entry += "<div class='field-highlight'><b>Matched Term:</b> "
-            ////    $(s.highlights).each(function (k, h) {
-            ////        entry += h + "<br />";
-            ////    });
-            ////    entry += "</div>";
-            ////    entry += "<div class='field-value'><b>Matched Field Content:</b> "
-            ////    $(s.fieldContent).each(function (k, h) {
-            ////        entry += h + "<br />";
-            ////    });
-            ////    entry += "</div>";
-            ////});
-
-            ////entry += "</div>";
-            ////$(".searchResults").append(entry);
-
-        });
-
-         
+        ///BEGIN: Displaying Result Entries
+        ///================================
+        //'Tabular', 'Slip'
+        if (resultRenderingType == "Tabular")
+            showResultTable(data.resultEntries);
+        else if (resultRenderingType == "Slip")
+            showResultSlip(data.resultEntries);
+        ///END: Displaying Result Entries
+        ///================================
     });
-
 }
 
 function resizeRowHeight(height) {
@@ -164,3 +126,99 @@ function resizeRowHeight(height) {
 }
 
 
+function showResultTable(dataEntries) {
+    var colIds = $.map($("table thead tr th"), (x) => { return $(x).attr("id") });
+    //$(data.resultEntries).each((i, e) => {
+    $(dataEntries).each((i, e) => {
+        let itemId = e.id;
+
+        //inserting a new row and adding td elements for each column in that row
+        let tr = $("<tr/>")
+        $('tbody').append(tr);
+        let maxRowHeight = $('#max-row-height').val()
+        if (!maxRowHeight) {
+            $('#max-row-height').val(10)
+            maxRowHeight
+        }
+        $(colIds).each((k, id) => {
+            $(tr).append($(`<td class='${id}'><div  style="width:100%; max-height:${maxRowHeight}em; overflow-y: auto" /></td>`))
+        });
+
+        //Populating field data into appropriate columns in the new row
+        $(e.fields).each((k, f) => {
+            let td = $(tr).children(`.${f.fieldId}`);
+            $(td).children('div').html(f.fieldContent);
+        });
+    });
+}
+
+function resizeRowHeight(height) {
+    $('tbody tr td div').css('max-height', height + 'em');
+}
+
+
+function showResultSlip(resultEntries) {
+    $("#slipRendering").empty();
+    let slipTemplate = $("#slipTemplate");
+    if (!slipTemplate) {
+        alert("No template is found to render results.")
+        return;
+    }
+
+    $(resultEntries).each((i, e) => {
+        let itemId = e.id;
+
+        let slip = slipTemplate.clone();
+        $(slip).show();
+        $(slip).attr("id", "slip-" + i);
+
+        //iterating through all children with a data-field-id attribute
+        $(slip).find("[data-field-id]").each((k, slipElement) => {
+            let fieldId = $(slipElement).data("field-id");
+            let field = e.fields.filter(f => f.fieldId === fieldId)[0];
+            if (field) {
+                let separator = $(field).data("val-separator");
+                if (!separator)
+                    separator = "<br />";
+
+                let fieldContent = field.fieldContent.join(separator);
+                $(slipElement).html(fieldContent);
+            }
+        }); 
+        //data-field-link
+        //setting any links to the item title
+        $(slip).find("a[data-field-link]").each((k, anchor) => {
+            //TODO: Set the the appropriate url
+            //let url = anchor;
+            let fieldId = $(anchor).data("field-link");
+            let field = e.fields.filter(f => f.fieldId === fieldId)[0];
+            let url = field.fieldContent;
+            $(anchor).attr("href", url);
+        });
+
+        //setting any links to the detailed view of the item
+        $(slip).find("a[data-details-view-link]").each((k, anchor) => {
+            //TODO: Set the the appropriate url
+            let url = "#"
+
+            $(anchor).attr("href", url);
+        });
+
+        let thumbnailDiv = $(slip).find("div[data-details-view-link]")[0];
+        if (thumbnailDiv) {
+            let fieldId = $(slipElement).data("field-id");
+            if (fieldId !== "") {
+                let field = e.fields.filter(f => f.fieldId === fieldId)[0];
+                if (field) {
+                    let thumbFileName = field.fieldContent[0];
+                    if (thumbFileName) {
+                        let urlSpecs = "url(BASE-PATH-REPLACE-THIS/" + thumbFileName + ")";
+                        $(thumbnailDiv).css("background-image", urlSpecs)
+                    }
+                }
+            }
+        }
+
+        $("#slipRendering").append(slip);
+    });
+}

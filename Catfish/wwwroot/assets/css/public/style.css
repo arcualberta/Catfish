@@ -339,7 +339,7 @@ ul.checkboxgroup li {
 }
 
 .radio-option-label {
-    margin-left: 8px;
+   /* margin-left: 8px; */
     margin-right: 20px;
 }
 
@@ -469,7 +469,7 @@ input[readonly] {
     color: red;
 }
 
-.radio-inline > div{
+.radio-inline > div, td > div.radio-inline{
     display:inline;
 }
 
