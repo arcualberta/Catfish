@@ -17,5 +17,17 @@ namespace Catfish.Models.Blocks
 
         public TextField SelectedItemTemplate { get; set; }
 
+        public TextField SelectedRenderingType { get; set; }
+
+        public TextAreaField SelectedTitleFieldId { get; set; }
+        public TextAreaField SelectedFirstSubTitleFieldId { get; set; }
+        public TextAreaField SelectedSecondSubTitleFieldId { get; set; }
+        public TextAreaField SelectedBodyFieldId { get; set; }
+        public TextAreaField SelectedFooterFieldId { get; set; }
+        //Link to "More" in Description/body area
+        public TextAreaField SelectedLinkFieldId { get; set; }
+
+        //link can be link to Title
+        public TextAreaField SelectedUrlFieldId { get; set; }
     }
 }
