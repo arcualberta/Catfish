@@ -293,6 +293,10 @@ Vue.component("card-block", {
             <input class='form-control col-md-8' type='text' name='popupSubTitle' v-model='model.modalSubTitle.value' contenteditable='true' v-on:blur='onBlur' />
         </div>
         <div class='lead row'>
+            <label class='form-label col-md-3'>Popup Description: </label>
+            <textarea class="form-control col-md-8" rows="6"></textarea>
+        </div>
+        <div class='lead row'>
             <label class='form-label col-md-3'>Email Address: </label>
             <input class='form-control col-md-8' type='text' name='popupEmail' v-model='model.emailAddress.value' contenteditable='true' v-on:blur='onBlur' />
         </div>

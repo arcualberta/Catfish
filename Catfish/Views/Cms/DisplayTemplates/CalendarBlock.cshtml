@@ -2,12 +2,20 @@
 @using Newtonsoft.Json;
 @*@inject Catfish.Services.IAppService _appService;*@
 
+@*
+    Please Note:
+    This block will not show up/run properly without the file
+    catfish2-0-GoogleCalendarServiceAccount.json
+    present in the project. This file is in the gitignore and is not tracked.
+    It helps to configure the Google Calendar access, so make sure you have it!
+*@
+
 @{
     ViewData["Title"] = "Calendar Block";
 
     //Register any additional javascript files that are needed for this components as follows
     //_appService.RegisterScript("/assets/js/MY-JS-FILE.js");
- }
+}
 
 @{
 

@@ -51,6 +51,7 @@ namespace Catfish.Models.Blocks
         public SelectField<Positioning> ImagePosition { get; set; }
         public TextField ModalTitle { get; set; } 
         public TextField ModalSubTitle { get; set; }
+        public HtmlField ModalDescription { get; set; }
         public TextField EmailAddress { get; set; }
         public TextField ButtonLink { get; set; }
         public TextField ButtonText { get; set; }

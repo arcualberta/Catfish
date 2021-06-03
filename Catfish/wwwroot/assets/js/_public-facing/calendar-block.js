@@ -3,6 +3,12 @@
     Note that this is javascript solely for the visual calendar UI element,
     the javascript does not interact with the events listed.
     See CalendarBlock.cshtml or CalendarBlock.cs for more info.
+
+    Please Note:
+    This block will not show up/run properly without the file
+    catfish2-0-GoogleCalendarServiceAccount.json
+    present in the project. This file is in the gitignore and is not tracked.
+    It helps to configure the Google Calendar access, so make sure you have it!
  */
 
 import dayjs from "dayjs";

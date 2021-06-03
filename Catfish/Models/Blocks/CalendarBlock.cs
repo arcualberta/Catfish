@@ -17,6 +17,15 @@ using System.IO;
 using System.Threading;
 using Google.Apis.Util.Store;
 
+
+/*
+    Please Note:
+    This block will not show up/run properly without the file
+    catfish2-0-GoogleCalendarServiceAccount.json
+    present in the project. This file is in the gitignore and is not tracked.
+    It helps to configure the Google Calendar access, so make sure you have it!
+*/
+
 namespace Catfish.Models.Blocks
 {
     public enum CalendarStyles
