@@ -325,11 +325,16 @@ namespace Catfish.UnitTests
            
             tf.TableHead.CreateField<InfoSection>("", lang);
             
-            tf.TableHead.CreateField<RadioField>("How long after a disaster might the harm occur?", lang, GetDisruptionOptions(), false);
+            tf.TableHead.CreateField<SelectField>("How long after a disaster might the harm occur?", lang, GetDisruptionOptions(), false);
+
            
-            tf.TableHead.CreateField<TextField>("Comments", lang,false);
+            var ta = tf.TableHead.CreateField<TextArea>("Comments", lang);
+            ta.Cols = 25;
+            ta.Rows = 1;
             tf.SetColumnValues(0, consequences, lang);
             tf.AllowAddRows = false;
+            
+            
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles  and Workflow                                          //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
