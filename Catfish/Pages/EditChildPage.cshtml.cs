@@ -6,6 +6,7 @@ using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Catfish.Core.Models;
+using Catfish.Core.Services;
 
 namespace Catfish.Pages
 {

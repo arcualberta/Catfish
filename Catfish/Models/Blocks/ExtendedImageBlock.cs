@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Catfish.Models.Blocks
 {
     // Category = "Media", Icon = "fas fa-image",
-    [BlockType(Name = "Extended Image",  Component = "extended-image-block")]
+    [BlockType(Name = "Extended Image",  Component = "extended-image-block", IsUnlisted = true)]
     public class ExtendedImageBlock : Block
     {
         /// <summary>
@@ -26,7 +26,6 @@ namespace Catfish.Models.Blocks
         public TextField LinkText { get; set; }
         public TextField LinkUrl { get; set; }
         public CheckBoxField ImageComesFirst { get; set; }
-
 
         public override string GetTitle()
         {

@@ -25,7 +25,12 @@ namespace Catfish.Core.Models.Contents.Fields
             Values = new XmlModelList<MultilingualValue>(xml.GetElement(ValuesTag, true), true, MultilingualValue.TagName);
         }
 
-        public int SetValue(string val, string lang, int valueIndex = 0)
+        public override void SetValue(string value, string lang)
+        {
+            SetValue(value, lang, 0);
+        }
+
+        public int SetValue(string val, string lang, int valueIndex)
         {
             if(Values.Count <= valueIndex)
             {
@@ -34,6 +39,17 @@ namespace Catfish.Core.Models.Contents.Fields
             }
             Values[valueIndex].SetContent(val, lang);
             return valueIndex;
+        }
+        public void UpdateValue(Guid txtId, string value, string lang)
+        {
+            foreach (var multilingualVal in Values)
+            {
+                if (multilingualVal.Values.Any(txt => txt.Id == txtId))
+                {
+                    multilingualVal.UpdateValue(txtId, value, lang);
+                    break;
+                }
+            }
         }
 
         public string GetValue(string lang, int valueIndex = 0)
@@ -82,11 +98,58 @@ namespace Catfish.Core.Models.Contents.Fields
             return vals;
         }
 
+        public string[] GetStrValues(string lang = null)
+        {
+            var vals = GetValues(lang);
+            return vals.Where(v => !string.IsNullOrEmpty(v.Value))
+                .Select(v => v.Value)
+                .ToArray();
+        }
+
+
         public string GetValues(string separator, string lang = null)
         {
             IEnumerable<Text> texts = GetValues(lang);
             return string.Join(separator, texts.Select(txt => txt.Value));
         }
 
+        public override void CopyValue(BaseField srcField, bool overwrite = false)
+        {
+            var src = srcField as TextField;
+
+            //This method is applicable only if the target field has no values in it
+            bool targetFieldHasData = false;
+            foreach(var val in Values)
+            {
+                targetFieldHasData = val.Values.Where(txt => !string.IsNullOrEmpty(txt.Value)).Any();
+                if (targetFieldHasData)
+                    break;
+            }
+
+            if (overwrite == false && targetFieldHasData)
+                return; //We don't want to overwrite data in the target field.
+
+            int i = 0;
+            foreach (var srcMultilingualVal in src.Values)
+            {
+                if (!srcMultilingualVal.Values.Where(txt => !string.IsNullOrEmpty(txt.Value)).Any())
+                    continue; //No data is available under any of the languages
+
+                if (Values.Count <= i)
+                    Values.Add(new MultilingualValue());
+
+                var dstMultilingualVal = Values[i];
+
+                foreach(var srcTxt in srcMultilingualVal.Values)
+                {
+                    var dstTxt = dstMultilingualVal.Values.Where(txt => txt.Language == srcTxt.Language).FirstOrDefault();
+
+                    if (dstTxt == null)
+                        srcMultilingualVal.Values.Add(new Text(srcTxt));
+                    else
+                        dstTxt.Copy(srcTxt);
+                }
+            }
+        }
     }
 }

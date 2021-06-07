@@ -1,0 +1,9 @@
+﻿@model Catfish.Core.Models.Contents.Fields.DateField
+
+@{
+
+    var values = string.Join(", ", Model.IncludeTime
+        ? Model.Values.Select(val => "<span>" + val.DateValue +"</span>")
+        : Model.Values.Select(val => "<span>" + (val.DateValue.HasValue ? val.DateValue.Value.ToString("yyyy-MM-dd") : "") + "</span>"));
+}
+@Html.Raw(values)

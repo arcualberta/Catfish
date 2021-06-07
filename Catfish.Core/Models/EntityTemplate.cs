@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Models.Contents.Workflow;
 using System;
 using System.Collections.Generic;
@@ -52,28 +53,48 @@ namespace Catfish.Core.Models
 
         public ICollection<Entity> Instances { get; set; }
 
+        private Workflow mWorkflow;
         [NotMapped]
-        public Workflow Workflow { get; set; }
+        public Workflow Workflow
+        {
+            get
+            {
+                if (mWorkflow == null)
+                {
+                    XmlModel xml = new XmlModel(Data);
+                    mWorkflow = new Workflow(xml.GetElement(Workflow.TagName, true));
+                }
+                return mWorkflow;
+
+            }
+        }
 
         public EntityTemplate()
         {
             Initialize(false);
         }
-
         public override void Initialize(bool regenerateId)
         {
             base.Initialize(regenerateId);
-            InitializeWorkflow();
+            mWorkflow = null;
+            ////InitializeWorkflow();
         }
 
-        public void InitializeWorkflow()
+        ////public void InitializeWorkflow()
+        ////{
+        ////    XElement workflowDef = Data.Element("workflow");
+        ////    if (workflowDef != null)
+        ////    {
+        ////        Workflow = new Workflow(workflowDef);
+        ////        //Workflow.Initialize(XmlModel.eGuidOption.Ignore);
+        ////    }
+        ////}
+
+
+        public EmailTemplate GetEmailTemplate(string templateName, string lang, bool createIfNotExists)
         {
-            XElement workflowDef = Data.Element("workflow");
-            if (workflowDef != null)
-            {
-                Workflow = new Workflow(workflowDef);
-                //Workflow.Initialize(XmlModel.eGuidOption.Ignore);
-            }
+            MetadataSet ms = GetMetadataSet(templateName, lang, createIfNotExists, true);
+            return ms == null ? null : new EmailTemplate(ms.Data);
         }
 
         public EntityTemplate Clone()
@@ -131,5 +152,22 @@ namespace Catfish.Core.Models
             return InstantiateDataItem(GetRootDataItem(false).Id);
         }
 
+        public T GetReport<T>(string reportName,Guid entityTemplateId, bool createIfNotExists) where T : BaseReport
+        {
+            BaseReport report = Reports
+                .Where(rep => rep.Name == reportName)
+                .FirstOrDefault();
+
+            if (report == null && createIfNotExists)
+            {
+                var t = typeof(T);
+
+                report = Activator.CreateInstance(t) as T;
+                report.SetAttribute("name", reportName);
+                report.SetAttribute("entity-template-id", entityTemplateId);
+                Reports.Add(report);
+            }
+            return report as T;
+        }
     }
 }

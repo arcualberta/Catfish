@@ -29,6 +29,12 @@ namespace Catfish.Core.Models.Contents.Workflow
             set => SetAttribute(LableAtt, value);
         }
 
+        public string Condition
+        {
+            get => Data.Value;
+            set => Data.Value = value;
+        }
+
         public Mapping(XElement data)
             : base(data)
         {

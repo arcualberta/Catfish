@@ -59,6 +59,21 @@ namespace Catfish.Core.Models
             set => SetAttribute("css-class", value);
         }
 
+        public XmlModel Clone()
+        {
+            var type = Type.GetType(ModelType);
+            XmlModel model = Activator.CreateInstance(type, new XElement(Data)) as XmlModel;
+            return model;
+        }
+        public T Clone<T>() where T : XmlModel
+        {
+            var type = typeof(T);
+            T model = Activator.CreateInstance(type, new XElement(Data)) as T;
+            return model;
+        }
+
+
+
         public static XmlModel InstantiateContentModel(XElement data)
         {
             string typeString = data.Attribute("model-type").Value;
@@ -138,14 +153,6 @@ namespace Catfish.Core.Models
             return XmlHelper.GetElement(Data, tagName, createIfNotExist);
         }
 
-        public XmlModel Clone()
-        {
-            var type = Type.GetType(ModelType);
-            XmlModel model = Activator.CreateInstance(type) as XmlModel;
-            model.Data = new XElement(Data);
-            return model;
-        }
-
         public bool GetAttribute(string attName, bool defaultValue)
         {
             var att = Data.Attribute(attName);
@@ -161,10 +168,33 @@ namespace Catfish.Core.Models
             var att = Data.Attribute(attName);
             return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : int.Parse(att.Value);
         }
+
         public void SetAttribute(string attName, int attValue)
         {
             Data.SetAttributeValue(attName, attValue);
         }
+
+        public int? GetAttribute(string attName, int? defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : int.Parse(att.Value);
+        }
+
+        public void SetAttribute(string attName, int? attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
+        public long GetAttribute(string attName, long defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : long.Parse(att.Value);
+        }
+        public void SetAttribute(string attName, long attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
 
         public string GetAttribute(string attName, string defaultValue)
         {
@@ -202,6 +232,9 @@ namespace Catfish.Core.Models
         public Guid[] GetAttribute(string attName, Guid[] defaultValue)
         {
             var att = Data.Attribute(attName);
+            if (defaultValue == null)
+                defaultValue = new Guid[0];
+
             return (att == null || string.IsNullOrEmpty(att.Value)) 
                 ? defaultValue 
                 : att.Value.Split(",", StringSplitOptions.RemoveEmptyEntries)
@@ -214,6 +247,25 @@ namespace Catfish.Core.Models
                 Data.SetAttributeValue(attName, "");
             else
                 Data.SetAttributeValue(attName, string.Join(",", attValue.Select(val => val.ToString())));
+        }
+
+        public string[] GetAttribute(string attName, string[] defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            if (defaultValue == null)
+                defaultValue = new string[0];
+
+            return (att == null || string.IsNullOrEmpty(att.Value))
+                ? defaultValue
+                : att.Value.Split(",", StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public void SetAttribute(string attName, string[] attValue)
+        {
+            if (attValue == null)
+                Data.SetAttributeValue(attName, "");
+            else
+                Data.SetAttributeValue(attName, string.Join(",", attValue));
         }
 
         public T GetAttribute<T>(string attName, T defaultValue) where T : Enum

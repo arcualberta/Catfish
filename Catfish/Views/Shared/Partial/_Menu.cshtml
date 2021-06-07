@@ -8,44 +8,101 @@
     bool displaySubMenu = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.EnabledSubMenu == null) ? false : currentSite.FooterContents.EnabledSubMenu.Value;
 }
 
+@{
+    void subMenu(SitemapItem item)
+    {
+
+        <li class="nav-item dropdown @(item.Id == WebApp.PageId ? "active" : "")">
+            <a class="dropdown-toggle" id="navbarDropdownMenuLink_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @item.MenuTitle
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_@item.Id">
+
+                @foreach (var subItm in item.Items)
+                {
+                    if (!subItm.IsHidden)
+                    {
+                        if (subItm.Items.Count == 0)
+                        {
+                        @*<li><a class="dropdown-item" href="/sub-page-1"> Sub Page 1</a></li>*@
+                        <li><a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a></li>
+                        }
+                        else
+                        {
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">@subItm.MenuTitle</a>
+                            <ul class="submenu dropdown-menu">
+
+                                @foreach (var subitm2 in subItm.Items)
+                                {
+                                    if (subitm2.Items.Count == 0)
+                                    {
+
+                                        <li><a class="dropdown-item" href="@subitm2.Permalink">@subitm2.MenuTitle</a></li>
+                                    }
+                                    else { subMenu2(subitm2); }
+
+
+                                }
+                            </ul>
+                        </li>
+
+                        }
+                    }
+
+
+                }
+
+
+            </ul>
+        </li>
+
+    }
+
+    void subMenu2(SitemapItem subItm)
+    {
+        <li class="dropdown-submenu">
+            <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">@subItm.MenuTitle</a>
+            <ul class="submenu dropdown-menu">
+
+                @foreach (var subitm2 in subItm.Items)
+                {
+                   
+                        if (subitm2.Items.Count == 0 && !subitm2.IsHidden)
+                        {
+                           <li><a class="dropdown-item" href="@subitm2.Permalink">@subitm2.MenuTitle</a></li>
+                        }
+                        else { subMenu(subitm2); }
+                }
+            </ul>
+        </li>
+    }
+}
+
+
+
 @*Not the best solution but meanwhile... class = d-sm-block d-md-none is hiding on md screen solution*@
 <nav class="navbar navbar-toggleable-sm navbar-dark bg-faded d-sm-block d-md-none">
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="#"></a>
+    <a class="navbar-brand" href="/"></a>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             @foreach (var item in sitemap)
             {
                 if (!item.IsHidden)
                 {
-
-                    @*<a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink"><span>@item.MenuTitle</span></a>*@
+  
                     if (item.Items.Count == 0 || displaySubMenu == false)
-                    {
-                        @*<li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">*@
-                        <a href="@item.Permalink">@item.MenuTitle</a>
-                        @*</li>*@
+                    { 
+                        <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink"><span>@item.MenuTitle</span></a>
                     }
                     else
                     {
                         //showing sub menu
+                        subMenu(item);
 
-                        <div class=" nav-item @(item.Id == WebApp.PageId ? "active" : "") dropdown">
-                            <a href="#" class=" dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> @item.MenuTitle</a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                @foreach (var subItm in item.Items)
-                                {
-                                    if (!subItm.IsHidden)
-                                    {
-                                        <a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a>
-                                    }
-
-                                }
-
-                            </div>
-                        </div>
 
                     }
 
@@ -70,34 +127,16 @@
                 else
                 {
                     //showing sub menu
-                    <li class=" nav-item @(item.Id == WebApp.PageId ? "active" : "") dropdown">
-                        <a href="#" class=" dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> @item.MenuTitle</a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            @foreach (var subItm in item.Items)
-                            {
-                                if (!subItm.IsHidden)
-                                {
-                                    <a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a>
-                                }
-                            }
+                    subMenu(item);
 
-                        </div>
-                    </li>
 
                 }
             }
         }
 
-        @*@if (_catfishAppConfig.EnableWorkflows())
-            {
-                //Displaying the Workflow page menus
-                <li class="nav-item">
-                    <a class="nav-link" href="/new"><span>@_catfishAppConfig.GetWorkflowHomePageTitle()</span></a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/entity/ItemList"><span>@_catfishAppConfig.GetWorkflowListPageTitle()</span></a>
-                </li>
-            }*@
     </ul>
 </nav>
+
+
+
+

@@ -12,7 +12,7 @@ namespace Catfish.Helper
         string GetGoogleClientId();
         string GetDefaultUserRole();
         string GetGoogleCalendarAPIKey();
-        string GetSolrUrl();
+        string GetSolrCoreUrl();
         bool DisplayCarouselThumbnails();
         string GetAllowDomain();
         string GetUnauthorizedLoginMessage();
@@ -26,14 +26,17 @@ namespace Catfish.Helper
         string GetDefaultLanguage();
         string GetGoogleClientSecret();
         string GetGoogleServiceAccountFileName();
+        string GetSiteURL();
         bool GetEnabledLocalLogin();
         bool GetEnabledBreadcrumb();
         ePanelLocation GetDefaultSearchPanelLocation();
+        string GenericAuthorizationErrorMessage();
 
         bool GetValue(string key, bool defaultValue);
         string GetValue(string key, string defaultValue);
+        string[] GetValue(string key, string[] defaultValue);
         int GetValue(string key, int defaultValue);
-
+        string[] GetAccessRestrictionAllowedDomains();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -56,6 +59,14 @@ namespace Catfish.Helper
             string val = _configuration[key];
             return string.IsNullOrEmpty(val) ? defaultValue : val;
         }
+
+        public string[] GetValue(string key, string[] defaultValue)
+        {
+            var val = _configuration.GetSection(key).Get<string[]>();
+            return val == null ? defaultValue : val;
+        }
+
+
 
         public int GetValue(string key, int defaultValue)
         {
@@ -114,9 +125,9 @@ namespace Catfish.Helper
              return _configuration["EmailServer:Recipient"];
         }
 
-        public string GetSolrUrl()
+        public string GetSolrCoreUrl()
         {
-            return _configuration["SolarConfiguration:solrItemURL"];
+            return _configuration["SolarConfiguration:solrCore"];
         }
 
         public string GetLogoUrl()
@@ -148,9 +159,20 @@ namespace Catfish.Helper
         {
             return _configuration["GoogleCalendar:ServiceAccountFileName"];
         }
+        public string GetSiteURL()
+        {
+            return _configuration["SiteConfig:SiteURL"].TrimEnd('/');
+        }
         public bool GetEnabledLocalLogin()
         {
             return GetValue("SiteConfig:EnabledLocalLogin", false);
+        }
+
+        public string GenericAuthorizationErrorMessage()
+        {
+            return string.IsNullOrEmpty(_configuration["SiteConfig:GenericAuthorizationErrorMessage"])
+                ? "Authorization failed. Please sign in and try again."
+                : _configuration["SiteConfig:GenericAuthorizationErrorMessage"];
         }
 
         public bool GetEnabledBreadcrumb()
@@ -160,10 +182,18 @@ namespace Catfish.Helper
 
         public ICatfishAppConfiguration.ePanelLocation GetDefaultSearchPanelLocation()
         {
-            string configVal = GetValue("SiteConfig:SearchPanelLocation", null);
+            string configVal = GetValue("SiteConfig:SearchPanelLocation", null as string);
             return string.IsNullOrEmpty(configVal)
                 ? ICatfishAppConfiguration.ePanelLocation.Header
                 : (ICatfishAppConfiguration.ePanelLocation)Enum.Parse(typeof(ICatfishAppConfiguration.ePanelLocation), configVal);
+        }
+
+        public string[] GetAccessRestrictionAllowedDomains()
+        {
+            var allowedD = _configuration.GetSection("SiteConfig:AccessRestriction:AllowedDomains");
+            string[] _domains = allowedD.Get<string[]>();
+
+            return _domains;
         }
     }
 }

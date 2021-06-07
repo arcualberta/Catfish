@@ -3,7 +3,7 @@
 @using ElmahCore;
 
 @inject ErrorLog _errorLog;
-
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishConfig;
 @{
     try
     {
@@ -15,6 +15,9 @@
         DateTime? endDateTime = Model.PublishSettings.End;
         bool pageAvailable = (!startDateTime.HasValue || startDateTime.HasValue && startDateTime.Value <= DateTime.Now)
             && (!endDateTime.HasValue || endDateTime.HasValue && endDateTime.Value > DateTime.Now);
+        bool showPageHeader = Model.PublishSettings.ShowTitleOfPage;
+
+        bool showPageTimeStamp = _catfishConfig.GetValue("SiteConfig:ShowPageTimeStamp", false);
 
         if (!pageAvailable)
         {
@@ -30,7 +33,11 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-sm-12 page-body">
-                            <h1>@Model.Title |@ViewBag.showDefaultPageTitles|</h1>
+                            @if (showPageHeader)
+                            {
+                                <h1>@Model.Title</h1>
+                            }
+
                             <div id="blocks">
                                 @try
                                 {
@@ -41,8 +48,15 @@
                                     _errorLog.Log(new Error(ex));
                                 }
                             </div>
+
                         </div>
                     </div>
+                    @if (showPageTimeStamp)
+                    {
+                        <div class="pageTimeStamp">
+                            Updated: @Model.Created
+                        </div>
+                    }
                 </div>
             </div>
 
@@ -88,9 +102,11 @@
             }
 
         } @*if page available to view*@
+
     }
     catch (Exception ex)
     {
         _errorLog.Log(new Error(ex));
     }
+
 }

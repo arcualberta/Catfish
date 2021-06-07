@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models.Contents.Expressions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
@@ -26,6 +27,10 @@ namespace Catfish.Core.Models.Contents.Fields
             get => GetAttribute("extended", false);
             set => SetAttribute("extended", value);
         }
+
+        private VisibilityCondition mVisibilityCondition;
+        public VisibilityCondition VisibilityCondition { get { if (mVisibilityCondition == null) mVisibilityCondition = new VisibilityCondition(GetElement(VisibilityCondition.TagName, true)); return mVisibilityCondition; } }
+
         public Option() : base(FieldTagName) { }
         public Option(XElement data) : base(data) { }
 

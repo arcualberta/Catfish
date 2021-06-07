@@ -39,7 +39,11 @@ namespace Catfish.Core.Models.Contents
             set => Data.SetAttributeValue("format", value);
         }
 
-        public string Language => Data.Attribute(XNamespace.Xml + "lang")?.Value;
+        public string Language
+        {
+            get => Data.Attribute(XNamespace.Xml + "lang")?.Value;
+            set => Data.SetAttributeValue(XNamespace.Xml + "lang", value);
+        }
 
         public int Rank
         {
@@ -83,6 +87,21 @@ namespace Catfish.Core.Models.Contents
             if (value != null)
                 Data.Value = value;
             SetNewGuid();
+        }
+
+        public Text(Text src)
+             : base(TagName)
+        {
+            SetNewGuid();
+            Copy(src);
+        }
+
+        public void Copy(Text src)
+        {
+            Value = src.Value;
+            Language = src.Language;
+            Format = src.Format;
+            Rank = src.Rank;
         }
     }
 }

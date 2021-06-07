@@ -50,6 +50,7 @@ namespace Catfish.Core.Models.Contents.Data
         {
             //Ensuring that each metadata set has a unique ID
             base.Initialize(guidOption == eGuidOption.Ignore ? eGuidOption.Ensure : guidOption);
+
         }
     }
 }

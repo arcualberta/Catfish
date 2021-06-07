@@ -19,6 +19,58 @@ namespace Catfish.Core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Catfish.Core.Models.BackgroundJob", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("EntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("HangfireJobId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("SourceTaskId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Task")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_BackgroundJobs");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.Backup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SourceData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SourceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SourceType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_Backup");
+                });
+
             modelBuilder.Entity("Catfish.Core.Models.Contents.Form", b =>
                 {
                     b.Property<Guid>("Id")
@@ -72,6 +124,9 @@ namespace Catfish.Core.Migrations
                     b.Property<Guid?>("TemplateId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UserEmail")
                         .HasColumnName("UserEmail")
                         .HasColumnType("nvarchar(max)");
@@ -81,6 +136,8 @@ namespace Catfish.Core.Migrations
                     b.HasIndex("PrimaryCollectionId");
 
                     b.HasIndex("StatusId");
+
+                    b.HasIndex("TemplateId");
 
                     b.ToTable("Catfish_Entities");
 
@@ -144,6 +201,26 @@ namespace Catfish.Core.Migrations
                     b.ToTable("Catfish_GroupTemplates");
                 });
 
+            modelBuilder.Entity("Catfish.Core.Models.IndexingHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastIndexedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ObjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_IndexingHistory");
+                });
+
             modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>
                 {
                     b.Property<Guid>("SubjectId")
@@ -191,9 +268,6 @@ namespace Catfish.Core.Migrations
 
                     b.Property<Guid>("EntityTemplateId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsEditable")
-                        .HasColumnType("bit");
 
                     b.Property<string>("NormalizedStatus")
                         .HasColumnType("nvarchar(max)");
@@ -288,6 +362,10 @@ namespace Catfish.Core.Migrations
                     b.HasOne("Catfish.Core.Models.SystemStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
+
+                    b.HasOne("Catfish.Core.Models.EntityTemplate", "Template")
+                        .WithMany("Instances")
+                        .HasForeignKey("TemplateId");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.GroupRole", b =>

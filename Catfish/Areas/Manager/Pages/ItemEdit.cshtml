@@ -27,39 +27,42 @@
 	    </div>
     </div>
 
-    <form id="item-edit-form" class="edit-form" novalidate>
-	    <div v-for="section in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
-           <div class="row">
+    <form id="item-edit-form" ref="myForm" class="edit-form" novalidate>
+        <div v-for="(section, index) in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }">
+            <div class="row">
                 <div class="col">
                     <div class="sitemap">
-                        <ol v-if="section.values">
+                        <ol v-if="section.value">
                             <li>
                                 <div class="sitemap-item">
                                     <div class="link">
                                         <span class="title">{{section.title}}</span>
                                     </div>
                                 </div>
-                                <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }"> <!-- v-for="let set of entrySets" -->
-                                   <ol class="dd-list">
-                                        <li v-for="(entry, index) in section.values" class="dd-item expanded">
+                                <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
+                                    <!-- v-for="let set of entrySets" -->
+                                    <ol class="dd-list">
+                                        <li  v-for="(entry, index) in section.value" class="dd-item expanded"> <!--  Need to talk to Kamal about the Name and Description elements being given to me are not arrays -->
                                             <div class="sitemap-item">
-												<div class="link">
-													<label :id="['entry-label-' + section.title + '-' + languageLabels[index]]"
-														   class="language-label" for="input-0">
-														{{languageLabels[index]}}:
-													</label>
-													<!--<div v-if="!isInPreviewMode" class="col-md-4 mb-3">
-														<input
-															   required type="text" class="form-control"
-															   :id="[section.title + '-input-' + index]"
-															   aria-describedby="entry-label"
-															   v-model="entry.value">
-														<div class="invalid-feedback">
-															This field is required.
-														</div>
-													</div>-->
-													<span>{{entry.Value}}</span>
-												</div>
+                                                <div class="link">
+                                                    <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]"
+                                                           class="language-label" for="input-0">
+                                                        {{entry.Language}} :
+                                                    </label>
+                                                    <div v-if="!isInPreviewMode" class="width-100">
+                                                        <input
+                                                               required type="text" class="form-control"
+                                                               :id="[section.title + '-input-' + index]"
+                                                               aria-describedby="entry-label"
+                                                               v-model="entry.Value">
+                                                        <div class="invalid-feedback">
+                                                            This field is required.
+                                                        </div>
+                                                    </div>
+                                                    <div v-else>
+                                                        <span>{{entry.Value}}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </li>
                                     </ol>
@@ -69,7 +72,7 @@
                             </li>
                         </ol>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
 
@@ -84,7 +87,7 @@
                 </div>
             </div>
         </div>
-    
+
         <div class="container-fluid tab-holder">
             <div class="row">
                 <div class="col">
@@ -93,94 +96,30 @@
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
                             <a v-for="(metadataSet, index) in metadataSets" class="nav-item nav-link"
                                :class="{show: index==0, active: index==0}"
-                               :id="'meta-tab-' + index" data-toggle="tab" :href="'#tab-' + index" role="tab" 
+                               :id="'meta-tab-' + index" data-toggle="tab" :href="'#tab-' + index" role="tab"
                                :aria-controls="'tab-' + index" :aria-selected="index==0 ? true : false">
-                                {{metadataSet.Name.Values.$values[0].Value}}
+                                {{metadataSet.Name}}
                             </a>
                         </div>
                     </nav>
                     <div class="tab-content" id="metaTabContent">
-					    <div v-for="(metadataSet, metaIndex) in metadataSets" :id="'tab-' + metaIndex"
-						     role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade"
-						     :class="{active: metaIndex==0, show: metaIndex==0}">
+                        <div v-for="(metadataSet, metaIndex) in metadataSets" :id="'tab-' + metaIndex"
+                             role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade"
+                             :class="{active: metaIndex==0, show: metaIndex==0}">
 
-							 <transition-group name="refresh">
-						    <div v-for="(field, fIndex) in metadataSet.Fields.$values"
-							     class="tab-pane fade show field-section" :key="field.Id"
-							     id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                
-							    <div class="sitemap-item">
-								    <div class="link">
-                                        <div class="flexer">
-                                            <div class="flexer" v-for="(val, index) in field.Name.Values.$values">
-                                                <h3 v-if="index >0 && index < field.Name.Values.$values.length" style="white-space: pre"> | </h3>
-                                                <h3>{{field.Name.Values.$values[index].Value}}</h3>
-                                            </div>
-                                        </div>
-										<div class="flex-row" v-for="(val, index) in field.Name.Values.$values">
-											<div class="label-holder">
-												<div>{{languageLabels[index]}}/{{field.Name.Values.$values[index].Language}}:</div>
-												<button v-if="!isInPreviewMode" type="button" class="btn-sm btn-primary btn-circle"
-														data-toggle="tooltip" data-placement="top"
-														:title="field.Description.Values.$values[index].Value">
-													<i class="fas fa-question"></i>
-												</button>
-											</div>
-											<!--
-		Note to self about the value in this element:
-		field.values[index].values[0].value
-	   - The first values is an array of objects. Those objects are for
-		 each field's language.
-	   - The next values is an array of that field language, but there seems to
-		 be no way this would ever increase past 1 item in the array. So therefore,
-		 the index is always set to 0.
-	-->
-											<div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
-												<input v-if="field.$type.includes(inputTypes.text)"
-													   required type="text" class="form-control"
-													   v-model="field.Values.$values[index].Values.$values[0].Value">
-												<textarea v-else-if="field.$type.includes(inputTypes.textarea)"
-													required class="form-control" rows="3"
-													v-model="field.Values.$values[index].Values.$values[0].Value"></textarea>
-												<!--<vue-editor v-else-if="field.$type.includes(inputTypes.textarea) 
-															v-model="field.Values.$values[index].Values.$values[0].Value">
-												</vue-editor>-->
-												<div class="invalid-feedback">
-													{{fieldRequiredLabel}}
-												</div>
-											</div>
-											<span v-else>{{field.Values.$values[index].Values.$values[0].Value}}</span>
-										</div>
-								    </div>
-
-                                    <div v-if="piranha.permissions.pages.add" class="add-value-container">
-                                        <div class="btn-group new-value-button" role="group">
-								            <button type="button" v-on:click="addNewEntry(metaIndex, fIndex)"
-										    class="btn btn-sm btn-primary btn-labeled">
-									            <i class="fas fa-plus"></i>
-									            {{valueLabel}}
-								            </button>
-							            </div>
-                                        <div class="btn-group new-value-button" role="group">
-								            <button :disabled="originalFields[metaIndex].includes(fIndex) && originalFieldIndexMaster[metaIndex][field.Id].count <=1"
-                                                    type="button" v-on:click="deleteField(metaIndex, fIndex)"
-										            class="btn btn-sm btn-danger btn-labeled trash-button">
-									            <i class="fas fa-trash"></i>
-									            {{deleteLabel}}
-								            </button>
-							            </div>
-
-						            </div>
-
-							    </div>
-						    </div>
-							</transition-group>
-					    </div>
+                            <transition-group name="refresh">
+                                <div v-for="(field, fIndex) in metadataSet.Fields"
+                                     class="tab-pane fade show field-section" :key="field.Id"
+                                     id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                    <item-field-component ref="itemFieldChild" :field-data="field" :is-in-preview-mode="isInPreviewMode" :language-labels="languageLabels"></item-field-component>
+                                </div>
+                            </transition-group>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    
+
     </form>
 
 

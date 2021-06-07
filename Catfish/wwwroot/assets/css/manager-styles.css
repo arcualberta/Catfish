@@ -1,0 +1,83 @@
+﻿.section-heading {
+    margin: 10px;
+}
+    .section-heading .label {
+        font-size: large;
+        font-weight: bold;
+    }
+
+.navbar-brand {
+    /* replace Piranha Logo on the top of the menu */
+    /*background: url(../img/logo-menu.png) 0 50% no-repeat;
+    background-size: contain;
+        */
+}
+
+.email-template .field-list{
+    border:solid 1px #ccc;
+    border-radius: 5px;
+}
+    .email-template .field-list .field {
+        margin: 15px 5px;
+    }
+
+    .email-template .field-list .fa-edit {
+        margin: 5px;
+    }
+
+
+.table.field-set-view td {
+    background-color: white;
+}
+
+.table-bordered tr {
+    border-color: #eee !important;
+}
+    .table-bordered tr .option-value {
+        margin: 0 -12px;
+        padding: 5px;
+        border-bottom: solid 1px #ccc;
+    }
+/*        .table-bordered tr .option-value:nth-child(odd) {
+           background-color: #ebe39e !important;
+        }
+
+        .table-bordered tr .option-value:nth-child(even) {
+            background-color: #c2f2ef !important;
+        }
+*/
+        .table-bordered tr .option-value:first-child {
+            margin-top: -12px !important;
+        }
+
+        .table-bordered tr .option-value:last-child {
+            margin-bottom: -12px !important;
+        }
+/*=======================================================================================================================================================*/
+/* ========================================  WORKFLOW EDITOR               ============================================================================= */
+.hide{
+    display: none;
+}
+.show{
+    display: block;
+}
+.editableText {
+    position: relative;
+    display: inline-block;
+    margin: 1px;
+    border: 1px double blue;
+    width: 100%;
+}
+.inline-editor i{
+    margin-left:10px;
+}
+
+.inline-editor .fa-window-close {
+    color: red;
+}
+
+.inline-editor .fa-save {
+    color: green;
+}
+
+/*=======================================================================================================================================================*/

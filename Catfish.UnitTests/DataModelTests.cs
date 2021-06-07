@@ -3,7 +3,7 @@ using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
 using Catfish.Models.ViewModels;
-using Catfish.Tests.Helpers;
+using Catfish.Test.Helpers;
 using NUnit.Framework;
 using Piranha.AspNetCore.Identity.SQLServer;
 using SolrNet;
@@ -130,7 +130,6 @@ namespace Catfish.UnitTests
             var templates = appdb.ItemTemplates.ToList();
             foreach(var template in templates)
             {
-                template.InitializeWorkflow();
                 if (template.Workflow != null)
                 {
                     foreach (var group in appdb.Groups.ToList())

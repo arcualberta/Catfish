@@ -17,7 +17,7 @@ namespace Catfish.Core.Models.Contents
         }
 
         public string ConcatenatedContent => GetConcatenatedContent(" | ");
-        public string ConcatenatedRichText => GetConcatenatedRichText();
+        public string ConcatenatedRichText => GetConcatenatedContent("");
 
         public XmlModelList<Text> Values { get; protected set; }
 
@@ -80,18 +80,6 @@ namespace Catfish.Core.Models.Contents
             return string.Join(separator, selected);
         }
 
-        public string GetConcatenatedRichText()
-        {
-            var selected = Values
-                .Where(v => !string.IsNullOrEmpty(v.Value))
-                .SelectMany(v => v.Data.Elements())
-                .ToList();
-
-            string[] str = selected.Select(v => v.ToString()).ToArray();
-            return string.Concat(str);
-        }
-
-
         public void UpdateValues(MultilingualValue srcValue)
         {
             foreach(var txt in Values)
@@ -99,6 +87,15 @@ namespace Catfish.Core.Models.Contents
                 var srcTxt = srcValue.Values.Where(t => t.Id == txt.Id).FirstOrDefault();
                 txt.Value = srcTxt.Value;
             }
+        }
+
+        public void UpdateValue(Guid txtId, string value, string lang)
+        {
+            var text = Values.Where(txt => txt.Id == txtId).FirstOrDefault();
+            if (text != null)
+                text.Value = value;
+            else
+                Values.Add(new Text() { Value = value, Language = lang });
         }
     }
 }

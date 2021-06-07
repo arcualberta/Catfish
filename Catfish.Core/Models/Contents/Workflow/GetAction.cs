@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -93,6 +94,16 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newPostAction;
         }
 
+        public PostAction AddPostAction(string buttonLable, string function, string successMessage)
+        {
+            if (PostActions.FindByAttribute(PostAction.LableAtt, buttonLable) != null)
+                throw new Exception(string.Format("Post action {0} already exists.", buttonLable));
+
+            PostAction newPostAction = new PostAction() { ButtonLabel = buttonLable, Function = function, SuccessMessage = successMessage};
+            PostActions.Add(newPostAction);
+            return newPostAction;
+        }
+
         public StateRef GetStateReference(Guid stateId, bool createIfNotExist)
         {
             StateRef stateRef = States.Where(sr => sr.RefId == stateId).FirstOrDefault();
@@ -123,6 +134,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             stateRef.AuthorizedDomains.Add(d);
             return d;
         }
+
         public StateRef AddStateReferances(Guid refId)
         {
             if (States.Where(st => st.Id == refId).Any())
@@ -142,9 +154,37 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             if (!string.IsNullOrWhiteSpace(userEmail) && stateRef.AuthorizedDomains.Count > 0)
             {
-                string emailDomain = userEmail.Substring(userEmail.IndexOf("@"));
-                return stateRef.AuthorizedDomains.Where(d => d.Value == emailDomain).Any();
+                string emailDomain = userEmail.Substring(userEmail.IndexOf("@"));                 
+                return stateRef.AuthorizedDomains.Where(d => d.Value == emailDomain).Any(); ;
             }
+            return false;
+        }
+
+        public bool IsAuthorizedByEmailField(Entity entity, string userEmail)
+        {
+            var stateId = entity.StatusId;
+            StateRef stateRef = States.Where(st => st.RefId == stateId).FirstOrDefault();
+
+            if (stateRef == null)
+                throw new Exception(string.Format("Requested state does not exist within the GetAction."));
+
+            foreach(var fieldRef in stateRef.AuthorizedEmailFields)
+            {
+                var dataItem = entity.DataContainer.Where(di => di.TemplateId == fieldRef.DataItemId).FirstOrDefault();
+                if (dataItem != null)
+                {
+                    var emailFieldVals = dataItem.Fields
+                        .Where(df => df.Id == fieldRef.FieldId)
+                        .Select(df => df as EmailField)
+                        .SelectMany(ef => ef.Values)
+                        .Select(txt => txt.Value)
+                        .ToList();
+
+                    if (emailFieldVals.Contains(userEmail))
+                        return true;
+                }
+            }
+
             return false;
         }
 

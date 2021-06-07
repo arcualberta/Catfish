@@ -29,7 +29,8 @@ const managerSideEntryPaths = {
 };
 
 const publicFacingEntryPaths = {
-    keywordsSearchBundle: "./wwwroot/assets/js/_public-facing/keywords-search-block-public.js"
+    //keywordsSearchBundle: "./wwwroot/assets/js/_public-facing/keywords-search-block-public.js"
+    'calendar-block-vue': "./wwwroot/assets/js/_public-facing/calendar-block.js"
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -140,22 +141,22 @@ module.exports = [
         module: {
             rules: moduleRules
         },
-        plugins: [new VueLoaderPlugin(),
-            new webpack.ProvidePlugin({
-                Vue: ['vue/dist/vue.esm.js', 'default']
-            })
-        ],
-        optimization: {
-            splitChunks: {
-                cacheGroups: {
-                    commons: {
-                        test: /[\\/]node_modules[\\/]/,
-                        name: "vendorsPublicFacingSide",
-                        chunks: "all"
-                    }
-                }
-            }
-        },
+        //plugins: [new VueLoaderPlugin(),
+        //    new webpack.ProvidePlugin({
+        //        Vue: ['vue/dist/vue.esm.js', 'default']
+        //    })
+        //],
+        //optimization: {
+        //    splitChunks: {
+        //        cacheGroups: {
+        //            commons: {
+        //                test: /[\\/]node_modules[\\/]/,
+        //                name: "vendorsPublicFacingSide",
+        //                chunks: "all"
+        //            }
+        //        }
+        //    }
+        //},
         devtool: devTool
     }
 ]; 

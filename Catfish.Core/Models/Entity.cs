@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Reports;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Catfish.Core.Models
     {
         public static readonly string Tag = "entity";
         public static readonly string MetadataSetsRootTag = "metadata-sets";
+        public static readonly string ReportsRootTag = "reports";
         public static readonly string AuditTrailRootTag = "audit-trail";
         public static readonly string DataContainerRootTag = "data-container";
 
@@ -61,7 +63,6 @@ namespace Catfish.Core.Models
             set => Data.SetAttributeValue("created", value);
         }
 
-        [NotMapped]
         public DateTime? Updated
         {
             get => GetDateTimeAttribute("updated");
@@ -74,13 +75,6 @@ namespace Catfish.Core.Models
         {
             get => GetGuidAttribute("template-id");
             set => Data.SetAttributeValue("template-id", value);
-        }
-
-        [NotMapped]
-        public Guid? StateId
-        {
-            get => GetGuidAttribute("state-id");
-            set => Data.SetAttributeValue("state-id", value);
         }
 
         [NotMapped]
@@ -98,7 +92,11 @@ namespace Catfish.Core.Models
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
 
         [NotMapped]
-        public XmlModelList<AuditTrail> AuditTrail { get; protected set; }
+        public XmlModelList<BaseReport> Reports { get; protected set; }
+
+
+        [NotMapped]
+        public XmlModelList<AuditEntry> AuditTrail { get; protected set; }
 
         [NotMapped]
         public XmlModelList<DataItem> DataContainer { get; protected set; }
@@ -114,10 +112,17 @@ namespace Catfish.Core.Models
         public SystemStatus Status { get; set; }
         
         [Column("StatusId")]
-        public Guid? StatusId { get; set; }
+        public Guid? StatusId 
+        {
+            get => GetGuidAttribute("status-id");
+            set => Data.SetAttributeValue("status-id", value);
+        }
 
         [Column("UserEmail")]
         public string UserEmail { get; set; }
+
+        [NotMapped]
+        public string ConcatenatedName { get { return Name.GetConcatenatedContent(" | "); } }
 
 
         public Entity()
@@ -173,8 +178,10 @@ namespace Catfish.Core.Models
             //Building the Metadata Set list
             MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
 
+            //Building the report list
+            Reports = new XmlModelList<BaseReport>(xml.GetElement(ReportsRootTag, true), true);
             //Building the Audit Trail Set list
-            AuditTrail = new XmlModelList<AuditTrail>(xml.GetElement(AuditTrailRootTag, true), true);
+            AuditTrail = new XmlModelList<AuditEntry>(xml.GetElement(AuditTrailRootTag, true), true);
 
             //Building the DataContainer
             DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);
@@ -241,15 +248,76 @@ namespace Catfish.Core.Models
             return dataItem;
         }
 
-        public Entity AddAuditEntry(Guid? userId, Guid statusFrom, Guid statusTo)
+        public MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists, string nameLang = "en")
         {
-            AuditTrail.Add(new AuditTrail()
+            MetadataSet metadatSet = MetadataSets
+                .Where(di => di.GetName(nameLang) == metadataSetName)
+                .FirstOrDefault();
+
+            if (metadatSet == null && createIfNotExists)
+            {
+                metadatSet = new MetadataSet();
+                metadatSet.SetName(metadataSetName, nameLang);
+                MetadataSets.Add(metadatSet);
+            }
+            return metadatSet;
+        }
+
+        public MetadataSet GetMetadataSet(Guid metadataSetId)
+        {
+            return MetadataSets
+                .Where(di => di.Id == metadataSetId)
+                .FirstOrDefault();
+        }
+
+
+        public Entity AddAuditEntry(Guid? userId, Guid statusFrom, Guid statusTo, string action)
+        {
+            AuditTrail.Add(new AuditEntry()
             {
                 UserId = userId,
                 StatusFrom = statusFrom,
-                StatusTo = statusTo
-            });
+                StatusTo = statusTo,
+                Action = action
+            }) ;
             return this;
+        }
+
+        public static Entity Parse(XElement xml, bool clone = false)
+        {
+            string typeString = xml.Attribute("model-type").Value;
+            var type = Type.GetType(typeString);
+            Entity template = Activator.CreateInstance(type) as Entity;
+
+            template.Content = xml.ToString();
+            if(clone)
+            {
+                template.Id = Guid.NewGuid();
+                template.Created = DateTime.Now;
+            }
+
+            if (typeof(EntityTemplate).IsAssignableFrom(type))
+                (template as EntityTemplate).TemplateName = template.Name.GetConcatenatedContent(" | ");
+
+            return template;
+        }
+
+
+        public MetadataSet GetMetadataSet(string metadataSetName, string lang, bool createIfNotExists, bool markAsTemplateMetadataSetIfCreated)
+        {
+            MetadataSet ms = MetadataSets
+            .Where(ms => ms.GetName(lang) == metadataSetName)
+            .FirstOrDefault();
+
+            if (ms == null && createIfNotExists)
+            {
+                ms = new MetadataSet();
+                ms.SetName(metadataSetName, lang);
+                MetadataSets.Add(ms);
+                if (markAsTemplateMetadataSetIfCreated)
+                    ms.IsTemplate = true;
+            }
+            return ms;
         }
     }
 }

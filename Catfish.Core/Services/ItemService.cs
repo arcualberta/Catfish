@@ -9,16 +9,22 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using ElmahCore;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using Catfish.Core.Helpers;
+using Catfish.Core.Models.Contents.Fields.ViewModels;
 
 namespace Catfish.Core.Services
 {
     public class ItemService : DbEntityService
     {
+        private readonly IConfiguration _configuration;
 
-        public ItemService(AppDbContext db, ErrorLog errorLog)
+        public ItemService(AppDbContext db, ErrorLog errorLog, IConfiguration configuration)
             : base(db, errorLog)
         {
-
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -113,21 +119,89 @@ namespace Catfish.Core.Services
         }
 
         
-        public void UpdateItemlDataModel(Item model)
+        public void UpdateItemlDataModel(ItemVM viewModel)
         {
             try
             {
-                Item itemData = Db.Items.Where(i => i.Id == model.Id).FirstOrDefault();
-                itemData.Content = model.Content;
-                itemData.Created = model.Created;
-                itemData.Updated = DateTime.Now;
-                itemData.PrimaryCollectionId = model.PrimaryCollectionId;
+                Item dataModel = Db.Items.Where(i => i.Id == viewModel.Id).FirstOrDefault();
+
+                //Delegating the responsibility of updating the data model to the view model
+                viewModel.UpdateDataModel(dataModel);
+
+                dataModel.Updated = DateTime.Now;
+
+                Db.SaveChanges();
+
                 //solrIndexService.AddUpdate(new SolrItemModel(model));
             }
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
+                throw ex;
             }
+        }
+
+        public List<FileReference> UploadFiles(ICollection<IFormFile> files)
+        {
+            string uploadRoot = ConfigHelper.GetUploadTempFolder(true);
+            List<FileReference> fileReferences = new List<FileReference>();
+            foreach (IFormFile file in files)
+            {
+                FileReference fileRef = new FileReference();
+                fileRef.Size = file.Length;
+                fileRef.OriginalFileName = file.FileName;
+                fileRef.FileName = fileRef.Id + "_" + file.FileName.Replace(" ", "_");
+                fileRef.ContentType = file.ContentType;
+                fileRef.Thumbnail = GetThumbnail(file.ContentType);
+
+                //Destination absolute path name
+                string pathName = Path.Combine(uploadRoot, fileRef.FileName);
+                using (var stream = new FileStream(pathName, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                fileReferences.Add(fileRef);
+            }
+
+            return fileReferences;
+        }
+
+        public string GetThumbnail(string contentType)
+        {
+            string icon_path = "/assets/images/icons/";
+
+            if (contentType == "application/pdf")
+                return Path.Combine(icon_path, "pdf.png");
+
+            if (contentType == "application/msword")
+                return Path.Combine(icon_path, "doc.png");
+
+            if (contentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                return Path.Combine(icon_path, "docx.png");
+
+            if (contentType == "application/vnd.ms-excel")
+                return Path.Combine(icon_path, "xls.png");
+
+            if (contentType == "application/x-zip-compressed")
+                return Path.Combine(icon_path, "zip.png");
+
+            if (contentType == "image/jpeg")
+                return Path.Combine(icon_path, "jpg.png");
+
+            if (contentType == "image/png")
+                return Path.Combine(icon_path, "png.png");
+
+            if (contentType == "image/tiff")
+                return Path.Combine(icon_path, "tiff.png");
+
+            if (contentType == "text/html")
+                return Path.Combine(icon_path, "html.png");
+
+            if (contentType == "text/xml")
+                return Path.Combine(icon_path, "xml.png");
+
+            return Path.Combine(icon_path, "other.png");
         }
     }
 }

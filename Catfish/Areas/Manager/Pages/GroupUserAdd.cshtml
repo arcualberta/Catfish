@@ -3,10 +3,17 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishConfig;
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using Catfish.Core.Models
 
+@{ 
+    string addUserDescription = _catfishConfig.GetValue("SiteConfig:AddingUserDescription","");
 
+    if (string.IsNullOrWhiteSpace(addUserDescription))
+        addUserDescription = "Please enter user email address(es) one line per email (please use UAlberta CCID email whenever applicable)!";
+}
     @*@Html.HiddenFor(m => m.Group.Id)*@
     <div class="top">
         <nav aria-label="breadcrumb">
@@ -24,7 +31,7 @@
 @*<form id="user-search-form" method="get">*@
     <div class="container-fluid">
         <div class="card">
-            <form id="user-search-form" method="get">
+            @*<form id="user-search-form" method="get">
                 <div class="card-header">
                     <span class="title">@Localizer.General["Users"]</span>
 
@@ -38,7 +45,7 @@
                                </button>
                     </span>
                 </div>
-            </form>
+            </form>*@
             <form id="item-edit-form" class="edit-form" method="post" novalidate>
                 <div class="card-body">
                     <div class="container-fluid">
@@ -49,7 +56,7 @@
                                     <span class="btn-label">
                                         <i class="fas fa-user-plus"></i>
                                     </span>
-                                    @Localizer.General["Add User"]
+                                    @Localizer.General["Add User(s)"]
                                 </button>
                             }
                         </div>
@@ -57,8 +64,7 @@
                     <div class="form-group">
                         <div class="container-fluid">
 
-                            @*<form id="item-edit-form" class="edit-form" method="post" novalidate>*@
-                            <table class="table table-borderless">
+                            @*<table class="table table-borderless">
                                 <thead>
                                     <tr>
                                         <th>@Localizer.General["User Name"]</th>
@@ -73,7 +79,11 @@
 
                                     }
                                 </tbody>
-                            </table>
+                            </table>*@
+                            <h5>Add User(s)</h5>
+                            <br />
+                            <div class="alert alert-info">Please enter one user-email per line in the CCID@ualberta.ca format. </div>
+                            @Html.TextAreaFor(m=>m.AdditinalUsers, new { @cols = 30, @rows = 5 })
                             @*</form>*@
                         </div>
                     </div>

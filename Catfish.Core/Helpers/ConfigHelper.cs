@@ -12,7 +12,50 @@ namespace Catfish.Core.Helpers
 
         public static IConfiguration Configuration { get; set; }
 
-        public enum eImageSize { Thumbnail = 150, Small = 256, Medium = 512, Large = 1024 } //in px
+        public static string UploadRoot
+        {
+            get
+            {
+                var configSection = Configuration.GetSection("SiteConfig:UploadRoot");
+                string path = (configSection == null || string.IsNullOrEmpty(configSection.Value))
+                    ? "App_Data/uploads/"
+                    : configSection.Value;
+
+                return path;
+            }
+        }
+
+        public static string SiteUrl
+        {
+            get
+            {
+                string val = Configuration.GetSection("SiteConfig:SiteUrl").Value;
+                return string.IsNullOrEmpty(val) ? null : val.TrimEnd('/');
+            }
+        }
+
+        public static string GetUploadTempFolder(bool createIfNotExist = false)
+        {
+            string path = Path.Combine(UploadRoot, "temp");
+
+            if (createIfNotExist)
+                Directory.CreateDirectory(path);
+
+            return path;
+        }
+
+        public static string GetAttachmentsFolder(bool createIfNotExist = false)
+        {
+            string path = Path.Combine(UploadRoot, "attachments"); ;
+
+            if (createIfNotExist)
+                Directory.CreateDirectory(path);
+
+            return path;
+        }
+
+
+        //public enum eImageSize { Thumbnail = 150, Small = 256, Medium = 512, Large = 1024 } //in px
 
         public static char FileGuidSeparator = '|';
 
@@ -75,20 +118,14 @@ namespace Catfish.Core.Helpers
             }
         }
 
-        public static string GetLanguageLabel(string languageCode)
-        {
-            string label = Languages.Where(c => c.TwoLetterISOLanguageName == languageCode).Select(c => c.NativeName).FirstOrDefault();
-            return string.IsNullOrEmpty(label) ? languageCode : label;
-        }
+        //public static string GetLanguageLabel(string languageCode)
+        //{
+        //    string label = Languages.Where(c => c.TwoLetterISOLanguageName == languageCode).Select(c => c.NativeName).FirstOrDefault();
+        //    return string.IsNullOrEmpty(label) ? languageCode : label;
+        //}
 
-        public static string GlobalAccessModes { get { return Configuration["GlobalAccessModes"]; } }
 
-        public static string UploadRoot { get { return Configuration["UploadRoot"]; } }
-
-        public static string DataRoot { get { return Path.Combine(UploadRoot, "Data"); } }
-
-        public static int ThumbnailSize { get { return 150; } }
-
-        public static int PageSize { get { return (Configuration["PageSize"] != null) ? int.Parse(Configuration["PageSize"]) : 25; } }
+        //public static int ThumbnailSize { get { return 150; } }
+        //public static int PageSize { get { return (Configuration["PageSize"] != null) ? int.Parse(Configuration["PageSize"]) : 25; } }
     }
 }

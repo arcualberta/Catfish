@@ -2,6 +2,7 @@
 using Catfish.Core.Models.ViewModels;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
@@ -10,6 +11,7 @@ using Piranha.AspNetCore.Identity.SQLServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Catfish.Core.Services
 {
@@ -18,11 +20,13 @@ namespace Catfish.Core.Services
         private readonly AppDbContext _appDb;
         private readonly IdentitySQLServerDb _piranhaDb;
         private readonly ErrorLog _errorLog;
-        public GroupService(AppDbContext db, IdentitySQLServerDb pdb, ErrorLog errorLog)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public GroupService(AppDbContext db, IdentitySQLServerDb pdb, IHttpContextAccessor httpContextAccessor, ErrorLog errorLog)
         {
             _appDb = db;
             _piranhaDb = pdb;
             _errorLog = errorLog;
+            _httpContextAccessor = httpContextAccessor;
         }
         /// <summary>
         /// This will return all groups except which groups have there status as deleted.
@@ -160,13 +164,18 @@ namespace Catfish.Core.Services
         {
             try
             {
-                UserGroupRole ugr = new UserGroupRole()
+                UserGroupRole ugr = _appDb.UserGroupRoles.Where(ugr => ugr.UserId == userId && ugr.GroupRoleId == groupRoleId).FirstOrDefault();
+
+                if (ugr == null)
                 {
-                    Id = Guid.NewGuid(),
-                    GroupRoleId = groupRoleId,
-                    UserId = userId,
-                };
-                _appDb.UserGroupRoles.Add(ugr);
+                    ugr = new UserGroupRole()
+                    {
+                        Id = Guid.NewGuid(),
+                        GroupRoleId = groupRoleId,
+                        UserId = userId,
+                    };
+                    _appDb.UserGroupRoles.Add(ugr);
+                }
 
                 return ugr;
             }
@@ -433,51 +442,54 @@ namespace Catfish.Core.Services
 
                 dbGroup.Name = group.Name;
                 dbGroup.GroupStatus = group.GroupStatus;
-                //get group roles details from GroupRoles table
-                List<GroupRole> dbGroupRoles = _appDb.GroupRoles.Where(r => r.GroupId == group.Id).ToList();
-                //get roles associate data from interface 
-                List<GroupRoleAssignmentVM> newList = roles;
-                List<GroupRole> selectedGroupRoles = new List<GroupRole>();
-                //get all selected roles list
-                foreach (var role in newList)
-                {
-                    try
+
+                if (roles.Count > 0) 
+                { 
+                    //get group roles details from GroupRoles table
+                    List<GroupRole> dbGroupRoles = _appDb.GroupRoles.Where(r => r.GroupId == group.Id).ToList();
+                    //get roles associate data from interface 
+                    List<GroupRoleAssignmentVM> newList = roles;
+                    List<GroupRole> selectedGroupRoles = new List<GroupRole>();
+                    //get all selected roles list
+                    foreach (var role in newList)
                     {
-                        if (role.Assigned)
+                        try
                         {
-                            var newGroupRole = new GroupRole();
-                            if (role.RoleGroupId == null)
-                                newGroupRole.Id = Guid.NewGuid();
-                            else
-                                newGroupRole.Id = (Guid)role.RoleGroupId;
+                            if (role.Assigned)
+                            {
+                                var newGroupRole = new GroupRole();
+                                if (role.RoleGroupId == null)
+                                    newGroupRole.Id = Guid.NewGuid();
+                                else
+                                    newGroupRole.Id = (Guid)role.RoleGroupId;
 
-                            newGroupRole.RoleId = role.RoleId;
-                            newGroupRole.Group = dbGroup;
-                            newGroupRole.GroupId = dbGroup.Id;
-                            selectedGroupRoles.Add(newGroupRole);
+                                newGroupRole.RoleId = role.RoleId;
+                                newGroupRole.Group = dbGroup;
+                                newGroupRole.GroupId = dbGroup.Id;
+                                selectedGroupRoles.Add(newGroupRole);
+                            }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        _errorLog.Log(new Error(ex));
-                    }
+                        catch (Exception ex)
+                        {
+                            _errorLog.Log(new Error(ex));
+                        }
                     
+                    }
+                    //get all newly added roles to a list
+                    List<GroupRole> newlyAddedRoles = selectedGroupRoles.Except(dbGroupRoles, new GroupRoleComparer()).ToList();
+                    //get all deleted roles to a list
+                    List<GroupRole> deletedRoles = dbGroupRoles.Except(selectedGroupRoles, new GroupRoleComparer()).ToList();
+
+
+                    //add newly added roles to GroupRoles table
+                    if (newlyAddedRoles.Count > 0)
+                        foreach (var groupRole in newlyAddedRoles)
+                            _appDb.GroupRoles.Add(groupRole);
+                    //remove deleted roles from GroupRoles table
+                    if (deletedRoles.Count > 0)
+                        foreach (var groupRole in deletedRoles)
+                            _appDb.GroupRoles.Remove(groupRole);
                 }
-                //get all newly added roles to a list
-                List<GroupRole> newlyAddedRoles = selectedGroupRoles.Except(dbGroupRoles, new GroupRoleComparer()).ToList();
-                //get all deleted roles to a list
-                List<GroupRole> deletedRoles = dbGroupRoles.Except(selectedGroupRoles, new GroupRoleComparer()).ToList();
-
-
-                //add newly added roles to GroupRoles table
-                if (newlyAddedRoles.Count > 0)
-                    foreach (var groupRole in newlyAddedRoles)
-                        _appDb.GroupRoles.Add(groupRole);
-                //remove deleted roles from GroupRoles table
-                if (deletedRoles.Count > 0)
-                    foreach (var groupRole in deletedRoles)
-                        _appDb.GroupRoles.Remove(groupRole);
-
                 return dbGroup;
             }
             catch (Exception ex)
@@ -620,6 +632,77 @@ namespace Catfish.Core.Services
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
+            }
+        }
+
+        public bool CheckLoggedUser(Guid userId, Guid groupRoleId)
+        {
+            try
+            {
+                string loggedUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                UserGroupRole usergroupRole = _appDb.UserGroupRoles
+                                            .Include(gr => gr.GroupRole)
+                                            .Where(gr => gr.GroupRoleId == groupRoleId && gr.UserId == userId).FirstOrDefault();
+                
+                if (_httpContextAccessor.HttpContext.User.IsInRole("SysAdmin"))
+                    return false;
+                else if (_piranhaDb.Roles.Where(r => r.Id == usergroupRole.GroupRole.RoleId && r.NormalizedName == "GROUPADMIN").Any() && usergroupRole.UserId == Guid.Parse(loggedUserId))
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return false;
+            }
+        }
+
+        public List<string> GetUserEmailListByRole(Guid roleId, Guid groupId)
+        {
+            try
+            {
+                List<string> emailList = new List<string>();
+                var groupRoleUsers = _appDb.UserGroupRoles.Include(gr => gr.GroupRole).Where(gr => gr.GroupRole.RoleId == roleId && gr.GroupRole.GroupId == groupId);
+
+                foreach (var groupRoleUser in groupRoleUsers)
+                    emailList.Add(_piranhaDb.Users.Where(u => u.Id == groupRoleUser.UserId).Select(u => u.Email).FirstOrDefault());
+
+                return emailList;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+            
+        }
+
+        public bool isGroupAdmin(Guid userId, Guid groupId)
+        {
+            try
+            {
+                Guid groupAdminRoleId = _piranhaDb.Roles
+                    .Where(r => r.NormalizedName == "GROUPADMIN")
+                    .Select(r => r.Id)
+                    .FirstOrDefault();
+
+                if (groupAdminRoleId == null || groupAdminRoleId == Guid.Empty)
+                    throw new Exception("Group Admin role cannot be found !");
+
+                bool isGroupAdmin = _appDb.UserGroupRoles.Include(gr => gr.GroupRole)
+                    .Where(gr => gr.GroupRole.GroupId == groupId 
+                              && gr.UserId == userId 
+                              && gr.GroupRole.RoleId == groupAdminRoleId)
+                    .Any();
+
+                return isGroupAdmin;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return false;
             }
         }
     }

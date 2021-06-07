@@ -1,67 +1,70 @@
 ﻿@page
 @model Catfish.Pages.LoginPageModel
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
 @{
 
     ViewBag.Title = "Login";
-    bool allowGoogleLogin =  _catfishAppConfig.IsAllowGoogleLogin();
+    bool allowGoogleLogin = _catfishAppConfig.IsAllowGoogleLogin();
     string AllowDomains = _catfishAppConfig.GetAllowDomain();
     string DeniedMessage = _catfishAppConfig.GetUnauthorizedLoginMessage();
     bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
+    var q = _httpContextAccessor.HttpContext.Request.Query;
+    string ret = q.Keys.Contains("ret") ? q["ret"].ToString() : "/";
 }
 
 
-    <div class="container">
-        <article>
+<div class="container">
+    <article>
 
-            @if (enabledLocalLogin)
-            {
-                <h2>@ViewBag.Title</h2>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <form method="post">
-                            @Html.AntiForgeryToken()
-                            <div class="form-group">
-                                <label>User name</label>
-                                @*<input type="text" name="Username" class="form-control" />*@
-                                @Html.TextBoxFor(m => m.Username, null, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                @*<input type="password" name="Password" class="form-control" />*@
-                                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                            </div>
-                            <button class="btn btn-success">Login</button>
-                        </form>
-
-                    </div>
-                </div>
-            }
-        </article>
-        @Html.AntiForgeryToken()
-        @if (allowGoogleLogin)
+        @if (enabledLocalLogin)
         {
-            <div class="grid_4 box login">
-                <div id="socialLoginDiv">
-                    <h2>Login With: </h2>
-                    <hr />
-                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                  
+            <h2>@ViewBag.Title</h2>
+            <div class="row">
+                <div class="col-sm-4">
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label>User name</label>
+                            @*<input type="text" name="Username" class="form-control" />*@
+                            @Html.TextBoxFor(m => m.Username, null, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            @*<input type="password" name="Password" class="form-control" />*@
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        </div>
+                        <button class="btn btn-success">Login</button>
+                    </form>
 
                 </div>
-            </div>
-            <div class="alert alert-warning alert-dismissible allowDomain" style="visibility: hidden; text-align:center;">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong>Warning!</strong> @DeniedMessage
             </div>
         }
-    </div>
+    </article>
+    @Html.AntiForgeryToken()
+    @if (allowGoogleLogin)
+    {
+        <div class="grid_4 box login">
+            <div id="socialLoginDiv">
+                <h2>Login With: </h2>
+                <hr />
+                <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
 
-    <script>
+            </div>
+        </div>
+        <div class="alert alert-warning alert-dismissible allowDomain" style="visibility: hidden; text-align:center;">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Warning!</strong> @DeniedMessage
+        </div>
+    }
+</div>
+
+
+<script>
    var allowDomains = ('@AllowDomains').split(',');
      var allowed = true;
-    
+
 
  function onSignIn(googleUser) {
        var profile = googleUser.getBasicProfile();
@@ -109,10 +112,10 @@
                          $('input:hidden[name="__RequestVerificationToken"]').val()
                  }
              }).done(function (result) {
-                 window.location.href = "/";
+                 window.location.href = "@ret";
              });
          }
      }
 }
 
-    </script>
+</script>

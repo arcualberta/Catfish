@@ -14,14 +14,17 @@ namespace Catfish.Areas.Manager.Pages
     public class CollectionListModel : PageModel
     {
         private DbEntityService _srv;
-        public IQueryable<EntityListEntry> Children { get; set; }
+        public IList<EntityListEntry> Children { get; set; }
         public CollectionListModel(DbEntityService srv)
         {
             _srv = srv;
         }
         public void OnGet()
         {
-            Children = _srv.GetEntityList<Collection>();
+            Children = _srv.GetEntityList<Collection>()
+                .ToList()
+                .OrderBy(entry => entry.ConcatenatedName)
+                .ToList();
         }
     }
 }

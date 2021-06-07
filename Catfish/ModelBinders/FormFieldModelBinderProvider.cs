@@ -27,7 +27,11 @@ namespace Catfish.ModelBinders
                 typeof(RadioField), 
                 typeof(SelectField), 
                 typeof(TextArea), 
-                typeof(TextField) 
+                typeof(TextField),
+                typeof(CompositeField),
+                typeof(AttachmentField),
+                typeof(EmailField),
+                typeof(TableField)
             };
 
             var binders = new Dictionary<Type, (ModelMetadata, IModelBinder)>();

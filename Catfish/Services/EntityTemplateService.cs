@@ -1,4 +1,6 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Workflow;
 using ElmahCore;
 using Microsoft.AspNetCore.Identity;
 using Piranha.AspNetCore.Identity.Data;
@@ -7,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Catfish.Services
 {
@@ -76,6 +79,20 @@ namespace Catfish.Services
 
         }
 
+        public async Task<EntityTemplate> GetTemplateAsync(Guid? templateId)
+        {
+            try
+            {
+                return await _db.EntityTemplates
+                    .FindAsync(templateId) //Handle the request asynchronously
+                    .ConfigureAwait(false); //Request can be handled in a separate thread
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
         public EntityTemplate GetTemplate(Guid? templateId)
         {
             try
@@ -118,6 +135,9 @@ namespace Catfish.Services
                     }
                     else
                     {
+                        //TODO: Check whether this template is authprized to access by the domain of the currently logged-in user.
+
+
                         //Finding all groups where the user possess some role and then
                         //getting all templates associated with those groups
                         List<Guid> selectTemplateIds = new List<Guid>();
@@ -161,5 +181,41 @@ namespace Catfish.Services
             }
         }
 
+        public XmlModelList<GetAction> GetTemplateActions(Guid? templateId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+
+            XmlModel xml = new XmlModel(template.Data);
+            XElement element = xml.GetElement(Workflow.TagName, false);// false -- don't cretae if not existed'
+            Workflow workflow = new Workflow(element);
+            
+            return workflow.Actions;
+         
+        }
+
+        public XmlModelList<MetadataSet> GetTemplateMetadataSets(Guid? templateId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+
+            //XmlModel xml = new XmlModel(template.MetadataSets);
+            //XElement element = xml.GetElement(Workflow.TagName, false);// false -- don't cretae if not existed'
+            //Workflow workflow = new Workflow(element);
+
+            return template.MetadataSets;
+
+        }
+
+        public FieldList GetTemplateMetadataSetFields(Guid? templateId, Guid? metadatasetId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+            MetadataSet ms = template.MetadataSets.Where(m => m.Id == metadatasetId).FirstOrDefault();
+
+            //XmlModel xml = new XmlModel(template.MetadataSets);
+            //XElement element = xml.GetElement(Workflow.TagName, false);// false -- don't cretae if not existed'
+            //Workflow workflow = new Workflow(element);
+
+            return ms.Fields;
+
+        }
     }
 }

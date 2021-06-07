@@ -1,14 +1,22 @@
 ﻿@page "~/manager/groups"
 @model Catfish.Areas.Manager.Pages.GroupListModel
-@inject Piranha.Manager.ManagerLocalizer Localizer
+
 @using Microsoft.AspNetCore.Authorization
+@using Catfish.Core.Authorization.Requirements;
+
+@inject Piranha.Manager.ManagerLocalizer Localizer
 @inject IAuthorizationService AuthorizationService
-@inject  Catfish.Core.Services.IGroupService GroupService
+@inject Catfish.Core.Services.IGroupService GroupService
+@inject Catfish.Helper.ICatfishAppConfiguration _config
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewBag.Title = Localizer.Page["Groups"];
     ViewBag.MenuItem = "Groups";
+
+    var siteURL = _config.GetSiteURL().TrimEnd('/');
+    string groupEditURL = siteURL + "/manager/groups/edit";
 }
 
 @section script
@@ -32,7 +40,7 @@
                 @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Add)).Succeeded)
                 {
 
-                    <a href="edit" class="btn btn-labeled btn-primary pull-right">
+                    <a href="@groupEditURL" class="btn btn-labeled btn-primary pull-right">
                         <i class="fas fa-plus"></i>@Localizer.General["Add"]
                     </a>
                 }
@@ -52,56 +60,55 @@
         <tbody>
             @foreach (var group in Model.Groups)
             {
-                <tr>
-                    <td>
-                        @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Edit)).Succeeded)
-                        {
-                            <a href="@string.Format("edit/{0}", group.Id)"> @group.Name</a>
-                        }
-                        else
-                        {
-                            <span class="title">@group.Name</span>
-                        }
-                    </td>
-                    <td class="actions one">
-                        @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Delete)).Succeeded)
-                        {
-                            if (!GroupService.CheckUserGroupRole(group.Id))
+                @if ((await AuthorizationService.AuthorizeAsync(User, group, new List<IAuthorizationRequirement>() { GroupOperations.UpdateGroup })).Succeeded)
+                {
+                    <tr>
+                        <td>
+                                <a href="@string.Format("/manager/groups/edit/{0}", group.Id)"> @group.Name</a>
+                            
+                        </td>
+                        <td class="actions one">
+                            @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Delete)).Succeeded)
                             {
-                                <a class="danger" onclick="return false;" href="#" data-toggle="modal" data-target="#groupModal" data-content="@group.Id" onclick="addUser('@group.Id', '@group.Name'); return false;">
-                                    <span class="fas fa-trash"></span>
-                                </a>
-                            }
-                            <!-- Modal -->
-                            <form method="post">
+                                if (!GroupService.CheckUserGroupRole(group.Id))
+                                {
+                                    <a class="danger" href="#" data-toggle="modal" data-target="#groupModal" data-content="@group.Id" onclick="addUser('@group.Id', '@group.Name'); return false;">
+                                        <span class="fas fa-trash"></span>
+                                    </a>
+                                }
+                                <!-- Modal -->
+                                <form method="post">
 
-                                <div id="groupModal" class="modal fade" role="dialog">
-                                    <div class="modal-dialog">
-                                        <!-- Modal content-->
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="myModalLabel">Group Delete Confirmation</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="card-body">
-                                                    <div class="form-group">
-                                                        <input type="hidden" name="GroupId" id="GroupId" value="" />
-                                                        <h5>Do you Really want to delete this Group?</h5>
+                                    <div id="groupModal" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myModalLabel">Group Delete Confirmation</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="hidden" name="GroupId" id="GroupId" value="" />
+                                                            <h5>Do you Really want to delete this Group?</h5>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button id="deleteConfirm" type="submit" class="btn btn-danger">Delete</button>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button id="deleteConfirm" type="submit" class="btn btn-danger">Delete</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
-                        }
-                    </td>
-                </tr>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+
+
             }
         </tbody>
     </table>

@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -43,18 +44,24 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newRecipient;
         }
 
-        public EmailRecipient AddRecipientByRole(string role)
+        public EmailRecipient AddRecipientByRole(Guid roleId, string roleName)
         {
-            if (Recipients.Where(x => x.Role == role).Any())
-                throw new Exception(string.Format("Email recipient role {0} already exists.", role));
+            if (Recipients.Where(x => x.RoleId == roleId).Any())
+                throw new Exception(string.Format("Email recipient role {0} already exists.", roleName));
 
-            EmailRecipient newRecipient = new EmailRecipient() { Role = role };
+            EmailRecipient newRecipient = new EmailRecipient() { RoleId = roleId };
             Recipients.Add(newRecipient);
             return newRecipient;
         }
 
-        public void AddRecipientByDataField(Guid dataItemId, Guid fieldId)
+        public EmailRecipient AddRecipientByDataField(Guid dataItemId, Guid fieldId)
         {
+            if(Recipients.Where(r=>r.DataContainerId == dataItemId && r.FieldId == fieldId).Any())          
+                throw new Exception(string.Format("Email recipient DataItem {0} and Feild {1} already exists.", dataItemId,fieldId));
+
+            EmailRecipient newRecipient = new EmailRecipient() { DataContainerId = dataItemId, FieldId = fieldId };
+            Recipients.Add(newRecipient);
+            return newRecipient;
 
         }
 
@@ -83,16 +90,17 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newRef;
         }
 
-        public override bool Execute(EntityTemplate template, TriggerRef triggerRef, IServiceProvider serviceProvider)
+        public override bool Execute(EntityTemplate template, Item item,TriggerRef triggerRef, IServiceProvider serviceProvider)
         {
             IEmailService emailService = serviceProvider.GetService<IEmailService>();
             IWorkflowService workflowService = serviceProvider.GetService<IWorkflowService>();
+            IGroupService groupService = serviceProvider.GetService<IGroupService>();
             IConfig config = serviceProvider.GetService<IConfig>();
+            string lang = "en";
 
             workflowService.SetModel(template);
             //get email trigger from workflow triggers using trigger referance.
             EmailTrigger selectedTrigger = (EmailTrigger)template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
-
             //get email template from selected workflow trigger.
             Guid emailReferanceId = selectedTrigger.Templates.Select(t => t.RefId).FirstOrDefault();
 
@@ -103,26 +111,56 @@ namespace Catfish.Core.Models.Contents.Workflow
                                     .Select(ms => ms.Value)
                                     .FirstOrDefault();
 
-            //get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
-            EmailTemplate emailTemplate = workflowService.GetEmailTemplate(emailTemplateName, false);
+            //get email template using workflow service GetEmailTemplate
+            EmailTemplate emailMessage = template.GetEmailTemplate(emailTemplateName, lang, false);
+            if (emailMessage == null)
+                return false;
+
+            //Make a clone and update references in the email body
+            emailMessage = emailMessage.Clone<EmailTemplate>();
+            emailMessage.UpdateRerefences("@SiteUrl", ConfigHelper.SiteUrl.TrimEnd('/'));
+            emailMessage.UpdateRerefences("@Item.Id", item.Id.ToString());
 
             //get all recipient in the trigger.
+            //Each recipient is identified in one of the following ways:
+            //  * recipient's email (which includes a role identified within the workflow)
+            //  * owner
+            //  * by the content of a field in a data-item
             var recipients = selectedTrigger.Recipients.ToList();
 
             //add recipient to the content
             foreach (var recipient in recipients)
             {
-                string emailRecipient;
+                List<string> emailRecipients = new List<string>();
                 if (recipient.Owner)
                 {
-                    emailRecipient = workflowService.GetLoggedUserEmail();
+                    if (item.UserEmail != null)
+                        emailRecipients.Add(item.UserEmail);
+                    else
+                        emailRecipients.Add(workflowService.GetLoggedUserEmail());
                 }
-                else
+                else if (recipient.FieldId.HasValue && recipient.FieldId != Guid.Empty)
                 {
-                    emailRecipient = recipient.Email;
+                    DataItem dataItem = item.DataContainer.Where(dc => dc.IsRoot == true).FirstOrDefault();
+                    //This means, we should retrieve the email from a data field in the passed data item
+                    var recipientEmails = dataItem.GetValues(recipient.FieldId.Value);
+                    emailRecipients.AddRange(recipientEmails);
+                }
+                else if(recipient.RoleId.HasValue && recipient.RoleId != Guid.Empty)
+                {
+                    //Retrieve the list of email addresses of all recipients that hold
+                    //the role identified by the recipient.RoleId within the group under
+                    //which this submission has been made.
+                    //Add each such email address to the emailRecipients array.
+                    emailRecipients.AddRange(groupService.GetUserEmailListByRole((Guid)recipient.RoleId, (Guid)item.GroupId));
+                }
+                else 
+                {
+                    emailRecipients.Add(recipient.Email);
                 }
                 //send email using email service
-                SendEmail(emailTemplate, emailRecipient, emailService, workflowService, config);
+                foreach(var emailRecipient in emailRecipients)
+                    SendEmail(emailMessage, emailRecipient, emailService, workflowService, config);
             }
 
             return true;

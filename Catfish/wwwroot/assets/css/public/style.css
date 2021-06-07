@@ -5,125 +5,183 @@
   background-position: 50% 50%; }
 
 header {
-  padding: 1rem 0; }
-  header h1 + .lead {
-    margin: 2rem 0; }
-  header.site-header.site-header-dark {
-    position: initial; }
-    header.site-header.site-header-dark .nav-site a {
-      color: #000; }
-      header.site-header.site-header-dark .nav-site a:hover {
-        color: #000; }
-    header.site-header.site-header-dark .nav-site .active a {
-      color: #000; }
-  header.page-header {
-    background-size: cover;
-    background-position: 50% 50%; }
+    padding: 1rem 0;
+}
+
+    header h1 + .lead {
+        margin: 2rem 0;
+    }
+
+    header.site-header.site-header-dark {
+        position: initial;
+    }
+
+        header.site-header.site-header-dark .nav-site a {
+            color: #000;
+        }
+
+            header.site-header.site-header-dark .nav-site a:hover {
+                color: #000;
+            }
+
+        header.site-header.site-header-dark .nav-site .active a {
+            color: #000;
+        }
+
+    header.page-header {
+        background-size: cover;
+        background-position: 50% 50%;
+    }
 
 .main {
-  margin: 3rem 0; }
-  .main img {
-    max-width: 100%; }
+    margin: 3rem 0;
+    min-height: 400px;
+}
+
+    .main img {
+        max-width: 100%;
+    }
 
 .teasers {
-  margin-bottom: 1rem; }
-  .teasers .teaser {
-    margin-bottom: 2rem; }
+    margin-bottom: 1rem;
+}
+
+    .teasers .teaser {
+        margin-bottom: 2rem;
+    }
 
 .archive-item {
-  padding-top: 3rem; }
-  .archive-item:first-child {
-    padding-top: 0; }
-  .archive-item a {
-    font-weight: 500; }
+    padding-top: 3rem;
+}
+
+    .archive-item:first-child {
+        padding-top: 0;
+    }
+
+    .archive-item a {
+        font-weight: 500;
+    }
 
 .tag {
-  white-space: nowrap; }
+    white-space: nowrap;
+}
 
 .post-header img {
-  margin-top: 2rem; }
+    margin-top: 2rem;
+}
 
 .post-header .tag {
-  margin-right: 1rem; }
+    margin-right: 1rem;
+}
 
 .post-body {
-  margin-top: 3rem; }
+    margin-top: 3rem;
+}
 
 .page-body h1 {
-  margin-bottom: 3rem; }
+    margin-bottom: 3rem;
+}
 
 body {
-  font-family: 'Montserrat', sans-serif; }
+    font-family: 'Montserrat', sans-serif;
+}
 
 header {
-  color: #fff; }
-  header.site-header {
-    padding: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%; }
-  header.page-header {
-    padding-top: 6rem; }
-    header.page-header img {
-      border-radius: 80px;
-      float: right; }
+    color: #fff;
+}
+
+    header.site-header {
+        padding: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    header.page-header {
+        padding-top: 6rem;
+    }
+
+        header.page-header img {
+            border-radius: 80px;
+            float: right;
+        }
 
 .nav-site li a {
-  color: #fff;
-  padding: 0;
-  margin: 1em 1em;
-  font-size: .9rem;
-  text-transform: uppercase;
-  transition: all ease-in-out .2s; }
-  .nav-site li a:hover {
-    padding: .8em 0;
     color: #fff;
-    transition: all ease-in-out .2s; }
-    .nav-site li a:hover span {
-      padding: .2em 1em;
-      border-color: #fff;
-      transition: all ease-in-out .2s; }
-  .nav-site li a span {
-    display: block;
-    padding: 1em;
-    border-color: transparent;
-    border-style: solid;
-    border-width: 1px 0;
-    transition: all ease-in-out .2s; }
+    padding: 0;
+    margin: 1em 1em;
+    font-size: .9rem;
+    text-transform: uppercase;
+    transition: all ease-in-out .2s;
+}
+
+    .nav-site li a:hover {
+        padding: .8em 0;
+        color: #fff;
+        transition: all ease-in-out .2s;
+    }
+
+        .nav-site li a:hover span {
+            padding: .2em 1em;
+            border-color: #fff;
+            transition: all ease-in-out .2s;
+        }
+
+    .nav-site li a span {
+        display: block;
+        padding: 1em;
+        border-color: transparent;
+        border-style: solid;
+        border-width: 1px 0;
+        transition: all ease-in-out .2s;
+    }
 
 .nav-site li.active a {
-  color: #fff;
-  font-weight: 500;
-  text-shadow: 0 0 5px #fff; }
+    color: #fff;
+    font-weight: 500;
+    text-shadow: 0 0 5px #fff;
+}
 
 .header-bg.header-bg-empty a:hover span {
-  border-color: #000; }
+    border-color: #000;
+}
 
 .teasers .teaser .teaser-body {
-  background: #f2f2f2;
-  height: 100%;
-  padding: 2rem; }
-  .teasers .teaser .teaser-body .teaser-subtitle {
-    font-size: 0.75rem;
-    font-weight: 300;
-    text-transform: uppercase; }
-  .teasers .teaser .teaser-body h3 {
-    font-size: 1.5rem;
-    font-weight: 300;
-    margin-bottom: 1rem; }
-  .teasers .teaser .teaser-body p {
-    font-size: 0.9rem; }
+    background: #f2f2f2;
+    height: 100%;
+    padding: 2rem;
+}
+
+    .teasers .teaser .teaser-body .teaser-subtitle {
+        font-size: 0.75rem;
+        font-weight: 300;
+        text-transform: uppercase;
+    }
+
+    .teasers .teaser .teaser-body h3 {
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-bottom: 1rem;
+    }
+
+    .teasers .teaser .teaser-body p {
+        font-size: 0.9rem;
+    }
 
 .archive-item h2 a {
-  color: #000;
-  transition: color ease-in-out .15s; }
-  .archive-item h2 a:hover {
-    transition: color ease-in-out .15s; }
+    color: #000;
+    transition: color ease-in-out .15s;
+}
+
+    .archive-item h2 a:hover {
+        transition: color ease-in-out .15s;
+    }
 
 .post-header img {
-  border: solid .3rem #fff;
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15); }
+    border: solid .3rem #fff;
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+}
 
 .btn-group-xs > .btn, .btn-xs {
     padding: .25rem .4rem;
@@ -132,12 +190,12 @@ header {
     border-radius: .2rem;
 }
 
-.control{
-    font-weight:bold;
+.control {
+    font-weight: bold;
 }
 
-.field-row{
-    margin:15px;
+.field-row {
+    margin: 15px;
 }
 
 .btn-add-value {
@@ -151,11 +209,9 @@ header {
 }
 
 .form-description {
-    
 }
 
 .form-link {
-    
 }
 
 .page-part2 {
@@ -172,25 +228,25 @@ header {
 }
 
 .item-box {
-    padding : 20px;
-    padding-bottom : 30px;
+    padding: 20px;
+    padding-bottom: 30px;
     background-color: white;
     border-color: black;
-    border-width: 10px;  
+    border-width: 10px;
     margin-right: 10px;
-    margin-top:10px;
+    margin-top: 10px;
 }
 
-header{
+header {
     color: #000;
 }
 
-.search-match{
-    background-color:yellow;
+.search-match {
+    background-color: yellow;
 }
 
-.search-panel{
-    float:right;
+.search-panel {
+    float: right;
 }
 
 footer > .container > .row {
@@ -284,6 +340,182 @@ ul.checkboxgroup li {
 }
 
 .radio-option-label {
-    margin-left: 8px;
+   /* margin-left: 8px; */
     margin-right: 20px;
+}
+
+/* composite Field*/
+.composite-field-child {
+    border: 1px solid lightGrey;
+    padding: 15px;
+    margin:15px;
+}
+
+/* Circular Buttons */
+.btn-circle.btn-xm {
+    width: 16px;
+    height: 16px;
+    /*margin: 5px;*/
+    padding: 0px;
+    border-radius: 8px;
+    font-size: 10px;
+    text-align: center;
+}
+
+.btn-circle.btn-sm {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    font-size: 8px;
+    text-align: center;
+}
+
+.btn-circle.btn-md {
+    width: 50px;
+    height: 50px;
+    padding: 7px 10px;
+    border-radius: 25px;
+    font-size: 10px;
+    text-align: center;
+}
+
+.btn-circle.btn-xl {
+    width: 70px;
+    height: 70px;
+    padding: 10px 16px;
+    border-radius: 35px;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Attachment Field Styles */
+.file-container {
+    margin-top: 15px;
+}
+
+.file-container .file-entry {
+        width: 110px;
+        height: 160px;
+        /*border: 1px solid grey;*/
+        border-radius: 5px;
+        margin: 5px 5px 50px 5px;
+    }
+
+.file-container .file-entry .delete-btn {
+            float: right;
+            margin-right: 15px;
+}
+
+.file-container .file-entry .thumbnail {
+            position: relative;
+            width: 120px;
+            height: 180px;
+            margin: 0px;
+            background-size: contain;
+}
+.file-container .file-entry .thumbnail .icon {
+            width: 100px;
+            height: 142px;
+            margin: 0px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            text-align: right;
+}
+
+.file-container .file-entry .label, .file-container .file-entry .label-active {
+            /*position: absolute;*/
+            width: 100%;
+            white-space: nowrap;
+            margin: 5px;
+ }
+
+ .file-container .file-entry .label {
+            bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+ }
+
+ .file-container .file-entry .label-active {
+            visibility: hidden;
+            font-weight: bold;
+ }
+
+ .file-container .file-entry .label:hover ~ .label-active {
+            visibility: visible;
+ }
+
+
+input[readonly] {
+    background: #ddd;
+    border: solid 1px #888;
+}
+
+/* compositeField */
+.compositeFieldAddItem{
+    float: left;
+}
+.compositeFieldAddItem > input[type="button"]{
+    width:150px;
+}
+
+.composite-field .child {
+    border: solid 1px #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.fa-trash {
+    color: red;
+}
+
+.radio-inline > div, td > div.radio-inline{
+    display:inline;
+}
+
+.footer-row{
+    background-color:#eee;
+}
+/* Adding some margin for workflow buttons that appear on the top-right
+   corner of a detailed view of an item.
+*/
+.pull-right {
+    margin: 10px;
+}
+
+.item-details-view h1, .form-view h2, .form-view h3 {
+    margin-top: 20px;
+}
+.item-details-view h1 {
+    font-size: 2rem;
+    color: #2e2eaf;
+}
+
+.item-details-view h2 {
+    font-size: 1.7rem;
+}
+
+.item-details-view h3 {
+    font-size: 1.4rem;
+}
+
+.item-details-view h5 {
+    font-size: 1.2rem;
+}
+
+.item-details-view .row {
+    margin: 10px 0;
+    border-bottom: solid 1px #eef;
+}
+
+.item-details-view .card.child-data-item {
+    margin-bottom: 20px;
+}
+
+/* Form Validation */
+.field-value label.error {
+    margin-left: 5px;
+    color: #dc3545 !important;
+    font-weight: bold;
 }

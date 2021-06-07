@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class OptionsField : BaseField
+    public class OptionsField : BaseField, IValueField
     {
         public static readonly string OptionContainerTag = "options";
         public static readonly string OptionTag = "option";
@@ -69,6 +69,24 @@ namespace Catfish.Core.Models.Contents.Fields
             }
         }
 
+        /// <summary>
+        /// This method updates the etxt of an existing option.
+        /// </summary>
+        /// <param name="txtId"></param>
+        /// <param name="value"></param>
+        /// <param name="lang"></param>
+        public void UpdateOption(Guid txtId, string value, string lang)
+        {
+            foreach (Option opt in Options)
+            {
+                if (opt.OptionText.Values.Any(v => v.Id == txtId))
+                {
+                    opt.OptionText.UpdateValue(txtId, value, lang);
+                    break;
+                }
+            }
+        }
+
         public override void UpdateValues(BaseField srcField)
         {
             OptionsField src = srcField as OptionsField;
@@ -76,11 +94,72 @@ namespace Catfish.Core.Models.Contents.Fields
                 throw new Exception("The source field is null or is not an OptionsField");
 
             var selections = src.SelectedOptionGuids == null ? new Guid[0] : src.SelectedOptionGuids;
-
+            int i = 0;
             foreach (var dstOption in Options)
             {
                 dstOption.Selected = selections.Contains(dstOption.Id);
+                Options[i].Selected = selections.Contains(dstOption.Id);
+                i++;
             }
+        }
+
+        public override void SetValue(string value, string lang)
+        {
+            int i = 0;
+            foreach (var op in Options)
+            {
+                if (op.OptionText.Values.Where(txt => txt.Language == lang && txt.Value == value).Any())
+                {
+                    op.Selected = true;
+                    Options[i].Selected = true;
+                    break;
+                }
+                i++;
+            }
+        }
+
+        public IEnumerable<Text> GetValues(string lang = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetValues(string separator, string lang = null)
+        {
+            var selectedOption = this.Options.Where(op => op.Selected).FirstOrDefault();
+
+            if (selectedOption == null)
+                return "";
+            else
+                return selectedOption.OptionText.GetConcatenatedContent(separator);
+        }
+
+        public Option GetOption(string optionText, string lang)
+        {
+            return Options.Where(op => op.OptionText.GetContent(lang) == optionText).FirstOrDefault();
+        }
+
+        public override void CopyValue(BaseField srcField, bool overwrite = false)
+        {
+            if (overwrite || Options.Where(op => op.Selected).Any() == false)
+            {
+                var src = srcField as OptionsField;
+                foreach (var srcOption in src.Options)
+                {
+                    var option = Options
+                        .Where(op => op.OptionText.ConcatenatedContent == srcOption.OptionText.ConcatenatedContent)
+                        .FirstOrDefault();
+
+                    if (option != null)
+                        option.Selected = srcOption.Selected;
+                }
+            }
+        }
+
+        public string[] GetSelectedOptionTexts()
+        {
+            return Options.Where(op => op.Selected)
+                .Select(op => op.OptionText.ConcatenatedContent)
+                .ToArray();
         }
     }
 }

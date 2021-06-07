@@ -12,6 +12,5 @@ namespace Catfish.Core.Models
         public Guid EntityTemplateId { get; set; }
         public string Status { get; set; }
         public string NormalizedStatus { get; set; }
-        public bool IsEditable { get; set; }
     }
 }

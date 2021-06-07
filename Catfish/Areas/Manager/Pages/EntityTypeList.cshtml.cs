@@ -25,8 +25,18 @@ namespace Catfish.Areas.Manager.Pages
         public void OnGet()
         {
             var templates = _srv.GetEntityTemplates();
-            Items = templates.Where(t => t is ItemTemplate).Select(t => new EntityTemplateListEntry(t)).ToList();
-            Collections = templates.Where(t => t is CollectionTemplate).Select(t => new EntityTemplateListEntry(t)).ToList();
+
+            Items = templates.Where(t => t is ItemTemplate)
+                .Select(t => new EntityTemplateListEntry(t))
+                .ToList()
+                .OrderBy(t => t.TypeName)
+                .ToList();
+
+            Collections = templates.Where(t => t is CollectionTemplate)
+                .Select(t => new EntityTemplateListEntry(t))
+                .ToList()
+                .OrderBy(t => t.TypeName)
+                .ToList();
         }
     }
 }

@@ -54,12 +54,12 @@ namespace Catfish.Core.Models.Contents.Workflow
             return States.Where(st => st.Id == stateId).FirstOrDefault();
         }
 
-        public State AddState(string value, bool isEditable)
+        public State AddState(SystemStatus status)
         {
-            if (States.Where(st => st.Value == value).Any())
-                throw new Exception(string.Format("State {0} already exists.", value));
+            if (States.Where(st => st.Value == status.Status).Any())
+                throw new Exception(string.Format("State {0} already exists.",status.Status));
 
-            State newState = new State() { Value = value , IsEditable = isEditable};
+            State newState = new State() { Value = status.Status, Id = status.Id };
             States.Add(newState);
             return newState;
         }
@@ -161,5 +161,8 @@ namespace Catfish.Core.Models.Contents.Workflow
                 groups.Add(group.Value);
             return groups;
         }
+        
     }
+
+    
 }

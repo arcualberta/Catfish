@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Authorization.Requirements;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
@@ -32,14 +33,16 @@ namespace Catfish.Core.Services
         private EntityTemplate mEntityTemplate;
         public readonly IHttpContextAccessor _httpContextAccessor;
         private Item mItem;
+        private readonly IAuthorizationService _auth;
 
-        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, ErrorLog errorLog)
+        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, IAuthorizationService auth, ErrorLog errorLog)
         {
             _db = db;
             _piranhaDb = pdb;
             _api = api;
             _httpContextAccessor = httpContextAccessor;
             _errorLog = errorLog;
+            _auth = auth;
         }
 
         public EntityTemplate GetModel()
@@ -71,19 +74,20 @@ namespace Catfish.Core.Services
 
         }
 
-        public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
-        {
-            try
-            {
-                MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
-                return ms == null ? null : new EmailTemplate(ms.Data);
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-                return null;
-            }
-        }
+        ////public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
+        ////{
+        ////    try
+        ////    {
+        ////        MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
+        ////        return ms == null ? null : new EmailTemplate(ms.Data);
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _errorLog.Log(new Error(ex));
+        ////        return null;
+        ////    }
+        ////}
+        
         protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists, bool markAsTemplateMetadataSetIfCreated)
         {
             try
@@ -124,21 +128,21 @@ namespace Catfish.Core.Services
         //    return dataItem;
         //}
 
-        public Workflow GetWorkflow(bool createIfNotExists)
-        {
-            try
-            {
-                XmlModel xml = new XmlModel(mEntityTemplate.Data);
-                XElement element = xml.GetElement(Workflow.TagName, createIfNotExists);
-                Workflow workflow = new Workflow(element);
-                return workflow;
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-                return null;
-            }
-        }
+        ////public Workflow GetWorkflow(bool createIfNotExists)
+        ////{
+        ////    try
+        ////    {
+        ////        XmlModel xml = new XmlModel(mEntityTemplate.Data);
+        ////        XElement element = xml.GetElement(Workflow.TagName, createIfNotExists);
+        ////        Workflow workflow = new Workflow(element);
+        ////        return workflow;
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _errorLog.Log(new Error(ex));
+        ////        return null;
+        ////    }
+        ////}
 
         public List<string> GetEmailAddresses(EmailTrigger trigger)
         {
@@ -159,23 +163,23 @@ namespace Catfish.Core.Services
 
         
 
-        public string GetStatus(Guid entityTemplateId, string status, bool createIfNotExist, bool isEditable)
+        public SystemStatus GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
         {
             try
             {
                 SystemStatus systemStatus = _db.SystemStatuses.Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId).FirstOrDefault();
                 if (systemStatus == null && createIfNotExist)
                 {
-                    systemStatus = new SystemStatus() { Status = status, NormalizedStatus = status.ToUpper(), Id = Guid.NewGuid(), EntityTemplateId = entityTemplateId, IsEditable = isEditable };
+                    systemStatus = new SystemStatus() { Status = status, NormalizedStatus = status.ToUpper(), Id = Guid.NewGuid(), EntityTemplateId = entityTemplateId };
                     _db.SystemStatuses.Add(systemStatus);
                     _db.SaveChanges();
                 }
-                return systemStatus.Status;
+                return systemStatus;
             }
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
-                return "";
+                return null;
             }
 
         }
@@ -208,8 +212,8 @@ namespace Catfish.Core.Services
         {
             try
             {
-                SetModel(entityTemplate);
-                var workflow = GetWorkflow(false);
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
                 if (workflow != null)
                 {
                     var getAction = workflow.Actions.Where(ac => ac.Function == function && ac.Group == group).FirstOrDefault();
@@ -350,6 +354,387 @@ namespace Catfish.Core.Services
             {
                 _errorLog.Log(new Error(ex));
                 return new List<Group>();
+            }
+        }
+
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId)
+        {
+            try
+            {
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
+                List<PostAction> allPostActions = new List<PostAction>();
+                if (workflow != null)
+                {
+                    var getActions = workflow.Actions.ToList();
+                    foreach(var getAction in getActions)
+                    {
+                        var action = getAction.States.Where(st => st.RefId == statusId).ToList();
+                        if (action != null)
+                        {
+                            foreach(var postAction in getAction.PostActions)
+                            {
+                                if (postAction.StateMappings.Where(sm => sm.Current == statusId).Any())
+                                    allPostActions.Add(postAction);
+                            }
+                        }
+                    }
+                    return allPostActions;
+                }
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        public Guid GetChildFormId(EntityTemplate entityTemplate, Guid postActionId)
+        {
+            try
+            {
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
+                foreach (var action in workflow.Actions)
+                {
+                    if (action.PostActions.Where(pa => pa.Id == postActionId).Any())
+                    {
+                        return action.Params.Select(p => p.TemplateId).FirstOrDefault();
+                    }
+                }
+                return Guid.Empty;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return Guid.Empty;
+            }
+            
+        }
+
+        public PostAction GetPostActionByButtonId(EntityTemplate entityTemplate, Guid buttonId)
+        {
+            try
+            {
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
+                foreach (var action in workflow.Actions)
+                {
+                    foreach(var postAction in action.PostActions)
+                    {
+                        if(postAction.StateMappings.Where(sm => sm.Id == buttonId).Any())
+                        {
+                            return postAction;
+                        }
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        public GetAction GetGetActionByPostActionID(EntityTemplate entityTemplate, Guid postActionId)
+        {
+            try
+            {
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
+                foreach (var action in workflow.Actions)
+                {
+                    if (action.PostActions.Where(pa => pa.Id == postActionId).Any())
+                        return action;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+
+                _errorLog.Log(new Error(ex));
+                return null;
+            } 
+        }
+        public List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid statusId, Guid postActionId)
+        {
+            try
+            {
+                //SetModel(entityTemplate);
+                List<TriggerRef> triggerRefs = new List<TriggerRef>();
+                var action = GetGetActionByPostActionID(entityTemplate, postActionId);
+                foreach (var postAction in action.PostActions)
+                {
+                    if (postAction.Id.Equals(postActionId))
+                    {
+                        var triggers = postAction.TriggerRefs.ToList();
+                        foreach(var trigger in triggers)
+                        {
+                            if (trigger.Condition) 
+                            {
+                                if (trigger.NextStatus == statusId)
+                                    triggerRefs.Add(trigger);
+                            }
+                            else
+                            {
+                                triggerRefs.Add(trigger);
+                            }
+                        }
+                    }
+                        //return postAction.TriggerRefs.OrderBy(tr => tr.Order).ToList();
+                }
+                return triggerRefs;
+            }
+            catch (Exception ex)
+            {
+
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+        public Mapping GetStateMappingByStateMappingId(EntityTemplate entityTemplate, Guid stateMappingId)
+        {
+            try
+            {
+                var workflow = entityTemplate.Workflow;
+                foreach(var action in workflow.Actions)
+                {
+                    foreach(var postAction in action.PostActions)
+                    {
+                        if (postAction.StateMappings.Where(sm => sm.Id == stateMappingId).Any())
+                        {
+                            return postAction.StateMappings.Where(sm => sm.Id == stateMappingId).FirstOrDefault();
+                        }
+                    }  
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+        public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang)
+        {
+            ItemTemplate template = new ItemTemplate();
+
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            Workflow workflow = template.Workflow;
+
+            //Defininig states
+            State emptyState = workflow.AddState(GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(GetStatus(template.Id, "Deleted", true));
+
+            //Defininig the entry for the root data item
+            DataItem inspectionForm = template.GetDataItem(submissionFormName, true, lang);
+            inspectionForm.IsRoot = true;
+
+            //Defininig roles
+            WorkflowRole adminRole = workflow.AddRole(_auth.GetRole("Admin", true));
+            WorkflowRole creatorRole = workflow.AddRole(_auth.GetRole("Creator", true));
+
+            
+            // ================================================
+            // Create submission-instances related workflow items
+            // ================================================
+
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit",
+                                                                                nameof(TemplateOperations.Update),
+                                                                                @"<p>Your Conference Fund application saved successfully. 
+                                                                                You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(creatorRole.Id);
+
+            // ================================================
+            // List submission-instances related workflow items
+            // ================================================
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
+            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
+            viewSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+            // ================================================
+            // Edit submission-instances related workflow items
+            // ================================================
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Defining post actions
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+
+
+            // ================================================
+            // Delete submission-instances related workflow items
+            // ================================================
+            //Defining actions. Only admin can delete a submission
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            return template;
+        }
+
+        public bool UpdateItemTemplateSchema(Guid id, string SchemaXml, out string successMessage)
+        {
+            try
+            {
+
+                if (string.IsNullOrWhiteSpace(SchemaXml))
+                    throw new Exception("The schema cannot be empty");
+
+                //Make sure the schemaXML represents a valid xml string
+                XElement xml = XElement.Parse(SchemaXml);
+                Entity entity = _db.Entities.Where(et => et.Id == id).FirstOrDefault();
+
+                if (entity != null && System.Text.RegularExpressions.Regex.Replace(entity.Content, @"\s+", "") == System.Text.RegularExpressions.Regex.Replace(SchemaXml, @"\s+", ""))
+                {
+                    //Nothing changed
+                    successMessage = "Nothing to save. Schema wasn't changed.";
+                    return true;
+                }
+
+                if (entity == null)
+                {
+                    string typeString = xml.Attribute("model-type").Value;
+                    var type = Type.GetType(typeString);
+                    entity = Entity.Parse(xml, false) as Entity;
+                    _db.Entities.Add(entity);
+                    id = entity.Id;
+                }
+                else
+                {
+                    var user = _auth.GetLoggedUser();
+                    Guid userId = user != null ? user.Id : Guid.Empty;
+                    string userName = user != null ? user.UserName : "";
+                    Backup backup = new Backup(entity.Id,
+                        entity.GetType().ToString(),
+                        entity.Content,
+                        userId,
+                        userName);
+                    _db.Backups.Add(backup);
+
+                    var dbEntityId = entity.Id;
+
+                    entity.Content = SchemaXml;
+                    entity.Updated = DateTime.Now;
+
+                    //restoring the ID
+                    entity.Id = dbEntityId;
+                }
+
+                List<string> oldGuids = new List<string>();
+                List<string> newGuids = new List<string>();
+                if (typeof(EntityTemplate).IsAssignableFrom(entity.GetType()))
+                {
+                    EntityTemplate template = entity as EntityTemplate;
+                    template.TemplateName = (entity as EntityTemplate).Name.GetConcatenatedContent(" | ");
+                    if (template.Workflow != null)
+                    {
+
+                        //Making sure the state values defined in the workflow matches with state values stored in 
+                        //the database (and creating new state values in the database if matching ones are not available.
+                        foreach (var state in template.Workflow.States)
+                        {
+                            var dbState = GetStatus(template.Id, state.Value, false);
+                            if (dbState == null)
+                            {
+                                if (_db.SystemStatuses.Where(st => st.Id == state.Id).Any())
+                                    throw new Exception(string.Format("Error: the System Status with ID {0} already exist associated with another template in the system.", state.Id));
+
+                                //Creating a new status with the same GUID
+                                dbState = new SystemStatus()
+                                {
+                                    Status = state.Value,
+                                    NormalizedStatus = state.Value.ToUpper(),
+                                    Id = state.Id,
+                                    EntityTemplateId = template.Id
+                                };
+                                _db.SystemStatuses.Add(dbState);
+                            }
+                            else if (state.Id != dbState.Id)
+                            {
+                                oldGuids.Add(state.Id.ToString());
+                                newGuids.Add(dbState.Id.ToString());
+                            }
+                        }
+
+                        //Making sure the roles defined in the workflow matches with roles stored in 
+                        //the database (and creating new roles in the database if matching ones are not available.
+                        foreach (var role in template.Workflow.Roles)
+                        {
+                            var dbRole = _auth.GetRole(role.Value, false);
+                            if (dbRole == null)
+                            {
+                                //Creating a new role with the given name and the Guid.
+                                _auth.CreateRole(role.Value, role.Id);
+                            }
+                            else if (role.Id != dbRole.Id)
+                            {
+                                oldGuids.Add(role.Id.ToString());
+                                newGuids.Add(dbRole.Id.ToString());
+                            }
+                        }
+                    }
+                }
+
+                //Globally replace all oldGuids in the schema content with the corresponding newGuids.
+                for (int i = 0; i < oldGuids.Count; ++i)
+                    entity.Content = entity.Content.Replace(oldGuids[i], newGuids[i], StringComparison.InvariantCultureIgnoreCase);
+                _db.SaveChanges();
+
+                successMessage = "Schema saved successfully.";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                successMessage = ex.Message;
+                return false;
             }
         }
     }

@@ -1,0 +1,65 @@
+﻿@model Catfish.Core.Models.Contents.MetadataSet
+
+@using Catfish.Core.Models.Contents.Fields;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["metadata-set-id"] = Model.Id;
+}
+
+<div class="email-template">
+    <div class="field-description">
+        @Html.Raw(Model.Description.ConcatenatedRichText)
+    </div>
+
+    @{
+
+        var fieldList = Model.Fields
+            .Where(f => typeof(TextField).IsAssignableFrom(f.GetType()))
+            .Select(f => f as TextField)
+            .ToList();
+
+        //Ensuring the Subject and Body fields are listed as the first two fields in that order
+        var entry = fieldList.Where(f => f.Name.GetContent() == "Body").FirstOrDefault();
+        if (entry != null)
+        {
+            fieldList.Remove(entry);
+            fieldList.Insert(0, entry);
+        }
+
+        entry = fieldList.Where(f => f.Name.GetContent() == "Subject").FirstOrDefault();
+        if (entry != null)
+        {
+            fieldList.Remove(entry);
+            fieldList.Insert(0, entry);
+        }
+
+    }
+
+    <div class="field-list">
+        @for (int i = 0; i < fieldList.Count; ++i)
+        {
+            var field = fieldList[i];
+                ViewData["data-field-id"] = field.Id;
+            <div class="field">
+                <div class="control field-label">
+                    <strong>@field.Name.ConcatenatedRichText</strong>
+                </div>
+                <div class="control field-value">
+                    @foreach (var multiLingualVal in field.Values)
+                    {
+                        foreach (var txt in multiLingualVal.Values)
+                        {
+                            <partial name="Partial/DataItemFields/_Text" model="txt" view-data="ViewData" />
+                        }
+                    }
+                </div>
+            </div>
+
+            if (i < fieldList.Count - 1)
+            {
+                <hr />
+            }
+        }
+    </div>
+</div>

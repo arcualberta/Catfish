@@ -1,0 +1,132 @@
+﻿@model Catfish.Core.Models.Contents.Fields.TableField
+@using Catfish.Helper;
+@using Catfish.Core.Models.Contents.Fields;
+
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+@{
+    string templateId = "tf-template-" + Model.Id;
+    var modelNamePrefix = Html.NameFor(model => model);
+    var tableFieldContainerId = "tf-container-" + Model.Id;
+}
+
+<div id="@tableFieldContainerId" class="container">
+    <table id="@templateId"
+           class="tf-template"
+           style="display:none">
+        <tbody>
+            <tr>
+                @for (int i = 0; i < Model.TableHead.Fields.Count; ++i)
+                {
+                    BaseField field = Model.TableHead.Fields[i];
+
+                    //Set RefId as the Id so that we don't need to do this initializaiton
+                    //in the front end when the field is cloned when adding a row
+                    field.RefId = field.Id;
+
+                    Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(field, null);
+
+                    <td data-ref-id="@field.Id">
+                        @Html.EditorFor(model => model.TableHead.Fields[i], Model.TableHead.Fields[i].GetType().ToString(), viewData)
+                    </td>
+                }
+                @if (Model.AllowAddRows)
+                {
+                    <th>
+                        <div class="col-1 text-right">
+                            <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', 0); return false;"></span>
+                        </div>
+                    </th>
+                }
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-field tf-data @Model.CssClass"
+           data-name-prefix="@modelNamePrefix"
+           data-min-rows="@Model.MinRows"
+           data-max-rows="@Model.MaxRows"
+           data-model-id="@Model.Id">
+        <thead>
+            <tr>
+                @foreach (var cell in Model.TableHead.Fields)
+                {
+                    <th>
+                        @Html.Raw(cell.Name.ConcatenatedContent)
+
+                        @if (cell.Required)
+                        {<span class="required"></span>}
+                        else
+                        {<span class="required" style="display:none"></span>}
+                    </th>
+                }
+                @if (Model.AllowAddRows)
+                {
+                    <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (var r = 0; r < Model.TableData.Count; ++r)
+            {
+                var row = Model.TableData[r];
+                <tr data-r="@r" class="data-row">
+                    @Html.HiddenFor(model => Model.TableData[r].Id)
+                    @Html.HiddenFor(model => Model.TableData[r].ModelType)
+
+                    @for (var c = 0; c < row.Fields.Count; ++c)
+                    {
+                        string fieldRootId = null;
+                        Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(Model.TableData[r].Fields[c], fieldRootId);
+                        viewData.Add("data-r", r);
+                        viewData.Add("data-c", c);
+                        <td>
+                            @Html.EditorFor(model => Model.TableData[r].Fields[c], Model.TableData[r].Fields[c].GetType().ToString(), viewData)
+                        </td>
+                    }
+                    @if (Model.AllowAddRows)
+                    {
+                        <th>
+                            <div class="col-1 text-right tableDeleteRowBtn">
+                                <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', @r); return false;"></span>
+                            </div>
+                        </th>
+                    }
+                </tr>
+            }
+
+            @for (var r = 0; r < Model.TableFooter.Count; ++r)
+            {
+                @Html.HiddenFor(model => Model.TableFooter[r].Id)
+                @Html.HiddenFor(model => Model.TableFooter[r].ModelType)
+
+                var row = Model.TableFooter[r];
+                var firstFooterRow = r == 0 ? "first-footer-row" : "";
+                <tr class="footer-row @firstFooterRow">
+                    @for (var c = 0; c < row.Fields.Count; ++c)
+                    {
+                        string fieldRootId = null;
+                        Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(Model.TableFooter[r].Fields[c], fieldRootId);
+
+                        <td>
+                            @Html.EditorFor(model => Model.TableFooter[r].Fields[c], Model.TableFooter[r].Fields[c].GetType().ToString(), viewData)
+                        </td>
+                    }
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+    @if(Model.AllowAddRows){
+        string addButtonContainerId = Html.IdFor(model => model) + "_addRowButton";
+
+        <div id="@addButtonContainerId" class="tableAddRowBtn">
+
+            <input type="button" class="btn btn-default btn-success" onClick="addRow('@tableFieldContainerId'); return false;" value="+ Row" />
+
+        </div>
+    }
+
+</div>

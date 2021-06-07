@@ -15,16 +15,18 @@ namespace Catfish.Core.Models
 {
     public class AppDbContext : DbContext
     {
+        private readonly ISolrService _indexingService;
         /// <summary>
         /// The application config.
         /// </summary>
         public IConfiguration Configuration { get; set; }
 
         //public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
-        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
+        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration, ISolrService indexingService)
             : base(options)
         {
             Configuration = configuration;
+            _indexingService = indexingService;
         }
 
         protected override void OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder optionsBuilder)
@@ -38,6 +40,7 @@ namespace Catfish.Core.Models
 
         public override int SaveChanges()
         {
+            bool indexUpdated = false;
             foreach (var entry in ChangeTracker.Entries())
             {
                 foreach (var prop in entry.Entity.GetType().GetProperties().Where(p => p.CustomAttributes.Count() > 0))
@@ -49,7 +52,32 @@ namespace Catfish.Core.Models
                         entry.Property(prop.Name).IsModified = true;
                     }
                 }
+
+                if (typeof(Entity).IsAssignableFrom(entry.Entity.GetType()))
+                {
+                    if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+                    {
+                        (entry.Entity as Entity).Updated = DateTime.Now;
+                        if (Configuration.GetSection("IndexItemsOnSave").Value == "true")
+                        {
+                            _indexingService.Index(entry.Entity as Item);
+                            indexUpdated = true;
+                        }
+                    }
+                    else if (entry.State == EntityState.Deleted)
+                    {
+                        //TODO: remove entry from the index.
+                    }
+                }
+
+                //if (typeof(Entity).IsAssignableFrom(entry.Entity.GetType()))
+                //    (entry.Entity as Entity).Updated = DateTime.Now;
+
+
             }
+
+            if(indexUpdated)
+                _indexingService.Commit();
 
             return base.SaveChanges();
         }
@@ -112,6 +140,9 @@ namespace Catfish.Core.Models
         public DbSet<GroupTemplate> GroupTemplates { get; set; }
         public DbSet<SystemStatus> SystemStatuses { get; set; }
         public DbSet<Form> Forms { get; set; }
+        public DbSet<BackgroundJob> BackgroundJobs { get; set; }
+        public DbSet<Backup> Backups { get; set; }
+        public DbSet<IndexingHistory> IndexingHistory { get; set; }
 
         /*
                 public DbSet<XmlModel> XmlModels { get; set; }

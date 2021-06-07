@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
 using Catfish.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Piranha.Extend.Fields;
 
 namespace Catfish.Pages
 {
@@ -15,6 +17,14 @@ namespace Catfish.Pages
 
         public Item Item { get; set; }
         public string CurrentStatus { get; set; }
+        [Display(Name = "Css Class")]
+        public StringField CssClass { get; set; }
+
+        [Display(Name = "Submission Confirmation")]
+        public TextField SubmissionConfirmation { get; set; }
+
+        [Display(Name = "Authorization Failure Message")]
+        public TextField AuthorizationFailureMessage { get; set; }
 
         public ItemDetailsModel(AppDbContext db)
         {

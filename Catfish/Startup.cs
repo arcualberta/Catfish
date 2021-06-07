@@ -8,21 +8,16 @@ using Catfish.Core.Services.FormBuilder;
 using Catfish.Core.Services.Solr;
 using Catfish.Helper;
 using Catfish.ModelBinders;
-using Catfish.Models;
 using Catfish.Models.Blocks;
 using Catfish.Models.Fields;
 using Catfish.Models.SiteTypes;
 using Catfish.Services;
 using ElmahCore;
 using ElmahCore.Mvc;
-using ElmahCore.Sql;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,8 +32,7 @@ using Piranha.Services;
 using SolrNet;
 using System;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+
 
 namespace Catfish
 {
@@ -152,7 +146,7 @@ namespace Catfish
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<IConfig, ReadConfiguration>();
-            services.AddScoped<Catfish.Services.IAuthorizationService, AuthorizationService>();
+            services.AddScoped<Catfish.Core.Services.IAuthorizationService, AuthorizationService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
@@ -161,7 +155,9 @@ namespace Catfish
             services.AddScoped<IFormService, FormService>();
             services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
             services.AddScoped<ICatfishSiteService, CatfishSiteService>();
+            services.AddScoped<IJobService, JobService>();
             services.AddSingleton<IAppService, AppService>();
+            services.AddSingleton<IBlockHelper, BlockHelper>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
@@ -171,6 +167,8 @@ namespace Catfish
             services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IPageIndexingService, PageIndexingService>();
+            services.AddScoped<ISolrService, SolrService>();
+            services.AddScoped<ISolrBatchService, SolrBatchService>();
 
 
             //Configure policy claims
@@ -179,6 +177,7 @@ namespace Catfish
             //Configuring authorization services
             services.AddScoped<IAuthorizationHelper, AuthorizationHelper>();
             services.AddScoped<IAuthorizationHandler, EntityTemplateAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, GroupAuthorizationHandler>();
             //services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationCrudHandler>();
             // Add custom policies
             services.AddAuthorization(o =>
@@ -349,16 +348,27 @@ namespace Catfish
             Piranha.App.Fields.Register<TextAreaField>();
             Piranha.App.Fields.Register<ControlledKeywordsField>();
             Piranha.App.Fields.Register<ControlledCategoriesField>();
-             Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
-           
+            Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
+            Piranha.App.Fields.Register<ColorPicker>();
+
+            Piranha.App.MediaTypes.Images.Add(".svg", "image/svg+xml", false);
+            Piranha.App.MediaTypes.Documents.Add(".xls", "application/vnd.ms-excel", false);
+            Piranha.App.MediaTypes.Documents.Add(".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", false);
+            Piranha.App.MediaTypes.Documents.Add(".csv", "text/csv", false);
+            Piranha.App.MediaTypes.Documents.Add(".doc", "application/msword", false);
+            Piranha.App.MediaTypes.Documents.Add(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingm", false);
         }
         private static void RegisterCustomScripts()
         {
             //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
+
             //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block-vue.js");
+
+            App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
+
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
@@ -381,9 +391,16 @@ namespace Catfish
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
+
+            App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
+
+            App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/card-block.js");
+
 
         }
         private static void RegisterCustomBlocks()
@@ -404,6 +421,11 @@ namespace Catfish
             App.Blocks.Register<ControlledVocabularySearchBlock>();
             App.Blocks.Register<VueList>();
             App.Blocks.Register<VueCarousel>();
+            App.Blocks.Register<ExtendedColumnBlock>();
+            App.Blocks.Register<AdvanceSearchBlock>();
+            App.Blocks.Register<SingleListItem>();
+            App.Blocks.Register<ListDisplayBlock>();
+            App.Blocks.Register<CardBlock>();
         }
         private static void RegisterCustomStyles()
         {
@@ -415,6 +437,10 @@ namespace Catfish
 
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/transitionAndAnimationManagerSide.css");
+
+            App.Modules.Get<Piranha.Manager.Module>()
+               .Styles.Add("~/assets/css/manager-styles.css");
+            
             /*
              These create a warning in Chrome about SameSite cookie use.
              This is not an issue for you to fix, it is for QuillJS.
@@ -448,6 +474,7 @@ namespace Catfish
                 {
                     InternalId = "Entities",
                     Name = "Entities",
+                    Policy = AppSecurity.AccessEntities,
                     Css = "fas fa-object-group"
 
                 });
@@ -459,15 +486,27 @@ namespace Catfish
                 {
                     InternalId = "Templates",
                     Name = "Templates",
+                    Policy = AppSecurity.AccessTemplates,
                     Css = "fas fa-clone"
 
                 });
             }
 
+
+            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Content").FirstOrDefault();
+            menubar.Items.Insert(menubar.Items.Count, new MenuItem
+            {
+                InternalId = "CustomStyles",
+                Name = "Custom Styles",
+                Route = "/manager/customstyles/",
+                Policy = AppSecurity.EditTheme,
+                Css = "fas fa-table"
+            });
+
             ///
             /// Templates Group Content Menus
             ///
-            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Templates").FirstOrDefault();
+            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Templates").FirstOrDefault();
             var idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem

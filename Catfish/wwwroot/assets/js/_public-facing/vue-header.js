@@ -8,7 +8,6 @@ test = Vue.component('vue-header', {
         }
     },
     mounted() {
-        console.log("i am a running header");
     },
     methods: {
 

@@ -1,0 +1,452 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<entity id="1c965908-8a54-47a4-81ed-3734843516cc" created="2021-04-07T02:54:24.9131209-06:00" model-type="Catfish.Core.Models.ItemTemplate, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2568ad76-4f87-4c0e-96c9-c11846594285">
+    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ca3b7900-cf72-4dbd-be0a-13d9ca34c3c3" xml:lang="en">Safety Inspection System Workflow</text>
+  </name>
+  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="919bb3bc-6cd9-42d5-a7cc-18700e85131a" />
+  <metadata-sets>
+    <metadata-set model-type="Catfish.Core.Models.Contents.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="01565d9e-1b77-42ef-81e7-552fa05544ab" created="2021-04-07T02:54:24.9326721-06:00" is-template="true">
+      <fields>
+        <field model-type="Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="923a9e02-9fef-4b6c-99b8-2e850db977e3">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="1e5ed5b9-dd5a-449e-ac30-7d0d405421ab">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="850faabb-832c-4ec0-b6eb-ec70cd88352e" xml:lang="en">Subject</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6b8bb914-709a-4da4-ba6a-247140d0d456" />
+          <values>
+            <value model-type="Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6be65247-d249-4e84-8874-38fc679e14f9">
+              <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="794ca921-ca2c-49d8-a526-058a7d24832d" xml:lang="en">Safety Inspection Submission</text>
+            </value>
+          </values>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ea4ec88d-c7ba-407a-92a5-3c7288e9c2c9">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="cff02acd-6f04-4137-98c1-d9b017e8d275">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4de3940f-3020-4725-b422-1c7c0fac8999" xml:lang="en">Body</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="182bf888-b501-4e39-98c7-bfdabc1637e8" />
+          <values>
+            <value model-type="Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d53e1ef1-4002-4772-a65f-b0b8078fec68">
+              <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d5c9aad0-4380-492a-95d3-cdfaa1e3dac9" xml:lang="en">A @Link[safety form|@Model] was submitted.
+
+Thank you</text>
+            </value>
+          </values>
+        </field>
+      </fields>
+      <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="06fe22a0-1597-497f-9b31-663d8c676b22">
+        <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="026c9b54-6961-4b4f-b084-61242707121e" xml:lang="en">Central Admin Notification</text>
+      </name>
+      <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9c4bd8b9-e21a-4555-80a4-dae3528d624c">
+        <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="1147c1b4-969b-473d-b32a-b0a96d03aee0" xml:lang="en">This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.</text>
+      </description>
+    </metadata-set>
+    <metadata-set model-type="Catfish.Core.Models.Contents.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2fd2a996-c87b-4e14-8c22-e7b75fc6d8c3" created="2021-04-07T02:54:24.9328084-06:00" is-template="true">
+      <fields>
+        <field model-type="Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="357487dc-566d-4ffc-a802-7c841d5c9985">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="24454857-13ce-46d6-aff8-0f9f6584beb8">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b61ed2db-bed3-4586-ac0b-09b281aa8a0d" xml:lang="en">Subject</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3ead48e4-4cfc-46d3-9182-f94c9de54f6d" />
+          <values>
+            <value model-type="Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ff5c47fd-fe55-4d92-a77b-46dfc72a7ad1">
+              <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2b8f24b7-7b42-4f22-b121-a43914a611cb" xml:lang="en">Safety Inspection Submission</text>
+            </value>
+          </values>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="23125e55-602e-44c3-a918-ded9dd69db81">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="bbf0f6a3-2c34-40f7-b78c-e240f92c2b5d">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="da91605e-460a-41d0-aa05-c4f6aea8d727" xml:lang="en">Body</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="217f1007-3ea8-421c-9a82-0da90461e25f" />
+          <values>
+            <value model-type="Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9f346cbd-fdb9-4d6c-959a-064a33821312">
+              <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="dbab9fe3-859a-4856-94bf-be79a2f44a57" xml:lang="en">A @Link[[safety form|@Model] was submitted.
+
+Thank you</text>
+            </value>
+          </values>
+        </field>
+      </fields>
+      <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="79e63d93-065a-42bd-9b7c-a31b16ce50e9">
+        <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2af99571-6e32-4a11-8a05-32d47c143ec6" xml:lang="en">User Notification</text>
+      </name>
+      <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2ae917f1-b5d0-4b6a-8778-8dbef7ea69d5">
+        <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b80d61e6-281e-4a89-9799-0324bce44b0d" xml:lang="en">This metadata set defines the email template to be sent to the dept admin when he/she submits a safety inspection form.</text>
+      </description>
+    </metadata-set>
+  </metadata-sets>
+  <reports />
+  <audit-trail />
+  <data-container>
+    <data-item model-type="Catfish.Core.Models.Contents.Data.DataItem, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8cfd7fdd-b4b3-452b-95ca-340e732797b6" created="2021-04-07T02:54:24.9328774-06:00" is-root="true">
+      <fields>
+        <field model-type="Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c07a22d4-9800-4c41-a325-d78abb57a964">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6cfbaa3f-2364-4716-8271-c70afa70c21e" />
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e164f49e-a22e-4d45-a824-56437e558c6f" />
+          <content model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0bd0a2e3-23cf-48fe-8195-d86873aab89e">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="616c210f-9075-4da6-919b-a9b8fc3453bd" xml:lang="en">BUILDING AND WORK SPACE</text>
+          </content>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="24294929-3e44-4d06-bd54-8879fbc09704">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="da4765a4-e30c-44ad-86ad-d5944b4892f8">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a2e1c4af-5b0c-42c7-9d7a-012eee0deb0c" xml:lang="en">Are floors clean and free of loose materials and debris?</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c8e941c7-6dfb-40e0-b42f-cbf4634ed757" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6cf1f75b-b0d3-4d4e-9b0d-076af5df975d">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="bc069c44-3fe0-445e-b989-8cc043244660">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="bd46f3a8-2fe1-47a9-b435-7c8d4d91991f" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d31c0e5b-0681-4535-bbb0-247dc2d799da">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b6f99997-4b02-4c79-967b-2c1463607cb1">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4293d47c-d0d5-4926-876a-f5d9d3e62903" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="407a06ae-345f-4e96-ac29-bd923f0f3e61">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a2de484b-71ad-4f72-be78-692c6530fee7">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="7864205a-a202-45c5-a82b-f8802bee6058" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d340ac6d-39e8-43e7-976d-ad11009e22bf">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="50b6f150-f02e-435f-8e31-2b4fc2072caa">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="41a4c85a-f03b-4057-b1ea-3fcc42898b27" xml:lang="en">Are floors free from protruding nails, splinters, holes and loose boards?</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9abd500f-c793-4ebf-aef0-56845fd47d76" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ac094b07-3599-4aa4-8088-ef539a492223">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ba2eb659-37d7-4051-818e-abcfdecedfe7">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b2d1daf8-b01f-41ee-baea-abafea94fe22" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b0753f9a-8cc7-4121-bc44-3383096417d0">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ae68eefd-c8e1-4a7a-ad83-69842ea94f7c">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ce8b97de-dbae-41f1-b297-0752a51ca3c7" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="63b9921f-c365-42a6-a079-01daf835b949">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4476540f-ad7a-46a1-a08e-3d6e3f070503">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9cb789bc-39f9-4bdc-adc0-abc6d50eae91" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2b269a59-796b-47be-880d-125b8d0b402c">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="76e17039-678b-4a3a-8370-38d8fcf5b46e">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="5159253d-9e4b-4a5d-a7cf-73a9bb52e015" xml:lang="en">Are floors free of oil and water spillage or leakage?</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="052738d9-f239-4d07-b3b9-e488c1e8f169" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d2eb1dce-ff19-43cb-b7ae-79d2c833660e">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="46e56259-0d2c-40ee-90d5-01785ad2811e">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="30d3ccd7-dea7-48af-8121-462a99711a4c" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c468fe15-e54d-40ab-8f7c-b5112286e67e">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2502e60b-2185-40f1-b363-e3c8df57ea75">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="49dea15a-f814-429b-b0bb-ad189fc711f5" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="014b0400-0248-432f-98b7-ef0d81ce8d25">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="071535ff-f0e8-4cef-9aa1-7f0bf760bfe5">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="f91c25be-2703-4f18-b460-d6c36d0b5009" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="70a8e91a-744a-4b50-b042-5572e72fa791">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="96bf7a19-7ed4-4b09-82f4-82377da9208d">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="294cd655-0f52-417f-aade-65a13649e9ce" xml:lang="en">Is absorbent available for immediate clean-up of spills and leaks?</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4204c1b8-2afd-4ff7-8edf-cd449985fb78" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="f176dbfe-2c2f-42b8-a358-d837f356aac4">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6f603efc-be9c-487f-8865-cbfb1c082ebe">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2acb07cf-a65e-466c-9c36-404440fdaae9" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ec2154b6-fe53-4e16-91f7-2f844725669b">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b8cc1bf8-b2c6-4c9a-ac4c-7ab4096e7b51">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4aa019a6-19ea-401f-99ab-15adbdb9b626" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3c88d37e-2e58-4c1a-925f-2f6896e3e86c">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="64a0c707-1948-4099-bad9-58f64d3fb5c0">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="186152d2-1ab4-4d17-8ed8-1373d92a84a8" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3109b865-30ad-4c57-93c5-fea8eb1846d4">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="aff9d1c8-690f-4c2d-bd47-98b57b2f445a">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="03ab4b20-34c1-40a3-9903-a93a448adf8d" xml:lang="en">Are walkways, stairways and aisles kept clear of obstructions? </text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="58606527-5f3b-43be-8898-32483716d42f" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2a0f4a5b-54ed-4bbd-a5e1-867424960d9d">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0d07466b-1b8d-4cd6-b4bb-e500f1ce32d9">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9812cab6-f790-441c-81d5-31ad608ff369" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d0e00de6-ef9a-4b3e-86a9-5a4ec923895c">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="57a53421-491c-4a2e-930c-c5533eb36a6e">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e1df8f38-c6aa-4c35-a538-3191e1de4f4e" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6f63a8ca-4963-42e0-93ab-9799723725e9">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d7fec058-d0e0-4510-9308-fd6aa6081c78">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d99ea5cc-1a1d-4d34-8d6e-bbef7d5f7a71" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="441e6934-ea9c-41b2-aecc-0d3925b8c2a8">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4ad39d9b-a307-4861-a383-03cab6e31737">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="871504d3-d0d9-4daa-b291-bbe712932881" xml:lang="en">Are stairs and handrails in good condition?</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a9fae30c-9a83-4b58-8dde-ae45a8a81690" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4789a06f-5a51-4ffe-bf0e-1262949ed2fb">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="dbfecd00-5574-4af1-98d8-e4cc7795be74">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="23d4deb2-a30b-4b2e-a27a-471003ae2d39" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b3ff45dc-084c-4993-8f7f-33835851c940">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ca2c72a3-3829-4730-a280-096dda739601">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d0db96b0-68ab-4ecb-85f6-2a607037fc8d" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="aae73edc-291b-48e8-8d78-3312ffa69964">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b4397692-b985-4bd9-a8f5-9d44cfc725c9">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="802c244b-dc56-4f5c-b195-ffb29e28069f" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b628e852-8e68-4be9-9acd-95a4faa194f1">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3e6531e3-692b-4b4a-a1b7-49ea1a41e970">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="00e22c54-a92c-4c8c-ba73-929e6a97d8f7" xml:lang="en">Are doorways/exits clear of materials or equipment?</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="56dbd888-8641-428a-bae8-4155e9bbd9b5" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="7b70691b-4261-42d3-bbcd-048842a02bae">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="1434e45f-49ed-4d21-ad1d-bbd32f404bd3">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9e5d936f-c731-47e9-b1c3-1ec6e30a4d44" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="19b04b35-4cdf-4958-a20b-8dbbf49e3d50">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="da800e55-8f9b-4db6-aa23-a808068d33f2">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3337ac1a-5490-458b-9148-04fd8c6f330e" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="bbf65a32-a0b1-4500-b36a-22bd0887957b">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8460e310-422f-40bc-a655-11a3fae1a06f">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="472748c8-dcaa-4a76-8713-9cd371c6f362" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d42a419c-d9cc-483d-beac-17ea8a27915f">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b102ea39-8007-4537-b8cc-6dc751a8de33">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d42ccc4f-f1ff-4821-8f63-ee724eafa550" xml:lang="en">Are entrances/exit doors in good working order?</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="aa63508b-ecc6-41f1-94ba-cc5a52ee9270" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8528c88f-580f-41aa-8fd9-6c036f5fb9b0">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="5e298650-6ad2-4890-bf82-31edca948240">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b185752c-82fc-447b-ba9a-2a3ea329370c" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="31451e8b-a292-44c5-9aa5-deb70a1e0f41">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ad73d8d0-25c2-4a2e-a3bb-c4667c689460">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a100c331-251d-4112-a1c3-1cce61d55e48" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="22c9b14b-f0c1-4fa8-90c0-84ab67b3832b">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d44489f8-9f5e-471c-a310-893cf75532a8">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="66e6a620-1a75-4a25-aab2-7e06a747eb6e" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="133d792b-ac8f-4192-be58-c316920bfb0d">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="18606395-c37d-4390-b4dc-1bb2d287815b">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="da36ed1f-591e-41b4-aec9-0fa588d760f5" xml:lang="en">Are wall and ceiling fixtures fastened securely?</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0e8cd264-fd9a-4a02-84a6-b79fc2e23bb3" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4b5e1cc8-e485-413c-9298-a934c649bacf">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="1d54c137-1249-45e7-8ca9-bbc5714d09ac">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d3f781c2-94ae-4d96-8c93-929689c74d0b" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ae3aa43a-8a6f-4973-80c5-acba81029250">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="f9eb078d-1811-45d0-9bdf-fdad8497ce03">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="424065ae-673e-4d0a-aaa2-58c02034d9af" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c69ab017-af3f-4031-a4d5-2246f7c98a75">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="65d11ad8-7d98-4c0d-888d-dd6e6ebf8546">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="70e91e1e-45a3-476f-b4af-deab08938cf4" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.OptionsField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3bc5d072-83eb-4404-b564-e59937f1bd2a">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8730bf3c-c588-4750-ae4f-f45657b316b2">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9734ada6-1ea4-4d57-bc46-c10d692bf3d0" xml:lang="en">Are ventilation and exhaust fans in good working order?</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="43fba841-21bd-4555-b0ef-7d25b5d9872c" />
+          <options>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="5f7f604f-c643-43bd-a21d-f540e628a0a5">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="aeaf9d98-66f1-47e8-a388-b4ca360c9e5f">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9981f1ab-66a1-4291-a1ad-af6f7dcee103" xml:lang="en">Yes</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="76b75dcf-e605-4948-8456-d8fee8d663fc">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4aaf2c4c-5941-4c28-b84f-a510be5d74fe">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="5a51bdcb-74c5-4889-a4bb-49ead3c329bc" xml:lang="en">No</text>
+              </name>
+            </option>
+            <option model-type="Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="378c9198-abb7-4312-9b91-6ade02a7bf50">
+              <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="128caf9b-c01c-4657-8eb1-c3b8fcdce510">
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="21006d75-9c51-45aa-8985-775a17bb8230" xml:lang="en">N/A</text>
+              </name>
+            </option>
+          </options>
+        </field>
+        <field model-type="Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6758882c-b957-44fb-a887-dfcab065899c" required="true">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b7fbe723-369e-42a8-8dc6-8a847dd5760c">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4eca2a2a-4d8a-4a68-8095-dcb81e126395" xml:lang="en">Comments</text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="decf1354-a77c-4153-867e-5f4d492a13c8" />
+          <values>
+            <value model-type="Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="7f16a9cc-d053-4430-a95e-4f64c4a07726">
+              <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="64763f92-2435-4d4f-9825-eacb5d141c39" xml:lang="en"></text>
+            </value>
+          </values>
+        </field>
+      </fields>
+      <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2560c9e2-3f88-4dbb-a705-399a041add3e">
+        <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="db8a4a12-fab9-4fe0-94bd-657b635ebe90" xml:lang="en">Safety Inspection Form</text>
+      </name>
+      <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8eaae8b7-6c37-4e09-9703-13f30101f21a">
+        <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8774a0c1-c3e8-4f34-9556-815a5d73abb3" xml:lang="en">This is the form to be filled by the central admin when a submission revision is requested.</text>
+      </description>
+    </data-item>
+  </data-container>
+  <workflow model-type="Catfish.Core.Models.Contents.Workflow.Workflow, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9c424d30-bf5e-4dba-bbc4-9e9d28aec635">
+    <states>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0e69ce62-8201-4f1e-ad20-79a1286744cc"></state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d637a166-13f7-49b2-9d6a-ee9932112e29">Saved</state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="31259d2d-097f-47ba-a139-b1f4bccff4fc">Submitted</state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8faaa851-4587-4df1-8b53-f152422168eb">Deleted</state>
+    </states>
+    <groups />
+    <roles>
+      <role model-type="Catfish.Core.Models.Contents.Workflow.WorkflowRole, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d4f68db4-26f4-4782-8db3-f44d2fee83b6">Admin</role>
+      <role model-type="Catfish.Core.Models.Contents.Workflow.WorkflowRole, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d468417a-f8c0-47e9-9713-431c7fd87f62">Supervisor</role>
+    </roles>
+    <triggers />
+    <actions>
+      <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4107d13d-ccaf-4f8b-aa4f-19fe5ea94ec8" link-lable="Start Submission" function="Instantiate" group="Home">
+        <params>
+          <param model-type="Catfish.Core.Models.Contents.Workflow.Param, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d647b9e1-e3cc-46f3-a7ee-943ca73cd03f" template-id="8cfd7fdd-b4b3-452b-95ca-340e732797b6" />
+        </params>
+        <post-actions>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="bfe5dbbc-dc9d-4e72-980c-3eaa36c855f5" button-lable="Save" function="Update">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ea64c7b6-1d9a-46a7-b784-47d2c0668666" current="0e69ce62-8201-4f1e-ad20-79a1286744cc" next="d637a166-13f7-49b2-9d6a-ee9932112e29" button-label="Save" />
+            </state-mappings>
+            <pop-ups />
+            <trigger-refs />
+          </post-action>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="5a655d8a-fb20-4711-a430-f7f51c00f1fc" button-lable="Submit" function="Update">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="01bf5b62-bce3-479d-9900-11db64c57032" current="0e69ce62-8201-4f1e-ad20-79a1286744cc" next="31259d2d-097f-47ba-a139-b1f4bccff4fc" button-label="Submit" />
+            </state-mappings>
+            <pop-ups>
+              <pop-up model-type="Catfish.Core.Models.Contents.Workflow.PopUp, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8ee8b353-3548-4bfc-a448-2215a65904ef" title="WARNING: Submitting Document" body="Once submitted, you cannot update the document." message="">
+                <buttons>
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b94af741-0c4c-45df-abe2-a28c39fdef62" text="Yes, submit" return="true" />
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c19cf668-d2e6-40a8-9c1a-e2e3aa606e5e" text="Cancel" return="false" />
+                </buttons>
+              </pop-up>
+            </pop-ups>
+            <trigger-refs />
+          </post-action>
+        </post-actions>
+        <states>
+          <state-ref model-type="Catfish.Core.Models.Contents.Workflow.StateRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9e9a34c8-0fca-4b3b-b467-46e1aa533ede" ref-id="0e69ce62-8201-4f1e-ad20-79a1286744cc">
+            <authorizations>
+              <email-domain model-type="Catfish.Core.Models.Contents.Workflow.EmailDomain, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8b25acd7-917d-4d05-bf3a-da6ccf9c5fe3">@ualberta.ca</email-domain>
+            </authorizations>
+          </state-ref>
+        </states>
+      </get-action>
+      <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a6d47091-2b9a-4656-93a1-8d455ec3498b" link-lable="Edit Submission" function="Edit" group="Details">
+        <params />
+        <post-actions>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a0bf9275-393d-48eb-b4f6-89239a1abb32" button-lable="Save" function="Save">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d7142316-8c64-4bbb-a616-bf0cb5ea5f90" current="d637a166-13f7-49b2-9d6a-ee9932112e29" next="d637a166-13f7-49b2-9d6a-ee9932112e29" button-label="Save" />
+            </state-mappings>
+            <pop-ups />
+            <trigger-refs />
+          </post-action>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="68ac68bc-08e2-47d5-8b74-729caf5d9b26" button-lable="Submit" function="Save">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ff361198-8a13-4b2a-88e4-bdfda0465868" current="d637a166-13f7-49b2-9d6a-ee9932112e29" next="31259d2d-097f-47ba-a139-b1f4bccff4fc" button-label="Submit" />
+            </state-mappings>
+            <pop-ups>
+              <pop-up model-type="Catfish.Core.Models.Contents.Workflow.PopUp, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="22c2a797-dc65-41f6-895a-a10893f9e0a2" title="WARNING: Submitting Document" body="Once submitted, you cannot update the document." message="">
+                <buttons>
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="7ae9257c-f5f1-40d0-9e52-11db606b65e7" text="Yes, submit" return="true" />
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4630eed3-c158-4f63-9215-0cd8d82cf903" text="Cancel" return="false" />
+                </buttons>
+              </pop-up>
+            </pop-ups>
+            <trigger-refs />
+          </post-action>
+        </post-actions>
+        <states>
+          <state-ref model-type="Catfish.Core.Models.Contents.Workflow.StateRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="7e0ea498-5844-45eb-9096-660f079b971f" ref-id="d637a166-13f7-49b2-9d6a-ee9932112e29">
+            <authorizations>
+              <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="269b6778-4b6f-47da-889f-06cd015d3f98" ref-id="d468417a-f8c0-47e9-9713-431c7fd87f62" />
+            </authorizations>
+          </state-ref>
+          <state-ref model-type="Catfish.Core.Models.Contents.Workflow.StateRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e072ab21-1ac8-4ef8-95c4-703823a1e73f" ref-id="31259d2d-097f-47ba-a139-b1f4bccff4fc">
+            <authorizations>
+              <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6dcac8fd-de50-4c4b-9f73-3f6c4070d86e" ref-id="d4f68db4-26f4-4782-8db3-f44d2fee83b6" />
+            </authorizations>
+          </state-ref>
+        </states>
+      </get-action>
+      <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="419924c4-d957-4b84-bbde-0c51d47004bb" link-lable="Delete Submission" function="Delete" group="Details">
+        <params />
+        <post-actions>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="66e4ec90-ff8f-4f97-8ae5-b21b7792d46e" button-lable="Delete" function="Save">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="599f9c9f-5ae5-4fde-88b3-08733ab4cde4" current="d637a166-13f7-49b2-9d6a-ee9932112e29" next="8faaa851-4587-4df1-8b53-f152422168eb" button-label="Delete" />
+            </state-mappings>
+            <pop-ups>
+              <pop-up model-type="Catfish.Core.Models.Contents.Workflow.PopUp, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8fccfd16-0bd2-4176-b06c-8fee970d8c99" title="WARNING: Delete" body="Deleting the submission. Please confirm." message="">
+                <buttons>
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="16b4b5f5-8e64-4322-8350-65c69e67474d" text="Yes, delete" return="true" />
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8d1615a0-3dad-4adb-8430-642ea6c186f4" text="Cancel" return="false" />
+                </buttons>
+              </pop-up>
+            </pop-ups>
+            <trigger-refs />
+          </post-action>
+        </post-actions>
+        <states>
+          <state-ref model-type="Catfish.Core.Models.Contents.Workflow.StateRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="fb4ccfaf-ca10-457e-9d42-f2665aadceb9" ref-id="d637a166-13f7-49b2-9d6a-ee9932112e29">
+            <authorizations />
+          </state-ref>
+        </states>
+      </get-action>
+    </actions>
+  </workflow>
+</entity>

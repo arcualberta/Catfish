@@ -12,8 +12,7 @@
     try
     {
         var jsonData = JsonConvert.SerializeObject(Model);
-        var componentElementString = string.Format("<{0} v-bind:model='{1}'></{0}>", Model.Component, jsonData);
-
+        string componentElementString = string.Format("<{0} v-bind:model='{1}'></{0}>", Model.Component, jsonData);
         @Html.Raw(componentElementString)
     }
     catch (Exception ex)

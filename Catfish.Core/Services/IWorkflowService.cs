@@ -16,10 +16,10 @@ namespace Catfish.Core.Services
         public void SetModel(EntityTemplate entityTemplate);
         public void SetModel(Item item);
         public EntityTemplate GetModel();
-        public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists);
+        ////public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists);
         //public DataItem GetDataItem(string dataItemName, bool createIfNotExists);
 
-        public Workflow GetWorkflow(bool createIfNotExist);
+        ////public Workflow GetWorkflow(bool createIfNotExist);
 
         public List<string> GetEmailAddresses(EmailTrigger trigger);
 
@@ -27,9 +27,13 @@ namespace Catfish.Core.Services
 
         public EntityTemplate GetTemplate();
 
-        public string GetStatus(Guid templateId, string status, bool createIfNotExist, bool isEditable);
+        public SystemStatus GetStatus(Guid templateId, string status, bool createIfNotExist);
 
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
+        
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId);
+
+        public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang);
 
         public string GetLoggedUserEmail();
 
@@ -45,5 +49,12 @@ namespace Catfish.Core.Services
         /// <returns></returns>
         List<Group> GetApplicableGroups(ClaimsPrincipal user, OperationAuthorizationRequirement requirement, EntityTemplate entityTemplate, Entity instance = null);
 
+        Guid GetChildFormId(EntityTemplate entityTemplate, Guid postActionId);
+        PostAction GetPostActionByButtonId(EntityTemplate entityTemplate, Guid buttonId);
+        GetAction GetGetActionByPostActionID(EntityTemplate entityTemplate, Guid postActionId);
+        List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid statusId, Guid postActionId);
+        Mapping GetStateMappingByStateMappingId(EntityTemplate entityTemplate, Guid stateMappingId);
+
+        bool UpdateItemTemplateSchema(Guid id, string SchemaXml, out string successMessage);
     }
 }

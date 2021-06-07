@@ -1,6 +1,5 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.ViewModels;
-using Catfish.Tests.Helpers;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
@@ -9,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
+using Catfish.Test.Helpers;
 
 namespace Catfish.UnitTests
 {

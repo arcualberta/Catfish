@@ -1,7 +1,9 @@
 ﻿@page "~/manager/groups/edit/{id:Guid?}"
 @model Catfish.Areas.Manager.Pages.GroupModel
-@inject Piranha.Manager.ManagerLocalizer Localizer
 @using Microsoft.AspNetCore.Authorization
+@using Catfish.Core.Authorization.Requirements;
+
+@inject Piranha.Manager.ManagerLocalizer Localizer
 @inject IAuthorizationService AuthorizationService
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using Catfish.Core.Models
@@ -10,125 +12,137 @@
     <script src="~/manager/identity/piranha.useredit.js"></script>
     <script type="text/javascript">
         piranha.groupedit.currentGroupName = Group.Name;
-
     </script>
 }
 
-<form id="item-edit-form" class="edit-form" method="post" novalidate>
-    @Html.HiddenFor(m => m.Group.Id)
-    <div class="top">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">@Localizer.General["Settings"]</li>
-                <li class="breadcrumb-item" aria-current="page"><a href="..\">@Localizer.General["Groups"]</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@Localizer.General["Edit"]</li>
-            </ol>
-        </nav>
+@if ((await AuthorizationService.AuthorizeAsync(User, Model.Group, new List<IAuthorizationRequirement>() { GroupOperations.UpdateGroup })).Succeeded)
+//@if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Edit)).Succeeded)
+{
+    <form id="item-edit-form" class="edit-form" method="post" novalidate>
+        @Html.HiddenFor(m => m.Group.Id)
+        <div class="top">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">@Localizer.General["Settings"]</li>
+                    <li class="breadcrumb-item" aria-current="page"><a href="..\">@Localizer.General["Groups"]</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Localizer.General["Edit"]</li>
+                </ol>
+            </nav>
 
-        <div class="container-fluid">
-            <div class="top-nav">
-                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Save)).Succeeded)
-                {
-                    <button type="submit" class="btn btn-labeled btn-success pull-left">
-                        <span class="btn-label">
-                            <i class="fas fa-check"></i>
-                        </span>
-                        @Localizer.General["Save"]
-                    </button>
-                }
+            <div class="container-fluid">
+                <div class="top-nav">
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Model.Group, new List<IAuthorizationRequirement>() { GroupOperations.UpdateGroup })).Succeeded)
+                    {
+                        <button type="submit" class="btn btn-labeled btn-success pull-left">
+                            <span class="btn-label">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            @Localizer.General["Save"]
+                        </button>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-header">
-                <span class="title">@Localizer.General["General"]</span>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>@Localizer.General["Name"]</label>
-                            @Html.TextBoxFor(m => m.Group.Name, new { @class = "form-control small", maxlength = 128, required = "" })
-                            <div class="invalid-feedback">
-                                @Localizer.General["Name is mandatory."]
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="title">@Localizer.General["General"]</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>@Localizer.General["Name"]</label>
+                                @Html.TextBoxFor(m => m.Group.Name, new { @class = "form-control small", maxlength = 128, required = "" })
+                                <div class="invalid-feedback">
+                                    @Localizer.General["Name is mandatory."]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>@Localizer.General["Status"]</label>
+                                @Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(Group.eGroupStatus))), "Select Status", new { @class = "form-control small" })
+
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>@Localizer.General["Status"]</label>
-                            @Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(Group.eGroupStatus))), "Select Status", new { @class = "form-control small" })
+                </div>
+            </div>
 
+            @if ((await AuthorizationService.AuthorizeAsync(User, Model.Group, new List<IAuthorizationRequirement>() { GroupOperations.ReadSecurePost })).Succeeded)
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <span class="title">@Localizer.General["Configuration"]</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>@Localizer.General["Templates"]</label>
+                            <ul class="list-group">
+                                @{
+                                    for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
+                                    {
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <span class="col-sm-4">
+                                                    @Html.EditorFor(model => model.Templates[cnt])
+                                                </span>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>@Localizer.General["Roles"]</label>
+                            <ul class="list-group">
+                                @{
+                                    for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
+                                    {
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <span class="col-sm-4">
+                                                    @Html.EditorFor(model => model.Roles[cnt])
+
+                                                </span>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
+
+    </form>
+
+
+    <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <span class="title">@Localizer.General["Configaration"]</span>
+                <span class="title">@Localizer.General["User Privileges"]</span>
             </div>
             <div class="card-body">
-                <div class="form-group">
-                    <label>@Localizer.General["Templates"]</label>
-                    <ul class="list-group">
-                        @{
-                            for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
-                            {
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <span class="col-sm-4">
-                                            @Html.EditorFor(model => model.Templates[cnt])
-                                        </span>
-                                    </div>
-                                </li>
-                            }
-                        }
-                    </ul>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label>@Localizer.General["Roles"]</label>
-                    <ul class="list-group">
-                        @{
-                            for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
-                            {
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <span class="col-sm-4">
-                                            @Html.EditorFor(model => model.Roles[cnt])
+                <form asp-page-handler="delete" method="post">
+                    @foreach (var role in Model.Roles.Where(r => r.Assigned))
+                    {
+                        var users = Model.Users.Where(u => u.GroupRole.RoleId == role.RoleId);
+                        <partial model="@role" name="Partial/Groups/GroupRoleAssignmentVM.cshtml" />
 
-                                        </span>
-                                    </div>
-                                </li>
-                            }
-                        }
-                    </ul>
-                </div>
-            </div>
-        </div>
+                    } @*ENDS foreach (var role in Model.Roles.Where(r => r.Assigned))*@
+                </form>
+            </div> @*Ends "card-body"*@
+        </div> @*End: "cards"*@
+
     </div>
-
-</form>
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-header">
-            <span class="title">@Localizer.General["User Privileges"]</span>
-        </div>
-        <div class="card-body">
-            <form asp-page-handler="delete" method="post">
-                @foreach (var role in Model.Roles.Where(r => r.Assigned))
-                {
-                    var users = Model.Users.Where(u => u.GroupRole.RoleId == role.RoleId);
-                    <partial model="@role" name="Partial/Groups/GroupRoleAssignmentVM.cshtml" />
-
-                } @*ENDS foreach (var role in Model.Roles.Where(r => r.Assigned))*@
-            </form>
-        </div> @*Ends "card-body"*@
-    </div> @*End: "cards"*@
-
-</div>
-
+}
+else
+{
+    <div class="alert alert-danger">Authorization failed.</div>
+}
 

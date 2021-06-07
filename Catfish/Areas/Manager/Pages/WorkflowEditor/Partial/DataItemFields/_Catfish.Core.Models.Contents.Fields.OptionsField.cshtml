@@ -1,0 +1,29 @@
+﻿@model Catfish.Core.Models.Contents.Fields.OptionsField
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<partial name="Partial/DataItemFields/_BaseField" model="Model" />
+<td>
+    @foreach (var opt in Model.Options)
+    {
+        <div id="@opt.Id" class="option-value">
+            @for (int i = 0; i < opt.OptionText.Values.Count; ++i)
+            {
+                var txt = opt.OptionText.Values[i];
+                <partial name="Partial/DataItemFields/_Text" model="txt" />
+                if (i < opt.OptionText.Values.Count - 1)
+                {
+                    <span>|</span>
+                }
+            }
+        </div>
+    }
+    <!--@{ Guid newOptId = Guid.NewGuid(); }
+    <div id="newVal_@newOptId" class="new-option-value">-->
+        <!--Show the save and cancel buttons here. -->
+        <!--<input type="text"/>
+        <select name="lang">
+            <option value="en" selected="selected">English</option>
+        </select>
+    </div>-->
+</td>

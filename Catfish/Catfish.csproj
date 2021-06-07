@@ -15,7 +15,6 @@
     <Compile Remove="Models\MainPage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Pages\Shared\EditorTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
   </ItemGroup>
@@ -25,7 +24,6 @@
     <PackageReference Include="ElmahCore.Sql" Version="1.2.5" />
     <PackageReference Include="Google.Apis" Version="1.46.0" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.46.0.2001" />
-    <PackageReference Include="Hangfire" Version="1.7.15" />
     <PackageReference Include="jQuery" Version="3.5.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.2" />
@@ -53,7 +51,6 @@
     <PackageReference Include="Piranha.Manager" Version="8.3.1" />
     <PackageReference Include="Piranha.Manager.TinyMCE" Version="8.3.0" />
     <PackageReference Include="Piranha.WebApi" Version="8.3.0" />
-    <PackageReference Include="System-Web-Helpers.dll" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,6 +69,7 @@
   <ItemGroup>
     <Folder Include="Areas\Manager\assets\img\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
+    <Folder Include="wwwroot\assets\js\vendor\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,6 +79,14 @@
   <ItemGroup>
     <Content Update="Views\Cms\DisplayTemplates\ControlledVocabularySearchBlock.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\assets\js\_public-facing\calendar-block.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\assets\js\_public-facing\calendaruibundle.js.map">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Update="wwwroot\css\formEditPage.css">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

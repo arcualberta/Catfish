@@ -3,8 +3,12 @@
 <div class="row columnBlock CBflex-container">
     @for (var n = 0; n < Model.Items.Count; n++)
     {
-        <div class="col-md CBflex-item">
+    int m = Model.Items.Count <= 4 ? Model.Items.Count : 4;
+    m = 12 / m;
+    <div class="col-md-@m CBflex-parent">
+        <div class="col-md-12 CBflex-item">
             @Html.DisplayFor(m => Model.Items[n], Model.Items[n].GetType().Name)
         </div>
+    </div>
     }
 </div>

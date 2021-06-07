@@ -52,8 +52,9 @@ Vue.component("item-list", {
            <select v-model="model.selectedItemTemplate.value" class="form-control" style="width:auto;">
                 <option disabled value="">Please select one</option>
                 <option v-for="item in model.itemTemplates.entries" :value="item.value">{{item.text}}</option>
-            </select></div> 
-    
+            </select>
+      </div> 
+      <div class='lead row'><label class='form-label col-md-3 required'>Authorization Failure Message: </label><input class='form-control col-md-8' type='text' name='AuthorizationFailureMessage' v-model='model.authorizationFailureMessage.value' contenteditable='true' v-on:blur='onBlur' value='authorizationFailureMessage' /></div>
 </div>` 
 
 

@@ -1,0 +1,106 @@
+﻿@model List<Catfish.Core.Models.Contents.Workflow.PostAction>
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
+@{
+    var postActions = Model;
+    string suffix = ViewData["suffix"] as string;
+    string successMessage = ViewData["successMessage"] as string;
+    Guid? currentStateId = ViewData["currentStateId"] as Guid?;
+    string submitCallFunction = ViewData["submitCallFunction"] as string;
+    string submissionFormNamePrefix = ViewData["submissionFormNamePrefix"] as string;
+}
+
+<div id="buttonLayer">
+    @foreach (var postAction in postActions)
+    {
+        //if (!string.IsNullOrWhiteSpace(postAction.SuccessMessage))
+        //{
+        //    successMessage = postAction.SuccessMessage;
+        //    successMessage = successMessage.Replace("@SiteUrl", _catfishAppConfig.GetSiteURL());
+        //    successMessage = successMessage.Replace("@Item.Id", @itemId);
+        //}
+        string buttonName = @postAction.ButtonLabel + "_" + @suffix;
+        var stateMappings = postAction.StateMappings.Where(sm => sm.ButtonLabel == postAction.ButtonLabel);
+        var validationControl = postAction.ValidateInputs ? "" : string.Format("removeRequiredAttribute($('#{0}_{1}'));", submissionFormNamePrefix, suffix);
+        foreach (var stateMapping in stateMappings)
+        {
+            if (stateMapping.Current != currentStateId)
+                continue;
+
+            var wrapperId = string.Format("button_wrapper_{0}", @stateMapping.Id);
+
+            <div id="@wrapperId" style="display:inline">
+                @{
+                    //Below, we are dynamically generating a javascript code for onClickVal similar to
+                    //the following:
+                    //     removeRequiredAttribute($('#submissionForm_e3d91673-6a69-4918-91b3-35c430a7d625')); submitEditWorkflowForm('5f319486-543c-4b79-b10d-4c0fb969cc15','Save','ae4effc0-d4c0-4093-9c0d-d7761f89a684','e3d91673-6a69-4918-91b3-35c430a7d625', '');
+                    string onclickSubmitVal = string.Format("{0} {1}('{2}','{3}','{4}','{5}', '{6}');",
+                                                validationControl, submitCallFunction, stateMapping.Id, stateMapping.ButtonLabel, postAction.Id, suffix, successMessage);
+                }
+
+                @if (postAction.PopUps.Any())
+                {
+                    foreach (var popup in postAction.PopUps)
+                    {
+                        string popupTragetId = "model_" + Guid.NewGuid().ToString();
+                        <input onclick="return false;"
+                               data-visible-if="@stateMapping.Condition"
+                               data-field-id="@wrapperId"
+                               id="@postAction.ButtonLabel"
+                               class="btn btn-success launch-modal"
+                               name="@postAction.ButtonLabel"
+                               type="button"
+                               value="@postAction.ButtonLabel"
+                               data-toggle="modal"
+                               data-target="#@popupTragetId" />
+
+                        <div id="@popupTragetId" class="modal fade" role="dialog">
+                            <div>
+                                <div class="modal-dialog">
+                                    @*Modal content*@
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <p>@popup.Body</p>
+                                                    @{
+                                                        if (popup.Message.Any())
+                                                        {
+                                                            <p class="text-info"><small><strong>Note : </strong>@popup.Message</small></p>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            @{
+                                                foreach (var button in popup.Buttons)
+                                                {
+                                                    if (button.Text == "Cancel")
+                                                    {
+                                                        <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button id="@buttonName" type="submit" class="btn btn-success" onclick="@onclickSubmitVal">@button.Text</button>
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="@onclickSubmitVal" />
+                }
+            </div>
+        }
+    }
+</div>

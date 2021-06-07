@@ -16,7 +16,8 @@
             <div class="top-nav">
                 @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.EntityTypeList)
                 {
-                    <partial name="@action.ActionView" />
+                    @*<partial name="@action.ActionView" />*@
+                    <a href="/manager/schema/edit" class="btn btn-primary btn-labeled"><i class="fas fa-plus"></i>Add Schema</a>
                 }
             </div>
         </div>

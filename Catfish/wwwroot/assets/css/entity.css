@@ -19,9 +19,18 @@
 	padding-right: 0;
 }
 
+.sitemap-item.additional-spacing {
+	margin-bottom: 10px;
+}
+
 .sitemap-item .link .language-label {
 	align-self: center;
 	padding-right: 10px;
+	flex-shrink:0;
+}
+
+.sitemap-item .link .width-100{
+	width:100%;
 }
 
 .sitemap-item.add-entry-container {
@@ -116,7 +125,7 @@
 
 #item-edit-page .metadata-input {
 	flex-grow: 1;
-	max-width: 75%;
+	max-width: 100%;
 }
 
 #item-edit-page .add-value-container {
@@ -125,8 +134,12 @@
 	padding-top: 0;
 }
 
-#item-edit-page .new-value-button {
+#item-edit-page .float-right-button {
 	float: right;
+}
+
+#item-edit-page .space-above {
+	padding-top: 15px;
 }
 
 #item-edit-page .flex-row {
@@ -150,7 +163,7 @@
 }
 
 #item-edit-page .trash-button{
-	margin-right: 10px;
+	
 }
 
 .collapse-expand .egg-icon{

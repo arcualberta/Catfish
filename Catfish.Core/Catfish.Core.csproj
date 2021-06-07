@@ -29,12 +29,17 @@
     <Compile Remove="Migrations\20200619222003_CreatedXmlModelInDatabase.Designer.cs" />
     <Compile Remove="Migrations\20200619223416_AddedXmlModelToDbSet.cs" />
     <Compile Remove="Migrations\20200619223416_AddedXmlModelToDbSet.Designer.cs" />
+    <Compile Remove="Migrations\20210427143955_CreatedIndexingHitory.cs" />
+    <Compile Remove="Migrations\20210427143955_CreatedIndexingHitory.Designer.cs" />
+    <Compile Remove="Migrations\20210427144241_CreatedIndexingHitory.cs" />
+    <Compile Remove="Migrations\20210427144241_CreatedIndexingHitory.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ElmahCore" Version="1.2.5" />
     <PackageReference Include="ElmahCore.Sql" Version="1.2.5" />
     <PackageReference Include="EntityFramework" Version="6.4.0" />
+    <PackageReference Include="Hangfire" Version="1.7.18" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
@@ -48,10 +53,14 @@
     
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="3.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NRules" Version="0.9.1" />
     <PackageReference Include="Piranha.AspNetCore.Identity.SQLServer" Version="8.3.0" />
     <PackageReference Include="SolrNet.Core" Version="1.0.19" />
-    <PackageReference Include="SolrNet.DSL" Version="1.0.19" />
     <PackageReference Include="SolrNet.Microsoft.DependencyInjection" Version="1.0.19" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Automation\Rules\" />
   </ItemGroup>
 
 </Project>
