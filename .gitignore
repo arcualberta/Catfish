@@ -187,3 +187,15 @@ Plugins
 /Examples/centralAmericaRegistration_generared.xml
 /Examples/covidWeeklyInspectionWorkflow_generared.json
 /Examples/covidWeeklyInspectionWorkflow_generared.xml
+.sonarqube/
+Examples/*_generared.xml
+Examples/*_generared.json
+/Examples/CalendarMgmtItem.xml
+/Examples/Metadat Field Data Structure in JSON with comments.txt
+/Catfish.Test/appsettings.test.json
+/Examples/production/_prod_conf.xml
+/Examples/production/_prod_conf_with_report.xml
+/Examples/production/_prod_covid_inspection.xml
+/Examples/production/_prod_covid_inspection_with_report.xml
+/Examples/production/_prod_sas.xml
+/Examples/production/_prod_sas_with_report.xml
