@@ -30,5 +30,7 @@ namespace Catfish.Models.Blocks
         //link can be link to Title
         public TextAreaField SelectedUrlFieldId { get; set; }
         public TextAreaField SelectedThumbnailFieldId { get; set; }
+
+        public NumberField MaxWords { get; set; } = 100;
     }
 }
