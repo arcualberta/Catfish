@@ -344,6 +344,100 @@
 }
 
 /*****************************************************/
+/* Card block styles (includes modal/pop-up) */
+.modal-image-container {
+    width: 100%;
+    flex-grow: 2;
+    flex-basis: 33%;
+}
+
+.modal-image-fitting {
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center top;
+    height: 100%;
+}
+
+.description-container {
+    padding: 15px;
+    padding-top: 0px;
+}
+
+.close-modal-button {
+    padding-top: 10px !important;
+    padding-right: 20px !important;
+    align-self: flex-end;
+    font-size: 3rem;
+    padding-bottom: 0px !important;
+}
+
+.card-body, .card-image {
+    text-align: center;
+}
+
+.card-body .btn {
+    background-color: transparent;
+}
+
+.card-image > .btn {
+    padding: 0;
+}
+
+.card-button-image {
+    width: 100%;
+    height: 300px;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: cover !important;
+}
+
+.CBflex-item .card {
+    max-width: 100%;
+}
+
+@media(max-width: 1199px) {
+    .modal-image-container {
+        display: none;
+    }
+}
+
+@media(max-width: 1030px) {
+    /*.card-image > .btn {
+        height: 256px;
+        width: 240px;
+        overflow: hidden;
+        padding: 13px;
+    }
+
+    .card-image img {
+        width: 260px;
+        height: 229px;
+        max-height: 300px;
+    }*/
+}
+
+@media(max-width: 767px) {
+    .card-image > .btn {
+        /*height: 327px;
+        width: 305px;
+        padding: 13px;*/
+        width: 300px;
+        height: 300px;
+    }
+
+    /*.card-image img {
+        width: 300px;
+        height: 330px;
+        max-height:300px;
+    }*/
+
+    .card, .card-image{
+        min-width: 300px;
+    }
+}
+
+/*****************************************************/
 /* Extended Gallery carousel*/
 .extended-gallery-block .carousel-indicators {
     position: static;

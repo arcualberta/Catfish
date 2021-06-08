@@ -10,71 +10,24 @@ Vue.component("card-block", {
     methods: {
         onBlur: function (e) {
             var elName = e.target.name;
-
-            //if (elName === "calendarId") {
-
-            //    this.model.calendarId.value = e.target.value;
-            //    var content = this.model.calendarId.value;
-            //    if (content.length > 0) {
-            //        this.$emit('update-content', {
-            //            uid: this.uid,
-            //            calendarId: content
-            //        });
-            //    }
-            //} else if (elName == "pastDays") {
-            //    this.model.daysRangePast.value = e.target.value;
-            //    var content = this.model.daysRangePast.value;
-            //    if (content.length > 0) {
-            //        this.$emit('update-content', {
-            //            uid: this.uid,
-            //            daysRangePast: content
-            //        });
-            //    }
-            //} else if (elName == "futureDays") {
-            //    this.model.daysRangeFuture.value = e.target.value;
-            //    var content = this.model.daysRangeFuture.value;
-            //    if (content.length > 0) {
-            //        this.$emit('update-content', {
-            //            uid: this.uid,
-            //            daysRangeFuture: content
-            //        });
-            //    }
-            //}
-            //else if (elName == "maxEvents") {
-            //    this.model.maxEvents.value = e.target.value;
-            //    var content = this.model.maxEvents.value;
-            //    if (content.length > 0) {
-            //        this.$emit('update-content', {
-            //            uid: this.uid,
-            //            maxEvents: content
-            //        });
-            //    }
-            //}
-            //else if (elName == "displayCalendarUI") {
-            //    this.model.displayCalendarUI.value = e.target.value;
-            //    var content = this.model.displayCalendarUI.value;
-            //    if (content.length > 0) {
-            //        this.$emit('update-content', {
-            //            uid: this.uid,
-            //            displayCalendarUI: content
-            //        });
-            //    }
-            //}
-            //else if (elName == "calendarStyle") {
-            //    this.model.calendarStyle.value = e.target.value;
-            //    var content = this.model.calendarStyle.value;
-            //    if (content.length > 0) {
-            //        this.$emit('update-content', {
-            //            uid: this.uid,
-            //            calendarStyle: content
-            //        });
-            //    }
-            //}
         },
 
         /**
-* Opens the Piranha-provided mediapicker
-* */
+         * Clears the image selection 
+         **/
+        remove(selected) {
+            if (selected == 'card') {
+                this.model.cardImage.id = null;
+                this.model.cardImage.media = null;
+            } else if (selected == 'modal') {
+                this.model.modalImage.id = null;
+                this.model.modalImage.media = null;
+            }
+        },
+
+        /**
+        * Opens the Piranha-provided mediapicker
+        * */
         select(selected) {
             this.selectedImg = selected;
             if (selected == 'card') {
@@ -216,7 +169,7 @@ Vue.component("card-block", {
                     <button v-on:click.prevent="select('card')" class="btn btn-primary text-center">
                         <i class="fas fa-plus"></i>
                     </button>
-                    <button v-on:click.prevent="remove" class="btn btn-danger text-center">
+                    <button v-on:click.prevent="remove('card')" class="btn btn-danger text-center">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -263,7 +216,7 @@ Vue.component("card-block", {
                     <button v-on:click.prevent="select('modal')" class="btn btn-primary text-center">
                         <i class="fas fa-plus"></i>
                     </button>
-                    <button v-on:click.prevent="remove" class="btn btn-danger text-center">
+                    <button v-on:click.prevent="remove('modal')" class="btn btn-danger text-center">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -294,13 +247,18 @@ Vue.component("card-block", {
         </div>
         <div class='lead row'>
             <label class='form-label col-md-3'>Popup Description: </label>
-            <textarea class="form-control col-md-8" rows="6"></textarea>
+            <textarea value='model.modalDescription.value' v-model='model.modalDescription.value' class="form-control col-md-8" rows="6"></textarea>
         </div>
         <div class='lead row'>
             <label class='form-label col-md-3'>Email Address: </label>
             <input class='form-control col-md-8' type='text' name='popupEmail' v-model='model.emailAddress.value' contenteditable='true' v-on:blur='onBlur' />
         </div>
-
+        <br>
+        <h5>
+            An optional  button can be added to the pop-up that links to another site. 
+            <br>You can add the URL to navigate to, as well as the text that will be displayed in the button.
+        </h5>
+        <br>
         <div class='lead row'>
             <label class='form-label col-md-3'>Button Link Url: </label>
             <input class='form-control col-md-8' type='text' name='buttonLinkUrl' v-model='model.buttonLink.value' contenteditable='true' v-on:blur='onBlur' />
@@ -309,6 +267,11 @@ Vue.component("card-block", {
             <label class='form-label col-md-3'>Button Text: </label>
             <input class='form-control col-md-8' type='text' name='buttonText' v-model='model.buttonText.value' contenteditable='true' v-on:blur='onBlur' />
         </div>
+        <div class='lead row'>
+            <label class='form-label col-md-3'>Button Color: </label>
+            <input type="color" v-model="model.buttonColor.value">
+        </div>
+        <br>
         <div class='lead row'>
             <label class='form-label col-md-3' for="prevent-outside-clicks-checkbox">Prevent popup from closing when clicking outside of it?</label>        
             <input type="checkbox" id="prevent-outside-clicks-checkbox" v-model="model.preventUserFromExitingOnOutsideClick.value">

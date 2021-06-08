@@ -213,6 +213,12 @@ Plugins
 
 /SonarQubeCommands.txt
 
+# for sitewide custom css
+/Catfish/wwwroot/assets/css/public/custom.css
+
 # Future of the Past custom CSS
 /Catfish/wwwroot/assets/css/public/custom-future-of-the-past.css
 /package-lock.json
+
+# Anti-racism custom CSS
+/Catfish/wwwroot/assets/css/public/custom-anti-racism.css

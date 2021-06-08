@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
+using Catfish.Models.Fields;
 
 namespace Catfish.Models.Blocks
 {
@@ -36,8 +37,8 @@ namespace Catfish.Models.Blocks
         Something,
     }
 
-    [BlockType(Name = "Card Block", Category = "Content", Component = "card-block", Icon = "far fa-square")]
-    public class CardBlock:Block
+    [BlockType(Name = "Card Block", Category = "Content", Component = "card-block-vue", Icon = "far fa-square")]
+    public class CardBlock: VueComponent
     {
         public ImageField CardImage { get; set; }
         public TextField CardTitle { get; set; }
@@ -55,6 +56,7 @@ namespace Catfish.Models.Blocks
         public TextField EmailAddress { get; set; }
         public TextField ButtonLink { get; set; }
         public TextField ButtonText { get; set; }
+        public ColorPicker ButtonColor { get; set; }
         public CheckBoxField PreventUserFromExitingOnOutsideClick { get; set; } 
         //public SelectField<Styling> ModalStyling { get; set; }
 

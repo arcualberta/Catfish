@@ -1,89 +1,139 @@
 ﻿@model Catfish.Models.Blocks.CardBlock
 
-@{      //TODO: make ids for each modal unique or modals will open each other!
-}
-
-<div class="card">
-    @if (Model.CardImage.Media != null)
+@{   
+    var modalSizeSmall = false;
+    var modalSizeLarge = false;
+    switch (Model.ModalSize.Value)
     {
-        <div class="card-image">
-            @if (Model.HasAModal.Value)
+        case Catfish.Models.Blocks.ModalSize.Small:
+            modalSizeSmall = true;
+            break;
+        case Catfish.Models.Blocks.ModalSize.Large:
+            modalSizeLarge = true;
+            break;
+        default:
+            modalSizeLarge = true;
+            modalSizeSmall = false;
+            break;
+    }
+
+    //'true' for the modal is actually default behaviour
+    //'false' makes no darkened backdrop
+    //'static' makes a backdrop that cannot be exited by clicking out of the modal
+    var outsideClickValue = "";
+    if (Model.PreventUserFromExitingOnOutsideClick.Value)
+    {
+        outsideClickValue = "static";
+    } else
+    {
+        outsideClickValue = "true";
+    }
+}
+<card-block-vue inline-template class="container" v-bind:modalsizesmall='@modalSizeSmall'>
+    <!--   v-bind:modalsizesarge='@modalSizeLarge' v-bind:ismodalcenteredonthescreen='@Model.IsModalCenteredOnTheScreen.Value' -->
+    <div>
+        <div class="card">
+            @if (Model.CardImage.Media != null)
             {
-                <button id="btn_myModal_0" class="btn" data-toggle="modal" data-target="#myModal_0">
-                    <img src="@Model.CardImage.Media.PublicUrl.Substring(2)" /> //TODO put check for image!
-                </button>
+                <div class="card-image">
+                    @if (Model.HasAModal.Value)
+                    {
+                        <button id="btn_myModal_@Model.Id" style="background: url(@Model.CardImage.Media.PublicUrl.Substring(2))" class="btn card-button-image" data-toggle="modal" data-target="#myModal_@Model.Id">
+                        </button>
+                    }
+                    else
+                    {
+                        <button id="btn_myModal_@Model.Id" style="background: url(@Model.CardImage.Media.PublicUrl.Substring(2))" class="btn card-button-image">
+                        </button>
+                    }
+                </div>
+                <div class="card-body">
+                    <h4>@Model.CardTitle.Value</h4>
+                    <p>@Model.CardSubTitle.Value</p>
+                </div>
             }
             else
             {
-                <button id="btn_myModal_0" class="btn">
-                    <img src="@Model.CardImage.Media.PublicUrl.Substring(2)" />
-                </button>
+                @*No picture, but could still have a modal*@
+                @if (Model.HasAModal.Value)
+                {
+                    <div class="card-body">
+                        <button id="btn_myModal_@Model.Id" class="btn" data-toggle="modal" data-target="#myModal_@Model.Id" style="width: 100%">
+                            <h4>@Model.CardTitle.Value</h4>
+                            <p>@Model.CardSubTitle.Value</p>
+                        </button>
+                    </div>
+                }
+
+                else
+                {
+                    <div class="card-body">
+                        <h4>@Model.CardTitle.Value</h4>
+                        <p>@Model.CardSubTitle.Value</p>
+                    </div>
+                }
+
             }
+
         </div>
-        <div class="card-body">
-            <h4>@Model.CardTitle.Value</h4>
-            <p>@Model.CardSubTitle.Value</p>
-        </div>
-    }
-    else
-    {
-        @*No picture, but could still have a modal*@
+
         @if (Model.HasAModal.Value)
         {
-        <div id="no-img-myModal_0" class="card-body" data-toggle="modal" data-target="#myModal_0">
-            <h4>@Model.CardTitle.Value</h4>
-            <p>@Model.CardSubTitle.Value</p>
-        </div>
-        }
+            <!-- Modal -->
+            <div id="myModal_@Model.Id" class="modal" style="display: none;" aria-hidden="true" data-backdrop="@outsideClickValue">
+                <div class="modal-dialog" :class="{ 'modal-dialog-centered': isModalCenteredOnTheScreen, 'modal-lg': modalSizeLarge, 'modal-sm': modalSizeSmall }">
+                    <div class="modal-content">
+                        <!-- Modal body -->
+                        <div class="modal-body" style="display: flex; padding: 0;">
+                            @switch (Model.ImagePosition.Value)
+                            {
+                                case Catfish.Models.Blocks.Positioning.Left:
+                                    <div class="modal-image-container">
+                                        <div class="modal-image-fitting" style="background-image: url('@Model.ModalImage.Media.PublicUrl.Substring(2)');">&nbsp;</div>
+                                    </div>
+                                    break;
+                                case Catfish.Models.Blocks.Positioning.Right:
+                                    break;
+                                case Catfish.Models.Blocks.Positioning.Top:
+                                    break;
+                                case Catfish.Models.Blocks.Positioning.Bottom:
+                                    break;
+                                default:
+                                    break;
+                            }
 
-        else
-        {
-        <div class="card-body">
-            <h4>@Model.CardTitle.Value</h4>
-            <p>@Model.CardSubTitle.Value</p>
-        </div>
-        }
-
-    }
-
-</div>
-
-@if (Model.HasAModal.Value)
-{
-    <!-- Modal -->
-    <div id="myModal_0" class="modal" style="display: none;" aria-hidden="true">
-        <div class="modal-dialog" :class="{'modal-dialog-centered': '@Model.IsModalCenteredOnTheScreen.Value', 'modal-lg': '@Model.ModalSize == Catfish.Models.Blocks.ModalSize.Large', 'modal-sm': '@Model.ModalSize == Catfish.Models.Blocks.ModalSize.Small' }">
-            <div class="modal-content">
-                <!-- Modal body -->
-                <div class="modal-body" style="display: flex; padding: 0;">
-                    <div class="modal-image-container">
-                        <div class="modal-image-fitting" style="background-image: url('@Model.ModalImage.Media.PublicUrl.Substring(2)');">&nbsp;</div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; flex-grow: 1; flex-basis: 66%;">
-                        <div class="modal-top-style-piece">
-                            <button class="close close-modal-button" type="button" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="description-container">
-                            <div class="personelName">
-                                <h4>@Model.ModalTitle</h4>
+                            <div style="display: flex; flex-direction: column; flex-grow: 1; flex-basis: 66%;">
+                                <div class="modal-top-style-piece">
+                                    <button class="close close-modal-button" type="button" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="description-container">
+                                    <div class="personal-name">
+                                        <h4>@Model.ModalTitle</h4>
+                                    </div>
+                                    <div class="personal-institution"><em>@Model.ModalSubTitle</em></div>
+                                    <div class="personal-bio">
+                                        <p>@Model.ModalDescription.Value</p>
+                                        @if (Model.EmailAddress.Value != null)
+                                        {
+                                            <p><a href="mailto: @Model.EmailAddress.Value">@Model.EmailAddress.Value</a></p>
+                                        }
+                                        @if (Model.ButtonLink.Value != null && Model.ButtonText.Value != null)
+                                        {
+                                            <p><a class="btn btn-lg" style="color: unset; font-weight: bold; background-color: @Model.ButtonColor.Value" href="@Model.ButtonLink.Value" target="_blank" rel="noopener">@Model.ButtonText.Value</a></p>
+                                        }
+                                    </div>
+                                    <!-- personal Bio -->
+                                </div>
+                                <!-- description-container -->
                             </div>
-                            <div class="personelInstitution"><em>@Model.ModalSubTitle</em></div>
-                            <div class="personal-bio">
-                                <p>&nbsp;</p>
-                                <p>@Model.ModalDescription.Value</p>
-                                <p><a href="mailto: @Model.EmailAddress.Value">@Model.EmailAddress.Value</a></p>
-                                <p><a class="btn btn-lg" style="background-color: #92c178; color: unset; font-weight: bold;" href="https://apps.ualberta.ca/directory/person/haagsma" target="_blank" rel="noopener">Website</a></p>
-                            </div>
-                            <!-- personnel Bio -->
+                            <!-- modal body -->
                         </div>
-                        <!-- description-container -->
+                        <!-- modal content -->
                     </div>
-                    <!-- modal body -->
+                    <!-- modal dialog -->
                 </div>
-                <!-- modal content -->
+                <!-- modal 0 -->
             </div>
-            <!-- modal dialog -->
-        </div>
-        <!-- modal 0 -->
+        }
     </div>
-}
+</card-block-vue>
