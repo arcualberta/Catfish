@@ -165,6 +165,8 @@ function showResultSlip(resultEntries) {
         return;
     }
 
+    let maxWords = $("#maxWords").val();
+
     $(resultEntries).each((i, e) => {
         let itemId = e.id;
 
@@ -188,6 +190,7 @@ function showResultSlip(resultEntries) {
                         separator = ",";
 
                     let fieldContent = field.fieldContent.join(separator);
+                    fieldContent = wordLimit(fieldContent, maxWords, "..."); 
                     $(slipElement).html(fieldContent);
                 }
             }
@@ -229,4 +232,18 @@ function showResultSlip(resultEntries) {
 
         $("#slipRendering").append(slip);
     });
+}
+function wordLimit(str, limit, end) {
+
+    //default limit to 100 
+    limit = (limit) ? limit : 100;
+    end = (end) ? end : '...';
+    str = str.split(' ');
+
+    if (str.length > limit) {
+        var cutTolimit = str.slice(0, limit);
+        return cutTolimit.join(' ') + ' ' + end;
+    }
+
+    return str.join(' ');
 }

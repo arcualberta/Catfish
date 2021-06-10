@@ -55,14 +55,14 @@ Vue.component("advance-search", {
 
     },
     
-  /*  computed: {
+    computed: {
 
-        isSelected: function () {
-            return selectText == this.model.workflowFunction.value ? true : false;
+        maxWordsValue: function () {
+            return this.model.maxWords.value;
 
         }
 
-    },*/
+    },
     mounted() {
         fetch('/api/Items/GetSelectListItem/' + this.model.selectedItemTemplate.value + '/true')
             .then(response => response.json())
@@ -130,7 +130,11 @@ Vue.component("advance-search", {
                 <option disabled value="">Please select one</option>
                 <option v-for="item in this.metadatasetFields" :value="item.value">{{item.text}}</option>
 
-         </select></div>
+         </select>
+         <label class='form-label col-sm-2' style="text-align: right;"> Max Words: </label>
+              <input type="number" name='maxWords' v-model='model.maxWords.value' contenteditable='true' value='maxWordsValue' class="form-control col-md-1 ">
+         
+     </div>
 
     <div class='lead row'><label class='form-label col-md-3 required'>Slip Footer: </label>
            <select v-model="model.selectedFooterFieldId.value" class="form-control" style="width:auto;">
