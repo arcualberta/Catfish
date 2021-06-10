@@ -145,16 +145,23 @@ Vue.component("advance-search", {
                 <option v-for="item in this.metadatasetFields" :value="item.value">{{item.text}}</option>
 
          </select></div>
-<div class='lead row'><label class='form-label col-md-3 required'>slip Body Link: </label>
+
+    <div class='lead row'><label class='form-label col-md-3 required'>Slip Body Link: </label>
            <select v-model="model.selectedLinkFieldId.value" class="form-control" style="width:auto;">
                 <option disabled value="">Please select one</option>
                 <option value="Link to Item Details Page">Link to Item Details Page</option>
                 <option v-for="item in this.metadatasetFields" :value="item.value">{{item.text}}</option>
 
+         </select></div>     
+     
+    <div class='lead row'><label class='form-label col-md-3 required'>Thumbnail Image: </label>
+           <select v-model="model.selectedThumbnailFieldId.value" class="form-control" style="width:auto;">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in this.metadatasetFields" :value="item.value">{{item.text}}</option>
+
          </select></div>
-     
-     
-</div>` 
+
+</div>`
 
 });
 
