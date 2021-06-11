@@ -165,6 +165,8 @@ function showResultSlip(resultEntries) {
         return;
     }
 
+    let maxWords = $("#maxWords").val();
+
     $(resultEntries).each((i, e) => {
         let itemId = e.id;
 
@@ -177,14 +179,23 @@ function showResultSlip(resultEntries) {
             let fieldId = $(slipElement).data("field-id");
             let field = e.fields.filter(f => f.fieldId === fieldId)[0];
             if (field) {
-                let separator = $(field).data("val-separator");
-                if (!separator)
-                    separator = "<br />";
+                if ($(slipElement).data("thumbnail")) {
+                    //Set the thumbnail image
+                    let thumbnailUrl = "/assets/images/thumbnails/" + field.fieldContent;
+                    $(slipElement).css("background-image", "url(" + thumbnailUrl + ")");
+                }
+                else {
+                    let separator = $(field).data("val-separator");
+                    if (!separator)
+                        separator = ",";
 
-                let fieldContent = field.fieldContent.join(separator);
-                $(slipElement).html(fieldContent);
+                    let fieldContent = field.fieldContent.join(separator);
+                    fieldContent = wordLimit(fieldContent, maxWords, "..."); 
+                    $(slipElement).html(fieldContent);
+                }
             }
-        }); 
+        });
+
         //data-field-link
         //setting any links to the item title
         $(slip).find("a[data-field-link]").each((k, anchor) => {
@@ -221,4 +232,18 @@ function showResultSlip(resultEntries) {
 
         $("#slipRendering").append(slip);
     });
+}
+function wordLimit(str, limit, end) {
+
+    //default limit to 100 
+    limit = (limit) ? limit : 100;
+    end = (end) ? end : '...';
+    str = str.split(' ');
+
+    if (str.length > limit) {
+        var cutTolimit = str.slice(0, limit);
+        return cutTolimit.join(' ') + ' ' + end;
+    }
+
+    return str.join(' ');
 }

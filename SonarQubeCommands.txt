@@ -1,0 +1,9 @@
+Token: 
+7a903c43787f99ab1673f5e205a845e1ea87bd9e
+
+Commands:
+dotnet tool install --global dotnet-sonarscanner
+
+dotnet sonarscanner begin /k:"Catfish" /d:sonar.login="7a903c43787f99ab1673f5e205a845e1ea87bd9e"
+dotnet build
+dotnet sonarscanner end /d:sonar.login="7a903c43787f99ab1673f5e205a845e1ea87bd9e"

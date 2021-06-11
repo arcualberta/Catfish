@@ -48,11 +48,17 @@ namespace Catfish.Controllers
         {
             // var model = await _api.Pages.GetByIdAsync<Models.BlogArchive>(id);   
             //model.Archive = await _api.Archives.GetByIdAsync(id, page, category, tag, year, month);
+            try
+            {
+                var model = await _loader.GetPageAsync<StandardArchive>(id, HttpContext.User, draft).ConfigureAwait(true);
+                model.Archive = await _api.Archives.GetByIdAsync<PostInfo>(id, page, category, tag, year, month);
 
-            var model = await _loader.GetPageAsync<StandardArchive>(id, HttpContext.User, draft).ConfigureAwait(true);
-            model.Archive = await _api.Archives.GetByIdAsync<PostInfo>(id, page, category, tag, year, month);
-
-            return View(model);
+                return View(model);
+            }
+            catch(UnauthorizedAccessException ex)
+            {
+                return StatusCode(401);
+            }
         }
 
         /// <summary>
@@ -102,9 +108,9 @@ namespace Catfish.Controllers
                 }
                 return View(model);
             }
-            catch
+            catch(UnauthorizedAccessException ex)
             {
-                return Unauthorized();
+                return StatusCode(401);
             }
         }
 

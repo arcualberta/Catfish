@@ -207,13 +207,13 @@ namespace Catfish.UnitTests
 
             bcpForm.CreateField<InfoSection>(null, null).AppendContent("h3", "RESOURCE REQUIREMENTS", lang);
             string[] reqTechOptions = GetReqTechs();
-            var reqTech = bcpForm.CreateField<CheckboxField>("Required [U]Tech Products and Services", lang, reqTechOptions, false);
-            var othT = bcpForm.CreateField<TextField>("Other [U]Tech Products and Service", lang);
+            var reqTech = bcpForm.CreateField<CheckboxField>("Required University Products", lang, reqTechOptions, false);
+            var othT = bcpForm.CreateField<TextField>("Other - Required University Products", lang);
             int lastInd = GetReqTechs().Length - 1;
             
             othT.VisibilityCondition.AppendLogicalExpression(reqTech, reqTech.Options[lastInd], true);
         
-            var rt = bcpForm.CreateField<TextArea>("Required [U]Tech Applications", lang, false);
+            var rt = bcpForm.CreateField<TextArea>("Required University applications", lang, false);
             rt.Cols = 30;
             rt.Rows = 5;
 
@@ -325,11 +325,16 @@ namespace Catfish.UnitTests
            
             tf.TableHead.CreateField<InfoSection>("", lang);
             
-            tf.TableHead.CreateField<RadioField>("How long after a disaster might the harm occur?", lang, GetDisruptionOptions(), false);
+            tf.TableHead.CreateField<SelectField>("How long after a disaster might the harm occur?", lang, GetDisruptionOptions(), false);
+
            
-            tf.TableHead.CreateField<TextField>("Comments", lang,false);
+            var ta = tf.TableHead.CreateField<TextArea>("Comments", lang);
+            ta.Cols = 25;
+            ta.Rows = 1;
             tf.SetColumnValues(0, consequences, lang);
             tf.AllowAddRows = false;
+            
+            
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles  and Workflow                                          //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1193,7 +1198,7 @@ namespace Catfish.UnitTests
         private string[] GetReqTechs()
         {
 
-            return new string[] { "Network Services",  "Email",  "Telephone", "SIS", "HCM", "VPN",  "Others" };
+            return new string[] { "Network Services",  "Email",  "Telephone", "SMS", "HCM", "VPN",  "Others" };
         }
 
         private string[] GetPossibleHarmfulConsequences()

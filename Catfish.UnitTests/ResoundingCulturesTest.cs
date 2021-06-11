@@ -214,7 +214,12 @@ namespace Catfish.UnitTests
         public void ImportData()
         {
             bool clearCurrentData = true;
+
+            //Set maxEntries to a positive value to limit the maximum number of data entries to be imported.
+            int maxEntries = -1;
+
             string multiValueSeparator = ";";
+
 
             if (clearCurrentData)
             {
@@ -247,12 +252,14 @@ namespace Catfish.UnitTests
                     string colHeading = colHeadings[i];
                     string colValue = col.FormattedValue;
 
-                    if (!string.IsNullOrEmpty(colValue))
+                    bool skipColumn = (colHeading == "suject - French") || string.IsNullOrEmpty(colValue);
+
+                    if (!skipColumn)
                     {
                         bool multivalued = colHeadings[i].Equals("Creator(s)") 
                             || colHeadings[i].Equals("Contributor(s)") 
                             || colHeadings[i].Equals("subject - English") 
-                            || colHeadings[i].Equals("suject - French") 
+                            || colHeadings[i].Equals("Genre/Form") 
                             || colHeadings[i].Equals("Medium of Performance")
                             || colHeadings[i].Equals("Thematic Areas")
                             || colHeadings[i].Equals("Keyword") 
@@ -278,9 +285,9 @@ namespace Catfish.UnitTests
                 }
                 _db.Items.Add(item);
 
-               // for DEBUG only INSERT 2
-                if (rowCount == 50)
-                        break;
+                if (maxEntries > 0 && rowCount == maxEntries)
+                    break;
+
                 rowCount++;
             }
 
@@ -298,7 +305,7 @@ namespace Catfish.UnitTests
         public List<RowData>  ReadGoogleSheet()
         {
             String spreadsheetId = "1YFS3QXGpNUtakBRXxsFmqqTYMYNv8bL-XbzZ3n6LRsI";//==>google sheet Id
-            String ranges = "A2:Y";// read from col A to Y, starting 2nd row
+            String ranges = "A2:Z";// read from col A to Z, starting 2nd row
 
             SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
             {
@@ -368,7 +375,8 @@ namespace Catfish.UnitTests
                 "Date",
                 "Rights/Access Statements",
                 "Notes/Problems",
-                "Related Records"
+                "Related Records",
+                "Thumbnail"
             };
 
         }
