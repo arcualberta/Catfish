@@ -30,6 +30,8 @@
     string homepageUrlStartTag = "";
     string homepageUrlEndTag = "";
 
+    bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
+
 
     if (homepage != null)
     {
@@ -73,7 +75,7 @@
                     <div class="col-sm">
                         <partial name="/Views/Shared/Partial/_Menu.cshtml" />
                     </div>
-                    @if (_catfishAppConfig.IsAllowGoogleLogin())
+                    @if (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin)
                     {
                         <div class="signinout">
                             @if (!User.Identity.IsAuthenticated)
