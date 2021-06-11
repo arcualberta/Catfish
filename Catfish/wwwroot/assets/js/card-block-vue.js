@@ -1,6 +1,6 @@
 ﻿/* global piranha component registration */
 /* 1st parameter is the component name */
-Vue.component("card-block", {
+Vue.component("card-block-vue", {
     props: ["uid", "toolbar", "model"],
     data: function() {
         return {

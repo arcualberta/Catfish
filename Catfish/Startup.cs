@@ -399,7 +399,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/card-block.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/card-block-vue.js");
 
 
         }

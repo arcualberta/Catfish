@@ -1,5 +1,5 @@
 ﻿Vue.component('card-block-vue', {
-    props: ["uid", "modalsizesmall", "modalsizelarge", "ismodalcenteredonthescreen"],
+    props: ["uid", "model", "modalsizesmall", "modalsizelarge", "ismodalcenteredonthescreen"],
 
     data: function () {
         return {

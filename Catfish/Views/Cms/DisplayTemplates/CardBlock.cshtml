@@ -1,6 +1,8 @@
 ﻿@model Catfish.Models.Blocks.CardBlock
+@using Newtonsoft.Json;
 
-@{   
+
+@{
     var modalSizeSmall = false;
     var modalSizeLarge = false;
     switch (Model.ModalSize.Value)
@@ -17,6 +19,9 @@
             break;
     }
 
+
+    var jsonData = JsonConvert.SerializeObject(Model);
+
     //'true' for the modal is actually default behaviour
     //'false' makes no darkened backdrop
     //'static' makes a backdrop that cannot be exited by clicking out of the modal
@@ -24,13 +29,14 @@
     if (Model.PreventUserFromExitingOnOutsideClick.Value)
     {
         outsideClickValue = "static";
-    } else
+    }
+    else
     {
         outsideClickValue = "true";
     }
 }
-<card-block-vue inline-template class="container" v-bind:modalsizesmall='@modalSizeSmall'>
-    <!--   v-bind:modalsizesarge='@modalSizeLarge' v-bind:ismodalcenteredonthescreen='@Model.IsModalCenteredOnTheScreen.Value' -->
+<card-block-vue inline-template class="container" v-bind:model='@Html.Raw(jsonData)'>
+    <!--   v-bind:modalsizelarge='@modalSizeLarge' v-bind:modalsizesmall=@modalSizeSmall v-bind:ismodalcenteredonthescreen='@Model.IsModalCenteredOnTheScreen.Value' -->
     <div>
         <div class="card">
             @if (Model.CardImage.Media != null)
