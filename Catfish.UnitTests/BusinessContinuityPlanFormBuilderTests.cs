@@ -120,7 +120,7 @@ namespace Catfish.UnitTests
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
 
-            Define_BCP_RolesStatesWorkflow(workflow, ref template);
+            Define_BCP_RolesStatesWorkflow(workflow, ref template, false);
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\BPC_DEptWorksheet_generared.xml");
@@ -1079,12 +1079,13 @@ namespace Catfish.UnitTests
             inspectorSubmissionNotification.SetBody("TBD");
 
         }
-        private void Define_BCP_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template)
+        private void Define_BCP_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template, bool enabledSaveState=false)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
@@ -1122,6 +1123,18 @@ namespace Catfish.UnitTests
 
 
             //Post action for submitting the form
+            if (enabledSaveState)
+            {
+                PostAction savePostAction = startSubmissionAction.AddPostAction(
+                                                                               "Save",
+                                                                               nameof(TemplateOperations.Update),
+                                                                               @"<p>Your form saved successfully. 
+                                                                                You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                               );
+                savePostAction.ValidateInputs = false;
+                savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
+            }
+
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
@@ -1136,14 +1149,27 @@ namespace Catfish.UnitTests
 
             //Submissions can only be edited by admins
             editSubmissionAction.AddStateReferances(submittedState.Id)
+                //.AddAuthorizedRole(inspectorRole.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
-            //Defining post actions
-            //  PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            //   editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            //June 10 2021
+            PostAction editPostActionSubmit = editSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            editPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit"); //current state, nectStae, buttonLabel
+            if (enabledSaveState)
+            {
+                editSubmissionAction.AddStateReferances(savedState.Id)
+                    .AddAuthorizedRole(inspectorRole.Id)
+                    .AddAuthorizedRole(adminRole.Id);
 
-            PostAction editPostActionSubmit = editSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));//(Button Label, ActionName)
-            editPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");//current state, nectStae, buttonLabel
+                //(Button Label, ActionName)
+                editPostActionSubmit.AddStateMapping(savedState.Id, submittedState.Id, "Submit");
+            }
+          
+           //Defining post actions
+           //  PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+           //   editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+         
             //editPostActionSubmit.ValidateInputs = false;
 
             //Defining the pop-up for the above postActionSubmit action
