@@ -47,9 +47,11 @@ namespace Catfish.Models.Blocks
         //public SelectField<Styling> CardStyling { get; set; }
 
         public SelectField<ModalSize> ModalSize { get; set; }
+       // public TextField ModalSize { get; set; }
         public CheckBoxField IsModalCenteredOnTheScreen { get; set; }
         public ImageField ModalImage { get; set; }
-        public SelectField<Positioning> ImagePosition { get; set; }
+         public SelectField<Positioning> ImagePosition { get; set; }
+      //  public TextField ImagePosition { get; set; }
         public TextField ModalTitle { get; set; } 
         public TextField ModalSubTitle { get; set; }
         public HtmlField ModalDescription { get; set; }

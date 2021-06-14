@@ -10,6 +10,27 @@ Vue.component("card-block-vue", {
     methods: {
         onBlur: function (e) {
             var elName = e.target.name;
+
+            if (elName == "modalSize") {
+                this.model.modalSize.value = e.target.value;
+                var content = this.model.modalSize.value;
+                if (content.length > 0) {
+                    this.$emit('update-content', {
+                        uid: this.uid,
+                        modalSize: content
+                    });
+                }
+            }
+            else if (elName == "imagePosition") {
+                this.model.imagePosition.value = e.target.value;
+                var content = this.model.imagePosition.value;
+                if (content.length > 0) {
+                    this.$emit('update-content', {
+                        uid: this.uid,
+                        imagePosition: content
+                    });
+                }
+            }
         },
 
         /**
@@ -229,7 +250,7 @@ Vue.component("card-block-vue", {
         </div>
 
        <div class='lead row'><label class='form-label col-md-3'>Image Positioning:</label>
-           <select class='form-control col-md-4' name="modalSize" v-on:blur='onBlur' :value='model.modalSize.value' id="modal-size-select">
+           <select class='form-control col-md-4' name="imagePosition" v-on:blur='onBlur' :value='model.imagePosition.value' id="image-position-select">
                <option value="0">Left</option>
                <option value="1">Right</option>
                <option value="2">Top</option>

@@ -363,7 +363,9 @@
     padding: 15px;
     padding-top: 0px;
 }
-
+.position-image-vertical{
+    height:100px;
+}
 .close-modal-button {
     padding-top: 10px !important;
     padding-right: 20px !important;
