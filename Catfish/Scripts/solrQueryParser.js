@@ -319,9 +319,9 @@ var SolrParser = function (langCode) {
                 case "\"":
                     var value = decodeQuotation.call(this, tokens);
                     if (name == null) {
-                        name = "\"" + token + "\"";
+                        name = "\"" + value + "\"";
                     } else {
-                        name += " " + "\"" + token + "\"";
+                        name += " " + "\"" + value + "\"";
                     }
                     break;
 
