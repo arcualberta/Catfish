@@ -231,7 +231,7 @@ namespace Catfish.UnitTests
             //============================================================================
             //                                 EMAIL 
             //==============================================================================
-            EmailTemplate adminEmailTemplate = CreateEmailTemplate(ref template);
+           // EmailTemplate adminEmailTemplate = CreateEmailTemplate(ref template);
 
             //EmailTrigger notificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
             //notificationEmailTrigger.AddRecipientByEmail("mruaini@ualberta.ca");

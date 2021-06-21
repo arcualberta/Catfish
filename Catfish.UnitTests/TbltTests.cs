@@ -73,9 +73,9 @@ namespace Catfish.UnitTests
                  .AppendContent("h1", "Join Us", lang);
            
             bcpForm.CreateField<TextField>("Name", lang,true);
-            bcpForm.CreateField<TextField>("Email", lang, true);
+            var applicantEmail= bcpForm.CreateField<TextField>("Email", lang, true);
             bcpForm.CreateField<TextField>("Affiliation", lang, true);
-            var other =bcpForm.CreateField<TextArea>(@"Please, tell us what language(s) you teach and what age groups (e.g., elementary, secondary, college/university, adults)", lang, false);
+            var other =bcpForm.CreateField<TextArea>(@"Please, tell us what language(s) you teach and what age groups (e.g., elementary, secondary, college/university, adults)", lang, true);
             other.Cols = 50;
             other.Rows = 5;
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ namespace Catfish.UnitTests
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
            
-            Define_TBLT_RolesStatesWorkflow(workflow, ref template);
+            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, applicantEmail);
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_ContactForm_generared.xml");
@@ -93,19 +93,34 @@ namespace Catfish.UnitTests
         }
 
         
-        private EmailTemplate CreateEmailTemplate(ref ItemTemplate template)
+        private EmailTemplate CreateApplicantEmailTemplate(ref ItemTemplate template)
         {
             string lang = "en";
-            string body = "<p>Dear Admin</p><p>Some one has requested to join TBLT. </p>";
-            EmailTemplate adminNotification = template.GetEmailTemplate("Admin Notification", lang, true);
-            adminNotification.SetDescription("This metadata set defines the email template to be sent to the portal admin.", lang);
-            adminNotification.SetSubject("Join Task-based Language Teaching");
-            adminNotification.SetBody(body);
+            string body = @"<p>Thank you very much for your interest in the TBLT community of practice. We will review your request and we will get back to you in the next few days.</p>   
+                             <br/><p> Kind regards,</p>
+                             <p>The leadership team</p> ";
+            EmailTemplate applicantNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
+            applicantNotification.SetDescription("This metadata set defines the email template to be sent to the applicant.", lang);
+            applicantNotification.SetSubject("Join Task-based Language Teaching");
+            applicantNotification.SetBody(body);
 
-            return adminNotification;
+            return applicantNotification;
 
         }
-        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template)
+
+        private EmailTemplate CreateAdminEmailTemplate(ref ItemTemplate template)
+        {
+            string lang = "en";
+            string body = "<p>An application to join the TBLT CoP has been received and is awaiting your approval.</p>";
+            EmailTemplate applicantNotification = template.GetEmailTemplate("Admin Notification", lang, true);
+            applicantNotification.SetDescription("This metadata set defines the email template to be sent to the portal admin.", lang);
+            applicantNotification.SetSubject("Join TBLT CoP Request");
+            applicantNotification.SetBody(body);
+
+            return applicantNotification;
+
+        }
+        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, TextField applicantEmail)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -159,14 +174,21 @@ namespace Catfish.UnitTests
             //============================================================================
             //                                 EMAIL 
             //==============================================================================
-            //EmailTemplate adminEmailTemplate = CreateEmailTemplate(ref template);
 
-            //EmailTrigger notificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
-            //notificationEmailTrigger.AddRecipientByEmail("mruaini@ualberta.ca");
-            //notificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Join Request Notification");
+            EmailTemplate applicantEmailTemplate = CreateApplicantEmailTemplate(ref template);
+            EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
+            applicantNotificationEmailTrigger.AddRecipientByDataField(tbltForm.Id, applicantEmail.Id);
+            applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Join TBLT Request Notification");
+
+            EmailTemplate adminEmailTemplate = CreateAdminEmailTemplate(ref template);
+
+            EmailTrigger notificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
+            notificationEmailTrigger.AddRecipientByEmail("tblt@ualberta.ca");
+            notificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Join Request Notification");
             //Defining trigger refs
-          //  submitPostAction.AddTriggerRefs("0", notificationEmailTrigger.Id, "Chair's Notification Email Trigger", submittedState.Id, true);
-            
+            submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant's Notification Email Trigger", submittedState.Id, true);
+            submitPostAction.AddTriggerRefs("1", notificationEmailTrigger.Id, "Admin's Notification Email Trigger", submittedState.Id, true);
+
 
             // Edit submission related workflow items
             //Defining actions
@@ -212,55 +234,6 @@ namespace Catfish.UnitTests
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
             */
 
-        }
-
-        private string[] GetDisruptionOptions()
-        {
-
-            return new string[] { "N/A", "0-2 days", "1 week", "2 weeks", "3 weeks", "4 weeks", ">4 weeks" };
-        }
-        private string[] GetYesNoList()
-        {
-            return new string[] { "No", "Yes" };
-        }
-
-        private string[] GetRTOList()
-        {
-            return new string[] { "<b>Critical:</b> Directly impacts life, health, safety, or security. Cannot stop. RTO <b>less than</b> 4 hours",
-             "<b>High:</b> Must continue at normal or increased level. Pausing for more than 24 hours may cause significant consequences or serious harm. RTO <b>less than</b> 24 hours",
-            "<b>Medium:</b> Must continue if at all possible, perhaps in reduced mode. Stopping for more than one week may cause major disruption. RTO <b>less than</b> 1 week",
-             "<b>Low:</b> May be suspended for up to one month without causing significant disruption. RTO <b>less than</b> 1 month",
-            "<b>Deferable:</b> May pause and resume when conditions permit. RTO <b>over</b> 1 month" };
-        }
-
-        private string[] GetReqTechs()
-        {
-
-            return new string[] { "Network Services",  "Email",  "Telephone", "SIS", "HCM", "VPN",  "Others" };
-        }
-
-        private string[] GetPossibleHarmfulConsequences()
-        {
-            List<string> conseq = new List<string>();
-            conseq.Add("01. Disruption of teaching?");
-            conseq.Add("02. Disruption of research?");
-            conseq.Add("03. Departure of faculty?");
-            conseq.Add("04. Departure of staff?");
-            conseq.Add("05. Departure of students? ");
-            conseq.Add("06. Well-being of staff/faculty?");
-            conseq.Add("07. Well-being of students?");
-            conseq.Add("08. Payment deadlines unmet by campus?");
-            conseq.Add("09. Loss of revenue to campus?");
-            conseq.Add("10. Legal obligations unmet by campus?");
-            conseq.Add("11. Legal harm to the University?");
-            conseq.Add("12. Impact on other campus unit(s)?");
-            conseq.Add("13. Impact on important business partner(s)?");
-            conseq.Add("14. Impact on the Faculty of Arts’ brand image? ");
-            conseq.Add("15. Function without power?");
-            conseq.Add("16. Other harmful consequence?");
-          
-
-            return conseq.ToArray();
         }
 
     }
