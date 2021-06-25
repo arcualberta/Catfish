@@ -27,7 +27,10 @@ Vue.component("vue-single-list-item", {
                 piranha.mediapicker.openCurrentFolder(this.update, "Image");
             }
         },
-
+        remove() { //MR -- Jun-- 24 2021 : remove added image CAT-913
+            this.model.body.id = null;
+            this.model.body.media = null;
+        },
         /**
          * Updates the image area with the chosen media
          * @param {any} media the chosen media
@@ -50,6 +53,7 @@ Vue.component("vue-single-list-item", {
                 });
             } else {
                 console.log("No image was selected");
+                
             }
         },
     },
