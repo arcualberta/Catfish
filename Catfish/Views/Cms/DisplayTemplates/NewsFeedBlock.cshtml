@@ -8,6 +8,7 @@
     bool isTwitter = Model.NewsSource.Value.Equals(Catfish.Models.Blocks.FeedSource.Twitter);
     bool isEmbed = Model.EmbedOption.Value.Equals(Catfish.Models.Blocks.EmbedOption.Embed);
     string url = Model.ReferenceUrl.Value;
+    bool isDisplayTitle = Model.IsDisplayBlockTitle.Value;
 
     //have to make sure the ulr doesn't contain "/" at the end
     // example https://twitter.com/UAlberta    NOT https://twitter.com/UAlberta/
@@ -18,7 +19,7 @@
 <news-feed-block-vue inline-template class="container" v-bind:model='@Html.Raw(jsonData)'>
     
     <div>
-        
+        @if (isDisplayTitle) {<div class="newsFeedBlockTitle">@Model.BlockTitle.Value</div> }
         @if (isTwitter)
         {
             url = url + "?ref_src=twsrc%5Etfw";

@@ -41,6 +41,7 @@ namespace Catfish.Models.Blocks
         [Display(Description = "For Twitter: go to https://publish.twitter.com/, enter your twitter url you want to embed.")]
         public TextField ReferenceUrl { get; set; }
         public TextField BlockTitle { get; set; }
+        public CheckBoxField IsDisplayBlockTitle { get; set; }
         public SelectField<FeedSource> NewsSource { get; set; }
         public SelectField<EmbedOption> EmbedOption{ get; set; }
     }

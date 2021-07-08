@@ -86,12 +86,16 @@ Vue.component("news-feed-block-vue", {
        
 
         <div class='lead row'>
-            <label class='form-label col-md-3 required'>Block Title: </label>
+            <label class='form-label col-md-3'>Block Title: </label>
             <input  class='form-control col-md-8' type='text' name='blockTitle' v-model='model.blockTitle.value' contenteditable='true' v-on:blur='onBlur'  />
         </div>
-       
+        <div class='lead row' >
+            <label class='form-label col-md-3' for="is-display-title-checkbox">Is Display Block Title?</label>
+            <input type="checkbox" name ="isDisplayBlockTitle" id="is-display-title-checkbox" v-model="model.isDisplayBlockTitle.value">
+        </div>
+
         <h4>Embed Option</h4>
-        <p>Do you want to embed the timeline on your page or just get the shared button? </p>
+        
         <div class='lead row'><label class='form-label col-md-3'>Option:</label>
             <select class='form-control col-md-4' name="embedOption" v-on:blur='onBlur' :value='model.embedOption.value' id="embed-option-select">
                 <option value="0">Embed</option>
