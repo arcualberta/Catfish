@@ -1,0 +1,37 @@
+﻿
+@model Catfish.Models.Blocks.NewsFeedBlock
+@using Newtonsoft.Json;
+
+
+@{
+    var jsonData = JsonConvert.SerializeObject(Model);
+    bool isTwitter = Model.NewsSource.Value.Equals(Catfish.Models.Blocks.FeedSource.Twitter);
+    bool isEmbed = Model.EmbedOption.Value.Equals(Catfish.Models.Blocks.EmbedOption.Embed);
+    string url = Model.ReferenceUrl.Value;
+
+    //have to make sure the ulr doesn't contain "/" at the end
+    // example https://twitter.com/UAlberta    NOT https://twitter.com/UAlberta/
+    url = url.LastIndexOf('/') == (url.Length - 1) ? url.Substring(0, url.Length - 1) : url.Substring(0, url.Length);
+
+}
+
+<news-feed-block-vue inline-template class="container" v-bind:model='@Html.Raw(jsonData)'>
+    
+    <div>
+        
+        @if (isTwitter)
+        {
+            url = url + "?ref_src=twsrc%5Etfw";
+            if (isEmbed)
+            {
+
+                <a class="twitter-timeline" href="@url">@Model.BlockTitle.Value</a>
+            }
+        }
+        else
+        {
+            string fbUrl = "https://www.facebook.com/plugins/page.php?href=" + url + "&tabs=timeline&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId";
+            <iframe src="@fbUrl" class="col-12 fbTimeline" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        }
+    </div>
+</news-feed-block-vue>

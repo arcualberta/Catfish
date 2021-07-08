@@ -718,6 +718,14 @@
     border-top: 1px solid Grey;
     /*border-bottom: 1px solid grey;*/
 }
+
+
+/* ============================================== News Feed Block                    =============================== */
+.fbTimeline {
+    border: none;
+    overflow: hidden;
+    height: 600px;
+}
 /* Carousel: Overrides the user's set width when the screen is narrow, for mobile devices */
 @media screen and (max-width: 991px) {
     .image-in-carousel {

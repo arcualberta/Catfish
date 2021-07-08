@@ -400,7 +400,7 @@ namespace Catfish
 
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/card-block-vue.js");
-
+            App.Modules.Manager().Scripts.Add("~/assets/js/news-feed-block-vue.js");
 
         }
         private static void RegisterCustomBlocks()
@@ -426,6 +426,7 @@ namespace Catfish
             App.Blocks.Register<SingleListItem>();
             App.Blocks.Register<ListDisplayBlock>();
             App.Blocks.Register<CardBlock>();
+            App.Blocks.Register<NewsFeedBlock>();
         }
         private static void RegisterCustomStyles()
         {
