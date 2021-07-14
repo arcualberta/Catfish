@@ -72,7 +72,10 @@ namespace Catfish
             services.AddLocalization(options =>
              options.ResourcesPath = "Resources"
            );
-
+            services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+            {
+                options.ValueCountLimit = int.MaxValue; //MR July 14 2021 -- to increase the form count limit -- default=1024
+            });
             //-- add MVC service
             services.AddMvc()
                 .AddRazorOptions(options => options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml"));
