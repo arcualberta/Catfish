@@ -1031,7 +1031,7 @@ namespace Catfish.UnitTests
                                                  "Files,Documents", "Desk","Chair","File Cabinet (not files)","Bookshelf",
                                                   "Rugs", "Other Furniture","Specialized Equipment"
                                                    };
-            string[] options = new string[] { "Destryed", "Major", "Minor"};
+            string[] options = new string[] { "Destroyed", "Major", "Minor"};
             TableField tf = bcpForm.CreateField<TableField>("", lang, true, items.Length, items.Length);
             //tf.SetDescription("Where have the last 3 occurrences of this conference been held?", lang);
             tf.FieldLabelCssClass = "col-md-12 radio-inline";

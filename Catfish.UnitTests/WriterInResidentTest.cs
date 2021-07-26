@@ -29,7 +29,7 @@ namespace Catfish.UnitTests
 
        
         [Test]
-        public void TBlt_ContactFormTest()
+        public void WiterInResidentFormTest()
         {
             string lang = "en";
             string templateName = "Writer in Resident Form Template";
@@ -70,18 +70,47 @@ namespace Catfish.UnitTests
             wrForm.SetDescription("This template is designed for Writer-in-Resident Application Form", lang);
 
             wrForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("h1", "Writer-in-Resident", lang);
+                 .AppendContent("h3", "2022-2023 University of Alberta Writer-in-Residence Application", lang, "alert alert-info")
+                  .AppendContent("div", "<span class='required'></span> Required", lang, "alert alert-warning"); 
+                
+                
+
+            var applicantEmail = wrForm.CreateField<TextField>("Email", lang, true);
+            var firstName = wrForm.CreateField<TextField>("First Name", lang,true);
+            var lastName = wrForm.CreateField<TextField>("Last Name", lang, true);
+            var address = wrForm.CreateField<TextArea>("Street Address", lang, true);
+            address.Cols = 50;
+            address.Rows= 2;
+
+            wrForm.CreateField<TextField>("City", lang, true);
+            wrForm.CreateField<TextField>("Province", lang, true);
+            wrForm.CreateField<TextField>("Postal Code", lang, true);
+            string[] options = new string[] {"Yes", "No" };
+
+            var eligible = wrForm.CreateField<RadioField>("Are you eligible to work in Canada?",lang,options, true);
+           // eligible.FieldLabelCssClass = "col-md-12";
+           // eligible.FieldValueCssClass = "col-md-12";
+            wrForm.CreateField<InfoSection>(null, null)
+              //  .AppendContent("h5", "Application", lang)
+                .AppendContent("div", "This application can accept files up to 10 MB in size.If you need to include a larger file with your application, please email it to efs@ualberta.ca.You may attach up to 10 documents that, together, equal no more than 1 GB. Preferred format for your application is PDF files, but this website can accept documents, spreadsheets, presentations and images.", lang, "alert alert-info");
+
+
+            wrForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h5", "Required Supporting Documents", lang, "alert alert-info alert-info");
+            wrForm.CreateField<AttachmentField>("Attachment 1 - Literary Resume", lang, true).SetDescription("Literary Resume", lang);
+            wrForm.CreateField<AttachmentField>("Attachment 2 - Writing Samples", lang, true).SetDescription("Writing Samples (50 pages from a published book &/or 20-30 pages of work in progress)", lang);
+            wrForm.CreateField<AttachmentField>("Attachment 3 - Statement of Interest", lang, true).SetDescription("Statement of Interest (maximum 1 page)", lang);
+            wrForm.CreateField<AttachmentField>("Attachment 4 - Description", lang, true).SetDescription("Single-page description of the writing project(s) to be undertaken during the residency", lang);
+
+            wrForm.CreateField<AttachmentField>("Attachment 5", lang, false).SetDescription("Other supporting documents", lang);
            
-            var applicantName = wrForm.CreateField<TextField>("Full Name", lang,true);
-            var applicantEmail =wrForm.CreateField<TextField>("Email", lang, true);
-            wrForm.CreateField<TextField>("Affiliation", lang, true);
-            
+
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
-           
-            Define_WR_RolesStatesWorkflow(workflow, ref template, wrForm, applicantName, applicantEmail);
+
+            Define_WR_RolesStatesWorkflow1(workflow, ref template, wrForm, lastName, applicantEmail);
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\WriterInResident_generared.xml");
@@ -112,24 +141,172 @@ namespace Catfish.UnitTests
 
         }
 
-        private EmailTemplate CreateApplicantApplicationEmailTemplate(ref ItemTemplate template, TextField applicantName, TextField applicantEmail)
+        private EmailTemplate CreateApplicantApplicationEmailTemplate(ref ItemTemplate template, string applicantName=null)
         {
             string lang = "en";
-            string body = "Dear" + applicantName + ", " +
+            string body = "Dear Applicant," + //+ applicantName + ", " +
                 "<p>Thank you for your application for the Writer-in-Residence position with the Department of English and Film Studies at the University of Alberta." +
                 "We will review your application and will get back to you." +
                  "<p>Your sincerely,</p>" +
 
                  "<p> [Insert Names of the Committee & titles(i.e.Professor) if the system can do that ] </p>";
 
-            EmailTemplate applicantEmailNotification = template.GetEmailTemplate("Applicant Rejection Email Notification", lang, true);
-            applicantEmailNotification.SetDescription("This metadata set defines the email template to be sent to the portal admin.", lang);
-            applicantEmailNotification.SetSubject("Join Task-based Language Teaching");
+            EmailTemplate applicantEmailNotification = template.GetEmailTemplate("Applicant Application Email Notification", lang, true);
+            applicantEmailNotification.SetDescription("This metadata set defines the email template to be sent to the applicant.", lang);
+            applicantEmailNotification.SetSubject("Writer-in-Resident Application");
             applicantEmailNotification.SetBody(body);
-
+            
             return applicantEmailNotification;
 
         }
+
+        private void Define_WR_RolesStatesWorkflow1(Workflow workflow, ref ItemTemplate template, DataItem wrForm, TextField applicantName, TextField applicantEmail)
+        {
+            IWorkflowService ws = _testHelper.WorkflowService;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+          
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+
+
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("WR_Admin", true));
+            WorkflowRole reviewRole = workflow.AddRole(auth.GetRole("WR_Review", true));
+            WorkflowRole adjudicatorRole = workflow.AddRole(auth.GetRole("WR_Adjudicator", true));
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //                                                     Submitting an form
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Public;
+            // Added state referances
+            startSubmissionAction.AddStateReferances(emptyState.Id);
+
+
+            //Defining form template
+            startSubmissionAction.AddTemplate(wrForm.Id, "Start Submission Template");
+            //Defining post actions
+
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+           
+            EmailTemplate applicantEmailTemplate = CreateApplicantApplicationEmailTemplate(ref template); 
+            EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
+            applicantNotificationEmailTrigger.AddRecipientByDataField(wrForm.Id, applicantEmail.Id);
+            applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Writer-in-Resident Application Notification");
+
+            //EmailTemplate adminEmailTemplate = CreateAdminEmailTemplate(ref template);
+
+            //EmailTrigger notificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
+            //notificationEmailTrigger.AddRecipientByEmail("tblt@ualberta.ca");
+            //notificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Join Request Notification");
+            
+            //Defining trigger refs
+            submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant's Notification Email Trigger", submittedState.Id, true);
+           // submitPostAction.AddTriggerRefs("1", notificationEmailTrigger.Id, "Admin's Notification Email Trigger", submittedState.Id, true);
+
+           
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //                                                        Listing forms.
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///
+
+            //Admins and Inspectors can run the item-list report to list instances.
+            //Note that the visibility of individual list entries is depend on the
+            //Read permission on individual submissions.
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            // Added state referances
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                   .AddOwnerAuthorization()
+                  .AddAuthorizedRole(reviewRole.Id)
+                  .AddAuthorizedRole(adminRole.Id);
+
+          
+
+            //Detailed submission bcp forms.
+            //Inspectors can view their own submissions.
+            //Admins can view all submissions.
+            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
+            viewSubmissionAction.AddStateReferances(submittedState.Id)
+               .AddOwnerAuthorization()
+              .AddAuthorizedRole(reviewRole.Id)
+              .AddAuthorizedRole(adminRole.Id)
+              .AddAuthorizedRole(adjudicatorRole.Id);
+
+
+
+            //============================================================================
+            //                                 EMAIL 
+            //==============================================================================
+            // EmailTemplate adminEmailTemplate = CreateEmailTemplate(ref template);
+
+            //EmailTrigger notificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
+            //notificationEmailTrigger.AddRecipientByEmail("mruaini@ualberta.ca");
+            //notificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Join Request Notification");
+            //Defining trigger refs
+            //  submitPostAction.AddTriggerRefs("0", notificationEmailTrigger.Id, "Chair's Notification Email Trigger", submittedState.Id, true);
+
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            //  PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            //   editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+            PostAction editPostActionSubmit = editSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));//(Button Label, ActionName)
+            editPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");//current state, nectStae, buttonLabel
+            //editPostActionSubmit.ValidateInputs = false;
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditActionPopUpopUp = editPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            EditActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+
+            // Delete submission related workflow items
+            /*
+            //Defining actions. Only admin can delete a submission
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", nameof(CrudOperations.Delete), "Details");
+            deleteSubmissionAction.Access = GetAction.eAccess.Restricted;
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.ValidateInputs = false;
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Do you really want to delete this submission?", "");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+            */
+
+          
+
+        }
+
         private void Define_WR_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template, DataItem wrForm, TextField applicantName, TextField applicantEmail)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
@@ -165,14 +342,14 @@ namespace Catfish.UnitTests
            
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
             submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
-
+            
             //Defining the pop-up for the above postActionSubmit action
             PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs
-            EmailTemplate applicantNotificationEmail =CreateApplicantApplicationEmailTemplate(ref template, applicantName, applicantEmail);
+            EmailTemplate applicantNotificationEmail =CreateApplicantApplicationEmailTemplate(ref template);
              submitPostAction.AddTriggerRefs("0", applicantNotificationEmail.Id, "Applicant Notification Email Trigger");
             //  submitPostAction.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
