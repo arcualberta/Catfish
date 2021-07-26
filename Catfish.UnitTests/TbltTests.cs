@@ -92,35 +92,126 @@ namespace Catfish.UnitTests
             //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
 
-        
-        private EmailTemplate CreateApplicantEmailTemplate(ref ItemTemplate template)
+        public void TBlt_SubmitResourcesFormTest()
         {
             string lang = "en";
+            string templateName = "Task-based Language Teaching Submit Suggest Resources Form Template";
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            //ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = template.Workflow;
+
+            //Defining email templates
+
+            //Defininig the inspection form
+            DataItem bcpForm = template.GetDataItem("Task-based Language Teaching Submit Suggest Resources Form", true, lang);
+            bcpForm.IsRoot = true;
+            bcpForm.SetDescription("This template is designed for Task-based Language Teaching Submit Suggest Resources Form", lang);
+
+            bcpForm.CreateField<InfoSection>(null, null)
+                 .AppendContent("h1", "Submit Resources", lang);
+
+            bcpForm.CreateField<TextField>("Name", lang, true);
+            var applicantEmail = bcpForm.CreateField<TextField>("Email", lang, true);
+            bcpForm.CreateField<TextField>("Title", lang, true);
+            var other = bcpForm.CreateField<TextArea>("Short Description", lang, true);
+            other.Cols = 50;
+            other.Rows = 3;
+            bcpForm.CreateField<AttachmentField>("Resource Item", lang, false);
+            bcpForm.CreateField<TextField>("Link to Resource(s)", lang, false).SetDescription("Link to a Google document (docs, slides, spreadsheets, etc.) or other resources", lang);
+
+            string[] keywords = new string[] { "keyword1", "keyword1" };//TODO: NEED TO REPLACE
+
+            bcpForm.CreateField<CheckboxField>("Keywords for this resource(s)", lang, keywords,false);
+
+            bcpForm.CreateField<TextField>("Suggested Keyword(s)", lang, false);
+
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //                                                         Defininig roles                                             //
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //
+
+            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, applicantEmail, "SubmitResource");
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_SubmitResourceForm_generared.xml");
+
+            //string json = JsonConvert.SerializeObject(template);
+            //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
+        }
+
+
+        private EmailTemplate CreateApplicantEmailTemplate(ref ItemTemplate template, string formName=null)
+        {
+            string lang = "en";
+            EmailTemplate applicantNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
+            applicantNotification.SetDescription("This metadata set defines the email template to be sent to the applicant.", lang);
             string body = @"<p>Thank you very much for your interest in the TBLT community of practice. We will review your request and we will get back to you in the next few days.</p>   
                              <br/><p> Kind regards,</p>
                              <p>The leadership team</p> ";
-            EmailTemplate applicantNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
-            applicantNotification.SetDescription("This metadata set defines the email template to be sent to the applicant.", lang);
-            applicantNotification.SetSubject("Join Task-based Language Teaching");
+            string subject = "Join Task-based Language Teaching";
+            if (!string.IsNullOrEmpty(formName) && formName.Equals("SubmitResource"))
+            {
+                body = @"<p>Thank you very much for your resource(s) suggestion. We will review it and add to our collection.</p>   
+                             <br/><p> Kind regards,</p>
+                             <p>The leadership team</p>";
+                subject = "Submit Resource(s)";
+            }
+
+           
+            applicantNotification.SetSubject(subject);
             applicantNotification.SetBody(body);
 
             return applicantNotification;
 
         }
 
-        private EmailTemplate CreateAdminEmailTemplate(ref ItemTemplate template)
+        private EmailTemplate CreateAdminEmailTemplate(ref ItemTemplate template, string formName=null)
         {
             string lang = "en";
-            string body = "<p>An application to join the TBLT CoP has been received and is awaiting your approval.</p>";
             EmailTemplate applicantNotification = template.GetEmailTemplate("Admin Notification", lang, true);
             applicantNotification.SetDescription("This metadata set defines the email template to be sent to the portal admin.", lang);
-            applicantNotification.SetSubject("Join TBLT CoP Request");
+           
+            string body = "<p>An application to join the TBLT CoP has been received and is awaiting your approval.</p>";
+            string subject = "Join TBLT CoP Request";
+            if (!string.IsNullOrEmpty(formName) && formName.Equals("SubmitResource"))
+            {
+                body = "<p>Resources have been suggested and are awaiting your approval.</p>";
+                subject = "Submit Resource(s)";
+            }
+      
+            applicantNotification.SetSubject(subject);
             applicantNotification.SetBody(body);
 
             return applicantNotification;
 
         }
-        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, TextField applicantEmail)
+        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, TextField applicantEmail, string formName=null)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -175,16 +266,18 @@ namespace Catfish.UnitTests
             //                                 EMAIL 
             //==============================================================================
 
-            EmailTemplate applicantEmailTemplate = CreateApplicantEmailTemplate(ref template);
+            EmailTemplate applicantEmailTemplate = CreateApplicantEmailTemplate(ref template, formName);
             EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
             applicantNotificationEmailTrigger.AddRecipientByDataField(tbltForm.Id, applicantEmail.Id);
             applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Join TBLT Request Notification");
 
-            EmailTemplate adminEmailTemplate = CreateAdminEmailTemplate(ref template);
+            EmailTemplate adminEmailTemplate = CreateAdminEmailTemplate(ref template, formName);
 
             EmailTrigger notificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
             notificationEmailTrigger.AddRecipientByEmail("tblt@ualberta.ca");
             notificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Join Request Notification");
+
+
             //Defining trigger refs
             submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant's Notification Email Trigger", submittedState.Id, true);
             submitPostAction.AddTriggerRefs("1", notificationEmailTrigger.Id, "Admin's Notification Email Trigger", submittedState.Id, true);
