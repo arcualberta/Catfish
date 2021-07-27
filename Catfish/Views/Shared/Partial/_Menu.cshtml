@@ -13,7 +13,7 @@
     {
 
         <li class="nav-item dropdown @(item.Id == WebApp.PageId ? "active" : "")">
-            <a class="dropdown-toggle" id="navbarDropdownMenuLink_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="dropdown-toggle" id="navbarDropdownMenuLink_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 @item.MenuTitle
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_@item.Id">
@@ -29,9 +29,9 @@
                         }
                         else
                         {
-                        <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">@subItm.MenuTitle</a>
-                            <ul class="submenu dropdown-menu">
+                        <li class="dropdown-submenu dropdown">
+                            <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="true">@subItm.MenuTitle</a>
+                            <ul class="dropdown-menu">
 
                                 @foreach (var subitm2 in subItm.Items)
                                 {
@@ -61,9 +61,9 @@
 
     void subMenu2(SitemapItem subItm)
     {
-        <li class="dropdown-submenu">
-            <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">@subItm.MenuTitle</a>
-            <ul class="submenu dropdown-menu">
+        <li class="dropdown-submenu dropdown">
+            <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="true">@subItm.MenuTitle</a>
+            <ul class="dropdown-menu">
 
                 @foreach (var subitm2 in subItm.Items)
                 {
