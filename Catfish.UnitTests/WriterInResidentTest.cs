@@ -146,10 +146,10 @@ namespace Catfish.UnitTests
             string lang = "en";
             string body = "Dear Applicant," + //+ applicantName + ", " +
                 "<p>Thank you for your application for the Writer-in-Residence position with the Department of English and Film Studies at the University of Alberta." +
-                "We will review your application and will get back to you." +
+                "We will review your application and will get back to you  and get back to you in January." +
                  "<p>Your sincerely,</p>" +
 
-                 "<p> [Insert Names of the Committee & titles(i.e.Professor) if the system can do that ] </p>";
+                 "<p> Writer-in-Residence Committee </p>";
 
             EmailTemplate applicantEmailNotification = template.GetEmailTemplate("Applicant Application Email Notification", lang, true);
             applicantEmailNotification.SetDescription("This metadata set defines the email template to be sent to the applicant.", lang);
@@ -242,8 +242,8 @@ namespace Catfish.UnitTests
             viewSubmissionAction.AddStateReferances(submittedState.Id)
                .AddOwnerAuthorization()
               .AddAuthorizedRole(reviewRole.Id)
-              .AddAuthorizedRole(adminRole.Id)
-              .AddAuthorizedRole(adjudicatorRole.Id);
+              .AddAuthorizedRole(adminRole.Id);
+             // .AddAuthorizedRole(adjudicatorRole.Id);
 
 
 
@@ -324,7 +324,7 @@ namespace Catfish.UnitTests
 
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("WR_Admin", true)); 
             WorkflowRole reviewRole = workflow.AddRole(auth.GetRole("WR_Review", true));
-            WorkflowRole adjudicatorRole = workflow.AddRole(auth.GetRole("WR_Adjudicator", true));
+           // WorkflowRole adjudicatorRole = workflow.AddRole(auth.GetRole("WR_Adjudicator", true));
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                     Submitting an form
@@ -381,15 +381,15 @@ namespace Catfish.UnitTests
 
             listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
                 .AddAuthorizedRole(adminRole.Id)
-                .AddAuthorizedRole(adjudicatorRole.Id)
+                //.AddAuthorizedRole(adjudicatorRole.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(acceptedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
-                .AddAuthorizedRole(adjudicatorRole.Id)
+               // .AddAuthorizedRole(adjudicatorRole.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(rejectedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
-                .AddAuthorizedRole(adjudicatorRole.Id)
+                //.AddAuthorizedRole(adjudicatorRole.Id)
                 .AddOwnerAuthorization();
 
             //Detailed submission bcp forms.
@@ -400,8 +400,8 @@ namespace Catfish.UnitTests
             viewSubmissionAction.AddStateReferances(submittedState.Id)
                .AddOwnerAuthorization()
               .AddAuthorizedRole(reviewRole.Id)
-              .AddAuthorizedRole(adminRole.Id)
-              .AddAuthorizedRole(adjudicatorRole.Id);
+              .AddAuthorizedRole(adminRole.Id);
+            // .AddAuthorizedRole(adjudicatorRole.Id);
 
             
            
@@ -473,20 +473,20 @@ namespace Catfish.UnitTests
 
             viewChildFormDetailsAction.AddStateReferances(reviewCompletedState.Id)
                   .AddAuthorizedRole(adminRole.Id)
-                  .AddAuthorizedRole(adjudicatorRole.Id)
+                 // .AddAuthorizedRole(adjudicatorRole.Id)
                 .AddAuthorizedRole(reviewRole.Id);
 
             viewChildFormDetailsAction.AddStateReferances(inAdjudicationState.Id)
-                 .AddAuthorizedRole(adminRole.Id)
-                  .AddAuthorizedRole(adjudicatorRole.Id);
+                 .AddAuthorizedRole(adminRole.Id);
+            // .AddAuthorizedRole(adjudicatorRole.Id);
 
             viewChildFormDetailsAction.AddStateReferances(acceptedState.Id)
-                 .AddAuthorizedRole(adminRole.Id)
-                  .AddAuthorizedRole(adjudicatorRole.Id);
+                 .AddAuthorizedRole(adminRole.Id);
+            //  .AddAuthorizedRole(adjudicatorRole.Id);
 
             viewChildFormDetailsAction.AddStateReferances(rejectedState.Id)
-                 .AddAuthorizedRole(adminRole.Id)
-                  .AddAuthorizedRole(adjudicatorRole.Id);
+                 .AddAuthorizedRole(adminRole.Id);
+                //  .AddAuthorizedRole(adjudicatorRole.Id);
 
 
             //===================================================================================================================================
@@ -558,15 +558,15 @@ namespace Catfish.UnitTests
             //Defining states and their authorizatios
             changeStateAction.GetStateReference(reviewCompletedState.Id, true)
                 .AddAuthorizedRole(adminRole.Id)
-                .AddAuthorizedRole(adjudicatorRole.Id)
+               // .AddAuthorizedRole(adjudicatorRole.Id)
                 .AddAuthorizedRole(reviewRole.Id);   
 
             changeStateAction.GetStateReference(inReviewState.Id, true)
                  .AddAuthorizedRole(adminRole.Id)
                 .AddAuthorizedRole(reviewRole.Id);
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
-                 .AddAuthorizedRole(adminRole.Id)
-                .AddAuthorizedRole(adjudicatorRole.Id);
+                 .AddAuthorizedRole(adminRole.Id);
+                //.AddAuthorizedRole(adjudicatorRole.Id);
               
             // ========================================================
             // Adjudication Decision related workflow items
