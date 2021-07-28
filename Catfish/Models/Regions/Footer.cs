@@ -29,5 +29,8 @@ namespace Catfish.Models.Regions
 
         [Field(Title = "Enabled SubMenu", Placeholder = "If the site will display sub menu")]
         public CheckBoxField EnabledSubMenu { get; set; } = true;
+
+        [Field(Title = "Enabled MegaMenu", Placeholder = "If the site will display Mega Menu instead of Sub Menu")]
+        public CheckBoxField EnabledMegaMenu { get; set; } = false;
     }
 }
