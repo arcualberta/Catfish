@@ -16,6 +16,6 @@ namespace Catfish.Models.ViewModels
 
         public string ReturnUrl { get; set; }
 
-        public IList<AuthenticationScheme> ExternalLogin { get; set; }
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }
     }
 }
