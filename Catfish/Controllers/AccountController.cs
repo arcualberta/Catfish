@@ -23,8 +23,8 @@ namespace Catfish.Controllers
         
         private readonly ICatfishAppConfiguration _catfishConfig;
         private readonly ISecurity _security;
-
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, Piranha.AspNetCore.Identity.IDb db, ICatfishAppConfiguration catfishConfig, ISecurity security)
+        private readonly Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, Piranha.AspNetCore.Identity.IDb db, ICatfishAppConfiguration catfishConfig, ISecurity security, Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor)
         {
            
             _signInManager = signInManager;
@@ -32,6 +32,7 @@ namespace Catfish.Controllers
             _userManager = userManager;
             _catfishConfig = catfishConfig;
             _security = security;
+            _httpContextAccessor = httpContextAccessor;
         }
         public IActionResult Index()
         {
@@ -49,10 +50,12 @@ namespace Catfish.Controllers
         //}
 
         [AllowAnonymous]
-        public async Task<IActionResult>
-            ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            var q = _httpContextAccessor.HttpContext.Request.Query;
+            string ret = q.Keys.Contains("ret") ? q["ret"].ToString() : "/";
+
+            returnUrl = returnUrl ?? Url.Content(ret);
 
             CatfishUserViewModel loginViewModel = new CatfishUserViewModel
             {
@@ -133,7 +136,7 @@ namespace Catfish.Controllers
                         //if (await _security.SignIn(HttpContext, userModel.Login, userModel.Password))
                         //    return new RedirectResult("/");
                         if (await TryLogin(userModel.Login, new string(userModel.Email.Reverse().ToArray())))
-                            return new RedirectResult("/");
+                            return new RedirectResult(returnUrl);
                     }
 
                 }
@@ -147,34 +150,10 @@ namespace Catfish.Controllers
                     _user = await _userManager.FindByNameAsync(userModel.Login).ConfigureAwait(false);
                     
                     if(await TryLogin(userModel.Login, new string(userModel.Email.Reverse().ToArray()), _user))
-                        return new RedirectResult("/");
-                    //try {
-                    //    //try to login
-                    //    if (await _security.SignIn(HttpContext, userModel.Login, new string(userModel.Email.Reverse().ToArray())))
-                    //        return new RedirectResult("/");
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    //if failed -- try reset the user's password and try login again ==
-                    //    //this is for backword compatibility if user has login with external account
-                    //    //woth different password
-                    //    //reset user's password
-                    //    var token = await _userManager.GeneratePasswordResetTokenAsync(_user);
-                    //    var resetPassResult = await _userManager.ResetPasswordAsync(_user, token, new string(userModel.Email.Reverse().ToArray()));
-                    //    if (resetPassResult.Succeeded)
-                    //    {
-                    //        if (await _security.SignIn(HttpContext, userModel.Login, new string(userModel.Email.Reverse().ToArray())))
-                    //            return new RedirectResult("/");
-                    //    }
-
-                    //}
-
-
-                    //if the login with user'd profile id failed -- try to login with user's email hash
-
+                        return new RedirectResult(returnUrl);
                 }
             }
-            return LocalRedirect("~/");
+            return LocalRedirect(returnUrl);
         }
 
         private bool IsAllowUser(string login)

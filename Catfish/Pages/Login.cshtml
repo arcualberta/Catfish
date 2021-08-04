@@ -6,11 +6,11 @@
 
     ViewBag.Title = "Login";
     bool allowGoogleLogin = _catfishAppConfig.IsAllowGoogleLogin();
-    string AllowDomains = _catfishAppConfig.GetAllowDomain();
+   // string AllowDomains = _catfishAppConfig.GetAllowDomain();
     string DeniedMessage = _catfishAppConfig.GetUnauthorizedLoginMessage();
     bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
-    var q = _httpContextAccessor.HttpContext.Request.Query;
-    string ret = q.Keys.Contains("ret") ? q["ret"].ToString() : "/";
+    //var q = _httpContextAccessor.HttpContext.Request.Query;
+    //string ret = q.Keys.Contains("ret") ? q["ret"].ToString() : "/";
 }
 
 
@@ -72,11 +72,11 @@
 
 
 <script>
-   var allowDomains = ('@AllowDomains').split(',');
-     var allowed = true;
+  // var allowDomains = ('atsign AllowDomains').split(',');
+ //    var allowed = true;
 
 
- function onSignIn(googleUser) {
+ /* function onSignIn(googleUser) {
        var profile = googleUser.getBasicProfile();
 
      //May 11 2020 --check if user's email is allow -- for example -- restricted to uofa user only --
@@ -91,11 +91,11 @@
 
 
      if (!allowed) {
-         //.css("visibility", "visible");
+       
          $(".allowDomain").css("visibility", "visible");
          var auth2 = gapi.auth2.getAuthInstance();
          auth2.signOut().then(function () {
-             //console.log('User signed out.');
+             
              auth2.disconnect();
          });
          auth2.disconnect();
@@ -104,7 +104,7 @@
          $(".allowDomain").css("visibility", "hidden");
          var auth2 = gapi.auth2.getAuthInstance();
          if (auth2.isSignedIn) {
-          @*@Model.catfishUser.Login = profile.getEmail();*@
+         
              var user = new Object();
              user.Login = profile.getEmail();
              user.Password = profile.getId();
@@ -122,10 +122,10 @@
                          $('input:hidden[name="__RequestVerificationToken"]').val()
                  }
              }).done(function (result) {
-                 window.location.href = "@ret";
+                 window.location.href = " 'atsign' ret" 
              });
          }
      }
-}
+} */
 
 </script>
