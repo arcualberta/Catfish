@@ -63,7 +63,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500">
-  
+
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
@@ -72,7 +72,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.min.js" integrity="sha384-3ziFidFTgxJXHMDttyPJKDuTlmxJlwbSkojudK/CkRqKDOmeSbN6KLrGdrBQnT2n" crossorigin="anonymous"></script>
     @*<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" ></script>*@
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    @*   this is needed for Google-signIn
+        <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+        *@
 
     <link href="~/assets/css/public/style.css" rel="stylesheet" />
     <link href="~/assets/css/public/componentStyles.css" rel="stylesheet" />
@@ -86,11 +88,13 @@
     <script src="~/assets/js/catfish.js"></script>
 
     <script src="~/assets/js/_public-facing/scripts/component-scripts.js"></script>
-   
+
     <script src="~/assets/js/_public-facing/scripts/item-list-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/contact-form-block-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/free-search-block-functions.js"></script>
     <script src="/assets/js/_public-facing/scripts/modal-bootstrap-jquery.js"></script>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
 
     @{
         //Inserting custom CSS files

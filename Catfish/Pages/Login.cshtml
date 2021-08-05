@@ -11,6 +11,7 @@
     bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
     //var q = _httpContextAccessor.HttpContext.Request.Query;
     //string ret = q.Keys.Contains("ret") ? q["ret"].ToString() : "/";
+    string externalLoginDivClass = enabledLocalLogin ? "col-md" : "col-md-12";
 }
 
 
@@ -45,19 +46,19 @@
         </article>
         @Html.AntiForgeryToken()
         @if (allowGoogleLogin)
-        {<article class="col-md-6">
+        {<article class="@externalLoginDivClass">
                 <div class="grid_4 box login">
                     <div id="socialLoginDiv">
                         <h2>External Login </h2>
                         <hr />
                         @*<div class="g-signin2" data-onsuccess="onSignIn"></div>*@
                         @*//asp-action="ExternalLogin" asp-controller="Account"*@
-                        <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
-                            @foreach (var provider in Model.ExternalLogins)
-                            {
-                                <input type="submit" class="btn btn-primary" value="@provider.Name" title="Login using your @provider.DisplayName account" />
-                            }
-                        </form>
+                    <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
+                        @foreach (var provider in Model.ExternalLogins)
+                        {
+                            <input type="submit" class=" btn-primary goggleLoginBtn fa fa-google btn" value="@provider.Name" title="Login using your @provider.DisplayName account" />
+                        }
+                    </form>
 
                     </div>
                 </div>
@@ -71,7 +72,7 @@
 </div>
 
 
-<script>
+@*<script>
   // var allowDomains = ('atsign AllowDomains').split(',');
  //    var allowed = true;
 
@@ -128,4 +129,4 @@
      }
 } */
 
-</script>
+</script>*@
