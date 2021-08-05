@@ -243,11 +243,11 @@
     @RenderSection("script", required: false)
 
     <script>
-    function onLoad() {
+   /* function onLoad() {
         gapi.load('auth2', function () {
             gapi.auth2.init();
         });
-    }
+    }*/
 
     function signOut() {
         //signout local login
@@ -259,18 +259,18 @@
                     $('input:hidden[name="__RequestVerificationToken"]').val()
             }
         }).done(function (result) {
-            //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
-            try {
-                var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
-                auth2.signOut().then(function () {
-                    //console.log('User signed out.');
-                    auth2.disconnect();
-                    window.location.href = "/";
-                });
-                auth2.disconnect();
+            window.location.href = "/";
+            /*try {
+                //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
+                //var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
+                //auth2.signOut().then(function () {    
+                //    auth2.disconnect();
+                //    window.location.href = "/";
+                //});
+                //auth2.disconnect();
             } catch (ex) {
                 window.location.href = "/";
-            }
+            }*/
 
 
         });
