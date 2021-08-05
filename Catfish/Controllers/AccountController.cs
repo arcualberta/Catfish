@@ -171,8 +171,8 @@ namespace Catfish.Controllers
                         }
                     }  
             }
-            if (allowedDomains.Contains("*") || allowedDomains == null) //if allow domain is null that mean no restriction
-                domainUser = true;
+            if (allowedDomains == null ||  allowedDomains.Contains("*")) //if allow domain is null that mean no restriction
+               domainUser = true;
 
             return domainUser;
         }
