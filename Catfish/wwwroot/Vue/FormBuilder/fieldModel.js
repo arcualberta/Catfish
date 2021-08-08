@@ -43,9 +43,11 @@
         },
         moveUp(idx) {
             this.$store.commit('moveFieldUp', idx)
+            this.$store.commit('setSelectedFieldIndex', idx - 1)
         },
         moveDown(idx) {
             this.$store.commit('moveFieldDown', idx)
+            this.$store.commit('setSelectedFieldIndex', idx + 1)
         },
         selectField() {
             this.$store.commit('setSelectedFieldIndex', this.index)

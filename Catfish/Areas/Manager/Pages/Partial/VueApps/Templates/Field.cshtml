@@ -1,9 +1,9 @@
 ﻿<script type="text/x-template" id="field-template">
     <div class="card alert bdr-info-h"
-         @@click="selectField()"
+         @@dblclick="selectField()"
          :class="{ 'alert-warning': isHighlighted }">
         
-        <div class="card-header pr-0" @@clcik="selectField()">
+        <div class="card-header pr-0" @@dblclick="selectField()">
            <div class="row">
                 <div class="col-8">
                     [{{field.componentType.replace(/([A-Z])/g, " $1")}}] {{field.name}}
