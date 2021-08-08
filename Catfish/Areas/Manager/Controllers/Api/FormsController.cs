@@ -1,4 +1,6 @@
-﻿using Catfish.Models.FormBuilder;
+﻿using Catfish.Core.Models.Contents.ViewModels;
+using Catfish.Core.Services.FormBuilder;
+using Catfish.Models.FormBuilder;
 using Catfish.Models.FormBuilder.Fields;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,17 +10,27 @@ using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Catfish.Controllers.Api
+namespace Catfish.Areas.Manager.Controllers.Api
 {
-    [Route("api/[controller]")]
+    [Route("manager/api/[controller]")]
     [ApiController]
     public class FormsController : ControllerBase
     {
+        private readonly IFormService _service;
+        public FormsController(IFormService service)
+        {
+            _service = service;
+        }
+
         // GET: api/<FormsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public FieldContainerListVM Get(int offset = 0, int? max = null)
         {
-            return new string[] { "value1", "value2" };
+            FieldContainerListVM vm = _service.Get(offset, max);
+            return vm;
+            //JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            //string jsonString = JsonConvert.SerializeObject(vm, settings);
+            //return Content(jsonString, "application/json");
         }
 
         // GET api/<FormsController>/5

@@ -1,0 +1,34 @@
+﻿@*Pop-up Template*@
+<teleport to="#modalContainer" :disabled="true">
+    <div v-if="activeTeleportModelId === field.Id" class="modal-backdrop">
+        <div class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="text-left col-10">
+                            <h4 class="modal-title">Field Settings</h4>
+                            <h6 class="mb-3 text-left">{{field.Name}}</h6>
+                        </div>
+                        <div class="text-right col-2">
+                            <button type="button" class="close col-2" @@click="cancelTeleportModelChanges()"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                    </div>
+                    <div class="modal-body text-left">
+                        <div class="form-group">
+                            <label class="control-label">Coupons</label>
+                            <div v-for="(coupon, couponIdx) in field.Coupons">
+                                {{coupon.Code}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @@click="updateOptionSettings(optIdx)">OK</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+    </div>
+</teleport>

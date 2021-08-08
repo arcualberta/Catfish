@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 
-namespace Catfish.Controllers.Api
+namespace Catfish.Areas.Manager.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]

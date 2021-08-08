@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    [Route("manager/api/[controller]")]
+    [Route("manager/apiold/[controller]")]
     [ApiController]
     public class FormsController : ControllerBase
     {
