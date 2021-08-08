@@ -1,14 +1,15 @@
 ﻿@* Form Builder Vue App Template *@
-<div id="app" class="container row mt-5 app">
-
+<div id="v3app" class="container row ml-3 v3app">
     @*Toolbar*@
-    <div class="row toolbar bg-light" style="">
+    <div class="toolbar bg-light" style="border: solid 1px blue">
         @*<h4>Field Types</h4>*@
-        <div v-for="(template, index) in fieldTemplates" class="col-sm-2">
-            <div class="m-1">
-                <div class="card bdr-info-h">
-                    <div class="card-body bg-light" @@click="insertField(index)">
-                        <span :class="template.Icon"></span> {{template.TemplateButtonLabel}}
+        <div class="row">
+            <div v-for="(template, index) in fieldTemplates" class="col-sm-2">
+                <div class="m-1">
+                    <div class="card bdr-info-h">
+                        <div class="card-body bg-light" @@click="insertField(index)">
+                            <span :class="template.icon"></span> {{template.templateButtonLabel}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -16,7 +17,7 @@
     </div>
 
     @*Form*@
-    <div class="">
+    <div class="" style="border:solid 1px blue">
         <h2>Form Properties</h2>
         <div class="card border-0">
             <div class="card-body">
@@ -75,7 +76,7 @@
     appTemplate.use(store);
     appTemplate.component('field', fieldModel);
 
-    const app = appTemplate.mount('#app');
+    const app = appTemplate.mount('#v3app');
 
 </script>
 

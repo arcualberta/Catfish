@@ -95,7 +95,7 @@
     actions: {
         //Ref: https://next.vuex.vuejs.org/guide/actions.html
         loadForm(context, formId) {
-            var url = "/api/forms/" + formId ?? 0;
+            var url = "/manager/api/forms/" + formId ?? 0;
             axios.get(url)
                 .then(res => {
                     context.commit('setForm', res.data)
@@ -105,7 +105,7 @@
                 })
         },
         loadFieldTemplates(context) {
-            var url = "/api/fieldtemplates";
+            var url = "/manager/api/fieldtemplates";
             axios.get(url)
                 .then(res => {
                     context.commit('setFieldTemplates', res.data)

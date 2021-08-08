@@ -9,7 +9,7 @@ using System.Net.Http;
 
 namespace Catfish.Areas.Manager.Controllers.Api
 {
-    [Route("api/[controller]")]
+    [Route("manager/api/[controller]")]
     [ApiController]
     public class FieldTemplatesController : ControllerBase
     {

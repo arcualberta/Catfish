@@ -36,11 +36,11 @@
 
 
 /* Toolbar */
-.app .toolbar {
+.v3app .toolbar {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
     background-color: yellow;
     padding: 10px;
-    z-index:2000;
+    z-index: 2000;
 }

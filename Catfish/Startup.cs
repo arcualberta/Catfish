@@ -383,7 +383,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
+            //App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/editItemBundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
 
@@ -397,7 +397,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
+            //App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
 
