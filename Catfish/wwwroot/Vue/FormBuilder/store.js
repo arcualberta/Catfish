@@ -22,52 +22,52 @@
             state.selectedFieldIndex = idx
         },
         setFieldProperty(state, fieldInfo) {
-            state.form.Fields[fieldInfo.fieldIndex][fieldInfo.property] = fieldInfo.value;
+            state.form.fields[fieldInfo.fieldIndex][fieldInfo.property] = fieldInfo.value;
         },
         moveFieldUp(state, index) {
-            let tmp = state.form.Fields[index];
-            state.form.Fields[index] = state.form.Fields[index - 1];
-            state.form.Fields[index - 1] = tmp;
+            let tmp = state.form.fields[index];
+            state.form.fields[index] = state.form.fields[index - 1];
+            state.form.fields[index - 1] = tmp;
         },
         moveFieldDown(state, index) {
-            let tmp = state.form.Fields[index];
-            state.form.Fields[index] = state.form.Fields[index + 1];
-            state.form.Fields[index + 1] = tmp;
+            let tmp = state.form.fields[index];
+            state.form.fields[index] = state.form.fields[index + 1];
+            state.form.fields[index + 1] = tmp;
         },
         deleteField(state, index) {
-            state.form.Fields.splice(index, 1);
+            state.form.fields.splice(index, 1);
             state.selectedFieldIndex = index;
         },
         insertField(state, templateIndex) {
             if (state.selectedFieldIndex)
                 ++state.selectedFieldIndex;
             else
-                state.selectedFieldIndex = state.form.Fields.length;
+                state.selectedFieldIndex = state.form.fields.length;
 
-            state.form.Fields.splice(state.selectedFieldIndex, 0, state.fieldTemplates[templateIndex]);
+            state.form.fields.splice(state.selectedFieldIndex, 0, state.fieldTemplates[templateIndex]);
         },
         deleteOption(state, optInfo) {
             if (confirm("Do you really want to delete?"))
-                state.form.Fields[optInfo.fieldIndex].Options.splice(optInfo.optionIndex, 1);
+                state.form.fields[optInfo.fieldIndex].options.splice(optInfo.optionIndex, 1);
         },
         addOption(state, optInfo) {
             if (optInfo.positionIndex >= 0)
-                state.form.Fields[optInfo.fieldIndex].Options.splice(optInfo.positionIndex + 1, 0, {});
+                state.form.fields[optInfo.fieldIndex].options.splice(optInfo.positionIndex + 1, 0, {});
             else
-                state.form.Fields[optInfo.fieldIndex].Options.push({});
+                state.form.fields[optInfo.fieldIndex].options.push({});
         },
         setOptionProperty(state, optInfo) {
-            state.form.Fields[optInfo.fieldIndex].Options[optInfo.optionIndex][optInfo.property] = optInfo.value;
+            state.form.fields[optInfo.fieldIndex].options[optInfo.optionIndex][optInfo.property] = optInfo.value;
         },
         moveOptionUp(state, optInfo) {
-            let tmp = state.form.Fields[optInfo.fieldIndex].Options[optInfo.optionIndex];
-            state.form.Fields[optInfo.fieldIndex].Options[optInfo.optionIndex] = state.form.Fields[optInfo.fieldIndex].Options[optInfo.optionIndex - 1];
-            state.form.Fields[optInfo.fieldIndex].Options[optInfo.optionIndex - 1] = tmp;
+            let tmp = state.form.fields[optInfo.fieldIndex].options[optInfo.optionIndex];
+            state.form.fields[optInfo.fieldIndex].options[optInfo.optionIndex] = state.form.fields[optInfo.fieldIndex].options[optInfo.optionIndex - 1];
+            state.form.fields[optInfo.fieldIndex].options[optInfo.optionIndex - 1] = tmp;
         },
         moveOptionDown(state, optInfo) {
-            let tmp = state.form.Fields[optInfo.fieldIndex].Options[optInfo.optionIndex];
-            state.form.Fields[optInfo.fieldIndex].Options[optInfo.optionIndex] = state.form.Fields[optInfo.fieldIndex].Options[optInfo.optionIndex + 1];
-            state.form.Fields[optInfo.fieldIndex].Options[optInfo.optionIndex + 1] = tmp;
+            let tmp = state.form.fields[optInfo.fieldIndex].options[optInfo.optionIndex];
+            state.form.fields[optInfo.fieldIndex].options[optInfo.optionIndex] = state.form.fields[optInfo.fieldIndex].options[optInfo.optionIndex + 1];
+            state.form.fields[optInfo.fieldIndex].options[optInfo.optionIndex + 1] = tmp;
         },
         editFieldSettings(state, field) {
             //edit field settings
@@ -83,13 +83,13 @@
     },
     getters: {
         fieldCount: state => {
-            return state.form?.Fields.length
+            return state.form?.fields.length
         },
         selectedFieldIndex: state => {
             return state.selectedFieldIndex
         },
         field: state => index => {
-            return state.form?.Fields[index]
+            return state.form?.fields[index]
         }
     },
     actions: {

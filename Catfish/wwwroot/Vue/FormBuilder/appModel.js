@@ -12,10 +12,10 @@
     //the store are modified.
     computed: Vuex.mapState({
         fieldTemplates: state => state.fieldTemplates,
-        formName: state => state.form?.Name,
-        formDescription: state => state.form?.Description,
-        linkText: state => state.form?.LinkText,
-        fields: state => state.form?.Fields
+        formName: state => state.form?.name,
+        formDescription: state => state.form?.description,
+        linkText: state => state.form?.linkText,
+        fields: state => state.form?.fields
     }),
     //======================================================================================================
     //Defining a set of methods for updating the Vuex data store through store commits.

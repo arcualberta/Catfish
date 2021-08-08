@@ -69,6 +69,8 @@
   <ItemGroup>
     <Folder Include="Areas\Manager\assets\img\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
+    <Folder Include="Areas\Manager\Shared\Partial\" />
+    <Folder Include="Areas\Manager\Views\" />
     <Folder Include="Models\FormBuilder\" />
     <Folder Include="wwwroot\assets\js\vendor\" />
     <Folder Include="wwwroot\Vue\FormBuilder\" />

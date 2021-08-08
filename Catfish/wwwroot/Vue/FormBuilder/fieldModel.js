@@ -18,19 +18,19 @@
     },
     computed: {
         isHighlighted() {
-            return this.index == this.$store.getters.selectedFieldIndex
+            return this.index === this.$store.getters.selectedFieldIndex
         },
         fieldName() {
-            return this.$store.getters.field(this.index).Label
+            return this.$store.getters.field(this.index).label
         },
         ...Vuex.mapState({
             field(state) {
-                return state.form.Fields[this.index]
+                return state.form.fields[this.index]
             },
             isOptionField() {
-                return this.field.ComponentType === "RadioButtonSet"
-                    || this.field.ComponentType === "CheckboxSet"
-                    || this.field.ComponentType === "DropDownMenu"
+                return this.field.componentType === "RadioButtonSet"
+                    || this.field.componentType === "CheckboxSet"
+                    || this.field.componentType === "DropDownMenu"
             }
         })
     },
@@ -74,7 +74,7 @@
         updateOptionSettings(optIdx) {
             this.activeTeleportModelId = null;
 
-            ['Price', 'Limit', 'StartDate', 'EndDate'].forEach(key => {
+            ['price', 'limit', 'startDate', 'endDate'].forEach(key => {
                 if (this.activeTeleportModelChanges.hasOwnProperty(key))
                     this.setOptProperty(optIdx, key, this.activeTeleportModelChanges[key])
             });

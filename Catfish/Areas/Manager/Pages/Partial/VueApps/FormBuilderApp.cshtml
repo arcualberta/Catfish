@@ -1,4 +1,6 @@
 ﻿@* Form Builder Vue App Template *@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 <div id="v3app" class="container row ml-3 v3app">
     @*Toolbar*@
     <div class="toolbar bg-light" style="border: solid 1px blue">
@@ -40,18 +42,6 @@
             <field :index="index"></field>
         </div>
     </div>
-    @*<div class="col-2" style="height: 0px; position: -webkit-sticky; position: sticky; top:0; right: 0; text-align:center">
-            <h4>Field Types</h4>
-            <div v-for="(template, index) in fieldTemplates">
-                <div class="m-1">
-                    <div class="card bdr-info-h">
-                        <div class="card-body bg-light" @@click="insertField(index)">
-                            {{template.ComponentType.replace(/([A-Z])/g, " $1")}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>*@
 </div>
 
 
