@@ -34,13 +34,15 @@
     -moz-appearance: textfield;
 }
 
-
+.navbar{
+    z-index:1060;
+}
 /* Toolbar */
 .v3app .toolbar {
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
+    top: 50px;
     background-color: yellow;
     padding: 10px;
-    z-index: 2000;
+    z-index: 10;
 }
