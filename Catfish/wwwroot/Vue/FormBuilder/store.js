@@ -113,7 +113,24 @@
                 .catch(error => {
                     console.log(error.response)
                 })
+        },
+        saveForm(context) {
+            //var postData = JSON.stringify(this.state.form);
+            //var formData = new FormData();
+            //formData.append('formStr', postData);
 
+            axios.post('/manager/api/forms/', {
+                data: {
+                    firstName: "Kamal",
+                    lastName: "Ranaweera"
+                }
+            })
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         }
     }
 })

@@ -21,7 +21,8 @@
     //Defining a set of methods for updating the Vuex data store through store commits.
     methods: {
         setFormProperty(name, val) { this.$store.commit('setFormProperty', { name: name, val: val }) },
-        insertField(templateIndex) { this.$store.commit('insertField', templateIndex) }
+        insertField(templateIndex) { this.$store.commit('insertField', templateIndex) },
+        saveForm() { this.$store.dispatch('saveForm') }
     },
     //======================================================================================================
     //Initializing the app
