@@ -119,12 +119,7 @@
             //var formData = new FormData();
             //formData.append('formStr', postData);
 
-            axios.post('/manager/api/forms/', {
-                data: {
-                    firstName: "Kamal",
-                    lastName: "Ranaweera"
-                }
-            })
+            axios.post('/manager/api/forms/', context.state.form)
                 .then(function (response) {
                     console.log(response);
                 })

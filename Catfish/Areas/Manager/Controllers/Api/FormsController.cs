@@ -59,7 +59,7 @@ namespace Catfish.Areas.Manager.Controllers.Api
 
         // POST api/<FormsController>
         [HttpPost]
-        public void Post([FromBody] MyViewModel user)
+        public void Post([FromBody] Form form)
         {
         }
 
@@ -74,11 +74,5 @@ namespace Catfish.Areas.Manager.Controllers.Api
         public void Delete(int id)
         {
         }
-    }
-
-    public class MyViewModel
-    {
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
     }
 }
