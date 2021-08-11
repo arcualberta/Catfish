@@ -1,4 +1,6 @@
-﻿using Catfish.Core.Models.Contents.ViewModels;
+﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Services.FormBuilder;
 using Catfish.Models.FormBuilder;
 using Catfish.Models.FormBuilder.Fields;
@@ -17,9 +19,11 @@ namespace Catfish.Areas.Manager.Controllers.Api
     public class FormsController : ControllerBase
     {
         private readonly IFormService _service;
-        public FormsController(IFormService service)
+        private readonly AppDbContext _appDb;
+        public FormsController(IFormService service, AppDbContext appDb)
         {
             _service = service;
+            _appDb = appDb;
         }
 
         // GET: api/<FormsController>
@@ -57,10 +61,79 @@ namespace Catfish.Areas.Manager.Controllers.Api
             return form;
         }
 
+        /// <summary>
+        ///  create/edit form (Catfish.Core.Models.Contents.Form)
+        /// </summary>
+        /// <param name="form">Catfish.Models.FormBuilder.Form</param>
         // POST api/<FormsController>
         [HttpPost]
         public void Post([FromBody] Form form)
         {
+            try
+            {
+                Catfish.Core.Models.Contents.Form _form = new Core.Models.Contents.Form();
+                string lang = "en";
+
+                _form.Initialize(Core.Models.XmlModel.eGuidOption.Ensure);
+
+                _form.SetName(form.Name, lang);
+                _form.SetDescription(form.Description, lang);
+                foreach (Field fld in form.Fields)
+                {
+                    switch (fld.ComponentType)
+                    {
+                        case "LongText":
+                            _form.CreateField<TextArea>(fld.Name, lang, fld.IsRequired).SetDescription(fld.Description, lang);
+                            break;
+                        case "EmailAddress":
+                            _form.CreateField<EmailField>(fld.Name, lang, fld.IsRequired).SetDescription(fld.Description, lang);
+                            break;
+                        case "NumberField":
+                            _form.CreateField<IntegerField>(fld.Name, lang, fld.IsRequired).SetDescription(fld.Description, lang);
+                            break;
+                        case "RadioButtonSet":
+                        
+                            List<string> optionTexts = new List<string>();
+
+                            foreach (var op in (fld as OptionField).Options)
+                                optionTexts.Add(op.Label);
+
+                            _form.CreateField<RadioField>(fld.Name, lang, optionTexts.ToArray(),fld.IsRequired).SetDescription(fld.Description, lang);
+                            break;
+                        case "CheckBoxSet":
+                            List<string> options = new List<string>();
+                            options.Clear();
+
+                            foreach (var op in (fld as OptionField).Options)
+                                options.Add(op.Label);
+
+                            _form.CreateField<CheckboxField>(fld.Name, lang, options.ToArray(), fld.IsRequired).SetDescription(fld.Description, lang);
+                            break;
+                        case "DropDownField":
+                            List<string> ddoptions = new List<string>();
+                            
+
+                            foreach (var op in (fld as OptionField).Options)
+                                ddoptions.Add(op.Label);
+
+                            _form.CreateField<SelectField>(fld.Name, lang, ddoptions.ToArray(), fld.IsRequired).SetDescription(fld.Description, lang);
+                            break;
+                        default://shortText
+                            _form.CreateField<TextField>(fld.Name,lang, fld.IsRequired).SetDescription(fld.Description, lang);
+                            break;
+
+                    }
+                    
+                  
+                }
+                _appDb.Forms.Add(_form);
+                _appDb.SaveChanges();
+
+            }catch(Exception ex)
+            {
+
+            }
+
         }
 
         // PUT api/<FormsController>/5
