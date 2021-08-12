@@ -63,7 +63,7 @@
 
 <!-- Create the App -->
 <script>
-    const appTemplate = Vue.createApp(appModel, { id: null });
+    const appTemplate = Vue.createApp(appModel, { id: '@ViewData["id"]' });
     appTemplate.use(store);
     appTemplate.component('field', fieldModel);
 

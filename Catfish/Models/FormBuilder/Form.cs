@@ -126,6 +126,7 @@ namespace Catfish.Models.FormBuilder
         {
             string lang = "en";
 
+            Id = dataModel.Id;
             Name = dataModel.GetName(lang);//dataModel.Name.GetContent(lang);
             Description = dataModel.GetDescription(lang); //dataModel.Description.GetContent(lang);
             Random rdm = new Random();

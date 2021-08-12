@@ -121,6 +121,10 @@
 
             axios.post('/manager/api/forms/', context.state.form)
                 .then(function (response) {
+                    if (response.data.created) {
+                        let url = window.location.href.replace(/\/$/, '') + "/" + response.data.id;
+                        window.location.href = url;
+                    }
                     console.log(response);
                 })
                 .catch(function (error) {
