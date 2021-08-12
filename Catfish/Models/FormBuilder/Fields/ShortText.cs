@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models.Contents.Fields;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;

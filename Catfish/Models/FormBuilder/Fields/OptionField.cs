@@ -35,5 +35,31 @@ namespace Catfish.Models.FormBuilder.Fields
 
             return this;
         }
+
+        public virtual void UpdateDataField(Core.Models.Contents.Fields.OptionsField dataField)
+        {
+            string lang = "en";
+
+            base.UpdateDataField(dataField);
+            
+            //Update existing options and adding new options
+            foreach(var viewOpt in Options)
+            {
+                var dataOpt = dataField.Options.FirstOrDefault(opt => opt.Id == viewOpt.Id);
+                if (dataOpt == null)
+                {
+                    dataOpt = new Core.Models.Contents.Fields.Option() { Id = viewOpt.Id };
+                    dataField.Options.Add(dataOpt);
+                }
+                dataOpt.OptionText.SetContent(viewOpt.Label, lang);
+            }
+
+            //Deleting old options that no longer exist
+            var viewOptionIds = Options.Select(op => op.Id).ToList();
+            var toBeDeleted = dataField.Options.Where(op => !viewOptionIds.Contains(op.Id)).ToList();
+            foreach (var item in toBeDeleted)
+                dataField.Options.Remove(item);
+        }
+
     }
 }

@@ -71,6 +71,10 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+        public BaseField GetField(Guid fieldId)
+        {
+            return Fields.FirstOrDefault(f => f.Id == fieldId);
+        }
 
         public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, bool? allowMultiple = null, object defaultValue = null)
             where T : MonolingualTextField

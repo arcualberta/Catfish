@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models.Contents.Fields;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Web;
 
 namespace Catfish.Models.FormBuilder
 {
-    public class Field
+    public abstract class Field
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public int? ForeignId { get; set; }
@@ -18,6 +19,7 @@ namespace Catfish.Models.FormBuilder
 
         [NotMapped]
         public string Icon { get; set; }
+
         public Field()
         {
             TemplateButtonLabel = GetType().Name;
@@ -26,6 +28,13 @@ namespace Catfish.Models.FormBuilder
         public Field(string templateButtonLabel)
         {
             TemplateButtonLabel = templateButtonLabel;
+        }
+
+        public virtual void UpdateDataField(BaseField dataField)
+        {
+            dataField.Name.SetContent(Name);
+            dataField.Description.SetContent(Description);
+            dataField.Required = IsRequired;
         }
     }
 }
