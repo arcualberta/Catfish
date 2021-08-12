@@ -95,7 +95,7 @@
     actions: {
         //Ref: https://next.vuex.vuejs.org/guide/actions.html
         loadForm(context, formId) {
-            var url = "/manager/api/forms/" + formId ?? 0;
+            var url = "/manager/api/forms/" + formId;// ?? null;
             axios.get(url)
                 .then(res => {
                     context.commit('setForm', res.data)

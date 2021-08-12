@@ -122,13 +122,59 @@ namespace Catfish.Models.FormBuilder
                 dataModel.Fields.Remove(item);
         }
 
-        public void UpdateViewModel(Core.Models.Contents.Form dataModel)
+        public void UpdateViewModel(Core.Models.Contents.FieldContainer dataModel)//(Core.Models.Contents.Form dataModel)
         {
             string lang = "en";
 
-            Name = dataModel.Name.GetContent(lang);
-            Description = dataModel.Description.GetContent(lang);
+            Name = dataModel.GetName(lang);//dataModel.Name.GetContent(lang);
+            Description = dataModel.GetDescription(lang); //dataModel.Description.GetContent(lang);
+            Random rdm = new Random();
+            int fidSeed = rdm.Next(1, 1000);
+            foreach (BaseField fd in dataModel.Fields)
+                {
+                    List<string> optionTexts = new List<string>();
+                    
+                
+                    switch (fd.GetType().Name)
+                    {
+                        case "TextArea":
+                             AppendField<LongText>(++fidSeed, fd.GetName(), "", fd.Required);
+                            break;
+                        case "EmailField":
+                             AppendField<EmailAddress>(++fidSeed, fd.GetName(), "Enter a valid email address to send receipts and correspondence.", fd.Required);
+                            break;
+                        case "IntegerField": 
+                        case "DecimalField":
+                            AppendField<NumberField>(++fidSeed, fd.GetName(), "", fd.Required);
+                            break;
+                        case "RadioField":
+                        optionTexts.Clear();
+                        foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
+                                optionTexts.Add(op.OptionText.Values[0].Value);
 
+                            AppendField<RadioButtonSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required);
+                            break;
+                        case "CheckboxField":
+                           
+                            optionTexts.Clear();
+                            foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
+                                optionTexts.Add(op.OptionText.Values[0].Value);
+
+                            AppendField<CheckboxSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required);
+                           
+                            break;
+                        case "SelectField":
+                            optionTexts.Clear();
+                            foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
+                                optionTexts.Add(op.OptionText.Values[0].Value);
+
+                            AppendField<DropDownMenu>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required);
+                            break;
+                        default: //TextField -- short text 
+                            AppendField<ShortText>(++fidSeed, fd.GetName(),"", fd.Required);
+                            break;
+                    }
+                }
 
         }
 

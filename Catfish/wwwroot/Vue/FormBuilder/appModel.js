@@ -1,7 +1,7 @@
 ﻿const appModel = {
     props: {
         id: {
-            type: Number,
+            type: String,
             required: false
         }
     },

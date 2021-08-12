@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Services.FormBuilder;
@@ -39,25 +40,44 @@ namespace Catfish.Areas.Manager.Controllers.Api
 
         // GET api/<FormsController>/5
         [HttpGet("{id}")]
-        public Form Get(int id)
+        [Route("{FormsController}/edit")]
+        [Route("{FormsController}/{id}")]
+        public Form Get(Guid? id=null)
         {
-            int fid = id ;
+           
+            // MR temporary set the fid to some random integer
+            //need to change ForeignKey to "Guid"??
+            Random rnd = new Random();
+            int fid = rnd.Next(1, 1000);
+
             Form form = new Form()
             {
                 ForeignId = fid,
                 Name = "Test Form",
-                Description = "This is an example form hardcoded for testing purposes."
+                Description = "This is an example form hardcoded for testing purposes.",
+                LinkText = "Link Text"
+                
             };
             int fidSeed = 100 * fid;
-            form.AppendField<ShortText>(++fidSeed, "First Name", "", true);
-            form.AppendField<ShortText>(++fidSeed, "Last Name", "", true);
-            form.AppendField<EmailAddress>(++fidSeed, "Email", "Enter a valid email address to send receipts and correspondence.", true);
-            form.AppendField<RadioButtonSet>(++fidSeed, "Subscribe to newsletter", new string[] { "Yes", "No" });
 
-            NumberField tickets = form.AppendField<NumberField>(++fidSeed, "Number of Tickets", "", true);
+            if (id != null )
+            {
+                 Core.Models.Contents.FieldContainer _form = _service.Get(id.Value);
+              
+                form.UpdateViewModel(_form);
+              
+            }
+            else
+            {
+                form.AppendField<ShortText>(++fidSeed, "First Name", "", true);
+                form.AppendField<ShortText>(++fidSeed, "Last Name", "", true);
+                form.AppendField<EmailAddress>(++fidSeed, "Email", "Enter a valid email address to send receipts and correspondence.", true);
+                form.AppendField<RadioButtonSet>(++fidSeed, "Subscribe to newsletter", new string[] { "Yes", "No" });
 
-            form.AppendField<LongText>(++fidSeed, "Meal Preferences", "Please specify any meal preferences or restrictions.", true);
+                NumberField tickets = form.AppendField<NumberField>(++fidSeed, "Number of Tickets", "", true);
 
+                form.AppendField<LongText>(++fidSeed, "Meal Preferences", "Please specify any meal preferences or restrictions.", true);
+            }
             return form;
         }
 
@@ -104,5 +124,11 @@ namespace Catfish.Areas.Manager.Controllers.Api
         public void Delete(int id)
         {
         }
+
+        //[HttpGet]
+        //public void Edit(Guid? id)
+        //{
+        //    Get(id);
+        //}
     }
 }
