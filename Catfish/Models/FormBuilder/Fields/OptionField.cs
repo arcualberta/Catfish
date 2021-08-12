@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models.Contents.Fields;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -36,29 +37,32 @@ namespace Catfish.Models.FormBuilder.Fields
             return this;
         }
 
-        public virtual void UpdateDataField(Core.Models.Contents.Fields.OptionsField dataField)
+        public override void UpdateDataField(BaseField dataField)
         {
             string lang = "en";
 
             base.UpdateDataField(dataField);
-            
+
+            OptionsField optionsDataField = dataField as OptionsField;
             //Update existing options and adding new options
-            foreach(var viewOpt in Options)
+            foreach (var viewOpt in Options)
             {
-                var dataOpt = dataField.Options.FirstOrDefault(opt => opt.Id == viewOpt.Id);
+                var dataOpt = optionsDataField.Options.FirstOrDefault(opt => opt.Id == viewOpt.Id);
                 if (dataOpt == null)
                 {
                     dataOpt = new Core.Models.Contents.Fields.Option() { Id = viewOpt.Id };
-                    dataField.Options.Add(dataOpt);
+                    optionsDataField.Options.Add(dataOpt);
                 }
+
                 dataOpt.OptionText.SetContent(viewOpt.Label, lang);
+                dataOpt.ExtendedOption = viewOpt.IsExtended;
             }
 
             //Deleting old options that no longer exist
             var viewOptionIds = Options.Select(op => op.Id).ToList();
-            var toBeDeleted = dataField.Options.Where(op => !viewOptionIds.Contains(op.Id)).ToList();
+            var toBeDeleted = optionsDataField.Options.Where(op => !viewOptionIds.Contains(op.Id)).ToList();
             foreach (var item in toBeDeleted)
-                dataField.Options.Remove(item);
+                optionsDataField.Options.Remove(item);
         }
 
     }

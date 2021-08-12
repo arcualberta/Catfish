@@ -73,19 +73,20 @@ namespace Catfish.Areas.Manager.Controllers.Api
             {
                 Core.Models.Contents.Form dataModel = _appDb.Forms.FirstOrDefault(f => f.Id == viewModel.Id);
 
-                if(dataModel == null)
+                if (dataModel == null)
                 {
                     dataModel = viewModel.CreateDataModel();
                     _appDb.Forms.Add(dataModel);
                 }
                 else
                 {
+                    dataModel.Initialize(XmlModel.eGuidOption.Ignore);
                     viewModel.UpdateDataModel(dataModel);
                 }
 
                 _appDb.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }

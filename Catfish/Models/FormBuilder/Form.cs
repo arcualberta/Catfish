@@ -47,7 +47,7 @@ namespace Catfish.Models.FormBuilder
 
         protected BaseField CreateDataFieldFor(Field viewField, Core.Models.Contents.Form dataModel)
         {
-            string lang = "string";
+            string lang = null;
             BaseField dataField = null;
             switch (viewField.ComponentType)
             {
@@ -61,32 +61,23 @@ namespace Catfish.Models.FormBuilder
                     dataField = dataModel.CreateField<IntegerField>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
                     break;
                 case "RadioButtonSet":
-                    List<string> optionTexts = new List<string>();
-                    foreach (var op in (viewField as OptionField).Options)
-                        optionTexts.Add(op.Label);
-
-                    dataField = dataModel.CreateField<RadioField>(viewField.Name, lang, optionTexts.ToArray(), viewField.IsRequired).SetDescription(viewField.Description, lang);
+                    dataField = dataModel.CreateField<RadioField>(viewField.Name, lang, Array.Empty<string>(), viewField.IsRequired).SetDescription(viewField.Description, lang);
+                    (viewField as OptionField).UpdateDataField(dataField);
                     break;
                 case "CheckBoxSet":
-                    List<string> options = new List<string>();
-                    foreach (var op in (viewField as OptionField).Options)
-                        options.Add(op.Label);
-
-                    dataField = dataModel.CreateField<CheckboxField>(viewField.Name, lang, options.ToArray(), viewField.IsRequired).SetDescription(viewField.Description, lang);
+                    dataField = dataModel.CreateField<CheckboxField>(viewField.Name, lang, Array.Empty<string>(), viewField.IsRequired).SetDescription(viewField.Description, lang);
+                    (viewField as OptionField).UpdateDataField(dataField);
                     break;
                 case "DropDownField":
-                    List<string> ddoptions = new List<string>();
-                    foreach (var op in (viewField as OptionField).Options)
-                        ddoptions.Add(op.Label);
-
-                    dataField = dataModel.CreateField<SelectField>(viewField.Name, lang, ddoptions.ToArray(), viewField.IsRequired).SetDescription(viewField.Description, lang);
+                    dataField = dataModel.CreateField<SelectField>(viewField.Name, lang, Array.Empty<string>(), viewField.IsRequired).SetDescription(viewField.Description, lang);
+                    (viewField as OptionField).UpdateDataField(dataField);
                     break;
                 default://shortText
                     dataField = dataModel.CreateField<TextField>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
                     break;
-
             }
 
+            dataField.Id = viewField.Id;
             return dataField;
         }
 
