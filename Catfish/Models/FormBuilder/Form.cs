@@ -87,12 +87,8 @@ namespace Catfish.Models.FormBuilder
             string lang = "en";
 
             _form.Initialize(Core.Models.XmlModel.eGuidOption.Ensure);
-            _form.Id = Id; //
-
-            _form.SetName(Name, lang);
-            _form.SetDescription(Description, lang);
-            foreach (Field fld in Fields)
-                CreateDataFieldFor(fld, _form);
+            _form.Id = Id;
+            UpdateDataModel(_form);
 
             return _form;
         }
@@ -101,6 +97,7 @@ namespace Catfish.Models.FormBuilder
         {
             string lang = "en";
 
+            dataModel.FormName = Name;
             dataModel.Name.SetContent(Name, lang);
             dataModel.Description.SetContent(Description, lang);
 
