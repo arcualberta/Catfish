@@ -44,43 +44,6 @@ namespace Catfish.Models.FormBuilder
             return field;
         }
 
-
-        protected BaseField CreateDataFieldFor(Field viewField, Core.Models.Contents.Form dataModel)
-        {
-            string lang = null;
-            BaseField dataField = null;
-            switch (viewField.ComponentType)
-            {
-                case "LongText":
-                    dataField = dataModel.CreateField<TextArea>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    break;
-                case "EmailAddress":
-                    dataField = dataModel.CreateField<EmailField>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    break;
-                case "NumberField":
-                    dataField = dataModel.CreateField<IntegerField>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    break;
-                case "RadioButtonSet":
-                    dataField = dataModel.CreateField<RadioField>(viewField.Name, lang, Array.Empty<string>(), viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    (viewField as OptionField).UpdateDataField(dataField);
-                    break;
-                case "CheckBoxSet":
-                    dataField = dataModel.CreateField<CheckboxField>(viewField.Name, lang, Array.Empty<string>(), viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    (viewField as OptionField).UpdateDataField(dataField);
-                    break;
-                case "DropDownField":
-                    dataField = dataModel.CreateField<SelectField>(viewField.Name, lang, Array.Empty<string>(), viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    (viewField as OptionField).UpdateDataField(dataField);
-                    break;
-                default://shortText
-                    dataField = dataModel.CreateField<TextField>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    break;
-            }
-
-            dataField.Id = viewField.Id;
-            return dataField;
-        }
-
         public Core.Models.Contents.Form CreateDataModel()
         {
             Core.Models.Contents.Form _form = new Core.Models.Contents.Form();
@@ -107,7 +70,7 @@ namespace Catfish.Models.FormBuilder
             {
                 var dataField = dataModel.GetField(viewField.Id);
                 if (dataField == null)
-                    CreateDataFieldFor(viewField, dataModel);
+                    viewField.CreateDataFieldFor(dataModel);//CreateDataFieldFor(viewField, dataModel);
                 else
                     viewField.UpdateDataField(dataField);
             }

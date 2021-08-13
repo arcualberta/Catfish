@@ -36,5 +36,9 @@ namespace Catfish.Models.FormBuilder
             dataField.Description.SetContent(Description);
             dataField.Required = IsRequired;
         }
+        public virtual BaseField CreateDataFieldFor(Core.Models.Contents.Form dataModel)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
