@@ -16,20 +16,25 @@ namespace Catfish.Models.FormBuilder
         public string LinkText { get; set; }
         public List<Field> Fields { get; set; } = new List<Field>();
 
-        public T AppendField<T>(int? foreignId, string fieldName, string fieldDescription = null, bool isRequired = false) where T:Field, new()
+        public T AppendField<T>(int? foreignId, string fieldName, string fieldDescription = null, bool isRequired = false, Guid? id=null) where T:Field, new()
         {
             T field = new T()
             {
                 ForeignId = foreignId,
                 Name = fieldName,
                 Description = fieldDescription,
-                IsRequired = isRequired,
+                IsRequired = isRequired     
             };
+
+            if (id != null)
+                field.Id = id.Value;
+
+
             Fields.Add(field);
             return field;
         }
 
-        public Field AppendField<T>(int? foreignId, string fieldName, string[] options, string fieldDescription = null, bool isRequired = false) where T : OptionField, new()
+        public Field AppendField<T>(int? foreignId, string fieldName, string[] options, string fieldDescription = null, bool isRequired = false, Guid? id=null) where T : OptionField, new()
         {
             OptionField field = new T()
             {
@@ -39,6 +44,9 @@ namespace Catfish.Models.FormBuilder
                 IsRequired = isRequired
             }
             .AppendOptions(options);
+
+            if (id != null)
+                field.Id = id.Value;
 
             Fields.Add(field);
             return field;
@@ -86,7 +94,7 @@ namespace Catfish.Models.FormBuilder
         {
             string lang = "en";
 
-            Id = dataModel.Id;
+            Id = dataModel.Id; //set the form id with existing form id
             Name = dataModel.GetName(lang);//dataModel.Name.GetContent(lang);
             Description = dataModel.GetDescription(lang); //dataModel.Description.GetContent(lang);
             Random rdm = new Random();
@@ -99,21 +107,21 @@ namespace Catfish.Models.FormBuilder
                     switch (fd.GetType().Name)
                     {
                         case "TextArea":
-                             AppendField<LongText>(++fidSeed, fd.GetName(), "", fd.Required);
+                             AppendField<LongText>(++fidSeed, fd.GetName(), "", fd.Required, fd.Id);
                             break;
                         case "EmailField":
-                             AppendField<EmailAddress>(++fidSeed, fd.GetName(), "Enter a valid email address to send receipts and correspondence.", fd.Required);
+                             AppendField<EmailAddress>(++fidSeed, fd.GetName(), "Enter a valid email address to send receipts and correspondence.", fd.Required, fd.Id);
                             break;
                         case "IntegerField": 
                         case "DecimalField":
-                            AppendField<NumberField>(++fidSeed, fd.GetName(), "", fd.Required);
+                            AppendField<NumberField>(++fidSeed, fd.GetName(), "", fd.Required, fd.Id);
                             break;
                         case "RadioField":
                         optionTexts.Clear();
                         foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
                                 optionTexts.Add(op.OptionText.Values[0].Value);
 
-                            AppendField<RadioButtonSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required);
+                            AppendField<RadioButtonSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id);
                             break;
                         case "CheckboxField":
                            
@@ -121,7 +129,7 @@ namespace Catfish.Models.FormBuilder
                             foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
                                 optionTexts.Add(op.OptionText.Values[0].Value);
 
-                            AppendField<CheckboxSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required);
+                            AppendField<CheckboxSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id);
                            
                             break;
                         case "SelectField":
@@ -129,10 +137,10 @@ namespace Catfish.Models.FormBuilder
                             foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
                                 optionTexts.Add(op.OptionText.Values[0].Value);
 
-                            AppendField<DropDownMenu>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required);
+                            AppendField<DropDownMenu>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id);
                             break;
                         default: //TextField -- short text 
-                            AppendField<ShortText>(++fidSeed, fd.GetName(),"", fd.Required);
+                            AppendField<ShortText>(++fidSeed, fd.GetName(),"", fd.Required, fd.Id);
                             break;
                     }
                 }
