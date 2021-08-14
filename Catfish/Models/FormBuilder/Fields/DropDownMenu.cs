@@ -10,13 +10,7 @@ namespace Catfish.Models.FormBuilder.Fields
     {
         public DropDownMenu() : base("Select") { }
         public override BaseField CreateDataFieldFor(Core.Models.Contents.Form dataModel)
-        {
-            string lang = "en";
-            
-            BaseField dataField = dataModel.CreateField<SelectField>(Name, lang, Array.Empty<string>(), IsRequired).SetDescription(Description, lang);
-            UpdateDataField(dataField);
-            dataField.Id = Id;//set the dataField Id = with Id from vIew
-            return dataField;
-        }
+            => CreateDataFieldFor<SelectField>(dataModel);
+
     }
 }

@@ -32,13 +32,23 @@ namespace Catfish.Models.FormBuilder
 
         public virtual void UpdateDataField(BaseField dataField)
         {
+            dataField.Id = Id;
             dataField.Name.SetContent(Name);
             dataField.Description.SetContent(Description);
             dataField.Required = IsRequired;
         }
+
         public virtual BaseField CreateDataFieldFor(Core.Models.Contents.Form dataModel)
         {
             throw new NotImplementedException();
         }
+
+        public T CreateDataFieldFor<T>(Core.Models.Contents.Form dataModel) where T: BaseField
+        {
+            T dataField = dataModel.CreateField<T>();
+            UpdateDataField(dataField);
+            return dataField;
+        }
+
     }
 }

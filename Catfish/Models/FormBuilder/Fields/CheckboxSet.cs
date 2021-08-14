@@ -16,13 +16,7 @@ namespace Catfish.Models.FormBuilder.Fields
         /// <param name="dataModel"></param>
         /// <returns></returns>
         public override BaseField CreateDataFieldFor(Core.Models.Contents.Form dataModel)
-        {
-            string lang = "en";
-            //throw new NotImplementedException();
-            BaseField dataField = dataModel.CreateField<CheckboxField>(Name, lang, Array.Empty<string>(), IsRequired).SetDescription(Description, lang);
-            UpdateDataField(dataField);
-            dataField.Id = Id;//set the dataField Id = with Id from vIew
-            return dataField;
-        }
+            => CreateDataFieldFor<CheckboxField>(dataModel);
+
     }
 }
