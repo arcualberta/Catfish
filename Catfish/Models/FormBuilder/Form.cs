@@ -55,7 +55,6 @@ namespace Catfish.Models.FormBuilder
         public Core.Models.Contents.Form CreateDataModel()
         {
             Core.Models.Contents.Form _form = new Core.Models.Contents.Form();
-            string lang = "en";
 
             _form.Initialize(Core.Models.XmlModel.eGuidOption.Ensure);
             _form.Id = Id;
@@ -78,7 +77,7 @@ namespace Catfish.Models.FormBuilder
             {
                 var dataField = dataModel.GetField(viewField.Id);
                 if (dataField == null)
-                    viewField.CreateDataFieldFor(dataModel);//CreateDataFieldFor(viewField, dataModel);
+                    viewField.CreateDataFieldFor(dataModel);
                 else
                     viewField.UpdateDataField(dataField);
             }
@@ -95,8 +94,8 @@ namespace Catfish.Models.FormBuilder
             string lang = "en";
 
             Id = dataModel.Id; //set the form id with existing form id
-            Name = dataModel.GetName(lang);//dataModel.Name.GetContent(lang);
-            Description = dataModel.GetDescription(lang); //dataModel.Description.GetContent(lang);
+            Name = dataModel.GetName(lang);
+            Description = dataModel.GetDescription(lang);
             Random rdm = new Random();
             int fidSeed = rdm.Next(1, 1000);
             foreach (BaseField fd in dataModel.Fields)
