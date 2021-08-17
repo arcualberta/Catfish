@@ -36,7 +36,7 @@
                         <thead>
                             <tr>
                                 <td scope="col" class="col-5">Label</td>
-                                <td scope="col">Extended</td>
+                                <td scope="col" v-if="field.componentType != 'DropDownMenu'">Extended</td>
                                 <td scope="col" colspan="2"></td>
                             </tr>
                         </thead>
@@ -47,7 +47,7 @@
                                     <span v-if="opt.limit > 0">{{ opt.limit }}</span>
                                     <span v-if="opt.price > 0">@@${{ opt.price }}</span>
                                 </td>
-                                <td scope="col"><input :checked="opt.isExtended" @@change="setOptProperty(optIdx, 'isExtended', $event.target.checked)" type="checkbox" style="margin-left:25px" /></td>
+                                <td scope="col"><input :checked="opt.isExtended" @@change="setOptProperty(optIdx, 'isExtended', $event.target.checked)" type="checkbox" style="margin-left:25px" v-if="field.componentType != 'DropDownMenu'" /></td>
                                 <td scope="col" colspan="2" style="text-align:right">
                                     <button @@click="showTeleportModel(opt.id)" type="button" :id="'option-button-' + field.Id + '_' + optIdx" class="btn btn-warning rounded-circle"><i class="fas fa-cog"></i></button> &nbsp;
                                     @{ await Html.RenderPartialAsync("Partial/VueApps/Templates/Teleport/OptionSettings"); }
