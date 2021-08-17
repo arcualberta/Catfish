@@ -34,7 +34,7 @@ namespace Catfish.Models.FormBuilder
             return field;
         }
 
-        public Field AppendField<T>(int? foreignId, string fieldName, string[] options, string fieldDescription = null, bool isRequired = false, Guid? id=null) where T : OptionField, new()
+        public Field AppendField<T>(int? foreignId, string fieldName, string[] options, string fieldDescription = null, bool isRequired = false, Guid? id=null, bool[] extendedOptions=null) where T : OptionField, new()
         {
             OptionField field = new T()
             {
@@ -43,7 +43,7 @@ namespace Catfish.Models.FormBuilder
                 Description = fieldDescription,
                 IsRequired = isRequired
             }
-            .AppendOptions(options);
+            .AppendOptions(options,extendedOptions);
 
             if (id != null)
                 field.Id = id.Value;
@@ -101,7 +101,7 @@ namespace Catfish.Models.FormBuilder
             foreach (BaseField fd in dataModel.Fields)
                 {
                     List<string> optionTexts = new List<string>();
-                    
+                List<bool> extendedOptions = new List<bool>();
                 
                     switch (fd.GetType().Name)
                     {
@@ -117,18 +117,25 @@ namespace Catfish.Models.FormBuilder
                             break;
                         case "RadioField":
                         optionTexts.Clear();
+                        extendedOptions.Clear();
                         foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
-                                optionTexts.Add(op.OptionText.Values[0].Value);
-
-                            AppendField<RadioButtonSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id);
+                        {
+                            optionTexts.Add(op.OptionText.Values[0].Value);
+                            extendedOptions.Add(op.ExtendedOption);
+                        }
+                            AppendField<RadioButtonSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id, extendedOptions.ToArray());
                             break;
                         case "CheckboxField":
                            
                             optionTexts.Clear();
-                            foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
-                                optionTexts.Add(op.OptionText.Values[0].Value);
+                            extendedOptions.Clear();
+                        foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
+                        {
+                            optionTexts.Add(op.OptionText.Values[0].Value);
+                            extendedOptions.Add(op.ExtendedOption);
+                        }
 
-                            AppendField<CheckboxSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id);
+                            AppendField<CheckboxSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id, extendedOptions.ToArray());
                            
                             break;
                         case "SelectField":

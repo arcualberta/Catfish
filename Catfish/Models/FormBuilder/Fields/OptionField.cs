@@ -29,11 +29,18 @@ namespace Catfish.Models.FormBuilder.Fields
 
         public OptionField(string templateButtonLabel) : base(templateButtonLabel) { }
 
-        public OptionField AppendOptions(string[] values)
+        public OptionField AppendOptions(string[] values, bool[] extendedOptions=null)
         {
-            foreach (var val in values)
-                AppendOption(val, val);
-
+            if (extendedOptions == null)
+            {
+                foreach (var val in values)
+                    AppendOption(val, val); 
+            }
+            else
+            {
+                for (int i = 0; i < values.Length; i++)
+                    AppendOption(values[i], values[i], null, null, extendedOptions[i]);  
+            }
             return this;
         }
 
