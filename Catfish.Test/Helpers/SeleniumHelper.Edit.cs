@@ -117,6 +117,48 @@ namespace Catfish.Test.Helpers
 
         }
 
+        public void SetFormTextFromPlaceHolderText(string selectorName, string value)
+        {
+            string selectorString = string.Format("input[placeholder^='{0}']", selectorName);
+            var elem = Driver.FindElement(By.CssSelector(selectorString));
+            // eg var elem = Driver.FindElement(By.CssSelector("input[placeholder='Enter form title']"));
+            elem.Clear();
+            elem.SendKeys(value);
+        }
+
+        public void SetFormTextAreaFromPlaceHolderText(string selectorName, string value)
+        {
+            string selectorString = string.Format("textarea[placeholder^='{0}']", selectorName);
+            var elem = Driver.FindElement(By.CssSelector(selectorString));
+            // eg var elem = Driver.FindElement(By.CssSelector("input[placeholder='Enter form title']"));
+            elem.Clear();
+            elem.SendKeys(value);
+        }
+
+        public void ClickViewForm(string gid)  // view will be id and edit "edit/id"
+        {
+            string selectorString = string.Format("a[href='{0}']", gid);
+            var elem = Driver.FindElement(By.CssSelector(selectorString));
+            elem.Click();
+        }
+
+        public void ClickFormSaveButton()
+        {
+            var elem = Driver.FindElement(By.XPath("//*[@id='v3app']/div[2]/button"));
+            elem.Click();
+        }
+
+        public string GetIDfromUrl()
+        {
+            string fullUrl = Driver.Url;
+            int pos = fullUrl.LastIndexOf("/") + 1;
+            string gid=fullUrl.Substring(pos, fullUrl.Length - pos);
+
+           
+            return gid;
+            // extract 
+        }
+
         //ClickAddButton
         public void ClickAddButton(string selectorName)
         {
