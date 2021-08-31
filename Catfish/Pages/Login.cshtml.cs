@@ -1,23 +1,45 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Piranha;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
+
 
 namespace Catfish.Pages
 {
     //[PageTypeRoute(Title = "Default", Route = "/login")]
     public class LoginPageModel : Microsoft.AspNetCore.Mvc.RazorPages.PageModel
-    {
+    {  
         private readonly ISecurity _security;
-
+        private SignInManager<Piranha.AspNetCore.Identity.Data.User> _signInManager;
+      
         [BindProperty]
         public string Username { get; set; }
         [BindProperty]
         public string Password { get; set; }
+        public string ReturnUrl { get; set; }
+       // private string returnUrl;
 
-        public LoginPageModel(ISecurity security) : base()
+        public string GetReturnUrl()
+        {
+            return ReturnUrl;
+        }
+
+        public void SetReturnUrl(string value)
+        {
+            ReturnUrl = value;
+        }
+
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
+        public LoginPageModel(ISecurity security,  SignInManager<Piranha.AspNetCore.Identity.Data.User> signInManager) : base()
         {
             _security = security;
+            _signInManager = signInManager;
+           
         }
 
         /// <summary>
@@ -31,5 +53,34 @@ namespace Catfish.Pages
 
             return Page();
         }
+
+        public async Task<IActionResult> OnGetAsync(string returnUrl)
+        {
+            this.SetReturnUrl(returnUrl);
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            return Page();
+        }
+       /// <summary>
+       /// For handling Google external login
+       /// </summary>
+       /// <param name="provider">Google</param>
+       /// <param name="returnUrl"></param>
+       /// <returns></returns>
+        public async Task<IActionResult> OnPostExternalLoginAsync(string provider, string returnUrl)
+        {
+            if (string.IsNullOrEmpty(provider))
+                provider = "Google";
+
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", returnUrl);
+
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl.ToString());
+
+            return new ChallengeResult(provider, properties);//Page();
+        }
+
+
+       
+
     }
 }
