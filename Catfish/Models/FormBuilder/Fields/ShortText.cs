@@ -11,5 +11,7 @@ namespace Catfish.Models.FormBuilder.Fields
     {
         public ShortText() : base("Text") { }
         public ShortText(string templateButtonLabel) : base(templateButtonLabel) { }
+        public override BaseField CreateDataFieldFor(Core.Models.Contents.Form dataModel)
+            => CreateDataFieldFor<TextField>(dataModel);
     }
 }

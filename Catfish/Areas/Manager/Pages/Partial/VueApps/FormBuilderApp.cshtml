@@ -26,15 +26,15 @@
             <div class="card-body">
                 <div class="form-group">
                     <label>Form Title</label>
-                    <input :value="formName" @@change="setFormProperty('Name', $event.target.value)" type="text" class="form-control" placeholder="Enter form title" />
+                    <input :value="formName" @@change="setFormProperty('name', $event.target.value)" type="text" class="form-control" placeholder="Enter form title" />
                 </div>
                 <div class="form-group">
                     <label>Form Description</label>
-                    <textarea :value="formDescription" @@change="setFormProperty('Description', $event.target.value)" type="text" class="form-control" placeholder="Enter form description here."></textarea>
+                    <textarea :value="formDescription" @@change="setFormProperty('description', $event.target.value)" type="text" class="form-control" placeholder="Enter form description here."></textarea>
                 </div>
                 <div class="form-group">
                     <label>Link Text</label>
-                    <input :value="linkText" @@change="setFormProperty('LinkText', $event.target.value)" type="text" class="form-control" placeholder="Enter link text" />
+                    <input :value="linkText" @@change="setFormProperty('linkText', $event.target.value)" type="text" class="form-control" placeholder="Enter link text" />
                 </div>
             </div>
         </div>

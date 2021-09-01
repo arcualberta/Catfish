@@ -39,7 +39,7 @@
             state.selectedFieldIndex = index;
         },
         insertField(state, templateIndex) {
-            if (state.selectedFieldIndex)
+            if (state.selectedFieldIndex >= 0)
                 ++state.selectedFieldIndex;
             else
                 state.selectedFieldIndex = state.form.fields.length;

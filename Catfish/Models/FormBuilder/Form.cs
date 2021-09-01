@@ -16,20 +16,25 @@ namespace Catfish.Models.FormBuilder
         public string LinkText { get; set; }
         public List<Field> Fields { get; set; } = new List<Field>();
 
-        public T AppendField<T>(int? foreignId, string fieldName, string fieldDescription = null, bool isRequired = false) where T:Field, new()
+        public T AppendField<T>(int? foreignId, string fieldName, string fieldDescription = null, bool isRequired = false, Guid? id=null) where T:Field, new()
         {
             T field = new T()
             {
                 ForeignId = foreignId,
                 Name = fieldName,
                 Description = fieldDescription,
-                IsRequired = isRequired,
+                IsRequired = isRequired     
             };
+
+            if (id != null)
+                field.Id = id.Value;
+
+
             Fields.Add(field);
             return field;
         }
 
-        public Field AppendField<T>(int? foreignId, string fieldName, string[] options, string fieldDescription = null, bool isRequired = false) where T : OptionField, new()
+        public Field AppendField<T>(int? foreignId, string fieldName, string[] options, string fieldDescription = null, bool isRequired = false, Guid? id=null, bool[] extendedOptions=null) where T : OptionField, new()
         {
             OptionField field = new T()
             {
@@ -38,61 +43,22 @@ namespace Catfish.Models.FormBuilder
                 Description = fieldDescription,
                 IsRequired = isRequired
             }
-            .AppendOptions(options);
+            .AppendOptions(options,extendedOptions);
+
+            if (id != null)
+                field.Id = id.Value;
 
             Fields.Add(field);
             return field;
         }
 
-
-        protected BaseField CreateDataFieldFor(Field viewField, Core.Models.Contents.Form dataModel)
-        {
-            string lang = null;
-            BaseField dataField = null;
-            switch (viewField.ComponentType)
-            {
-                case "LongText":
-                    dataField = dataModel.CreateField<TextArea>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    break;
-                case "EmailAddress":
-                    dataField = dataModel.CreateField<EmailField>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    break;
-                case "NumberField":
-                    dataField = dataModel.CreateField<IntegerField>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    break;
-                case "RadioButtonSet":
-                    dataField = dataModel.CreateField<RadioField>(viewField.Name, lang, Array.Empty<string>(), viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    (viewField as OptionField).UpdateDataField(dataField);
-                    break;
-                case "CheckBoxSet":
-                    dataField = dataModel.CreateField<CheckboxField>(viewField.Name, lang, Array.Empty<string>(), viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    (viewField as OptionField).UpdateDataField(dataField);
-                    break;
-                case "DropDownField":
-                    dataField = dataModel.CreateField<SelectField>(viewField.Name, lang, Array.Empty<string>(), viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    (viewField as OptionField).UpdateDataField(dataField);
-                    break;
-                default://shortText
-                    dataField = dataModel.CreateField<TextField>(viewField.Name, lang, viewField.IsRequired).SetDescription(viewField.Description, lang);
-                    break;
-            }
-
-            dataField.Id = viewField.Id;
-            return dataField;
-        }
-
         public Core.Models.Contents.Form CreateDataModel()
         {
             Core.Models.Contents.Form _form = new Core.Models.Contents.Form();
-            string lang = "en";
 
             _form.Initialize(Core.Models.XmlModel.eGuidOption.Ensure);
-            _form.Id = Id; //
-
-            _form.SetName(Name, lang);
-            _form.SetDescription(Description, lang);
-            foreach (Field fld in Fields)
-                CreateDataFieldFor(fld, _form);
+            _form.Id = Id;
+            UpdateDataModel(_form);
 
             return _form;
         }
@@ -101,6 +67,7 @@ namespace Catfish.Models.FormBuilder
         {
             string lang = "en";
 
+            dataModel.FormName = Name;
             dataModel.Name.SetContent(Name, lang);
             dataModel.Description.SetContent(Description, lang);
 
@@ -110,7 +77,7 @@ namespace Catfish.Models.FormBuilder
             {
                 var dataField = dataModel.GetField(viewField.Id);
                 if (dataField == null)
-                    CreateDataFieldFor(viewField, dataModel);
+                    viewField.CreateDataFieldFor(dataModel);
                 else
                     viewField.UpdateDataField(dataField);
             }
@@ -126,56 +93,63 @@ namespace Catfish.Models.FormBuilder
         {
             string lang = "en";
 
-            Id = dataModel.Id;
-            Name = dataModel.GetName(lang);//dataModel.Name.GetContent(lang);
-            Description = dataModel.GetDescription(lang); //dataModel.Description.GetContent(lang);
+            Id = dataModel.Id; //set the form id with existing form id
+            Name = dataModel.GetName(lang);
+            Description = dataModel.GetDescription(lang);
             Random rdm = new Random();
             int fidSeed = rdm.Next(1, 1000);
             foreach (BaseField fd in dataModel.Fields)
+            {
+                List<string> optionTexts = new List<string>();
+                List<bool> extendedOptions = new List<bool>();
+
+                switch (fd.GetType().Name)
                 {
-                    List<string> optionTexts = new List<string>();
-                    
-                
-                    switch (fd.GetType().Name)
-                    {
-                        case "TextArea":
-                             AppendField<LongText>(++fidSeed, fd.GetName(), "", fd.Required);
-                            break;
-                        case "EmailField":
-                             AppendField<EmailAddress>(++fidSeed, fd.GetName(), "Enter a valid email address to send receipts and correspondence.", fd.Required);
-                            break;
-                        case "IntegerField": 
-                        case "DecimalField":
-                            AppendField<NumberField>(++fidSeed, fd.GetName(), "", fd.Required);
-                            break;
-                        case "RadioField":
+                    case "TextArea":
+                        AppendField<LongText>(++fidSeed, fd.GetName(), "", fd.Required, fd.Id);
+                        break;
+                    case "EmailField":
+                        AppendField<EmailAddress>(++fidSeed, fd.GetName(), "Enter a valid email address to send receipts and correspondence.", fd.Required, fd.Id);
+                        break;
+                    case "IntegerField":
+                    case "DecimalField":
+                        AppendField<NumberField>(++fidSeed, fd.GetName(), "", fd.Required, fd.Id);
+                        break;
+                    case "RadioField":
+                        optionTexts.Clear();
+                        extendedOptions.Clear();
+                        foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
+                        {
+                            optionTexts.Add(op.OptionText.Values[0].Value);
+                            extendedOptions.Add(op.ExtendedOption);
+                        }
+                        AppendField<RadioButtonSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id, extendedOptions.ToArray());
+                        break;
+                    case "CheckboxField":
+
+                        optionTexts.Clear();
+                        extendedOptions.Clear();
+                        foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
+                        {
+                            optionTexts.Add(op.OptionText.Values[0].Value);
+                            extendedOptions.Add(op.ExtendedOption);
+                        }
+
+                        AppendField<CheckboxSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id, extendedOptions.ToArray());
+
+                        break;
+                    case "SelectField":
                         optionTexts.Clear();
                         foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
-                                optionTexts.Add(op.OptionText.Values[0].Value);
+                            optionTexts.Add(op.OptionText.Values[0].Value);
 
-                            AppendField<RadioButtonSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required);
-                            break;
-                        case "CheckboxField":
-                           
-                            optionTexts.Clear();
-                            foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
-                                optionTexts.Add(op.OptionText.Values[0].Value);
-
-                            AppendField<CheckboxSet>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required);
-                           
-                            break;
-                        case "SelectField":
-                            optionTexts.Clear();
-                            foreach (var op in ((Core.Models.Contents.Fields.OptionsField)fd).Options)
-                                optionTexts.Add(op.OptionText.Values[0].Value);
-
-                            AppendField<DropDownMenu>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required);
-                            break;
-                        default: //TextField -- short text 
-                            AppendField<ShortText>(++fidSeed, fd.GetName(),"", fd.Required);
-                            break;
-                    }
+                        AppendField<DropDownMenu>(++fidSeed, fd.GetName(), optionTexts.ToArray(), fd.GetDescription("en"), fd.Required, fd.Id);
+                        break;
+                    default: //TextField -- short text 
+                        AppendField<ShortText>(++fidSeed, fd.GetName(), "", fd.Required, fd.Id);
+                        break;
                 }
+            }
 
         }
 

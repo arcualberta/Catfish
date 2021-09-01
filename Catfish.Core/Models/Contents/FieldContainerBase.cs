@@ -241,6 +241,13 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+        public T CreateField<T>() where T : BaseField
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
+            Fields.Add(field);
+            return field;
+        }
+
         public void UpdateFieldValues(FieldContainer dataSrc)
         {
             foreach (var dst in Fields)

@@ -23,7 +23,12 @@ namespace Catfish.Areas.Manager.Pages
         }
         public void OnGet()
         {
-            ViewData["data"] = _db.Forms.Select(x => x as FieldContainer).ToList();
-        }
+            Entries = _db.Forms
+                .Select(x => new ListEntry() { Id = x.Id, Name = x.FormName })
+                .AsEnumerable()
+                .OrderBy(entry => entry.Name)
+                .ToList();
     }
+    }
+
 }
