@@ -148,9 +148,25 @@ namespace Catfish.Controllers
                     // previously user login with google will be loginwith his/her profile Id 
                     //this one is for backward compatibility in case there're users has been signed with google account previously
                     _user = await _userManager.FindByNameAsync(userModel.Login).ConfigureAwait(false);
-                    
-                    if(await TryLogin(userModel.Login, new string(userModel.Email.Reverse().ToArray()), _user))
+
+                    if (await TryLogin(userModel.Login, new string(userModel.Email.Reverse().ToArray()), _user))
                         return new RedirectResult(returnUrl);
+                    else
+                    {
+                        //failed to login with email.Reverse() password -- try to chnage the password and login again
+                        string resetToken = await _userManager.GeneratePasswordResetTokenAsync(_user);
+                       var result = await _userManager.ResetPasswordAsync(_user, resetToken, new string(userModel.Email.Reverse().ToArray()));
+
+                        if (result.Succeeded)
+                        {
+                            if (await TryLogin(userModel.Login, new string(userModel.Email.Reverse().ToArray()), _user))
+                                return new RedirectResult(returnUrl);
+                        }
+                    }
+                    //if (await _security.SignIn(HttpContext, userModel.Login, userModel.Password))
+                    //    return new RedirectResult("/");
+
+                  
                 }
             }
             return LocalRedirect(returnUrl);
