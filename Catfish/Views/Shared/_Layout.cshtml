@@ -212,12 +212,12 @@
     </div>@*End of vueApp div *@
 
     @* Header/Footer additional scripts/css *@
-    
+
     @Html.Raw(javascriptCodeHeader)
     @Html.Raw(javascriptCodeFooter)
-   
 
-   
+
+
 
     <style>
     @Html.Raw(cssCodeHeader)
@@ -240,9 +240,12 @@
         <link href="@url" rel="stylesheet" />
     }
 
-    <script>
-        new Vue({ el: '#vueApp' })
-    </script>
+    @if (vueComponentNames.Count > 0)
+    {
+        <script>
+            new Vue({ el: '#vueApp' })
+        </script>
+    }
 
     @RenderSection("script", required: false)
 
@@ -267,7 +270,7 @@
             /*try {
                 //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
                 //var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
-                //auth2.signOut().then(function () {    
+                //auth2.signOut().then(function () {
                 //    auth2.disconnect();
                 //    window.location.href = "/";
                 //});

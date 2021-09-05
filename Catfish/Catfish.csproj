@@ -75,6 +75,7 @@
     <Folder Include="Models\FormBuilder\" />
     <Folder Include="wwwroot\assets\js\vendor\" />
     <Folder Include="wwwroot\Vue\FormBuilder\" />
+    <Folder Include="wwwroot\Vue\TileGrid\" />
   </ItemGroup>
 
   <ItemGroup>
