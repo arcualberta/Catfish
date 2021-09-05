@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.Blocks.TileGrid
 {
-    [BlockType(Name = "Tile Grid", Category = "Content", Component = "tile-grid", Icon = "far fa-square")]
-    public class TileGrid : Block
+    public class Grid : Block
     {
         public ICollection<Tile> Tiles { get; set; } = new List<Tile>();
     }
