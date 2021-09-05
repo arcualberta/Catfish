@@ -211,13 +211,20 @@
 
     </div>@*End of vueApp div *@
 
+    <div id="vue3-app">
+    </div>
+    <script>
+        new Vue({
+        }).$mount('#avue3-apppp')
+    </script>
+
     @* Header/Footer additional scripts/css *@
-    
+
     @Html.Raw(javascriptCodeHeader)
     @Html.Raw(javascriptCodeFooter)
-   
 
-   
+
+
 
     <style>
     @Html.Raw(cssCodeHeader)
@@ -267,7 +274,7 @@
             /*try {
                 //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
                 //var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
-                //auth2.signOut().then(function () {    
+                //auth2.signOut().then(function () {
                 //    auth2.disconnect();
                 //    window.location.href = "/";
                 //});
