@@ -13,7 +13,7 @@ namespace Catfish.Controllers.Api
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    public class TilesGridController : ControllerBase
+    public class TileGridController : ControllerBase
     {
         // GET: api/<TilesController>
         [HttpGet]
