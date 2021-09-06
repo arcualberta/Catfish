@@ -15,7 +15,7 @@ namespace Catfish.Controllers.Api
     [Produces("application/json")]
     public class TileGridController : ControllerBase
     {
-        // GET: api/<TilesController>
+        // GET: api/tilegrid
         [HttpGet]
         public IEnumerable<Tile> Get(int? offset = null, int? max = null)
         {
@@ -32,7 +32,7 @@ namespace Catfish.Controllers.Api
                 tiles.Add(new Tile()
                 {
                     Id = Guid.NewGuid(),
-                    Title = "Item " + (i*max + 1),
+                    Title = "Item " + (i * max + 1),
                     Content = "Content " + (i * max + 1),
                     Date = DateTime.Now.AddDays(i),
                     Thumbnail = "https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/dahlia-3598551_1920.jpg?itok=XZfJlur2",
@@ -41,6 +41,16 @@ namespace Catfish.Controllers.Api
             }
 
             return tiles;
+        }
+
+        // GET: api/tilegrid/keywords/block/f8d5815f-ccad-4b72-92ef-51b7c88ea0dd
+        [HttpGet]
+        [Route("keywords/block/{id:Guid}")]
+        public IEnumerable<string> BlcokKeywords(Guid id)
+        {
+            string[] keywords = new string[] { "keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5", "keyword 6" };
+
+            return keywords;
         }
     }
 }
