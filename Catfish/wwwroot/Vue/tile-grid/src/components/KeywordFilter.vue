@@ -1,21 +1,18 @@
 <template>
-    <div class="cat-filter">
-        <h1>Category Filter</h1>
-        {{msg}}
+    <div class="data-filter">
+        <h1>Keyword Filter</h1>
     </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+    import { Options, Vue } from 'vue-class-component';
 
-@Options({
-  props: {
-    msg: String
-  }
-})
-export default class HelloWorld extends Vue {
-  msg!: string
-}
+    @Options({
+        props: { id: String }
+    })
+    export default class KeywordFilter extends Vue {
+
+    }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -1,27 +1,22 @@
 <template>
-    <CategoryFilter msg="Please select the following options to filter data."></CategoryFilter>
+    <KeywordFilter :id="blockId"></KeywordFilter>
 </template>
 
 <script lang="ts">
     import { Options, Vue } from 'vue-class-component';
-    import CategoryFilter from './components/CategoryFilter.vue';
+    import KeywordFilter from './components/KeywordFilter.vue';
 
     @Options({
-        components: {
-            CategoryFilter
-        },
+        components: { KeywordFilter },
+        props: { blockId: "" as string }
     })
-    export default class App extends Vue { }
+    export default class App extends Vue {
+        name: string = "Tile Grid";
+    }
 </script>
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 0px;
-  border: solid 1px green;
+
 }
 </style>
