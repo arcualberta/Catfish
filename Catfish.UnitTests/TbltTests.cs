@@ -92,6 +92,7 @@ namespace Catfish.UnitTests
             //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
 
+        [Test]
         public void TBlt_SubmitResourcesFormTest()
         {
             string lang = "en";
@@ -141,15 +142,22 @@ namespace Catfish.UnitTests
             var other = bcpForm.CreateField<TextArea>("Short Description", lang, true);
             other.Cols = 50;
             other.Rows = 3;
+            var goal = bcpForm.CreateField<TextArea>("Goal of the task", lang, true);
+            goal.Cols = 50;
+            goal.Rows = 3;
+
+
             bcpForm.CreateField<AttachmentField>("Resource Item", lang, false);
             bcpForm.CreateField<TextField>("Link to Resource(s)", lang, false).SetDescription("Link to a Google document (docs, slides, spreadsheets, etc.) or other resources", lang);
 
-            string[] keywords = new string[] { "keyword1", "keyword1" };//TODO: NEED TO REPLACE
+            string[] keywords = new string[] { "keyword1", "keyword2" };//TODO: NEED TO REPLACE
 
             bcpForm.CreateField<CheckboxField>("Keywords for this resource(s)", lang, keywords,false);
 
             bcpForm.CreateField<TextField>("Suggested Keyword(s)", lang, false);
 
+            string[] consent = new string[] { "I confirm that I have obtained all necessary permissions to post the materials on tblt.ualberta.ca and I grant the TBLT CoP permission to host these materials." };
+            bcpForm.CreateField<CheckboxField>("", lang, consent, true);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
