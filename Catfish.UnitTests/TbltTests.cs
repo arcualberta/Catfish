@@ -400,9 +400,9 @@ namespace Catfish.UnitTests
             deleteSubmissionAction.GetStateReference(rejectedState.Id, true)
                 .AddAuthorizedRole(editorRole.Id);
 
-            //// ================================================
-            //// Change State submission-instances related workflow items
-            //// ================================================
+            // ================================================
+            // Change State submission-instances related workflow items
+            // ================================================
 
             //GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
             //changeStateAction.Access = GetAction.eAccess.Restricted;
