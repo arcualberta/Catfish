@@ -589,6 +589,18 @@ input[readonly] {
 .d-md-flex{
     width:800px;
 }
+
+/* google font awesome multi color */
+.fa-google {
+    background: linear-gradient(to bottom left,transparent 49%,#fbbc05 50%) 0 25%/48% 40%, linear-gradient(to top left,transparent 49%,#fbbc05 50%) 0 75%/48% 40%, linear-gradient(-40deg,transparent 53%,#ea4335 54%), linear-gradient( 45deg,transparent 46%,#4285f4 48%), #34a853;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-size:xx-large;
+}
+
 /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
     .column {

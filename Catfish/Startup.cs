@@ -127,6 +127,17 @@ namespace Catfish
                 .AddPiranhaManagerOptions()
                 .AddMvcOptions(options => options.ModelBinderProviders.Insert(0, new FormFieldModelBinderProvider()));
 
+            //MR -- July 29 2021 -- add google Oauth login
+            services.AddAuthentication()
+            .AddGoogle(options =>
+            {
+            IConfigurationSection googleAuthNSection =
+                Configuration.GetSection("GoogleExternalLogin");
+
+                options.ClientId = googleAuthNSection["Catfish2Oauth-ClientId"];
+                options.ClientSecret = googleAuthNSection["Catfish2Oauth-ClientSecret"];
+            });
+
             services.AddPiranhaApplication();
             services.AddPiranhaFileStorage();
             services.AddPiranhaImageSharp();
