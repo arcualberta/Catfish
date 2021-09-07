@@ -12,6 +12,15 @@
     })
     export default class App extends Vue {
         name: string = "Tile Grid";
+
+        //////Initializing the app
+        ////created() {
+
+        ////    //Ref: https://next.vuex.vuejs.org/guide/actions.html#dispatching-actions
+        ////    .$store.dispatch('loadFieldTemplates')
+        ////    this.$store.dispatch('loadForm', this.id)
+        ////}
+
     }
 </script>
 
