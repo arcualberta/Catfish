@@ -28,7 +28,7 @@ namespace Catfish.Test
         private string siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
 
 
-      
+
         public CreateFormTest()
         {
 
@@ -64,7 +64,7 @@ namespace Catfish.Test
         public void NewFormOne()
         {
 
-            string testSuffix = " C";
+            string testSuffix = " D";
             string testTitle = "This is test" + testSuffix;
             string testDecs = "This test is about test" + testSuffix;
             string testLinkText = "Link to test" + testSuffix;
@@ -94,5 +94,51 @@ namespace Catfish.Test
             _seleniumHelper.Driver.Close();
         }
 
-     }
+
+
+        [Test]
+        public void NewFormOneWithTextField()
+        {
+
+            string testSuffix = " G";
+            string testTitle = "This is test" + testSuffix;
+            string testDecs = "This test is about test" + testSuffix;
+            string testLinkText = "Link to test" + testSuffix;
+            //RefreshDatabase();
+            _seleniumHelper.LoginLocal();
+
+            //Navigating to the test page
+            _seleniumHelper.GoToUrl("manager/forms/edit");
+
+            // set up form information 
+
+            _seleniumHelper.SetFormTextFromPlaceHolderText("Enter form title", testTitle);
+            _seleniumHelper.SetFormTextAreaFromPlaceHolderText("Enter form description here.", testDecs);
+            _seleniumHelper.SetFormTextFromPlaceHolderText("Enter link text", testLinkText);
+            Thread.Sleep(1000);
+
+            // add a text field
+            _seleniumHelper.ClickFieldAddButton((int)SeleniumHelper.eFieldButton.Text);
+            // for now first field will be 2 
+            _seleniumHelper.SetTextfieldName("2", "first text field");
+            _seleniumHelper.SetTextfieldDesc("2", "This is about the first text field");
+            Thread.Sleep(1000);
+
+            // save
+            _seleniumHelper.ClickFormSaveButton();
+
+            Thread.Sleep(1000);
+            // get guid
+            string ourID = _seleniumHelper.GetIDfromUrl();
+
+            _seleniumHelper.GoToUrl("manager/forms/");
+            Thread.Sleep(2000);
+
+            _seleniumHelper.ClickViewForm(ourID);
+
+            Thread.Sleep(5000);
+            _seleniumHelper.Driver.Close();
+        }
+
+    }
 }
