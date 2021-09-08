@@ -78,12 +78,18 @@ namespace Catfish.UnitTests
             var other =bcpForm.CreateField<TextArea>(@"Please, tell us what language(s) you teach and what age groups (e.g., elementary, secondary, college/university, adults)", lang, true);
             other.Cols = 50;
             other.Rows = 5;
+
+            //Defininig the Comments form
+            DataItem commentsForm = template.GetDataItem("TBLT Comment Form", true, lang);
+            commentsForm.IsRoot = false;
+            commentsForm.SetDescription("This is the form to be filled by theeditor when make a decision.", lang);
+            commentsForm.CreateField<TextArea>("Comments", lang, true);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
-           
-            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, applicantEmail);
+
+            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, commentsForm, applicantEmail);
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_ContactForm_generared.xml");
@@ -159,12 +165,19 @@ namespace Catfish.UnitTests
             string[] consent = new string[] { "I confirm that I have obtained all necessary permissions to post the materials on tblt.ualberta.ca and I grant the TBLT CoP permission to host these materials." };
             bcpForm.CreateField<CheckboxField>("", lang, consent, true);
 
+
+            //Defininig the Comments form
+            DataItem commentsForm = template.GetDataItem("TBLT Comment Form", true, lang);
+            commentsForm.IsRoot = false;
+            commentsForm.SetDescription("This is the form to be filled by theeditor when make a decision.", lang);
+            commentsForm.CreateField<TextArea>("Comments", lang, true);
+
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
 
-            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, applicantEmail, "SubmitResource");
+            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, commentsForm, applicantEmail, "SubmitResource");
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_SubmitResourceForm_generared.xml");
@@ -219,7 +232,7 @@ namespace Catfish.UnitTests
             return applicantNotification;
 
         }
-        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, TextField applicantEmail, string formName=null)
+        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, TextField applicantEmail, string formName=null)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -404,30 +417,27 @@ namespace Catfish.UnitTests
             // Change State submission-instances related workflow items
             // ================================================
 
-            //GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
-            //changeStateAction.Access = GetAction.eAccess.Restricted;
+            GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
+            changeStateAction.Access = GetAction.eAccess.Restricted;
 
-            ////Define Revision Template
-            //changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
-            ////Defining post actions
-            //PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
-            //                                                                    You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+            //Define Revision Template
+            changeStateAction.AddTemplate(commentsForm.Id, "Comments");
+            //Defining post actions
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
 
-            ////Defining state mappings
-            //changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
+            //Defining state mappings
+            changeStatePostAction.AddStateMapping(submittedState.Id, approvedState.Id, "Approve");
+            changeStatePostAction.AddStateMapping(submittedState.Id, rejectedState.Id, "Reject");
 
-            ////Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            //PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
-            //changeStateActionPopUpopUp.AddButtons("Yes", "true");
-            //changeStateActionPopUpopUp.AddButtons("Cancel", "false");
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp adjudicationDecisionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to make a decision ? ", "Once changed, you cannot revise this document.");
+            adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
+            adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
 
-            ////Defining states and their authorizatios
-            //changeStateAction.GetStateReference(reviewCompletedState.Id, true)
-            //    .AddAuthorizedRole(sasAdmin.Id);
-            //changeStateAction.GetStateReference(inReviewState.Id, true)
-            //    .AddAuthorizedRole(sasChair.Id);
-            //changeStateAction.GetStateReference(inAdjudicationState.Id, true)
-            //    .AddAuthorizedRole(sasAdmin.Id);
+            //Defining states and their authorizatios
+            changeStateAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(editorRole.Id);
 
         }
 
