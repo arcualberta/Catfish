@@ -1,31 +1,27 @@
 <template>
-    <KeywordFilter :id="blockId"></KeywordFilter>
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
 </template>
 
 <script lang="ts">
-    import { Options, Vue } from 'vue-class-component';
-    import KeywordFilter from './components/KeywordFilter.vue';
+import { defineComponent } from "vue";
+import HelloWorld from "./components/HelloWorld.vue";
 
-    @Options({
-        components: { KeywordFilter },
-        props: { blockId: "" as string }
-    })
-    export default class App extends Vue {
-        name: string = "Tile Grid";
-
-        //////Initializing the app
-        ////created() {
-
-        ////    //Ref: https://next.vuex.vuejs.org/guide/actions.html#dispatching-actions
-        ////    .$store.dispatch('loadFieldTemplates')
-        ////    this.$store.dispatch('loadForm', this.id)
-        ////}
-
-    }
+export default defineComponent({
+  name: "App",
+  components: {
+    HelloWorld,
+  },
+});
 </script>
 
 <style lang="scss">
 #app {
-
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>

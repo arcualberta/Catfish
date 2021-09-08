@@ -1,6 +1,5 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import store from './store'
-import './assets/global.css'
+import { createApp } from "vue";
+import App from "./App.vue";
+import store from "./store";
 
-const vue3App = createApp(App).use(store).mount('#app')
+createApp(App).use(store).mount("#app");
