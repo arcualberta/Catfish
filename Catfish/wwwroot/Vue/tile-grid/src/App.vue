@@ -1,18 +1,19 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <KewordFilter id="" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+    import { defineComponent } from "vue";
+    import KewordFilter from "./components/KeywordFilter.vue";
+    import HelloWorld from "./components/HelloWorld.vue";
 
-export default defineComponent({
-  name: "App",
-  components: {
-    HelloWorld,
-  },
-});
+    export default defineComponent({
+        name: "App",
+        components: {
+            KewordFilter,
+            HelloWorld
+        },
+    });
 </script>
 
 <style lang="scss">
