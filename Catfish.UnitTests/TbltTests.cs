@@ -28,7 +28,7 @@ namespace Catfish.UnitTests
         }
 
        
-        [Test]
+        
         public void TBlt_ContactFormTest()
         {
             string lang = "en";
@@ -78,12 +78,18 @@ namespace Catfish.UnitTests
             var other =bcpForm.CreateField<TextArea>(@"Please, tell us what language(s) you teach and what age groups (e.g., elementary, secondary, college/university, adults)", lang, true);
             other.Cols = 50;
             other.Rows = 5;
+
+            //Defininig the Comments form
+            DataItem commentsForm = template.GetDataItem("TBLT Comment Form", true, lang);
+            commentsForm.IsRoot = false;
+            commentsForm.SetDescription("This is the form to be filled by theeditor when make a decision.", lang);
+            commentsForm.CreateField<TextArea>("Comments", lang, true);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
-           
-            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, applicantEmail);
+
+            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, commentsForm, applicantEmail);
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_ContactForm_generared.xml");
@@ -92,6 +98,7 @@ namespace Catfish.UnitTests
             //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
 
+        [Test]
         public void TBlt_SubmitResourcesFormTest()
         {
             string lang = "en";
@@ -141,22 +148,36 @@ namespace Catfish.UnitTests
             var other = bcpForm.CreateField<TextArea>("Short Description", lang, true);
             other.Cols = 50;
             other.Rows = 3;
+            var goal = bcpForm.CreateField<TextArea>("Goal of the task", lang, true);
+            goal.Cols = 50;
+            goal.Rows = 3;
+
+
             bcpForm.CreateField<AttachmentField>("Resource Item", lang, false);
             bcpForm.CreateField<TextField>("Link to Resource(s)", lang, false).SetDescription("Link to a Google document (docs, slides, spreadsheets, etc.) or other resources", lang);
 
-            string[] keywords = new string[] { "keyword1", "keyword1" };//TODO: NEED TO REPLACE
+            string[] keywords = new string[] { "keyword1", "keyword2" };//TODO: NEED TO REPLACE
 
             bcpForm.CreateField<CheckboxField>("Keywords for this resource(s)", lang, keywords,false);
 
             bcpForm.CreateField<TextField>("Suggested Keyword(s)", lang, false);
 
+            string[] consent = new string[] { "I confirm that I have obtained all necessary permissions to post the materials on tblt.ualberta.ca and I grant the TBLT CoP permission to host these materials." };
+            bcpForm.CreateField<CheckboxField>("", lang, consent, true);
+
+
+            //Defininig the Comments form
+            DataItem commentsForm = template.GetDataItem("TBLT Comment Form", true, lang);
+            commentsForm.IsRoot = false;
+            commentsForm.SetDescription("This is the form to be filled by theeditor when make a decision.", lang);
+            commentsForm.CreateField<TextArea>("Comments", lang, true);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
 
-            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, applicantEmail, "SubmitResource");
+            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, commentsForm, applicantEmail, "SubmitResource");
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_SubmitResourceForm_generared.xml");
@@ -191,7 +212,7 @@ namespace Catfish.UnitTests
 
         }
 
-        private EmailTemplate CreateAdminEmailTemplate(ref ItemTemplate template, string formName=null)
+        private EmailTemplate CreateEditorEmailTemplate(ref ItemTemplate template, string formName=null)
         {
             string lang = "en";
             EmailTemplate applicantNotification = template.GetEmailTemplate("Admin Notification", lang, true);
@@ -211,57 +232,21 @@ namespace Catfish.UnitTests
             return applicantNotification;
 
         }
-        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, TextField applicantEmail, string formName=null)
+        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, TextField applicantEmail, string formName=null)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+            State approvedState = workflow.AddState(ws.GetStatus(template.Id, "Approved", true));
+            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
 
-            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Portal Admin", true));
+            WorkflowRole editorRole = workflow.AddRole(auth.GetRole("Editor", true));
             WorkflowRole memberRole = workflow.AddRole(auth.GetRole("Member", true));
 
-
-            // Submitting an bcp form
-            //Only safey inspectors can submit this form
-            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
-            startSubmissionAction.Access = GetAction.eAccess.Public;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                                 .AddOwnerAuthorization();
-           
-            //Listing bcp forms.
-            //Admins and Inspectors can run the item-list report to list instances.
-            //Note that the visibility of individual list entries is depend on the
-            //Read permission on individual submissions.
-            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
-            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
-                  // .AddOwnerAuthorization()
-                  .AddAuthorizedRole(memberRole.Id)
-                  .AddAuthorizedRole(adminRole.Id);
-
-
-            //Detailed submission bcp forms.
-            //Inspectors can view their own submissions.
-            //Admins can view all submissions.
-            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
-            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
-            viewSubmissionAction.AddStateReferances(submittedState.Id)
-               // .AddOwnerAuthorization()
-               .AddAuthorizedRole(memberRole.Id)
-                .AddAuthorizedRole(adminRole.Id);
-
-
-            //Post action for submitting the form
-            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
-
-            //Defining the pop-up for the above submitPostAction action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
-            submitActionPopUp.AddButtons("Yes, submit", "true");
-            submitActionPopUp.AddButtons("Cancel", "false");
             //============================================================================
             //                                 EMAIL 
             //==============================================================================
@@ -271,61 +256,188 @@ namespace Catfish.UnitTests
             applicantNotificationEmailTrigger.AddRecipientByDataField(tbltForm.Id, applicantEmail.Id);
             applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Join TBLT Request Notification");
 
-            EmailTemplate adminEmailTemplate = CreateAdminEmailTemplate(ref template, formName);
+            EmailTemplate adminEmailTemplate = CreateEditorEmailTemplate(ref template, formName);
 
-            EmailTrigger notificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
-            notificationEmailTrigger.AddRecipientByEmail("tblt@ualberta.ca");
-            notificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Join Request Notification");
+            EmailTrigger editorNotificationEmailTrigger = workflow.AddTrigger("ToEditor", "SendEmail");
+            editorNotificationEmailTrigger.AddRecipientByEmail("tblt@ualberta.ca");
+            editorNotificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Join Request Notification");
 
+            // =======================================
+            // start submission related workflow items
+            // =======================================
 
-            //Defining trigger refs
-            submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant's Notification Email Trigger", submittedState.Id, true);
-            submitPostAction.AddTriggerRefs("1", notificationEmailTrigger.Id, "Admin's Notification Email Trigger", submittedState.Id, true);
-
-
-            // Edit submission related workflow items
             //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
 
-            //Submissions can only be edited by admins
-            editSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining form template
+            startSubmissionAction.AddTemplate(tbltForm.Id, "Task-based Language Teaching Submit Suggest Resources Form");
 
             //Defining post actions
-            //  PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            //   editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update),
+                                                                            @"<p>Your TBLT application saved successfully. 
+                                                                                You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+            savePostAction.ValidateInputs = false;
+            savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
 
-            PostAction editPostActionSubmit = editSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));//(Button Label, ActionName)
-            editPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");//current state, nectStae, buttonLabel
-            //editPostActionSubmit.ValidateInputs = false;
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
+                                                                                 @"<p>Thank you for submitting your TBLT application. 
+                                                                                    Your editor has been automatically notified to provide an assessment about your application.
+                                                                                 You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp EditActionPopUpopUp = editPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
-            EditActionPopUpopUp.AddButtons("Yes, submit", "true");
-            EditActionPopUpopUp.AddButtons("Cancel", "false");
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            submitPostAction.AddTriggerRefs("0", editorNotificationEmailTrigger.Id, "Editor's Notification Email Trigger");
+            submitPostAction.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(memberRole.Id);
 
 
+            // ================================================
+            // List submission-instances related workflow items
+            // ================================================
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
 
-            // Delete submission related workflow items
-            /*
-            //Defining actions. Only admin can delete a submission
+            // Added state referances
+            listSubmissionsAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(approvedState.Id)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
+
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction viewDetailsSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+
+            viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            // Added state referances
+            viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(approvedState.Id)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
+
+
+            // ================================================
+            // Edit submission-instances related workflow items
+            // ================================================
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
+            editSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining post actions
+            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save",
+                                                                                        nameof(TemplateOperations.Update),
+                                                                                        @"<p>Your TBLT application saved successfully. 
+                                                                                            You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+            editSubmissionPostActionSave.ValidateInputs = false;
+            PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit",
+                                                                                            nameof(TemplateOperations.Update),
+                                                                                             @"<p>Thank you for submitting your TBLT application. 
+                                                                                                Your editor has been automatically notified to provide an assessment about your application.
+                                                                                             You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
+            //Defining state mappings
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, submittedState.Id, "Submit");
+            editSubmissionPostActionSave.AddStateMapping(submittedState.Id, savedState.Id, "Save");
+            editSubmissionPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            //*******To Do*******
+            // Implement a function to restrict the e-mail triggers when SAS Admin updated the document
+            editSubmissionPostActionSubmit.AddTriggerRefs("0", editorNotificationEmailTrigger.Id, "Editor's Notification Email Trigger");
+            editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+
+            //Defining state referances
+            editSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddOwnerAuthorization();
+            editSubmissionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(editorRole.Id);
+
+            
+            
+            // ================================================
+            // Delete submission-instances related workflow items
+            // ================================================
+
             GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", nameof(CrudOperations.Delete), "Details");
             deleteSubmissionAction.Access = GetAction.eAccess.Restricted;
-            deleteSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id);
-
-
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
-            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
             deleteSubmissionPostAction.ValidateInputs = false;
 
-            //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Do you really want to delete this submission?", "");
+            //Defining state mappings
+            ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(rejectedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postAction action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
-            */
+
+            //Defining state referances
+            ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
+            ////////    .AddOwnerAuthorization();
+            deleteSubmissionAction.GetStateReference(rejectedState.Id, true)
+                .AddAuthorizedRole(editorRole.Id);
+
+            // ================================================
+            // Change State submission-instances related workflow items
+            // ================================================
+
+            GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
+            changeStateAction.Access = GetAction.eAccess.Restricted;
+
+            //Define Revision Template
+            changeStateAction.AddTemplate(commentsForm.Id, "Comments");
+            //Defining post actions
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+
+            //Defining state mappings
+            changeStatePostAction.AddStateMapping(submittedState.Id, approvedState.Id, "Approve");
+            changeStatePostAction.AddStateMapping(submittedState.Id, rejectedState.Id, "Reject");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp adjudicationDecisionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to make a decision ? ", "Once changed, you cannot revise this document.");
+            adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
+            adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining states and their authorizatios
+            changeStateAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(editorRole.Id);
 
         }
 

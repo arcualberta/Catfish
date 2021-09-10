@@ -10,7 +10,8 @@
     export default defineComponent({
         name: "KeywordFilter",
         props: {
-            id: String,
+            pageId: String,
+            blockId: String
         }
     });
 </script>
