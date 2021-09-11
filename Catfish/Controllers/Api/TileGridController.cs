@@ -58,13 +58,13 @@ namespace Catfish.Controllers.Api
         [Route("keywords/page/{pageId:Guid}/block/{blockId:Guid}")]
         public async Task<IEnumerable<string>> BlcokKeywords(Guid pageId, Guid blockId)
         {
-            string[] keywords = new string[] { };
+            string[] keywords = Array.Empty<string>();
 
             var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
 
             if(page != null)
             {
-                var block = page.Blocks.Where(b => b.Id == blockId).FirstOrDefault();
+                var block = page.Blocks.FirstOrDefault(b => b.Id == blockId);
                 if (block != null && (block as Catfish.Models.Blocks.TileGrid.TileGrid).KeywordList != null)
                     keywords = (block as Catfish.Models.Blocks.TileGrid.TileGrid)
                         .KeywordList
@@ -74,7 +74,6 @@ namespace Catfish.Controllers.Api
                         .Where(v => !string.IsNullOrEmpty(v))
                         .ToArray();
             }
-
           
             return keywords;
         }
