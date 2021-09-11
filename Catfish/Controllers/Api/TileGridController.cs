@@ -66,7 +66,13 @@ namespace Catfish.Controllers.Api
             {
                 var block = page.Blocks.Where(b => b.Id == blockId).FirstOrDefault();
                 if (block != null && (block as Catfish.Models.Blocks.TileGrid.TileGrid).KeywordList != null)
-                    keywords = (block as Catfish.Models.Blocks.TileGrid.TileGrid).KeywordList.Value.Split(",");
+                    keywords = (block as Catfish.Models.Blocks.TileGrid.TileGrid)
+                        .KeywordList
+                        .Value
+                        .Split(new char[] { ',', '\r', '\n' })
+                        .Select(v => v.Trim())
+                        .Where(v => !string.IsNullOrEmpty(v))
+                        .ToArray();
             }
 
           
