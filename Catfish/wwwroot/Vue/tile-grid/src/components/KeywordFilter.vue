@@ -2,20 +2,30 @@
     <div class="data-filter">
         <h1>Keyword Filter</h1>
         <ul>
-            <li v-for="k in keywords" :key="k">
-                <input type="checkbox" value="k" /> 
-                <label>{{k}}</label>
+            <li v-for="(item, index) in keywords" :key="item">
+                <input type="checkbox" :value="item" @click="handleKeywordChange" /> 
+                <label>{{ item }}: {{index}}</label>
             </li>
         </ul>
     </div>
 </template>
 <script lang="ts">
-    import { defineComponent } from "vue";
+    import { defineComponent, ref, PropType } from "vue";
     export default defineComponent({
         name: "KeywordFilter",
+        props: {
+            keywords: {
+                required: true,
+                type: Array as PropType<string[]>
+            }
+        },
         setup() {
-            const keywords = ['key 1', 'key 2', 'key 3']
-            return { keywords }
+            console.log('Keyword Panel setup')
+            const handleKeywordChange = (e: MouseEvent) => {
+                console.log('keywords changed', e.target)
+            }
+
+            return { handleKeywordChange }
         }
     });
 </script>
