@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Models.Blocks.TileGrid;
+using Piranha.AspNetCore.Services;
+using Catfish.Models;
+using Piranha.Extend;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,6 +18,13 @@ namespace Catfish.Controllers.Api
     [Produces("application/json")]
     public class TileGridController : ControllerBase
     {
+        private readonly IModelLoader _loader;
+
+        public TileGridController(IModelLoader loader)
+        {
+            _loader = loader;
+        }
+
         // GET: api/tilegrid
         [HttpGet]
         public IEnumerable<Tile> Get(int? offset = null, int? max = null)
@@ -43,13 +53,28 @@ namespace Catfish.Controllers.Api
             return tiles;
         }
 
-        // GET: api/tilegrid/keywords/block/f8d5815f-ccad-4b72-92ef-51b7c88ea0dd
+        // GET: /api/tilegrid/keywords/page/3c49e3ca-6937-4fa6-ab40-0549f45ca87b/block/3C9C2F8A-C1D8-4869-A8CA-D0641E9200A5
         [HttpGet]
-        [Route("keywords/block/{id:Guid}")]
-        public IEnumerable<string> BlcokKeywords(Guid id)
+        [Route("keywords/page/{pageId:Guid}/block/{blockId:Guid}")]
+        public async Task<IEnumerable<string>> BlcokKeywords(Guid pageId, Guid blockId)
         {
-            string[] keywords = new string[] { "keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5", "keyword 6" };
+            string[] keywords = Array.Empty<string>();
 
+            var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
+
+            if(page != null)
+            {
+                var block = page.Blocks.FirstOrDefault(b => b.Id == blockId);
+                if (block != null && (block as Catfish.Models.Blocks.TileGrid.TileGrid).KeywordList != null)
+                    keywords = (block as Catfish.Models.Blocks.TileGrid.TileGrid)
+                        .KeywordList
+                        .Value
+                        .Split(new char[] { ',', '\r', '\n' })
+                        .Select(v => v.Trim())
+                        .Where(v => !string.IsNullOrEmpty(v))
+                        .ToArray();
+            }
+          
             return keywords;
         }
     }
