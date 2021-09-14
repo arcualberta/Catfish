@@ -18,16 +18,13 @@
             console.log('App setup')
 
             //Definiting reactive variables
-            const pageId = ref('')
-            const blockId = ref('')
             const keywords = ref([''])
 
-            pageId.value = "a0de9368-add6-4677-a119-27f6cc942ad3";
-            blockId.value = "8622971C-3B80-44BF-8B65-F911CFFBAA85";
-
-            const loadKeywords = async () => {
+            const loadKeywords = async (pageId: string, blockId: string) => {
                 try {
-                    let api = "https://localhost:44385/api/tilegrid/keywords/page/" + pageId.value + "/block/" + blockId.value;
+                    let api = `https://localhost:44385/api/tilegrid/keywords/page/${pageId}/block/${blockId}`;
+                    console.log('Loading keywords: ', api)
+
                     const res = await fetch(api);
                     keywords.value = await res.json();
                 }
@@ -35,9 +32,14 @@
                     console.log('Data loading error ', err)
                 }
             }
-            loadKeywords();
 
-            return { keywords, pageId, blockId }
+            return { keywords, loadKeywords }
+        },
+        mounted() {
+            console.log('App mounted')
+            let pageId = this.$el.parentElement.getAttribute("page-id");
+            let blockId = this.$el.parentElement.getAttribute("block-id");
+            this.loadKeywords(pageId, blockId);
         }
     });
 </script>

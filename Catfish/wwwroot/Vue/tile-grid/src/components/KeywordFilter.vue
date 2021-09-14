@@ -2,9 +2,9 @@
     <div class="data-filter">
         <h1>Keyword Filter</h1>
         <ul>
-            <li v-for="(item, index) in keywords" :key="item">
+            <li v-for="item in keywords" :key="item">
                 <input type="checkbox" :value="item" @click="handleKeywordChange" /> 
-                <label>{{ item }}: {{index}}</label>
+                <label>{{ item }}</label>
             </li>
         </ul>
     </div>
