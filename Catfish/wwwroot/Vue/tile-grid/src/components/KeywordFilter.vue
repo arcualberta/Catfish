@@ -3,10 +3,11 @@
         <h1>Keyword Filter</h1>
         <ul>
             <li v-for="item in keywords" :key="item">
-                <input type="checkbox" :value="item" @click="handleKeywordChange" /> 
+                <input type="checkbox" :value="item" v-model="selectedKeywords" @change="handleKeywordChange" /> 
                 <label>{{ item }}</label>
             </li>
         </ul>
+        <div>{{selectedKeywords}}</div>
     </div>
 </template>
 <script lang="ts">
@@ -20,12 +21,15 @@
             }
         },
         setup() {
+
+            const selectedKeywords = ref([]);
+
             console.log('Keyword Panel setup')
             const handleKeywordChange = (e: MouseEvent) => {
-                console.log('keywords changed', e.target)
+                console.log('keywords changed', selectedKeywords.value.length)
             }
 
-            return { handleKeywordChange }
+            return { handleKeywordChange, selectedKeywords }
         }
     });
 </script>
