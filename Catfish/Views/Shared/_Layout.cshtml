@@ -26,6 +26,10 @@
 
         if (typeof(StandardPage).IsAssignableFrom(Model.GetType()))
             blocks = (Model as StandardPage).Blocks;
+        else if (typeof(ItemPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as ItemPage).Blocks;
+        else if (typeof(ItemPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as ItemPage).Blocks;
         else if (typeof(StandardPost).IsAssignableFrom(Model.GetType()))
             blocks = (Model as StandardPost).Blocks;
         else if (typeof(MediaPage).IsAssignableFrom(Model.GetType()))

@@ -283,6 +283,7 @@ namespace Catfish
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
                  .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
+                .AddType(typeof(Models.ItemPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
                
