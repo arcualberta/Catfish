@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^0.21.4",
     "core-js": "^3.6.5",
+    "guid-typescript": "^1.0.9",
     "v-axios": "^3.0.6",
     "vue": "^3.0.0",
     "vue-axios": "^3.3.6",

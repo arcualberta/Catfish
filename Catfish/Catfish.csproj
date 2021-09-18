@@ -17,6 +17,10 @@
   <ItemGroup>
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\action-types.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\mutations.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\tile.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -79,6 +83,19 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\action-types.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\mutations.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\tile.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\state.ts" />
   </ItemGroup>
 
   <ItemGroup>

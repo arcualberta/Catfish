@@ -1,5 +1,5 @@
 <template>
-    <KeywordFilter :keywords="keywords"/>
+    <KeywordFilter :keywords="keywords" />
 </template>
 
 <script lang="ts">
