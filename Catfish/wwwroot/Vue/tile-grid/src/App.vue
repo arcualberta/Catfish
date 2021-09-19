@@ -1,5 +1,6 @@
 <template>
     <KeywordFilter :keywords="keywords" />
+    <ItemList />
 </template>
 
 <script lang="ts">
@@ -7,15 +8,14 @@
     import { Tile } from './store/defs/state'
     import { defineComponent, ref } from 'vue';
     import KeywordFilter from './components/KeywordFilter.vue';
+    import ItemList from './components/ItemList.vue';
     import { Guid } from 'guid-typescript';
 
     export default defineComponent({
         name: "App",
         components: {
-            KeywordFilter
-        },
-        actions: {
-
+            KeywordFilter,
+            ItemList
         },
         setup() {
             //console.log('App setup')

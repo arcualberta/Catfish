@@ -18,6 +18,7 @@
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\getters.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\index.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\mutations.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
@@ -86,6 +87,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\getters.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\actions.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

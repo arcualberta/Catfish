@@ -7,7 +7,6 @@
                 <label>{{ item }}</label>
             </li>
         </ul>
-        <div>{{selectedKeywords}}</div>
     </div>
 </template>
 <script lang="ts">
