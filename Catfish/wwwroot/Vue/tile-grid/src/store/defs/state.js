@@ -1,5 +1,4 @@
-//Define the state object
 export const state = {
-    tiles: Array()
+    items: Array()
 };
 //# sourceMappingURL=state.js.map

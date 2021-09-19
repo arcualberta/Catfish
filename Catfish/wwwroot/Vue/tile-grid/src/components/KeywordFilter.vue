@@ -12,6 +12,9 @@
 </template>
 <script lang="ts">
     import { defineComponent, ref, PropType } from "vue";
+    import { Actions } from '../store/defs/actions'
+    import { useStore } from '../store'
+
     export default defineComponent({
         name: "KeywordFilter",
         props: {
@@ -23,10 +26,12 @@
         setup() {
 
             const selectedKeywords = ref([]);
+            const store = ref(useStore())
 
             console.log('Keyword Panel setup')
             const handleKeywordChange = (e: MouseEvent) => {
                 console.log('keywords changed', selectedKeywords.value.length)
+                store.value.dispatch(Actions.FILTER_BY_KEYWORDS, selectedKeywords.value)
             }
 
             return { handleKeywordChange, selectedKeywords }

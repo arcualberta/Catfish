@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import { store, key } from "./store/store";
+import { store, key } from "./store";
 import axios from "axios";
 import VueAxios from "vue-axios";
 

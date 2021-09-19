@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
-    import { useStore } from './store/store'
-    import { Tile } from './store/tile'
+    import { useStore } from './store'
+    import { Tile } from './store/defs/state'
     import { defineComponent, ref } from 'vue';
     import KeywordFilter from './components/KeywordFilter.vue';
     import { Guid } from 'guid-typescript';
@@ -31,7 +31,7 @@
                 objectUrl: new URL("https://localhost:44385")
 
             }
-            store.value.state.tiles.push(t);
+            store.value.state.items.push(t);
 
             //Definiting reactive variables
             const keywords = ref([''])

@@ -17,10 +17,10 @@
   <ItemGroup>
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
-    <Content Remove="wwwroot\Vue\tile-grid\src\store\action-types.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\index.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\mutations.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
-    <Content Remove="wwwroot\Vue\tile-grid\src\store\tile.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,17 +86,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\action-types.ts">
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\actions.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\mutations.ts">
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\index.ts" />
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\mutations.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\tile.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\state.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\shims-vuex.d.ts" />
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\state.ts" />
   </ItemGroup>
 
   <ItemGroup>

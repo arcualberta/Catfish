@@ -27,7 +27,7 @@ namespace Catfish.Controllers.Api
 
         // GET: api/tilegrid
         [HttpGet]
-        public IEnumerable<Tile> Get(int? offset = null, int? max = null)
+        public IEnumerable<Tile> Get(string keywords = null, int? offset = null, int? max = null)
         {
             List<Tile> tiles = new List<Tile>();
 
