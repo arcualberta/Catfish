@@ -1,10 +1,13 @@
 ﻿import { Tile } from "./tile";
 
-//Define state object
-export const state = {
+//Declare State interface
+export interface State {
+  tiles: Tile[]
+}
+
+//Define the state object
+export const state: State = {
   tiles: Array<Tile>()
 }
 
-//Declare state type
-export type State = typeof state
 
