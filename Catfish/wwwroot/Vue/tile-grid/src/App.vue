@@ -3,8 +3,11 @@
 </template>
 
 <script lang="ts">
+    import { useStore } from './store/store'
+    import { Tile } from './store/tile'
     import { defineComponent, ref } from 'vue';
     import KeywordFilter from './components/KeywordFilter.vue';
+    import { Guid } from 'guid-typescript';
 
     export default defineComponent({
         name: "App",
@@ -15,7 +18,20 @@
 
         },
         setup() {
-            console.log('App setup')
+            //console.log('App setup')
+
+            const store = ref(useStore())
+
+            let t: Tile = {
+                title: "",
+                thumbnail: new URL("http://google.ca"),
+                id: Guid.create(),
+                content: "",
+                created: new Date(),
+                objectUrl: new URL("https://localhost:44385")
+
+            }
+            store.value.state.tiles.push(t);
 
             //Definiting reactive variables
             const keywords = ref([''])
@@ -23,20 +39,20 @@
             const loadKeywords = async (pageId: string, blockId: string) => {
                 try {
                     let api = `https://localhost:44385/api/tilegrid/keywords/page/${pageId}/block/${blockId}`;
-                    console.log('Loading keywords: ', api)
+                    //console.log('Loading keywords: ', api)
 
                     const res = await fetch(api);
                     keywords.value = await res.json();
                 }
                 catch (err) {
-                    console.log('Data loading error ', err)
+                    //console.log('Data loading error ', err)
                 }
             }
 
-            return { keywords, loadKeywords }
+            return { store, keywords, loadKeywords }
         },
         mounted() {
-            console.log('App mounted')
+            //console.log('App mounted')
             let pageId = this.$el.parentElement.getAttribute("page-id");
             let blockId = this.$el.parentElement.getAttribute("block-id");
             this.loadKeywords(pageId, blockId);

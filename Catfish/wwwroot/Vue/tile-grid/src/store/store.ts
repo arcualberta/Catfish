@@ -1,5 +1,5 @@
 import { InjectionKey } from 'vue'
-import { createStore, Store } from 'vuex'
+import { createStore, useStore as baseUseStore, Store } from 'vuex'
 import { State } from './state'
 import { Tile } from './tile'
 
@@ -11,3 +11,8 @@ export const store = createStore<State>({
     tiles: Array<Tile>()
   }
 })
+
+// define your own `useStore` composition function
+export function useStore(): Store<State> {
+  return baseUseStore(key)
+}
