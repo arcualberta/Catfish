@@ -13,8 +13,8 @@ export type Mutations<S = State> = {
 }
 
 //Create a mutation tree that implement all mutation interfaces
-export const mutations: MutationTree<State & Mutations> = {
-  [MutationTypes.SET_TILES]:(state, payload: Tile[]) => {
+export const mutations: MutationTree<State> & Mutations = {
+  [MutationTypes.SET_TILES](state: State, payload: Tile[]) {
     state.tiles = payload
   },
 }

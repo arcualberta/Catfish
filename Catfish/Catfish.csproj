@@ -96,6 +96,7 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\state.ts" />
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\shims-vuex.d.ts" />
   </ItemGroup>
 
   <ItemGroup>
