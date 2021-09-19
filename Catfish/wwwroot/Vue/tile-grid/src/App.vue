@@ -4,12 +4,9 @@
 </template>
 
 <script lang="ts">
-    import { useStore } from './store'
-    import { Tile } from './store/defs/state'
     import { defineComponent, ref } from 'vue';
     import KeywordFilter from './components/KeywordFilter.vue';
     import ItemList from './components/ItemList.vue';
-    import { Guid } from 'guid-typescript';
 
     export default defineComponent({
         name: "App",
@@ -19,19 +16,6 @@
         },
         setup() {
             //console.log('App setup')
-
-            const store = ref(useStore())
-
-            let t: Tile = {
-                title: "",
-                thumbnail: new URL("http://google.ca"),
-                id: Guid.create(),
-                content: "",
-                created: new Date(),
-                objectUrl: new URL("https://localhost:44385")
-
-            }
-            store.value.state.items.push(t);
 
             //Definiting reactive variables
             const keywords = ref([''])
@@ -45,11 +29,11 @@
                     keywords.value = await res.json();
                 }
                 catch (err) {
-                    //console.log('Data loading error ', err)
+                    console.log('Data loading error ', err)
                 }
             }
 
-            return { store, keywords, loadKeywords }
+            return { keywords, loadKeywords }
         },
         mounted() {
             //console.log('App mounted')

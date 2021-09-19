@@ -13,13 +13,14 @@ module.exports = {
     parserOptions: {
         ecmaVersion: 2020,
     },
-    rules: {
-        "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-        "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-        "@typescript-eslint/indent": ["off"],
-      "indent": "off",
-      "no-trailing-spaces": "off",
-      "skipBlankLines": 0
+  rules: {
+    "no-console": "off",
+    //"no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "@typescript-eslint/indent": ["off"],
+    "indent": "off",
+    "no-trailing-spaces": "off",
+    "skipBlankLines": 0
     },
     overrides: [
         {

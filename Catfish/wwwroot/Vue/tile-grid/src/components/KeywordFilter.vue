@@ -25,12 +25,12 @@
         setup() {
 
             const selectedKeywords = ref([]);
-            const store = ref(useStore())
+            const store = useStore()
 
             console.log('Keyword Panel setup')
-            const handleKeywordChange = (e: MouseEvent) => {
+            const handleKeywordChange = () => {
                 console.log('keywords changed', selectedKeywords.value.length)
-                store.value.dispatch(Actions.FILTER_BY_KEYWORDS, selectedKeywords.value)
+                store.dispatch(Actions.FILTER_BY_KEYWORDS, selectedKeywords.value)
             }
 
             return { handleKeywordChange, selectedKeywords }
