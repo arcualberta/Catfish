@@ -4,10 +4,11 @@
 export interface Tile {
   id: Guid,
   title: string,
+  subtitle: string,
   content: string,
   thumbnail: URL,
-  created: Date,
-  objectUrl: URL
+  date: Date,
+  detailedViewUrl: URL
 }
 
 //Declare State interface

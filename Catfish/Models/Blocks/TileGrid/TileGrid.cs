@@ -28,10 +28,10 @@ namespace Catfish.Models.Blocks.TileGrid
         public TextField TileCss { get; set; }
 
         public TextField SelectedMapTitleId { get; set; }
+        public TextField SelectedMapSubtitleId { get; set; }
         public TextField SelectedMapContentId { get; set; }
-        public TextField SelectedMapAuthorId { get; set; }
         public TextField SelectedMapThumbnailId { get; set; }
-        public TextField SelectedMapObjectUrlId { get; set; }
+        public TextField DetailedViewUrl { get; set; }
         public string GetKeywords()
         {
             if (KeywordList != null)

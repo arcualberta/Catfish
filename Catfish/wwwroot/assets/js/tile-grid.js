@@ -38,8 +38,17 @@
                         tileCss: content
                     });
                 }
-
             }   
+            else if (elName == "detailedViewUrl") {
+              this.model.detailedViewUrl.value = e.target.value;
+              var content = this.model.detailedViewUrl.value;
+              if (content.length > 0) {
+                this.$emit('update-content', {
+                  uid: this.uid,
+                  detailedViewUrl: content
+                });
+              }
+            }
 
         },
         selectItemTemplate: function (selected) {
@@ -90,6 +99,13 @@
 
          </select></div>
 
+        <div class='lead row'><label class='form-label col-md-3 required'>Subtitle: </label>
+           <select v-model="model.selectedMapSubtitleId.value" class="form-control" style="width:auto;">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
+
+            </select></div>
+
            <div class='lead row'><label class='form-label col-md-3 required'>Content: </label>
            <select v-model="model.selectedMapContentId.value" class="form-control" style="width:auto;">
                 <option disabled value="">Please select one</option>
@@ -97,12 +113,6 @@
 
             </select></div>
 
-        <div class='lead row'><label class='form-label col-md-3 required'>Author: </label>
-           <select v-model="model.selectedMapAuthorId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
-
-            </select></div>
            <div class='lead row'><label class='form-label col-md-3 required'>Thumbnail: </label>
            <select v-model="model.selectedMapThumbnailId.value" class="form-control" style="width:auto;">
                 <option disabled value="">Please select one</option>
@@ -111,12 +121,16 @@
          </select></div>
 
         
-           <div class='lead row'><label class='form-label col-md-3 required'>Object Url: </label>
-           <select v-model="model.selectedMapObjectUrlId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
-
-         </select></div>
+         <div class='lead row'>
+            <label class='form-label col-md-3'>Detailed View Url:</label>
+            <input type='text'
+                    class='form-control col-md-4'
+                    name='detailedViewUrl'
+                    v-model='model.detailedViewUrl.value'
+                    contenteditable='true'
+                    v-on:blur='onBlur'
+                    value='detailedViewUrlValue'  />
+            </div>
           
        </div>`
 });
