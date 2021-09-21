@@ -509,7 +509,7 @@ namespace Catfish.UnitTests
             commentsForm.SetDescription("This is the form to be filled by the editor when make a decision.", lang);
             commentsForm.CreateField<TextArea>("Comments", lang, true);
 
-            Define_TBLT_DiscussionWorkflow(workflow, ref template, bcpForm, commentsForm, "SubmitResource");
+            Define_TBLT_DiscussionWorkflow(workflow, ref template, bcpForm, commentsForm, "SubmitDiscussion");
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_DiscussionForm_generared.xml");
