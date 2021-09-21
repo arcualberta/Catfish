@@ -4,3 +4,32 @@
 
 @inject ErrorLog _errorLog;
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishConfig;
+@{
+    try
+    {
+        ViewBag.Title = Model == null ? "" : Model.Title;
+
+        //check if it's set the publishing start/end date to make  the page contain available
+        DateTime? startDateTime = Model.PublishSettings.Start;
+        DateTime? endDateTime = Model.PublishSettings.End;
+        bool pageAvailable = (!startDateTime.HasValue || startDateTime.HasValue && startDateTime.Value <= DateTime.Now)
+            && (!endDateTime.HasValue || endDateTime.HasValue && endDateTime.Value > DateTime.Now);
+        bool showPageHeader = Model.PublishSettings.ShowTitleOfPage;
+
+        bool showPageTimeStamp = _catfishConfig.GetValue("SiteConfig:ShowPageTimeStamp", false);
+
+        if (!pageAvailable)
+        {
+            string message = string.IsNullOrWhiteSpace(Model.PublishSettings.Message.Value)
+                            ? "The page is unavailable."
+                            : Model.PublishSettings.Message.Value;
+
+            <div id="pagePublishMessage" class="container alert alert-danger">@Html.Raw(message)</div>
+        }
+    }
+    catch (Exception ex)
+    {
+
+        _errorLog.Log(new Error(ex));
+    }
+}
