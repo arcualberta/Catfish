@@ -232,7 +232,7 @@ namespace Catfish.UnitTests
             return applicantNotification;
 
         }
-        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, TextField applicantEmail, string formName=null)
+        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, TextField applicantEmail=null, string formName=null)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -253,13 +253,16 @@ namespace Catfish.UnitTests
 
             EmailTemplate applicantEmailTemplate = CreateApplicantEmailTemplate(ref template, formName);
             EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
-            applicantNotificationEmailTrigger.AddRecipientByDataField(tbltForm.Id, applicantEmail.Id);
-            applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Join TBLT Request Notification");
-
+            if (applicantEmail != null)
+            {
+               
+                applicantNotificationEmailTrigger.AddRecipientByDataField(tbltForm.Id, applicantEmail.Id);
+                applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Join TBLT Request Notification");
+            }
             EmailTemplate adminEmailTemplate = CreateEditorEmailTemplate(ref template, formName);
 
             EmailTrigger editorNotificationEmailTrigger = workflow.AddTrigger("ToEditor", "SendEmail");
-            editorNotificationEmailTrigger.AddRecipientByEmail("tblt@ualberta.ca");
+            editorNotificationEmailTrigger.AddRecipientByEmail("mruaini@ualberta.ca");
             editorNotificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Join Request Notification");
 
             // =======================================
@@ -295,7 +298,10 @@ namespace Catfish.UnitTests
 
             //Defining trigger refs
             submitPostAction.AddTriggerRefs("0", editorNotificationEmailTrigger.Id, "Editor's Notification Email Trigger");
-            submitPostAction.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            if (applicantEmail != null)
+            {
+                submitPostAction.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            }
 
             startSubmissionAction.AddStateReferances(emptyState.Id)
                 .AddAuthorizedRole(memberRole.Id);
@@ -377,10 +383,13 @@ namespace Catfish.UnitTests
             //*******To Do*******
             // Implement a function to restrict the e-mail triggers when SAS Admin updated the document
             editSubmissionPostActionSubmit.AddTriggerRefs("0", editorNotificationEmailTrigger.Id, "Editor's Notification Email Trigger");
-            editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            if (applicantEmail != null)
+            {
+                 editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            }
 
-            //Defining state referances
-            editSubmissionAction.GetStateReference(savedState.Id, true)
+                //Defining state referances
+                editSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddOwnerAuthorization();
             editSubmissionAction.GetStateReference(submittedState.Id, true)
                 .AddAuthorizedRole(editorRole.Id);
@@ -437,7 +446,7 @@ namespace Catfish.UnitTests
 
             //Defining states and their authorizatios
             changeStateAction.GetStateReference(submittedState.Id, true)
-                .AddAuthorizedRole(editorRole.Id);
+                .AddAuthorizedRole(editorRole.Id); 
 
         }
 
@@ -500,6 +509,7 @@ namespace Catfish.UnitTests
             commentsForm.SetDescription("This is the form to be filled by the editor when make a decision.", lang);
             commentsForm.CreateField<TextArea>("Comments", lang, true);
 
+            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, commentsForm);
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_DiscussionForm_generared.xml");
