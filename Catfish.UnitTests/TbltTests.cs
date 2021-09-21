@@ -232,7 +232,7 @@ namespace Catfish.UnitTests
             return applicantNotification;
 
         }
-        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, TextField applicantEmail, string formName=null)
+        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, TextField applicantEmail=null, string formName=null)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -253,9 +253,11 @@ namespace Catfish.UnitTests
 
             EmailTemplate applicantEmailTemplate = CreateApplicantEmailTemplate(ref template, formName);
             EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
-            applicantNotificationEmailTrigger.AddRecipientByDataField(tbltForm.Id, applicantEmail.Id);
-            applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Join TBLT Request Notification");
-
+            if (applicantEmail != null)
+            {    
+                applicantNotificationEmailTrigger.AddRecipientByDataField(tbltForm.Id, applicantEmail.Id);
+                applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Join TBLT Request Notification");
+            }
             EmailTemplate adminEmailTemplate = CreateEditorEmailTemplate(ref template, formName);
 
             EmailTrigger editorNotificationEmailTrigger = workflow.AddTrigger("ToEditor", "SendEmail");
@@ -500,6 +502,7 @@ namespace Catfish.UnitTests
             commentsForm.SetDescription("This is the form to be filled by the editor when make a decision.", lang);
             commentsForm.CreateField<TextArea>("Comments", lang, true);
 
+            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, commentsForm);
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_DiscussionForm_generared.xml");
