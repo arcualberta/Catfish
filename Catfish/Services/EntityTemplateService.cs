@@ -210,12 +210,23 @@ namespace Catfish.Services
             EntityTemplate template = GetTemplate(templateId);
             MetadataSet ms = template.MetadataSets.Where(m => m.Id == metadatasetId).FirstOrDefault();
 
-            //XmlModel xml = new XmlModel(template.MetadataSets);
-            //XElement element = xml.GetElement(Workflow.TagName, false);// false -- don't cretae if not existed'
-            //Workflow workflow = new Workflow(element);
-
             return ms.Fields;
 
         }
+        /// <summary>
+        /// MR: Sept 22 2021 - Get all the Field in the Data-Item in the Item Template
+        /// </summary>
+        /// <param name="templateId">Item Template Id</param>
+        /// <returns></returns>
+        public FieldList GetTemplateDataItemFields(Guid? templateId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+
+            var dataItem = template.GetRootDataItem(false);
+            
+            return dataItem.Fields; 
+
+        }
+
     }
 }

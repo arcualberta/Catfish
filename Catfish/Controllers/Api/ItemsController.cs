@@ -547,5 +547,32 @@ namespace Catfish.Controllers.Api
             return result;
         }
 
+        [HttpGet("getItemtemplateFields/{templateId}")]
+        public List<SelectListItem> GetItemTemplateFields(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                var fields = _entityTemplateService.GetTemplateDataItemFields(Guid.Parse(templateId));
+
+
+                foreach (BaseField field in fields)
+                {
+                    if (!string.IsNullOrEmpty(field.GetName()))
+                    {
+                        result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString() });
+                    }
+
+                }
+            }
+
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+
+
     }
 }

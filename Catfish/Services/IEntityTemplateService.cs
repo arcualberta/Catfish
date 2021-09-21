@@ -22,5 +22,8 @@ namespace Catfish.Services
         //MR April 28 2021
         XmlModelList<MetadataSet> GetTemplateMetadataSets(Guid? templateId);
         FieldList GetTemplateMetadataSetFields(Guid? templateId, Guid? metadatasetId);
+
+        //Mr Sept 22 2021
+        public FieldList GetTemplateDataItemFields(Guid? templateId);
     }
 }

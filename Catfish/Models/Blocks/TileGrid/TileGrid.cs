@@ -1,4 +1,6 @@
-﻿using Piranha.Extend;
+﻿using Catfish.Core.Models;
+using Catfish.Models.Fields;
+using Piranha.Extend;
 using Piranha.Extend.Fields;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,22 @@ namespace Catfish.Models.Blocks.TileGrid
 
         [Field(Title = "Keywords", Placeholder = "Please list keywords separated by a comma")]
         public TextField KeywordList { get; set; }
+        public CatfishSelectList<Collection> Collections { get; set; }
+        public TextField SelectedCollection { get; set; }
 
+        public CatfishSelectList<ItemTemplate> ItemTemplates { get; set; }
+        public TextField SelectedItemTemplate { get; set; }
+
+        [Field(Title = "Css class for the Block")]
+        public TextField BlockCss { get; set; }
+        [Field(Title = "Css class for each Tile")]
+        public TextField TileCss { get; set; }
+
+        public TextField SelectedMapTitleId { get; set; }
+        public TextField SelectedMapContentId { get; set; }
+        public TextField SelectedMapAuthorId { get; set; }
+        public TextField SelectedMapThumbnailId { get; set; }
+        public TextField SelectedMapObjectUrlId { get; set; }
         public string GetKeywords()
         {
             if (KeywordList != null)
