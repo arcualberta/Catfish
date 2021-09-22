@@ -73,7 +73,7 @@
         `<div  class= 'block-body'>
             <h2>Tile Grid</h2>
            <div>Please list your keywords separated by a comma.</div>
-         <textarea rows='4' cols='100' class='lead ' 
+         <textarea rows='2' cols='100' class='lead ' 
             v-html='model.keywordList.value' contenteditable='true' v-on:blur='onBlur' name='keywordList'>
         </textarea>
            <div class='lead row'><label class='form-label col-md-3 required'>Collection: </label>
@@ -85,7 +85,7 @@
             <div class='lead row'><label class='form-label col-md-3'>Css class for Block:</label> <input type='text' class='form-control col-md-4' name='blockCss' v-model='model.blockCss.value' contenteditable='true' v-on:blur='onBlur' value='blockCssValue'  /></div>
          <div class='lead row'><label class='form-label col-md-3'>Css class for each Tile:</label> <input type='text' class='form-control col-md-4' name='tileCss' v-model='model.tileCss.value' contenteditable='true' v-on:blur='onBlur' value='tileCssValue'  /></div>
          <br/>
-        <div class="alert alert-info">Field Mapping</div>
+        <div class="alert alert-info">Fields Mapping</div>
          <div class='lead row'><label class='form-label col-md-3 required'>Item Template: </label>
            <select v-model="model.selectedItemTemplate.value" class="form-control" style="width:auto;" v-on:change="selectItemTemplate(model.selectedItemTemplate.value)">
                 <option disabled value="">Please select one</option>
@@ -112,7 +112,12 @@
                 <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
 
             </select></div>
+            <div class='lead row'><label class='form-label col-md-3 required'>Keyword Source: </label>
+           <select v-model="model.keywordSourceId.value" class="form-control" style="width:auto;">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
 
+            </select><span class="text-info" style="font-size:.8em; padding-left:5px"><b> Please select a radio, checkbox or dropdown field</b></span></div>
            <div class='lead row'><label class='form-label col-md-3 required'>Thumbnail: </label>
            <select v-model="model.selectedMapThumbnailId.value" class="form-control" style="width:auto;">
                 <option disabled value="">Please select one</option>

@@ -32,6 +32,8 @@ namespace Catfish.Models.Blocks.TileGrid
         public TextField SelectedMapContentId { get; set; }
         public TextField SelectedMapThumbnailId { get; set; }
         public TextField DetailedViewUrl { get; set; }
+
+        public TextField KeywordSourceId { get; set; }
         public string GetKeywords()
         {
             if (KeywordList != null)
