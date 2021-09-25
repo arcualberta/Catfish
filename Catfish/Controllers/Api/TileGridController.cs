@@ -46,7 +46,7 @@ namespace Catfish.Controllers.Api
                     Content = "Content " + (i * max + 1),
                     Date = DateTime.Now.AddDays(i),
                     Thumbnail = "https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/dahlia-3598551_1920.jpg?itok=XZfJlur2",
-                    ObjectUrl = "https://www.almanac.com/plant/dahlias"
+                    DetailedViewUrl = "https://www.almanac.com/plant/dahlias"
                 });
             }
 
