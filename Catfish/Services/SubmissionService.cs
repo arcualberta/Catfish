@@ -129,6 +129,25 @@ namespace Catfish.Services
             return items;
 
         }
+        /// <summary>
+        /// Get all item in a given collection
+        /// </summary>
+        /// <param name="collectionId">CollectionID</param>
+        /// <returns></returns>
+        public List<Item> GetSubmissionList(Guid? collectionId)
+        {
+            List<Item> items = new List<Item>();
+           
+            try
+            {
+                items = _db.Items.Where(i => i.PrimaryCollectionId == collectionId).ToList();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+            return items;
+        }
 
         ///// <summary>
         ///// Get the submission details which passing from the parameter.  

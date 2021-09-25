@@ -262,7 +262,7 @@ namespace Catfish.UnitTests
             EmailTemplate adminEmailTemplate = CreateEditorEmailTemplate(ref template, formName);
 
             EmailTrigger editorNotificationEmailTrigger = workflow.AddTrigger("ToEditor", "SendEmail");
-            editorNotificationEmailTrigger.AddRecipientByEmail("mruaini@ualberta.ca");
+            editorNotificationEmailTrigger.AddRecipientByEmail("tblt@ualberta.ca");
             editorNotificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Join Request Notification");
 
             // =======================================
@@ -500,8 +500,8 @@ namespace Catfish.UnitTests
             other.Cols = 50;
             other.Rows = 3;
 
+            bcpForm.CreateField<CheckboxField>("Keywords for this resource(s)", lang, GetDiscussionKeywords(), false);
 
-            
 
             //Defininig the Comments form
             DataItem commentsForm = template.GetDataItem("TBLT Comment Form", true, lang);
@@ -704,6 +704,28 @@ namespace Catfish.UnitTests
             changeStateAction.GetStateReference(submittedState.Id, true)
                 .AddAuthorizedRole(editorRole.Id);
 
+        }
+
+        private string[] GetDiscussionKeywords()
+        {
+            return new string[]
+            {
+                "Real-life tasks",
+                "Assessment",
+                "Grammar",
+                "Listening",
+                "Reading",
+                "Writing",
+                "Speaking",
+                "Vocabulary",
+                "Interaction",
+                "Materials",
+                "Teacher training",
+                "Technology",
+                "Age-appropriate tasks",
+                "Games",
+                "Culture"
+            };
         }
     }
 }

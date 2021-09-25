@@ -27,6 +27,7 @@ namespace Catfish.Services
         bool ExecuteTriggers(Guid entityTemplateId,Item item, Guid postActionId);
         Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action);
         string SetSuccessMessage(Guid entityTemplateId, Guid postActionId, Guid itemId);
+        List<Item> GetSubmissionList(Guid? collectionId);
     }
     public class ItemField
     {
