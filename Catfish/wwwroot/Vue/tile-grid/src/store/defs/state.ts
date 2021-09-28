@@ -1,7 +1,7 @@
 ﻿import { Guid } from "guid-typescript";
 
 //Declare Tile interface which proxies the c# Tile class in Tile.cs
-export interface Tile {
+export interface Item {
   id: Guid,
   title: string,
   subtitle: string,
@@ -13,10 +13,10 @@ export interface Tile {
 
 //Declare State interface
 export interface State {
-  items: Tile[]
+  items: Item[]
 }
 
 
 export const state: State = {
-  items: Array<Tile>()
+  items: Array<Item>()
 }

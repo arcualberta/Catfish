@@ -23,7 +23,7 @@
             const loadKeywords = async (pageId: string, blockId: string) => {
                 try {
                     let api = `https://localhost:44385/api/tilegrid/keywords/page/${pageId}/block/${blockId}`;
-                    //console.log('Loading keywords: ', api)
+                    console.log('Loading keywords: ', api)
 
                     const res = await fetch(api);
                     keywords.value = await res.json();

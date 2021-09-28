@@ -10,6 +10,7 @@ using Piranha.Extend;
 using Catfish.Services;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Models;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -23,11 +24,13 @@ namespace Catfish.Controllers.Api
     {
         private readonly IModelLoader _loader;
         private readonly ISubmissionService _submissionService;
+        private readonly AppDbContext _appDb;
 
-        public TileGridController(IModelLoader loader, ISubmissionService submissionService)
+        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db)
         {
             _loader = loader;
             _submissionService = submissionService;
+            _appDb = db;
         }
 
         // GET: api/tilegrid
@@ -67,43 +70,52 @@ namespace Catfish.Controllers.Api
 
             var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
 
-            Guid? selectedColllectionId = null;
-            Guid? keywordResourceId = null;
-            Guid selectedItemTemplateId= Guid.Empty;
+            if (page == null)
+                return keywords;
+
+            var block = page.Blocks.FirstOrDefault(b => b.Id == blockId) as TileGrid;
+            keywords = block.KeywordList
+                .Value
+                .Split(new char[] { ',', '\r', '\n' })
+                .Select(v => v.Trim())
+                .Where(v => !string.IsNullOrEmpty(v))
+                .ToArray();
 
 
-            if(page != null)
+            if(!string.IsNullOrEmpty(block.KeywordSourceId.Value))
             {
-                var block = page.Blocks.FirstOrDefault(b => b.Id == blockId);
-                if (block != null && (block as Catfish.Models.Blocks.TileGrid.TileGrid).KeywordList != null)
-                    keywords = (block as Catfish.Models.Blocks.TileGrid.TileGrid)
-                        .KeywordList
-                        .Value
-                        .Split(new char[] { ',', '\r', '\n' })
-                        .Select(v => v.Trim())
-                        .Where(v => !string.IsNullOrEmpty(v))
-                        .ToArray();
+                Guid? keywordSourceFieldId = Guid.Parse(block.KeywordSourceId.Value);
+                Guid selectedItemTemplateId = Guid.Parse(block.SelectedItemTemplate.Value);
 
-                selectedColllectionId = Guid.Parse((block as Catfish.Models.Blocks.TileGrid.TileGrid).SelectedCollection.Value);
-                keywordResourceId = Guid.Parse((block as Catfish.Models.Blocks.TileGrid.TileGrid).KeywordSourceId.Value);
-                selectedItemTemplateId = Guid.Parse((block as Catfish.Models.Blocks.TileGrid.TileGrid).SelectedItemTemplate.Value);
-            }
+                var template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == selectedItemTemplateId);
+                var keywordSourceField = template.GetRootDataItem(false)?.Fields
+                    .FirstOrDefault(field => field is OptionsField && field.Id == keywordSourceFieldId)
+                    as OptionsField;
+                if(keywordSourceField != null)
+                {
+                    var fieldBasedKeywords = keywordSourceField.Options
+                        .SelectMany(opt => opt.OptionText.Values)
+                        .Select(txt => txt.Value);
 
-            //MR Sept 22 2021 -- Get all the item pages (in the collection) keywords that selected i "keyword Resource"
-            List<Core.Models.Item> items = _submissionService.GetSubmissionList(User, selectedItemTemplateId, selectedColllectionId); 
-
-            foreach(Core.Models.Item itm in items)
-            {
-                DataItem dataItem = itm.GetRootDataItem(false);
-
-                var keywordField = dataItem.Fields.Where(f => f.Id == keywordResourceId && typeof(OptionsField).IsAssignableFrom(f.GetType())).FirstOrDefault();//itm.DataContainer.Where(d => d.Fields.Any(f => f.GetType() == typeof(OptionsField) && f.Id == keywordResourceId)).FirstOrDefault();
-
-                if (keywordField != null){
-                   
-                   string[] resourceKeys = (keywordField as OptionsField).GetSelectedOptionTexts();
-                   keywords = keywords.Union(resourceKeys).ToArray();
+                    keywords = keywords.Union(fieldBasedKeywords).ToArray();
                 }
             }
+
+            ////MR Sept 22 2021 -- Get all the item pages (in the collection) keywords that selected i "keyword Resource"
+            //List<Core.Models.Item> items = _submissionService.GetSubmissionList(User, selectedItemTemplateId, selectedColllectionId); 
+
+            //foreach(Core.Models.Item itm in items)
+            //{
+            //    DataItem dataItem = itm.GetRootDataItem(false);
+
+            //    var keywordField = dataItem.Fields.Where(f => f.Id == keywordResourceId && typeof(OptionsField).IsAssignableFrom(f.GetType())).FirstOrDefault();//itm.DataContainer.Where(d => d.Fields.Any(f => f.GetType() == typeof(OptionsField) && f.Id == keywordResourceId)).FirstOrDefault();
+
+            //    if (keywordField != null){
+                   
+            //       string[] resourceKeys = (keywordField as OptionsField).GetSelectedOptionTexts();
+            //       keywords = keywords.Union(resourceKeys).ToArray();
+            //    }
+            //}
           
             return keywords;
         }

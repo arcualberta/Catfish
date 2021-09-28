@@ -3,8 +3,7 @@
         <h1>Item List</h1>
         <div class="container row">
             <div v-for="item in items" :key="item" class="col-md-4 m-1">
-                <tile 
-                <h3>{{item.title}}</h3>
+                <tile :item="item"></tile>
             </div>
         </div>
     </div>
@@ -12,7 +11,7 @@
 <script lang="ts">
     import { defineComponent, computed } from "vue";
     import { useStore } from '../store'
-    import { Tile } from './Tile.vue'
+    import Tile from './Tile.vue'
 
     export default defineComponent({
         name: "ItemList",

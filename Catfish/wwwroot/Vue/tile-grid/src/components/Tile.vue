@@ -1,16 +1,17 @@
 <template>
     <div class="data-item">
         <h3>{{item.title}}</h3>
+        This is a tile.
     </div>
 </template>
 <script lang="ts">
     import { defineComponent, PropType } from "vue";
-    import { Tile } from '../store/defs/state';
+    import { Item } from "../store/defs/state"
 
     export default defineComponent({
-        name: "ItemList",
+        name: "Tile",
         props: {
-            item: null as null | PropType<Tile>
+            item: null as null | PropType<Item>
         },
     });
 </script>

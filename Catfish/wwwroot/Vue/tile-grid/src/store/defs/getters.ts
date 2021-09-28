@@ -1,8 +1,8 @@
 ﻿import { GetterTree } from 'vuex';
-import { State, Tile } from './state';
+import { State, Item } from './state';
 
 export const getters: GetterTree<State, State> = {
-  items: (state) : Tile[] => {
+  items: (state): Item[] => {
     return state.items
   },
 }
