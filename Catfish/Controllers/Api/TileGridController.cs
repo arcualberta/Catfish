@@ -101,6 +101,8 @@ namespace Catfish.Controllers.Api
                 }
             }
 
+            Array.Sort(keywords);
+
             ////MR Sept 22 2021 -- Get all the item pages (in the collection) keywords that selected i "keyword Resource"
             //List<Core.Models.Item> items = _submissionService.GetSubmissionList(User, selectedItemTemplateId, selectedColllectionId); 
 
