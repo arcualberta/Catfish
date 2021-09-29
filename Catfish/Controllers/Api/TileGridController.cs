@@ -38,12 +38,9 @@ namespace Catfish.Controllers.Api
         public IEnumerable<Tile> Get(string keywords = null, int? offset = null, int? max = null)
         {
             List<Tile> tiles = new List<Tile>();
+            string[] keywordList = keywords?.Split(new char[] { '|' });
 
-            if (!max.HasValue)
-                max = 20;
-
-            if (offset.HasValue && offset.Value > 0)
-                max = 10;
+            max = 5 * (keywordList != null ? keywordList.Length: 0);
 
             for (int i = 0; i < max; ++i)
             {
@@ -51,7 +48,7 @@ namespace Catfish.Controllers.Api
                 {
                     Id = Guid.NewGuid(),
                     Title = "Item " + (i * max + 1),
-                    Content = "Content " + (i * max + 1),
+                    Content = Helper.MockHelper.LoremIpsum(4, 8, 1, 5, 1),
                     Date = DateTime.Now.AddDays(i),
                     Thumbnail = "https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/dahlia-3598551_1920.jpg?itok=XZfJlur2",
                     DetailedViewUrl = "https://www.almanac.com/plant/dahlias"
