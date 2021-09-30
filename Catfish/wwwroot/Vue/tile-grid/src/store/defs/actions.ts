@@ -11,7 +11,7 @@ export const actions: ActionTree<State, any> = {
 
   async [Actions.FILTER_BY_KEYWORDS](store, keywords: string[]) {
     const concatenatedKeywords = keywords.join('|')
-    const api = `https://localhost:44385/api/tilegrid/?keywords=${concatenatedKeywords}`;
+        const api = window.location.origin + `/api/tilegrid/?keywords=${concatenatedKeywords}`;
 
     const res = await fetch(api);
     const data = await res.json()

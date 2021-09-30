@@ -1,13 +1,16 @@
+"use strict";
+var _a;
+exports.__esModule = true;
+exports.mutations = exports.Mutations = void 0;
 //Declare MutationTypes
-export var Mutations;
+var Mutations;
 (function (Mutations) {
     Mutations["SET_TILES"] = "SET_TILES";
-})(Mutations || (Mutations = {}));
+})(Mutations = exports.Mutations || (exports.Mutations = {}));
 //Create a mutation tree that implement all mutation interfaces
-export const mutations = {
-    [Mutations.SET_TILES](state, payload) {
+exports.mutations = (_a = {},
+    _a[Mutations.SET_TILES] = function (state, payload) {
         state.items = payload;
         console.log('Payload: ', payload);
     },
-};
-//# sourceMappingURL=mutations.js.map
+    _a);
