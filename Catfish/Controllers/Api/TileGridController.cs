@@ -11,6 +11,7 @@ using Catfish.Services;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models;
+using Catfish.Core.Services;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -25,18 +26,21 @@ namespace Catfish.Controllers.Api
         private readonly IModelLoader _loader;
         private readonly ISubmissionService _submissionService;
         private readonly AppDbContext _appDb;
+        private readonly ISolrService _solr;
 
-        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db)
+        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr)
         {
             _loader = loader;
             _submissionService = submissionService;
             _appDb = db;
+            _solr = solr;
         }
 
         // GET: api/tilegrid
         [HttpGet]
         public IEnumerable<Tile> Get(string keywords = null, int? offset = null, int? max = null)
         {
+            //_solr
             List<Tile> tiles = new List<Tile>();
             string[] keywordList = keywords?.Split(new char[] { '|' });
 

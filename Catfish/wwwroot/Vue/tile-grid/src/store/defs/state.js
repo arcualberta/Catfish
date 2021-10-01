@@ -1,6 +1,4 @@
-"use strict";
-exports.__esModule = true;
-exports.state = void 0;
-exports.state = {
+export const state = {
     items: Array()
 };
+//# sourceMappingURL=state.js.map
