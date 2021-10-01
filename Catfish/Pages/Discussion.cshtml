@@ -1,0 +1,27 @@
+﻿@page "~/discussion/{id:Guid}"
+@model Catfish.Pages.DiscussionModel
+@{
+    ViewData["Title"] = "Discussion";
+}
+@{
+    //var title = Model.Title;
+    
+
+    //var subtitle = Model.Subtitle;
+    string successMessage = "";//string.IsNullOrEmpty(Model.SubmissionConfirmation.Value.ToString()) ? "" : Model.SubmissionConfirmation.Value.ToString();
+}
+
+    <div class="container item-details-view">
+        <h1>@Model.Tile.Title</h1>
+        <h6>@Model.Tile.Subtitle</h6>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+
+                </div>
+                <div class="col-sm-8">
+
+                </div>
+            </div>
+        </div>
+    </div>
