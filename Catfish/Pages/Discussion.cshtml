@@ -16,11 +16,11 @@
         <h6>@Model.Tile.Subtitle</h6>
         <div class="container">
             <div class="row">
-                <div class="col-sm-4">
-
+                <div class="col-sm-2">
+                    <img src="@Url.Content(Model.Tile.Thumbnail)" alt="Image" style="height:100px;width:100px;" />
                 </div>
-                <div class="col-sm-8">
-
+                <div class="col-sm-10">
+                    <p>@Model.Tile.Content</p>
                 </div>
             </div>
         </div>
