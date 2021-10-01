@@ -95,23 +95,31 @@
         @:<div class="dropdown-content">
          @:<div class="d-md-flex align-items-start justify-content-start row">
 
-            foreach(var subitm in item.Items) { 
-                <div class="column">
-                    <div class="dropdown-header">@subitm.MenuTitle</div>
-                    <div class="dropdown-divider"></div>
-                
+        foreach(var subitm in item.Items) {
+               <div class="column">
+                   @if (subitm.Items.Count > 0)
+                   {
+                       <div class="dropdown-header">@subitm.MenuTitle</div>
+                       <div class="dropdown-divider"></div>
 
-                    @foreach (var subitm2 in subitm.Items)
-                    {
+                       @foreach (var subitm2 in subitm.Items)
+                       {
 
-                        if (subitm2.Items.Count == 0 && !subitm2.IsHidden)
-                        {
+                           if (subitm2.Items.Count == 0 && !subitm2.IsHidden)
+                           {
 
-                            <a class="dropdown-item" href="@subitm2.Permalink">@subitm2.MenuTitle</a>
-                        }
-                        
-                    }
-                </div>
+                               <a class="dropdown-item" href="@subitm2.Permalink">@subitm2.MenuTitle</a>
+                           }
+
+                       }
+                   }
+                   else
+                   {
+                       <a class="dropdown-item" href="@subitm.Permalink">@subitm.MenuTitle</a>
+                   }
+
+
+               </div>
             }
     
         @:</div></div>
