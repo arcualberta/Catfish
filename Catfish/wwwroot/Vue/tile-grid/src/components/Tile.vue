@@ -1,12 +1,12 @@
 <template>
     <div class="data-item">
-        <img class="thumbnail" :src="item.thumbnail" />
+        <a :href="item.detailedViewUrl"><img class="thumbnail" :src="item.thumbnail" /></a>
         <div class="cat-outer">
             <div class="cat-inner col-6">
                 {{keywordStr}}
             </div>
         </div>
-        <h3>{{item.title}}</h3>
+        <h3><a :href="item.detailedViewUrl">{{item.title}}</a></h3>
         <div class="content">
             {{ item.content }}
         </div>

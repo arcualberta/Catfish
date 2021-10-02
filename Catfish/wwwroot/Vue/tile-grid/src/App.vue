@@ -7,6 +7,8 @@
     import { defineComponent, ref } from 'vue';
     import KeywordFilter from './components/KeywordFilter.vue';
     import ItemList from './components/ItemList.vue';
+    import { useStore } from './store';
+    import { Actions } from './store/defs/actions';
 
     export default defineComponent({
         name: "App",
@@ -40,6 +42,9 @@
             let pageId = this.$el.parentElement.getAttribute("page-id");
             let blockId = this.$el.parentElement.getAttribute("block-id");
             this.loadKeywords(pageId, blockId);
+
+            const store = useStore()
+            store.dispatch(Actions.FILTER_BY_KEYWORDS, [])
         }
     });
 </script>

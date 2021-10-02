@@ -1,9 +1,8 @@
 <template>
     <div class="data-filter">
-        <h1>Keyword Filter</h1>
         <ul>
             <li v-for="item in keywords" :key="item">
-                <input type="checkbox" :value="item" v-model="selectedKeywords" @change="handleKeywordChange" /> 
+                <input type="checkbox" :value="item" :checked="checked" v-model="selectedKeywords" @change="handleKeywordChange" /> 
                 <label>{{ item }}</label>
             </li>
         </ul>
@@ -11,8 +10,8 @@
 </template>
 <script lang="ts">
     import { defineComponent, ref, PropType } from "vue";
-    import { Actions } from '../store/defs/actions'
-    import { useStore } from '../store'
+    import { Actions } from '../store/defs/actions';
+    import { useStore } from '../store';
 
     export default defineComponent({
         name: "KeywordFilter",

@@ -12,6 +12,7 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models;
 using Catfish.Core.Services;
+using Microsoft.AspNetCore.Http;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -28,6 +29,14 @@ namespace Catfish.Controllers.Api
         private readonly AppDbContext _appDb;
         private readonly ISolrService _solr;
 
+        public const string SessionKeySelectedKeywords = "_SelectedKeywords";
+        public const string SessionKeyOffset = "_Offset";
+        public const string SessionKeyMax = "_Max";
+
+        private string[] _slectedKeywords = Array.Empty<string>();
+        private int? _offset;
+        private int? _max;
+
         public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr)
         {
             _loader = loader;
@@ -38,15 +47,15 @@ namespace Catfish.Controllers.Api
 
         // GET: api/tilegrid
         [HttpGet]
-        public IEnumerable<Tile> Get(string keywords = null, int? offset = null, int? max = null)
+        public IEnumerable<Tile> Get(Guid gridId, string keywords = null, int? offset = null, int? max = null)
         {
-            //_solr
+            UpdateProperties(gridId, keywords, offset, max);
+
             List<Tile> tiles = new List<Tile>();
-            string[] keywordList = keywords?.Split(new char[] { '|' });
 
-            max = 5 * (keywordList != null ? keywordList.Length: 0);
+            _max = 5 * _slectedKeywords.Length;
 
-            for (int i = 0; i < max; ++i)
+            for (int i = 0; i < _max; ++i)
             {
                 tiles.Add(new Tile()
                 {
@@ -55,17 +64,49 @@ namespace Catfish.Controllers.Api
                     Content = Helper.MockHelper.LoremIpsum(4, 8, 1, 5, 1),
                     Date = DateTime.Now.AddDays(i),
                     Thumbnail = "https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/dahlia-3598551_1920.jpg?itok=XZfJlur2",
-                    DetailedViewUrl = "https://www.almanac.com/plant/dahlias"
+                    DetailedViewUrl = "https://www.ualberta.ca/"
                 });
             }
 
             return tiles;
         }
+        private void UpdateProperties(Guid gridId, string keywords, int? offset, int? max)
+        {
+            if (string.IsNullOrEmpty(keywords))
+            {
+                keywords = HttpContext.Session.GetString(gridId + SessionKeySelectedKeywords);
+                if (!string.IsNullOrEmpty(keywords))
+                    _slectedKeywords = keywords.Split('|');
+                _offset = HttpContext.Session.Keys.Contains(gridId + SessionKeyOffset)
+                    ? HttpContext.Session.GetInt32(gridId + SessionKeyOffset)
+                    : null;
+                _max = HttpContext.Session.Keys.Contains(gridId + SessionKeyMax)
+                    ? HttpContext.Session.GetInt32(gridId + SessionKeyMax)
+                    : null;
+            }
+            else
+            {
+                HttpContext.Session.SetString(gridId + SessionKeySelectedKeywords, keywords);
+                _slectedKeywords = keywords.Split('|');
+
+                if (offset.HasValue)
+                    HttpContext.Session.SetInt32(gridId + SessionKeyOffset, offset.Value);
+                else
+                    HttpContext.Session.Remove(gridId + SessionKeyOffset);
+                _offset = offset;
+
+                if (max.HasValue)
+                    HttpContext.Session.SetInt32(gridId + SessionKeyMax, max.Value);
+                else
+                    HttpContext.Session.Remove(gridId + SessionKeyMax);
+                _max = max;
+            }
+        }
 
         // GET: /api/tilegrid/keywords/page/3c49e3ca-6937-4fa6-ab40-0549f45ca87b/block/3C9C2F8A-C1D8-4869-A8CA-D0641E9200A5
         [HttpGet]
         [Route("keywords/page/{pageId:Guid}/block/{blockId:Guid}")]
-        public async Task<IEnumerable<string>> BlcokKeywords(Guid pageId, Guid blockId)
+        public async Task<IEnumerable<string>> Keywords(Guid pageId, Guid blockId)
         {
             string[] keywords = Array.Empty<string>();
 
@@ -104,22 +145,6 @@ namespace Catfish.Controllers.Api
 
             Array.Sort(keywords);
 
-            ////MR Sept 22 2021 -- Get all the item pages (in the collection) keywords that selected i "keyword Resource"
-            //List<Core.Models.Item> items = _submissionService.GetSubmissionList(User, selectedItemTemplateId, selectedColllectionId); 
-
-            //foreach(Core.Models.Item itm in items)
-            //{
-            //    DataItem dataItem = itm.GetRootDataItem(false);
-
-            //    var keywordField = dataItem.Fields.Where(f => f.Id == keywordResourceId && typeof(OptionsField).IsAssignableFrom(f.GetType())).FirstOrDefault();//itm.DataContainer.Where(d => d.Fields.Any(f => f.GetType() == typeof(OptionsField) && f.Id == keywordResourceId)).FirstOrDefault();
-
-            //    if (keywordField != null){
-                   
-            //       string[] resourceKeys = (keywordField as OptionsField).GetSelectedOptionTexts();
-            //       keywords = keywords.Union(resourceKeys).ToArray();
-            //    }
-            //}
-          
             return keywords;
         }
     }

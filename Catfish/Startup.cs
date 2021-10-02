@@ -69,6 +69,16 @@ namespace Catfish
         {
             string sqlConnectionString = Configuration.GetConnectionString("catfish");
 
+            //Configuring  session
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+
             //localization need to be called before MVC() or other service that need it
             services.AddLocalization(options =>
              options.ResourcesPath = "Resources"
@@ -314,6 +324,8 @@ namespace Catfish
             app.UsePiranhaIdentity();
             app.UsePiranhaManager();
             app.UsePiranhaTinyMCE();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
