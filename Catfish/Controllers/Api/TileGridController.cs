@@ -39,27 +39,65 @@ namespace Catfish.Controllers.Api
 
         // GET: api/tilegrid
         [HttpGet]
-        public IEnumerable<Tile> Get(Guid gridId, string keywords = null, int? offset = null, int? max = null)
+        public IEnumerable<Tile> Get(Guid gridId, string keywords = null, int? offset = null, int? max = 25)
         {
+            List<Tile> dbData = GetMockupData();
+
             //UpdateProperties(gridId, keywords, offset, max);
-            string[] sslectedKeywords = string.IsNullOrEmpty(keywords) 
+            string[] slectedKeywords = string.IsNullOrEmpty(keywords) 
                 ? Array.Empty<string>() 
                 : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
             List<Tile> tiles = new List<Tile>();
+            if (slectedKeywords.Length > 0)
+            {
+                foreach (var t in dbData)
+                {
+                    foreach (var cat in t.Categories)
+                    {
+                        if (slectedKeywords.Contains(cat))
+                        {
+                            tiles.Add(t);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+                tiles = dbData;
 
-            max = 5 * sslectedKeywords.Length;
+            if (offset.HasValue)
+                tiles = tiles.Skip(offset.Value).ToList();
 
-            for (int i = 0; i < max; ++i)
+            if (max.HasValue)
+                tiles = tiles.Take(max.Value).ToList();
+
+            return tiles;
+        }
+
+        private List<Tile> GetMockupData()
+        {
+            List<Tile> tiles = new List<Tile>();
+            int n = 250;
+            string[] keywords = new string[] { "Age-appropriate tasks", "Assessment", "Culture", "Games", "Grammar", "Interaction",
+                                                "Listening", "Materials", "Reading", "Real-life tasks", "Speaking", "Teacher training",
+                                                "Technology", "Vocabulary", "Writing" };
+
+            Random rand = new Random(0);
+               
+            for (int i = 0; i < n; ++i)
             {
                 tiles.Add(new Tile()
                 {
                     Id = Guid.NewGuid(),
-                    Title = "Item " + (i * max + 1),
+                    Title = "Item " + (i + 1),
                     Content = Helper.MockHelper.LoremIpsum(4, 8, 1, 5, 1),
                     Date = DateTime.Now.AddDays(i),
                     Thumbnail = "https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/dahlia-3598551_1920.jpg?itok=XZfJlur2",
-                    DetailedViewUrl = "https://www.ualberta.ca/"
+                    DetailedViewUrl = "https://www.ualberta.ca/",
+                    Categories = rand.Next(0, 2) < 1 
+                    ? new string[] {keywords[rand.Next(0, keywords.Length)], keywords[rand.Next(0, keywords.Length)]}
+                    : new string[] { keywords[rand.Next(0, keywords.Length)] }
                 });
             }
 

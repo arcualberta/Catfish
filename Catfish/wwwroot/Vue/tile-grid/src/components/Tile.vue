@@ -3,7 +3,7 @@
         <a :href="item.detailedViewUrl"><img class="thumbnail" :src="item.thumbnail" /></a>
         <div class="cat-outer">
             <div class="cat-inner col-6">
-                {{keywordStr}}
+                {{item.categories.join(", ")}}
             </div>
         </div>
         <h3><a :href="item.detailedViewUrl">{{item.title}}</a></h3>
@@ -20,11 +20,6 @@
         name: "Tile",
         props: {
             item: null as null | PropType<Item>
-        },
-        computed: {
-            keywordStr() {
-                return "Category 1, Category 2, Category 3";
-            }
         }
     });
 </script>

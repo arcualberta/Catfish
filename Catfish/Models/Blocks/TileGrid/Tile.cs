@@ -11,5 +11,6 @@ namespace Catfish.Models.Blocks.TileGrid
         public string Thumbnail { get; set; }
         public DateTime Date { get; set; }
         public string DetailedViewUrl { get; set; }
+        public string[] Categories { get; set; }
     }
 }
