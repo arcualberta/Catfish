@@ -20,22 +20,14 @@ using Microsoft.AspNetCore.Http;
 namespace Catfish.Controllers.Api
 {
     [Route("api/[controller]")]
-    [ApiController]
     [Produces("application/json")]
+    [ApiController]
     public class TileGridController : ControllerBase
     {
         private readonly IModelLoader _loader;
         private readonly ISubmissionService _submissionService;
         private readonly AppDbContext _appDb;
         private readonly ISolrService _solr;
-
-        public const string SessionKeySelectedKeywords = "_SelectedKeywords";
-        public const string SessionKeyOffset = "_Offset";
-        public const string SessionKeyMax = "_Max";
-
-        private string[] _slectedKeywords = Array.Empty<string>();
-        private int? _offset;
-        private int? _max;
 
         public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr)
         {
@@ -49,13 +41,16 @@ namespace Catfish.Controllers.Api
         [HttpGet]
         public IEnumerable<Tile> Get(Guid gridId, string keywords = null, int? offset = null, int? max = null)
         {
-            UpdateProperties(gridId, keywords, offset, max);
+            //UpdateProperties(gridId, keywords, offset, max);
+            string[] sslectedKeywords = string.IsNullOrEmpty(keywords) 
+                ? Array.Empty<string>() 
+                : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
             List<Tile> tiles = new List<Tile>();
 
-            _max = 5 * _slectedKeywords.Length;
+            max = 5 * sslectedKeywords.Length;
 
-            for (int i = 0; i < _max; ++i)
+            for (int i = 0; i < max; ++i)
             {
                 tiles.Add(new Tile()
                 {
@@ -69,38 +64,6 @@ namespace Catfish.Controllers.Api
             }
 
             return tiles;
-        }
-        private void UpdateProperties(Guid gridId, string keywords, int? offset, int? max)
-        {
-            if (string.IsNullOrEmpty(keywords))
-            {
-                keywords = HttpContext.Session.GetString(gridId + SessionKeySelectedKeywords);
-                if (!string.IsNullOrEmpty(keywords))
-                    _slectedKeywords = keywords.Split('|');
-                _offset = HttpContext.Session.Keys.Contains(gridId + SessionKeyOffset)
-                    ? HttpContext.Session.GetInt32(gridId + SessionKeyOffset)
-                    : null;
-                _max = HttpContext.Session.Keys.Contains(gridId + SessionKeyMax)
-                    ? HttpContext.Session.GetInt32(gridId + SessionKeyMax)
-                    : null;
-            }
-            else
-            {
-                HttpContext.Session.SetString(gridId + SessionKeySelectedKeywords, keywords);
-                _slectedKeywords = keywords.Split('|');
-
-                if (offset.HasValue)
-                    HttpContext.Session.SetInt32(gridId + SessionKeyOffset, offset.Value);
-                else
-                    HttpContext.Session.Remove(gridId + SessionKeyOffset);
-                _offset = offset;
-
-                if (max.HasValue)
-                    HttpContext.Session.SetInt32(gridId + SessionKeyMax, max.Value);
-                else
-                    HttpContext.Session.Remove(gridId + SessionKeyMax);
-                _max = max;
-            }
         }
 
         // GET: /api/tilegrid/keywords/page/3c49e3ca-6937-4fa6-ab40-0549f45ca87b/block/3C9C2F8A-C1D8-4869-A8CA-D0641E9200A5

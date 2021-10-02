@@ -43,8 +43,10 @@
             let blockId = this.$el.parentElement.getAttribute("block-id");
             this.loadKeywords(pageId, blockId);
 
+            console.log("localStorage.selectedKeywords: ", localStorage.selectedKeywords)
+
             const store = useStore()
-            store.dispatch(Actions.FILTER_BY_KEYWORDS, [])
+            store.dispatch(Actions.FILTER_BY_KEYWORDS, localStorage.selectedKeywords)
         }
     });
 </script>

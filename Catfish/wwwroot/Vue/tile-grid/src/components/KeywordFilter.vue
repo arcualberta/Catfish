@@ -2,7 +2,7 @@
     <div class="data-filter">
         <ul>
             <li v-for="item in keywords" :key="item">
-                <input type="checkbox" :value="item" :checked="checked" v-model="selectedKeywords" @change="handleKeywordChange" /> 
+                <input type="checkbox" :value="item" v-model="selectedKeywords" @change="handleKeywordChange" /> 
                 <label>{{ item }}</label>
             </li>
         </ul>
@@ -21,10 +21,18 @@
                 type: Array as PropType<string[]>
             }
         },
+        computed: {
+            isChecked(key: string): boolean {
+                return true
+            }
+        },
         setup() {
 
             const selectedKeywords = ref([]);
             const store = useStore()
+
+            if (localStorage.selectedKeywords)
+                selectedKeywords.value = localStorage.selectedKeywords.split('|');
 
             console.log('Keyword Panel setup')
             const handleKeywordChange = () => {

@@ -9,9 +9,14 @@ export enum Actions {
 
 export const actions: ActionTree<State, any> = {
 
-  async [Actions.FILTER_BY_KEYWORDS](store, keywords: string[]) {
-    const concatenatedKeywords = keywords.join('|')
-        const api = window.location.origin + `/api/tilegrid/?keywords=${concatenatedKeywords}`;
+  async [Actions.FILTER_BY_KEYWORDS](store, keywords: string | string[]) {
+
+    if (typeof keywords !== "string")
+      keywords = keywords.join('|');
+
+    localStorage.selectedKeywords = keywords;
+
+    const api = window.location.origin + `/api/tilegrid/?keywords=${keywords}`;
 
     const res = await fetch(api);
     const data = await res.json()
