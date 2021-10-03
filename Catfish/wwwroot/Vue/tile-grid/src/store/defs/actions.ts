@@ -15,7 +15,7 @@ export const actions: ActionTree<State, any> = {
   async [Actions.FILTER_BY_KEYWORDS](store, params: SearchParams) {
 
     const api = window.location.origin +
-      `/api/tilegrid/?keywords=${params?.keywords?.join('|')}&offset=${params?.offset}&max=${params?.max}`;
+      `/api/tilegrid/?collectionId=${params?.collectionId}&keywords=${params?.keywords?.join('|')}&offset=${params?.offset}&max=${params?.max}`;
 
     console.log("Item Load API: ", api)
 

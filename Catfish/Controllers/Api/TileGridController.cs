@@ -39,7 +39,7 @@ namespace Catfish.Controllers.Api
 
         // GET: api/tilegrid
         [HttpGet]
-        public SearchResult Get(Guid gridId, string keywords = null, int offset = 0, int max = 0)
+        public SearchResult Get(Guid collectionId, string keywords = null, int offset = 0, int max = 0)
         {
             List<Tile> dbData = GetMockupData();
 

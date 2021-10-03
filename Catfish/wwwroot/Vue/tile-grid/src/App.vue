@@ -1,5 +1,5 @@
 <template>
-    <KeywordFilter :keywords="keywords" />
+    <KeywordFilter :keywords="keywords" :collection-id="collectionId" />
     <ItemList />
 </template>
 
@@ -7,8 +7,7 @@
     import { defineComponent, ref } from 'vue';
     import KeywordFilter from './components/KeywordFilter.vue';
     import ItemList from './components/ItemList.vue';
-    import { useStore } from './store';
-    import { Actions } from './store/defs/actions';
+import { Guid } from 'guid-typescript';
 
     export default defineComponent({
         name: "App",
@@ -17,10 +16,10 @@
             ItemList
         },
         setup() {
-            //console.log('App setup')
 
             //Definiting reactive variables
             const keywords = ref([''])
+            const collectionId = ref(Guid.EMPTY)
 
             const loadKeywords = async (pageId: string, blockId: string) => {
                 try {
@@ -35,11 +34,17 @@
                 }
             }
 
-            return { keywords, loadKeywords }
+            const setCollectionId = (id: string): void => {
+                collectionId.value = id
+            }
+
+            return { keywords, collectionId, setCollectionId, loadKeywords }
         },
         mounted() {
             let pageId = this.$el.parentElement.getAttribute("page-id");
             let blockId = this.$el.parentElement.getAttribute("block-id");
+            this.collectionId = this.$el.parentElement.getAttribute("collection-id");
+           // this.setCollectionId(collectionId)
             this.loadKeywords(pageId, blockId);
         }
     });

@@ -20,6 +20,7 @@ export interface SearchResult {
 }
 
 export interface SearchParams {
+  collectionId: Guid,
   keywords: string[],
   offset: number,
   max: number
