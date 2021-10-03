@@ -1,8 +1,8 @@
 ﻿import { GetterTree } from 'vuex';
-import { State, Item } from './state';
+import { State } from './state';
 
 export const getters: GetterTree<State, State> = {
-  items: (state): Item[] => {
-    return state.items
-  },
+//  items: (state): Item[] | undefined => {
+//    return state.searchResult?.items
+//  },
 }

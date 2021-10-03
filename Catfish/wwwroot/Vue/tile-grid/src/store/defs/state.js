@@ -1,4 +1,4 @@
 export const state = {
-    items: Array()
+    searchResult: null,
 };
 //# sourceMappingURL=state.js.map

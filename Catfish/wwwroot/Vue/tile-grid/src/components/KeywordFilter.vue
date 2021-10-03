@@ -10,7 +10,7 @@
 </template>
 <script lang="ts">
     import { defineComponent, ref, PropType } from "vue";
-    import { Actions } from '../store/defs/actions';
+    import { Actions, SearchParams } from '../store/defs/actions';
     import { useStore } from '../store';
 
     export default defineComponent({
@@ -19,11 +19,6 @@
             keywords: {
                 required: true,
                 type: Array as PropType<string[]>
-            }
-        },
-        computed: {
-            isChecked(key: string): boolean {
-                return true
             }
         },
         setup() {
@@ -37,6 +32,12 @@
             console.log('Keyword Panel setup')
             const handleKeywordChange = () => {
                 console.log('keywords changed', selectedKeywords.value.length)
+                //const searchParams: SearchParams = {
+                //    keywords: selectedKeywords.value,
+                //    offset: 0,
+                //    max: 25
+                //}
+                console.log("Search Params: ", selectedKeywords.value)
                 store.dispatch(Actions.FILTER_BY_KEYWORDS, selectedKeywords.value)
             }
 

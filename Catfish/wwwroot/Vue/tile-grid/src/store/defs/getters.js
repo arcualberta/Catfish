@@ -1,6 +1,6 @@
 export const getters = {
-    items: (state) => {
-        return state.items;
-    },
+//  items: (state): Item[] | undefined => {
+//    return state.searchResult?.items
+//  },
 };
 //# sourceMappingURL=getters.js.map

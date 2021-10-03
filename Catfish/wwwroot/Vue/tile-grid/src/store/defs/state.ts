@@ -12,12 +12,19 @@ export interface Item {
   detailedViewUrl: URL
 }
 
+export interface SearchResult {
+  items: Item[],
+  first: number,
+  last: number,
+  count: number
+}
+
 //Declare State interface
 export interface State {
-  items: Item[]
+  searchResult: SearchResult | null
 }
 
 
 export const state: State = {
-  items: Array<Item>()
+  searchResult: null,
 }
