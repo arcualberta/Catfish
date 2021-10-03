@@ -7,9 +7,9 @@
             </li>
         </ul>
         <div v-if="items?.length > 0" class="m-4">
-            <span v-if="first > 0"><i class="fas fa-angle-double-left"></i></span>
+            <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
             {{first}} to {{last}} of {{count}}
-            <span v-if="count > last"><i class="fas fa-angle-double-right"></i></span>
+            <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
         </div>
     </div>
 </template>
@@ -35,19 +35,27 @@
             console.log("localStorage.keywordSearchParams: ", localStorage.keywordSearchParams)
             searchParams.value = (localStorage.keywordSearchParams)
                 ? JSON.parse(localStorage.keywordSearchParams)
-                : { keywords: [], offset: 0, max: 0 };
+                : { keywords: [], offset: 0, max: 25 };
 
             const store = useStore()
 
             const handleKeywordChange = () => {
                 //When the keywords are changed, always set the search offset to zero.
                 searchParams.value.offset = 0;
-                if (searchParams.value.max === null)
-                    searchParams.value.max = 0;
 
-                //Store the search being carryout in the Local Storage.
+                //Save the search being carried out in the Local Storage.
                 localStorage.keywordSearchParams = JSON.stringify(searchParams.value);
 
+                store.dispatch(Actions.FILTER_BY_KEYWORDS, searchParams.value);
+            }
+
+            const previousPage = () => {
+                searchParams.value.offset = Math.max(0, searchParams.value.offset - searchParams.value.max);
+                store.dispatch(Actions.FILTER_BY_KEYWORDS, searchParams.value);
+            }
+
+            const nextPage = () => {
+                searchParams.value.offset = searchParams.value.offset + searchParams.value.max;
                 store.dispatch(Actions.FILTER_BY_KEYWORDS, searchParams.value);
             }
 
@@ -55,8 +63,10 @@
             store.dispatch(Actions.FILTER_BY_KEYWORDS, searchParams.value);
 
             return {
-                handleKeywordChange,
                 searchParams,
+                handleKeywordChange,
+                previousPage,
+                nextPage,
                 items: computed(() => store.state.searchResult?.items),
                 count: computed(() => store.state.searchResult?.count),
                 first: computed(() => store.state.searchResult?.first),
