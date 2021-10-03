@@ -11,17 +11,22 @@ export enum Actions {
 
 export const actions: ActionTree<State, any> = {
 
-  async [Actions.FILTER_BY_KEYWORDS](store, keywords: string | string[]) {
+  async [Actions.FILTER_BY_KEYWORDS](store, params: SearchParams | undefined) {
 
-    //const keywords = (typeof params.keywords === "string") ? params.keywords : params.keywords.join('|');
-    if (typeof keywords !== "string")
-      keywords = keywords.join('|');
+    //If search params is not specified, try to load it from the Local Storage. If it is not null,
+    //save it into the Local Storage
+    if (params === undefined) {
+      params = (localStorage.keywordSearchParams)
+        ? JSON.parse(localStorage.keywordSearchParams)
+        : { keywords: [], offset: 0, max: 0 };
+    }
 
-    localStorage.selectedKeywords = keywords;
-    const offset = 0;
-    const max = 25;
+    localStorage.searchParams = JSON.stringify(params);
 
-    const api = window.location.origin + `/api/tilegrid/?keywords=${keywords}&offset=${offset}&max=${max}`;
+    const api = window.location.origin +
+      `/api/tilegrid/?keywords=${params?.keywords?.join('|')}&offset=${params?.offset}&max=${params?.max}`;
+
+    console.log("Item Load API: ", api)
 
     const res = await fetch(api);
     const data = await res.json()
@@ -30,7 +35,7 @@ export const actions: ActionTree<State, any> = {
 }
 
 export interface SearchParams {
-  keywords: string | string[],
+  keywords: string[],
   offset: number,
   max: number
 }

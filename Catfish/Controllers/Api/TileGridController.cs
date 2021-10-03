@@ -39,7 +39,7 @@ namespace Catfish.Controllers.Api
 
         // GET: api/tilegrid
         [HttpGet]
-        public SearchResult Get(Guid gridId, string keywords = null, int? offset = null, int? max = 25)
+        public SearchResult Get(Guid gridId, string keywords = null, int offset = 0, int max = 0)
         {
             List<Tile> dbData = GetMockupData();
 
@@ -68,14 +68,15 @@ namespace Catfish.Controllers.Api
 
             SearchResult result = new SearchResult() { Count = tiles.Count };
 
-            if (offset.HasValue)
-                tiles = tiles.Skip(offset.Value).ToList();
+            if (offset > 0)
+                tiles = tiles.Skip(offset).ToList();
 
-            if (max.HasValue)
-                tiles = tiles.Take(max.Value).ToList();
+            if (max == 0)
+                max = 25;
+            tiles = tiles.Take(max).ToList();
 
             result.Items = tiles;
-            result.First = offset.HasValue ? offset.Value + 1 : 1;
+            result.First = offset + 1;
             result.Last = result.First + result.Items.Count() - 1;
             return result;
         }

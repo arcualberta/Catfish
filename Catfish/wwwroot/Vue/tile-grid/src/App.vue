@@ -38,15 +38,9 @@
             return { keywords, loadKeywords }
         },
         mounted() {
-            //console.log('App mounted')
             let pageId = this.$el.parentElement.getAttribute("page-id");
             let blockId = this.$el.parentElement.getAttribute("block-id");
             this.loadKeywords(pageId, blockId);
-
-            console.log("localStorage.selectedKeywords: ", localStorage.selectedKeywords)
-
-            const store = useStore()
-            store.dispatch(Actions.FILTER_BY_KEYWORDS, localStorage.selectedKeywords)
         }
     });
 </script>
