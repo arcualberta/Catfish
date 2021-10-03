@@ -1,6 +1,7 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
 import { Mutations } from './mutations';
+import { SearchParams } from '../../models'
 
 //Declare ActionTypes
 export enum Actions {
@@ -34,8 +35,3 @@ export const actions: ActionTree<State, any> = {
   }
 }
 
-export interface SearchParams {
-  keywords: string[],
-  offset: number,
-  max: number
-}

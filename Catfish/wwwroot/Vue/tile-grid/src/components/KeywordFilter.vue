@@ -15,7 +15,8 @@
 </template>
 <script lang="ts">
     import { defineComponent, ref, PropType, computed } from "vue";
-    import { Actions, SearchParams } from '../store/defs/actions';
+    import { Actions } from '../store/defs/actions';
+    import { SearchParams } from "../models"
     import { useStore } from '../store';
 
     export default defineComponent({

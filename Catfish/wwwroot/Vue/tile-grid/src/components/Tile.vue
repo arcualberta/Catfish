@@ -14,7 +14,7 @@
 </template>
 <script lang="ts">
     import { defineComponent, PropType } from "vue";
-    import { Item } from "../store/defs/state"
+    import { Item } from "../models"
 
     export default defineComponent({
         name: "Tile",

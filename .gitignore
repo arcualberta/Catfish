@@ -235,3 +235,5 @@ Examples/*_generared.json
 # Anti-racism custom CSS
 /Catfish/wwwroot/assets/css/public/custom-anti-racism.css
 /Catfish/wwwroot/Vue/tile-grid-xxtmp
+/Design Documents/Tile Grid/Tile Grid.drawio
+/Design Documents/Tile Grid/Tile Grid.png

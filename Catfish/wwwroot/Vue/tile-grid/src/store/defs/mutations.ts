@@ -1,5 +1,6 @@
 ﻿import { MutationTree } from 'vuex';
-import { State, SearchResult } from './state';
+import { State } from './state';
+import { SearchResult } from '../../models'
 
 //Declare MutationTypes
 export enum Mutations {
