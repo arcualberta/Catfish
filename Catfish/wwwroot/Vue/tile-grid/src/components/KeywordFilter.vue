@@ -21,7 +21,7 @@
     </div>
 </template>
 <script lang="ts">
-    import { defineComponent, ref, PropType, computed, toRefs } from "vue";
+    import { defineComponent, ref, PropType, computed, toRefs, watch } from "vue";
     import { Actions } from '../store/defs/actions';
     import { SearchParams } from "../models"
     import { useStore } from '../store';
@@ -44,8 +44,11 @@
             const searchParams = ref({} as SearchParams);
             const { collectionId } = toRefs(props);
 
-            console.log("Collection ID in Props: ", props.collectionId)
-            console.log("Collection ID: ", collectionId.value)
+            watch(collectionId, (newVal, prevVal) => {
+                console.log("Collection ID old: ", prevVal)
+                console.log("Collection ID new: ", newVal)
+                dispatchSearch()
+            })
 
             //If the Local Storage contains search-params object, load it. Otherwise, create a default one.
             console.log("localStorage.keywordSearchParams: ", localStorage.keywordSearchParams)
@@ -86,15 +89,12 @@
                 store.dispatch(Actions.FILTER_BY_KEYWORDS, searchParams.value);
             }
 
-            //During the initial load of the filter, load items based on settings saved
-            //in the local storage or default
-            dispatchSearch();
-
             return {
                 searchParams,
                 runFreshSearch,
                 previousPage,
                 nextPage,
+                dispatchSearch,
                 items: computed(() => store.state.searchResult?.items),
                 count: computed(() => store.state.searchResult?.count),
                 first: computed(() => store.state.searchResult?.first),

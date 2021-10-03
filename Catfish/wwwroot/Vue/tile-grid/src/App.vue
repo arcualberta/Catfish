@@ -46,6 +46,8 @@ import { Guid } from 'guid-typescript';
             this.collectionId = this.$el.parentElement.getAttribute("collection-id");
            // this.setCollectionId(collectionId)
             this.loadKeywords(pageId, blockId);
+            console.log("Vue App Mounted")
+
         }
     });
 </script>
