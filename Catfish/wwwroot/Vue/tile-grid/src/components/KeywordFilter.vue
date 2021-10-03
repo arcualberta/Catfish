@@ -2,14 +2,21 @@
     <div class="data-filter">
         <ul>
             <li v-for="item in keywords" :key="item">
-                <input type="checkbox" :value="item" v-model="searchParams.keywords" @change="handleKeywordChange" />
+                <input type="checkbox" :value="item" v-model="searchParams.keywords" @change="runSearch" />
                 <label>{{ item }}</label>
             </li>
         </ul>
         <div v-if="items?.length > 0" class="m-4">
             <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
-            {{first}} to {{last}} of {{count}}
+            {{first}}-{{last}} of {{count}}
             <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
+            <span>
+                <select v-model="searchParams.max" @change="runSearch" class="pull-right">
+                    <option>25</option>
+                    <option>50</option>
+                    <option>100</option>
+                </select>
+            </span>
         </div>
     </div>
 </template>
@@ -39,7 +46,7 @@
 
             const store = useStore()
 
-            const handleKeywordChange = () => {
+            const runSearch = () => {
                 //When the keywords are changed, always set the search offset to zero.
                 searchParams.value.offset = 0;
 
@@ -55,7 +62,9 @@
             }
 
             const nextPage = () => {
-                searchParams.value.offset = searchParams.value.offset + searchParams.value.max;
+                //NOTE: The prepended + sign is needed in the following statement to enforce 
+                //numerical addition instead of string concatenation
+                searchParams.value.offset = +searchParams.value.offset + +searchParams.value.max;
                 store.dispatch(Actions.FILTER_BY_KEYWORDS, searchParams.value);
             }
 
@@ -64,7 +73,7 @@
 
             return {
                 searchParams,
-                handleKeywordChange,
+                runSearch,
                 previousPage,
                 nextPage,
                 items: computed(() => store.state.searchResult?.items),
