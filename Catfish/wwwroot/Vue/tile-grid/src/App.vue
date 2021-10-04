@@ -1,5 +1,5 @@
 <template>
-    <KeywordFilter :keywords="keywords" :collection-id="collectionId" />
+    <KeywordFilter :keywords="keywords" :page-id="pageId" :block-id="blockId" />
     <ItemList />
 </template>
 
@@ -19,11 +19,12 @@ import { Guid } from 'guid-typescript';
 
             //Definiting reactive variables
             const keywords = ref([''])
-            const collectionId = ref(Guid.EMPTY)
+            const pageId = ref(Guid.EMPTY)
+            const blockId = ref(Guid.EMPTY)
 
-            const loadKeywords = async (pageId: string, blockId: string) => {
+            const loadKeywords = async () => {
                 try {
-                    let api = window.location.origin + `/api/tilegrid/keywords/page/${pageId}/block/${blockId}`;
+                    let api = window.location.origin + `/api/tilegrid/keywords/page/${pageId.value}/block/${blockId.value}`;
                     console.log('Loading keywords: ', api)
 
                     const res = await fetch(api);
@@ -34,19 +35,12 @@ import { Guid } from 'guid-typescript';
                 }
             }
 
-            const setCollectionId = (id: string): void => {
-                collectionId.value = id
-            }
-
-            return { keywords, collectionId, setCollectionId, loadKeywords }
+            return { keywords, pageId, blockId, loadKeywords }
         },
         mounted() {
-            let pageId = this.$el.parentElement.getAttribute("page-id");
-            let blockId = this.$el.parentElement.getAttribute("block-id");
-            this.collectionId = this.$el.parentElement.getAttribute("collection-id");
-           // this.setCollectionId(collectionId)
-            this.loadKeywords(pageId, blockId);
-            console.log("Vue App Mounted")
+            this.pageId = this.$el.parentElement.getAttribute("page-id");
+            this.blockId = this.$el.parentElement.getAttribute("block-id");
+            this.loadKeywords();
 
         }
     });

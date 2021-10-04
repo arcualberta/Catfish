@@ -20,7 +20,8 @@ export interface SearchResult {
 }
 
 export interface SearchParams {
-  collectionId: Guid,
+  pageId: Guid,
+  blockId: Guid,
   keywords: string[],
   offset: number,
   max: number

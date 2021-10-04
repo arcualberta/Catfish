@@ -30,7 +30,11 @@
     export default defineComponent({
         name: "KeywordFilter",
         props: {
-            collectionId: {
+            pageId: {
+                required: true,
+                type: null as PropType<Guid> | null
+            },
+            blockId: {
                 required: true,
                 type: null as PropType<Guid> | null
             },
@@ -42,13 +46,8 @@
         setup(props) {
 
             const searchParams = ref({} as SearchParams);
-            const { collectionId } = toRefs(props);
-
-            watch(collectionId, (newVal, prevVal) => {
-                console.log("Collection ID old: ", prevVal)
-                console.log("Collection ID new: ", newVal)
-                dispatchSearch()
-            })
+            const { pageId } = toRefs(props);
+            const { blockId } = toRefs(props);
 
             //If the Local Storage contains search-params object, load it. Otherwise, create a default one.
             console.log("localStorage.keywordSearchParams: ", localStorage.keywordSearchParams)
@@ -56,12 +55,16 @@
                 ? JSON.parse(localStorage.keywordSearchParams)
                 : { keywords: [], offset: 0, max: 25 };
 
-            const store = useStore()
+            watch([pageId, blockId], () => {
+                if (pageId.toString() !== Guid.EMPTY && blockId.toString() !== Guid.EMPTY) {
+                    dispatchSearch()
+                }
+            })
 
+            const store = useStore()
             const runFreshSearch = () => {
                 //When the keywords are changed, always set the search offset to zero.
                 searchParams.value.offset = 0;
-
                 dispatchSearch()
             }
 
@@ -84,7 +87,8 @@
                 //Overwtite any collection ID value saved in the local storage because if we rely on it,
                 //we may use a wrong value from the cache if we ever change the collection 
                 //in the piranha nlock configuration.
-                searchParams.value.collectionId = collectionId.value;
+                searchParams.value.pageId = pageId.value;
+                searchParams.value.blockId = blockId.value;
 
                 store.dispatch(Actions.FILTER_BY_KEYWORDS, searchParams.value);
             }
