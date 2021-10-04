@@ -39,82 +39,38 @@ namespace Catfish.Controllers.Api
 
         // GET: api/tilegrid
         [HttpGet]
-        public SearchResult Get(Guid pageId, Guid blockId, string keywords = null, int offset = 0, int max = 0)
+        public async Task<SearchResult> Get(Guid pageId, Guid blockId, string keywords = null, int offset = 0, int max = 0)
         {
-            return FilterMockupData(keywords, offset, max);
-
-
-        }
-
-        private SearchResult FilterMockupData(string keywords = null, int offset = 0, int max = 0)
-        {
-            List<Tile> dbData = GetMockupData();
-
-            //UpdateProperties(gridId, keywords, offset, max);
             string[] slectedKeywords = string.IsNullOrEmpty(keywords)
-                ? Array.Empty<string>()
-                : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
+               ? Array.Empty<string>()
+               : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
-            List<Tile> tiles = new List<Tile>();
-            if (slectedKeywords.Length > 0)
-            {
-                foreach (var t in dbData)
-                {
-                    foreach (var cat in t.Categories)
-                    {
-                        if (slectedKeywords.Contains(cat))
-                        {
-                            tiles.Add(t);
-                            break;
-                        }
-                    }
-                }
-            }
-            else
-                tiles = dbData;
 
-            SearchResult result = new SearchResult() { Count = tiles.Count };
+            SearchResult result = new SearchResult();
 
-            if (offset > 0)
-                tiles = tiles.Skip(offset).ToList();
+            var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
+            if (page == null)
+                return result;
 
-            if (max == 0)
-                max = 25;
-            tiles = tiles.Take(max).ToList();
+            var block = page.Blocks.FirstOrDefault(b => b.Id == blockId) as TileGrid;
+            if (block == null)
+                return result;
 
-            result.Items = tiles;
-            result.First = offset + 1;
-            result.Last = result.First + result.Items.Count() - 1;
+            string collectionId = block.SelectedCollection.Value;
+            string solrCollectionFieldName = "collection_s";
+
+            string templateId = block.SelectedItemTemplate.Value;
+            string keywordFieldId = block.KeywordSourceId.Value;
+            string solrKeywordFieldName = string.Format("data_{0}_{1}_ts", templateId, keywordFieldId);
+
+            //TODO: Create the solr query, retrieve results and return them wrapped in the
+            //Search Result object
+
+            result = Helper.MockHelper.FilterMockupTileGridData(slectedKeywords, offset, max);
             return result;
         }
-        private List<Tile> GetMockupData()
-        {
-            List<Tile> tiles = new List<Tile>();
-            int n = 250;
-            string[] keywords = new string[] { "Age-appropriate tasks", "Assessment", "Culture", "Games", "Grammar", "Interaction",
-                                                "Listening", "Materials", "Reading", "Real-life tasks", "Speaking", "Teacher training",
-                                                "Technology", "Vocabulary", "Writing" };
 
-            Random rand = new Random(0);
-               
-            for (int i = 0; i < n; ++i)
-            {
-                tiles.Add(new Tile()
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "Item " + (i + 1),
-                    Content = Helper.MockHelper.LoremIpsum(4, 8, 1, 5, 1),
-                    Date = DateTime.Now.AddDays(i),
-                    Thumbnail = "https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/dahlia-3598551_1920.jpg?itok=XZfJlur2",
-                    DetailedViewUrl = "https://www.ualberta.ca/",
-                    Categories = rand.Next(0, 2) < 1 
-                    ? new string[] {keywords[rand.Next(0, keywords.Length)], keywords[rand.Next(0, keywords.Length)]}
-                    : new string[] { keywords[rand.Next(0, keywords.Length)] }
-                });
-            }
 
-            return tiles;
-        }
 
         // GET: /api/tilegrid/keywords/page/3c49e3ca-6937-4fa6-ab40-0549f45ca87b/block/3C9C2F8A-C1D8-4869-A8CA-D0641E9200A5
         [HttpGet]
