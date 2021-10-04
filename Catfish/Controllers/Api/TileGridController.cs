@@ -39,13 +39,20 @@ namespace Catfish.Controllers.Api
 
         // GET: api/tilegrid
         [HttpGet]
-        public SearchResult Get(Guid collectionId, string keywords = null, int offset = 0, int max = 0)
+        public SearchResult Get(Guid pageId, Guid blockId, string keywords = null, int offset = 0, int max = 0)
+        {
+            return FilterMockupData(keywords, offset, max);
+
+
+        }
+
+        private SearchResult FilterMockupData(string keywords = null, int offset = 0, int max = 0)
         {
             List<Tile> dbData = GetMockupData();
 
             //UpdateProperties(gridId, keywords, offset, max);
-            string[] slectedKeywords = string.IsNullOrEmpty(keywords) 
-                ? Array.Empty<string>() 
+            string[] slectedKeywords = string.IsNullOrEmpty(keywords)
+                ? Array.Empty<string>()
                 : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
             List<Tile> tiles = new List<Tile>();
@@ -80,7 +87,6 @@ namespace Catfish.Controllers.Api
             result.Last = result.First + result.Items.Count() - 1;
             return result;
         }
-
         private List<Tile> GetMockupData()
         {
             List<Tile> tiles = new List<Tile>();
