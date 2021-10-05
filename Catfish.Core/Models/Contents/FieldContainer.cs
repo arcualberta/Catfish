@@ -16,7 +16,13 @@ namespace Catfish.Core.Models.Contents
       
         [NotMapped]
         public MultilingualDescription Description { get; protected set; }
-        
+
+        public Guid? TemplateId
+        {
+            get => GetAttribute("template-id", null as Guid?);
+            set => Data.SetAttributeValue("template-id", value);
+        }
+
         public FieldContainer(string tagName) : base(tagName) 
         { 
             Initialize(eGuidOption.Ignore); 

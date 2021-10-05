@@ -37,7 +37,7 @@ namespace Catfish.Core.Models.Solr
         {
             foreach(var field in container.Fields)
             {
-                string solrFieldName = string.Format("{0}_{1}_{2}", containerPrefix, container.Id, field.Id);
+                string solrFieldName = string.Format("{0}_{1}_{2}", containerPrefix, container.TemplateId, field.Id);
                 if (typeof(TextField).IsAssignableFrom(field.GetType()))
                 {
                     solrFieldName += "_ts";
