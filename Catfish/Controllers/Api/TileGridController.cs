@@ -59,9 +59,10 @@ namespace Catfish.Controllers.Api
             string collectionId = block.SelectedCollection.Value;
             string solrCollectionFieldName = "collection_s";
 
-            string templateId = block.SelectedItemTemplate.Value;
+            string itemTemplateId = block.SelectedItemTemplate.Value;
             string keywordFieldId = block.KeywordSourceId.Value;
-            string solrKeywordFieldName = string.Format("data_{0}_{1}_ts", templateId, keywordFieldId);
+            string dataItemTemplateId = null; //TODO: load the template and get the ID of the root data item
+            string solrKeywordFieldName = string.Format("data_{0}_{1}_ts", dataItemTemplateId, keywordFieldId);
 
             //TODO: Create the solr query, retrieve results and return them wrapped in the
             //Search Result object
