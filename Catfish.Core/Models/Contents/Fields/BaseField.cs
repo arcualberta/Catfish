@@ -48,7 +48,18 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("ref-id", value);
         }
 
-        
+        public bool IsListEntryTitle
+        {
+            get => GetAttribute("list-entry-title", false);
+            set => SetAttribute("list-entry-title", value);
+        }
+
+        public bool IsListEntryDescription
+        {
+            get => GetAttribute("list-entry-desc", false);
+            set => SetAttribute("list-entry-desc", value);
+        }
+
         ///Request to exclude the user-input field from rendering. However, the remaining
         ///properties such as ID and model-type will be rendered.
         public bool Exclude

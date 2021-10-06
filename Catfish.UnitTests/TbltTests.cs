@@ -504,7 +504,9 @@ namespace Catfish.UnitTests
             bcpForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h1", "Submit Discussion", lang);
 
-            bcpForm.CreateField<TextField>("Title ", lang, true);
+            var title = bcpForm.CreateField<TextField>("Title ", lang, true);
+            title.IsListEntryTitle = true; // this will identified as the item label in Collection content page
+
             bcpForm.CreateField<TextField>("Author Name", lang, true);
             var other = bcpForm.CreateField<TextArea>("Content ", lang, true);
             other.Cols = 50;
