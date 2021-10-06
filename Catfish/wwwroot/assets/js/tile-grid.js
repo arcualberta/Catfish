@@ -2,7 +2,8 @@
     props: ["uid", "toolbar", "model"],
     data() {
         return {
-            itemFields: []
+            itemFields: [],
+            metadatasets:[]
         }
     },
     methods: {
@@ -59,6 +60,13 @@
                     this.itemFields = data;
 
                 });
+
+            fetch('/api/Items/GetItemtemplateMetadataSets/' + selected)
+                .then(response => response.json())
+                .then((data) => {
+                    this.metadatasets = data;
+
+                });
         },
     },
     mounted() {
@@ -67,7 +75,14 @@
             .then((data) => {
                 this.itemFields = data;
 
-        });
+            });
+
+        fetch('/api/Items/GetItemtemplateMetadataSets/' + this.model.selectedItemTemplate.value)
+            .then(response => response.json())
+            .then((data) => {
+                this.metadatasets = data;
+
+            });
     },
     template:
         `<div  class= 'block-body'>
@@ -84,13 +99,25 @@
 
             <div class='lead row'><label class='form-label col-md-3'>Css class for Block:</label> <input type='text' class='form-control col-md-4' name='blockCss' v-model='model.blockCss.value' contenteditable='true' v-on:blur='onBlur' value='blockCssValue'  /></div>
          <div class='lead row'><label class='form-label col-md-3'>Css class for each Tile:</label> <input type='text' class='form-control col-md-4' name='tileCss' v-model='model.tileCss.value' contenteditable='true' v-on:blur='onBlur' value='tileCssValue'  /></div>
-         <br/>
-        <div class="alert alert-info">Fields Mapping</div>
-         <div class='lead row'><label class='form-label col-md-3 required'>Item Template: </label>
+         
+        <div class='lead row'><label class='form-label col-md-3 required'>Item Template: </label>
            <select v-model="model.selectedItemTemplate.value" class="form-control" style="width:auto;" v-on:change="selectItemTemplate(model.selectedItemTemplate.value)">
                 <option disabled value="">Please select one</option>
                 <option v-for="item in model.itemTemplates.entries" :value="item.value">{{item.text}}</option>
             </select></div>
+
+         <br/>
+        <div class="alert alert-info">Metadata Set</div>
+        <div class='lead row'><label class='form-label col-md-3 required'>Classification Metadata Set: </label>
+           <select v-model="model.classificationMetadataSetId.value" class="form-control" style="width:auto;">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in this.metadatasets" :value="item.value">{{item.text}}</option>
+            </select></div>
+
+
+          <br/>
+        <div class="alert alert-info">Submission Form Field Mappings</div>
+        
 
           <div class='lead row'><label class='form-label col-md-3 required'>Title: </label>
            <select v-model="model.selectedMapTitleId.value" class="form-control" style="width:auto;">

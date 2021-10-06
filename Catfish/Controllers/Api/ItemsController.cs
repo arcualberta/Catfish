@@ -572,7 +572,38 @@ namespace Catfish.Controllers.Api
             result = result.OrderBy(li => li.Text).ToList();
             return result;
         }
+        /// <summary>
+        ///  Oct 06 2021: This method wil retrieve all the metadatasets that attached to this Template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemtemplateMetadataSets/{templateId}")]
+        public List<SelectListItem> GetItemtemplateMetadataSets(string templateId)
+        {
+            List<SelectListItem> result = new List<SelectListItem>();
 
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                var metadatasets = _entityTemplateService.GetTemplateMetadataSets(Guid.Parse(templateId));
+
+
+                foreach (var md in metadatasets)
+                {
+                    var mdname = md.GetName("en");
+                    if (!string.IsNullOrEmpty(mdname))
+                    {
+                        result.Add(new SelectListItem { Text = mdname, Value = md.Id.ToString() });
+                    }
+
+                }
+            }
+
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
 
     }
+
+    
 }

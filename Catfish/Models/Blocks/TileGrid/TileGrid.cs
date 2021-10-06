@@ -34,6 +34,8 @@ namespace Catfish.Models.Blocks.TileGrid
         public TextField DetailedViewUrl { get; set; }
 
         public TextField KeywordSourceId { get; set; }
+
+        public TextField ClassificationMetadataSetId { get; set; }
         public string GetKeywords()
         {
             if (KeywordList != null)
