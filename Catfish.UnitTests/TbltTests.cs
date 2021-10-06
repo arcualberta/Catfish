@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
@@ -103,6 +104,7 @@ namespace Catfish.UnitTests
         {
             string lang = "en";
             string templateName = "Task-based Language Teaching Submit Suggest Resources Form Template";
+            string _metadatsetName = "TBLT Category Metadata";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -132,6 +134,14 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
+            MetadataSet tbMeta = template.GetMetadataSet(_metadatsetName, true, lang);
+            string[] proficientcy = GetProficientcyLevel();
+            tbMeta.CreateField<CheckboxField>("Proficiency level", lang,proficientcy, true);
+            string[] langSkills = GetLanguageSkills();
+            tbMeta.CreateField<CheckboxField>("Language skills", lang, langSkills, true);
+
+            string[] modes = GetDeliveryModes();
+            tbMeta.CreateField<CheckboxField>("Mode", lang, modes, true);
             //Defining email templates
 
             //Defininig the inspection form
@@ -144,7 +154,7 @@ namespace Catfish.UnitTests
 
             bcpForm.CreateField<TextField>("Name", lang, true);
             var applicantEmail = bcpForm.CreateField<TextField>("Email", lang, true);
-            bcpForm.CreateField<TextField>("Title", lang, true);
+            bcpForm.CreateField<TextField>("Title of task", lang, true);
             var other = bcpForm.CreateField<TextArea>("Short Description", lang, true);
             other.Cols = 50;
             other.Rows = 3;
@@ -725,6 +735,38 @@ namespace Catfish.UnitTests
                 "Age-appropriate tasks",
                 "Games",
                 "Culture"
+            };
+        }
+
+        private string[] GetProficientcyLevel()
+        {
+            return new string[] { "Lower beginners/ A1",
+                                "Upper beginners/ A2",
+                                "Lower intermediate/ B1",
+                                "Upper intermediate/ B2",
+                                "Lower advanced/ C1",
+                                "Upper advanced/ C2"
+            };
+        }
+
+        private string[] GetLanguageSkills()
+        {
+            return new string[] { "Reading",
+                                "Listening",
+                                "Writing",
+                                "Oral production",
+                                "Oral interaction",
+                                "Pronunciation"
+            };
+        }
+
+        private string[] GetDeliveryModes()
+        {
+            return new string[] { "Face-to-face (in person)",
+                                "Digital (online)",
+                                "Hybrid (in person and online)",
+                                "Asynchronous",
+                                "Synchronous"
             };
         }
     }
