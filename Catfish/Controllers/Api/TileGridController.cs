@@ -39,14 +39,14 @@ namespace Catfish.Controllers.Api
 
         // GET: api/tilegrid
         [HttpGet]
-        public async Task<SearchResult> Get(Guid pageId, Guid blockId, string keywords = null, int offset = 0, int max = 0)
+        public async Task<SearchOutput> Get(Guid pageId, Guid blockId, string keywords = null, int offset = 0, int max = 0)
         {
             string[] slectedKeywords = string.IsNullOrEmpty(keywords)
                ? Array.Empty<string>()
                : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
 
-            SearchResult result = new SearchResult();
+            SearchOutput result = new SearchOutput();
 
             var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
             if (page == null)

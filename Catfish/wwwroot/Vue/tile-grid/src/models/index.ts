@@ -12,7 +12,7 @@ export interface Item {
   detailedViewUrl: URL
 }
 
-export interface SearchResult {
+export interface SearchOutput {
   items: Item[],
   first: number,
   last: number,

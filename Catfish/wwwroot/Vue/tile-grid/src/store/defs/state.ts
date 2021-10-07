@@ -1,8 +1,8 @@
-﻿import { SearchResult } from '../../models'
+﻿import { SearchOutput } from '../../models'
 
 //Declare State interface
 export interface State {
-  searchResult: SearchResult | null
+  searchResult: SearchOutput | null
 }
 
 

@@ -1,6 +1,6 @@
 ﻿import { MutationTree } from 'vuex';
 import { State } from './state';
-import { SearchResult } from '../../models'
+import { SearchOutput } from '../../models'
 
 //Declare MutationTypes
 export enum Mutations {
@@ -9,7 +9,7 @@ export enum Mutations {
 
 //Create a mutation tree that implement all mutation interfaces
 export const mutations: MutationTree<State> = {
-  [Mutations.SET_TILES](state: State, payload: SearchResult) {
+  [Mutations.SET_TILES](state: State, payload: SearchOutput) {
     console.log('Payload: ', payload)
     state.searchResult = payload;
   },

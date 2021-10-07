@@ -74,7 +74,7 @@ namespace Catfish.Helper
             return tiles;
         }
 
-        public static SearchResult FilterMockupTileGridData(string[] slectedKeywords, int offset = 0, int max = 0)
+        public static SearchOutput FilterMockupTileGridData(string[] slectedKeywords, int offset = 0, int max = 0)
         {
             List<Tile> dbData = GetMockupTileGridData();
 
@@ -96,7 +96,7 @@ namespace Catfish.Helper
             else
                 tiles = dbData;
 
-            SearchResult result = new SearchResult() { Count = tiles.Count };
+            SearchOutput result = new SearchOutput() { Count = tiles.Count };
 
             if (offset > 0)
                 tiles = tiles.Skip(offset).ToList();

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.Blocks.TileGrid
 {
-    public class SearchResult
+    public class SearchOutput
     {
         public IEnumerable<Tile> Items { get; set; }
         public int First { get; set; }
