@@ -40,7 +40,7 @@
                         }
 
                         //set button to 'indexing'
-                        document.getElementById('siteIndex-' + this.currentSite).innerHTML = "Indexing";
+                        //document.getElementById('siteIndex-' + this.currentSite).innerHTML = "Indexing";
                         document.getElementById("close-modal-button").click();
 
                     })

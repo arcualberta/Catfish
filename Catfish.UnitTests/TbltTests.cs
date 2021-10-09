@@ -507,12 +507,16 @@ namespace Catfish.UnitTests
             var title = bcpForm.CreateField<TextField>("Title ", lang, true);
             title.IsListEntryTitle = true; // this will identified as the item label in Collection content page
 
-            bcpForm.CreateField<TextField>("Author Name", lang, true);
-            var other = bcpForm.CreateField<TextArea>("Content ", lang, true);
-            other.Cols = 50;
-            other.Rows = 3;
+            bcpForm.CreateField<TextField>("Author", lang, true);
+            var content = bcpForm.CreateField<TextArea>("Post content ", lang, true);
+            content.Cols = 50;
+            content.Rows = 3;
 
-            bcpForm.CreateField<CheckboxField>("Keywords for this resource(s)", lang, GetDiscussionKeywords(), false);
+            bcpForm.CreateField<CheckboxField>("Keywords", lang, GetDiscussionKeywords(), false);
+
+            var addionalKeywords = bcpForm.CreateField<TextArea>("Additional keywords (separated by commas)", lang, true);
+            addionalKeywords.Cols = 50;
+            addionalKeywords.Rows = 3;
 
 
             //Defininig the Comments form
