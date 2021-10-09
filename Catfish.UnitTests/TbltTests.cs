@@ -74,7 +74,7 @@ namespace Catfish.UnitTests
                  .AppendContent("h1", "Join Us", lang);
            
             bcpForm.CreateField<TextField>("Name", lang,true);
-            var applicantEmail= bcpForm.CreateField<TextField>("Email", lang, true);
+            var applicantEmail= bcpForm.CreateField<EmailField>("Email", lang, true);
             bcpForm.CreateField<TextField>("Affiliation", lang, true);
             var other =bcpForm.CreateField<TextArea>(@"Please, tell us what language(s) you teach and what age groups (e.g., elementary, secondary, college/university, adults)", lang, true);
             other.Cols = 50;
@@ -129,22 +129,19 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            //ws.SetModel(template);
-
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            MetadataSet tbMeta = template.GetMetadataSet(_metadatsetName, true, lang);
+            MetadataSet keywordMeta = template.GetMetadataSet(_metadatsetName, true, lang);
             string[] proficientcy = GetProficientcyLevel();
-            tbMeta.CreateField<CheckboxField>("Proficiency level", lang,proficientcy, true);
+            keywordMeta.CreateField<CheckboxField>("Proficiency level", lang,proficientcy, true);
             string[] langSkills = GetLanguageSkills();
-            tbMeta.CreateField<CheckboxField>("Language skills", lang, langSkills, true);
-
+            keywordMeta.CreateField<CheckboxField>("Language skills", lang, langSkills, true);
             string[] modes = GetDeliveryModes();
-            tbMeta.CreateField<CheckboxField>("Mode", lang, modes, true);
-            //Defining email templates
+            keywordMeta.CreateField<CheckboxField>("Mode", lang, modes, true);
 
-            //Defininig the inspection form
+
+            //Defininig the submission form
             DataItem bcpForm = template.GetDataItem("Task-based Language Teaching Submit Suggest Resources Form", true, lang);
             bcpForm.IsRoot = true;
             bcpForm.SetDescription("This template is designed for Task-based Language Teaching Submit Suggest Resources Form", lang);
@@ -152,28 +149,38 @@ namespace Catfish.UnitTests
             bcpForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h1", "Submit Resources", lang);
 
-            bcpForm.CreateField<TextField>("Name", lang, true);
-            var applicantEmail = bcpForm.CreateField<TextField>("Email", lang, true);
+            bcpForm.CreateField<TextField>("Your name", lang, true);
+            var applicantEmail = bcpForm.CreateField<EmailField>("Email address", lang, true);
             bcpForm.CreateField<TextField>("Title of task", lang, true);
-            var other = bcpForm.CreateField<TextArea>("Short Description", lang, true);
+            var other = bcpForm.CreateField<TextArea>("Short description", lang, true);
             other.Cols = 50;
             other.Rows = 3;
             var goal = bcpForm.CreateField<TextArea>("Goal of the task", lang, true);
             goal.Cols = 50;
             goal.Rows = 3;
 
+            string[] ageOptions = new string[] { "3-5", "6-9", "10-12", "13-15", "16-18", "adults" };
+            bcpForm.CreateField<CheckboxField>("Age range of learners", lang, ageOptions, true);
+
+            bcpForm.CreateField<TextField>("Language", lang, true);
+            bcpForm.CreateField<TextField>("Topic/theme/content", lang, true);
+            bcpForm.CreateField<TextField>("Grammar feature", lang, false);
 
             bcpForm.CreateField<AttachmentField>("Resource Item", lang, false);
             bcpForm.CreateField<TextField>("Link to Resource(s)", lang, false).SetDescription("Link to a Google document (docs, slides, spreadsheets, etc.) or other resources", lang);
 
-            string[] keywords = new string[] { "keyword1", "keyword2" };//TODO: NEED TO REPLACE
+            bcpForm.CreateField<FieldContainerReference>("Please, select the appropriate keywords that best describe your resource", lang,
+                FieldContainerReference.eRefType.metadata, keywordMeta.Id);
 
-            bcpForm.CreateField<CheckboxField>("Keywords for this resource(s)", lang, keywords,false);
+            var additionalKeywords = bcpForm.CreateField<TextArea>("Additional keywords", lang, false);
+            additionalKeywords.SetDescription("Any new keywords you would like to suggest for existing or new categories", lang);
+            additionalKeywords.Cols = 50;
+            additionalKeywords.Rows = 5;
 
-            bcpForm.CreateField<TextField>("Suggested Keyword(s)", lang, false);
-
-            string[] consent = new string[] { "I confirm that I have obtained all necessary permissions to post the materials on tblt.ualberta.ca and I grant the TBLT CoP permission to host these materials." };
-            bcpForm.CreateField<CheckboxField>("", lang, consent, true);
+            bcpForm.CreateField<CheckboxField>("Permission to publish", lang, new string[] { "Yes, I confirm" },true)
+                .SetDescription("Please, confirm that you own this material and/or that you have obtained all necessary permissions to post the material on the TBLT CoP Website", lang);
+            bcpForm.CreateField<CheckboxField>("Permission to use", lang, new string[] { "Yes, I confirm" }, true)
+                .SetDescription("Please confirm that you grant the TBLT CoP an Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license to use this material (except in those cases where an alternative license has been indicated by you on the applicable material).", lang);
 
 
             //Defininig the Comments form
@@ -242,7 +249,7 @@ namespace Catfish.UnitTests
             return applicantNotification;
 
         }
-        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, TextField applicantEmail=null, string formName=null)
+        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, EmailField applicantEmail=null, string formName=null)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;

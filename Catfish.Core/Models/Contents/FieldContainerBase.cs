@@ -124,6 +124,20 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+        public T CreateField<T>(string fieldName, string lang, FieldContainerReference.eRefType refType, Guid? refId)
+            where T : FieldContainerReference
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
+
+            Fields.Add(field);
+            field.SetName(fieldName, lang);
+
+            field.RefType = refType;
+            if (refId.HasValue)
+                field.RefId = refId.Value;
+            return field;
+        }
+
         public void SetFieldValue<T>(string fieldName, string fieldNameLang, string fieldValue, string fieldValueLang, bool createIfNotExists = true, int valueIndex = 0)
             where T : TextField
         {

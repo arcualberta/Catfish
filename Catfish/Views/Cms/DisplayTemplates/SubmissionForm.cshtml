@@ -121,7 +121,7 @@
                 }
                 else
                 {
-                    @Html.EditorFor(model => Item, Item.GetType().ToString())
+                    @Html.EditorFor(model => Item, Item.GetType().ToString(), new ViewDataDictionary(ViewData) { { "template", template } })
                 }
 
                 <partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml"
