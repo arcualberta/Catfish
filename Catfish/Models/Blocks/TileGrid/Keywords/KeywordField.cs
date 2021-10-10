@@ -8,15 +8,17 @@ namespace Catfish.Models.Blocks.TileGrid.Keywords
 {
     public class KeywordField
     {
-        public eAggregation Aggregation { get; set; } = eAggregation.Intersection;
+        public eAggregation Aggregation { get; set; }
         public Guid Id { get; set; }
         public string Name { get; set; }
         public List<string> Values { get; set; } = new List<string>();
 
-        public KeywordField() { }
+        public KeywordField() { Aggregation = eAggregation.Intersection; }
 
         public KeywordField(OptionsField field, eAggregation fieldValueAggregation)
         {
+            Id = field.Id;
+            Name = field.Name.GetConcatenatedContent(" / ");
             Aggregation = fieldValueAggregation;
             AddKeywords(field);
         }
