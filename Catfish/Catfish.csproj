@@ -17,6 +17,7 @@
   <ItemGroup>
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\models\keywords.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\client-cache.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\getters.ts" />
@@ -90,6 +91,9 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\keywords.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\getters.ts">

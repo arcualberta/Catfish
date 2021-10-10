@@ -7,7 +7,9 @@
     import { defineComponent, ref } from 'vue';
     import KeywordFilter from './components/KeywordFilter.vue';
     import ItemList from './components/ItemList.vue';
-import { Guid } from 'guid-typescript';
+    import { Guid } from 'guid-typescript';
+    import { useStore } from './store';
+    import { Actions } from './store/defs/actions';
 
     export default defineComponent({
         name: "App",
@@ -40,8 +42,11 @@ import { Guid } from 'guid-typescript';
         mounted() {
             this.pageId = this.$el.parentElement.getAttribute("page-id");
             this.blockId = this.$el.parentElement.getAttribute("block-id");
-            this.loadKeywords();
 
+            const store = useStore();
+            store.dispatch(Actions.LOAD_KEYWORDS, { pageId: this.pageId, blockId: this.blockId });
+
+            this.loadKeywords();
         }
     });
 </script>
