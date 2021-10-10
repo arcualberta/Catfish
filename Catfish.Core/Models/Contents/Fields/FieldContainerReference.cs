@@ -8,7 +8,7 @@ namespace Catfish.Core.Models.Contents.Fields
 {
     public class FieldContainerReference : BaseField
     {
-        public enum eRefType { data, metadata }
+        public enum eRefType { undefined, data, metadata }
         public FieldContainerReference() { DisplayLabel = "Field Container"; ChildForm = new MetadataSet(); }
         public FieldContainerReference(XElement data) : base(data) { DisplayLabel = "Field Container"; }
         public FieldContainerReference(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Field Container"; }
