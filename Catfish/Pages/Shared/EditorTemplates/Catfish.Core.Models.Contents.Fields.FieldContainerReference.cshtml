@@ -5,6 +5,8 @@
 
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.RefType)
+@Html.HiddenFor(model => model.RefId)
 
 @if (Model.Exclude)
     return;

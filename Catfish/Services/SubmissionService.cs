@@ -292,6 +292,8 @@ namespace Catfish.Services
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
                 newDataItem.UpdateFieldValues(value);
+                newItem.UpdateReferencedFieldContainers(value);
+
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
                 newDataItem.OwnerId = currUserId.ToString(); //user.Id.ToString();

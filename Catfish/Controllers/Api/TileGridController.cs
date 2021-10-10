@@ -86,15 +86,15 @@ namespace Catfish.Controllers.Api
                 return keywords;
 
             var block = page.Blocks.FirstOrDefault(b => b.Id == blockId) as TileGrid;
-            keywords = block.KeywordList
-                .Value
+            keywords = block?.KeywordList?
+                .Value?
                 .Split(new char[] { ',', '\r', '\n' })
                 .Select(v => v.Trim())
                 .Where(v => !string.IsNullOrEmpty(v))
                 .ToArray();
 
 
-            if(!string.IsNullOrEmpty(block.KeywordSourceId.Value))
+            if(!string.IsNullOrEmpty(block?.KeywordSourceId?.Value))
             {
                 Guid? keywordSourceFieldId = Guid.Parse(block.KeywordSourceId.Value);
                 Guid selectedItemTemplateId = Guid.Parse(block.SelectedItemTemplate.Value);
