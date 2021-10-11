@@ -9,7 +9,8 @@ export interface KeywordField {
   aggregation: number,
   id: Guid,
   name: string,
-  values: string[]
+  values: string[],
+  selected: boolean[]
 }
 
 export interface KeywordFieldContainer {

@@ -32,6 +32,8 @@ export const actions: ActionTree<State, any> = {
 
     console.log("Item Load API: ", api)
 
+    console.log("Keyword Query model: ", store.state.keywordQueryModel)
+
     const res = await fetch(api);
     const data = await res.json()
     store.commit(Mutations.SET_TILES, data);
