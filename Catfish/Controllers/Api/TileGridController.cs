@@ -15,6 +15,7 @@ using Catfish.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Catfish.Models.Blocks.TileGrid.Keywords;
 using Catfish.Core.Models.Contents;
+using Newtonsoft.Json;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -40,9 +41,14 @@ namespace Catfish.Controllers.Api
         }
 
         // GET: api/tilegrid
-        [HttpGet]
-        public async Task<SearchOutput> Get(Guid pageId, Guid blockId, string keywords = null, int offset = 0, int max = 0)
+        [HttpPost]
+        //[Route("items/page/{pageId:Guid}/block/{blockId:Guid}")]
+        [Route("items")]
+        public async Task<SearchOutput> Get([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0)
         {
+            KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
+
+            string keywords = null;
             string[] slectedKeywords = string.IsNullOrEmpty(keywords)
                ? Array.Empty<string>()
                : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);

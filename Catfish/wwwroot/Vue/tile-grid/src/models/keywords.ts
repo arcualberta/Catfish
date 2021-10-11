@@ -23,5 +23,6 @@ export interface KeywordFieldContainer {
 
 export interface KeywordQueryModel {
   aggregation: number,
-  containers: KeywordFieldContainer[]
+  containers: KeywordFieldContainer[],
+  tmp: string[]
 }
