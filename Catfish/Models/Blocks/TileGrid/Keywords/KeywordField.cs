@@ -12,6 +12,7 @@ namespace Catfish.Models.Blocks.TileGrid.Keywords
         public Guid Id { get; set; }
         public string Name { get; set; }
         public List<string> Values { get; set; } = new List<string>();
+        public List<bool> Selected { get; set; } = new List<bool>();
 
         public KeywordField() { Aggregation = eAggregation.Intersection; }
 
@@ -28,6 +29,7 @@ namespace Catfish.Models.Blocks.TileGrid.Keywords
             foreach(var opt in field.Options)
             {
                 Values.Add(opt.OptionText.GetConcatenatedContent(" / "));
+                Selected.Add(false);
             }
         }
     }

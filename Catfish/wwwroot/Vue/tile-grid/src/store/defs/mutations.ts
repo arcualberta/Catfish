@@ -15,10 +15,10 @@ export const mutations: MutationTree<State> = {
   [Mutations.SET_KEYWORDS](state: State, payload: KeywordQueryModel) {
     console.log('SET_KEYWORDS Payload: ', payload)
 
-    //Updating the "selected" array associated with each field
-    for (const cIdx in payload.containers)
-      for (const fIdx in payload.containers[cIdx].fields)
-        payload.containers[cIdx].fields[fIdx].selected = new Array(payload.containers[cIdx].fields[fIdx].values.length).fill(false);
+    ////Updating the "selected" array associated with each field
+    //for (const cIdx in payload.containers)
+    //  for (const fIdx in payload.containers[cIdx].fields)
+    //    payload.containers[cIdx].fields[fIdx].selected = new Array(payload.containers[cIdx].fields[fIdx].values.length).fill(false);
 
     state.keywordQueryModel = payload;
   },
