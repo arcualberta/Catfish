@@ -1,6 +1,7 @@
 ﻿import { MutationTree } from 'vuex';
 import { State } from './state';
 import { SearchOutput } from '../../models'
+import { KeywordQueryModel } from '../../models/keywords';
 
 //Declare MutationTypes
 export enum Mutations {
@@ -11,9 +12,9 @@ export enum Mutations {
 //Create a mutation tree that implement all mutation interfaces
 export const mutations: MutationTree<State> = {
 
-  [Mutations.SET_KEYWORDS](state: State, payload: any) {
+  [Mutations.SET_KEYWORDS](state: State, payload: KeywordQueryModel) {
     console.log('SET_KEYWORDS Payload: ', payload)
-    state.searchResult = payload;
+    state.keywordQueryModel = payload;
   },
 
   [Mutations.SET_TILES](state: State, payload: SearchOutput) {

@@ -1,7 +1,7 @@
 <template>
     <div class="data-items">
         <div class="container row">
-            <div v-for="item in items" :key="item" class="col-md-3 col-sm-3">
+            <div v-for="item in items" :key="item" class="col-md-4">
                 <tile :item="item"></tile>
             </div>
         </div>

@@ -20,7 +20,7 @@ export interface KeywordFieldContainer {
   fields: KeywordField[]
 }
 
-export interface SortKeywordsInFields {
+export interface KeywordQueryModel {
   aggregation: number,
   containers: KeywordFieldContainer[]
 }

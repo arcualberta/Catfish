@@ -1,23 +1,38 @@
 <template>
-    <div class="data-filter">
-        <ul>
-            <li v-for="item in keywords" :key="item">
-                <input type="checkbox" :value="item" v-model="searchParams.keywords" @change="runFreshSearch" />
-                <label>{{ item }}</label>
-            </li>
-        </ul>
-        <div v-if="items?.length > 0" class="m-4">
-            <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
-            {{first}}-{{last}} of {{count}}
-            <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
-            <span>
-                <select v-model="searchParams.max" class="pull-right" @change="runFreshSearch">
-                    <option>25</option>
-                    <option>50</option>
-                    <option>100</option>
-                </select>
-            </span>
+    <div class="col-md-3 text-left">
+        <!--<div v-if="keywordQueryModel.">
+            <ul>
+                <li v-for="item in keywords" :key="item">
+                    <input type="checkbox" :value="item" v-model="searchParams.keywords" @change="runFreshSearch" />
+                    <label>{{ item }}</label>
+                </li>
+            </ul>
+        </div>-->
+        <div v-for="container in keywordQueryModel?.containers" :key="container">
+            <div v-if="keywordQueryModel?.containers.length > 1 && container?.name?.length > 0">{{container.name}}</div>
+            <div v-for="field in container.fields" :key="field" class="mb-3">
+                <div v-if="field.name.length > 0" class="font-weight-bold">{{field.name}}</div>
+                <div v-for="value in field.values" :key="value">
+                    <input type="checkbox" :value="value" v-model="searchParams.keywords" @change="runFreshSearch" />
+                    <label class="ml-1">{{ value }}</label>
+                </div>
+            </div>
+            <!--Container {{container}}-->
         </div>
+    </div>
+    <div v-if="items?.length > 0" class="col-md-9 mb-4">
+        <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
+        {{first}}-{{last}} of {{count}}
+        <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
+        <span>
+            <select v-model="searchParams.max" class="pull-right" @change="runFreshSearch">
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+        </span>
+        
+        <ItemList />
     </div>
 </template>
 <script lang="ts">
@@ -26,9 +41,13 @@
     import { SearchParams } from "../models"
     import { useStore } from '../store';
     import { Guid } from "guid-typescript";
+    import ItemList from './ItemList.vue';
 
     export default defineComponent({
         name: "KeywordFilter",
+        components: {
+            ItemList
+        },
         props: {
             pageId: {
                 required: true,
@@ -62,6 +81,7 @@
             })
 
             const store = useStore()
+
             const runFreshSearch = () => {
                 //When the keywords are changed, always set the search offset to zero.
                 searchParams.value.offset = 0;
@@ -99,6 +119,7 @@
                 previousPage,
                 nextPage,
                 dispatchSearch,
+                keywordQueryModel: computed(() => store.state.keywordQueryModel),
                 items: computed(() => store.state.searchResult?.items),
                 count: computed(() => store.state.searchResult?.count),
                 first: computed(() => store.state.searchResult?.first),
