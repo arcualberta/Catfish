@@ -30,7 +30,7 @@
             this.blockId = this.$el.parentElement.getAttribute("block-id");
 
             const store = useStore();
-            store.dispatch(Actions.LOAD_KEYWORDS, { pageId: this.pageId, blockId: this.blockId });
+            store.dispatch(Actions.INIT_FILTER, { pageId: this.pageId, blockId: this.blockId });
         }
     });
 </script>

@@ -14,7 +14,8 @@ namespace Catfish.Models.Blocks.TileGrid.Keywords
         [JsonProperty("containers")]
         public List<KeywordFieldContainer> Containers { get; set; } = new List<KeywordFieldContainer>();
 
-        public string[] Tmp { get; set; }
+        public int Offset { get; set; }
+        public int Max { get; set; }
 
         public KeywordQueryModel() { /*Aggregation = eAggregation.Intersection; */}
         public KeywordQueryModel(eAggregation fieldContainerAggregation)
@@ -30,7 +31,6 @@ namespace Catfish.Models.Blocks.TileGrid.Keywords
         public void AddContainer(FieldContainer src, eAggregation fieldAggregation, eAggregation fieldValueAggregation)
         {
             Containers.Add(new KeywordFieldContainer(src, fieldAggregation, fieldValueAggregation));
-            Tmp = Containers.Select(c => c.Name).ToArray();
         }
 
         public void SortKeywordsInFields()
