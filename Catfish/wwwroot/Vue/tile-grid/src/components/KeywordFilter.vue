@@ -20,20 +20,23 @@
             <!--Container {{container}}-->
         </div>
     </div>
-    <div v-if="items?.length > 0" class="col-md-9 mb-4">
-        <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
-        {{first}}-{{last}} of {{count}}
-        <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
-        <span>
-            <select v-model="searchParams.max" class="pull-right" @change="runFreshSearch">
-                <option>25</option>
-                <option>50</option>
-                <option>100</option>
-            </select>
-        </span>
-        
+    <div class="col-md-9 mb-4">
+        <div v-if="items?.length > 0">
+            <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
+            {{first}}-{{last}} of {{count}}
+            <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
+            <span>
+                <select v-model="searchParams.max" class="pull-right" @change="runFreshSearch">
+                    <option>25</option>
+                    <option>50</option>
+                    <option>100</option>
+                </select>
+            </span>
+        </div>
+        <div v-else>No results found.</div>
         <ItemList />
     </div>
+
 </template>
 <script lang="ts">
     import { defineComponent, ref, PropType, computed, toRefs, watch } from "vue";

@@ -61,6 +61,7 @@ namespace Catfish.Controllers.Api
                 if (block == null)
                     return result;
 
+                
                 string collectionId = block.SelectedCollection.Value;
                 string solrCollectionFieldName = "collection_s";
 
@@ -68,6 +69,7 @@ namespace Catfish.Controllers.Api
                 string keywordFieldId = block.KeywordSourceId.Value;
                 string dataItemTemplateId = null; //TODO: load the template and get the ID of the root data item
                 string solrKeywordFieldName = string.Format("data_{0}_{1}_ts", dataItemTemplateId, keywordFieldId);
+                string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/') + "/";
 
 
                 KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
@@ -85,13 +87,31 @@ namespace Catfish.Controllers.Api
 
                 System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
 
-                SearchResult _result = _solr.ExecuteSearch(query, offset, max, 10);
+                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
 
-
-                //TODO: Create the solr query, retrieve results and return them wrapped in the
-                //Search Result object
-
-                result = Helper.MockHelper.FilterMockupTileGridData(slectedKeywords, offset, max);
+                //Wrapping the results in the SearchOutput object
+                Guid titleFieldId = string.IsNullOrEmpty(block.SelectedMapTitleId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapTitleId.Value);
+                Guid subtitleFieldId = string.IsNullOrEmpty(block.SelectedMapSubtitleId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapSubtitleId.Value);
+                Guid contentFieldId = string.IsNullOrEmpty(block.SelectedMapContentId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapContentId.Value);
+                Guid thumbnailFieldId = string.IsNullOrEmpty(block.SelectedMapThumbnailId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapThumbnailId.Value);
+                Guid keywordsFieldId = string.IsNullOrEmpty(block.KeywordSourceId.Value) ? Guid.Empty : Guid.Parse(block.KeywordSourceId.Value);
+                
+                foreach (var resultItem in solrSearchResult.ResultEntries)
+                {
+                    Tile tile = new Tile();
+                    tile.Id = resultItem.Id;
+                    tile.Title = Combine(resultItem.Fields.FirstOrDefault(field => field.FieldId == titleFieldId)?.FieldContent);
+                    tile.Subtitle = Combine(resultItem.Fields.FirstOrDefault(field => field.FieldId == subtitleFieldId)?.FieldContent);
+                    tile.Content = Combine(resultItem.Fields.FirstOrDefault(field => field.FieldId == contentFieldId)?.FieldContent);
+                    tile.Thumbnail = Combine(resultItem.Fields.FirstOrDefault(field => field.FieldId == thumbnailFieldId)?.FieldContent);
+                    tile.Categories = resultItem.Fields.FirstOrDefault(field => field.FieldId == keywordsFieldId)?.FieldContent.ToArray();
+                    tile.DetailedViewUrl = detailedViewUrl + resultItem.Id;
+                    result.Items.Add(tile);
+                }
+                result.First = solrSearchResult.Offset;
+                result.Count = solrSearchResult.TotalMatches;
+                
+                //result = Helper.MockHelper.FilterMockupTileGridData(slectedKeywords, offset, max);
 
             }
             catch(Exception ex)
@@ -101,6 +121,10 @@ namespace Catfish.Controllers.Api
             return result;
         }
 
+        private string Combine(List<string> components)
+        {
+            return components == null ? null : string.Join(" / ", components);
+        }
 
 
         // GET: /api/tilegrid/keywords/page/3c49e3ca-6937-4fa6-ab40-0549f45ca87b/block/3C9C2F8A-C1D8-4869-A8CA-D0641E9200A5

@@ -7,7 +7,7 @@ namespace Catfish.Models.Blocks.TileGrid
 {
     public class SearchOutput
     {
-        public IEnumerable<Tile> Items { get; set; }
+        public List<Tile> Items { get; set; } = new List<Tile>();
         public int First { get; set; }
         public int Last { get; set; }
         public int Count { get; set; }
