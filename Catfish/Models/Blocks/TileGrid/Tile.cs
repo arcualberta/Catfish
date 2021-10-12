@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Catfish.Models.Blocks.TileGrid
 {
@@ -11,6 +12,6 @@ namespace Catfish.Models.Blocks.TileGrid
         public string Thumbnail { get; set; }
         public DateTime Date { get; set; }
         public string DetailedViewUrl { get; set; }
-        public string[] Categories { get; set; }
+        public List<string> Categories { get; set; } = new List<string>();
     }
 }

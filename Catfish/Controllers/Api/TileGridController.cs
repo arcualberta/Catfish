@@ -80,10 +80,10 @@ namespace Catfish.Controllers.Api
                    : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
                 var query = keywordQueryModel?.BuildSolrQuery();
-
+                string scope = string.Format("collection_s:{0} AND doc_type_ss:item", collectionId);
                 query = string.IsNullOrEmpty(query)
-                    ? "doc_type_ss:item"
-                    : string.Format("doc_type_ss:item AND {0}", query);
+                    ? scope
+                    : string.Format("{0} AND {1}", scope, query);
 
                 System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
 
@@ -104,8 +104,36 @@ namespace Catfish.Controllers.Api
                     tile.Subtitle = Combine(resultItem.Fields.FirstOrDefault(field => field.FieldId == subtitleFieldId)?.FieldContent);
                     tile.Content = Combine(resultItem.Fields.FirstOrDefault(field => field.FieldId == contentFieldId)?.FieldContent);
                     tile.Thumbnail = Combine(resultItem.Fields.FirstOrDefault(field => field.FieldId == thumbnailFieldId)?.FieldContent);
-                    tile.Categories = resultItem.Fields.FirstOrDefault(field => field.FieldId == keywordsFieldId)?.FieldContent.ToArray();
                     tile.DetailedViewUrl = detailedViewUrl + resultItem.Id;
+
+                    var categories = resultItem.Fields.FirstOrDefault(field => field.FieldId == keywordsFieldId)?.FieldContent.ToArray();
+                    foreach(var cat in categories)
+                    {
+                        if (cat.StartsWith("ref://"))
+                        {
+                            try
+                            {
+
+
+                                //This is a reference field
+                                var parts = cat.Substring(6).Split("_");
+                                var containerId = Guid.Parse(parts[1]);
+
+                                //Get all fields that starts with the prefix
+                                var keywordFields = resultItem.Fields.Where(field => field.ContainerId == containerId).ToList();
+                                foreach (var kf in keywordFields)
+                                    tile.Categories.AddRange(kf.FieldContent);
+                            }
+                            catch (Exception ex)
+                            {
+                                _errorLog.Log(new Error() { Message = "Field referencing error." });
+                                _errorLog.Log(new Error(ex));
+                            }
+                        }
+                        else
+                            tile.Categories.Add(cat);
+                    }
+
                     result.Items.Add(tile);
                 }
                 result.First = solrSearchResult.Offset;

@@ -76,6 +76,14 @@ namespace Catfish.Core.Models.Solr
                     foreach (var txt in (field as MonolingualTextField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
                         AddField(solrFieldName, txt.Value);
                 }
+                else if (typeof(FieldContainerReference).IsAssignableFrom(field.GetType()))
+                {
+                    solrFieldName += "_ss";
+                    var refField = field as FieldContainerReference;
+                    var refType = refField.RefType == FieldContainerReference.eRefType.metadata ? "metadata" : "data";
+                    var val = string.Format("ref://{0}_{1}_", refType, refField.RefId);
+                    AddField(solrFieldName, val);
+                }
 
             }
         }

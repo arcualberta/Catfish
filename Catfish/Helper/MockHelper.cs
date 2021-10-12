@@ -66,8 +66,8 @@ namespace Catfish.Helper
                     Thumbnail = "https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/dahlia-3598551_1920.jpg?itok=XZfJlur2",
                     DetailedViewUrl = "https://www.ualberta.ca/",
                     Categories = rand.Next(0, 2) < 1
-                    ? new string[] { keywords[rand.Next(0, keywords.Length)], keywords[rand.Next(0, keywords.Length)] }
-                    : new string[] { keywords[rand.Next(0, keywords.Length)] }
+                    ? new List<string>(new string[]{ keywords[rand.Next(0, keywords.Length)], keywords[rand.Next(0, keywords.Length)] })
+                    : new List<string>(new string[] { keywords[rand.Next(0, keywords.Length)] })
                 });
             }
 
