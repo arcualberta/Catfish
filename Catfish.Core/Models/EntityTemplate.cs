@@ -119,7 +119,12 @@ namespace Catfish.Core.Models
 
             //Cloning non-template type metadata sets
             foreach (var ms in MetadataSets.Where(m => m.IsTemplate == false))
-                model.MetadataSets.Add(new MetadataSet(new XElement(ms.Data)));
+            {
+                MetadataSet clone = new MetadataSet(new XElement(ms.Data));
+                clone.TemplateId = ms.Id;
+                clone.Id = Guid.NewGuid();
+                model.MetadataSets.Add(clone);
+            }
 
             //NOTE: we do not need to clone the data items from the template because the data items are
             //added to the instantiated entity when it's used later in the application. The entity template

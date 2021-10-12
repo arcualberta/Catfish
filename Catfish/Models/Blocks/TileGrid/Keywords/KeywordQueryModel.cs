@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.Blocks.TileGrid.Keywords
 {
-    public class KeywordQueryModel
+    public class KeywordQueryModel: SolrQueryModel
     {
-        public eAggregation Aggregation { get; set; }
-
         [JsonProperty("containers")]
         public List<KeywordFieldContainer> Containers { get; set; } = new List<KeywordFieldContainer>();
 
@@ -37,6 +35,13 @@ namespace Catfish.Models.Blocks.TileGrid.Keywords
         {
             foreach (var container in Containers)
                 container.SortKeywordsInFields();
+        }
+
+        public string BuildSolrQuery()
+        {
+            var queryParts = Containers.Select(c => c.BuildSolrQuery()).ToList();
+            string query = JoinQueryParts(queryParts);
+            return query;
         }
     }
 }

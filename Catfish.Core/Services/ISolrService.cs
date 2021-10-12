@@ -15,6 +15,6 @@ namespace Catfish.Core.Services
         public void Commit();
         public SearchResult Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1);
         public SearchResult Search(SearchFieldConstraint[] constraints, int start, int maxRows, int maxHighlightsPerEntry = 1);
-
+        public SearchResult ExecuteSearch(string query, int start, int max, int maxHiglightSnippets);
     }
 }

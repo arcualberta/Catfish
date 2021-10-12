@@ -23,7 +23,7 @@ namespace Catfish.Core.Models
                 .Select(f => f as FieldContainerReference))
             {
                 FieldContainer dst = field.RefType == FieldContainerReference.eRefType.metadata
-                     ? MetadataSets.FirstOrDefault(fc => fc.Id == field.RefId)
+                     ? MetadataSets.FirstOrDefault(fc => fc.TemplateId == field.RefId)
                      : DataContainer.FirstOrDefault(fc => fc.Id == field.RefId) as FieldContainer;
 
                 dst?.UpdateFieldValues(field.ChildForm);

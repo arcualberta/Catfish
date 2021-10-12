@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.Blocks.TileGrid.Keywords
 {
-    public class KeywordFieldContainer
+    public class KeywordFieldContainer : SolrQueryModel
     {
-        public eAggregation Aggregation { get; set; }
         public FieldContainerReference.eRefType ContainerType { get; set; }
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -48,5 +47,12 @@ namespace Catfish.Models.Blocks.TileGrid.Keywords
                 field.Values.Sort();
         }
 
+        public string BuildSolrQuery()
+        {
+            string fieldNamePrefix = ContainerType == FieldContainerReference.eRefType.data ? "data" : "metadata";
+            var queryParts = Fields.Select(c => c.BuildSolrQuery(fieldNamePrefix, Id)).ToList();
+            string query = JoinQueryParts(queryParts);
+            return query;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Helper;
+using ElmahCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -18,12 +19,13 @@ namespace Catfish.Services
     {
         protected readonly IConfiguration _config;
         private readonly string _solrCoreUrl;
-
+        private readonly ErrorLog _errorLog;
         private SearchResult _result;
-        public SolrService(IConfiguration config)
+        public SolrService(IConfiguration config, ErrorLog errorLog)
         {
             _config = config;
             _solrCoreUrl = config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
+            _errorLog = errorLog;
         }
         public void Index(Entity entity)
         {
@@ -153,26 +155,42 @@ namespace Catfish.Services
 
         ////    httpResponse.EnsureSuccessStatusCode();
         ////}
-        
+
+        public SearchResult ExecuteSearch(string query, int start, int max, int maxHiglightSnippets)
+        {
+
+            _result = null;
+            var task = ExecuteSearchQuery(query, start, max, maxHiglightSnippets);
+            task.Wait(60000);//Wait for a maximum of 1 minute
+            return _result;
+        }
+
         /// <summary>
         /// Executes a given valid solr query.
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        protected async Task ExecuteSearchQuery(string query, int start, int max, int maxHiglightSnippets)
+        public async Task ExecuteSearchQuery(string query, int start, int max, int maxHiglightSnippets)
         {
-            string queryUri = _solrCoreUrl + "/select?hl=on&q=" + query +
-                string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
+            try
+            {
+                string queryUri = _solrCoreUrl + "/select?hl=on&q=" + query +
+                    string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
 
-            //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
-            using var client = new HttpClient();
-            using var httpResponse = await client.GetAsync(new Uri(queryUri)).ConfigureAwait(false);
+                //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
+                using var client = new HttpClient();
+                using var httpResponse = await client.GetAsync(new Uri(queryUri)).ConfigureAwait(false);
 
-            httpResponse.EnsureSuccessStatusCode();
+                httpResponse.EnsureSuccessStatusCode();
 
-            string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-            _result = new SearchResult(response);
-            _result.ItemsPerPage = max;
+                string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                _result = new SearchResult(response, _errorLog);
+                _result.ItemsPerPage = max;
+            }
+            catch(Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
         }
 
         protected string[] GetFieldNames(string[] acceptedFieldPrefixes = null)
@@ -196,7 +214,5 @@ namespace Catfish.Services
             };
             return fieldNames;
         }
-
-
     }
 }

@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Http;
 using Catfish.Models.Blocks.TileGrid.Keywords;
 using Catfish.Core.Models.Contents;
 using Newtonsoft.Json;
+using Catfish.Core.Models.Solr;
+using ElmahCore;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -31,13 +33,14 @@ namespace Catfish.Controllers.Api
         private readonly ISubmissionService _submissionService;
         private readonly AppDbContext _appDb;
         private readonly ISolrService _solr;
-
-        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr)
+        private readonly ErrorLog _errorLog;
+        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr, ErrorLog errorLog)
         {
             _loader = loader;
             _submissionService = submissionService;
             _appDb = db;
             _solr = solr;
+            _errorLog = errorLog;
         }
 
         // GET: api/tilegrid
@@ -46,36 +49,55 @@ namespace Catfish.Controllers.Api
         [Route("items")]
         public async Task<SearchOutput> Get([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0)
         {
-            KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
-
-            string keywords = null;
-            string[] slectedKeywords = string.IsNullOrEmpty(keywords)
-               ? Array.Empty<string>()
-               : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
-
-
             SearchOutput result = new SearchOutput();
+            try
+            {
 
-            var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
-            if (page == null)
-                return result;
+                var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
+                if (page == null)
+                    return result;
 
-            var block = page.Blocks.FirstOrDefault(b => b.Id == blockId) as TileGrid;
-            if (block == null)
-                return result;
+                var block = page.Blocks.FirstOrDefault(b => b.Id == blockId) as TileGrid;
+                if (block == null)
+                    return result;
 
-            string collectionId = block.SelectedCollection.Value;
-            string solrCollectionFieldName = "collection_s";
+                string collectionId = block.SelectedCollection.Value;
+                string solrCollectionFieldName = "collection_s";
 
-            string itemTemplateId = block.SelectedItemTemplate.Value;
-            string keywordFieldId = block.KeywordSourceId.Value;
-            string dataItemTemplateId = null; //TODO: load the template and get the ID of the root data item
-            string solrKeywordFieldName = string.Format("data_{0}_{1}_ts", dataItemTemplateId, keywordFieldId);
+                string itemTemplateId = block.SelectedItemTemplate.Value;
+                string keywordFieldId = block.KeywordSourceId.Value;
+                string dataItemTemplateId = null; //TODO: load the template and get the ID of the root data item
+                string solrKeywordFieldName = string.Format("data_{0}_{1}_ts", dataItemTemplateId, keywordFieldId);
 
-            //TODO: Create the solr query, retrieve results and return them wrapped in the
-            //Search Result object
 
-            result = Helper.MockHelper.FilterMockupTileGridData(slectedKeywords, offset, max);
+                KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
+
+                string keywords = null;
+                string[] slectedKeywords = string.IsNullOrEmpty(keywords)
+                   ? Array.Empty<string>()
+                   : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
+
+                var query = keywordQueryModel?.BuildSolrQuery();
+
+                query = string.IsNullOrEmpty(query)
+                    ? "doc_type_ss:item"
+                    : string.Format("doc_type_ss:item AND {0}", query);
+
+                System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
+
+                SearchResult _result = _solr.ExecuteSearch(query, offset, max, 10);
+
+
+                //TODO: Create the solr query, retrieve results and return them wrapped in the
+                //Search Result object
+
+                result = Helper.MockHelper.FilterMockupTileGridData(slectedKeywords, offset, max);
+
+            }
+            catch(Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
             return result;
         }
 

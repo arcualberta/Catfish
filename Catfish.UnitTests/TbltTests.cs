@@ -133,6 +133,7 @@ namespace Catfish.UnitTests
             Workflow workflow = template.Workflow;
 
             MetadataSet keywordMeta = template.GetMetadataSet(_metadatsetName, true, lang);
+            keywordMeta.IsTemplate = false;
             string[] proficientcy = GetProficientcyLevel();
             keywordMeta.CreateField<CheckboxField>("Proficiency level", lang,proficientcy, true);
             string[] langSkills = GetLanguageSkills();
