@@ -519,12 +519,19 @@ namespace Catfish.UnitTests
             var content = bcpForm.CreateField<TextArea>("Post content ", lang, true);
             content.Cols = 50;
             content.Rows = 3;
+            content.RichText = true;
 
             bcpForm.CreateField<CheckboxField>("Keywords", lang, GetDiscussionKeywords(), false);
 
             var addionalKeywords = bcpForm.CreateField<TextArea>("Additional keywords (separated by commas)", lang, true);
             addionalKeywords.Cols = 50;
             addionalKeywords.Rows = 3;
+            addionalKeywords.RichText = false;
+
+            var otherKeywords = bcpForm.CreateField<TextArea>("Other keywords (separate by commas)", lang, false);
+            otherKeywords.Cols = 50;
+            otherKeywords.Rows = 3;
+            otherKeywords.RichText = false;
 
 
             //Defininig the Comments form
@@ -582,9 +589,8 @@ namespace Catfish.UnitTests
 
             //Defining post actions
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
-                                                                                 @"<p>Thank you for submitting your TBLT comment. 
-                                                                                    Your editor has been automatically notified to provide an assessment about your application.
-                                                                                 You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
+                                                                                 @"<p>Thank you for submitting your post to the Task-based Language Teaching discussion forum. 
+                                                                                    Your post should be visible at the <a href='@SiteUrl/discussion-forum'> forum page. </a></p>");
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
 
@@ -653,9 +659,8 @@ namespace Catfish.UnitTests
             editSubmissionPostActionSave.ValidateInputs = false;
             PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit",
                                                                                             nameof(TemplateOperations.Update),
-                                                                                             @"<p>Thank you for submitting your TBLT application. 
-                                                                                                Your editor has been automatically notified to provide an assessment about your application.
-                                                                                             You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
+                                                                                             @"<p>Thank you for submitting your post to the Task-based Language Teaching discussion forum. 
+                                                                                    Your post should be visible at the <a href='@SiteUrl/discussion-forum'> forum page. </a></p>");
             //Defining state mappings
             editSubmissionPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");
 
