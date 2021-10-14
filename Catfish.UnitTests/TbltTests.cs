@@ -150,9 +150,12 @@ namespace Catfish.UnitTests
             bcpForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h1", "Submit Resources", lang);
 
-            bcpForm.CreateField<TextField>("Your name", lang, true);
+            var name = bcpForm.CreateField<TextField>("Your name", lang, true);
+            name.IsListEntryTitle = true;
             var applicantEmail = bcpForm.CreateField<EmailField>("Email address", lang, true);
-            bcpForm.CreateField<TextField>("Title of task", lang, true);
+            var title =bcpForm.CreateField<TextField>("Title of task", lang, true);
+            title.IsListEntryTitle = true;
+
             var other = bcpForm.CreateField<TextArea>("Short description", lang, true);
             other.Cols = 50;
             other.Rows = 3;
@@ -161,7 +164,7 @@ namespace Catfish.UnitTests
             goal.Rows = 3;
 
             string[] ageOptions = new string[] { "3-5", "6-9", "10-12", "13-15", "16-18", "adults" };
-            bcpForm.CreateField<CheckboxField>("Age range of learners", lang, ageOptions, true);
+            bcpForm.CreateField<CheckboxField>("Age range of learners", lang, ageOptions, false);
 
             bcpForm.CreateField<TextField>("Language", lang, true);
             bcpForm.CreateField<TextField>("Topic/theme/content", lang, true);
