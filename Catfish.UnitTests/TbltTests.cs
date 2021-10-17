@@ -526,11 +526,6 @@ namespace Catfish.UnitTests
 
             bcpForm.CreateField<CheckboxField>("Keywords", lang, GetDiscussionKeywords(), false);
 
-            var addionalKeywords = bcpForm.CreateField<TextArea>("Additional keywords (separated by commas)", lang, true);
-            addionalKeywords.Cols = 50;
-            addionalKeywords.Rows = 3;
-            addionalKeywords.RichText = false;
-
             var otherKeywords = bcpForm.CreateField<TextArea>("Other keywords (separate by commas)", lang, false);
             otherKeywords.Cols = 50;
             otherKeywords.Rows = 3;
