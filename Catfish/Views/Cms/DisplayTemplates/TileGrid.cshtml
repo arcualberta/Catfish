@@ -15,8 +15,8 @@
     var collectionId = block.SelectedCollection.Value;
 }
 <script>
-    var blockId = @(Model as Piranha.Extend.Block)?.Id;
-    var pageId = @_webApp.PageId;
+    var pageId = '@pageId'
+    var blockId = '@blockId';
 </script>
 
 <noscript>
