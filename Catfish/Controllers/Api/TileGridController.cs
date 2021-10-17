@@ -85,7 +85,7 @@ namespace Catfish.Controllers.Api
                     ? scope
                     : string.Format("{0} AND {1}", scope, query);
 
-                System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
+               // System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
 
                 SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
 
