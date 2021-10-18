@@ -147,9 +147,6 @@ namespace Catfish.UnitTests
             bcpForm.IsRoot = true;
             bcpForm.SetDescription("This template is designed for Task-based Language Teaching Submit Suggest Resources Form", lang);
 
-            bcpForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("h1", "Submit Resources", lang);
-
             var name = bcpForm.CreateField<TextField>("Your name", lang, true);
             name.IsListEntryTitle = true;
             var applicantEmail = bcpForm.CreateField<EmailField>("Email address", lang, true);
@@ -511,9 +508,6 @@ namespace Catfish.UnitTests
             DataItem bcpForm = template.GetDataItem("Task-based Language Teaching Discussion Form", true, lang);
             bcpForm.IsRoot = true;
             bcpForm.SetDescription("This template is designed for Task-based Language Teaching Discussion Form", lang);
-
-            bcpForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("h1", "Submit Discussion", lang);
 
             var title = bcpForm.CreateField<TextField>("Title ", lang, true);
             title.IsListEntryTitle = true; // this will identified as the item label in Collection content page
