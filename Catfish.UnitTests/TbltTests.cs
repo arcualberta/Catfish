@@ -295,22 +295,21 @@ namespace Catfish.UnitTests
             //Defining form template
             startSubmissionAction.AddTemplate(tbltForm.Id, "Task-based Language Teaching Submit Suggest Resources Form");
 
-            //Defining post actions
-            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update),
-                                                                            @"<p>Your TBLT application saved successfully. 
-                                                                                You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
-            savePostAction.ValidateInputs = false;
-            savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
+            ////Defining post actions
+            ////PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update),
+            ////                                                                @"<p>Thank you for saving your resource to the Task-based Language Teaching resource collection. 
+            ////                                                                        Your submission should be view/edit at the <a href='@SiteUrl/resources'>resources page.</a></p>");
+            ////savePostAction.ValidateInputs = false;
+            ////savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
 
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
-                                                                                 @"<p>Thank you for submitting your TBLT application. 
-                                                                                    Your editor has been automatically notified to provide an assessment about your application.
-                                                                                 You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
+                                                                                 @"<p>Thank you for submitting your resource to the Task-based Language Teaching resource collection. 
+                                                                                    Your submission should be visible at the <a href='@SiteUrl/resources/@Item.Id'> resources page. </a></p>");
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirm Submission", "Do you want to submit this resource to the resource collection? Once submitted, you cannot edit it.", "");
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
@@ -582,12 +581,12 @@ namespace Catfish.UnitTests
             //Defining post actions
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
                                                                                  @"<p>Thank you for submitting your post to the Task-based Language Teaching discussion forum. 
-                                                                                    Your post should be visible at the <a href='@SiteUrl/discussion-forum'> forum page. </a></p>");
+                                                                                    Your post should be visible at the <a href='@SiteUrl/discussion/@Item.Id'> forum page. </a></p>");
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this comment?", "Once submitted, you cannot update the request.");
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirm Submission", "Do you want to submit this post to the discussion forum? Once submitted, you cannot edit it.", "");
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
@@ -657,7 +656,7 @@ namespace Catfish.UnitTests
             editSubmissionPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirm Submission", "Do you want to submit this post to the discussion forum? Once submitted, you cannot edit it.", "");
             EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
