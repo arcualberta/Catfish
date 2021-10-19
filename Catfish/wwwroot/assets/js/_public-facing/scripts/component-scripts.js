@@ -1,9 +1,24 @@
 ﻿/*
  * Function for the free-text panel in views/shared/partial/_search.cshtml
  */
+$(function () {
+    //advance search
+    //the query param need to be "?q=searchText"  ==> ?q= 
+    let searchMode = $('input[name="searchMode"]:checked').val();
+    if (searchMode === "simple") {
+        let queryStr = window.location.search;
+        if (queryStr !== "") {
+            $("#simpleSearchTerm").val(queryStr.substring(3));
+          
+            $("#advanceSearchSubmitBtn").click();
+        }
+    }
+
+});
+
 function searchText() {
     var searchText = $("input[name='searchTerm']").val();
-    window.location.href = '/search?searchTerm=' + searchText;
+    window.location.href = '/search?q=' + searchText;
     return false;
 }
 
