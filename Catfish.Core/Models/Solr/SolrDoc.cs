@@ -37,7 +37,13 @@ namespace Catfish.Core.Models.Solr
         {
             foreach(var field in container.Fields)
             {
-                string solrFieldName = string.Format("{0}_{1}_{2}", containerPrefix, container.TemplateId, field.Id);
+                //Backword compatibility fix: new items use MedataSet.TemplateId as the container ID part of the field name. However, this TemplateId
+                //was introduced recently and the items created prior to introducing this TemplateId uses MetadataSet.Id as the container ID. Therefore,
+                //in the statement below, we take the TemplateId as the container ID if it's defined but use the actual container's ID if the TemplateId
+                //is not defined. 
+                Guid? containerId = container.TemplateId != null ? container.TemplateId : container.Id;
+
+                string solrFieldName = string.Format("{0}_{1}_{2}", containerPrefix, containerId, field.Id);
                 if (typeof(TextField).IsAssignableFrom(field.GetType()))
                 {
                     solrFieldName += "_ts";
