@@ -225,7 +225,7 @@ function showResultSlip(resultEntries) {
         //setting any links to the detailed view of the item
         $(slip).find("a[data-details-view-link]").each((k, anchor) => {
             //TODO: Set the the appropriate url
-            let url = "#"
+            let url = window.location.origin + "/items/" + itemId;
 
             $(anchor).attr("href", url);
         });
