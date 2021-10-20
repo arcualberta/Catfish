@@ -91,6 +91,10 @@ namespace Catfish.Core.Models.Solr
                     AddField(solrFieldName, val);
                 }
 
+                //Adding the name of the field to the index.
+                string solrNameFieldName = string.Format("{0}_name_s", solrFieldName);
+                AddField(solrNameFieldName, field.Name.GetConcatenatedContent(" / "));
+
             }
         }
 

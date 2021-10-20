@@ -28,10 +28,18 @@ namespace Catfish.Core.Models.Solr
                 .FirstOrDefault();
             TemplateId = string.IsNullOrEmpty(idStr) ? Guid.Empty : Guid.Parse(idStr);
 
+            //Creating a dictionary of field names
+            Dictionary<string, string> fieldNameDictionary = new Dictionary<string, string>();
+            foreach(var ele in doc.Elements("str").Where(ele => ele.Attribute("name").Value.EndsWith("_name_s")))
+            {
+                var key = ele.Attribute("name").Value;
+                fieldNameDictionary.Add(key.Substring(0, key.Length - 7), ele.Value); //exclude _name_s
+            }
+
             //Populating result fields
             Fields = doc.Elements("arr")
                 .Where(arr => arr.Attribute("name").Value != "doc_type_ss")
-                .Select(arr => new ResultEntryField(arr))
+                .Select(arr => new ResultEntryField(arr, fieldNameDictionary))
                 .ToList();
 
         }
