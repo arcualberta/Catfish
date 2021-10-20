@@ -92,7 +92,7 @@ namespace Catfish.Core.Models.Solr
                 }
 
                 //Adding the name of the field to the index.
-                string solrNameFieldName = string.Format("{0}_name_s", solrFieldName);
+                string solrNameFieldName = string.Format("cf-fn_{0}_s", solrFieldName);
                 AddField(solrNameFieldName, field.Name.GetConcatenatedContent(" / "));
 
             }

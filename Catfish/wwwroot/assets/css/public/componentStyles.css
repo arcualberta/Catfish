@@ -693,14 +693,16 @@
     /*border-top: 1px solid grey;*/
 }
 
-.entryDetailLink {
-    border-bottom: 1px solid grey;
+.entryDetailLink, .entryTags {
     padding-bottom: 10px;
     margin-right: -15px;
     margin-left: -15px;
     padding-left: 15px;
 }
 
+.entryTags {
+    border-top: 1px solid grey;
+}
 .entryImg {
     width: 100px;
     height: 140px;

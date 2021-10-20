@@ -30,10 +30,10 @@ namespace Catfish.Core.Models.Solr
 
             //Creating a dictionary of field names
             Dictionary<string, string> fieldNameDictionary = new Dictionary<string, string>();
-            foreach(var ele in doc.Elements("str").Where(ele => ele.Attribute("name").Value.EndsWith("_name_s")))
+            foreach(var ele in doc.Elements("str").Where(ele => ele.Attribute("name").Value.StartsWith("cf-fn_")))
             {
                 var key = ele.Attribute("name").Value;
-                fieldNameDictionary.Add(key.Substring(0, key.Length - 7), ele.Value); //exclude _name_s
+                fieldNameDictionary.Add(key.Substring(6, key.Length - 8), ele.Value); //exclude cf-fn_ at the begining and _s at the end
             }
 
             //Populating result fields

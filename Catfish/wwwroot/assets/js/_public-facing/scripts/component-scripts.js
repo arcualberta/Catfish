@@ -230,6 +230,20 @@ function showResultSlip(resultEntries) {
             $(anchor).attr("href", url);
         });
 
+        //setting the list of fields to be displayed when the detailed-view link is clicked
+      let detailsDiv = $(slip).find("div[data-details]")[0];
+        if (moreFieldList) {
+          moreFieldList.forEach((fieldName) => {
+            let field = e.fields.filter((f) => {
+              return f.fieldName == fieldName;
+            })[0];
+
+            if (field) {
+              $(detailsDiv).append(`<div>${field.fieldName}: ${field.fieldContent.join()}</div>`)
+            }
+          });
+        }
+
         let thumbnailDiv = $(slip).find("div[data-details-view-link]")[0];
         if (thumbnailDiv) {
             let fieldId = $(slipElement).data("field-id");

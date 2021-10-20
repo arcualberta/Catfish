@@ -13,6 +13,12 @@
 
     string renderingType = Model.SelectedRenderingType.Value;
 }
+<script>
+    var moreFieldList = ["Creator/Contributors", "Publisher", "Language",
+        "Type", "Format", "Extent", "Thematic areas", "subject-English",
+        "Genre/Form", "Medium of Performance", "Coverage (Spatial)",
+        "Source Collection", "Source Collection ID", "Related records", "Rights/Access Statement"];
+</script>
 
 <div class="container container-fluid advanced-search">
     <h2>Search</h2>
@@ -139,6 +145,7 @@
 
                             </div>
                             <div class="entryDetailLink"><a href="#" data-details-view-link><b>More</b></a></div>
+                            <div data-details></div>
                             <div class="entryTags"><b>Tags:</b> <span data-field-id="@keywordFieldId" data-val-separator=","></span></div>
                         </div>
                         <div class="col-md-2 entryImg" data-field-id="@thumbnailFieldId" data-thumbnail="true"></div>
