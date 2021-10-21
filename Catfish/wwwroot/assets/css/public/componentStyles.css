@@ -721,6 +721,13 @@
     /*border-bottom: 1px solid grey;*/
 }
 
+[data-toggle="collapse"].collapsed .if-not-collapsed {
+    display: none;
+}
+
+[data-toggle="collapse"]:not(.collapsed) .if-collapsed {
+    display: none;
+}
 
 /* ============================================== News Feed Block                    =============================== */
 .fbTimeline {

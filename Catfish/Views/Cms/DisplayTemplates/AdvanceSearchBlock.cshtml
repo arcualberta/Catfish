@@ -149,7 +149,12 @@
                             @*  ==== Redirect to different Page ============
                                 <div class="entryDetailLink"><a href="#" data-details-view-link><b>More</b></a></div>*@
 
-                            <a class="entryDetailLink stretched-link text-info" data-toggle="collapse" role="button" aria-expanded="false" data-target="#entryDetails_@titleFieldId"><b>More</b></a>
+                        <a class="entryDetailLink stretched-link text-info collapsed" data-toggle="collapse" role="button" aria-expanded="false" data-target="#entryDetails_@titleFieldId">
+
+                            <!--You can put any valid html inside these!-->
+                            <span class="if-collapsed"><b>More</b></span>
+                            <span class="if-not-collapsed"><b>Less</b></span>
+                        </a>
                             <div id="entryDetails_@titleFieldId" class="entryDetails collapse multi-collapse " data-details></div>
 
 
