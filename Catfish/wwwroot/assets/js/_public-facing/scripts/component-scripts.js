@@ -222,16 +222,25 @@ function showResultSlip(resultEntries) {
             $(anchor).attr("href", url);
         });
 
-        //setting any links to the detailed view of the item
-        $(slip).find("a[data-details-view-link]").each((k, anchor) => {
-            //TODO: Set the the appropriate url
-            let url = window.location.origin + "/items/" + itemId;
+        //setting any links to the detailed view of the item == commented out now, don't need it
+        //$(slip).find("a[data-details-view-link]").each((k, anchor) => {
+            // Set the the appropriate url
+          //  let url = window.location.origin + "/items/" + itemId;
 
-            $(anchor).attr("href", url);
-        });
+         //   $(anchor).attr("href", url);
+       // });
+
+        //replacing Id of data-details div to make it uniques 
+        //and the data target of the "More" button
+        let entryLink = $(slip).find("a.entryDetailLink")[0];
+        $(entryLink).attr("data-target", "#entryDetails_" + itemId);
 
         //setting the list of fields to be displayed when the detailed-view link is clicked
-      let detailsDiv = $(slip).find("div[data-details]")[0];
+        let detailsDiv = $(slip).find("div[data-details]")[0];
+        $(detailsDiv).attr("id", "entryDetails_" + itemId)
+        
+
+      
         if (moreFieldList) {
           moreFieldList.forEach((fieldName) => {
             let field = e.fields.filter((f) => {
@@ -276,3 +285,4 @@ function wordLimit(str, limit, end) {
 
     return str.join(' ');
 }
+
