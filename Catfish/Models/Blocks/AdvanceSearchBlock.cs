@@ -2,7 +2,7 @@
 using Catfish.Models.Fields;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
-
+using System.Linq;
 
 namespace Catfish.Models.Blocks
 {
@@ -31,6 +31,18 @@ namespace Catfish.Models.Blocks
         public TextAreaField SelectedUrlFieldId { get; set; }
         public TextAreaField SelectedThumbnailFieldId { get; set; }
 
+        public TextAreaField SelectedFieldList { get; set; }
         public NumberField MaxWords { get; set; } = 100;
+
+        public string[] GetSelectedFieldList()
+        {
+            string[] fieldNames = new string[] { };
+            if (SelectedFieldList.Value != null)
+            {
+                fieldNames = SelectedFieldList.Value.Split(new char[] { ',', '\n' }, System.StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
+            }
+
+            return fieldNames;
+        }
     }
 }

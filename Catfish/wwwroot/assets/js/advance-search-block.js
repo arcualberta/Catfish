@@ -17,13 +17,13 @@ Vue.component("advance-search", {
    
     methods: {
         onBlur: function (e) {
-            this.model.entityTemplateId.value = e.target.value;
+            this.model.selectedFieldList.value = e.target.value;
 
-            var content = this.model.entityTemplateId.value;
+            var content = this.model.selectedFieldList.value;
             if (content.length > 0) {
                 this.$emit('update-content', {
                     uid: this.uid,
-                    entityTemplateId: content
+                    selectedFieldList: content
                 });
             }
         },
@@ -153,6 +153,7 @@ Vue.component("advance-search", {
     <div class='lead row'><label class='form-label col-md-3 required'>Slip Body Link: </label>
            <select v-model="model.selectedLinkFieldId.value" class="form-control" style="width:auto;">
                 <option disabled value="">Please select one</option>
+                <option value="Link to Item Details Page" selected>Link to Item Details section on the same page</option>
                 <option value="Link to Item Details Page">Link to Item Details Page</option>
                 <option v-for="item in this.metadatasetFields" :value="item.value">{{item.text}}</option>
 
@@ -164,6 +165,12 @@ Vue.component("advance-search", {
                 <option v-for="item in this.metadatasetFields" :value="item.value">{{item.text}}</option>
 
          </select></div>
+      <br/>
+     <div class="alert alert-info">Please list the selected fields' name below, separated by a comma, when you choose <i>'Link to Item Details section on the same page'</i> on the <i>'Slip Body Link'</i> </div>
+     <div class='lead row'>
+             <textarea rows='4' v-model='model.selectedFieldList.value' contenteditable='true' value='maxWordsValue' class="form-control col-md-11" style="margin-left:15px">
+ 
+    </div>
 
 </div>`
 

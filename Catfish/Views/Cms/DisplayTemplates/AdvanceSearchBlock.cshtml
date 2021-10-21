@@ -11,13 +11,15 @@
     var fields = _entityTemplateService.GetTemplateMetadataSetFields(entityTemplateId, metadatasetId).ToArray();
     Array.Sort(fields, delegate (BaseField x, BaseField y) { return x.GetName().CompareTo(y.GetName()); });
 
+    string[] selectedFields = Model.GetSelectedFieldList();
+
     string renderingType = Model.SelectedRenderingType.Value;
+
+
 }
 <script>
-    var moreFieldList = ["Creator/Contributors", "Publisher", "Language",
-        "Type", "Format", "Extent", "Thematic areas", "subject-English",
-        "Genre/Form", "Medium of Performance", "Coverage (Spatial)",
-        "Source Collection", "Source Collection ID", "Related records", "Rights/Access Statement"];
+    var moreFieldList = @Html.Raw(Json.Serialize(selectedFields))
+    
 </script>
 
 <div class="container container-fluid advanced-search">
