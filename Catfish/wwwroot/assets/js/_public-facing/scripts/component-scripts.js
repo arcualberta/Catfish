@@ -5,15 +5,29 @@ $(function () {
     //advance search
     //the query param need to be "?q=searchText"  ==> ?q= 
     let searchMode = $('input[name="searchMode"]:checked').val();
-    if (searchMode === "simple") {
-        let queryStr = window.location.search;
-        if (queryStr !== "") {
-            $("#simpleSearchTerm").val(queryStr.substring(3));
-          
-            $("#advanceSearchSubmitBtn").click();
-        }
-    }
+    let queryStr = window.location.search;
+    if (queryStr !== "") {
+      let qval = queryStr.substring(3);
+      if (qval.indexOf("___") < 1) {
+        //This is a simple search
+        $("#simpleSearchTerm").val(qval);
+      }
+      else {
+          //This is an advanced search.
+          //Separating key-value pairs
+          let pairs = qval.split("|||")
+          pairs.forEach((pair) => {
+            let keyval = pair.split("___");
+            $(`#${keyval[0]}`).val(keyval[1]);
+          });
 
+        //select the advance search mode
+        $("input[name='searchMode'][value='advanced']").attr("checked", true).click();
+        //$(".search-mode").hide();
+
+        }
+        $("#advanceSearchSubmitBtn").click();
+    }
 });
 
 function searchText() {
