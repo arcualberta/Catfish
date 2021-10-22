@@ -142,8 +142,8 @@ namespace Catfish
             services.AddAuthentication()
             .AddGoogle(options =>
             {
-            IConfigurationSection googleAuthNSection =
-                Configuration.GetSection("GoogleExternalLogin");
+                IConfigurationSection googleAuthNSection =
+                    Configuration.GetSection("GoogleExternalLogin");
 
                 options.ClientId = googleAuthNSection["Catfish2Oauth-ClientId"];
                 options.ClientSecret = googleAuthNSection["Catfish2Oauth-ClientSecret"];
@@ -231,7 +231,8 @@ namespace Catfish
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApi api)
         {
-            if (env.IsDevelopment())
+            var enableRemoteErrors = Configuration.GetSection("SiteConfig:RemoteErrors").Get<bool>();
+            if (env.IsDevelopment() || enableRemoteErrors)
             {
                 app.UseDeveloperExceptionPage();
             }

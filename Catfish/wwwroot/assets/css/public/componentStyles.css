@@ -665,8 +665,12 @@
     font-weight: normal;
 }
 
+.advanced-search #advanceSearchSubmitBtn {
+    margin-bottom: 25px;
+}
+
 .advanced-search .searchResults {
-    margin-top: 25px;
+    padding: 25px;
 }
 
 .advanced-search .search-controls{
@@ -698,6 +702,10 @@
     margin-right: -15px;
     margin-left: -15px;
     padding-left: 15px;
+}
+
+.entryDetails{
+    margin-top: 10px;
 }
 
 .entryTags {

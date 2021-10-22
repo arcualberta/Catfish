@@ -89,7 +89,7 @@
                 <label id="currentPageInfo" style="width:250px; text-align:center"></label>
                 <input id="nextPageBtn" type="submit" value="Next >>" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#nextPageOffset').val(),'@renderingType'); return false;" />
 
-                <span style="margin-left:100px;">
+                <span style="margin-left:100px;" class="row-height-ctrl">
                     <label>Row Height: </label>
                     <input type="number" id="max-row-height" value="10" style="width:75px;" onchange="resizeRowHeight($(this).val());" />
                 </span>
