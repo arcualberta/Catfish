@@ -14,6 +14,7 @@ namespace Catfish.Core.Services
         private readonly AppDbContext _db;
         private readonly ISolrService _solr;
         private readonly int _indexBatchSize;
+        private readonly bool _indexFieldNames;
         public SolrBatchService(IConfiguration config, AppDbContext db, ISolrService solr)
         {
             _config = config;
@@ -21,6 +22,9 @@ namespace Catfish.Core.Services
             _solr = solr;
             var batchSize = _config.GetSection("SolarConfiguration:IndexBatchSize").Value;
             _indexBatchSize = string.IsNullOrEmpty(batchSize) ? 1000 : int.Parse(batchSize);
+         
+            _indexFieldNames = false;
+            _ = bool.TryParse(_config.GetSection("SolarConfiguration:IndexFieldNames").Value, out _indexFieldNames);
         }
 
         public void IndexItems(bool forceReindexingAll)
@@ -65,7 +69,7 @@ namespace Catfish.Core.Services
 
                     if (indexHistory.LastIndexedAt < item.Updated)
                     {
-                        docsToIndex.Add(new SolrDoc(item));
+                        docsToIndex.Add(new SolrDoc(item, _indexFieldNames));
                         indexingHistoriesToUpdate.Add(indexHistory);
                     }
                 }

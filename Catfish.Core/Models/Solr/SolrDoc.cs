@@ -18,7 +18,7 @@ namespace Catfish.Core.Models.Solr
         public SolrDoc()
         {
         }
-        public SolrDoc(Entity src)
+        public SolrDoc(Entity src, bool indexFieldNames)
         {
             AddId(src.Id);
             AddField("status_s", src.StatusId);
@@ -27,13 +27,13 @@ namespace Catfish.Core.Models.Solr
             AddField("doc_type_ss", typeof(Item).IsAssignableFrom(src.GetType()) ? "item" : "entity");
 
             foreach (var child in src.MetadataSets)
-                AddContainerFields("metadata", child);
+                AddContainerFields("metadata", child, indexFieldNames);
 
             foreach (var child in src.DataContainer)
-                AddContainerFields("data", child);
+                AddContainerFields("data", child, indexFieldNames);
         }
 
-        protected void AddContainerFields(string containerPrefix, FieldContainer container)
+        protected void AddContainerFields(string containerPrefix, FieldContainer container, bool indexFieldNames)
         {
             foreach(var field in container.Fields)
             {
@@ -92,8 +92,11 @@ namespace Catfish.Core.Models.Solr
                 }
 
                 //Adding the name of the field to the index.
-                string solrNameFieldName = string.Format("cf-fn_{0}_s", solrFieldName);
-                AddField(solrNameFieldName, field.Name.GetConcatenatedContent(" / "));
+                if (indexFieldNames)
+                {
+                    string solrNameFieldName = string.Format("cf-fn_{0}_s", solrFieldName);
+                    AddField(solrNameFieldName, field.Name.GetConcatenatedContent(" / "));
+                }
 
             }
         }

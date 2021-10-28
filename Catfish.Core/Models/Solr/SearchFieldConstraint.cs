@@ -6,7 +6,7 @@ namespace Catfish.Core.Models.Solr
 {
     public class SearchFieldConstraint
     {
-        public enum eScope { Data, Metadata }
+        public enum eScope { Data, Metadata, Other }
 
         public eScope Scope { get; set; }
         public Guid ContainerId { get; set; }
@@ -33,7 +33,7 @@ namespace Catfish.Core.Models.Solr
             if(str == "metadata")
                 return eScope.Metadata;
 
-            throw new Exception("Unknown scope: " + str);
+            return eScope.Other;
         }
 
     }

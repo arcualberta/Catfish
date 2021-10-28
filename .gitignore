@@ -153,6 +153,9 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
+#Vue applets compiled code
+/Catfish/wwwroot/assets/dist/applets/
+
 Catfish/App_Data
 /Catfish/Web.config
 /packages

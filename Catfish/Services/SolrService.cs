@@ -21,18 +21,22 @@ namespace Catfish.Services
         private readonly string _solrCoreUrl;
         private readonly ErrorLog _errorLog;
         private SearchResult _result;
+        private readonly bool _indexFieldNames;
         public SolrService(IConfiguration config, ErrorLog errorLog)
         {
             _config = config;
             _solrCoreUrl = config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
             _errorLog = errorLog;
+
+            _indexFieldNames = false;
+            _ = bool.TryParse(_config.GetSection("SolarConfiguration:IndexFieldNames").Value, out _indexFieldNames);
         }
         public void Index(Entity entity)
         {
             //XElement xml = GetSampleDoc();
             //AddUpdateAsync(xml);
 
-            SolrDoc doc = new SolrDoc(entity);
+            SolrDoc doc = new SolrDoc(entity, _indexFieldNames);
             AddUpdateAsync(doc);
         }
 
@@ -48,7 +52,7 @@ namespace Catfish.Services
         {
             //XElement xml = GetSampleDoc();
             //AddUpdateAsync(xml);
-            var docs = entities.Select(entity => new SolrDoc(entity)).ToList();
+            var docs = entities.Select(entity => new SolrDoc(entity, _indexFieldNames)).ToList();
             Index(docs);
         }
 

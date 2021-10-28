@@ -49,6 +49,10 @@ namespace Catfish.Core.Models.Solr
             foreach (var highlightFieldEntry in highlights.Elements("arr").Where(ele => ele.Attribute("name").Value != "doc_type_ss"))
             {
                 var fieldKey = highlightFieldEntry.Attribute("name").Value;
+
+                if (!(fieldKey.StartsWith("data_") || fieldKey.StartsWith("metadata_")))
+                    continue;
+
                 string[] fieldKeyParts = fieldKey.Split("_");
                 var containerType = SearchFieldConstraint.Str2Scope(fieldKeyParts[0]);
                 var containerId = Guid.Parse(fieldKeyParts[1]);
