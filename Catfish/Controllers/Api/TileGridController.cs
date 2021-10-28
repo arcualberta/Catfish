@@ -107,31 +107,36 @@ namespace Catfish.Controllers.Api
                     tile.DetailedViewUrl = detailedViewUrl + resultItem.Id;
 
                     var categories = resultItem.Fields.FirstOrDefault(field => field.FieldId == keywordsFieldId)?.FieldContent.ToArray();
-                    foreach(var cat in categories)
+                    if (keywordsFieldId != Guid.Empty && categories == null)
+                        _errorLog.Log(new Error(new Exception(string.Format("Keyword field with ID {0} not found for item with ID {1}", keywordsFieldId, resultItem.Id))));
+                    else
                     {
-                        if (cat.StartsWith("ref://"))
+                        foreach (var cat in categories)
                         {
-                            try
+                            if (cat.StartsWith("ref://"))
                             {
+                                try
+                                {
 
 
-                                //This is a reference field
-                                var parts = cat.Substring(6).Split("_");
-                                var containerId = Guid.Parse(parts[1]);
+                                    //This is a reference field
+                                    var parts = cat.Substring(6).Split("_");
+                                    var containerId = Guid.Parse(parts[1]);
 
-                                //Get all fields that starts with the prefix
-                                var keywordFields = resultItem.Fields.Where(field => field.ContainerId == containerId).ToList();
-                                foreach (var kf in keywordFields)
-                                    tile.Categories.AddRange(kf.FieldContent);
+                                    //Get all fields that starts with the prefix
+                                    var keywordFields = resultItem.Fields.Where(field => field.ContainerId == containerId).ToList();
+                                    foreach (var kf in keywordFields)
+                                        tile.Categories.AddRange(kf.FieldContent);
+                                }
+                                catch (Exception ex)
+                                {
+                                    _errorLog.Log(new Error() { Message = "Field referencing error." });
+                                    _errorLog.Log(new Error(ex));
+                                }
                             }
-                            catch (Exception ex)
-                            {
-                                _errorLog.Log(new Error() { Message = "Field referencing error." });
-                                _errorLog.Log(new Error(ex));
-                            }
+                            else
+                                tile.Categories.Add(cat);
                         }
-                        else
-                            tile.Categories.Add(cat);
                     }
 
                     result.Items.Add(tile);
