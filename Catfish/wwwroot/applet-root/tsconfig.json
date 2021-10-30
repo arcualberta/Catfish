@@ -15,6 +15,10 @@
     "types": [
       "webpack-env"
     ],
+    "typedocOptions": {
+      "entryPoints": [ "src" ],
+      "out": "docs"
+    },
     "paths": {
       "@/*": [
         "src/*"
