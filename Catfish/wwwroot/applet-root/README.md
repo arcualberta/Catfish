@@ -1,4 +1,4 @@
-# applets
+# applet-root
 
 ## Project setup
 ```

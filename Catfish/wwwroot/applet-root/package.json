@@ -1,5 +1,5 @@
 {
-  "name": "applets",
+  "name": "applet-root",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,9 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "guid-typescript": "^1.0.9",
     "vue": "^3.0.0",
-    "vue-class-component": "^8.0.0-0",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
@@ -28,7 +26,6 @@
     "eslint-plugin-vue": "^7.0.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "typedoc": "^0.22.7",
     "typescript": "~4.1.5"
   }
 }

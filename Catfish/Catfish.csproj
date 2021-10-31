@@ -8,9 +8,17 @@
   <UserSecretsId>fb287c84-b0b6-46e0-893a-86f23d79c05e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="wwwroot\applet-root\src\applets\**" />
+    <Compile Remove="wwwroot\applet-root\src\store\defs\**" />
     <Compile Remove="wwwroot\applets\**" />
+    <Content Remove="wwwroot\applet-root\src\applets\**" />
+    <Content Remove="wwwroot\applet-root\src\store\defs\**" />
     <Content Remove="wwwroot\applets\**" />
+    <EmbeddedResource Remove="wwwroot\applet-root\src\applets\**" />
+    <EmbeddedResource Remove="wwwroot\applet-root\src\store\defs\**" />
     <EmbeddedResource Remove="wwwroot\applets\**" />
+    <None Remove="wwwroot\applet-root\src\applets\**" />
+    <None Remove="wwwroot\applet-root\src\store\defs\**" />
     <None Remove="wwwroot\applets\**" />
   </ItemGroup>
   <ItemGroup>
@@ -23,13 +31,7 @@
   <ItemGroup>
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
-    <Content Remove="wwwroot\applet-root\src\applets\keyword-search\components\actions.ts" />
-    <Content Remove="wwwroot\applet-root\src\applets\keyword-search\components\getters.ts" />
-    <Content Remove="wwwroot\applet-root\src\applets\keyword-search\components\mutations.ts" />
-    <Content Remove="wwwroot\applet-root\src\applets\keyword-search\components\state.ts" />
-    <Content Remove="wwwroot\applet-root\src\applets\keyword-search\models\index.ts" />
-    <Content Remove="wwwroot\applet-root\src\applets\keyword-search\models\keywords.ts" />
-    <Content Remove="wwwroot\applet-root\src\applets\shared\models\index.ts" />
+    <Content Remove="wwwroot\applet-root\src\store\getters.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\models\keywords.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\client-cache.ts" />
@@ -94,7 +96,6 @@
     <Folder Include="Areas\Manager\Shared\Partial\" />
     <Folder Include="Areas\Manager\Views\" />
     <Folder Include="Models\FormBuilder\" />
-    <Folder Include="wwwroot\applet-root\src\applets\keyword-search\components\" />
     <Folder Include="wwwroot\assets\js\vendor\" />
     <Folder Include="wwwroot\Vue\FormBuilder\" />
   </ItemGroup>
@@ -104,15 +105,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\keyword-search\models\index.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\keyword-search\models\keywords.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\shared\models\index.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

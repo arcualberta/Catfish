@@ -6,7 +6,6 @@
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -26,10 +25,6 @@
       "dom.iterable",
       "scripthost"
     ]
-  },
-  "typedocOptions": {
-    "entryPoints": [ "src/applets/keyword-search/index.ts" ],
-    "out": "docs"
   },
   "include": [
     "src/**/*.ts",
