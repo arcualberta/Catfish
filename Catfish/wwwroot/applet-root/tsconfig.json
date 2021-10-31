@@ -15,10 +15,6 @@
     "types": [
       "webpack-env"
     ],
-    "typedocOptions": {
-      "entryPoints": [ "src" ],
-      "out": "docs"
-    },
     "paths": {
       "@/*": [
         "src/*"
@@ -30,6 +26,10 @@
       "dom.iterable",
       "scripthost"
     ]
+  },
+  "typedocOptions": {
+    "entryPoints": [ "src/applets/keyword-search/index.ts" ],
+    "out": "docs"
   },
   "include": [
     "src/**/*.ts",

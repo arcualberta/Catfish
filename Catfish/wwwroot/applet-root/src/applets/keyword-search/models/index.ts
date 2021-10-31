@@ -1,4 +1,5 @@
 ﻿import { Guid } from "guid-typescript";
+import { Item } from '../../shared/models'
 
 export interface SearchOutput {
   items: Item[],

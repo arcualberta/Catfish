@@ -29,8 +29,7 @@
     <Content Remove="wwwroot\applet-root\src\applets\keyword-search\components\state.ts" />
     <Content Remove="wwwroot\applet-root\src\applets\keyword-search\models\index.ts" />
     <Content Remove="wwwroot\applet-root\src\applets\keyword-search\models\keywords.ts" />
-    <Content Remove="wwwroot\applet-root\src\applets\keyword-search\store.ts" />
-    <Content Remove="wwwroot\applet-root\src\shared\models\index.ts" />
+    <Content Remove="wwwroot\applet-root\src\applets\shared\models\index.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\models\keywords.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\client-cache.ts" />
@@ -95,7 +94,7 @@
     <Folder Include="Areas\Manager\Shared\Partial\" />
     <Folder Include="Areas\Manager\Views\" />
     <Folder Include="Models\FormBuilder\" />
-    <Folder Include="wwwroot\applet-root\src\shared\components\" />
+    <Folder Include="wwwroot\applet-root\src\applets\keyword-search\components\" />
     <Folder Include="wwwroot\assets\js\vendor\" />
     <Folder Include="wwwroot\Vue\FormBuilder\" />
   </ItemGroup>
@@ -105,24 +104,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\keyword-search\actions.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\keyword-search\getters.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\applet-root\src\applets\keyword-search\models\index.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\applet-root\src\applets\keyword-search\models\keywords.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\keyword-search\mutations.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\keyword-search\state.ts" />
-    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\keyword-search\store.ts" />
-    <TypeScriptCompile Include="wwwroot\applet-root\src\shared\models\index.ts">
+    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\shared\models\index.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">

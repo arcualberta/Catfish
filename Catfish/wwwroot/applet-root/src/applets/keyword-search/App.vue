@@ -1,14 +1,14 @@
 <template>
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <Tile />
 </template>
 
 <script lang="ts">
     import { Options, Vue } from 'vue-class-component';
-    import ResultItem from './components/ResultItem.vue';
+    import Tile from '../shared/components/Tile.vue';
 
 @Options({
   components: {
-        ResultItem,
+        Tile,
   },
 })
 export default class App extends Vue {}

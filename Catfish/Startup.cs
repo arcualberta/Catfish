@@ -1,4 +1,5 @@
-﻿using Catfish.Areas.Manager.Access;
+﻿using Catfish.Areas.Applets.BlockModels;
+using Catfish.Areas.Manager.Access;
 using Catfish.Core.Authorization.Handlers;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models;
@@ -100,7 +101,6 @@ namespace Catfish
                 options.UseManager();
                 options.UseTinyMCE();
                 options.UseMemoryCache();
-
                 options.AddRazorRuntimeCompilation = true; //MR: Feb 11, 2020  -- Enabled run time compiler for razor, so don't need to recompile when update the view
             });
 
@@ -111,8 +111,22 @@ namespace Catfish
                 options.UseSqlServer(sqlConnectionString));
 
             services.AddRazorPages()
-                .AddPiranhaManagerOptions();
+                .AddPiranhaManagerOptions()
+                .AddRazorOptions(options =>
+                {
+                    options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+          
+                    options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    //options.ViewLocationExpanders.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                });
 
+
+            services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(options =>
+            {
+                options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+            });
 
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
@@ -136,7 +150,22 @@ namespace Catfish
 
             services.AddRazorPages()
                 .AddPiranhaManagerOptions()
-                .AddMvcOptions(options => options.ModelBinderProviders.Insert(0, new FormFieldModelBinderProvider()));
+                .AddMvcOptions(options => options.ModelBinderProviders.Insert(0, new FormFieldModelBinderProvider()))
+              
+                .AddRazorOptions(options =>
+                {
+                    //options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    //options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+
+                    //options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    //options.ViewLocationExpanders.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                });
+
+                //services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(o =>
+                //{
+                //    o.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                //});
 
             //MR -- July 29 2021 -- add google Oauth login
             services.AddAuthentication()
@@ -268,27 +297,8 @@ namespace Catfish
                 }
             });
 
-
-            // Middleware setup
-            //use localization
-            // var supportedCulture = new[]
-            //{
-            //     new CultureInfo("en"),
-            //     new CultureInfo("rus")
-
-            // };
-            // var requestLocalizationOptios = new RequestLocalizationOptions
-            // {
-            //     DefaultRequestCulture = new RequestCulture("en"),
-            //     //for formating like date, currency,etc
-            //     SupportedCultures = supportedCulture,
-            //     //UI string -- resources that we provided
-            //     SupportedUICultures = supportedCulture
-
-            // };
-            // app.UseRequestLocalization(requestLocalizationOptios);
-
             app.UsePiranha();
+
             //MR Feb 7 2020 -- add classic MVC routing
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
@@ -334,8 +344,13 @@ namespace Catfish
                 endpoints.MapDefaultControllerRoute();
 
                 endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
                 endpoints.MapPiranhaManager();
             });
@@ -431,7 +446,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/card-block-vue.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/news-feed-block-vue.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/tile-grid.js");
-
+            App.Modules.Manager().Scripts.Add("~/assets/js/keyword-search.js");
         }
         private static void RegisterCustomBlocks()
         {
@@ -458,6 +473,7 @@ namespace Catfish
             App.Blocks.Register<CardBlock>();
             App.Blocks.Register<NewsFeedBlock>();
             App.Blocks.Register<TileGrid>();
+            App.Blocks.Register<KeywordSearch>();
         }
         private static void RegisterCustomStyles()
         {
