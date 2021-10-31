@@ -114,19 +114,19 @@ namespace Catfish
                 .AddPiranhaManagerOptions()
                 .AddRazorOptions(options =>
                 {
-                    options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    //options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    //options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
           
-                    options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    //options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
                     //options.ViewLocationExpanders.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    //options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
                 });
 
 
-            services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(options =>
-            {
-                options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-            });
+            //services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(options =>
+            //{
+            //    options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+            //});
 
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
@@ -151,21 +151,7 @@ namespace Catfish
             services.AddRazorPages()
                 .AddPiranhaManagerOptions()
                 .AddMvcOptions(options => options.ModelBinderProviders.Insert(0, new FormFieldModelBinderProvider()))
-              
-                .AddRazorOptions(options =>
-                {
-                    //options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    //options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-
-                    //options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    //options.ViewLocationExpanders.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                });
-
-                //services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(o =>
-                //{
-                //    o.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                //});
+                .AddRazorOptions(options => options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml"));
 
             //MR -- July 29 2021 -- add google Oauth login
             services.AddAuthentication()
