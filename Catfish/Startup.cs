@@ -1,4 +1,4 @@
-﻿using Catfish.Areas.Applets.BlockModels;
+﻿using Catfish.Areas.Applets.Blocks;
 using Catfish.Areas.Manager.Access;
 using Catfish.Core.Authorization.Handlers;
 using Catfish.Core.Helpers;
@@ -151,7 +151,7 @@ namespace Catfish
             services.AddRazorPages()
                 .AddPiranhaManagerOptions()
                 .AddMvcOptions(options => options.ModelBinderProviders.Insert(0, new FormFieldModelBinderProvider()))
-                .AddRazorOptions(options => options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml"));
+                .AddRazorOptions(options => options.ViewLocationFormats.Add("/Areas/Applets/Blocks/{0}.cshtml"));
 
             //MR -- July 29 2021 -- add google Oauth login
             services.AddAuthentication()
