@@ -4,12 +4,16 @@
         <div class="row">Page Id: {{pageId}}</div>
         <div class="row">Block Id: {{blockId}}</div>
         <div class="row">Applet Name: {{appletName}}</div>
+        <div class="row">Data Attributes {{dataAttributes}}</div>
     </div>
 </template>
 
 <script lang="ts">
     import { defineComponent, ref, PropType, computed, toRefs, watch } from 'vue';
     import { Guid } from 'guid-typescript';
+
+    import { DataAttribute } from '../../models';
+
     //import KeywordFilter from './components/KeywordFilter.vue';
     //import { useStore } from './store';
     //import { Actions } from './store/defs/actions';
@@ -31,6 +35,10 @@
             appletName: {
                 required: true,
                 type: String
+            },
+            dataAttributes: {
+                required: false,
+                type: null as PropType<DataAttribute> | null
             }
         },
         setup() {

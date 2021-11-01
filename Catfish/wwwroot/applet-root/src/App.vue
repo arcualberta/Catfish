@@ -1,5 +1,5 @@
 <template>
-    <KeywordSearch :page-id="pageId" :block-id="blockId" :applet-name="appletName"></KeywordSearch>
+    <KeywordSearch :page-id="pageId" :block-id="blockId" :applet-name="appletName" :data-attributes="dataAttributes"></KeywordSearch>
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
 </template>
 
