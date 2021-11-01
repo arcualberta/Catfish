@@ -34,15 +34,15 @@
             this.blockId = this.$el.parentElement.getAttribute("block-id");
             this.appletName = this.$el.parentElement.getAttribute("applet-name");
 
-            const dataAttributeNames = Array.from(this.$el.parentElement.attributes);
-                //.filter(att => att.toString().startsWith("data-"));
+            const dataAttributeNames = Array.from(this.$el.parentElement.attributes)
+                .filter(att => (att as Attr).name.startsWith("data-"));
             dataAttributeNames.forEach(att => {
+                const attrib = (att as Attr);
                 this.dataAttributes.push({
-                    name: att as string,
-                    value: this.$el.parentElement.getAttribute(att as string)
+                    name: attrib.name.substring(5),
+                    value: attrib.value
                 });
             });
-            console.log("Attribute Names: ", dataAttributeNames);
             console.log("Parent Attributes: ", this.dataAttributes);
 
             const store = useStore();
