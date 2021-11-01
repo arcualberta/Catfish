@@ -8,6 +8,7 @@
     import { Guid } from 'guid-typescript';
     import { useStore } from 'vuex';
     import { Mutations } from './store/defs/mutations';
+    import { DataAttribute } from './models';
 
     import HelloWorld from './components/HelloWorld.vue';
     import KeywordSearch from './applets/keyword-search/App.vue'
@@ -24,13 +25,25 @@
             const appletName = ref('')
             const pageId = ref(Guid.EMPTY)
             const blockId = ref(Guid.EMPTY)
+            const dataAttributes = ref([] as DataAttribute[])
 
-            return { appletName, pageId, blockId }
+            return { appletName, pageId, blockId, dataAttributes }
         },
         mounted() {
             this.pageId = this.$el.parentElement.getAttribute("page-id");
             this.blockId = this.$el.parentElement.getAttribute("block-id");
             this.appletName = this.$el.parentElement.getAttribute("applet-name");
+
+            const dataAttributeNames = Array.from(this.$el.parentElement.attributes);
+                //.filter(att => att.toString().startsWith("data-"));
+            dataAttributeNames.forEach(att => {
+                this.dataAttributes.push({
+                    name: att as string,
+                    value: this.$el.parentElement.getAttribute(att as string)
+                });
+            });
+            console.log("Attribute Names: ", dataAttributeNames);
+            console.log("Parent Attributes: ", this.dataAttributes);
 
             const store = useStore();
             store.commit(Mutations.INIT_APPLET, { pageId: this.pageId, blockId: this.blockId, appletName: this.appletName });
