@@ -1,8 +1,9 @@
 <template>
-    <div class="row">
+    <div>
         <h2>Keyword Search</h2>
-        <div>Page Id: {{pageIdx}}</div>
-        <!--<KeywordFilter :keywords="keywords" :page-id="pageId" :block-id="blockId" />-->
+        <div class="row">Page Id: {{pageId}}</div>
+        <div class="row">Block Id: {{blockId}}</div>
+        <div class="row">Applet Name: {{appletName}}</div>
     </div>
 </template>
 
