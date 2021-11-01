@@ -1,4 +1,5 @@
 <template>
+    <KeywordSearch page-id="this.pageId" block-id="blockId" applet-name="appletName"></KeywordSearch>
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
 </template>
 
@@ -9,11 +10,13 @@
     import { Mutations } from './store/defs/mutations';
 
     import HelloWorld from './components/HelloWorld.vue';
+    import KeywordSearch from './applets/keyword-search/App.vue'
 
     export default defineComponent({
         name: 'App',
         components: {
-            HelloWorld
+            HelloWorld,
+            KeywordSearch
         },
         setup() {
 

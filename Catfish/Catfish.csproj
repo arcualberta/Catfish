@@ -8,13 +8,9 @@
   <UserSecretsId>fb287c84-b0b6-46e0-893a-86f23d79c05e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="wwwroot\applet-root\src\applets\**" />
     <Compile Remove="wwwroot\applets\**" />
-    <Content Remove="wwwroot\applet-root\src\applets\**" />
     <Content Remove="wwwroot\applets\**" />
-    <EmbeddedResource Remove="wwwroot\applet-root\src\applets\**" />
     <EmbeddedResource Remove="wwwroot\applets\**" />
-    <None Remove="wwwroot\applet-root\src\applets\**" />
     <None Remove="wwwroot\applets\**" />
   </ItemGroup>
   <ItemGroup>
