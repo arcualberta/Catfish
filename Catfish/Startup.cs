@@ -433,6 +433,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/news-feed-block-vue.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/tile-grid.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/keyword-search.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/carousel.js");
         }
         private static void RegisterCustomBlocks()
         {
@@ -460,6 +461,7 @@ namespace Catfish
             App.Blocks.Register<NewsFeedBlock>();
             App.Blocks.Register<TileGrid>();
             App.Blocks.Register<KeywordSearch>();
+            App.Blocks.Register < Carousel>();
         }
         private static void RegisterCustomStyles()
         {

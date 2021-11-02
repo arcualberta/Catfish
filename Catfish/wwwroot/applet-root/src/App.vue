@@ -1,6 +1,6 @@
 <template>
     <KeywordSearch :page-id="pageId" :block-id="blockId" :applet-name="appletName" :data-attributes="dataAttributes"></KeywordSearch>
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <Carousel :page-id="pageId" :block-id="blockId" :applet-name="appletName" :data-attributes="dataAttributes"></Carousel>
 </template>
 
 <script lang="ts">
@@ -10,13 +10,13 @@
     import { Mutations } from './store/defs/mutations';
     import { DataAttribute } from './models';
 
-    import HelloWorld from './components/HelloWorld.vue';
+    import Carousel from './applets/carousel/App.vue';
     import KeywordSearch from './applets/keyword-search/App.vue'
 
     export default defineComponent({
         name: 'App',
         components: {
-            HelloWorld,
+            Carousel,
             KeywordSearch
         },
         setup() {
@@ -32,7 +32,7 @@
         mounted() {
             this.pageId = this.$el.parentElement.getAttribute("page-id");
             this.blockId = this.$el.parentElement.getAttribute("block-id");
-            this.appletName = this.$el.parentElement.getAttribute("applet-name");
+            this.appletName = this.$el.parentElement.getAttribute("data-applet-name");
 
             const dataAttributeNames = Array.from(this.$el.parentElement.attributes)
                 .filter(att => (att as Attr).name.startsWith("data-"));

@@ -89,6 +89,7 @@
     <Folder Include="Areas\Manager\Shared\Partial\" />
     <Folder Include="Areas\Manager\Views\" />
     <Folder Include="Models\FormBuilder\" />
+    <Folder Include="wwwroot\applet-root\src\components\" />
     <Folder Include="wwwroot\assets\js\vendor\" />
     <Folder Include="wwwroot\Vue\FormBuilder\" />
   </ItemGroup>
@@ -98,6 +99,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\applet-root\src\applets\shared\props.ts" />
     <TypeScriptCompile Include="wwwroot\applet-root\src\store\defs\state.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
       <SubType>Code</SubType>

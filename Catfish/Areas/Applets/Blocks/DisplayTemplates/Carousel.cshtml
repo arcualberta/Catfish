@@ -1,0 +1,14 @@
+﻿@model Catfish.Areas.Applets.Blocks.Carousel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{ 
+    var viewData = new ViewDataDictionary(this.ViewData)
+    {
+        { "applet-name", "KeywordSearch" },
+        { "data-collection-id", Model.SelectedCollection.Value },
+        { "data-display-format", "List" },
+
+    };
+}
+<partial name="Partial/_AppletLoader" view-data="@viewData"/>
+

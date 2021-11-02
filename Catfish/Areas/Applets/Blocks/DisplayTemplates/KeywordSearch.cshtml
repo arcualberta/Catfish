@@ -1,31 +1,13 @@
 ﻿@model Catfish.Areas.Applets.Blocks.KeywordSearch
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@inject Piranha.AspNetCore.Services.IApplicationService _webApp
+@{ 
+    var viewData = new ViewDataDictionary(this.ViewData)
+    {
+        { "applet-name", "Carousel" },
+        { "data-display-format", "Basic" },
 
-<link href="/assets/dist/applets/css/app.css" rel="preload" as="style">
-<link href="/assets/dist/applets/js/app.js" rel="preload" as="script">
-<link href="/assets/dist/applets/js/chunk-vendors.js" rel="preload" as="script">
-<link href="/assets/dist/applets/css/app.css" rel="stylesheet">
-
-
-@{
-    var pageId = _webApp.PageId;
-    var blockId = Model.Id;
-    var collectionId = Model.SelectedCollection.Value;
-    var displayFormat = "List";
+    };
 }
-<script>
-    var pageId = '@pageId'
-    var blockId = '@blockId';
-    var displayFormat = '@displayFormat';
-</script>
+<partial name="Partial/_AppletLoader" view-data="@viewData"/>
 
-<noscript>
-    <strong>We're sorry but Keyword Search applet doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-</noscript>
-
-<div id="app" block-id="@blockId" page-id="@pageId" applet-name="KeywordSearch"
-     data-collection-id="@collectionId" data-display-format="@displayFormat">
-</div>
-<script src="/assets/dist/applets/js/chunk-vendors.js"></script>
-<script src="/assets/dist/applets/js/app.js"></script>

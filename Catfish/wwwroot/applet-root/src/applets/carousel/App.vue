@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>Keyword Search</h2>
+        <h2>Carousel</h2>
         <div class="row">Page Id: {{pageId}}</div>
         <div class="row">Block Id: {{blockId}}</div>
         <div class="row">Applet Name: {{appletName}}</div>
@@ -17,13 +17,11 @@
         components: {
         },
         props,
-        setup() {
-            console.log('Keyword Search setup ...')
-
-
+        setup(props) {
+            console.log('Carousel setup ...')
         },
         mounted() {
-            console.log('Keyword Search mounted ...')
+            console.log('Carousel mounted ...')
         }
     });
 </script>
