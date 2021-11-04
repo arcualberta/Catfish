@@ -2682,7 +2682,8 @@ namespace Catfish.UnitTests
             changeStateAction.GetStateReference(inReviewState.Id, true)
                 .AddAuthorizedRole(sasChair.Id);
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
-                .AddAuthorizedRole(sasAdmin.Id);
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasAdjudication.Id);
 
             // ========================================================
             // Adjudication Decision related workflow items
@@ -2706,7 +2707,8 @@ namespace Catfish.UnitTests
             //////adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
             //////    .AddAuthorizedRole(sasAdjudication.Id);
             adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
-                .AddAuthorizedRole(sasAdmin.Id);
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedRole(sasAdjudication.Id); 
 
 
             //Post action for submitting the form
