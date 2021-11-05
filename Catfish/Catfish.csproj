@@ -8,12 +8,6 @@
   <UserSecretsId>fb287c84-b0b6-46e0-893a-86f23d79c05e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="wwwroot\applets\**" />
-    <Content Remove="wwwroot\applets\**" />
-    <EmbeddedResource Remove="wwwroot\applets\**" />
-    <None Remove="wwwroot\applets\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Controllers\SetupController.cs" />
     <Compile Remove="Models\BlogArchive.cs" />
     <Compile Remove="Models\BlogPost.cs" />
@@ -25,6 +19,7 @@
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
     <Content Remove="wwwroot\applet-root\src\store\getters.ts" />
     <Content Remove="wwwroot\applet-root\src\store\state.ts" />
+    <Content Remove="wwwroot\applets\src\lib-components\shared\props.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\models\keywords.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\client-cache.ts" />
@@ -73,6 +68,12 @@
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="Pages\Shared\DisplayTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
+    <None Include="wwwroot\applets\.browserslistrc" />
+    <None Include="wwwroot\applets\.gitignore" />
+    <None Include="wwwroot\applets\babel.config.js" />
+    <None Include="wwwroot\applets\build\rollup.config.js" />
+    <None Include="wwwroot\applets\dev\serve.vue" />
+    <None Include="wwwroot\applets\src\lib-components\applets-sample.vue" />
     <None Include="wwwroot\assets\js\entitytypelist.js" />
     <None Include="wwwroot\assets\js\textarea-field.js" />
   </ItemGroup>
@@ -101,6 +102,12 @@
   <ItemGroup>
     <TypeScriptCompile Include="wwwroot\applet-root\src\applets\shared\props.ts" />
     <TypeScriptCompile Include="wwwroot\applet-root\src\store\defs\state.ts" />
+    <TypeScriptCompile Include="wwwroot\applets\dev\serve.ts" />
+    <TypeScriptCompile Include="wwwroot\applets\shims-vue.d.ts" />
+    <TypeScriptCompile Include="wwwroot\applets\src\entry.esm.ts" />
+    <TypeScriptCompile Include="wwwroot\applets\src\entry.ts" />
+    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\index.ts" />
+    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\shared\props.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

@@ -1,4 +1,4 @@
-﻿@model Piranha.Extend.Block 
+﻿@model Piranha.Extend.Block
 @using System.Xml.Linq;
 
 @*Catfish.Areas.Applets.Blocks.KeywordSearch*@
@@ -16,10 +16,10 @@
     var blockId = Model.Id;
 }
 @*<script>
-    var pageId = '@pageId'
-    var blockId = '@blockId';
-    var displayFormat = '@displayFormat';
-</script>*@
+        var pageId = '@pageId'
+        var blockId = '@blockId';
+        var displayFormat = '@displayFormat';
+    </script>*@
 
 <noscript>
     <strong>We're sorry but Keyword Search applet doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
@@ -27,11 +27,12 @@
 
 @*Building the div element for mounting the applet *@
 @{
+    var mountPointId = string.Format("app-{0}", blockId);
     XElement div = new XElement("div");
-    div.SetAttributeValue("id", string.Format("app", blockId));
+    div.SetAttributeValue("id", mountPointId);
     div.SetAttributeValue("page-id", pageId);
     div.SetAttributeValue("block-id", blockId);
-    foreach(var pair in ViewData)
+    foreach (var pair in ViewData)
     {
         div.SetAttributeValue(pair.Key, pair.Value);
     }
@@ -39,5 +40,16 @@
     @Html.Raw(div.ToString())
 }
 
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://unpkg.com/vuex@next"></script>
+<script src="/assets/dist/applet.min.js"></script>
+<script type="module">
+    //import Applet from '/assets/dist/applet.min.js';
+    //import { App } from '/assets/dist/applets/js/app.js';
+    //import store from '/assets/dist/applets/js/app.js';
+    Vue.createApp(Applet).mount('#@mountPointId');
+
+    //createApplet();
+</script>
 <script src="/assets/dist/applets/js/chunk-vendors.js"></script>
 <script src="/assets/dist/applets/js/app.js"></script>
