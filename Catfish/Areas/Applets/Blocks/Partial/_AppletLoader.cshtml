@@ -34,7 +34,10 @@
     div.SetAttributeValue("block-id", blockId);
     foreach (var pair in ViewData)
     {
-        div.SetAttributeValue(pair.Key, pair.Value);
+        if(pair.Key.StartsWith("data-"))
+        {
+            div.SetAttributeValue(pair.Key, pair.Value);
+        }
     }
 
     @Html.Raw(div.ToString())
@@ -51,7 +54,12 @@
     //import Applet from '/assets/dist/applet.min.js';
     //import { App } from '/assets/dist/applets/js/app.js';
     //import store from '/assets/dist/applets/js/app.js';
-    Vue.createApp(Applets.AppletsSample).mount('#@mountPointId');
+
+    const applet = Applets.@ViewData["applet"];
+    if (!applet)
+        throw "Applet \"@ViewData["applet"]\" not found.";
+
+    Vue.createApp(Applets.@ViewData["applet"]).mount('#@mountPointId');
 
     //createApplet();
 </script>
