@@ -1,5 +1,5 @@
 ﻿@model Piranha.Extend.Block
-@using System.Xml.Linq;
+@using Newtonsoft.Json;
 
 @*Catfish.Areas.Applets.Blocks.KeywordSearch*@
 
@@ -10,16 +10,25 @@
 <link href="/assets/dist/applets/js/chunk-vendors.js" rel="preload" as="script">
 <link href="/assets/dist/applets/css/app.css" rel="stylesheet">
 
+<noscript>
+    <strong>We're sorry but Keyword Search applet doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+
 
 @{
     var pageId = _webApp.PageId;
     var blockId = Model.Id;
     var mountPointId = string.Format("app-{0}", blockId);
-}
 
-<noscript>
-    <strong>We're sorry but Keyword Search applet doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-</noscript>
+    //Creating a dictionary of all data attributes
+    var dataAttributes = new Dictionary<string, object>();
+    foreach(var pair in ViewData)
+    {
+        if (pair.Key.StartsWith("data-"))
+            dataAttributes.Add(pair.Key.Substring(5), pair.Value);
+    }
+
+}
 
 <div id="@mountPointId"></div>
 
@@ -30,15 +39,15 @@
 <script src="/applets/dist/applets.min.js"></script>
 
 <script type="module">
-    //import store from '/assets/dist/applets/js/app.js';
 
-    const applet = Applets.@ViewData["applet"];
+    const applet = Applets.@Model.GetType().Name;
     if (!applet)
         throw "Applet \"@ViewData["applet"]\" not found.";
 
-    Vue.createApp(Applets.@ViewData["applet"], {
+    Vue.createApp(applet, {
         pageId: '@pageId',
-        blockId: '@blockId'
+        blockId: '@blockId',
+        dataAttributes:@Html.Raw(JsonConvert.SerializeObject(dataAttributes))
     }).mount('#@mountPointId');
 
 </script>

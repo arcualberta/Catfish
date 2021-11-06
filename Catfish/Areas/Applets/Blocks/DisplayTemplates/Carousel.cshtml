@@ -4,10 +4,8 @@
 @{ 
     var viewData = new ViewDataDictionary(this.ViewData)
     {
-        { "applet", "Carousel" },
-        { "data-collection-id", Model.SelectedCollection.Value },
-        { "data-display-format", "List" },
-
+        { "data-display-format", "Basic" },
+        { "data-interval", 10 }
     };
 }
 <partial name="Partial/_AppletLoader" view-data="@viewData"/>
