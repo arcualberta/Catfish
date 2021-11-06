@@ -19,6 +19,7 @@
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
     <Content Remove="wwwroot\applet-root\src\store\getters.ts" />
     <Content Remove="wwwroot\applet-root\src\store\state.ts" />
+    <Content Remove="wwwroot\applets\src\lib-components\shared\initConfigParams.ts" />
     <Content Remove="wwwroot\applets\src\lib-components\shared\props.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\models\keywords.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
@@ -113,6 +114,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="wwwroot\applet-root\src\applets\shared\props.ts" />
     <TypeScriptCompile Include="wwwroot\applet-root\src\store\defs\state.ts" />
+    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\shared\initConfigParams.ts" />
     <TypeScriptCompile Include="wwwroot\applets\src\lib-components\shared\props.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
       <SubType>Code</SubType>

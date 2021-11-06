@@ -3,14 +3,14 @@
     import props from '../shared/props'
 
     export default defineComponent({
-        name: "Applet",
+        name: "Carousel",
         components: {
         },
         props,
-        setup() {
+        setup(p, ctx) {
             console.log('Carousel setup ...')
-
-
+            console.log('props: ', p)
+            console.log('context: ', ctx)
         },
         mounted() {
             console.log('Carousel mounted ...')
