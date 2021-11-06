@@ -40,16 +40,20 @@
     @Html.Raw(div.ToString())
 }
 
-<script src="https://unpkg.com/vue@next"></script>
-<script src="https://unpkg.com/vuex@next"></script>
-<script src="/assets/dist/applet.min.js"></script>
+
+@*<script src="/assets/js/vue/vue-dev.js"></script>*@
+<script src="/assets/js/vue3/vue.global.js"></script>
+<script src="/assets/js/vue3/vuex.global.js"></script>
+
+<script src="/applets/dist/applets.min.js"></script>
+
 <script type="module">
     //import Applet from '/assets/dist/applet.min.js';
     //import { App } from '/assets/dist/applets/js/app.js';
     //import store from '/assets/dist/applets/js/app.js';
-    Vue.createApp(Applet).mount('#@mountPointId');
+    Vue.createApp(Applets.AppletsSample).mount('#@mountPointId');
 
     //createApplet();
 </script>
-<script src="/assets/dist/applets/js/chunk-vendors.js"></script>
-<script src="/assets/dist/applets/js/app.js"></script>
+@*<script src="/assets/dist/applets/js/chunk-vendors.js"></script>
+<script src="/assets/dist/applets/js/app.js"></script>*@
