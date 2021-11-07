@@ -1,11 +1,18 @@
 ﻿@model Catfish.Areas.Applets.Blocks.KeywordSearch
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@{ 
+@inject Piranha.AspNetCore.Services.IModelLoader _loader;
+
+@{
     var viewData = new ViewDataDictionary(this.ViewData)
     {
         { "data-collection-id", Model.SelectedCollection.Value },
+        { "data-display-format", Model.ClassificationMetadataSetId },
         { "data-display-format", "List" },
+        { "data-display-format", "List" },
+        { "data-display-format", "List" },
+        { "data-display-format", "List" },
+
     };
 }
 <partial name="Partial/_AppletLoader" view-data="@viewData"/>
