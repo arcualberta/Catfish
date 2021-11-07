@@ -11,14 +11,16 @@ using Catfish.Areas.Applets.Blocks;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Areas.Applets.Models.Solr;
 using Catfish.Core.Models.Contents;
+using Newtonsoft.Json;
+using Catfish.Core.Services;
+using ElmahCore;
+using Catfish.Core.Models.Solr;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Catfish.Areas.Applets.Controllers
 {
     //private readonly ISubmissionService _submissionService;
-    //private readonly ISolrService _solr;
-    //private readonly ErrorLog _errorLog;
 
     [Route("applets/api/[controller]")]
     [ApiController]
@@ -26,10 +28,14 @@ namespace Catfish.Areas.Applets.Controllers
     {
         private readonly IModelLoader _loader;
         private readonly AppDbContext _appDb;
-        public KeywordSearchController(IModelLoader loader, AppDbContext appDb)
+        private readonly ISolrService _solr;
+        private readonly ErrorLog _errorLog;
+        public KeywordSearchController(IModelLoader loader, AppDbContext appDb, ISolrService solr, ErrorLog errorLog)
         {
             _loader = loader;
             _appDb = appDb;
+            _solr = solr;
+            _errorLog = errorLog;
         }
 
         // GET: api/<KeywordSearchController>
@@ -118,5 +124,122 @@ namespace Catfish.Areas.Applets.Controllers
 
             return model;
         }
+
+
+        [HttpPost]
+        [Route("items")]
+        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0)
+        {
+            SearchOutput result = new SearchOutput();
+            try
+            {
+
+                var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
+                if (page == null)
+                    return result;
+
+                var block = page.Blocks.FirstOrDefault(b => b.Id == blockId) as KeywordSearch;
+                if (block == null)
+                    return result;
+
+
+                string collectionId = block.SelectedCollection.Value;
+                string solrCollectionFieldName = "collection_s";
+
+                string itemTemplateId = block.SelectedItemTemplate.Value;
+                string keywordFieldId = block.KeywordSourceId.Value;
+                string dataItemTemplateId = null; //TODO: load the template and get the ID of the root data item
+                string solrKeywordFieldName = string.Format("data_{0}_{1}_ts", dataItemTemplateId, keywordFieldId);
+                string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/') + "/";
+
+
+                KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
+
+                string keywords = null;
+                string[] slectedKeywords = string.IsNullOrEmpty(keywords)
+                   ? Array.Empty<string>()
+                   : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
+
+                var query = keywordQueryModel?.BuildSolrQuery();
+                string scope = string.Format("collection_s:{0} AND doc_type_ss:item", collectionId);
+                query = string.IsNullOrEmpty(query)
+                    ? scope
+                    : string.Format("{0} AND {1}", scope, query);
+
+                // System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
+
+                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
+
+                //Wrapping the results in the SearchOutput object
+                Guid titleFieldId = string.IsNullOrEmpty(block.SelectedMapTitleId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapTitleId.Value);
+                Guid subtitleFieldId = string.IsNullOrEmpty(block.SelectedMapSubtitleId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapSubtitleId.Value);
+                Guid contentFieldId = string.IsNullOrEmpty(block.SelectedMapContentId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapContentId.Value);
+                Guid thumbnailFieldId = string.IsNullOrEmpty(block.SelectedMapThumbnailId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapThumbnailId.Value);
+                Guid keywordsFieldId = string.IsNullOrEmpty(block.KeywordSourceId.Value) ? Guid.Empty : Guid.Parse(block.KeywordSourceId.Value);
+
+                foreach (var resultEntry in solrSearchResult.ResultEntries)
+                {
+                    ResultItem resultItem = new ResultItem();
+                    resultItem.Id = resultEntry.Id;
+                    resultItem.Title = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == titleFieldId)?.FieldContent);
+                    resultItem.Subtitle = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == subtitleFieldId)?.FieldContent);
+                    resultItem.Content = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == contentFieldId)?.FieldContent);
+                    resultItem.Thumbnail = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == thumbnailFieldId)?.FieldContent);
+                    resultItem.DetailedViewUrl = detailedViewUrl + resultEntry.Id;
+
+                    var categories = resultEntry.Fields.FirstOrDefault(field => field.FieldId == keywordsFieldId)?.FieldContent.ToArray();
+                    if (keywordsFieldId != Guid.Empty && categories == null)
+                        _errorLog.Log(new Error(new Exception(string.Format("Keyword field with ID {0} not found for item with ID {1}", keywordsFieldId, resultEntry.Id))));
+                    else
+                    {
+                        foreach (var cat in categories)
+                        {
+                            if (cat.StartsWith("ref://"))
+                            {
+                                try
+                                {
+
+
+                                    //This is a reference field
+                                    var parts = cat.Substring(6).Split("_");
+                                    var containerId = Guid.Parse(parts[1]);
+
+                                    //Get all fields that starts with the prefix
+                                    var keywordFields = resultEntry.Fields.Where(field => field.ContainerId == containerId).ToList();
+                                    foreach (var kf in keywordFields)
+                                        resultItem.Categories.AddRange(kf.FieldContent);
+                                }
+                                catch (Exception ex)
+                                {
+                                    _errorLog.Log(new Error() { Message = "Field referencing error." });
+                                    _errorLog.Log(new Error(ex));
+                                }
+                            }
+                            else
+                                resultItem.Categories.Add(cat);
+                        }
+                    }
+
+                    result.Items.Add(resultItem);
+                }
+                result.First = solrSearchResult.Offset;
+                result.Count = solrSearchResult.TotalMatches;
+
+                //result = Helper.MockHelper.FilterMockupTileGridData(slectedKeywords, offset, max);
+
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+            return result;
+        }
+
+        private string Combine(List<string> components)
+        {
+            return components == null ? null : string.Join(" / ", components);
+        }
+
+
     }
 }
