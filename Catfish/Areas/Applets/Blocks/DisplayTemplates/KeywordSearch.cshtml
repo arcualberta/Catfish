@@ -6,13 +6,11 @@
 @{
     var viewData = new ViewDataDictionary(this.ViewData)
     {
-        { "data-collection-id", Model.SelectedCollection.Value },
-        { "data-display-format", Model.ClassificationMetadataSetId },
         { "data-display-format", "List" },
-        { "data-display-format", "List" },
-        { "data-display-format", "List" },
-        { "data-display-format", "List" },
-
+        { "data-collection-id", Model.SelectedCollection?.Value },
+        { "data-template-id", Model.SelectedItemTemplate?.Value },
+        { "data-keyword-metadata-set-id", Model.ClassificationMetadataSetId?.Value },
+        { "data-keyword-source-id", Model.KeywordSourceId?.Value }
     };
 }
 <partial name="Partial/_AppletLoader" view-data="@viewData"/>

@@ -2,6 +2,10 @@
     import { defineComponent } from 'vue';
     import props from '../shared/props'
 
+    import { state } from './store/defs/state'
+    import { actions } from './store/defs/actions'
+    import { mutations } from './store/defs/mutations'
+
     export default defineComponent({
         name: "Carousel",
         components: {
@@ -14,6 +18,11 @@
         },
         mounted() {
             console.log('Carousel mounted ...')
+        },
+        storeConfig: {
+            state: state,
+            actions,
+            mutations
         }
     });
 </script>
