@@ -50,6 +50,7 @@
     const actions = applet.storeConfig.actions;
 
     const store = Vuex.createStore({ state, mutations, actions });
+    //const store = applet.storeConfig.store;
 
     if (!applet)
         throw "Applet \"@ViewData["applet"]\" not found.";

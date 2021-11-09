@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, ref, PropType,/* computed, toRefs,*/ watch } from "vue";
+    import { defineComponent/*, ref*/, PropType, computed, /* toRefs, watch*/ } from "vue";
     import { useStore } from 'vuex';
     //import { Actions } from '../store/defs/actions';
     //import { SearchParams } from "../models"
@@ -18,21 +18,22 @@
         },
         setup(props) {
 
+            console.log("KeywordFilter props: ", props)
+
             const store = useStore();
             console.log("Store: ", store)
+
             //const queryModel = ref(store.state.keywordQueryModel);
-            const queryModel = ref(store.state.queryModel);
+            //const queryModel = ref(store.state.queryModel);
+            //console.log("KeywordFilter initial queryModel: ", queryModel)
 
-            console.log("KeywordFilter props: ", props)
-            console.log("KeywordFilter initial queryModel: ", queryModel)
+            //watch(queryModel, () => {
+            //    console.log("Watch called queryModel: ", queryModel)
 
-            watch(queryModel, () => {
-                console.log("Watch called queryModel: ", queryModel)
-
-                if (queryModel) {
-                    console.log("KeywordFilter updated queryModel: ", queryModel)
-                }
-            })
+            //    if (queryModel) {
+            //        console.log("KeywordFilter updated queryModel: ", queryModel)
+            //    }
+            //})
 
             //const searchParams = ref({} as SearchParams);
             //const { pageId } = toRefs(props);
@@ -83,26 +84,23 @@
             //    store.dispatch(Actions.FILTER_BY_KEYWORDS, searchParams.value);
             //}
 
-            //return {
-            //    searchParams,
-            //    runFreshSearch,
-            //    previousPage,
-            //    nextPage,
-            //    dispatchSearch,
-            //    keywordQueryModel: computed(() => store.state.keywordQueryModel),
-            //    items: computed(() => store.state.searchResult?.items),
-            //    count: computed(() => store.state.searchResult?.count),
-            //    first: computed(() => store.state.searchResult?.first),
-            //    last: computed(() => store.state.searchResult?.last)
-            //}
-
-            return { queryModel };
+            return {
+                //searchParams,
+                //runFreshSearch,
+                //previousPage,
+                //nextPage,
+                //dispatchSearch,
+                keywordQueryModel: computed(() => store.state.keywordQueryModel),
+                items: computed(() => store.state.searchResult?.items),
+                count: computed(() => store.state.searchResult?.count),
+                first: computed(() => store.state.searchResult?.first),
+                last: computed(() => store.state.searchResult?.last)
+            }
         }
     });
 </script>
 
 <template>
-    <div>{{queryModel}}</div>
     <div class="col-md-3 text-left">
         <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
             <div v-if="keywordQueryModel?.containers.length > 1 && container?.name?.length > 0">{{container.name}}</div>
@@ -130,7 +128,7 @@
             </span>
         </div>
         <div v-else>No results found.</div>
-        <ItemList />
+        <!--<ItemList />-->
     </div>
 
 </template>
