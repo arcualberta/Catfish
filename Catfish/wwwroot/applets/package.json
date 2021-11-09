@@ -39,6 +39,8 @@
     "@vue/cli-service": "^4.5.13",
     "@vue/compiler-sfc": "^3.2.21",
     "@zerollup/ts-transform-paths": "^1.7.18",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
     "cross-env": "^7.0.3",
     "minimist": "^1.2.5",
     "postcss": "^8.2.10",
