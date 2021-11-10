@@ -2,7 +2,6 @@
     import { defineComponent, ref } from 'vue'
     import { useStore } from 'vuex'
 
-    import { store/*, useStore*/ } from './store'
     import { state } from './store/defs/state'
     import { Actions, actions } from './store/defs/actions'
     import { mutations } from './store/defs/mutations'
@@ -27,14 +26,11 @@
         },
         mounted() {
             console.log('Keyword Search mounted ...')
-            //this.pageId = this.$el.parentElement.getAttribute("page-id");
-            //this.blockId = this.$el.parentElement.getAttribute("block-id");
 
             const s = useStore();
             s.dispatch(Actions.INIT_FILTER, { pageId: this.pageId, blockId: this.blockId });
         },
         storeConfig: {
-            store,
             state,
             actions,
             mutations

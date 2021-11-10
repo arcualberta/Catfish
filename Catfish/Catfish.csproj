@@ -31,7 +31,6 @@
     <Content Remove="wwwroot\applets\src\lib-components\keyword-search\store\defs\getters.ts" />
     <Content Remove="wwwroot\applets\src\lib-components\keyword-search\store\defs\mutations.ts" />
     <Content Remove="wwwroot\applets\src\lib-components\keyword-search\store\defs\state.ts" />
-    <Content Remove="wwwroot\applets\src\lib-components\keyword-search\store\index.ts" />
     <Content Remove="wwwroot\applets\src\lib-components\shared\props.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\models\keywords.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
@@ -156,7 +155,6 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\applets\src\lib-components\keyword-search\store\defs\state.ts" />
-    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\keyword-search\store\index.ts" />
     <TypeScriptCompile Include="wwwroot\applets\src\lib-components\shared\props.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
       <SubType>Code</SubType>
