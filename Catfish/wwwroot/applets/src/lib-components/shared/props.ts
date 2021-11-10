@@ -1,6 +1,5 @@
 ﻿import { PropType } from 'vue';
 import { Guid } from "guid-typescript";
-import { DataAttribute } from '../../models';
 
 export default {
   pageId: {
@@ -19,4 +18,9 @@ export default {
     required: false,
     type: null as PropType<DataAttribute> | null
   }
+}
+
+export interface DataAttribute {
+  name: string | null;
+  value: string | null;
 }
