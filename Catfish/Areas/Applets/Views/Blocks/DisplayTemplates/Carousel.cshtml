@@ -1,4 +1,4 @@
-﻿@model Catfish.Areas.Applets.Blocks.Carousel
+﻿@model Catfish.Areas.Applets.Models.Blocks.Carousel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{ 
@@ -8,5 +8,5 @@
         { "data-interval", 10 }
     };
 }
-<partial name="Partial/_AppletLoader" view-data="@viewData"/>
+<partial name="Shared/_AppletLoader" view-data="@viewData"/>
 

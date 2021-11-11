@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Catfish.Areas.Applets.Blocks
+namespace Catfish.Areas.Applets.Models.Blocks
 {
     [BlockType(Name = "Keyword Search", Category = "Control", Component = "keyword-search", Icon = "fas fa-search")]
     public class KeywordSearch : Block

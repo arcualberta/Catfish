@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Catfish.Areas.Applets.Models.KeywordSearch
+namespace Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels
 {
     public class ResultItem
     {

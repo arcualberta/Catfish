@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Catfish.Areas.Applets.Models.KeywordSearch
+namespace Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels
 {
     public class KeywordField : SolrQueryModel
     {

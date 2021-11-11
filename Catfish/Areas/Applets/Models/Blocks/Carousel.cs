@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Catfish.Areas.Applets.Blocks
+namespace Catfish.Areas.Applets.Models.Blocks
 {
     [BlockType(Name = "Carousel", Category = "Content", Component = "carousel", Icon = "fas fa-search")]
     public class Carousel : Block

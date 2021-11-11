@@ -106,6 +106,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Applets\Models\Blocks\Carousel\" />
+    <Folder Include="Areas\Applets\Views\PagePartials\Shared\" />
     <Folder Include="Areas\Manager\assets\img\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
     <Folder Include="Areas\Manager\Shared\Partial\" />

@@ -1,4 +1,4 @@
-﻿using Catfish.Areas.Applets.Models.KeywordSearch;
+﻿using Catfish.Areas.Applets.Models.Blocks;
 using Catfish.Core.Models;
 using Catfish.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Catfish.Areas.Applets.Blocks;
+using Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Areas.Applets.Models.Solr;
 using Catfish.Core.Models.Contents;
