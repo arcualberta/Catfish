@@ -45,23 +45,20 @@
 <script type="module">
 
     const applet = Applets.@Model.GetType().Name;
+    if (!applet)
+        throw "Applet \"@ViewData["applet"]\" not found.";
+
     const state = applet.storeConfig.state;
     const mutations = applet.storeConfig.mutations;
     const actions = applet.storeConfig.actions;
+    const getters = applet.storeConfig.getters;
 
-    const store = Vuex.createStore({ state, mutations, actions });
-    //const store = applet.storeConfig.store;
-
-    if (!applet)
-        throw "Applet \"@ViewData["applet"]\" not found.";
+    const store = Vuex.createStore({ state, mutations, actions, getters });
 
     const app = Vue.createApp(applet, {
         pageId: '@pageId',
         blockId: '@blockId',
         dataAttributes:@Html.Raw(JsonConvert.SerializeObject(dataAttributes))
-    });
-
-    app.use(store)
-    app.mount('#@mountPointId');
+    }).use(store).mount('#@mountPointId');
 
 </script>

@@ -5,6 +5,7 @@
     import { state } from './store/defs/state'
     import { Actions, actions } from './store/defs/actions'
     import { mutations } from './store/defs/mutations'
+    import { getters } from './store/defs/getters'
     import KeywordFilter from './components/KeywordFilter.vue'
 
     import props from '../shared/props'
@@ -24,23 +25,23 @@
             const keywordQueryModel = ref(s.state.keywordQueryModel);
             return { keywordQueryModel };
         },
-        mounted() {
-            console.log('Keyword Search mounted ...')
+        //mounted() {
+        //    console.log('Keyword Search mounted ...')
 
-            const s = useStore();
-            s.dispatch(Actions.INIT_FILTER, { pageId: this.pageId, blockId: this.blockId });
-        },
+        //    const s = useStore();
+        //    s.dispatch(Actions.INIT_FILTER, { pageId: this.pageId, blockId: this.blockId });
+        //},
         storeConfig: {
             state,
             actions,
-            mutations
+            mutations,
+            getters
         }
     });
 </script>
 
 <template>
     <div>
-        <h2>Keyword Search</h2>
         <KeywordFilter :query-model="keywordQueryModel"/>
     </div>
 </template>
