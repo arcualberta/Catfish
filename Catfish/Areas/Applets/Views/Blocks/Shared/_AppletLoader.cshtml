@@ -1,19 +1,16 @@
 ﻿@model Piranha.Extend.Block
 @using Newtonsoft.Json;
 
-@*Catfish.Areas.Applets.Blocks.KeywordSearch*@
-
 @inject Piranha.AspNetCore.Services.IApplicationService _webApp
 
-<link href="/assets/dist/applets/css/app.css" rel="preload" as="style">
+@*<link href="/assets/dist/applets/css/app.css" rel="preload" as="style">
 <link href="/assets/dist/applets/js/app.js" rel="preload" as="script">
 <link href="/assets/dist/applets/js/chunk-vendors.js" rel="preload" as="script">
-<link href="/assets/dist/applets/css/app.css" rel="stylesheet">
+<link href="/assets/dist/applets/css/app.css" rel="stylesheet">*@
 
 <noscript>
     <strong>We're sorry but Keyword Search applet doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
 </noscript>
-
 
 @{
     var pageId = _webApp.PageId;
@@ -32,15 +29,13 @@
 
 <div id="@mountPointId"></div>
 
-@*<script src="/assets/js/vue/vue-dev.js"></script>*@
-
 <script src="/assets/js/vue3/vue.global.js"></script>
 @*<script src="/assets/js/vue3/vue.global.prod.js"></script>*@
 
 <script src="/assets/js/vue3/vuex.global.js"></script>
 @*<script src="/assets/js/vue3/vuex.global.prod.js"></script>*@
 
-<script src="/applets/dist/applets.min.js"></script>
+<script src="/assets/dist/applets/applets.min.js"></script>
 
 <script type="module">
 
@@ -48,17 +43,22 @@
     if (!applet)
         throw "Applet \"@ViewData["applet"]\" not found.";
 
-    const state = applet.storeConfig.state;
-    const mutations = applet.storeConfig.mutations;
-    const actions = applet.storeConfig.actions;
-    const getters = applet.storeConfig.getters;
-
-    const store = Vuex.createStore({ state, mutations, actions, getters });
-
     const app = Vue.createApp(applet, {
         pageId: '@pageId',
         blockId: '@blockId',
         dataAttributes:@Html.Raw(JsonConvert.SerializeObject(dataAttributes))
-    }).use(store).mount('#@mountPointId');
+    });
+
+    if (applet.storeConfig) {
+        const state = applet.storeConfig.state;
+        const mutations = applet.storeConfig.mutations;
+        const actions = applet.storeConfig.actions;
+        const getters = applet.storeConfig.getters;
+
+        const store = Vuex.createStore({ state, mutations, actions, getters });
+        app.use(store);
+    }
+
+    app.mount('#@mountPointId');
 
 </script>

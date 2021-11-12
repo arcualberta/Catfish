@@ -1,7 +1,7 @@
 ﻿import { MutationTree } from 'vuex';
 import { State } from './state';
-import { SearchOutput } from '../../models'
-import { KeywordQueryModel, KeywordSource } from '../../models/keywords';
+import { SearchOutput } from '../models'
+import { KeywordQueryModel, KeywordSource } from '../models/keywords';
 
 //Declare MutationTypes
 export enum Mutations {

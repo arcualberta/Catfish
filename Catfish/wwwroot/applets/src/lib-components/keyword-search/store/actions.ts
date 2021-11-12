@@ -2,7 +2,7 @@
 import { State } from './state';
 import { Mutations } from './mutations';
 //import { SearchParams } from '../../models'
-import { KeywordSource } from '../../models/keywords'
+import { KeywordSource } from '../models/keywords'
 
 //Declare ActionTypes
 export enum Actions {

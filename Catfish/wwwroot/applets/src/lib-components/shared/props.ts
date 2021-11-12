@@ -10,8 +10,8 @@ export default {
     required: true,
     type: null as PropType<Guid> | null
   },
-  appletName: {
-    required: true,
+  appletTitle: {
+    required: false,
     type: String
   },
   dataAttributes: {

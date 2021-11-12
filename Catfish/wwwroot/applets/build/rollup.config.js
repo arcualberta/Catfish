@@ -42,6 +42,7 @@ const baseConfig = {
     ],
     replace: {
       'process.env.NODE_ENV': JSON.stringify('production'),
+      'preventAssignment': true,
     },
     vue: {
     },
@@ -92,7 +93,7 @@ if (!argv.format || argv.format === 'es') {
     input: 'src/entry.esm.ts',
     external,
     output: {
-      file: 'dist/applets.esm.js',
+      file: '../assets/dist/applets/applets.esm.js',
       format: 'esm',
       exports: 'named',
     },
@@ -131,7 +132,7 @@ if (!argv.format || argv.format === 'cjs') {
     external,
     output: {
       compact: true,
-      file: 'dist/applets.ssr.js',
+      file: '../assets/dist/applets/applets.ssr.js',
       format: 'cjs',
       name: 'Applets',
       exports: 'auto',
@@ -154,7 +155,7 @@ if (!argv.format || argv.format === 'iife') {
     external,
     output: {
       compact: true,
-      file: 'dist/applets.min.js',
+      file: '../assets/dist/applets/applets.min.js',
       format: 'iife',
       name: 'Applets',
       exports: 'auto',

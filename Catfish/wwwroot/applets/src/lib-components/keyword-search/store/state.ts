@@ -1,6 +1,6 @@
 ﻿import { Guid } from 'guid-typescript'
-import { SearchOutput } from '../../models'
-import { KeywordQueryModel } from '../../models/keywords'
+import { SearchOutput } from '../models'
+import { KeywordQueryModel } from '../models/keywords'
 
 //Declare State interface
 export interface State {
