@@ -2,10 +2,10 @@
     import { defineComponent, ref } from 'vue'
     import { useStore } from 'vuex'
 
-    import { state } from './store/defs/state'
-    import { Actions, actions } from './store/defs/actions'
-    import { mutations } from './store/defs/mutations'
-    import { getters } from './store/defs/getters'
+    import { state } from './store/state'
+    import { Actions, actions } from './store/actions'
+    import { mutations } from './store/mutations'
+    import { getters } from './store/getters'
     import KeywordFilter from './components/KeywordFilter.vue'
 
     import props from '../shared/props'
@@ -25,12 +25,6 @@
             const keywordQueryModel = ref(s.state.keywordQueryModel);
             return { keywordQueryModel };
         },
-        //mounted() {
-        //    console.log('Keyword Search mounted ...')
-
-        //    const s = useStore();
-        //    s.dispatch(Actions.INIT_FILTER, { pageId: this.pageId, blockId: this.blockId });
-        //},
         storeConfig: {
             state,
             actions,
