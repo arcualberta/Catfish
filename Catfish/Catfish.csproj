@@ -8,9 +8,13 @@
   <UserSecretsId>fb287c84-b0b6-46e0-893a-86f23d79c05e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Areas\Applets\applets\**" />
     <Compile Remove="wwwroot\applet-root\**" />
+    <Content Remove="Areas\Applets\applets\**" />
     <Content Remove="wwwroot\applet-root\**" />
+    <EmbeddedResource Remove="Areas\Applets\applets\**" />
     <EmbeddedResource Remove="wwwroot\applet-root\**" />
+    <None Remove="Areas\Applets\applets\**" />
     <None Remove="wwwroot\applet-root\**" />
   </ItemGroup>
   <ItemGroup>
@@ -23,10 +27,6 @@
   <ItemGroup>
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
-    <Content Remove="Areas\Applets\applets\src\lib-components\keyword-search\models\client-cache.ts" />
-    <Content Remove="Areas\Applets\applets\src\lib-components\keyword-search\models\index.ts" />
-    <Content Remove="Areas\Applets\applets\src\lib-components\keyword-search\models\keywords.ts" />
-    <Content Remove="Areas\Applets\applets\src\lib-components\shared\props.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\models\keywords.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\client-cache.ts" />
@@ -35,23 +35,6 @@
     <Content Remove="wwwroot\Vue\tile-grid\src\store\index.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\mutations.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\Applets\applets\.browserslistrc" />
-    <Content Include="Areas\Applets\applets\.gitignore" />
-    <Content Include="Areas\Applets\applets\babel.config.js" />
-    <Content Include="Areas\Applets\applets\build\rollup.config.js" />
-    <Content Include="Areas\Applets\applets\shims-vue.d.ts" />
-    <Content Include="Areas\Applets\applets\src\entry.esm.ts" />
-    <Content Include="Areas\Applets\applets\src\entry.ts" />
-    <Content Include="Areas\Applets\applets\src\lib-components\carousel\Applet.vue" />
-    <Content Include="Areas\Applets\applets\src\lib-components\index.ts" />
-    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\Applet.vue" />
-    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\components\KeywordFilter.vue" />
-    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\store\actions.ts" />
-    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\store\getters.ts" />
-    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\store\mutations.ts" />
-    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\store\state.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -120,26 +103,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\models\client-cache.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\models\index.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\models\keywords.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\store\actions.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\store\getters.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\store\mutations.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\store\state.ts" />
-    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\shared\props.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
