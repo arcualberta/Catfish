@@ -2,24 +2,24 @@
   "name": "Applets",
   "version": "1.0.0",
   "description": "",
-  "main": "../assets/dist/applets/applets.ssr.js",
-  "browser": "../assets/dist/applets/applets.esm.js",
-  "module": "../assets/dist/applets/applets.esm.js",
-  "unpkg": "../assets/dist/applets/applets.min.js",
-  "types": "../assets/dist/applets/types/src/entry.esm.d.ts",
+  "main": "../../../wwwroot/assets/dist/applets/applets.ssr.js",
+  "browser": "../../../wwwroot/assets/dist/applets/applets.esm.js",
+  "module": "../../../wwwroot/assets/dist/applets/applets.esm.js",
+  "unpkg": "../../../wwwroot/assets/dist/applets/applets.min.js",
+  "types": "../../../wwwroot/assets/dist/applets/types/src/entry.esm.d.ts",
   "files": [
-    "../assets/dist/applets/*",
+    "../../../wwwroot/assets/dist/applets/*",
     "src/**/*.vue"
   ],
   "sideEffects": false,
   "scripts": {
     "serve": "vue-cli-service serve dev/serve.ts",
-    "prebuild": "rimraf ../assets/dist/applets",
+    "prebuild": "rimraf ../../../wwwroot/assets/dist/applets",
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
-    "postbuild": "rimraf ../assets/dist/applets/types/dev ../assets/dist/applets/types/src/entry.d.ts"
+    "postbuild": "rimraf ../../../wwwroot/assets/dist/applets/types/dev ../../../wwwroot/assets/dist/applets/types/src/entry.d.ts"
   },
   "dependencies": {
     "guid-typescript": "^1.0.9",

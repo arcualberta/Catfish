@@ -23,10 +23,10 @@
   <ItemGroup>
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
-    <Content Remove="wwwroot\applets\src\lib-components\keyword-search\models\client-cache.ts" />
-    <Content Remove="wwwroot\applets\src\lib-components\keyword-search\models\index.ts" />
-    <Content Remove="wwwroot\applets\src\lib-components\keyword-search\models\keywords.ts" />
-    <Content Remove="wwwroot\applets\src\lib-components\shared\props.ts" />
+    <Content Remove="Areas\Applets\applets\src\lib-components\keyword-search\models\client-cache.ts" />
+    <Content Remove="Areas\Applets\applets\src\lib-components\keyword-search\models\index.ts" />
+    <Content Remove="Areas\Applets\applets\src\lib-components\keyword-search\models\keywords.ts" />
+    <Content Remove="Areas\Applets\applets\src\lib-components\shared\props.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\models\keywords.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\client-cache.ts" />
@@ -35,6 +35,37 @@
     <Content Remove="wwwroot\Vue\tile-grid\src\store\index.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\mutations.ts" />
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Applets\applets\.browserslistrc" />
+    <Content Include="Areas\Applets\applets\.gitignore" />
+    <Content Include="Areas\Applets\applets\babel.config.js" />
+    <Content Include="Areas\Applets\applets\build\rollup.config.js" />
+    <Content Include="Areas\Applets\applets\dist\types\entry.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\entry.esm.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\carousel\Applet.vue.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\index.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\keyword-search\Applet.vue.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\keyword-search\components\KeywordFilter.vue.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\keyword-search\models\client-cache.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\keyword-search\models\index.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\keyword-search\models\keywords.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\keyword-search\store\actions.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\keyword-search\store\getters.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\keyword-search\store\mutations.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\keyword-search\store\state.d.ts" />
+    <Content Include="Areas\Applets\applets\dist\types\lib-components\shared\props.d.ts" />
+    <Content Include="Areas\Applets\applets\shims-vue.d.ts" />
+    <Content Include="Areas\Applets\applets\src\entry.esm.ts" />
+    <Content Include="Areas\Applets\applets\src\entry.ts" />
+    <Content Include="Areas\Applets\applets\src\lib-components\carousel\Applet.vue" />
+    <Content Include="Areas\Applets\applets\src\lib-components\index.ts" />
+    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\Applet.vue" />
+    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\components\KeywordFilter.vue" />
+    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\store\actions.ts" />
+    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\store\getters.ts" />
+    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\store\mutations.ts" />
+    <Content Include="Areas\Applets\applets\src\lib-components\keyword-search\store\state.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,14 +106,6 @@
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="Pages\Shared\DisplayTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
-    <None Include="wwwroot\applets\.browserslistrc" />
-    <None Include="wwwroot\applets\.gitignore" />
-    <None Include="wwwroot\applets\babel.config.js" />
-    <None Include="wwwroot\applets\build\rollup.config.js" />
-    <None Include="wwwroot\applets\shims-vue.d.ts" />
-    <None Include="wwwroot\applets\src\entry.esm.ts" />
-    <None Include="wwwroot\applets\src\entry.ts" />
-    <None Include="wwwroot\applets\src\lib-components\index.ts" />
     <None Include="wwwroot\assets\js\entitytypelist.js" />
     <None Include="wwwroot\assets\js\textarea-field.js" />
   </ItemGroup>
@@ -112,26 +135,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\keyword-search\models\client-cache.ts">
+    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\models\client-cache.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\keyword-search\models\index.ts">
+    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\models\index.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\keyword-search\models\keywords.ts">
+    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\models\keywords.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\keyword-search\store\actions.ts">
+    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\store\actions.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\keyword-search\store\getters.ts">
+    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\store\getters.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\keyword-search\store\mutations.ts">
+    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\store\mutations.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\keyword-search\store\state.ts" />
-    <TypeScriptCompile Include="wwwroot\applets\src\lib-components\shared\props.ts" />
+    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\keyword-search\store\state.ts" />
+    <TypeScriptCompile Include="Areas\Applets\applets\src\lib-components\shared\props.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

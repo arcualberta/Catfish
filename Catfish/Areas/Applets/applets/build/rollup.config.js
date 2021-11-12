@@ -93,7 +93,7 @@ if (!argv.format || argv.format === 'es') {
     input: 'src/entry.esm.ts',
     external,
     output: {
-      file: '../assets/dist/applets/applets.esm.js',
+      file: '../../../wwwroot/assets/dist/applets/applets.esm.js',
       format: 'esm',
       exports: 'named',
     },
@@ -132,7 +132,7 @@ if (!argv.format || argv.format === 'cjs') {
     external,
     output: {
       compact: true,
-      file: '../assets/dist/applets/applets.ssr.js',
+      file: '../../../wwwroot/assets/dist/applets/applets.ssr.js',
       format: 'cjs',
       name: 'Applets',
       exports: 'auto',
@@ -155,7 +155,7 @@ if (!argv.format || argv.format === 'iife') {
     external,
     output: {
       compact: true,
-      file: '../assets/dist/applets/applets.min.js',
+      file: '../../../wwwroot/assets/dist/applets/applets.min.js',
       format: 'iife',
       name: 'Applets',
       exports: 'auto',
