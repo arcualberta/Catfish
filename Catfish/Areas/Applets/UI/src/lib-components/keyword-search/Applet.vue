@@ -8,12 +8,15 @@
     import { getters } from './store/getters'
     import KeywordFilter from './components/KeywordFilter.vue'
 
+    import ItemList from './components/ItemList.vue'
+
     import props from '../shared/props'
 
     export default defineComponent({
         name: "Applet",
         components: {
-            KeywordFilter
+            KeywordFilter,
+            ItemList
         },
         props,
         setup(p) {
@@ -37,6 +40,7 @@
 <template>
     <div>
         <KeywordFilter :query-model="keywordQueryModel"/>
+        <ItemList  />
     </div>
 </template>
 
