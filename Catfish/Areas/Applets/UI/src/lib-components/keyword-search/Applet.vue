@@ -40,7 +40,7 @@
 <template>
     <div>
         <KeywordFilter :query-model="keywordQueryModel"/>
-        <ItemList  />
+       
     </div>
 </template>
 
