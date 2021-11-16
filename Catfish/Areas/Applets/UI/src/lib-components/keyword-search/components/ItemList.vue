@@ -4,9 +4,7 @@
   
     export default defineComponent({
         name: "ItemList",
-        components: {
-        
-        },
+       
         props: {},
         setup() {
 
