@@ -1,7 +1,6 @@
 ﻿import { Guid } from "guid-typescript";
 
-//Declare Tile interface which proxies the c# Tile class in Tile.cs
-export interface Item {
+export interface ResultItem {
   id: Guid;
   title: string;
   subtitle: string;
@@ -13,7 +12,7 @@ export interface Item {
 }
 
 export interface SearchOutput {
-  items: Item[];
+  items: ResultItem[];
   first: number;
   last: number;
   count: number;
