@@ -6,12 +6,12 @@
     import { KeywordQueryModel } from '../models/keywords'
 
     //import { Guid } from "guid-typescript";
-    //import ItemList from './ItemList.vue';
+    import ItemList from './ItemList.vue';
 
     export default defineComponent({
         name: "KeywordFilter",
         components: {
-        //    ItemList
+          ItemList
         },
         props: {
             queryModel: null as null | PropType<KeywordQueryModel>
@@ -128,7 +128,7 @@
             </span>
         </div>
         <div v-else>No results found.</div>
-        <!--<ItemList />-->
+        <ItemList />
     </div>
 
 </template>
