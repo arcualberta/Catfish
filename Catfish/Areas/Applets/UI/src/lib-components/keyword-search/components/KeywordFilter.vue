@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { defineComponent/*, ref*/, PropType, computed, /* toRefs, watch*/ } from "vue";
+    import { defineComponent, ref, PropType, computed, /* toRefs,*/ watch } from "vue";
     import { useStore } from 'vuex';
-    //import { Actions } from '../store/defs/actions';
+    import { Actions } from '../store/actions';
     //import { SearchParams } from "../models"
     import { KeywordQueryModel } from '../models/keywords'
 
@@ -23,17 +23,34 @@
             const store = useStore();
             console.log("Store: ", store)
 
-            //const queryModel = ref(store.state.keywordQueryModel);
-            //const queryModel = ref(store.state.queryModel);
-            //console.log("KeywordFilter initial queryModel: ", queryModel)
+            const runFreshSearch = () => {
+                console.log("called runFreshSearch");
 
-            //watch(queryModel, () => {
-            //    console.log("Watch called queryModel: ", queryModel)
+                //When the keywords are changed, always set the search offset to zero.
+                dispatchSearch()
+            }
 
-            //    if (queryModel) {
-            //        console.log("KeywordFilter updated queryModel: ", queryModel)
-            //    }
-            //})
+            const dispatchSearch = () => {
+                console.log("called dispatchSearch");
+
+                ////Save the search being carried out in the Local Storage.
+                //localStorage.keywordSearchParams = JSON.stringify(searchParams.value);
+
+                ////Overwtite any collection ID value saved in the local storage because if we rely on it,
+                ////we may use a wrong value from the cache if we ever change the collection 
+                ////in the piranha nlock configuration.
+                //searchParams.value.pageId = pageId.value;
+                //searchParams.value.blockId = blockId.value;
+
+                store.dispatch(Actions.FILTER_BY_KEYWORDS);
+            }
+
+            const queryModel = ref(store.state.keywordQueryModel);
+            watch(queryModel, () => {
+                if (queryModel) {
+                    console.log("KeywordFilter updated queryModel: ", queryModel)
+                }
+            })
 
             //const searchParams = ref({} as SearchParams);
             //const { pageId } = toRefs(props);
@@ -53,11 +70,6 @@
 
             //const store = useStore()
 
-            //const runFreshSearch = () => {
-            //    //When the keywords are changed, always set the search offset to zero.
-            //    searchParams.value.offset = 0;
-            //    dispatchSearch()
-            //}
 
             //const previousPage = () => {
             //    searchParams.value.offset = Math.max(0, searchParams.value.offset - searchParams.value.max);
@@ -71,25 +83,13 @@
             //    dispatchSearch();
             //}
 
-            //const dispatchSearch = () => {
-            //    //Save the search being carried out in the Local Storage.
-            //    localStorage.keywordSearchParams = JSON.stringify(searchParams.value);
-
-            //    //Overwtite any collection ID value saved in the local storage because if we rely on it,
-            //    //we may use a wrong value from the cache if we ever change the collection 
-            //    //in the piranha nlock configuration.
-            //    searchParams.value.pageId = pageId.value;
-            //    searchParams.value.blockId = blockId.value;
-
-            //    store.dispatch(Actions.FILTER_BY_KEYWORDS, searchParams.value);
-            //}
 
             return {
                 //searchParams,
-                //runFreshSearch,
                 //previousPage,
                 //nextPage,
                 //dispatchSearch,
+                runFreshSearch,
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
                 items: computed(() => store.state.searchResult?.items),
                 count: computed(() => store.state.searchResult?.count),

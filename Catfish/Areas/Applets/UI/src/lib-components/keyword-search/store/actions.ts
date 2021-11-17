@@ -35,46 +35,49 @@ export const actions: ActionTree<State, any> = {
 
   },
 
-  async [Actions.INIT_FILTER_ASYNC](store, source: KeywordSource) {
+  [Actions.FILTER_BY_KEYWORDS](store) {
+    console.log("Dispatched Actions.FILTER_BY_KEYWORDS. Query model: ", JSON.stringify(store.state.keywordQueryModel))
 
-    store.commit(Mutations.SET_SOURCE, source);
+    ////const api = window.location.origin + `/applets/api/keywordsearch/items/`;
+    ////console.log("Item Load API: ", api)
 
-    const api = window.location.origin +
-      `/applets/api/keywordsearch/keywords/page/${source.pageId}/block/${source.blockId}`;
-    console.log('Keyword Load API: ', api)
+    ////const formData = new FormData();
+    ////if (store.state.pageId) formData.append("pageId", store.state.pageId.toString());
+    ////if (store.state.blockId) formData.append("blockId", store.state.blockId.toString());
 
-    const res = await fetch(api);
-    const data = await res.json()
-    store.commit(Mutations.SET_KEYWORDS, data);
-  },
+    ////formData.append("offset", params?.offset.toString());
+    ////formData.append("max", params?.max.toString());
+    ////formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
+
+    ////console.log("Form Data: ", formData)
+
+    ////fetch(api, {
+    ////  method: 'POST', // or 'PUT'
+    ////  body: formData
+    ////})
+    ////.then(response => response.json())
+    ////  .then(data => {
+    ////    store.commit(Mutations.SET_TILES, data);
+    ////})
+    ////.catch((error) => {
+    ////  console.error('Error:', error);
+    ////});
+  }
+
+  ////async [Actions.INIT_FILTER_ASYNC](store, source: KeywordSource) {
+
+  ////  store.commit(Mutations.SET_SOURCE, source);
+
+  ////  const api = window.location.origin +
+  ////    `/applets/api/keywordsearch/keywords/page/${source.pageId}/block/${source.blockId}`;
+  ////  console.log('Keyword Load API: ', api)
+
+  ////  const res = await fetch(api);
+  ////  const data = await res.json()
+  ////  store.commit(Mutations.SET_KEYWORDS, data);
+  ////},
 
 
-  ////async [Actions.FILTER_BY_KEYWORDS](store, params: SearchParams) {
 
-  ////  const api = window.location.origin + `/applets/api/keywordsearch/items/`;
-  ////  console.log("Item Load API: ", api)
-
-  ////  const formData = new FormData();
-  ////  if (store.state.pageId) formData.append("pageId", store.state.pageId.toString());
-  ////  if (store.state.blockId) formData.append("blockId", store.state.blockId.toString());
-
-  ////  formData.append("offset", params?.offset.toString());
-  ////  formData.append("max", params?.max.toString());
-  ////  formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
-
-  ////  console.log("Form Data: ", formData)
-
-  ////  fetch(api, {
-  ////    method: 'POST', // or 'PUT'
-  ////    body: formData
-  ////  })
-  ////  .then(response => response.json())
-  ////    .then(data => {
-  ////      store.commit(Mutations.SET_TILES, data);
-  ////  })
-  ////  .catch((error) => {
-  ////    console.error('Error:', error);
-  ////  });
-  ////}
 }
 
