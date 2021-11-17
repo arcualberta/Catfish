@@ -57,7 +57,7 @@ export const actions: ActionTree<State, any> = {
     ////})
     ////.then(response => response.json())
     ////  .then(data => {
-    ////    store.commit(Mutations.SET_TILES, data);
+    ////    store.commit(Mutations.SET_RESULTS, data);
     ////})
     ////.catch((error) => {
     ////  console.error('Error:', error);
