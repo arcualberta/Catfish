@@ -7,7 +7,7 @@ import { KeywordQueryModel, KeywordSource } from '../models/keywords';
 export enum Mutations {
   SET_SOURCE = 'SET_SOURCE',
   SET_KEYWORDS = 'SET_KEYWORDS',
-  SET_RESULTS = 'SET_TILES'
+  SET_RESULTS = 'SET_RESULTS'
 }
 
 //Create a mutation tree that implement all mutation interfaces

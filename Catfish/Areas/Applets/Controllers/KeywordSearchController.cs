@@ -128,7 +128,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("items")]
-        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0)
+        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 100)
         {
             SearchOutput result = new SearchOutput();
             try
