@@ -87,7 +87,14 @@
 
   <ItemGroup>
     <Folder Include="Areas\Applets\Models\Blocks\CarouselModels\" />
+    <Folder Include="Areas\Applets\Models\Blocks\ItemEditorModels\" />
     <Folder Include="Areas\Applets\Models\PageComponents\" />
+    <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\components\" />
+    <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\models\" />
+    <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\store\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\components\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\models\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\store\" />
     <Folder Include="Areas\Applets\Views\PagePartials\Shared\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
     <Folder Include="Areas\Manager\Shared\Partial\" />
