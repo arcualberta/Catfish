@@ -39,8 +39,8 @@
                 ////Overwtite any collection ID value saved in the local storage because if we rely on it,
                 ////we may use a wrong value from the cache if we ever change the collection 
                 ////in the piranha nlock configuration.
-                //searchParams.value.pageId = pageId.value;
-                //searchParams.value.blockId = blockId.value;
+              //  searchParams.value.pageId = pageId.value;
+              //  searchParams.value.blockId = blockId.value;
 
                 store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
@@ -88,7 +88,7 @@
                 //searchParams,
                 //previousPage,
                 //nextPage,
-                //dispatchSearch,
+                dispatchSearch,
                 runFreshSearch,
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
                 items: computed(() => store.state.searchResult?.items),
@@ -127,8 +127,8 @@
                 </select>
             </span>
         </div>
-        <div v-else>No results found.</div>
-        <!--<ItemList />-->
+        <!--<div v-else>No results found.</div>
+        <ItemList />-->
     </div>
 
 </template>
