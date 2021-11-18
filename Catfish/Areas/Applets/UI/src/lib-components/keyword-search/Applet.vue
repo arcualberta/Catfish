@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, ref, computed} from 'vue'
+    import { defineComponent, ref, computed, onMounted} from 'vue'
     import { useStore } from 'vuex'
 
     import { state } from './store/state'
@@ -34,6 +34,10 @@
                 store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
 
+            onMounted(() => {
+                runFreshSearch()
+            });
+
             return {
                 runFreshSearch,
                 keywordQueryModel,
@@ -64,7 +68,7 @@
                     {{first + 1}}-{{last + 1}} of {{count}}
                     <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
                     <span>
-                        <select v-model="pageSize" class="pull-right" @change="runFreshSearch()">
+                        <select v-model="pageSize" class="pull-right" @change="runFreshSearch">
                             <option>25</option>
                             <option>50</option>
                             <option>100</option>
