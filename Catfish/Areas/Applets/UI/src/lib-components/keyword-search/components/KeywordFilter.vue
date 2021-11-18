@@ -101,34 +101,14 @@
 </script>
 
 <template>
-    <div class="col-md-3 text-left">
-        <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
-            <div v-if="keywordQueryModel?.containers.length > 1 && container?.name?.length > 0">{{container.name}}</div>
-            <div v-for="(field, fIdx) in container.fields" :key="field" class="mb-3">
-                <div v-if="field.name.length > 0" class="font-weight-bold">{{field.name}}</div>
-                <div v-for="(value, vIdx) in field.values" :key="value">
-                    <input type="checkbox" :value="value" v-model="keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx]" @change="runFreshSearch" />
-                    <label class="ml-1">{{ value }}</label>
-                </div>
+    <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
+        <div v-if="keywordQueryModel?.containers.length > 1 && container?.name?.length > 0">{{container.name}}</div>
+        <div v-for="(field, fIdx) in container.fields" :key="field" class="mb-3">
+            <div v-if="field.name.length > 0" class="font-weight-bold">{{field.name}}</div>
+            <div v-for="(value, vIdx) in field.values" :key="value">
+                <input type="checkbox" :value="value" v-model="keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx]" @change="runFreshSearch" />
+                <label class="ml-1">{{ value }}</label>
             </div>
-            <!--Container {{container}}-->
         </div>
     </div>
-    <div class="col-md-9 mb-4">
-        <div v-if="items?.length > 0">
-            <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
-            {{first}}-{{last}} of {{count}}
-            <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
-            <!--<span>
-                <select v-model="searchParams.max" class="pull-right" @change="runFreshSearch">
-                    <option>25</option>
-                    <option>50</option>
-                    <option>100</option>
-                </select>
-            </span>-->
-        </div>
-        <!--<div v-else>No results found.</div>
-        <ItemList />-->
-    </div>
-
 </template>
