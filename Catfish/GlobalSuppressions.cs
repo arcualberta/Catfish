@@ -64,4 +64,3 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Minor Code Smell", "S2219:Runtime type checking should be simplified", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Helper.BlockHelper.GetVueComponentNames(System.Collections.Generic.IList{Piranha.Extend.Block})~System.Collections.Generic.IList{System.String}")]
 [assembly: SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "<Pending>", Scope = "member", Target = "~P:Catfish.Models.Blocks.TileGrid.TileGrid.Tiles")]
 [assembly: SuppressMessage("Design", "CA1056:Uri properties should not be strings", Justification = "<Pending>", Scope = "member", Target = "~P:Catfish.Models.Blocks.TileGrid.Tile.ObjectUrl")]
-[assembly: SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "<Pending>", Scope = "member", Target = "~P:Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels.SearchOutput.Items")]

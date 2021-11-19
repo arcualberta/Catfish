@@ -20,7 +20,6 @@
 
             //Definiting reactive variables
             const keywords = ref([''])
-
             const pageId = ref(Guid.EMPTY)
             const blockId = ref(Guid.EMPTY)
 
