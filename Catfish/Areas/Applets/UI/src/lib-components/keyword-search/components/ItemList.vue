@@ -1,6 +1,5 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed } from "vue";
-    import { useStore } from 'vuex'
+    import { defineComponent} from "vue";
    
   
     export default defineComponent({
@@ -8,11 +7,7 @@
        
         props: {},
         setup() {
-            const store = useStore()
 
-            return {
-                items: computed(() => store.state.searchResult?.items)
-            }
         }
     });
 </script>
@@ -28,9 +23,3 @@
         </div>
     </div>
 </template>
-
-<style scoped>
-    .item{
-      margin: 10px 0;
-    }
-</style>
