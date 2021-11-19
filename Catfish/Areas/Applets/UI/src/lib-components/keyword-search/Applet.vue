@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, ref } from 'vue'
+    import { defineComponent, onMounted, ref } from 'vue'
     import { useStore } from 'vuex'
 
     import { state } from './store/state'
@@ -26,6 +26,10 @@
             store.dispatch(Actions.INIT_FILTER, { pageId: p.pageId, blockId: p.blockId });
 
             const keywordQueryModel = ref(store.state.keywordQueryModel);
+
+            onMounted(() => {
+                store.dispatch(Actions.FILTER_BY_KEYWORDS);
+            });
 
             return {
                 keywordQueryModel,
