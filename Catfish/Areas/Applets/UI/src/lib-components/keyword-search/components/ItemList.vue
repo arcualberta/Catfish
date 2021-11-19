@@ -21,12 +21,16 @@
 
             const nextPage = () => {
 
-                store.commit(Mutations.SET_OFFSET, store.state.max);
+                let offset = store.state.offset + store.state.max;
+                store.commit(Mutations.SET_OFFSET, offset);
                 store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
 
             const previousPage = () => {
-                store.dispatch(Actions.PREVIOUS_PAGE);
+                //store.dispatch(Actions.PREVIOUS_PAGE);
+                let offset = store.state.offset - store.state.max;
+                store.commit(Mutations.SET_OFFSET, offset);
+                store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
 
             const selectedPageSize = ref(25);

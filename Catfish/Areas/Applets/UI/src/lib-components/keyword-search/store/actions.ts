@@ -44,8 +44,7 @@ export const actions: ActionTree<State, any> = {
     if (store.state.pageId) formData.append("pageId", store.state.pageId.toString());
     if (store.state.blockId) formData.append("blockId", store.state.blockId.toString());
 
-     // let offset = store.state.offset == 0 ? store.state.offset : store.state.offset + store.state.max;
-     // console.log("offset:" + offset);
+    
       formData.append("offset", store.state.offset.toString());
 
     formData.append("max", store.state.max.toString());

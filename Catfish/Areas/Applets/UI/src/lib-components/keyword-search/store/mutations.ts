@@ -32,7 +32,7 @@ export const mutations: MutationTree<State> = {
 
   [Mutations.SET_OFFSET](state: State, payload: number) {
       console.log('SET_OFFSET Payload: ', JSON.stringify(payload))
-      state.offset += payload;
+      state.offset = payload;
     }
    
 
