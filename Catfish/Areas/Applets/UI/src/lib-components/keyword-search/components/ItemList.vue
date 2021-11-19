@@ -14,8 +14,12 @@
 
 <template>
     <div class="itemList">
-       <h1>Result List</h1>
-
+        <div v-for="item in items" :key="item.id">
+            <div class="item">
+                <h2>  {{item.title}}</h2>
+                <h3>  {{item.subtitle}}</h3>
+                <div>  {{item.content}}</div>
+            </div>
+        </div>
     </div>
-
 </template>
