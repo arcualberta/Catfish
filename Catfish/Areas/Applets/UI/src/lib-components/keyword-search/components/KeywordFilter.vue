@@ -2,17 +2,10 @@
     import { defineComponent, ref, PropType, computed, /* toRefs,*/ watch } from "vue";
     import { useStore } from 'vuex';
     import { Actions } from '../store/actions';
-    //import { SearchParams } from "../models"
     import { KeywordQueryModel } from '../models/keywords'
-
-    //import { Guid } from "guid-typescript";
-   // import ItemList from './ItemList.vue';
 
     export default defineComponent({
         name: "KeywordFilter",
-        components: {
-          //ItemList
-        },
         props: {
             queryModel: null as null | PropType<KeywordQueryModel>
         },
@@ -27,14 +20,6 @@
                 store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
 
-            //const nextPage = () => {
-            //    store.dispatch(Actions.NEXT_PAGE);
-            //}
-
-            //const previousPage = () => {
-            //    store.dispatch(Actions.PREVIOUS_PAGE);
-            //}
-
             const queryModel = ref(store.state.keywordQueryModel);
             watch(queryModel, () => {
                 if (queryModel) {
@@ -42,49 +27,9 @@
                 }
             })
 
-            //const searchParams = ref({} as SearchParams);
-            //const { pageId } = toRefs(props);
-            //const { blockId } = toRefs(props);
-
-            ////If the Local Storage contains search-params object, load it. Otherwise, create a default one.
-            //console.log("localStorage.keywordSearchParams: ", localStorage.keywordSearchParams)
-            //searchParams.value = (localStorage.keywordSearchParams)
-            //    ? JSON.parse(localStorage.keywordSearchParams)
-            //    : { keywords: [], offset: 0, max: 25 };
-
-            //watch([pageId, blockId], () => {
-            //    if (pageId.toString() !== Guid.EMPTY && blockId.toString() !== Guid.EMPTY) {
-            //        dispatchSearch()
-            //    }
-            //})
-
-            //const store = useStore()
-
-
-            //const previousPage = () => {
-            //    searchParams.value.offset = Math.max(0, searchParams.value.offset - searchParams.value.max);
-            //    dispatchSearch();
-            //}
-
-            //const nextPage = () => {
-            //    //NOTE: The prepended + sign is needed in the following statement to enforce 
-            //    //numerical addition instead of string concatenation
-            //    searchParams.value.offset = +searchParams.value.offset + +searchParams.value.max;
-            //    dispatchSearch();
-            //}
-
-
             return {
-                //searchParams,
-                //previousPage,
-                //nextPage,
-                //dispatchSearch,
                 runFreshSearch,
-                keywordQueryModel: computed(() => store.state.keywordQueryModel),
-            //    items: computed(() => store.state.searchResult?.items),
-            //    count: computed(() => store.state.searchResult?.count),
-            //    first: computed(() => store.state.searchResult?.first),
-            //    last: computed(() => store.state.searchResult?.last)
+                keywordQueryModel: computed(() => store.state.keywordQueryModel)
             }
         }
     });
