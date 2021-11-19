@@ -24,26 +24,16 @@
             console.log("Store: ", store)
 
             const runFreshSearch = () => {
-                console.log("called runFreshSearch");
-
-                //When the keywords are changed, always set the search offset to zero.
-                dispatchSearch()
-            }
-
-            const dispatchSearch = () => {
-                console.log("called dispatchSearch");
-
-                ////Save the search being carried out in the Local Storage.
-                //localStorage.keywordSearchParams = JSON.stringify(searchParams.value);
-
-                ////Overwtite any collection ID value saved in the local storage because if we rely on it,
-                ////we may use a wrong value from the cache if we ever change the collection 
-                ////in the piranha nlock configuration.
-                //searchParams.value.pageId = pageId.value;
-                //searchParams.value.blockId = blockId.value;
-
                 store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
+
+            //const nextPage = () => {
+            //    store.dispatch(Actions.NEXT_PAGE);
+            //}
+
+            //const previousPage = () => {
+            //    store.dispatch(Actions.PREVIOUS_PAGE);
+            //}
 
             const queryModel = ref(store.state.keywordQueryModel);
             watch(queryModel, () => {
@@ -91,44 +81,24 @@
                 //dispatchSearch,
                 runFreshSearch,
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
-                items: computed(() => store.state.searchResult?.items),
-                count: computed(() => store.state.searchResult?.count),
-                first: computed(() => store.state.searchResult?.first),
-                last: computed(() => store.state.searchResult?.last)
+            //    items: computed(() => store.state.searchResult?.items),
+            //    count: computed(() => store.state.searchResult?.count),
+            //    first: computed(() => store.state.searchResult?.first),
+            //    last: computed(() => store.state.searchResult?.last)
             }
         }
     });
 </script>
 
 <template>
-    <div class="col-md-3 text-left">
-        <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
-            <div v-if="keywordQueryModel?.containers.length > 1 && container?.name?.length > 0">{{container.name}}</div>
-            <div v-for="(field, fIdx) in container.fields" :key="field" class="mb-3">
-                <div v-if="field.name.length > 0" class="font-weight-bold">{{field.name}}</div>
-                <div v-for="(value, vIdx) in field.values" :key="value">
-                    <input type="checkbox" :value="value" v-model="keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx]" @change="runFreshSearch" />
-                    <label class="ml-1">{{ value }}</label>
-                </div>
+    <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
+        <div v-if="keywordQueryModel?.containers.length > 1 && container?.name?.length > 0">{{container.name}}</div>
+        <div v-for="(field, fIdx) in container.fields" :key="field" class="mb-3">
+            <div v-if="field.name.length > 0" class="font-weight-bold">{{field.name}}</div>
+            <div v-for="(value, vIdx) in field.values" :key="value">
+                <input type="checkbox" :value="value" v-model="keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx]" @change="runFreshSearch" />
+                <label class="ml-1">{{ value }}</label>
             </div>
-            <!--Container {{container}}-->
         </div>
     </div>
-    <div class="col-md-9 mb-4">
-        <div v-if="items?.length > 0">
-            <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
-            {{first}}-{{last}} of {{count}}
-            <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
-            <span>
-                <select v-model="searchParams.max" class="pull-right" @change="runFreshSearch">
-                    <option>25</option>
-                    <option>50</option>
-                    <option>100</option>
-                </select>
-            </span>
-        </div>
-        <div v-else>No results found.</div>
-        <!--<ItemList />-->
-    </div>
-
 </template>
