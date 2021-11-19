@@ -1,55 +1,72 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed } from "vue";
-    import { useStore } from 'vuex'
-   
-  
+    import { defineComponent, computed, ref} from "vue";
+    import { useStore } from 'vuex';
+    import { Mutations } from '../store/mutations';
+   // import { SearchParams } from "../models";
+
+    import { Actions } from '../store/actions'
+
     export default defineComponent({
         name: "ItemList",
        
         props: {},
         setup() {
             const store = useStore()
+           
+            const runFreshSearch = () => {
+
+                store.commit(Mutations.SET_OFFSET, 0);
+                store.dispatch(Actions.FILTER_BY_KEYWORDS);
+            }
+
+            const nextPage = () => {
+
+                store.commit(Mutations.SET_OFFSET, store.state.max);
+                store.dispatch(Actions.FILTER_BY_KEYWORDS);
+            }
+
+            const previousPage = () => {
+                store.dispatch(Actions.PREVIOUS_PAGE);
+            }
+
+            const selectedPageSize = ref(25);
 
             return {
-                items: computed(() => store.state.searchResult?.items)
-            }
+                items: computed(() => store.state.searchResult?.items),
+                runFreshSearch,
+                nextPage,
+                previousPage,
+                selectedPageSize,
+                count: computed(() => store.state.searchResult?.count),
+                first: computed(() => store.state.searchResult?.first),
+                last: computed(() => store.state.searchResult?.last)            }
         }
     });
 </script>
 
 <template>
     <div class="itemList">
-        <h1>Result List</h1>
-        <div v-if="items?.length > 0">
-            <div v-for="item in items">
-                <div>
-                    <div v-for="item in items" :key="item.id">
-                        <div v-if="item?.title != null" class="item">
-                            <div class="itm-heading col-md-12">  {{item.title}}</div>
-                            <div class="itm-subHeading col-md-12">  {{item.subtitle}}</div>
-                            <div class="itm-content col-md-12">  {{item.content}}</div>
-                        </div>
-                    </div>
-                </div>
+        <div class="">
+            <div v-if="items?.length > 0">
+                <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
+                {{first}}-{{last}} of {{count}}
+                <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
+                <span>
+                    <select v-model="selectedPageSize" class="pull-right" @change="runFreshSearch">
+                        <option>25</option>
+                        <option>50</option>
+                        <option>100</option>
+                    </select>
+                </span>
+            </div>
+            <div v-else>No results found.</div>
+        </div>
+        <div v-for="item in items" :key="item.id">
+            <div class="item">
+                <h2>  {{item.title}}</h2>
+                <h3>  {{item.subtitle}}</h3>
+                <div>  {{item.content}}</div>
             </div>
         </div>
     </div>
 </template>
-
-<style scoped>
-    .item{
-      margin: 10px 0;
-    }
-    .itm-heading{
-        font-size: 1.1em;
-        background-color: LightGrey;
-    }
-    .itm_subheading{
-        font-size: 1em;
-        font-style: italic;
-        font-weight: bold;
-    }
-    itm-content{
-
-    }
-</style>

@@ -1,7 +1,6 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
 import { Mutations } from './mutations';
-//import { SearchParams } from '../models'
 import { KeywordSource } from '../models/keywords'
 
 //Declare ActionTypes
@@ -35,7 +34,7 @@ export const actions: ActionTree<State, any> = {
 
   },
 
-    [Actions.FILTER_BY_KEYWORDS](store) {
+  [Actions.FILTER_BY_KEYWORDS](store) {
     console.log("Dispatched Actions.FILTER_BY_KEYWORDS. Query model: ", JSON.stringify(store.state.keywordQueryModel))
 
     const api = window.location.origin + `/applets/api/keywordsearch/items/`;
@@ -45,7 +44,10 @@ export const actions: ActionTree<State, any> = {
     if (store.state.pageId) formData.append("pageId", store.state.pageId.toString());
     if (store.state.blockId) formData.append("blockId", store.state.blockId.toString());
 
-    formData.append("offset", store.state.offset.toString());
+     // let offset = store.state.offset == 0 ? store.state.offset : store.state.offset + store.state.max;
+     // console.log("offset:" + offset);
+      formData.append("offset", store.state.offset.toString());
+
     formData.append("max", store.state.max.toString());
     formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
 
@@ -55,14 +57,14 @@ export const actions: ActionTree<State, any> = {
       method: 'POST', // or 'PUT'
       body: formData
     })
-    .then(response => response.json())
+      .then(response => response.json())
       .then(data => {
         store.commit(Mutations.SET_RESULTS, data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  },
 
   ////async [Actions.INIT_FILTER_ASYNC](store, source: KeywordSource) {
 
@@ -77,7 +79,36 @@ export const actions: ActionTree<State, any> = {
   ////  store.commit(Mutations.SET_KEYWORDS, data);
   ////},
 
+  //[Actions.NEXT_PAGE](store) {
+  //      console.log("Dispatched Actions.NEXT_PGE. Query model: ", JSON.stringify(store.state.keywordQueryModel))
 
+  //      const api = window.location.origin + `/applets/api/keywordsearch/items/`;
+  //      console.log("Item Load API: ", api)
+
+  //      const formData = new FormData();
+  //      if (store.state.pageId) formData.append("pageId", store.state.pageId.toString());
+  //      if (store.state.blockId) formData.append("blockId", store.state.blockId.toString());
+
+  //      let offset = store.state.offset + store.state.max;
+  //      formData.append("offset", offset.toString());
+
+  //      formData.append("max", store.state.max.toString());
+  //      formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
+
+  //      console.log("Form Data: ", formData)
+
+  //      fetch(api, {
+  //          method: 'POST', // or 'PUT'
+  //          body: formData
+  //      })
+  //          .then(response => response.json())
+  //          .then(data => {
+  //              store.commit(Mutations.SET_RESULTS, data);
+  //          })
+  //          .catch((error) => {
+  //              console.error('Error:', error);
+  //          });
+  //  }
 
 }
 

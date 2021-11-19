@@ -2,17 +2,10 @@
     import { defineComponent, ref, PropType, computed, /* toRefs,*/ watch } from "vue";
     import { useStore } from 'vuex';
     import { Actions } from '../store/actions';
-    //import { SearchParams } from "../models"
     import { KeywordQueryModel } from '../models/keywords'
-
-    //import { Guid } from "guid-typescript";
-   // import ItemList from './ItemList.vue';
 
     export default defineComponent({
         name: "KeywordFilter",
-        components: {
-          //ItemList
-        },
         props: {
             queryModel: null as null | PropType<KeywordQueryModel>
         },
@@ -24,24 +17,6 @@
             console.log("Store: ", store)
 
             const runFreshSearch = () => {
-                console.log("called runFreshSearch");
-
-                //When the keywords are changed, always set the search offset to zero.
-                dispatchSearch()
-            }
-
-            const dispatchSearch = () => {
-                console.log("called dispatchSearch");
-
-                ////Save the search being carried out in the Local Storage.
-                //localStorage.keywordSearchParams = JSON.stringify(searchParams.value);
-
-                ////Overwtite any collection ID value saved in the local storage because if we rely on it,
-                ////we may use a wrong value from the cache if we ever change the collection 
-                ////in the piranha nlock configuration.
-              //  searchParams.value.pageId = pageId.value;
-              //  searchParams.value.blockId = blockId.value;
-
                 store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
 
@@ -52,49 +27,9 @@
                 }
             })
 
-            //const searchParams = ref({} as SearchParams);
-            //const { pageId } = toRefs(props);
-            //const { blockId } = toRefs(props);
-
-            ////If the Local Storage contains search-params object, load it. Otherwise, create a default one.
-            //console.log("localStorage.keywordSearchParams: ", localStorage.keywordSearchParams)
-            //searchParams.value = (localStorage.keywordSearchParams)
-            //    ? JSON.parse(localStorage.keywordSearchParams)
-            //    : { keywords: [], offset: 0, max: 25 };
-
-            //watch([pageId, blockId], () => {
-            //    if (pageId.toString() !== Guid.EMPTY && blockId.toString() !== Guid.EMPTY) {
-            //        dispatchSearch()
-            //    }
-            //})
-
-            //const store = useStore()
-
-
-            //const previousPage = () => {
-            //    searchParams.value.offset = Math.max(0, searchParams.value.offset - searchParams.value.max);
-            //    dispatchSearch();
-            //}
-
-            //const nextPage = () => {
-            //    //NOTE: The prepended + sign is needed in the following statement to enforce 
-            //    //numerical addition instead of string concatenation
-            //    searchParams.value.offset = +searchParams.value.offset + +searchParams.value.max;
-            //    dispatchSearch();
-            //}
-
-
             return {
-                //searchParams,
-                //previousPage,
-                //nextPage,
-                dispatchSearch,
                 runFreshSearch,
-                keywordQueryModel: computed(() => store.state.keywordQueryModel),
-                items: computed(() => store.state.searchResult?.items),
-                count: computed(() => store.state.searchResult?.count),
-                first: computed(() => store.state.searchResult?.first),
-                last: computed(() => store.state.searchResult?.last)
+                keywordQueryModel: computed(() => store.state.keywordQueryModel)
             }
         }
     });

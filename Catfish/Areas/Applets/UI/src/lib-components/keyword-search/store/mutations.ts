@@ -7,7 +7,9 @@ import { KeywordQueryModel, KeywordSource } from '../models/keywords';
 export enum Mutations {
   SET_SOURCE = 'SET_SOURCE',
   SET_KEYWORDS = 'SET_KEYWORDS',
-  SET_RESULTS = 'SET_RESULTS'
+  SET_RESULTS = 'SET_RESULTS',
+  SET_OFFSET = 'SET_OFFSET'
+  
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -26,5 +28,13 @@ export const mutations: MutationTree<State> = {
   [Mutations.SET_RESULTS](state: State, payload: SearchOutput) {
     console.log('SET_RESULTS Payload: ', JSON.stringify(payload))
     state.searchResult = payload;
-  }
+    },
+
+  [Mutations.SET_OFFSET](state: State, payload: number) {
+      console.log('SET_OFFSET Payload: ', JSON.stringify(payload))
+      state.offset += payload;
+    }
+   
+
+
 }

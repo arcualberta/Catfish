@@ -128,8 +128,14 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("items")]
-        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 100)
+        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0)
         {
+            //Using mockup data
+            KeywordQueryModel qModel = await Keywords(pageId, blockId).ConfigureAwait(false);
+            DataMockupHelpers.KeywordSearchMockupHelper helper = new DataMockupHelpers.KeywordSearchMockupHelper(qModel.Containers, 250);
+            return helper.FilterMockupData(null, offset, max);
+
+
             SearchOutput result = new SearchOutput();
             try
             {
