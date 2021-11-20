@@ -1,8 +1,6 @@
 ﻿<script lang="ts">
     import { defineComponent, computed, ref} from "vue";
     import { useStore } from 'vuex';
-   // import { Mutations } from '../store/mutations';
-   // import { SearchParams } from "../models";
 
     import { Actions } from '../store/actions'
 
@@ -13,12 +11,6 @@
         setup() {
             const store = useStore()
            
-            //const runFreshSearch = () => {
-
-            //    store.commit(Mutations.SET_OFFSET, 0);
-            //    store.dispatch(Actions.FILTER_BY_KEYWORDS);
-            //}
-
             const nextPage = () => store.dispatch(Actions.NEXT_PAGE);
             const previousPage = () => store.dispatch(Actions.PREVIOUS_PAGE);
             const freshSearch = (pageSize: number) => store.dispatch(Actions.FRESH_SEARCH, pageSize);

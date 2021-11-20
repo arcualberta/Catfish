@@ -26,8 +26,6 @@ export const mutations: MutationTree<State> = {
   },
 
   [Mutations.SET_RESULTS](state: State, payload: SearchOutput) {
-    //console.log('SET_RESULTS Payload: ', JSON.stringify(payload))
-    //console.log('SET_RESULTS Payload.first: ', payload.first)
     state.searchResult = payload;
     state.offset = payload.first - 1;
   },

@@ -29,7 +29,6 @@ export const actions: ActionTree<State, any> = {
     fetch(api)
       .then(response => response.json())
       .then(data => {
-        //console.log("Fetch results: ", data);
         store.commit(Mutations.SET_KEYWORDS, data)
       });
   },
@@ -96,36 +95,7 @@ export const actions: ActionTree<State, any> = {
   ////  store.commit(Mutations.SET_KEYWORDS, data);
   ////},
 
-  //[Actions.NEXT_PAGE](store) {
-  //      console.log("Dispatched Actions.NEXT_PGE. Query model: ", JSON.stringify(store.state.keywordQueryModel))
 
-  //      const api = window.location.origin + `/applets/api/keywordsearch/items/`;
-  //      console.log("Item Load API: ", api)
-
-  //      const formData = new FormData();
-  //      if (store.state.pageId) formData.append("pageId", store.state.pageId.toString());
-  //      if (store.state.blockId) formData.append("blockId", store.state.blockId.toString());
-
-  //      let offset = store.state.offset + store.state.max;
-  //      formData.append("offset", offset.toString());
-
-  //      formData.append("max", store.state.max.toString());
-  //      formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
-
-  //      console.log("Form Data: ", formData)
-
-  //      fetch(api, {
-  //          method: 'POST', // or 'PUT'
-  //          body: formData
-  //      })
-  //          .then(response => response.json())
-  //          .then(data => {
-  //              store.commit(Mutations.SET_RESULTS, data);
-  //          })
-  //          .catch((error) => {
-  //              console.error('Error:', error);
-  //          });
-  //  }
 
 }
 
