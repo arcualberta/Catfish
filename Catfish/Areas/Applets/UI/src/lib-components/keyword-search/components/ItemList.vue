@@ -19,7 +19,6 @@
 
             return {
                 items: computed(() => store.state.searchResult?.items),
-                //runFreshSearch,
                 freshSearch,
                 nextPage,
                 previousPage,
