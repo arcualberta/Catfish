@@ -27,9 +27,7 @@
 
             const keywordQueryModel = ref(store.state.keywordQueryModel);
 
-            onMounted(() => {
-                store.dispatch(Actions.FILTER_BY_KEYWORDS);
-            });
+            onMounted(() => store.dispatch(Actions.FILTER_BY_KEYWORDS));
 
             return {
                 keywordQueryModel,
