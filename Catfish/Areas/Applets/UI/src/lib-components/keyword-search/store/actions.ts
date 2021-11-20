@@ -29,10 +29,9 @@ export const actions: ActionTree<State, any> = {
     fetch(api)
       .then(response => response.json())
       .then(data => {
-        console.log("Fetch results: ", data);
+        //console.log("Fetch results: ", data);
         store.commit(Mutations.SET_KEYWORDS, data)
       });
-
   },
 
   [Actions.FILTER_BY_KEYWORDS](store) {
@@ -75,6 +74,12 @@ export const actions: ActionTree<State, any> = {
   [Actions.PREVIOUS_PAGE](store) {
     const offset = Math.max(store.state.offset - store.state.max, 0);
     store.commit(Mutations.SET_OFFSET, offset);
+    store.dispatch(Actions.FILTER_BY_KEYWORDS);
+  },
+
+  [Actions.FRESH_SEARCH](store, pageSize: number) {
+    store.commit(Mutations.SET_OFFSET, 0);
+    store.commit(Mutations.SET_PAGE_SIZE, pageSize);
     store.dispatch(Actions.FILTER_BY_KEYWORDS);
   },
 
