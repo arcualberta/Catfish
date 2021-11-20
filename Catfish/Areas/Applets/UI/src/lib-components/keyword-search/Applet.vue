@@ -45,7 +45,7 @@
 <template>
     <div class="row">
         <div class="col-md-4 text-left">
-            <KeywordFilter :query-model="keywordQueryModel" />
+            <KeywordFilter />
         </div>
         <div class="col-md-8">
             <ItemList />

@@ -1,14 +1,10 @@
 <script lang="ts">
-    import { defineComponent, ref, PropType, computed, /* toRefs,*/ watch } from "vue";
+    import { defineComponent, ref, computed, /* toRefs,*/ watch } from "vue";
     import { useStore } from 'vuex';
     import { Actions } from '../store/actions';
-    import { KeywordQueryModel } from '../models/keywords'
 
     export default defineComponent({
         name: "KeywordFilter",
-        props: {
-            queryModel: null as null | PropType<KeywordQueryModel>
-        },
         setup(props) {
 
             console.log("KeywordFilter props: ", props)
