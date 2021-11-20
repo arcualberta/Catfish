@@ -13,7 +13,7 @@ namespace Catfish.Areas.Applets.Models.Blocks
     [BlockType(Name = "Item Editor", Category = "Content", Component = "item-editor", Icon = "fas fa-edit")]
     public class ItemEditor:Block
     {
-        public Guid ItemId { get; set; }
+        public TextField ItemId { get; set; }
         [Display(Name = "Css Class")]
         public StringField CssClass { get; set; }
 
