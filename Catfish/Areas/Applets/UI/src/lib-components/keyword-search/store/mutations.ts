@@ -27,14 +27,14 @@ export const mutations: MutationTree<State> = {
 
   [Mutations.SET_RESULTS](state: State, payload: SearchOutput) {
     console.log('SET_RESULTS Payload: ', JSON.stringify(payload))
+    console.log('SET_RESULTS Payload.first: ', payload.first)
     state.searchResult = payload;
-    },
+    state.offset = payload.first - 1;
+  },
 
   [Mutations.SET_OFFSET](state: State, payload: number) {
-      console.log('SET_OFFSET Payload: ', JSON.stringify(payload))
-      state.offset = payload;
-    }
-   
-
+    console.log('SET_OFFSET Payload: ', JSON.stringify(payload))
+    state.offset = payload;
+  }
 
 }

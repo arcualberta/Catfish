@@ -68,8 +68,7 @@ export const actions: ActionTree<State, any> = {
   },
 
   [Actions.NEXT_PAGE](store) {
-    const offset = Math.min(store.state.offset + store.state.max, store.state.max);
-    store.commit(Mutations.SET_OFFSET, offset);
+    store.commit(Mutations.SET_OFFSET, store.state.offset + store.state.max);
     store.dispatch(Actions.FILTER_BY_KEYWORDS);
   },
 
