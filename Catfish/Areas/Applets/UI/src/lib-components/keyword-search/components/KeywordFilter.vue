@@ -1,27 +1,16 @@
 <script lang="ts">
-    import { defineComponent, ref, computed, /* toRefs,*/ watch } from "vue";
+    import { defineComponent, computed, /* watch*/ } from "vue";
     import { useStore } from 'vuex';
     import { Actions } from '../store/actions';
 
     export default defineComponent({
         name: "KeywordFilter",
-        setup(props) {
-
-            console.log("KeywordFilter props: ", props)
+        setup() {
 
             const store = useStore();
-            console.log("Store: ", store)
+            //console.log("Store: ", store)
 
-            const runFreshSearch = () => {
-                store.dispatch(Actions.FILTER_BY_KEYWORDS);
-            }
-
-            const queryModel = ref(store.state.keywordQueryModel);
-            watch(queryModel, () => {
-                if (queryModel) {
-                    console.log("KeywordFilter updated queryModel: ", queryModel)
-                }
-            })
+            const runFreshSearch = () => store.dispatch(Actions.FRESH_SEARCH);
 
             return {
                 runFreshSearch,

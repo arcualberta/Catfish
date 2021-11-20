@@ -78,7 +78,8 @@ export const actions: ActionTree<State, any> = {
 
   [Actions.FRESH_SEARCH](store, pageSize: number) {
     store.commit(Mutations.SET_OFFSET, 0);
-    store.commit(Mutations.SET_PAGE_SIZE, pageSize);
+    if (pageSize)
+      store.commit(Mutations.SET_PAGE_SIZE, pageSize);
     store.dispatch(Actions.FILTER_BY_KEYWORDS);
   },
 

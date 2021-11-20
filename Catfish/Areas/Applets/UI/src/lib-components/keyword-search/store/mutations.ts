@@ -28,14 +28,19 @@ export const mutations: MutationTree<State> = {
   [Mutations.SET_RESULTS](state: State, payload: SearchOutput) {
     state.searchResult = payload;
     state.offset = payload.first - 1;
+
+    //if (state.keywordQueryModel)
+    //  state.keywordQueryModel.containers[0].fields[0].selected[4] = true;
+
   },
 
   [Mutations.SET_OFFSET](state: State, payload: number) {
-    console.log('SET_OFFSET: Offset: ', payload)
+    console.log('SET_OFFSET: payload: ', payload)
     state.offset = payload;
   },
 
   [Mutations.SET_PAGE_SIZE](state: State, payload: number) {
+    console.log('SET_PAGE_SIZE: payload: ', payload)
     state.max = payload;
   }
 
