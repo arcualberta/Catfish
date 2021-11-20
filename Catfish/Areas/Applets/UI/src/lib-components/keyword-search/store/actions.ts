@@ -9,7 +9,8 @@ export enum Actions {
   INIT_FILTER_ASYNC = 'INIT_FILTER_ASYNC',
   FILTER_BY_KEYWORDS = 'FILTER_BY_KEYWORDS',
   NEXT_PAGE = 'NEXT_PAGE',
-  PREVIOUS_PAGE = 'PREVIOUS_PAGE'
+  PREVIOUS_PAGE = 'PREVIOUS_PAGE',
+  FRESH_SEARCH = 'FRESH_SEARCH'
 }
 
 export const actions: ActionTree<State, any> = {
@@ -41,11 +42,12 @@ export const actions: ActionTree<State, any> = {
     console.log("Item Load API: ", api)
 
     const formData = new FormData();
-    if (store.state.pageId) formData.append("pageId", store.state.pageId.toString());
-    if (store.state.blockId) formData.append("blockId", store.state.blockId.toString());
-
+    if (store.state.pageId)
+      formData.append("pageId", store.state.pageId.toString());
+    if (store.state.blockId)
+      formData.append("blockId", store.state.blockId.toString());
     
-      formData.append("offset", store.state.offset.toString());
+    formData.append("offset", store.state.offset.toString());
 
     formData.append("max", store.state.max.toString());
     formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
@@ -63,6 +65,18 @@ export const actions: ActionTree<State, any> = {
       .catch((error) => {
         console.error('Error:', error);
       });
+  },
+
+  [Actions.NEXT_PAGE](store) {
+    const offset = Math.min(store.state.offset + store.state.max, store.state.max);
+    store.commit(Mutations.SET_OFFSET, offset);
+    store.dispatch(Actions.FILTER_BY_KEYWORDS);
+  },
+
+  [Actions.PREVIOUS_PAGE](store) {
+    const offset = Math.max(store.state.offset - store.state.max, 0);
+    store.commit(Mutations.SET_OFFSET, offset);
+    store.dispatch(Actions.FILTER_BY_KEYWORDS);
   },
 
   ////async [Actions.INIT_FILTER_ASYNC](store, source: KeywordSource) {

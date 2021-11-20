@@ -19,19 +19,8 @@
                 store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
 
-            const nextPage = () => {
-
-                let offset = store.state.offset + store.state.max;
-                store.commit(Mutations.SET_OFFSET, offset);
-                store.dispatch(Actions.FILTER_BY_KEYWORDS);
-            }
-
-            const previousPage = () => {
-                //store.dispatch(Actions.PREVIOUS_PAGE);
-                let offset = store.state.offset - store.state.max;
-                store.commit(Mutations.SET_OFFSET, offset);
-                store.dispatch(Actions.FILTER_BY_KEYWORDS);
-            }
+            const nextPage = () => store.dispatch(Actions.NEXT_PAGE);
+            const previousPage = () => store.dispatch(Actions.PREVIOUS_PAGE);
 
             const selectedPageSize = ref(25);
 
