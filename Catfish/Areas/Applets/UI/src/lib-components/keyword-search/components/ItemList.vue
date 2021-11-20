@@ -10,24 +10,17 @@
         props: {},
         setup() {
             const store = useStore()
-
-            const runFreshSearch = () => {
-                store.dispatch(Actions.FILTER_BY_KEYWORDS);
-            }
-
-            const nextPage = () => {
-                store.dispatch(Actions.NEXT_PAGE);
-            }
-
-            const previousPage = () => {
-                store.dispatch(Actions.PREVIOUS_PAGE);
-            }
+           
+            const nextPage = () => store.dispatch(Actions.NEXT_PAGE);
+            const previousPage = () => store.dispatch(Actions.PREVIOUS_PAGE);
+            const freshSearch = (pageSize: number) => store.dispatch(Actions.FRESH_SEARCH, pageSize);
 
             const selectedPageSize = ref(25);
 
             return {
                 items: computed(() => store.state.searchResult?.items),
-                runFreshSearch,
+                //runFreshSearch,
+                freshSearch,
                 nextPage,
                 previousPage,
                 selectedPageSize,
@@ -46,7 +39,7 @@
                 {{first}}-{{last}} of {{count}}
                 <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
                 <span>
-                    <select v-model="selectedPageSize" class="pull-right" @change="runFreshSearch">
+                    <select v-model="selectedPageSize" class="pull-right" @change="freshSearch(Number(selectedPageSize))">
                         <option>25</option>
                         <option>50</option>
                         <option>100</option>
