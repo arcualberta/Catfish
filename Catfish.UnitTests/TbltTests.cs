@@ -29,7 +29,7 @@ namespace Catfish.UnitTests
         }
 
        
-        
+        [Test]
         public void TBlt_ContactFormTest()
         {
             string lang = "en";
@@ -71,7 +71,8 @@ namespace Catfish.UnitTests
             bcpForm.SetDescription("This template is designed for Task-based Language Teaching Contact Form", lang);
 
             bcpForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("h1", "Join Us", lang);
+                 .AppendContent("h1", "Join Us", lang)
+                 .AppendContent("p", "<i>If you are interested in becoming a member of the TBLT CoP, please fill out this form.</ i>", lang);
            
             bcpForm.CreateField<TextField>("Name", lang,true);
             var applicantEmail= bcpForm.CreateField<EmailField>("Email", lang, true);
@@ -79,6 +80,8 @@ namespace Catfish.UnitTests
             var other =bcpForm.CreateField<TextArea>(@"Please, tell us what language(s) you teach and what age groups (e.g., elementary, secondary, college/university, adults)", lang, true);
             other.Cols = 50;
             other.Rows = 5;
+
+            bcpForm.CreateField<CheckboxField>("", lang, new string[] { "I confirm that I have read the <a href='https://tblt.ualberta.ca/foip-notification-statement'>FOIP Notification Statement</a> and the <a href='https://tblt.ualberta.ca/terms-of-use'>Terms of Use</a> of this website, as well as the applicable University of Alberta’s Policies linked in them, and that I agree to their terms." }, true);
 
             //Defininig the Comments form
             DataItem commentsForm = template.GetDataItem("TBLT Comment Form", true, lang);
