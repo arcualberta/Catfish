@@ -133,7 +133,7 @@ namespace Catfish.Areas.Applets.Controllers
             //Using mockup data
             KeywordQueryModel qModel = await Keywords(pageId, blockId).ConfigureAwait(false);
             DataMockupHelpers.KeywordSearchMockupHelper helper = new DataMockupHelpers.KeywordSearchMockupHelper(qModel.Containers, 250);
-            return helper.FilterMockupData(null, offset, max);
+            return helper.FilterMockupData(JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams), offset, max);
 
 
             SearchOutput result = new SearchOutput();

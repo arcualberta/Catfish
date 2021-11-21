@@ -6,7 +6,6 @@ import { KeywordSource } from '../models/keywords'
 //Declare ActionTypes
 export enum Actions {
   INIT_FILTER = 'INIT_FILTER',
-  INIT_FILTER_ASYNC = 'INIT_FILTER_ASYNC',
   FILTER_BY_KEYWORDS = 'FILTER_BY_KEYWORDS',
   NEXT_PAGE = 'NEXT_PAGE',
   PREVIOUS_PAGE = 'PREVIOUS_PAGE',
@@ -50,7 +49,7 @@ export const actions: ActionTree<State, any> = {
     formData.append("max", store.state.max.toString());
     formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
 
-    console.log("Form Data: ", formData)
+    //console.log("Form Data: ", formData)
 
     fetch(api, {
       method: 'POST', // or 'PUT'

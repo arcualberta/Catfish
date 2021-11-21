@@ -29,7 +29,7 @@ namespace Catfish.Areas.Applets.DataMockupHelpers
                 {
                     Id = Guid.NewGuid(),
                     Title = "Item " + (i + 1),
-                    Content = Helper.MockHelper.LoremIpsum(4, 8, 1, 5, 1),
+                    Content = Helper.MockHelper.LoremIpsum(5, 10, 5, 50, 1),
                     Date = DateTime.Now.AddDays(i),
                     Thumbnail = "https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/dahlia-3598551_1920.jpg?itok=XZfJlur2",
                     DetailedViewUrl = "https://www.ualberta.ca/",
@@ -42,13 +42,26 @@ namespace Catfish.Areas.Applets.DataMockupHelpers
             return tiles;
         }
 
-        public SearchOutput FilterMockupData(string[] slectedKeywords, int offset = 0, int max = 0)
+        public SearchOutput FilterMockupData(KeywordQueryModel queryModel, int offset = 0, int max = 0)
         {
             List<ResultItem> dbData = GetMockupData();
 
             List<ResultItem> tiles = new List<ResultItem>();
-            if (slectedKeywords?.Length > 0)
+            if (queryModel != null)
             {
+                List<string> slectedKeywords = new List<string>();
+                foreach (var cont in queryModel.Containers)
+                {
+                    foreach (var field in cont.Fields)
+                    {
+                        for (int i = 0; i < field.Values.Count; ++i)
+                        {
+                            if (field.Selected[i])
+                                slectedKeywords.Add(field.Values[i]);
+                        }
+                    }
+                }
+
                 foreach (var t in dbData)
                 {
                     foreach (var cat in t.Categories)
