@@ -1,4 +1,5 @@
 ﻿using Catfish.Areas.Applets.Models.Blocks;
+using Catfish.Areas.Applets.Services;
 using Catfish.Areas.Manager.Access;
 using Catfish.Core.Authorization.Handlers;
 using Catfish.Core.Helpers;
@@ -199,6 +200,7 @@ namespace Catfish
             services.AddScoped<IJobService, JobService>();
             services.AddSingleton<IAppService, AppService>();
             services.AddSingleton<IBlockHelper, BlockHelper>();
+            services.AddSingleton<IAssetRegistry, AssetRegistry>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
