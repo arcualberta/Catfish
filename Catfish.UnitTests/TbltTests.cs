@@ -184,7 +184,7 @@ namespace Catfish.UnitTests
             bcpForm.CreateField<CheckboxField>("Permission to publish", lang, new string[] { "Yes, I confirm" },true)
                 .SetDescription("Please, confirm that you own this material and/or that you have obtained all necessary permissions to post the material on the TBLT CoP Website", lang);
             bcpForm.CreateField<CheckboxField>("Permission to use", lang, new string[] { "Yes, I confirm" }, true)
-                .SetDescription("Please confirm that you grant the TBLT CoP an Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license to use this material (except in those cases where an alternative license has been indicated by you on the applicable material).", lang);
+                .SetDescription("Please confirm that you grant the TBLT CoP a <a href='https://creativecommons.org/licenses/by-nc-sa/4.0/'>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license</a> to use this material (except in those cases where an alternative license has been indicated by you on the applicable material).", lang);
 
 
             //Defininig the Comments form
