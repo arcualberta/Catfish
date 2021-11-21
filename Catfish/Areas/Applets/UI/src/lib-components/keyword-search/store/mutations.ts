@@ -31,11 +31,12 @@ export const mutations: MutationTree<State> = {
   },
 
   [Mutations.SET_OFFSET](state: State, payload: number) {
-    console.log('SET_OFFSET: Offset: ', payload)
+    //console.log('SET_OFFSET: payload: ', payload)
     state.offset = payload;
   },
 
   [Mutations.SET_PAGE_SIZE](state: State, payload: number) {
+    //console.log('SET_PAGE_SIZE: payload: ', payload)
     state.max = payload;
   }
 

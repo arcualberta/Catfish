@@ -27,9 +27,7 @@
 
             const keywordQueryModel = ref(store.state.keywordQueryModel);
 
-            onMounted(() => {
-                store.dispatch(Actions.FILTER_BY_KEYWORDS);
-            });
+            onMounted(() => store.dispatch(Actions.FILTER_BY_KEYWORDS));
 
             return {
                 keywordQueryModel,
@@ -47,7 +45,7 @@
 <template>
     <div class="row">
         <div class="col-md-4 text-left">
-            <KeywordFilter :query-model="keywordQueryModel" />
+            <KeywordFilter />
         </div>
         <div class="col-md-8">
             <ItemList />
