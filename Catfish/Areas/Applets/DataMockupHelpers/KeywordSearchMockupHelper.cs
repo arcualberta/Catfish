@@ -47,9 +47,9 @@ namespace Catfish.Areas.Applets.DataMockupHelpers
             List<ResultItem> dbData = GetMockupData();
 
             List<ResultItem> tiles = new List<ResultItem>();
+            List<string> slectedKeywords = new List<string>();
             if (queryModel != null)
             {
-                List<string> slectedKeywords = new List<string>();
                 foreach (var cont in queryModel.Containers)
                 {
                     foreach (var field in cont.Fields)
@@ -61,7 +61,10 @@ namespace Catfish.Areas.Applets.DataMockupHelpers
                         }
                     }
                 }
+            }
 
+            if (slectedKeywords.Count > 0)
+            {
                 foreach (var t in dbData)
                 {
                     foreach (var cat in t.Categories)
