@@ -5,7 +5,7 @@
     var viewData = new ViewDataDictionary(this.ViewData)
 {
         { "data-item-id", Model.ItemId?.Value },
-        { "data-template-id", Model.SelectedItemTemplate?.Value },
+       // { "data-template-id", Model.SelectedItemTemplate?.Value },
     };
 }
     <partial name="Shared/_AppletLoader" view-data="@viewData" />

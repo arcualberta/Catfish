@@ -463,6 +463,7 @@ namespace Catfish
             App.Blocks.Register<TileGrid>();
             App.Blocks.Register<KeywordSearch>();
             App.Blocks.Register < Carousel>();
+            App.Blocks.Register<ItemEditor>();
         }
         private static void RegisterCustomStyles()
         {

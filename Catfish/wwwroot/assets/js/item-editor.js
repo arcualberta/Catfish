@@ -11,74 +11,22 @@
 
             var elName = e.target.name;
             if (elName == "ItemEditor") {
-                this.model.keywordList.value = e.target.value;
-                var content = this.model.keywordList.value;
+                this.model.ItemId.value = e.target.value;
+                var content = this.model.ItemId.value;
                 if (content.length > 0) {
                     this.$emit('update-content', {
                         uid: this.uid,
-                        keywordList: content
-                    });
-                }
-            }
-            else if (elName == "blockCss") {
-                this.model.blockCss.value = e.target.value;
-                var content = this.model.blockCss.value;
-                if (content.length > 0) {
-                    this.$emit('update-content', {
-                        uid: this.uid,
-                        blockCss: content
-                    });
-                }
-            }
-            else if (elName == "itemEditorCss") {
-                this.model.tileCss.value = e.target.value;
-                var content = this.model.tileCss.value;
-                if (content.length > 0) {
-                    this.$emit('update-content', {
-                        uid: this.uid,
-                        tileCss: content
+                        ItemId: content
                     });
                 }
             }
             
-
         },
-        //selectItemTemplate: function (selected) {
-
-        //    fetch('/api/Items/GetItemtemplateFields/' + selected)
-        //        .then(response => response.json())
-        //        .then((data) => {
-        //            this.itemFields = data;
-
-        //        });
-
-        //    fetch('/api/Items/GetItemtemplateMetadataSets/' + selected)
-        //        .then(response => response.json())
-        //        .then((data) => {
-        //            this.metadatasets = data;
-
-        //        });
-        //},
+        
     },
-    mounted() {
-        if (this.model.selectedItemTemplate?.value) {
-            fetch('/api/Items/GetItemtemplateFields/' + this.model.selectedItemTemplate.value)
-                .then(response => response.json())
-                .then((data) => {
-                    this.itemFields = data;
-
-                });
-
-            fetch('/api/Items/GetItemtemplateMetadataSets/' + this.model.selectedItemTemplate.value)
-                .then(response => response.json())
-                .then((data) => {
-                    this.metadatasets = data;
-
-                });
-        }
-    },
-    template:
-        `<div  class= 'block-body'>
-            <h2>Item Editor</h2>
-       </div>`
+    
+    template: "<div  class= 'block-body calendar-block'>" +
+        "<div class='lead row'><label class='form-label col-md-3 required'>Item ID: </label><input class='form-control col-md-8' type='text' name='itemId' v-model='model.itemId.value' contenteditable='true' v-on:blur='onBlur' value='itemIdValue'  :class='{ requiredField: isItemIdEmpty }' /></div>" +
+       // "<div class='lead row'><label class='form-label col-md-3 required'>Collection ID: </label><input class='form-control col-md-8' type='text' name='collectionId' v-model='model.collectionId.value' contenteditable='true' v-on:blur='onBlur' value='collectionIdValue'  :class='{ requiredField: isCollectionEmpty }' /></div>" +
+        "</div>"
 });

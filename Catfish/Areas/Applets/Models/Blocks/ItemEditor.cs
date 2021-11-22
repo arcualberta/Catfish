@@ -17,25 +17,6 @@ namespace Catfish.Areas.Applets.Models.Blocks
         [Display(Name = "Css Class")]
         public StringField CssClass { get; set; }
 
-        [Display(Name = "Submission Confirmation")]
-        public TextField SubmissionConfirmation { get; set; }
-
-        [Display(Name = "Authorization Failure Message")]
-        public TextField AuthorizationFailureMessage { get; set; }
-
-        public CatfishSelectList<Collection> Collections { get; set; }
-        public CatfishSelectList<ItemTemplate> ItemTemplates { get; set; }
-
-        public TextField SelectedCollection { get; set; }
-
-        public TextField SelectedItemTemplate { get; set; }
-
-        public TextField WorkflowFunction { get; set; }
-
-        public TextField WorkflowGroup { get; set; }
-
-        public CheckBoxField LinkToGroup { get; set; }
-
-        public StringField GroupSelectorLabel { get; set; }
+        
     }
 }
