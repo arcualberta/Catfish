@@ -58,7 +58,7 @@
                         {{cat}}
                     </span>
                 </div>
-                <div class="item-content">{{item.content}}</div>
+                <div class="content">{{item.content}}</div>
             </div>
         </div>
     </div>
