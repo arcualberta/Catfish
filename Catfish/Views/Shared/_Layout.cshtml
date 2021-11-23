@@ -4,6 +4,8 @@
 @using Catfish.Models.Blocks;
 @using Piranha.Extend;
 
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 @inject Catfish.Services.IAppService _appService;
@@ -71,14 +73,14 @@
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
-    
+
     @*<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>*@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.min.js" integrity="sha384-3ziFidFTgxJXHMDttyPJKDuTlmxJlwbSkojudK/CkRqKDOmeSbN6KLrGdrBQnT2n" crossorigin="anonymous"></script>
     @*<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" ></script>*@
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     @*   this is needed for Google-signIn
         <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-        *@
+    *@
 
     <link href="~/assets/css/public/style.css" rel="stylesheet" />
     <link href="~/assets/css/public/componentStyles.css" rel="stylesheet" />
@@ -99,6 +101,8 @@
     <script src="/assets/js/_public-facing/scripts/modal-bootstrap-jquery.js"></script>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+
+    <link src="/assets/vendor/bootstrap-5/css/bootstrap.min.css">
 
     @{
         //Inserting custom CSS files
@@ -155,6 +159,8 @@
             <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
         }
     }
+
+    <partial name="Partial/_AssetRegistry.cshtml" />
 </head>
 
 <body>

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, ref } from 'vue'
+    import { defineComponent, onMounted, ref } from 'vue'
     import { useStore } from 'vuex'
 
     import { state } from './store/state'
@@ -8,22 +8,30 @@
     import { getters } from './store/getters'
     import KeywordFilter from './components/KeywordFilter.vue'
 
+    import ItemList from './components/ItemList.vue'
+
     import props from '../shared/props'
 
     export default defineComponent({
         name: "Applet",
         components: {
-            KeywordFilter
+            KeywordFilter,
+            ItemList
         },
         props,
         setup(p) {
             console.log('Keyword Search setup ...', p)
 
-            const s = useStore()
-            s.dispatch(Actions.INIT_FILTER, { pageId: p.pageId, blockId: p.blockId });
+            const store = useStore()
+            store.dispatch(Actions.INIT_FILTER, { pageId: p.pageId, blockId: p.blockId });
 
-            const keywordQueryModel = ref(s.state.keywordQueryModel);
-            return { keywordQueryModel };
+            const keywordQueryModel = ref(store.state.keywordQueryModel);
+
+            onMounted(() => store.dispatch(Actions.FILTER_BY_KEYWORDS));
+
+            return {
+                keywordQueryModel,
+            };
         },
         storeConfig: {
             state,
@@ -35,8 +43,13 @@
 </script>
 
 <template>
-    <div>
-        <KeywordFilter :query-model="keywordQueryModel"/>
+    <div class="row">
+        <div class="col-md-4 text-left">
+            <KeywordFilter />
+        </div>
+        <div class="col-md-8">
+            <ItemList />
+        </div>
     </div>
 </template>
 

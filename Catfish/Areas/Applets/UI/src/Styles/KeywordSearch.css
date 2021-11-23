@@ -1,0 +1,7 @@
+﻿.itemList .item {
+
+}
+
+    .itemList .item .content {
+        max-height: 100px;
+    }
