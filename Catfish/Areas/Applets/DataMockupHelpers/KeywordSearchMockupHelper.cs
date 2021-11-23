@@ -29,13 +29,14 @@ namespace Catfish.Areas.Applets.DataMockupHelpers
                 {
                     Id = Guid.NewGuid(),
                     Title = "Item " + (i + 1),
+                    Subtitle = Helper.MockHelper.LoremIpsum(2, 3, 1, 1, 1),
                     Content = Helper.MockHelper.LoremIpsum(5, 10, 5, 50, 1),
                     Date = DateTime.Now.AddDays(i),
                     Thumbnail = "https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/dahlia-3598551_1920.jpg?itok=XZfJlur2",
-                    DetailedViewUrl = "https://www.ualberta.ca/",
+                    DetailedViewUrl = i%2 == 1 ? "/" : "",
                     Categories = rand.Next(0, 2) < 1
                     ? new List<string>(new string[] { GetKeywordAtRandom(), GetKeywordAtRandom() })
-                    : new List<string>(new string[] { GetKeywordAtRandom() })
+                    : new List<string>(new string[] { GetKeywordAtRandom() }),
                 });
             }
 
