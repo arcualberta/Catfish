@@ -9,7 +9,8 @@ export enum Actions {
   FILTER_BY_KEYWORDS = 'FILTER_BY_KEYWORDS',
   NEXT_PAGE = 'NEXT_PAGE',
   PREVIOUS_PAGE = 'PREVIOUS_PAGE',
-  FRESH_SEARCH = 'FRESH_SEARCH'
+    FRESH_SEARCH = 'FRESH_SEARCH',
+  SAVE_KEYWORDS ='SAVE_KEYWORDS'
 }
 
 export const actions: ActionTree<State, any> = {
@@ -28,7 +29,8 @@ export const actions: ActionTree<State, any> = {
     fetch(api)
       .then(response => response.json())
       .then(data => {
-        store.commit(Mutations.SET_KEYWORDS, data)
+          store.commit(Mutations.SET_KEYWORDS, data)
+        
       });
   },
 
@@ -46,9 +48,15 @@ export const actions: ActionTree<State, any> = {
     
     formData.append("offset", store.state.offset.toString());
 
-    formData.append("max", store.state.max.toString());
+      formData.append("max", store.state.max.toString());
+      //let keywordsParam;
+      //if (localStorage.getItem('keywordSearchParams')) {
+      //    keywordsParam = JSON.parse(localStorage.keywordSearchParams);
+      //    console.log("from localStorage:" + keywordsParam)
+      //    store.dispatch(Actions.SAVE_KEYWORDS, keywordsParam);
+      //}
     formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
-
+    
     //console.log("Form Data: ", formData)
 
     fetch(api, {
@@ -80,8 +88,12 @@ export const actions: ActionTree<State, any> = {
     if (pageSize)
       store.commit(Mutations.SET_PAGE_SIZE, pageSize);
     store.dispatch(Actions.FILTER_BY_KEYWORDS);
-  },
+    },
 
+    [Actions.SAVE_KEYWORDS](store, source: KeywordSource) {
+        console.log("save keywords action :" + JSON.stringify(source));
+        store.commit(Mutations.SET_KEYWORDS, source);
+    }
   ////async [Actions.INIT_FILTER_ASYNC](store, source: KeywordSource) {
 
   ////  store.commit(Mutations.SET_SOURCE, source);
