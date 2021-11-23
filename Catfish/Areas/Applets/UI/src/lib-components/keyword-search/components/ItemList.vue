@@ -48,14 +48,17 @@
         <div v-else>No results found.</div>
         <div v-for="item in items" :key="item.id">
             <div class="item">
-                <h3>{{item.title}}</h3>
-                <h5>{{item.subtitle}}</h5>
+                <h3 class="item-title"><a v-if='item.detailedViewUrl?.length > 0' v-bind:href="item.detailedViewUrl">{{item.title}}</a>
+                     <span v-else>{{item.title}}</span>
+                </h3>
+                <div class="item-date">{{item.date}}</div>
+                <h5 class="item-subtitle">{{item.subtitle}}</h5>
                 <div class="categories">
                     <span v-for="cat in item.categories" class="badge rounded-pill bg-dark text-white m-1">
                         {{cat}}
                     </span>
                 </div>
-                <div class="content">{{item.content}}</div>
+                <div class="item-content">{{item.content}}</div>
             </div>
         </div>
     </div>
