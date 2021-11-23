@@ -48,8 +48,8 @@
         <div v-else>No results found.</div>
         <div v-for="item in items" :key="item.id">
             <div class="item">
-                <h2>{{item.title}}</h2>
-                <h3>{{item.subtitle}}</h3>
+                <h3>{{item.title}}</h3>
+                <h5>{{item.subtitle}}</h5>
                 <div class="categories">
                     <span v-for="cat in item.categories" class="badge rounded-pill bg-dark text-white m-1">
                         {{cat}}
