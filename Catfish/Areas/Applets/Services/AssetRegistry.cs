@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,9 +11,15 @@ namespace Catfish.Areas.Applets.Services
     {
         private readonly List<string> _stylesheets = new List<string>();
         private readonly List<string> _scripts = new List<string>();
+        private bool _isDevEnvironment;
 
-        public void RegisterStylesheet(string pathName)
+        public AssetRegistry(IWebHostEnvironment env)
         {
+            _isDevEnvironment = env.IsDevelopment();
+        }
+        public void RegisterStylesheet(string devPathName, string prodPathName)
+        {
+            string pathName = _isDevEnvironment ? devPathName : prodPathName;
             if (!_stylesheets.Contains(pathName))
                 _stylesheets.Add(pathName);
         }
@@ -20,8 +28,9 @@ namespace Catfish.Areas.Applets.Services
             return _stylesheets.AsReadOnly();
         }
 
-        public void RegisterScript(string pathName)
+        public void RegisterScript(string devPathName, string prodPathName)
         {
+            string pathName = _isDevEnvironment ? devPathName : prodPathName;
             if (!_scripts.Contains(pathName))
                 _scripts.Add(pathName);
         }
