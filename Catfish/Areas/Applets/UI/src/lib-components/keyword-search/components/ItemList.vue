@@ -55,7 +55,7 @@
                         {{cat}}
                     </span>
                 </div>
-                <div>{{item.content}}</div>
+                <div class="content fas fa-ellipsis-v" aria-hidden="true">{{item.content}}</div>
             </div>
         </div>
     </div>
