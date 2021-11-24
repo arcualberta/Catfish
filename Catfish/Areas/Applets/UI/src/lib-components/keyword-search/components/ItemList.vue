@@ -33,7 +33,6 @@
         methods: {
             formatDate(dateString: string) {
                 const date = dayjs(dateString);
-                // Then specify how you want your dates to be formatted
                 return date.format('MMM DD, YYYY');
             }
         }
@@ -60,8 +59,7 @@
                 <h3 class="item-title">
                     <a v-if='item.detailedViewUrl?.length > 0' v-bind:href="item.detailedViewUrl">{{item.title}}</a>
                     <span v-else>{{item.title}}</span>
-                </h3>
-                <!--<div class="item-date">{{item.date}}</div>-->
+                </h3>           
                 <div class="item-date">{{formatDate(item.date)}}</div>
                 <h5 class="item-subtitle">{{item.subtitle}}</h5>
                 <div class="categories">
