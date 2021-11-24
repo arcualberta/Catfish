@@ -200,7 +200,7 @@ namespace Catfish
             services.AddScoped<IJobService, JobService>();
             services.AddSingleton<IAppService, AppService>();
             services.AddSingleton<IBlockHelper, BlockHelper>();
-            services.AddSingleton<IAssetRegistry, AssetRegistry>();
+            services.AddScoped<IAssetRegistry, AssetRegistry>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");

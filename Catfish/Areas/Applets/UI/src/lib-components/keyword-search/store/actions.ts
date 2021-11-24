@@ -2,6 +2,7 @@
 import { State } from './state';
 import { Mutations } from './mutations';
 import { KeywordSource } from '../models/keywords'
+import { SearchParams } from '../models';
 
 //Declare ActionTypes
 export enum Actions {
@@ -9,32 +10,41 @@ export enum Actions {
   FILTER_BY_KEYWORDS = 'FILTER_BY_KEYWORDS',
   NEXT_PAGE = 'NEXT_PAGE',
   PREVIOUS_PAGE = 'PREVIOUS_PAGE',
-  FRESH_SEARCH = 'FRESH_SEARCH'
+    FRESH_SEARCH = 'FRESH_SEARCH',
+  SAVE_KEYWORDS ='SAVE_KEYWORDS'
 }
 
 export const actions: ActionTree<State, any> = {
 
- [Actions.INIT_FILTER](store, source: KeywordSource) {
+ [Actions.INIT_FILTER](store) {
 
-    console.log('Store: ', store)
-    console.log('Source: ', source)
-
-    store.commit(Mutations.SET_SOURCE, source);
+    //console.log('Store: ', JSON.stringify(store.state))
 
     const api = window.location.origin +
-      `/applets/api/keywordsearch/keywords/page/${source.pageId}/block/${source.blockId}`;
+      `/applets/api/keywordsearch/keywords/page/${store.state.pageId}/block/${store.state.blockId}`;
     console.log('Keyword Load API: ', api)
 
     fetch(api)
       .then(response => response.json())
       .then(data => {
-        store.commit(Mutations.SET_KEYWORDS, data)
+          store.commit(Mutations.SET_KEYWORDS, data)
+        
       });
   },
 
   [Actions.FILTER_BY_KEYWORDS](store) {
     console.log("Dispatched Actions.FILTER_BY_KEYWORDS. Query model: ", JSON.stringify(store.state.keywordQueryModel))
 
+    //Saving current search parameters in the local storage
+    if (store.state.blockId) {
+      const searchParams = {
+        keywords: store.state.keywordQueryModel,
+        offset: store.state.offset,
+        max: store.state.max
+      } as SearchParams;
+      localStorage.setItem(store.state.blockId.toString() + "SearchParams", JSON.stringify(searchParams));
+    }
+      
     const api = window.location.origin + `/applets/api/keywordsearch/items/`;
     console.log("Item Load API: ", api)
 
@@ -45,10 +55,9 @@ export const actions: ActionTree<State, any> = {
       formData.append("blockId", store.state.blockId.toString());
     
     formData.append("offset", store.state.offset.toString());
-
     formData.append("max", store.state.max.toString());
     formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
-
+    
     //console.log("Form Data: ", formData)
 
     fetch(api, {
@@ -60,7 +69,7 @@ export const actions: ActionTree<State, any> = {
         store.commit(Mutations.SET_RESULTS, data);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error('Item Load API Error:', error);
       });
   },
 
@@ -80,7 +89,12 @@ export const actions: ActionTree<State, any> = {
     if (pageSize)
       store.commit(Mutations.SET_PAGE_SIZE, pageSize);
     store.dispatch(Actions.FILTER_BY_KEYWORDS);
-  },
+    },
+
+    [Actions.SAVE_KEYWORDS](store, source: KeywordSource) {
+        console.log("save keywords action :" + JSON.stringify(source));
+        store.commit(Mutations.SET_KEYWORDS, source);
+  }
 
   ////async [Actions.INIT_FILTER_ASYNC](store, source: KeywordSource) {
 
