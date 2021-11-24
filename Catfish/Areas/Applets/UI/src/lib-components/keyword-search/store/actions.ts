@@ -2,6 +2,7 @@
 import { State } from './state';
 import { Mutations } from './mutations';
 import { KeywordSource } from '../models/keywords'
+import { SearchParams } from '../models';
 
 //Declare ActionTypes
 export enum Actions {
@@ -37,6 +38,18 @@ export const actions: ActionTree<State, any> = {
   [Actions.FILTER_BY_KEYWORDS](store) {
     console.log("Dispatched Actions.FILTER_BY_KEYWORDS. Query model: ", JSON.stringify(store.state.keywordQueryModel))
 
+    //Saving current search parameters in the local storage
+    if (store.state.blockId) {
+      const searchParams = {
+        pageId: store.state.pageId,
+        blockId: store.state.blockId,
+        keywords: store.state.keywordQueryModel,
+        offset: store.state.offset,
+        max: store.state.max
+      } as SearchParams;
+      localStorage.setItem(store.state.blockId.toString() + "SearchParams", JSON.stringify(searchParams));
+    }
+      
     const api = window.location.origin + `/applets/api/keywordsearch/items/`;
     console.log("Item Load API: ", api)
 
