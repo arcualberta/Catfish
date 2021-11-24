@@ -9,12 +9,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Areas\Applets\applets\**" />
+    <Compile Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
+    <Compile Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <Compile Remove="wwwroot\applet-root\**" />
     <Content Remove="Areas\Applets\applets\**" />
+    <Content Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
+    <Content Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <Content Remove="wwwroot\applet-root\**" />
     <EmbeddedResource Remove="Areas\Applets\applets\**" />
+    <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
+    <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <EmbeddedResource Remove="wwwroot\applet-root\**" />
     <None Remove="Areas\Applets\applets\**" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <None Remove="wwwroot\applet-root\**" />
   </ItemGroup>
   <ItemGroup>
@@ -92,9 +100,6 @@
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\components\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\models\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\store\" />
-    <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\components\" />
-    <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\models\" />
-    <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\store\" />
     <Folder Include="Areas\Applets\Views\PagePartials\Shared\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
     <Folder Include="Areas\Manager\Shared\Partial\" />
