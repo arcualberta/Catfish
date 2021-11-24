@@ -26,6 +26,9 @@
             //We need to use store in this setup method. so let's load it first.
             const store = useStore()
 
+            //Storing the page and block IDs in the store
+            store.commit(Mutations.SET_SOURCE, { pageId: p.pageId, blockId: p.blockId });
+
             //See if we can load a SearchParams object from local storage
             const searchParamsStr = localStorage.getItem(p.blockId?.toString() + "SearchParams");
             let searchParams;
@@ -40,33 +43,17 @@
             }
             else {
                 //Dispatch an action to loaf keywords
-                store.dispatch(Actions.INIT_FILTER, { pageId: p.pageId, blockId: p.blockId });
+                store.dispatch(Actions.INIT_FILTER);
             }
-
-            //////if there's cache in the localStorage for selected keywords, use that to reset the state
-            ////if (localStorage.getItem('keywordSearchParams')) {
-            ////    searchParams.value = JSON.parse(localStorage.keywordSearchParams);
-            ////    console.log("before calling save keyword action: " + searchParams.value)
-            ////    store.dispatch(Actions.SAVE_KEYWORDS, searchParams.value);
-            //// } 
-
-            ////const params = ref(searchParams.value); //const state = ref(store.state)
-
-            const keywordQueryModel = ref(store.state.keywordQueryModel);
 
             //When the component is mounted, execute a search query based on the current patameters in the store.state.
             onMounted(() => store.dispatch(Actions.FILTER_BY_KEYWORDS));
 
+            const keywordQueryModel = ref(store.state.keywordQueryModel);
             return {
                 keywordQueryModel
             };
         },
-        ////watch: {
-        ////    params(newVal) {
-        ////        //localStorage.setItem("keywordSearchParams", JSON.stringify(newVal));
-        ////        localStorage.keywordSearchParams = JSON.stringify(newVal);
-        ////    }
-        ////},
         storeConfig: {
             state,
             actions,

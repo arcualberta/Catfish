@@ -16,15 +16,12 @@ export enum Actions {
 
 export const actions: ActionTree<State, any> = {
 
- [Actions.INIT_FILTER](store, source: KeywordSource) {
+ [Actions.INIT_FILTER](store) {
 
-    console.log('Store: ', store)
-    console.log('Source: ', source)
-
-    store.commit(Mutations.SET_SOURCE, source);
+    //console.log('Store: ', JSON.stringify(store.state))
 
     const api = window.location.origin +
-      `/applets/api/keywordsearch/keywords/page/${source.pageId}/block/${source.blockId}`;
+      `/applets/api/keywordsearch/keywords/page/${store.state.pageId}/block/${store.state.blockId}`;
     console.log('Keyword Load API: ', api)
 
     fetch(api)
@@ -41,8 +38,6 @@ export const actions: ActionTree<State, any> = {
     //Saving current search parameters in the local storage
     if (store.state.blockId) {
       const searchParams = {
-        pageId: store.state.pageId,
-        blockId: store.state.blockId,
         keywords: store.state.keywordQueryModel,
         offset: store.state.offset,
         max: store.state.max
@@ -60,14 +55,7 @@ export const actions: ActionTree<State, any> = {
       formData.append("blockId", store.state.blockId.toString());
     
     formData.append("offset", store.state.offset.toString());
-
-      formData.append("max", store.state.max.toString());
-      //let keywordsParam;
-      //if (localStorage.getItem('keywordSearchParams')) {
-      //    keywordsParam = JSON.parse(localStorage.keywordSearchParams);
-      //    console.log("from localStorage:" + keywordsParam)
-      //    store.dispatch(Actions.SAVE_KEYWORDS, keywordsParam);
-      //}
+    formData.append("max", store.state.max.toString());
     formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
     
     //console.log("Form Data: ", formData)
@@ -81,7 +69,7 @@ export const actions: ActionTree<State, any> = {
         store.commit(Mutations.SET_RESULTS, data);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error('Item Load API Error:', error);
       });
   },
 
@@ -106,7 +94,8 @@ export const actions: ActionTree<State, any> = {
     [Actions.SAVE_KEYWORDS](store, source: KeywordSource) {
         console.log("save keywords action :" + JSON.stringify(source));
         store.commit(Mutations.SET_KEYWORDS, source);
-    }
+  }
+
   ////async [Actions.INIT_FILTER_ASYNC](store, source: KeywordSource) {
 
   ////  store.commit(Mutations.SET_SOURCE, source);
