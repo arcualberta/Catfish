@@ -42,7 +42,7 @@ export const actions: ActionTree<State, any> = {
         offset: store.state.offset,
         max: store.state.max
       } as SearchParams;
-      localStorage.setItem(store.state.blockId.toString() + "SearchParams", JSON.stringify(searchParams));
+        localStorage.setItem(store.state.blockId.toString() + store.getters.searchParamStorageKey, JSON.stringify(searchParams));
     }
       
     const api = window.location.origin + `/applets/api/keywordsearch/items/`;
