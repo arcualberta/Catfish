@@ -30,7 +30,8 @@
             store.commit(Mutations.SET_SOURCE, { pageId: p.pageId, blockId: p.blockId });
 
             //See if we can load a SearchParams object from local storage
-            const searchParamsStr = localStorage.getItem(p.blockId?.toString() + "SearchParams");
+            
+            const searchParamsStr = localStorage.getItem(store.getters.searchParamStorageKey);
             let searchParams;
             if (searchParamsStr && searchParamsStr.length > 0
                 && (searchParams = JSON.parse(searchParamsStr) as SearchParams)

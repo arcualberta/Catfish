@@ -7,8 +7,14 @@
         overflow-y: hidden;
 }
 
-.item >.content {
-    white-space: nowrap;
+.item > .content {
+   
     overflow: hidden;
     text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;  
+    white-space: normal;
+
 }
+
