@@ -200,7 +200,7 @@ namespace Catfish
             services.AddScoped<IJobService, JobService>();
             services.AddSingleton<IAppService, AppService>();
             services.AddSingleton<IBlockHelper, BlockHelper>();
-            services.AddSingleton<IAssetRegistry, AssetRegistry>();
+            services.AddScoped<IAssetRegistry, AssetRegistry>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
@@ -437,6 +437,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/tile-grid.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/keyword-search.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/carousel.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/item-template-editor.js");
         }
         private static void RegisterCustomBlocks()
         {
@@ -465,6 +466,7 @@ namespace Catfish
             App.Blocks.Register<TileGrid>();
             App.Blocks.Register<KeywordSearch>();
             App.Blocks.Register < Carousel>();
+            App.Blocks.Register<ItemTemplateEditor>();
             App.Blocks.Register<ItemEditor>();
         }
         private static void RegisterCustomStyles()
@@ -501,6 +503,7 @@ namespace Catfish
         private static void AddPartialViews()
         {
             //App.Modules.Manager().Partials.Add("Partial/_EntityTypeListAddEntityType");
+           
         }
 
         private static void AddManagerMenus()

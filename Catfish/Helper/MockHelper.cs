@@ -20,8 +20,8 @@ namespace Catfish.Helper
 
             var rand = new Random();
             int numSentences = rand.Next(maxSentences - minSentences)
-                + minSentences + 1;
-            int numWords = rand.Next(maxWords - minWords) + minWords + 1;
+                + minSentences;
+            int numWords = rand.Next(maxWords - minWords) + minWords;
 
             StringBuilder result = new StringBuilder();
 

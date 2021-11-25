@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "copyfiles": "^2.4.1",
+    "dayjs": "^1.10.7",
     "guid-typescript": "^1.0.9",
     "vuex": "^4.0.2"
   },
