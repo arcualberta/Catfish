@@ -15,8 +15,8 @@
         },
         props,
         setup(p) {
-            console.log('Item Template Editor setup ...', p);
-            console.log('props: ', p)
+            console.log('Item Template Editor setup ...');
+            console.log('props: ', JSON.stringify(p))
            
         },
         storeConfig: {
