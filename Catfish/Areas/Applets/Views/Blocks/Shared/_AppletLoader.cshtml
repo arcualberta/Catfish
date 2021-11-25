@@ -44,10 +44,14 @@
     if (!applet)
         throw "Applet \"@ViewData["applet"]\" not found.";
 
+    //TODO: Read all URL query parameters and build queryParams associative array    
+    let queryParams = { }; //Cresting a temporary associative array for now.
+
     const app = Vue.createApp(applet, {
         pageId: '@pageId',
         blockId: '@blockId',
-        dataAttributes:@Html.Raw(JsonConvert.SerializeObject(dataAttributes))
+        dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes)),
+        queryParameters: queryParams
     });
 
     if (applet.storeConfig) {
