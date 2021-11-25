@@ -1,7 +1,8 @@
 ﻿<script lang="ts">
     import { defineComponent, computed, ref } from "vue";
-    import { useStore } from 'vuex';
+    import dayjs from "dayjs";
 
+    import { useStore } from 'vuex';
     import { Actions } from '../store/actions'
 
     export default defineComponent({
@@ -27,6 +28,13 @@
                 first: computed(() => store.state.searchResult?.first),
                 last: computed(() => store.state.searchResult?.last)
             }
+        },
+
+        methods: {
+            formatDate(dateString: string) {
+                const date = dayjs(dateString);
+                return date.format('MMM DD, YYYY');
+            }
         }
     });
 </script>
@@ -48,10 +56,11 @@
         <div v-else>No results found.</div>
         <div v-for="item in items" :key="item.id">
             <div class="item">
-                <h3 class="item-title"><a v-if='item.detailedViewUrl?.length > 0' v-bind:href="item.detailedViewUrl">{{item.title}}</a>
-                     <span v-else>{{item.title}}</span>
-                </h3>
-                <div class="item-date">{{item.date}}</div>
+                <h3 class="item-title">
+                    <a v-if='item.detailedViewUrl?.length > 0' v-bind:href="item.detailedViewUrl">{{item.title}}</a>
+                    <span v-else>{{item.title}}</span>
+                </h3>           
+                <div class="item-date">{{formatDate(item.date)}}</div>
                 <h5 class="item-subtitle">{{item.subtitle}}</h5>
                 <div class="categories">
                     <span v-for="cat in item.categories" class="badge rounded-pill bg-dark text-white m-1">
