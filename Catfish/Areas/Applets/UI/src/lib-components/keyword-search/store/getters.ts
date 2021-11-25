@@ -6,8 +6,8 @@ export const getters: GetterTree<State, State> = {
 //  items: (state): Item[] | undefined => {
 //    return state.searchResult?.items
 //  },
-    searchParamStorageKey:() =>{
-        return "SearchParams";
+    searchParamStorageKey: (state) => {
+        return state.blockId?.toString() + "SearchParams";
     }
 
 }
