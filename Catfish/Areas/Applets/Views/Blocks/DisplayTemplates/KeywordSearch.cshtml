@@ -1,15 +1,21 @@
 ﻿@model Catfish.Areas.Applets.Models.Blocks.KeywordSearch
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+@inject Catfish.Areas.Applets.Services.IAssetRegistry _assetRegistry;
+
 @{
     var viewData = new ViewDataDictionary(this.ViewData)
-    {
+{
         { "data-display-format", "List" },
         { "data-collection-id", Model.SelectedCollection?.Value },
         { "data-template-id", Model.SelectedItemTemplate?.Value },
         { "data-keyword-metadata-set-id", Model.ClassificationMetadataSetId?.Value },
         { "data-keyword-source-id", Model.KeywordSourceId?.Value }
     };
+
+    //Registering assets
+    _assetRegistry.RegisterStylesheet("/assets/dist/applets/KeywordSearch.css", "/assets/dist/applets/KeywordSearch.css");
+
 }
-<partial name="Shared/_AppletLoader" view-data="@viewData"/>
+<partial name="Shared/_AppletLoader" view-data="@viewData" />
 

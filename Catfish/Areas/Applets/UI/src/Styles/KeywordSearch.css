@@ -1,7 +1,20 @@
 ﻿.itemList .item {
+    margin: 20px 0;
+}
+
+.itemList .item .content {
+        max-height: 150px;
+        overflow-y: hidden;
+}
+
+.item > .content {
+   
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;  
+    white-space: normal;
 
 }
 
-    .itemList .item .content {
-        max-height: 100px;
-    }
