@@ -467,6 +467,7 @@ namespace Catfish
             App.Blocks.Register<KeywordSearch>();
             App.Blocks.Register < Carousel>();
             App.Blocks.Register<ItemTemplateEditor>();
+            App.Blocks.Register<ItemEditor>();
         }
         private static void RegisterCustomStyles()
         {
