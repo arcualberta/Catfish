@@ -357,7 +357,7 @@ namespace Catfish.Core.Services
             }
         }
 
-        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId)
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid? statusId)
         {
             try
             {

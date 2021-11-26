@@ -31,7 +31,7 @@ namespace Catfish.Core.Services
 
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
         
-        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId);
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid? statusId);
 
         public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang);
 
