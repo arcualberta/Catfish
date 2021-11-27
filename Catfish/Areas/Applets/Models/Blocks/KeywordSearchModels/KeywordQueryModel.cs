@@ -13,9 +13,6 @@ namespace Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels
         [JsonProperty("containers")]
         public List<KeywordFieldContainer> Containers { get; set; } = new List<KeywordFieldContainer>();
 
-        public int Offset { get; set; }
-        public int Max { get; set; }
-
         public KeywordQueryModel() { /*Aggregation = eAggregation.Intersection; */}
         public KeywordQueryModel(eAggregation fieldContainerAggregation)
         { 

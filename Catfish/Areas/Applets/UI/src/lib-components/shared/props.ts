@@ -17,10 +17,20 @@ export default {
   dataAttributes: {
     required: false,
     type: null as PropType<DataAttribute> | null
+  },
+  queryParameters: {
+    required: false,
+    type: null as PropType<QueryParameter> | null
   }
 }
 
 export interface DataAttribute {
   name: string | null;
   value: string | null;
+}
+
+export interface QueryParameter {
+  /*name: string | null;
+  value: string | number | null;*/
+    [key:string]: string | number | null
 }

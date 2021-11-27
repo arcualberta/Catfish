@@ -4,7 +4,7 @@
     if (queryStr !== "") {
         $("#freeSearchBlockTerm").val(queryStr.substring(3));
 
-        document.getElementById('freeSearchBlockButton').click(function (event) {
+        document.getElementById('freeSearchBlockButton')?.click(function (event) {
             executeSearch(event);
         });
     }

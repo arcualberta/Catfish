@@ -7,7 +7,9 @@ import { KeywordQueryModel, KeywordSource } from '../models/keywords';
 export enum Mutations {
   SET_SOURCE = 'SET_SOURCE',
   SET_KEYWORDS = 'SET_KEYWORDS',
-  SET_TILES = 'SET_TILES'
+  SET_RESULTS = 'SET_RESULTS',
+  SET_OFFSET = 'SET_OFFSET',
+  SET_PAGE_SIZE = 'SET_PAGE_SIZE'
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -23,8 +25,19 @@ export const mutations: MutationTree<State> = {
     state.keywordQueryModel = payload;
   },
 
-  [Mutations.SET_TILES](state: State, payload: SearchOutput) {
-    console.log('SET_TILES Payload: ', payload)
+  [Mutations.SET_RESULTS](state: State, payload: SearchOutput) {
     state.searchResult = payload;
+    state.offset = payload.first - 1;
+  },
+
+  [Mutations.SET_OFFSET](state: State, payload: number) {
+    //console.log('SET_OFFSET: payload: ', payload)
+    state.offset = payload;
+  },
+
+  [Mutations.SET_PAGE_SIZE](state: State, payload: number) {
+    //console.log('SET_PAGE_SIZE: payload: ', payload)
+    state.max = payload;
   }
+
 }

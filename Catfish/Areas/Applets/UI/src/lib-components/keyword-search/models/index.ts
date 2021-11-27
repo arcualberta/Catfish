@@ -1,7 +1,7 @@
 ﻿import { Guid } from "guid-typescript";
+import { KeywordQueryModel } from "./keywords";
 
-//Declare Tile interface which proxies the c# Tile class in Tile.cs
-export interface Item {
+export interface ResultItem {
   id: Guid;
   title: string;
   subtitle: string;
@@ -13,7 +13,7 @@ export interface Item {
 }
 
 export interface SearchOutput {
-  items: Item[];
+  items: ResultItem[];
   first: number;
   last: number;
   count: number;
@@ -22,7 +22,7 @@ export interface SearchOutput {
 export interface SearchParams {
   pageId: Guid;
   blockId: Guid;
-  keywords: string[];
+  keywords: KeywordQueryModel;
   offset: number;
   max: number;
 }
