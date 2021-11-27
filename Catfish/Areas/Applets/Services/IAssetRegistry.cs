@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Catfish.Areas.Applets.Services
 {
-    interface IAssetRegistry
+    public interface IAssetRegistry
     {
-        public void RegisterStylesheet(string pathName);
+        public void RegisterStylesheet(string devPathName, string prodPathName);
         public IReadOnlyList<string> GetStylesheets();
-        public void RegisterScript(string pathName);
+        public void RegisterScript(string devPathName, string prodPathName);
         public IReadOnlyList<string> GetScripts();
     }
 }

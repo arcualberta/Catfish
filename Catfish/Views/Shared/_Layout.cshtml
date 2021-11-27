@@ -4,6 +4,8 @@
 @using Catfish.Models.Blocks;
 @using Piranha.Extend;
 
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 @inject Catfish.Services.IAppService _appService;
@@ -157,6 +159,8 @@
             <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
         }
     }
+
+    <partial name="Partial/_AssetRegistry.cshtml" />
 </head>
 
 <body>
