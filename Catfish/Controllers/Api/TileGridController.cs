@@ -141,11 +141,10 @@ namespace Catfish.Controllers.Api
 
                     result.Items.Add(tile);
                 }
-                result.First = solrSearchResult.Offset;
-                result.Count = solrSearchResult.TotalMatches;
-                
-                //result = Helper.MockHelper.FilterMockupTileGridData(slectedKeywords, offset, max);
 
+                result.First = solrSearchResult.Offset + 1;
+                result.Count = solrSearchResult.TotalMatches;
+                result.Last = result.First + result.Items.Count - 1;
             }
             catch(Exception ex)
             {
