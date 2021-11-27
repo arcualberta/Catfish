@@ -130,11 +130,10 @@ namespace Catfish.Areas.Applets.Controllers
         [Route("items")]
         public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0)
         {
-            //Using mockup data
-            KeywordQueryModel qModel = await Keywords(pageId, blockId).ConfigureAwait(false);
-            DataMockupHelpers.KeywordSearchMockupHelper helper = new DataMockupHelpers.KeywordSearchMockupHelper(qModel.Containers, 250);
-            return helper.FilterMockupData(JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams), offset, max);
-
+            //////Using mockup data
+            ////KeywordQueryModel qModel = await Keywords(pageId, blockId).ConfigureAwait(false);
+            ////DataMockupHelpers.KeywordSearchMockupHelper helper = new DataMockupHelpers.KeywordSearchMockupHelper(qModel.Containers, 250);
+            ////return helper.FilterMockupData(JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams), offset, max);
 
             SearchOutput result = new SearchOutput();
             try
@@ -150,14 +149,10 @@ namespace Catfish.Areas.Applets.Controllers
 
 
                 string collectionId = block.SelectedCollection.Value;
-                string solrCollectionFieldName = "collection_s";
 
-                string itemTemplateId = block.SelectedItemTemplate.Value;
+                Guid itemTemplateId = Guid.Parse(block.SelectedItemTemplate.Value);
                 string keywordFieldId = block.KeywordSourceId.Value;
-                string dataItemTemplateId = null; //TODO: load the template and get the ID of the root data item
-                string solrKeywordFieldName = string.Format("data_{0}_{1}_ts", dataItemTemplateId, keywordFieldId);
                 string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/') + "/";
-
 
                 KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
 
@@ -167,7 +162,7 @@ namespace Catfish.Areas.Applets.Controllers
                    : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
                 var query = keywordQueryModel?.BuildSolrQuery();
-                string scope = string.Format("collection_s:{0} AND doc_type_ss:item", collectionId);
+                string scope = string.Format("doc_type_ss:item AND collection_s:{0} AND template_s:{1}", collectionId, itemTemplateId);
                 query = string.IsNullOrEmpty(query)
                     ? scope
                     : string.Format("{0} AND {1}", scope, query);
@@ -228,11 +223,9 @@ namespace Catfish.Areas.Applets.Controllers
 
                     result.Items.Add(resultItem);
                 }
-                result.First = solrSearchResult.Offset;
+                result.First = solrSearchResult.Offset + 1;
                 result.Count = solrSearchResult.TotalMatches;
-
-                //result = Helper.MockHelper.FilterMockupTileGridData(slectedKeywords, offset, max);
-
+                result.Last = result.First + result.Items.Count - 1;
             }
             catch (Exception ex)
             {
