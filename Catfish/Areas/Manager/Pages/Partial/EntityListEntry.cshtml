@@ -3,14 +3,15 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @using Catfish.Core.Models;
 @{
-        var id = Model.Id;
-        var modelType = Model.ModelType;
-        // string detailsPage = "/manager/schema/" + Model.Id;
-        string editorPage = "/manager/schema/edit/" + Model.Id;
-        string collectionContents = "/manager/collectioncontents/" + Model.Id;
-       
-        string name = string.IsNullOrEmpty(Model.ConcatenatedName) ? System.Text.RegularExpressions.Regex.Replace(Model.ItemLabel, "<.*?>", String.Empty)  : Model.Name.GetConcatenatedContent(" | ") ;
-    
+    var id = Model.Id;
+    var modelType = Model.ModelType;
+    // string detailsPage = "/manager/schema/" + Model.Id;
+    string xmlEditorPage = "/manager/schema/edit/" + Model.Id;
+    string collectionContents = "/manager/collectioncontents/" + Model.Id;
+    string editorAppletPage = "/manager/items/edit/?id=" + Model.Id;
+
+    string name = string.IsNullOrEmpty(Model.ConcatenatedName) ? System.Text.RegularExpressions.Regex.Replace(Model.ItemLabel, "<.*?>", String.Empty)  : Model.Name.GetConcatenatedContent(" | ") ;
+
     }
 <li class="dd-item expanded">
     <div class="sitemap-item">
@@ -26,15 +27,9 @@
                 <div class=" col-md-2">
                     @if (Model.IsItem)
                     {
-                        //might go to differnt page
-                        <a href="@editorPage">Edit Item</a>
+                        <a href="@editorAppletPage">Edit Item</a> <span>|</span>
                     }
-                    else
-                    {
-                        //for collection list
-                        <a href="@editorPage">Edit</a>
-                    }
-
+                    <a href="@xmlEditorPage">Edit XML</a>
                 </div>
             </div>
         </div>
