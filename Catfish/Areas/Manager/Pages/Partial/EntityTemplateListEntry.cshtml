@@ -8,6 +8,7 @@
     string workflowTemplateDetailsPage = "/manager/workflow/templates/" + Model.Id;
     string xmlDetailsPage = "/manager/schema/" + Model.Id;
     string xmlEditorPage = "/manager/schema/edit/" + Model.Id;
+    string entityTypeEditorPage = "/manager/itemtemplates/edit/?pid=" + Model.Id;
 }
 <li class="dd-item expanded">
     <div class="sitemap-item">
@@ -20,7 +21,8 @@
                     <a href="@workflowTemplateDetailsPage">@Model.TypeName</a>
                 </div>
                 <div class=" col-md-4 text-right">
-                    <a href="~/item-template-editor?pid=@Model.Id">Edit Template</a> | 
+                    @*<a href="~/item-template-editor?pid=@Model.Id">Edit Template</a> |*@
+                    <a href="@entityTypeEditorPage">Edit Template</a> |
                     <a href="@xmlDetailsPage">View XML</a> |
                     <a href="@xmlEditorPage">Edit XML</a>
                 </div>
