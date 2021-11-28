@@ -5,7 +5,7 @@
     import { actions } from './store/actions'
     import { getters } from './store/getters'
     import { mutations } from './store/mutations'
-    import props from '../shared/props'
+    import props, { QueryParameter } from '../shared/props'
 
 
     export default defineComponent({
@@ -15,9 +15,13 @@
         },
         props,
         setup(p) {
-            console.log('Item Template Editor setup ...', p);
-            console.log('props: ', p)
-           
+            console.log('Item Template Editor setup ...');
+            console.log('props: ', JSON.stringify(p));
+            const queryParams = p.queryParameters as QueryParameter;
+
+            return {
+                queryParams
+            }
         },
         storeConfig: {
             state,
@@ -30,4 +34,5 @@
 
 <template>
     <h3>Item Template Editor</h3>
+    <div>Item Template ID: {{queryParameters.id}}</div>
 </template>
