@@ -30,7 +30,7 @@ namespace Catfish.Areas.Applets.Controllers
             _errorLog = errorLog;
         }
         [HttpGet]
-        [Route("itemeditor/{id:Guid}")]
+        [Route("statetranistions/{id:Guid}")]
         public List<string> StateTransitions(Guid id)
         {
             Item item = _submissionService.GetSubmissionDetails(id);
