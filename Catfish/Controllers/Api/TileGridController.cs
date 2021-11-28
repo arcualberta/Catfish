@@ -208,7 +208,7 @@ namespace Catfish.Controllers.Api
                 if (keywordFieldContainer != null)
                     model.Containers.Add(keywordFieldContainer);
 
-                model.SortKeywordsInFields();
+                //model.SortKeywordsInFields();
             }
 
             return model;

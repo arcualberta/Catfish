@@ -17,10 +17,11 @@
         setup(p) {
             console.log('Item Template Editor setup ...');
             console.log('props: ', JSON.stringify(p));
-            let queryParams = p.queryParameters as QueryParameter;
-            let pid = queryParams['pid'];
-            console.log(" pid : " + pid)
-           
+            const queryParams = p.queryParameters as QueryParameter;
+
+            return {
+                queryParams
+            }
         },
         storeConfig: {
             state,
@@ -33,4 +34,5 @@
 
 <template>
     <h3>Item Template Editor</h3>
+    <div>Item Template ID: {{queryParameters.id}}</div>
 </template>

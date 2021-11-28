@@ -3,11 +3,11 @@ import { Guid } from "guid-typescript";
 
 export default {
   pageId: {
-    required: true,
+    required: false,
     type: null as PropType<Guid> | null
   },
   blockId: {
-    required: true,
+    required: false,
     type: null as PropType<Guid> | null
   },
   appletTitle: {

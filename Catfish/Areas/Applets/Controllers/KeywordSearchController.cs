@@ -119,7 +119,7 @@ namespace Catfish.Areas.Applets.Controllers
                 if (keywordFieldContainer != null)
                     model.Containers.Add(keywordFieldContainer);
 
-                model.SortKeywordsInFields();
+                //model.SortKeywordsInFields();
             }
 
             return model;
