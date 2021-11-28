@@ -30,13 +30,23 @@ namespace Catfish.Areas.Applets.Controllers
             _errorLog = errorLog;
         }
         [HttpGet]
-        [Route("itemeditor/{itemId:Guid}")]
-        public Item StateTransitions(Guid itemId)
+        [Route("itemeditor/{id:Guid}")]
+        public List<string> StateTransitions(Guid id)
         {
-            Item item = _submissionService.GetSubmissionDetails(itemId);
+            Item item = _submissionService.GetSubmissionDetails(id);
             EntityTemplate template = _entityTemplateService.GetTemplate(item.TemplateId);
             List<PostAction> postActions = _workflowService.GetAllChangeStatePostActions(template, item.StatusId);
-            return null;
+            List<string> nextButtons = new List<string>();
+            foreach(var postAction in postActions)
+            {
+                foreach(var stateMapping in postAction.StateMappings)
+                {
+                    if (stateMapping.Current == item.StatusId)
+                        nextButtons.Add(stateMapping.ButtonLabel);
+                }
+            }
+
+            return nextButtons;
         }
     }
 }
