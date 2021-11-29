@@ -509,7 +509,7 @@ namespace Catfish.UnitTests
             //Defining actions
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
 
-            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            startSubmissionAction.Access = GetAction.eAccess.Public;
 
             //Defining form template
             startSubmissionAction.AddTemplate(tbltForm.Id, "Task-based Language Teaching Submit Contact Us Form");
