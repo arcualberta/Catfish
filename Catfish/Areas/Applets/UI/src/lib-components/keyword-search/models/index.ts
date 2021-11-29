@@ -1,4 +1,5 @@
 ﻿import { Guid } from "guid-typescript";
+import { KeywordQueryModel } from "./keywords";
 
 export interface ResultItem {
   id: Guid;
@@ -21,7 +22,7 @@ export interface SearchOutput {
 export interface SearchParams {
   pageId: Guid;
   blockId: Guid;
-  keywords: string[];
+  keywords: KeywordQueryModel;
   offset: number;
   max: number;
 }
