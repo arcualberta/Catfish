@@ -1,9 +1,12 @@
 ﻿using Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels;
+using Catfish.Areas.Applets.Services;
+using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
 using ElmahCore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,13 +19,16 @@ namespace Catfish.Areas.Applets.Controllers
     [ApiController]
     public class ItemEditorController : ControllerBase
     {
+        private readonly IItemAppletService _itemAppletService;
         private readonly ISubmissionService _submissionService;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IWorkflowService _workflowService;
         private readonly AppDbContext _appDb;
         private readonly ErrorLog _errorLog;
-        public ItemEditorController(ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, AppDbContext appDb, ErrorLog errorLog)
+        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, AppDbContext appDb, ErrorLog errorLog)
         {
+            _itemAppletService = itemAppletService;
+
             _submissionService = submissionService;
             _entityTemplateService = entityTemplateService;
             _workflowService = workflowService;
@@ -53,7 +59,7 @@ namespace Catfish.Areas.Applets.Controllers
         [Route("{id:Guid}")]
         public Item Get(Guid id)
         {
-            Item item = _submissionService.GetSubmissionDetails(id);
+            Item item = _itemAppletService.GetItem(id, User);
 
             return item;
         }
