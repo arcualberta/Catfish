@@ -48,5 +48,15 @@ namespace Catfish.Areas.Applets.Controllers
 
             return nextButtons;
         }
+
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public Item Get(Guid id)
+        {
+            Item item = _submissionService.GetSubmissionDetails(id);
+
+            return item;
+        }
+
     }
 }
