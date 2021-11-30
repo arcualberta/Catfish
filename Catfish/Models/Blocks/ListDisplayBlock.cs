@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Piranha.Extend.Fields;
 using System.ComponentModel.DataAnnotations;
 using Catfish.Models.Fields;
+using Piranha;
 
 namespace Catfish.Models.Blocks
 {
@@ -37,8 +38,10 @@ namespace Catfish.Models.Blocks
 
     [BlockGroupType(Name = "ListDisplay", Category = "Content", Icon = "fas fa-images", Component = "vue-list-display-block")]
     [BlockItemType(Type = typeof(SingleListItem))]
-    public class ListDisplayBlock : VueComponentGroup
+    public class ListDisplayBlock : VueComponentGroup, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<ListDisplayBlock>();
+
         public StringField DisplayListTitle { get; set; }
         public SelectField<ItemPanelDirection> ItemListPosition { get; set; }
         public SelectField<ColumnOption> ColumnWidth { get; set; }
