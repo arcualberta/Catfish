@@ -601,6 +601,21 @@ input[readonly] {
     font-size:xx-large;
 }
 
+/* to target safari 10.1+ only */
+
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .fa-google {
+            background: url("../../images/Gbutton.png");
+            width: 180px;
+            height: 40px;
+        }
+    }
+}
+
+
+
+
 /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
     .column {
