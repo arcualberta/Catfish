@@ -11,9 +11,7 @@ export enum Actions {
 export const actions: ActionTree<State, any> = {
 
     [Actions.LOAD_TEMPLATE](store) {
-
-        //console.log('Store: ', JSON.stringify(store.state))
-       
+ 
         const api = window.location.origin +
             `/applets/api/itemtemplates/${store.state.Id}`;
         //console.log('Keyword Load API: ', api)
@@ -23,8 +21,8 @@ export const actions: ActionTree<State, any> = {
             .then(data => {
                 
                 store.commit(Mutations.SET_TEMPLATE, data);
-                console.log("Loaded Template datacontainer: " + JSON.stringify(store.state.template?.dataContainer))
-                console.log("Datacontainer count: " + store.state.template?.dataContainer.length)
+               console.log("Loaded Template datacontainer: " + JSON.stringify(store.state.template?.dataContainer))
+               // console.log("Datacontainer count: " + store.state.template?.dataContainer.length)
             });
     },
 

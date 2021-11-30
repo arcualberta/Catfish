@@ -8,11 +8,13 @@
     import { mutations } from './store/mutations'
     import props, { QueryParameter } from '../shared/props'
 
+    import ItemTemplate from './components/ItemTemplate.vue'
+
 
     export default defineComponent({
         name: "ItemTemplateEditor",
         components: {
-
+            ItemTemplate
         },
         props,
         setup(p) {
@@ -43,4 +45,5 @@
 <template>
     <h3>Item Template Editor</h3>
     <div>Item Template ID: {{queryParameters.id}}</div>
+    <ItemTemplate />
 </template>

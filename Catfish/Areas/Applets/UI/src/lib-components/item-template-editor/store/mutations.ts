@@ -15,13 +15,13 @@ export const mutations: MutationTree<State> = {
 
     [Mutations.SET_ID](state: State, payload: Guid) {
         state.Id = payload;
-        console.log("template id : " + state.Id)
+       // console.log("template id : " + state.Id)
     },
     [Mutations.SET_TEMPLATE](state: State, payload:ItemTemplate) {
         state.template = payload
-        console.log("template ID: " + state.template.id);
-        console.log("template name: " + state.template.templateName);
-        console.log("field length: " + state.template.dataContainer[0].fields.length)
+       // console.log("template ID: " + state.template.id);
+       // console.log("template name: " + state.template.templateName);
+       // console.log("field length: " + state.template.dataContainer[0].fields.length)
     }
 
 }
