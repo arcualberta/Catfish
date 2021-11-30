@@ -57,4 +57,7 @@
         
     </div>
 
+    <h5>Item Template JSON</h5>
+    <p>{{JSON.stringify(template)}}</p>
+
 </template>
