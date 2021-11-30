@@ -16,14 +16,15 @@ export const actions: ActionTree<State, any> = {
        
         const api = window.location.origin +
             `/applets/api/itemtemplates/${store.state.Id}`;
-        console.log('Keyword Load API: ', api)
+        //console.log('Keyword Load API: ', api)
 
         fetch(api)
             .then(response => response.json())
             .then(data => {
-                //store.commit(Mutations.SET_KEYWORDS, data)
-                 console.log(JSON.stringify(data))
-
+                
+                store.commit(Mutations.SET_TEMPLATE, data);
+                console.log("Loaded Template datacontainer: " + JSON.stringify(store.state.template?.dataContainer))
+                console.log("Datacontainer count: " + store.state.template?.dataContainer.length)
             });
     },
 

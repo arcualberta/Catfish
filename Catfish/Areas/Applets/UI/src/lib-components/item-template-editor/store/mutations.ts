@@ -1,10 +1,12 @@
 ﻿import { MutationTree } from 'vuex';
 import { State } from './state';
 import { Guid } from 'guid-typescript'
+import { ItemTemplate } from "../models/itemTemplate"
 
 //Declare MutationTypes
 export enum Mutations {
     SET_ID = 'SET_ID',
+    SET_TEMPLATE='SET_TEMPLATE'
     
 }
 
@@ -14,6 +16,10 @@ export const mutations: MutationTree<State> = {
     [Mutations.SET_ID](state: State, payload: Guid) {
         state.Id = payload;
         console.log("template id : " + state.Id)
+    },
+    [Mutations.SET_TEMPLATE](state: State, payload:ItemTemplate) {
+        state.template = payload
+       
     }
 
 }
