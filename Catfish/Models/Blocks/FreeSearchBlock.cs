@@ -11,12 +11,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Catfish.Core.Services.Solr;
 using Catfish.Core.Models.Solr;
 using SolrNet;
+using Piranha;
 
 namespace Catfish.Models.Blocks
 {
     [BlockType(Name = "Free Search", Category = "Control", Component = "free-search", Icon = "fas fa-search")]
-    public class FreeSearchBlock : Block
+    public class FreeSearchBlock : Block, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<FreeSearchBlock>();
+
         public TextField CssVal { get; set; }
         public string GetCss()
         {

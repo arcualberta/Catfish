@@ -34,6 +34,7 @@ using Piranha.Manager.Editor;
 using Piranha.Services;
 using SolrNet;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -349,12 +350,20 @@ namespace Catfish
 
             //add to manager menu item
             AddManagerMenus();
-
-            //Register Piranha Custom Components 
             RegisterCustomFields();
-            RegisterCustomBlocks();
-            RegisterCustomScripts();
             RegisterCustomStyles();
+
+            //Register Piranha Custom Blocks 
+            RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Production").GetChildren());
+            RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Depricated").GetChildren());
+            if (env.IsDevelopment())
+            {
+                RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Development").GetChildren());
+                RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Experimental").GetChildren());
+            }
+            //RegisterCustomBlocks();
+            //RegisterCustomScripts();
+
 
             //Performing Catfish system initialization
             using (var scope = app.ApplicationServices.CreateScope())
@@ -440,7 +449,33 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/carousel.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/item-template-editor.js");
         }
-        private static void RegisterCustomBlocks()
+
+        private void RegisterCustomBlocks(IEnumerable<IConfigurationSection> blockConfigList)
+        {
+            foreach (var blockConfig in blockConfigList)
+                RegisterCustomBlock(blockConfig);
+        }
+        private void RegisterCustomBlock(IConfigurationSection blockConfig)
+        {
+            var typeStr = blockConfig.GetSection("Type").Value;
+            var t = Type.GetType(typeStr);
+            if(t == null)
+                throw new Exception(string.Format("Could not find the \"type\" for {0}. Did you specify the fully qualified type correctly in appsettings?", typeStr));
+
+            var inst = (Activator.CreateInstance(t) as ICatfishBlock);
+            if (inst != null)
+            {
+                inst.RegisterBlock();
+
+                var js = blockConfig.GetSection("Script").Value;
+                if (!string.IsNullOrEmpty(js))
+                    App.Modules.Manager().Scripts.Add(js);
+            }
+            else
+                throw new Exception(string.Format("{0} does not implement the ICatfishBlock interface", typeStr));
+        }
+
+        private void RegisterCustomBlocks()
         {
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();

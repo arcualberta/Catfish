@@ -1,4 +1,5 @@
-﻿using Piranha.Extend;
+﻿using Piranha;
+using Piranha.Extend;
 using Piranha.Extend.Fields;
 using System;
 using System.Collections.Generic;
@@ -36,8 +37,10 @@ namespace Catfish.Models.Blocks
     }
 
     [BlockType(Name = "News Feed Block", Category = "Content", Component = "news-feed-block-vue", Icon = "fas fa-newspaper")]
-    public class NewsFeedBlock : VueComponent
+    public class NewsFeedBlock : VueComponent, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<NewsFeedBlock>();
+
         [Display(Description = "For Twitter: go to https://publish.twitter.com/, enter your twitter url you want to embed.")]
         public TextField ReferenceUrl { get; set; }
         public TextField BlockTitle { get; set; }
