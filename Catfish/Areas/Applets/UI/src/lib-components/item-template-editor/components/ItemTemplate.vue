@@ -32,32 +32,41 @@
 
 <template>
     <h3>{{template?.templateName}}</h3>
-    <div v-if="metadatasets?.length > 0">
-        <h5>Metadata Sets</h5>
-    </div>
+    <div class="container row itemTemplate">
 
-    <div v-if="dataContainer?.length > 0">
-        <h5>Data Container</h5>
-        
-            <div v-for="df in dataContainer" :key="df.id">
-                <div v-if="df.fields.length > 0">
-                    <div>Field</div>
-                    <div v-for="fc in df.fields" :key="fc.id">
-                        <div>{{fc.id}} : {{fc.modelType }}</div>
-                         <div v-if="fc.values?.length > 0">
-                             <div v-for="v in fc.values" :key="v.id">
-                                 <div>{{v.id}} : {{v.value}}</div>
-                             </div>
-
-                         </div>
-
+        <div class="col-md-4">
+            <div class="col-12">
+                <button>Overview</button>
+            </div>
+            <div class="col-12">
+                <button>Notification</button>
+            </div>
+            <!-- METADATA SETS -->
+            <div v-if="metadasets?.length > 0">
+                <div>Metadasets</div> <!-- DEBUG -->
+                <div v-for="ms in metadasets" :key="md.id">
+                    <div v-if="ms.isTemplate == true" class="col-12">
+                        <button>{{ms.name.concatenatedContent}}</button>
                     </div>
                 </div>
             </div>
+            <!-- FORMS -->
+            <div class="col-12">
+                <button>Forms</button>
+            </div>
+            <!-- DATA CONTAINER -->
+            <div v-if="dataContainer?.length > 0">     
+                <div v-for="form in dataContainer" :key="form.id" class="col-12">        
+                        <button>{{form.name.concatenatedContent}}</button>     
+                </div>
+            </div>
+         </div>
+         <div class="col-md-8">
+                <!-- Content Section -->
+
+                <h5>Item Template JSON</h5>
+                <p>{{JSON.stringify(template)}}</p>
+         </div>
         
     </div>
-
-    <h5>Item Template JSON</h5>
-    <p>{{JSON.stringify(template)}}</p>
-
 </template>

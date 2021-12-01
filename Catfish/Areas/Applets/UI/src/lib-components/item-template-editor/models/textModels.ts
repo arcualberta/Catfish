@@ -9,10 +9,13 @@ export interface Text {
     rank: number;
     created: Date;
     updated: Date;
+   
 }
 
 export interface TextCollection {
     id: Guid;
     modelType: string;
     values: Text[];
+    concatenatedContent: string;
+    
 }

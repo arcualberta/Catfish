@@ -17,7 +17,8 @@ export interface FieldContainer {
     id: Guid;
     modelType: string;
     fields: Field[];
-    isRoot: boolean
+    isRoot: boolean | false;
     name: TextCollection | null
     description: TextCollection | null
+    isTemplate: boolean | false;
 }
