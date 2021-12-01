@@ -1,4 +1,5 @@
-﻿using Piranha.Extend;
+﻿using Piranha;
+using Piranha.Extend;
 using Piranha.Extend.Blocks;
 using Piranha.Extend.Fields;
 using System;
@@ -13,8 +14,10 @@ using System.Threading.Tasks;
 namespace Catfish.Models.Blocks
 {
     [BlockType(Name = "Dont Choose Me", Component = "vue-single-list-item", IsUnlisted = true)]
-    public class SingleListItem : Block
+    public class SingleListItem : Block, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<SingleListItem>();
+
         public ImageField Body { get; set; }
         public ImageField ItemImage { get; set; }
         public StringField ItemTitle { get; set; }
