@@ -355,15 +355,12 @@ namespace Catfish
 
             //Register Piranha Custom Blocks 
             RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Production").GetChildren());
-            RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Depricated").GetChildren());
+            RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Obsolete").GetChildren());
             if (env.IsDevelopment())
             {
                 RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Development").GetChildren());
                 RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Experimental").GetChildren());
             }
-            //RegisterCustomBlocks();
-            //RegisterCustomScripts();
-
 
             //Performing Catfish system initialization
             using (var scope = app.ApplicationServices.CreateScope())
@@ -401,54 +398,54 @@ namespace Catfish
             Piranha.App.MediaTypes.Documents.Add(".doc", "application/msword", false);
             Piranha.App.MediaTypes.Documents.Add(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingm", false);
         }
-        private static void RegisterCustomScripts()
-        {
-            //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
+        //private static void RegisterCustomScripts()
+        //{
+        //    //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
 
-            //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block-vue.js");
+        //    //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block-vue.js");
 
-            App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
 
-            App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/form.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
-            //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
-            //App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/editItemBundle.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/form.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
+        //    //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
+        //    //App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/dist/editItemBundle.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
 
-            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/process-page.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/process-page.js");
 
-            //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
+        //    //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
 
-            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
 
-            App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
-            //App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
+        //    //App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
 
-            App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
 
-            App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/card-block-vue.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/news-feed-block-vue.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/tile-grid.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/keyword-search.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/carousel.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/item-template-editor.js");
-        }
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/card-block-vue.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/news-feed-block-vue.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/tile-grid.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/keyword-search.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/carousel.js");
+        //    App.Modules.Manager().Scripts.Add("~/assets/js/item-template-editor.js");
+        //}
 
         private void RegisterCustomBlocks(IEnumerable<IConfigurationSection> blockConfigList)
         {
@@ -475,36 +472,36 @@ namespace Catfish
                 throw new Exception(string.Format("{0} does not implement the ICatfishBlock interface", typeStr));
         }
 
-        private void RegisterCustomBlocks()
-        {
-            //Register custom Block
-            App.Blocks.Register<EmbedBlock>();
-            App.Blocks.Register<CalendarBlock>();
-            App.Blocks.Register<JavascriptBlock>();
-            App.Blocks.Register<CssBlock>();
-            App.Blocks.Register<ContactFormBlock>();
-            App.Blocks.Register<NavigationBlock>();
-            App.Blocks.Register<SubmissionEntryPointList>();
-            App.Blocks.Register<FreeSearchBlock>();
-            App.Blocks.Register<SubmissionForm>();
-            App.Blocks.Register<ItemListBlock>();
-            App.Blocks.Register<ExtendedImageBlock>();
-            App.Blocks.Register<ExtendedGalleryBlock>();
-            App.Blocks.Register<ControlledVocabularySearchBlock>();
-            App.Blocks.Register<VueList>();
-            App.Blocks.Register<VueCarousel>();
-            App.Blocks.Register<ExtendedColumnBlock>();
-            App.Blocks.Register<AdvanceSearchBlock>();
-            App.Blocks.Register<SingleListItem>();
-            App.Blocks.Register<ListDisplayBlock>();
-            App.Blocks.Register<CardBlock>();
-            App.Blocks.Register<NewsFeedBlock>();
-            App.Blocks.Register<TileGrid>();
-            App.Blocks.Register<KeywordSearch>();
-            App.Blocks.Register < Carousel>();
-            App.Blocks.Register<ItemTemplateEditor>();
-            App.Blocks.Register<ItemEditor>();
-        }
+        //private void RegisterCustomBlocks()
+        //{
+        //    //Register custom Block
+        //    App.Blocks.Register<EmbedBlock>();
+        //    App.Blocks.Register<CalendarBlock>();
+        //    App.Blocks.Register<JavascriptBlock>();
+        //    App.Blocks.Register<CssBlock>();
+        //    App.Blocks.Register<ContactFormBlock>();
+        //    App.Blocks.Register<NavigationBlock>();
+        //    App.Blocks.Register<SubmissionEntryPointList>();
+        //    App.Blocks.Register<FreeSearchBlock>();
+        //    App.Blocks.Register<SubmissionForm>();
+        //    App.Blocks.Register<ItemListBlock>();
+        //    App.Blocks.Register<ExtendedImageBlock>();
+        //    App.Blocks.Register<ExtendedGalleryBlock>();
+        //    App.Blocks.Register<ControlledVocabularySearchBlock>();
+        //    App.Blocks.Register<VueList>();
+        //    App.Blocks.Register<VueCarousel>();
+        //    App.Blocks.Register<ExtendedColumnBlock>();
+        //    App.Blocks.Register<AdvanceSearchBlock>();
+        //    App.Blocks.Register<SingleListItem>();
+        //    App.Blocks.Register<ListDisplayBlock>();
+        //    App.Blocks.Register<CardBlock>();
+        //    App.Blocks.Register<NewsFeedBlock>();
+        //    App.Blocks.Register<TileGrid>();
+        //    App.Blocks.Register<KeywordSearch>();
+        //    App.Blocks.Register < Carousel>();
+        //    App.Blocks.Register<ItemTemplateEditor>();
+        //    App.Blocks.Register<ItemEditor>();
+        //}
         private static void RegisterCustomStyles()
         {
             App.Modules.Get<Piranha.Manager.Module>()
