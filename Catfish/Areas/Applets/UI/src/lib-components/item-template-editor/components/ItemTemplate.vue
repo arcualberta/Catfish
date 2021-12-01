@@ -35,29 +35,29 @@
     <div class="container row itemTemplate">
 
         <div class="col-md-4">
-            <div class="col-12">
-                <button>Overview</button>
+            <div class="col-12 menuLabel">
+                Overview
             </div>
-            <div class="col-12">
-                <button>Notification</button>
+            <div class="col-12 menuLabel">
+                Notification
             </div>
             <!-- METADATA SETS -->
             <div v-if="metadasets?.length > 0">
                 <div>Metadasets</div> <!-- DEBUG -->
                 <div v-for="ms in metadasets" :key="md.id">
-                    <div v-if="ms.isTemplate == true" class="col-12">
-                        <button>{{ms.name.concatenatedContent}}</button>
+                    <div v-if="ms.isTemplate == true" class="col-12 menuLabel">
+                        {{ms.name.concatenatedContent}}
                     </div>
                 </div>
             </div>
             <!-- FORMS -->
-            <div class="col-12">
-                <button>Forms</button>
+            <div class="col-12 menuLabel">
+                <div class="sectionLabel">Forms</div>
             </div>
             <!-- DATA CONTAINER -->
             <div v-if="dataContainer?.length > 0">     
-                <div v-for="form in dataContainer" :key="form.id" class="col-12">        
-                        <button>{{form.name.concatenatedContent}}</button>     
+                <div v-for="form in dataContainer" :key="form.id" class="col-12 menuLabel">        
+                        {{form.name.concatenatedContent}}    
                 </div>
             </div>
          </div>
@@ -70,3 +70,14 @@
         
     </div>
 </template>
+
+<style scoped>
+    .menuLabel{
+        border: 1px solid Grey;
+        margin: 10px;
+        padding: 10px 10px;
+    }
+    .sectionLabel{
+        font-weight: bold;
+    }
+</style>
