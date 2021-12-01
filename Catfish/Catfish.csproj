@@ -51,6 +51,7 @@
   <ItemGroup>
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\fieldContainer.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -123,6 +124,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\fieldContainer.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
