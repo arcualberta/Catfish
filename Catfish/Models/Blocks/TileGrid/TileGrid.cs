@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Models.Fields;
+using Piranha;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
 using System;
@@ -10,8 +11,10 @@ using System.Threading.Tasks;
 namespace Catfish.Models.Blocks.TileGrid
 {
     [BlockType(Name = "Tile Grid", Category = "Content", Component = "tile-grid", Icon = "fas fa-th")]
-    public class TileGrid : Block
+    public class TileGrid : Block, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<TileGrid>();
+
         // public ICollection<Tile> Tiles { get; set; } = new List<Tile>();
 
         [Field(Title = "Keywords", Placeholder = "Please list keywords separated by a comma")]

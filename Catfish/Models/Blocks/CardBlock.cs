@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
 using Catfish.Models.Fields;
+using Piranha;
 
 namespace Catfish.Models.Blocks
 {
@@ -38,8 +39,9 @@ namespace Catfish.Models.Blocks
     }
 
     [BlockType(Name = "Card Block", Category = "Content", Component = "card-block-vue", Icon = "far fa-square")]
-    public class CardBlock: VueComponent
+    public class CardBlock: VueComponent, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<CardBlock>();
         public ImageField CardImage { get; set; }
         public TextField CardTitle { get; set; }
         public TextField CardSubTitle { get; set; }

@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using Google.Apis.Util.Store;
+using Piranha;
 
 
 /*
@@ -47,9 +48,10 @@ namespace Catfish.Models.Blocks
     }
 
     [BlockType(Name = "Calendar Block", Category = "Content", Component = "calendar-block-vue", Icon = "fas fa-calendar-alt")] //calendar-block
-    public class CalendarBlock : VueComponent
+    public class CalendarBlock : VueComponent, ICatfishBlock
     {
-       
+        public void RegisterBlock() => App.Blocks.Register<CalendarBlock>();
+
         public TextField CalendarId { get; set; }
         public NumberField DaysRangePast { get; set; }
         public NumberField DaysRangeFuture { get; set; }
