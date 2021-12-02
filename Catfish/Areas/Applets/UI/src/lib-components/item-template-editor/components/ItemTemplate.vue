@@ -1,9 +1,7 @@
 ﻿<script lang="ts">
-    import {defineComponent, computed /*, ref*/} from "vue";
+    import {defineComponent, computed , ref} from "vue";
     import {useStore} from 'vuex';
     import dayjs from "dayjs";
-
-    //import { ItemTemplate } from "../models/itemTemplate.vue";
 
     export default defineComponent({
         name: "ItemTemplate",
@@ -11,13 +9,14 @@
         props: { },
         setup() {
             const store = useStore()
+
+            const activePanel = ref(null as null | string)
            
-            //const template = ref(store.state.template?.value.templateName);
-           // console.log("ItemTemplate component - template name : " + templateName)
             return {
                 template: computed(() => store.state.template),
-                metadatasets: computed(() => store.state.template?.metadataSets),
-                dataContainer: computed(() => store.state.template?.dataContainer)
+                metadataSets: computed(() => store.state.template?.metadataSets),
+                dataContainer: computed(() => store.state.template?.dataContainer),
+                activePanel
             }
         },
 
@@ -35,49 +34,71 @@
     <div class="container row itemTemplate">
 
         <div class="col-md-4">
-            <div class="col-12 menuLabel">
-                Overview
+            <div class="col-12 menuEntry" @click="activePanel = 'overview'">
+                <div class="sectionLabel">Overview</div>
             </div>
-            <div class="col-12 menuLabel">
-                Notification
+
+            <!-- NOTIFICATIONS -->
+            <div class="col-12 menuEntry" @click="activePanel = 'notifications'">
+                <div class="sectionLabel">Notifications</div>
             </div>
-            <!-- METADATA SETS -->
-            <div v-if="metadasets?.length > 0">
-                <div>Metadasets</div> <!-- DEBUG -->
-                <div v-for="ms in metadasets" :key="md.id">
-                    <div v-if="ms.isTemplate == true" class="col-12 menuLabel">
-                        {{ms.name.concatenatedContent}}
-                    </div>
-                </div>
+            <div v-for="ms in metadataSets.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id">
+                {{ms.name.concatenatedContent}}
             </div>
-            <!-- FORMS -->
-            <div class="col-12 menuLabel">
+
+            <!-- DATA FORMS -->
+            <div class="col-12 menuEntry" @click="activePanel = 'forms'">
                 <div class="sectionLabel">Forms</div>
             </div>
-            <!-- DATA CONTAINER -->
-            <div v-if="dataContainer?.length > 0">     
-                <div v-for="form in dataContainer" :key="form.id" class="col-12 menuLabel">        
-                        {{form.name.concatenatedContent}}    
+            <div v-for="form in dataContainer" :key="form.id" class="col-12 menuEntry" @click="activePanel = form.id">
+                {{form.name.concatenatedContent}}
+            </div>
+
+            <!-- METADATA FORMS -->
+            <div class="col-12 menuEntry" @click="activePanel = 'metadata-forms'">
+                <div class="sectionLabel">Metadata Forms</div>
+            </div>
+            <div v-for="ms in metadataSets.filter(m => m.isTemplate == false)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id">
+                {{ms.name.concatenatedContent}}
+            </div>
+
+        </div>
+
+        <div class="col-md-8">
+            <div class="col-12 wrapper" v-if="activePanel == null || activePanel == 'overview'">
+                <h4>Overview</h4>
+            </div>
+
+            <!-- NOTIFICATIONS -->
+            <div class="col-12 wrapper" v-if="activePanel == 'notifications'">
+                <h4>Notifications</h4>
+            </div>
+            <div v-for="ms in metadataSets.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 wrapper">
+                <div v-if="activePanel == ms.id.toString()">
+                    <h4>{{ms.name.concatenatedContent}}</h4>
                 </div>
             </div>
-         </div>
-         <div class="col-md-8">
-                <!-- Content Section -->
 
-                <h5>Item Template JSON</h5>
-                <p>{{JSON.stringify(template)}}</p>
-         </div>
-        
+
+        </div>
+
     </div>
 </template>
 
 <style scoped>
-    .menuLabel{
+    .menuEntry{
         border: 1px solid Grey;
         margin: 10px;
         padding: 10px 10px;
     }
+        .menuEntry.active {
+            background-color: #BBBCAA;
+        }
     .sectionLabel{
         font-weight: bold;
+    }
+    .wrapper{
+        margin: 0;
+        padding: 0;
     }
 </style>
