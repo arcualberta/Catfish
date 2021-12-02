@@ -17,5 +17,4 @@ export interface TextCollection {
     modelType: string;
     values: Text[];
     concatenatedContent: string;
-    
 }
