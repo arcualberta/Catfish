@@ -3,9 +3,11 @@
     import {useStore} from 'vuex';
     import dayjs from "dayjs";
 
+    import NotificationEditor from "./NotificationEditor.vue"
+
     export default defineComponent({
         name: "ItemTemplate",
-
+        components: { NotificationEditor},
         props: { },
         setup() {
             const store = useStore()
@@ -44,6 +46,7 @@
             </div>
             <div v-for="ms in metadataSets?.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id" v-bind:class= "activePanel == ms.id?'active':''">
                 {{ms.name.concatenatedContent}}
+                
             </div>
 
             <!-- DATA FORMS -->
@@ -75,7 +78,8 @@
             </div>
             <div v-for="ms in metadataSets?.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 wrapper">
                 <div v-if="activePanel == ms.id">
-                    <h4>{{ms.name.concatenatedContent}}</h4>
+                    <!--<h4>{{ms.name.concatenatedContent}}</h4>-->
+                    <NotificationEditor :title="ms.name.concatenatedContent" :container="ms" ></NotificationEditor>
                 </div>
             </div>
             <!-- DATA FORMS -->
