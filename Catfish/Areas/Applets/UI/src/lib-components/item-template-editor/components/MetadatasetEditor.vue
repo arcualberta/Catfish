@@ -3,8 +3,8 @@
     import { defineComponent} from "vue";
 
     export default defineComponent({
-        name: "NotificationEditor",
-        props: ['container'],
+        name: "MetadatasetEditor",
+        props: ['metadataset'],
         setup() {
 
         }
@@ -14,6 +14,6 @@
 </script>
 
 <template>
-    <h4>{{container.name.concatenatedContent}}</h4>
-    <div>{{container}}</div>
+    <h4>{{metadataset.name.concatenatedContent}}</h4>
+    <div>{{metadataset}}</div>
 </template>

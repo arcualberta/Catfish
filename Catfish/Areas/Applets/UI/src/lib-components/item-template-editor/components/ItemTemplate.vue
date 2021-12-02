@@ -5,10 +5,11 @@
 
     import NotificationEditor from "./NotificationEditor.vue"
     import FormEditor from "./FormEditor.vue"
+    import MetadatasetEditor from "./MetadatasetEditor.vue"
 
     export default defineComponent({
         name: "ItemTemplate",
-        components: { NotificationEditor, FormEditor},
+        components: { NotificationEditor, FormEditor, MetadatasetEditor},
         props: { },
         setup() {
             const store = useStore()
@@ -80,7 +81,7 @@
             <div v-for="ms in metadataSets?.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 wrapper">
                 <div v-if="activePanel == ms.id">
                     <!--<h4>{{ms.name.concatenatedContent}}</h4>-->
-                    <NotificationEditor :title="ms.name.concatenatedContent" :container="ms" ></NotificationEditor>
+                    <NotificationEditor :container="ms" ></NotificationEditor>
                 </div>
             </div>
             <!-- DATA FORMS -->
@@ -90,7 +91,7 @@
             <div v-for="form in dataContainer" :key="form.id" class="col-12 wrapper">
                 <div v-if="activePanel == form.id">
                     <!--{{form.name.concatenatedContent}}-->
-                    <FormEditor :title="form.name.concatenatedContent" :form="form"></FormEditor>
+                    <FormEditor  :form="form"></FormEditor>
                 </div>
 
             </div>
@@ -100,7 +101,8 @@
             </div>
             <div v-for="ms in metadataSets?.filter(m => m.isTemplate == false)" :key="ms.id" class="col-12 wrapper " >
                 <div v-if="activePanel == ms.id">
-                    {{ms.name.concatenatedContent}}
+                    <!--{{ms.name.concatenatedContent}}-->
+                    <MetadatasetEditor :metadataset="ms"></MetadatasetEditor>
                 </div>
                
             </div>

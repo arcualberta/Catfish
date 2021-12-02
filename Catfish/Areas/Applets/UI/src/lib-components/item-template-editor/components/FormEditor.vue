@@ -4,7 +4,7 @@
 
     export default defineComponent({
         name: "FormEditor",
-        props: ['title', 'form'],
+        props: ['form'],
         setup() {
 
         }
@@ -14,6 +14,6 @@
 </script>
 
 <template>
-    <h4>{{title}}</h4>
+    <h4>{{form.name.concatenatedContent}}</h4>
     <div>{{form}}</div>
 </template>
