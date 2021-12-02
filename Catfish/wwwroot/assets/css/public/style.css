@@ -606,7 +606,7 @@ input[readonly] {
 @media not all and (min-resolution:.001dpcm) {
     @media {
         .fa-google {
-            background: url("../../images/Gbutton.png");
+            background: url("/assets/images/Gbutton.png");
             width: 180px;
             height: 40px;
         }
