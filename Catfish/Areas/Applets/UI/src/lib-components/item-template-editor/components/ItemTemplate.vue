@@ -4,10 +4,11 @@
     import dayjs from "dayjs";
 
     import NotificationEditor from "./NotificationEditor.vue"
+    import FormEditor from "./FormEditor.vue"
 
     export default defineComponent({
         name: "ItemTemplate",
-        components: { NotificationEditor},
+        components: { NotificationEditor, FormEditor},
         props: { },
         setup() {
             const store = useStore()
@@ -88,7 +89,8 @@
             </div>
             <div v-for="form in dataContainer" :key="form.id" class="col-12 wrapper">
                 <div v-if="activePanel == form.id">
-                    {{form.name.concatenatedContent}}
+                    <!--{{form.name.concatenatedContent}}-->
+                    <FormEditor :title="form.name.concatenatedContent" :form="form"></FormEditor>
                 </div>
 
             </div>
