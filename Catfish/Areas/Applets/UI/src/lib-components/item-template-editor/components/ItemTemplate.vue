@@ -91,6 +91,9 @@
         margin: 10px;
         padding: 10px 10px;
     }
+        .menuEntry.active {
+            background-color: #BBBCAA;
+        }
     .sectionLabel{
         font-weight: bold;
     }
