@@ -42,7 +42,7 @@
             <div class="col-12 menuEntry" @click="activePanel = 'notifications'">
                 <div class="sectionLabel">Notifications</div>
             </div>
-            <div v-for="ms in metadataSets.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id">
+            <div v-for="ms in metadataSets?.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id">
                 {{ms.name.concatenatedContent}}
             </div>
 
@@ -58,7 +58,7 @@
             <div class="col-12 menuEntry" @click="activePanel = 'metadata-forms'">
                 <div class="sectionLabel">Metadata Forms</div>
             </div>
-            <div v-for="ms in metadataSets.filter(m => m.isTemplate == false)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id">
+            <div v-for="ms in metadataSets?.filter(m => m.isTemplate == false)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id">
                 {{ms.name.concatenatedContent}}
             </div>
 
@@ -73,13 +73,31 @@
             <div class="col-12 wrapper" v-if="activePanel == 'notifications'">
                 <h4>Notifications</h4>
             </div>
-            <div v-for="ms in metadataSets.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 wrapper">
-                <div v-if="activePanel == ms.id.toString()">
+            <div v-for="ms in metadataSets?.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 wrapper">
+                <div v-if="activePanel == ms.id">
                     <h4>{{ms.name.concatenatedContent}}</h4>
                 </div>
             </div>
+            <!-- DATA FORMS -->
+            <div class="col-12 wrapper" v-if="activePanel == 'forms'">
+                <h4>Forms</h4>
+            </div>
+            <div v-for="form in dataContainer" :key="form.id" class="col-12 wrapper">
+                <div v-if="activePanel == form.id">
+                    {{form.name.concatenatedContent}}
+                </div>
 
-
+            </div>
+            <!-- METADATA FORMS -->
+            <div class="col-12 wrapper" v-if="activePanel == 'metadata-forms'">
+                <h4>Metadata Forms</h4>
+            </div>
+            <div v-for="ms in metadataSets?.filter(m => m.isTemplate == false)" :key="ms.id" class="col-12 wrapper" >
+                <div v-if="activePanel == ms.id">
+                    {{ms.name.concatenatedContent}}
+                </div>
+               
+            </div>
         </div>
 
     </div>
