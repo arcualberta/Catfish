@@ -38,7 +38,7 @@
     <div class="container row itemTemplate">
 
         <div class="col-md-4">
-            <div class="col-12 menuEntry " @click="activePanel = 'overview'" v-bind:class= "activePanel == 'overview' || activePanel == null ?'active':''">
+            <div class="col-12 menuEntry " @click="activePanel = 'overview'" v-bind:class= "activePanel == 'overview' || activePanel == null ? 'active'  : ''">
                 <div class="sectionLabel">Overview</div>
             </div>
 
@@ -46,7 +46,7 @@
             <div class="col-12 menuEntry" @click="activePanel = 'notifications'" v-bind:class="activePanel == 'notifications' ?'active':''">
                 <div class="sectionLabel">Notifications</div>
             </div>
-            <div v-for="ms in metadataSets?.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id" v-bind:class= "activePanel == ms.id?'active':''">
+            <div v-for="ms in metadataSets?.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id" v-bind:class= "activePanel == ms.id ? 'active' : ''">
                 {{ms.name.concatenatedContent}}
                 
             </div>
@@ -55,7 +55,7 @@
             <div class="col-12 menuEntry" @click="activePanel = 'forms'" >
                 <div class="sectionLabel">Forms</div>
             </div>
-            <div v-for="form in dataContainer" :key="form.id" class="col-12 menuEntry" @click="activePanel = form.id" v-bind:class = "activePanel == form.id?'active':''">
+            <div v-for="form in dataContainer" :key="form.id" class="col-12 menuEntry" @click="activePanel = form.id" v-bind:class = "activePanel == form.id ? 'active' : ''">
                 {{form.name.concatenatedContent}}
             </div>
 
@@ -63,7 +63,7 @@
             <div class="col-12 menuEntry" @click="activePanel = 'metadata-forms'">
                 <div class="sectionLabel">Metadata Forms</div>
             </div>
-            <div v-for="ms in metadataSets?.filter(m => m.isTemplate == false)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id" v-bind:class = "activePanel == ms.id?'active':''">
+            <div v-for="ms in metadataSets?.filter(m => m.isTemplate == false)" :key="ms.id" class="col-12 menuEntry" @click="activePanel = ms.id" v-bind:class = "activePanel == ms.id ? 'active' : ''">
                 {{ms.name.concatenatedContent}}
             </div>
 
@@ -80,8 +80,7 @@
             </div>
             <div v-for="ms in metadataSets?.filter(m => m.isTemplate == true)" :key="ms.id" class="col-12 wrapper">
                 <div v-if="activePanel == ms.id">
-                    <!--<h4>{{ms.name.concatenatedContent}}</h4>-->
-                    <NotificationEditor :container="ms" ></NotificationEditor>
+                    <NotificationEditor :fieldContainer="ms" ></NotificationEditor>
                 </div>
             </div>
             <!-- DATA FORMS -->
@@ -90,7 +89,6 @@
             </div>
             <div v-for="form in dataContainer" :key="form.id" class="col-12 wrapper">
                 <div v-if="activePanel == form.id">
-                    <!--{{form.name.concatenatedContent}}-->
                     <FormEditor  :form="form"></FormEditor>
                 </div>
 
@@ -101,7 +99,6 @@
             </div>
             <div v-for="ms in metadataSets?.filter(m => m.isTemplate == false)" :key="ms.id" class="col-12 wrapper " >
                 <div v-if="activePanel == ms.id">
-                    <!--{{ms.name.concatenatedContent}}-->
                     <MetadatasetEditor :metadataset="ms"></MetadatasetEditor>
                 </div>
                
