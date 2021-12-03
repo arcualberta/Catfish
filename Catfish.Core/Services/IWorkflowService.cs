@@ -38,6 +38,7 @@ namespace Catfish.Core.Services
         public string GetLoggedUserEmail();
 
         User GetLoggedUser();
+        //EntityTemplate GetEntityTemplateByEntityTemplateId(Guid? templateId);
 
         /// <summary>
         /// Returns the list of Groups where the specified user is associated with a role that has 
@@ -54,7 +55,7 @@ namespace Catfish.Core.Services
         GetAction GetGetActionByPostActionID(EntityTemplate entityTemplate, Guid postActionId);
         List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid statusId, Guid postActionId);
         Mapping GetStateMappingByStateMappingId(EntityTemplate entityTemplate, Guid stateMappingId);
-
+        EntityTemplate GetEntityTemplateByEntityTemplateId(Guid entityTemplateId);
         bool UpdateItemTemplateSchema(Guid id, string SchemaXml, out string successMessage);
     }
 }
