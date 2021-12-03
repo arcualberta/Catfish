@@ -26,7 +26,7 @@
                 <h2>Local Account Login</h2>
                 <hr />
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <form method="post">
                             @Html.AntiForgeryToken()
                             <div class="form-group">
@@ -44,7 +44,7 @@
                         <div style="margin-top:20px;">
                             <a href="./forgotPassword">Forgot Password?</a>
                         </div>
-                        <div>
+                        <div style="margin-bottom:20px;">
                             <a href="./resetPassword">Change my password</a>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
         @Html.AntiForgeryToken()
         @if (allowGoogleLogin)
         {<article class="@externalLoginDivClass">
-                <div class="grid_4 box login">
+                <div class="grid_6 box login">
                     <div id="socialLoginDiv">
                         <h2>External Login </h2>
                         <hr />
