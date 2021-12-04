@@ -52,16 +52,16 @@ namespace Catfish.Pages
                 {
                     //send the new password to user
                     Core.Services.Email _email = new Core.Services.Email();
-                    string uri ="https://" + HttpContext.Request.Host.ToString() + "/resetPassword";
+                    string uri ="https://" + HttpContext.Request.Host.ToString() + "/changepassword/true";
                     _email.Body = "<p>Here is your temporary password:<br/></p><p>" + passwd + "</p><br/><p> Please reset it by clicking the link below.</p><p>" +
                                 "<a href='"+ uri +"' target='_blank'>Reset my  password </a></p>";
                     _email.RecipientEmail = Email;
                     _email.Subject = "Reset Password";
                     _email.UserName = user.UserName;
                     
-
                     _emailSrv.SendEmail(_email);
-                    return new RedirectResult("/");
+
+                    return Redirect("/changepassword/true");
                 }
             }
             catch(Exception ex)

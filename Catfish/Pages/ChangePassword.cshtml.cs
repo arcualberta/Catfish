@@ -20,7 +20,7 @@ using Piranha.AspNetCore.Identity.Data;
 namespace Catfish.Pages
 {
     //[PageTypeRoute(Title = "Default", Route = "/login")]
-    public class ResetPasswordPageModel : Microsoft.AspNetCore.Mvc.RazorPages.PageModel
+    public class ChangePasswordPageModel : Microsoft.AspNetCore.Mvc.RazorPages.PageModel
     {  
         private readonly ISecurity _security;
         private SignInManager<Piranha.AspNetCore.Identity.Data.User> _signInManager;
@@ -34,19 +34,27 @@ namespace Catfish.Pages
         [BindProperty]
         public string ConfirmPassword { get; set; }
 
+        [BindProperty]
+        public bool IsReset { get; set; }
         public string ErrorMessage { get; set; }
 
         public string SuccessMeesage { get; set; }
       
 
-        public ResetPasswordPageModel(ISecurity security,  SignInManager<Piranha.AspNetCore.Identity.Data.User> signInManager) : base()
+        public ChangePasswordPageModel(ISecurity security,  SignInManager<Piranha.AspNetCore.Identity.Data.User> signInManager) : base()
         {
             _security = security;
             _signInManager = signInManager;
            
         }
 
-       
+        public IActionResult OnGet(bool? reset)
+        {
+            IsReset = reset.HasValue && reset.Value;
+            return Page();
+        }
+
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid && NewPassword.Equals(ConfirmPassword))
@@ -60,13 +68,11 @@ namespace Catfish.Pages
                 }
                 try
                 {
-                   
                     string token = await _signInManager.UserManager.GeneratePasswordResetTokenAsync(user);
                     var result = await _signInManager.UserManager.ResetPasswordAsync(user, token, NewPassword);
                     if (result.Succeeded)
                     {
                         SuccessMeesage = "Your password has been succesfully updated.";
-                        
                     }
 
                 }
@@ -81,8 +87,6 @@ namespace Catfish.Pages
             {
                 ErrorMessage = "New Password and Confirm Password does not matched.";
             }
-            
-
             return Page();
         }
 
