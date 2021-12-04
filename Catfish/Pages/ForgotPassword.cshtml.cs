@@ -39,7 +39,7 @@ namespace Catfish.Pages
 
             if(user == null)
             {
-                ErrorMessage = "Sorry, Can't find user with '" + Email + "' email address.";
+                ErrorMessage = "Sorry, can't find the user with '" + Email + "' email address.";
                 return Page();
             }
 
