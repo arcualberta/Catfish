@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-    import { defineComponent } from 'vue'
+    import { defineComponent, computed } from 'vue'
     import { useStore } from 'vuex';
 
     import { state } from './store/state'
@@ -8,13 +8,13 @@
     import { mutations, Mutations } from './store/mutations'
     import props, { QueryParameter } from '../shared/props'
 
-    //import Item from './components/Item.vue'
+    import FieldContainer from '../shared/components/display/FieldContainer.vue'
 
 
     export default defineComponent({
         name: "ItemViewer",
         components: {
-            //Item
+            FieldContainer
         },
         props,
         setup(p) {
@@ -24,13 +24,14 @@
             console.log('props: ', JSON.stringify(p));
             const queryParams = p.queryParameters as QueryParameter;
 
-            store.commit(Mutations.SET_ID, queryParams.id);
+            store.commit(Mutations.SET_ID, queryParams.iid);
 
             //load the data
             store.dispatch(Actions.LOAD_ITEM);
 
             return {
-                queryParams
+                queryParams,
+                dataItem: computed(() => store.getters.rootDataItem)
             }
         },
         storeConfig: {
@@ -43,7 +44,7 @@
 </script>
 
 <template>
-    <h3>Item Viewer Editor</h3>
+    <p>Item Viewer</p>
     <div>Item ID: {{queryParameters.iid}}</div>
-    <!--<ItemTemplate />-->
+    <FieldContainer :model="dataItem" v-if="dataItem"/>
 </template>

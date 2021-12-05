@@ -12,7 +12,7 @@ export const actions: ActionTree<State, any> = {
   [Actions.LOAD_ITEM](store) {
  
         const api = window.location.origin +
-            `/applets/api/items/${store.state.id}`;
+            `/applets/api/itemeditor/${store.state.id}`;
         //console.log('Keyword Load API: ', api)
 
         fetch(api)
