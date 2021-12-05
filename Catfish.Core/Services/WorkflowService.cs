@@ -357,7 +357,7 @@ namespace Catfish.Core.Services
             }
         }
 
-        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId)
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid? statusId)
         {
             try
             {
@@ -737,5 +737,16 @@ namespace Catfish.Core.Services
                 return false;
             }
         }
+
+        public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid entityTemplateId)
+        {
+            EntityTemplate entityTemplate = _db.EntityTemplates.Where(et => et.Id == entityTemplateId).FirstOrDefault();
+            return entityTemplate;
+        }
+
+        //public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid? templateId)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

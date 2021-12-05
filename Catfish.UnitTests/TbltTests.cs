@@ -186,6 +186,8 @@ namespace Catfish.UnitTests
             bcpForm.CreateField<CheckboxField>("Permission to use", lang, new string[] { "Yes, I confirm" }, true)
                 .SetDescription("Please confirm that you grant the TBLT CoP a <a href='https://creativecommons.org/licenses/by-nc-sa/4.0/'>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license</a> to use this material (except in those cases where an alternative license has been indicated by you on the applicable material).", lang);
 
+            bcpForm.CreateField<TextField>("Thumbnail URL", lang)
+                .SetFieldCssClass("hidden");
 
             //Defininig the Comments form
             DataItem commentsForm = template.GetDataItem("TBLT Comment Form", true, lang);
@@ -509,7 +511,7 @@ namespace Catfish.UnitTests
             //Defining actions
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
 
-            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            startSubmissionAction.Access = GetAction.eAccess.Public;
 
             //Defining form template
             startSubmissionAction.AddTemplate(tbltForm.Id, "Task-based Language Teaching Submit Contact Us Form");
