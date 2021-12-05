@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Services;
+using ElmahCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,12 @@ namespace Catfish.Areas.Applets.Services
     {
         private readonly ISubmissionService _submissionService;
         public readonly AppDbContext _appDb;
-        public ItemAppletService(AppDbContext db, ISubmissionService submissionService)
+        private readonly ErrorLog _errorLog;
+        public ItemAppletService(AppDbContext db, ISubmissionService submissionService, ErrorLog errorLog)
         {
             _appDb = db;
             _submissionService = submissionService;
+            _errorLog = errorLog;
         }
 
         public Item GetItem(Guid id, ClaimsPrincipal user)

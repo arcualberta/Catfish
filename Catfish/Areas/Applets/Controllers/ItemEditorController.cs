@@ -35,6 +35,7 @@ namespace Catfish.Areas.Applets.Controllers
             _appDb = appDb;
             _errorLog = errorLog;
         }
+
         [HttpGet]
         [Route("statetranistions/{id:Guid}")]
         public List<string> StateTransitions(Guid id)
