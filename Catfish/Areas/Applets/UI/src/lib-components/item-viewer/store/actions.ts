@@ -4,8 +4,7 @@ import { Mutations } from './mutations';
 
 //Declare ActionTypes
 export enum Actions {
-  LOAD_ITEM = "LOAD_ITEM",
-    SET_ID = "SET_ID"
+  LOAD_ITEM = "LOAD_ITEM"
 }
 
 export const actions: ActionTree<State, any> = {
@@ -13,23 +12,15 @@ export const actions: ActionTree<State, any> = {
   [Actions.LOAD_ITEM](store) {
  
         const api = window.location.origin +
-            `/applets/api/items/${store.state.Id}`;
+            `/applets/api/items/${store.state.id}`;
         //console.log('Keyword Load API: ', api)
 
         fetch(api)
             .then(response => response.json())
             .then(data => {
-                
-                store.commit(Mutations.SET_TEMPLATE, data);
-               console.log("Loaded datacontainer: " + JSON.stringify(store.state.template?.dataContainer))
-               // console.log("Datacontainer count: " + store.state.template?.dataContainer.length)
+
+              store.commit(Mutations.SET_ITEM, data);
             });
     },
-
-    [Actions.SET_ID](store, payload) {
-
-        store.commit(Mutations.SET_ID, payload);
-    },
-
 }
 

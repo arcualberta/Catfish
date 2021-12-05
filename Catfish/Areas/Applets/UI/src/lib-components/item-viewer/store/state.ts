@@ -3,13 +3,13 @@ import {Item} from "../models/item"
 //Declare State interface
 export interface State {
   
-    Id: Guid | null;
+    id: Guid | null;
     item: Item | null;
   
 }
 
 export const state: State = {
   
-    Id: null,
+    id: null,
     item: null
 }
