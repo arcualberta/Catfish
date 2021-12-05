@@ -1,6 +1,6 @@
 ﻿import { Guid } from "guid-typescript";
-import { FieldContainer } from "./fieldContainer";
-import { TextCollection } from "./textModels"
+import { FieldContainer } from "../../shared/models/fieldContainer";
+import { TextCollection } from "../../shared/models/textModels"
 
 export interface ItemTemplate {
   id: Guid;
