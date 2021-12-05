@@ -1,15 +1,5 @@
-﻿import { Guid } from "guid-typescript";
-import { FieldContainer } from "../../shared/models/fieldContainer";
-import { TextCollection } from "../../shared/models/textModels"
+﻿import { EntityModel } from "../../shared/models/entityModel";
 
-export interface ItemTemplate {
-  id: Guid;
-  status: string;
+export interface ItemTemplate extends EntityModel {
   templateName: string;
-  modelType: string;
-  metadataSets: FieldContainer[];
-  dataContainer: FieldContainer[];
-  name: TextCollection | null;
-  description: TextCollection | null;
-  statusId: Guid | null;
 }
