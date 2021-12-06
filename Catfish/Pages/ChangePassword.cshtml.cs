@@ -68,6 +68,12 @@ namespace Catfish.Pages
                 }
                 try
                 {
+                    //try to login with current paswd
+                    bool canLogin = await TryLogin(user).ConfigureAwait(false);
+                    if (!canLogin)
+                        return Page();
+
+                    //changing the passwd
                     string token = await _signInManager.UserManager.GeneratePasswordResetTokenAsync(user);
                     var result = await _signInManager.UserManager.ResetPasswordAsync(user, token, NewPassword);
                     if (result.Succeeded)
@@ -90,6 +96,29 @@ namespace Catfish.Pages
             return Page();
         }
 
-       
+       private async Task<bool> TryLogin(User user)
+        {
+            
+            bool isPersisten = false;
+            try {
+                var result = await _signInManager.CheckPasswordSignInAsync(user, CurrentPassword, isPersisten).ConfigureAwait(false);
+                if (result.Succeeded)
+                {
+                    //user can signin with current password  and now sign out the user 
+                    await _signInManager.SignOutAsync();
+                    return true;
+                }
+                else
+                {
+                    ErrorMessage = "Your don't have the correct password, can't change your password.";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                return false;
+            }
+        }
     }
 }
