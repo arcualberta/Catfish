@@ -48,3 +48,9 @@
     <div>Item ID: {{queryParameters.iid}}</div>
     <FieldContainer :model="dataItem" v-if="dataItem"/>
 </template>
+
+<style scoped>
+    .field-name{
+        font-weight:bold !important;
+    }
+</style>

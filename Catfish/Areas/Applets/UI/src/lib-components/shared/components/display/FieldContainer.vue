@@ -18,7 +18,7 @@
 <template>
     <h4>Field Container View</h4>
     <h4>{{model.name.concatenatedContent}}</h4>
-    <div v-for="field in model.fields">
+    <div v-for="field in model.fields" class="row">
         <Field :model="field" />
     </div>
 </template>
