@@ -52,8 +52,9 @@ namespace Catfish.Pages
                 {
                     //send the new password to user
                     Core.Services.Email _email = new Core.Services.Email();
-                    string uri ="https://" + HttpContext.Request.Host.ToString() + "/changepassword/true";
-                    _email.Body = "<p>Here is your temporary password:<br/></p><p>" + passwd + "</p><br/><p> Please reset it by clicking the link below.</p><p>" +
+                    DateTime currentTime = DateTime.Now;
+                    string uri ="https://" + HttpContext.Request.Host.ToString() + "/changepassword/true/" + currentTime;
+                    _email.Body = "<p>Here is your temporary password:<br/></p><p>" + passwd + "</p><br/><p> Please reset it by clicking the link below. This temporary Password will be expired in 1 hour!</p><p>" +
                                 "<a href='"+ uri +"' target='_blank'>Reset my  password </a></p>";
                     _email.RecipientEmail = Email;
                     _email.Subject = "Reset Password";
@@ -61,7 +62,7 @@ namespace Catfish.Pages
                     
                     _emailSrv.SendEmail(_email);
 
-                    return Redirect("/changepassword/true");
+                    return Redirect("/changepassword/true/" + currentTime);
                 }
             }
             catch(Exception ex)
