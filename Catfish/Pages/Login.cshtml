@@ -47,7 +47,14 @@
                         <div style="margin-bottom:20px;">
                             <a href="./changepassword">Change my password</a>
                         </div>
+                        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                        {
+                            <div class="alert alert-danger">
+                                @Model.ErrorMessage
+                            </div>
+                        }
                     </div>
+                   
                 </div>
             }
         </article>
