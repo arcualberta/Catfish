@@ -83,7 +83,9 @@
         <div v-if="this.isTextField(model)">
             TextField
         </div>
-        <div>{{JSON.stringify(model)}}</div>
+        <div>
+            {{JSON.stringify(model)}}
+        </div>
     </div>
 </template>
 
