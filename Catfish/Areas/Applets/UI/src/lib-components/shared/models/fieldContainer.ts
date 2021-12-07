@@ -19,6 +19,12 @@ import { TextCollection} from "./textModels";
 //  TextField = "TextField",
 //}
 
+export enum OptionType {
+    Checkbox,
+    Radio,
+    Select
+}
+
 export enum eFieldType {
   AttachmentField,
   CheckboxField,
@@ -72,4 +78,9 @@ export interface Option {
 }
 export interface OptionsField extends Field {
     options: Option[] | null;
+}
+
+
+export interface MonolingualTextInput extends Field {
+    values: Text[] | null;
 }
