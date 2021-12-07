@@ -46,11 +46,12 @@ namespace Catfish.Pages
         /// Handle local sign in from public interface (front end)
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string ret)
         {
             if (ModelState.IsValid && await _security.SignIn(HttpContext, Username, Password))
-                return new RedirectResult("/");
+                return new RedirectResult(string.IsNullOrEmpty(ret) ? "/" : ret);
 
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return Page();
         }
 
