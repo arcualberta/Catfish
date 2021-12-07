@@ -39,8 +39,8 @@ namespace Catfish.Pages
         public string ErrorMessage { get; set; }
 
         public string SuccessMeesage { get; set; }
-        [BindProperty]
-        public DateTime Expired { get; set; }
+        //[BindProperty]
+        //public DateTime Expired { get; set; }
       
 
         public ChangePasswordPageModel(ISecurity security,  SignInManager<Piranha.AspNetCore.Identity.Data.User> signInManager) : base()
@@ -53,8 +53,8 @@ namespace Catfish.Pages
         public IActionResult OnGet(bool? reset, DateTime? expired)
         {
             IsReset = reset.HasValue && reset.Value;
-            if(IsReset)
-                Expired = expired.Value;
+            //if(IsReset)
+            //    Expired = expired.Value;
             return Page();
         }
 
@@ -75,16 +75,16 @@ namespace Catfish.Pages
                 try
                 {
                     //check if thr given temporary password has been expired;
-                    if (IsReset && Expired.AddHours(1) < DateTime.Now)
-                    {
-                        ErrorMessage = "Sorry your temporary password has been expired!";
-                        //reset the temporary password, make the password invalid
-                        string ntoken = await _signInManager.UserManager.GeneratePasswordResetTokenAsync(user);
-                        Random rand = new Random();
-                        var res = await _signInManager.UserManager.ResetPasswordAsync(user, ntoken, CurrentPassword + rand.Next(1, 100));
+                    //if (IsReset && Expired.AddHours(1) < DateTime.Now)
+                    //{
+                    //    ErrorMessage = "Sorry your temporary password has been expired!";
+                    //    //reset the temporary password, make the password invalid
+                    //    string ntoken = await _signInManager.UserManager.GeneratePasswordResetTokenAsync(user);
+                    //    Random rand = new Random();
+                    //    var res = await _signInManager.UserManager.ResetPasswordAsync(user, ntoken, CurrentPassword + rand.Next(1, 100));
                        
-                        return new RedirectResult("/");
-                    }
+                    //    return new RedirectResult("/");
+                    //}
 
                     //try to login with current paswd
                     bool canLogin = await TryLogin(user).ConfigureAwait(false);
