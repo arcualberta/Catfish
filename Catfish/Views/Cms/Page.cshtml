@@ -11,7 +11,7 @@
         ViewBag.Title = Model == null ? "" : Model.Title;
 
         //check if it's set the publishing start/end date to make  the page contain available
-        DateTime? startDateTime = Model.PublishSettings.Start;
+        DateTime? startDateTime = Model?.PublishSettings.Start;
         DateTime? endDateTime = Model.PublishSettings.End;
         bool pageAvailable = (!startDateTime.HasValue || startDateTime.HasValue && startDateTime.Value <= DateTime.Now)
             && (!endDateTime.HasValue || endDateTime.HasValue && endDateTime.Value > DateTime.Now);

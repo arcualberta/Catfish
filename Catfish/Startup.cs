@@ -203,6 +203,7 @@ namespace Catfish
             services.AddSingleton<IBlockHelper, BlockHelper>();
             services.AddScoped<IAssetRegistry, AssetRegistry>();
             services.AddScoped<IItemAppletService, ItemAppletService>();
+            services.AddScoped<IItemTemplateAppletService, ItemTemplateAppletService>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
@@ -223,6 +224,7 @@ namespace Catfish
             services.AddScoped<IAuthorizationHelper, AuthorizationHelper>();
             services.AddScoped<IAuthorizationHandler, EntityTemplateAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, GroupAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, ItemEditorAuthorizationHandler>();
             //services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationCrudHandler>();
             // Add custom policies
             services.AddAuthorization(o =>

@@ -2,7 +2,7 @@
 import { State } from './state';
 
 export const getters: GetterTree<State, State> = {
-    //getTemplateId: state => {
-    //    return state.queryParameters["templateId"];
-    //}
+  rootDataItem: state => {
+    return state.item?.dataContainer.filter(dc => dc.isRoot)[0];
+  }
 }
