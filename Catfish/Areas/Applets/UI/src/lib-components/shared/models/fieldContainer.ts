@@ -66,8 +66,12 @@ export interface FieldContainer {
     isTemplate: boolean | false;
 }
 
-export interface MultilingualTextInput extends Field{
+export interface MultilingualTextField extends Field {
     values: TextCollection[] | null;
+}
+
+export interface MonolingualTextField extends Field {
+    values: Text[] | null;
 }
 
 export interface Option {
@@ -81,6 +85,3 @@ export interface OptionsField extends Field {
 }
 
 
-export interface MonolingualTextInput extends Field {
-    values: Text[] | null;
-}
