@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
     import { defineComponent, PropType } from "vue";
-    import { FieldContainer } from "../models/fieldContainer";
+    import { FieldContainer } from "../../shared/models/fieldContainer";
 
     export default defineComponent({
         name: "NotificationEditor",
