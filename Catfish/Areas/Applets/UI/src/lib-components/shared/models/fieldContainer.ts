@@ -19,11 +19,11 @@ import { TextCollection} from "./textModels";
 //  TextField = "TextField",
 //}
 
-export enum OptionType {
-    Checkbox,
-    Radio,
-    Select
-}
+//export enum OptionType {
+//    Checkbox,
+//    Radio,
+//    Select
+//}
 
 export enum eFieldType {
   AttachmentField,

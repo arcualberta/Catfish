@@ -4,6 +4,7 @@
     import { Field, FieldContainer, eFieldType } from '../../models/fieldContainer'
     import TextField from './TextField.vue'
     import EmailField from './EmailField.vue'
+    import OptionField from './OptionField.vue'
 
     export default defineComponent({
         name: "FieldContainerView",
@@ -12,7 +13,8 @@
         },
         components: {
             TextField,
-            EmailField
+            EmailField,
+            OptionField
         },
         methods: {
             getFieldType(field: Field): eFieldType {
@@ -54,9 +56,11 @@
         <div v-if="this.isAttachmentField(model)">
             AttachmentField
         </div>
-        <div v-if="this.isCheckboxField(model)">
+        <!--<div v-if="this.isCheckboxField(model)">
             CheckboxField
-        </div>
+        </div>-->
+        <OptionField v-if="this.isCheckboxField(field)" :model="field"  />
+
         <div v-if="this.isCompositeField(model)">
             CompositeField
         </div>
@@ -66,9 +70,9 @@
         <div v-if="this.isDecimalField(model)">
             DecimalField
         </div>
-        <div v-if="this.isEmailField(model)">
+        <!--<div v-if="this.isEmailField(model)">
             EmailField
-        </div>
+        </div>-->
         <div v-if="this.isFieldContainerReference(model)">
             FieldContainerReference
         </div>
@@ -78,9 +82,10 @@
         <div v-if="this.isIntegerField(model)">
             IntegerField
         </div>
-        <div v-if="this.isMonolingualTextField(model)">
+        <!--<div v-if="this.isMonolingualTextField(model)">
             MonolingualTextField
-        </div>
+        </div>-->
+        <TextField :model="field" v-if="this.isMonolingualTextField(model)" />
         <div v-if="this.isRadioField(model)">
             RadioField
         </div>
@@ -90,9 +95,10 @@
         <div v-if="this.isTableField(model)">
             TableField
         </div>
-        <div v-if="this.isTextArea(model)">
-            TextArea
-        </div>
+        <!--<div v-if="this.isTextArea(model)">
+        TextArea
+    </div>-->
+        <TextField :model="field" v-if="this.isTextArea(field)" />
 
     </div>
 </template>
