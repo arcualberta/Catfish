@@ -69,8 +69,7 @@ namespace Catfish.Controllers.Api
                 string keywordFieldId = block.KeywordSourceId.Value;
                 string dataItemTemplateId = null; //TODO: load the template and get the ID of the root data item
                 string solrKeywordFieldName = string.Format("data_{0}_{1}_ts", dataItemTemplateId, keywordFieldId);
-                string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/') + "/";
-
+                string detailedViewUrl = block.DetailedViewUrl.Value;
 
                 KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
 

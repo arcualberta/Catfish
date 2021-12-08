@@ -19,6 +19,12 @@
 
 <div class="container">
     <div class="row">
+        @if (TempData["SuccessMessage"] != null && TempData["SuccessMessage"].ToString().Length > 0)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
         <article class="col-md-6">
 
             @if (enabledLocalLogin)
@@ -26,7 +32,7 @@
                 <h2>Local Account Login</h2>
                 <hr />
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <form method="post">
                             @Html.AntiForgeryToken()
                             <div class="form-group">
@@ -41,26 +47,38 @@
                             </div>
                             <button class="btn btn-success">Login</button>
                         </form>
-
+                        <div style="margin-top:20px;">
+                            <a href="./forgotPassword">Forgot Password?</a>
+                        </div>
+                        <div style="margin-bottom:20px;">
+                            <a href="./changepassword">Change my password</a>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                        {
+                            <div class="alert alert-danger">
+                                @Model.ErrorMessage
+                            </div>
+                        }
                     </div>
+
                 </div>
             }
         </article>
         @Html.AntiForgeryToken()
         @if (allowGoogleLogin)
         {<article class="@externalLoginDivClass">
-                <div class="grid_4 box login">
+                <div class="grid_6 box login">
                     <div id="socialLoginDiv">
                         <h2>External Login </h2>
                         <hr />
                         @*<div class="g-signin2" data-onsuccess="onSignIn"></div>*@
                         @*//asp-action="ExternalLogin" asp-controller="Account"*@
-                    <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
-                        @foreach (var provider in Model.ExternalLogins)
-                        {
-                            <input type="submit" class=" btn-primary goggleLoginBtn fa fa-google btn" value="@provider.Name" title="Login using your @provider.DisplayName account" />
-                        }
-                    </form>
+                        <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
+                            @foreach (var provider in Model.ExternalLogins)
+                            {
+                                <input type="submit" class=" btn-primary goggleLoginBtn fa fa-google btn" value="@provider.Name" title="Login using your @provider.DisplayName account" />
+                            }
+                        </form>
 
                     </div>
                 </div>
