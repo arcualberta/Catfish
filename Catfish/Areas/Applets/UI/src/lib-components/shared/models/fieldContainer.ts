@@ -1,5 +1,5 @@
 ﻿import { Guid } from "guid-typescript";
-import { Text, TextCollection} from "./textModels";
+import { TextCollection} from "./textModels";
 
 //export enum eFieldType {
 //  AttachmentField = "AttachmentField",
@@ -18,6 +18,12 @@ import { Text, TextCollection} from "./textModels";
 //  TextArea = "TextArea",
 //  TextField = "TextField",
 //}
+
+export enum OptionType {
+    Checkbox,
+    Radio,
+    Select
+}
 
 export enum eFieldType {
   AttachmentField,
@@ -40,13 +46,14 @@ export enum eFieldType {
 export interface Field {
   id: Guid;
   modelType: string;
-  values: Text[];
   name: TextCollection;
   required: boolean;
   allowMultipleValues: boolean;
   readonly: boolean;
-  refId: string;
   description: TextCollection;
+  created: Date;
+  updated: Date;
+  cssClass: string;
 }
 
 export interface FieldContainer {
@@ -57,4 +64,23 @@ export interface FieldContainer {
     name: TextCollection | null;
     description: TextCollection | null;
     isTemplate: boolean | false;
+}
+
+export interface MultilingualTextInput extends Field{
+    values: TextCollection[] | null;
+}
+
+export interface Option {
+    id: Guid;
+    optionText: TextCollection[] | null;
+    selected: boolean;
+    extendedOption: boolean;
+}
+export interface OptionsField extends Field {
+    options: Option[] | null;
+}
+
+
+export interface MonolingualTextInput extends Field {
+    values: Text[] | null;
 }
