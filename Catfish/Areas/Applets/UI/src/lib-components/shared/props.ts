@@ -30,7 +30,5 @@ export interface DataAttribute {
 }
 
 export interface QueryParameter {
-  /*name: string | null;
-  value: string | number | null;*/
-    [key:string]: string | number | null
+  [key: string]: string | number | null;
 }

@@ -737,5 +737,16 @@ namespace Catfish.Core.Services
                 return false;
             }
         }
+
+        public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid entityTemplateId)
+        {
+            EntityTemplate entityTemplate = _db.EntityTemplates.Where(et => et.Id == entityTemplateId).FirstOrDefault();
+            return entityTemplate;
+        }
+
+        //public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid? templateId)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
