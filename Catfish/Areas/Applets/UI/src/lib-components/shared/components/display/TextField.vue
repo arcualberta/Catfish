@@ -1,5 +1,6 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType } from 'vue'
+    import { boolean } from 'joi';
+import { defineComponent, PropType } from 'vue'
     import { MultilingualTextInput } from '../../models/fieldContainer'
 
 
@@ -12,12 +13,12 @@
            },
             isMultivalued: 
             {
-                type: Boolean as PropType<boolean>,
+                type: boolean,
                 required: false,
                 default: true
             },
             isMultiline: {
-                type: Boolean as PropType<boolean>,
+                type: boolean,
                 required: false,
                 default: true
             }

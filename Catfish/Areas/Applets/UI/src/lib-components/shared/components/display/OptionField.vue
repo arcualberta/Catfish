@@ -12,9 +12,8 @@
            },
             type: 
             {
-                type: Object as PropType<OptionType>,
+                type: null as PropType<OptionType> | null,
                 required: true
-               
             }
 
         }

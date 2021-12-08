@@ -1,4 +1,5 @@
 ﻿<script lang="ts">
+    import { boolean } from 'joi';
     import { defineComponent, PropType, ref} from 'vue'
     import { MonolingualTextInput } from '../../models/fieldContainer'
 
@@ -12,7 +13,7 @@
            },
             isMultivalued: 
             {
-                type: Boolean as PropType<boolean>,
+                type: boolean,
                 required: false,
                 default: false
             }

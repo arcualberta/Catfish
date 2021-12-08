@@ -1,4 +1,5 @@
 ﻿<script lang="ts">
+    import { boolean, number } from 'joi';
     import { defineComponent, PropType, ref} from 'vue'
     import { MonolingualTextInput } from '../../models/fieldContainer'
     
@@ -12,12 +13,12 @@
            },
             isMultivalued: 
             {
-                type: Boolean as PropType<boolean>,
+                type: boolean,
                 required: false,
                 default: false
             },
             numDecimalPlaces: {
-                type: Number as PropType<Number>,
+                type: number,
                 required: true  
             }
 
