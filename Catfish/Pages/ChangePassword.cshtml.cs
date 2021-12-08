@@ -38,7 +38,7 @@ namespace Catfish.Pages
         public bool IsReset { get; set; }
         public string ErrorMessage { get; set; }
 
-        public string SuccessMeesage { get; set; }
+        public string SuccessMessage { get; set; }
         //[BindProperty]
         //public DateTime Expired { get; set; }
       
@@ -96,9 +96,11 @@ namespace Catfish.Pages
                     var result = await _signInManager.UserManager.ResetPasswordAsync(user, token, NewPassword);
                     if (result.Succeeded)
                     {
-                        SuccessMeesage = "Your password has been succesfully updated.";
+                        SuccessMessage = "Your password has been succesfully updated. Please continue to log in.";
+                        TempData["SuccessMessage"] = SuccessMessage;
                     }
 
+                    return Redirect("/login");
                 }
                 catch(Exception ex)
                 {

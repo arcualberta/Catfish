@@ -52,6 +52,11 @@ namespace Catfish.Pages
         {
             try
             {
+                //We don't want someone who clicked on the login button from the change-password page
+                //or forgot-passwrod page to go back to those pages.
+                if (!string.IsNullOrEmpty(ret) && (ret.StartsWith("/changepassword") || ret.StartsWith("/forgotPassword")))
+                    ret = ""; 
+
                 if (ModelState.IsValid && await _security.SignIn(HttpContext, Username, Password))
                     return new RedirectResult(string.IsNullOrEmpty(ret) ? "/" : ret);
                 else

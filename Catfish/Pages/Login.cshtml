@@ -19,6 +19,12 @@
 
 <div class="container">
     <div class="row">
+        @if (TempData["SuccessMessage"] != null && TempData["SuccessMessage"].ToString().Length > 0)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
         <article class="col-md-6">
 
             @if (enabledLocalLogin)
@@ -54,7 +60,7 @@
                             </div>
                         }
                     </div>
-                   
+
                 </div>
             }
         </article>
@@ -67,12 +73,12 @@
                         <hr />
                         @*<div class="g-signin2" data-onsuccess="onSignIn"></div>*@
                         @*//asp-action="ExternalLogin" asp-controller="Account"*@
-                    <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
-                        @foreach (var provider in Model.ExternalLogins)
-                        {
-                            <input type="submit" class=" btn-primary goggleLoginBtn fa fa-google btn" value="@provider.Name" title="Login using your @provider.DisplayName account" />
-                        }
-                    </form>
+                        <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
+                            @foreach (var provider in Model.ExternalLogins)
+                            {
+                                <input type="submit" class=" btn-primary goggleLoginBtn fa fa-google btn" value="@provider.Name" title="Login using your @provider.DisplayName account" />
+                            }
+                        </form>
 
                     </div>
                 </div>
