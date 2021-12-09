@@ -16,7 +16,7 @@
            }
         },
         methods: {
-			concatenatedString(field: OptionsField) {
+			getSelectedFieldLabels(field: OptionsField) {
 				return OptionsFieldMethods.getSelectedFieldLabels(field.options);
             }
 		}
@@ -24,7 +24,7 @@
 </script>
 
 <template>
-    {{concatenatedString(model)}}
+    {{getSelectedFieldLabels(model)}}
 </template>
 
 <style scoped>
