@@ -7,6 +7,8 @@
 	import OptionsField from './OptionsField.vue'
     import DecimalField from './DecimalField.vue'
     import IntegerField from './IntegerField.vue'
+    import DateField from './DateField.vue'
+
     export default defineComponent({
         name: "FieldContainerView",
         props: {
@@ -17,7 +19,8 @@
             EmailField,
             OptionsField,
             DecimalField,
-            IntegerField
+            IntegerField,
+            DateField
         },
         methods: {
             getFieldType(field: Field): eFieldType {
@@ -54,6 +57,7 @@
             <OptionsField v-if="this.isOptionsField(field)" :model="field" />
             <DecimalField v-if="this.isDecimalField(field)" :model="field" />
             <IntegerField v-if="this.isIntegerField(field)" :model="field" />
+            <DateField  v-if="this.isDateField(field)" :model="field" />
 
             <div v-if="this.isAttachmentField(model)">
                 AttachmentField
@@ -62,9 +66,9 @@
             <div v-if="this.isCompositeField(model)">
                 CompositeField
             </div>
-            <div v-if="this.isDateField(model)">
+            <!--<div v-if="this.isDateField(model)">
                 DateField
-            </div>
+            </div>-->
             <!--<div v-if="this.isDecimalField(model)">
                 DecimalField
             </div>-->
