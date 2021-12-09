@@ -19,11 +19,7 @@ import { TextCollection} from "./textModels";
 //  TextField = "TextField",
 //}
 
-//export enum OptionType {
-//    Checkbox,
-//    Radio,
-//    Select
-//}
+export enum eRefType { undefined, data, metadata }
 
 export enum eFieldType {
   AttachmentField,
@@ -84,6 +80,10 @@ export interface OptionsField extends Field {
     options: Option[];
 }
 
+export interface FieldContainerReference extends Field {
+    ReferenceId: Guid;
+    RefType: eRefType;
+}
 export class OptionsFieldMethods {
 
     public static getSelectedFieldLabels(options: Option[]) {
