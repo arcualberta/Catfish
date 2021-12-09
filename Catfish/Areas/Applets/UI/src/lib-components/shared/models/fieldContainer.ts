@@ -19,11 +19,11 @@ import { TextCollection} from "./textModels";
 //  TextField = "TextField",
 //}
 
-export enum OptionType {
-    Checkbox,
-    Radio,
-    Select
-}
+//export enum OptionType {
+//    Checkbox,
+//    Radio,
+//    Select
+//}
 
 export enum eFieldType {
   AttachmentField,
@@ -66,21 +66,33 @@ export interface FieldContainer {
     isTemplate: boolean | false;
 }
 
-export interface MultilingualTextInput extends Field{
+export interface MultilingualTextField extends Field {
     values: TextCollection[] | null;
+}
+
+export interface MonolingualTextField extends Field {
+    values: Text[] | null;
 }
 
 export interface Option {
     id: Guid;
-    optionText: TextCollection[] | null;
+    optionText: TextCollection | null;
     selected: boolean;
     extendedOption: boolean;
 }
 export interface OptionsField extends Field {
-    options: Option[] | null;
+    options: Option[];
 }
 
+export class OptionsFieldMethods {
 
-export interface MonolingualTextInput extends Field {
-    values: Text[] | null;
+    public static getSelectedFieldLabels(options: Option[]) {
+        return options?.filter(opt => opt.selected)
+            .map(opt => opt.optionText?.values
+                .map(txt => txt.value)
+                .join(" / ")
+            )
+            .join(", ")
+    }
 }
+

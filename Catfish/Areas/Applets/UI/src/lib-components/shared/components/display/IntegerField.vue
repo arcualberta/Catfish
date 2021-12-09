@@ -1,19 +1,18 @@
 ﻿<script lang="ts">
-    import { boolean } from 'joi';
     import { defineComponent, PropType, ref} from 'vue'
-    import { MonolingualTextInput } from '../../models/fieldContainer'
+    import { MonolingualTextField } from '../../models/fieldContainer'
 
 
     export default defineComponent({
         name: "IntegerField",
         props: {
             model: {
-                type: null as PropType<MonolingualTextInput> | null,
+                type: null as PropType<MonolingualTextField> | null,
                 required: true
            },
             isMultivalued: 
             {
-                type: boolean,
+                type: Boolean,
                 required: false,
                 default: false
             }
@@ -36,7 +35,6 @@
 </script>
 
 <template>
-   <div> Integer Field</div>
     <div>{{val.value}}</div>
 </template>
 

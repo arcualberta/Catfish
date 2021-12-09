@@ -1,35 +1,37 @@
 ﻿<script lang="ts">
-    import { boolean } from 'joi';
-import { defineComponent, PropType } from 'vue'
-    import { MultilingualTextInput } from '../../models/fieldContainer'
-
+    import { defineComponent, PropType } from 'vue'
+    import { MultilingualTextField } from '../../models/fieldContainer'
+    import TextCollection from './text/TextCollection.vue'
 
     export default defineComponent({
         name: "TextField",
         props: {
             model: {
-                type: null as PropType<MultilingualTextInput> | null,
+                type: null as PropType<MultilingualTextField> | null,
                 required: true
            },
             isMultivalued: 
             {
-                type: boolean,
+                type: Boolean,
                 required: false,
                 default: true
             },
             isMultiline: {
-                type: boolean,
+                type: Boolean,
                 required: false,
                 default: true
             }
 
+        },
+        components: {
+            TextCollection
         }
     });
 </script>
 
 <template>
-   <div v-for="val in Model.values" :key="val.id">
-       <div>{{val.concatenatedContent}}</div>
+   <div v-for="val in model.values" :key="val.id">
+       <TextCollection :model="val" />
    </div>
     
 </template>
