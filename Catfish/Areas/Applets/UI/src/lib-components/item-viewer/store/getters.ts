@@ -1,4 +1,5 @@
-﻿import { GetterTree } from 'vuex';
+﻿import { Guid } from 'guid-typescript';
+import { GetterTree } from 'vuex';
 import { State } from './state';
 
 export const getters: GetterTree<State, State> = {
@@ -6,7 +7,7 @@ export const getters: GetterTree<State, State> = {
     return state.item?.dataContainer.filter(dc => dc.isRoot)[0];
     },
 
-    metadataSets: state => {
-        return state.item?.metadataSets;
+    metadataSet: (state) => (id: Guid) => {
+        return state.item?.metadataSets?.find(ms => ms.id === id);
     }
 }

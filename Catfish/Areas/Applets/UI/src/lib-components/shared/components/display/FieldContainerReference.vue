@@ -6,12 +6,12 @@
 
    // import { Item } from '../../../item-viewer/models/item'
   
-    import FieldContainerVue from './FieldContainer.vue'
+	import ChildFeildContainer from './ChildFeildContainer.vue'
 
     export default defineComponent({
         name: "FieldContainerReference",
         components: {
-            FieldContainerVue
+			ChildFeildContainer
         },
         props: {
             model: {
@@ -20,9 +20,10 @@
             }
 
         },
-        setup() {
+        setup(p) {
             const store = useStore();
-            const source = ref(store.getters.metadataSets);
+            const refId = ref(p.model.refId);
+            const source = ref(store.getters.metadataSet(p?.model?.refId));
             
            
              //const  mdSets = store.state.item.metadataSets; //source.metadataSets;
@@ -30,10 +31,12 @@
            
              //  const dtContainer = source.dataContainer;
 
-           console.log("item: " + JSON.stringify(source));
            
            /* console.log("datacontainer: " + JSON.stringify(dtContainer))*/
-            return { source}
+            return {
+				refId,
+				source
+            }
         },
         methods: {
 
@@ -47,7 +50,10 @@
 
 <template>
     Field Container Reference
-   <!--{{JSON.stringify(source)}}-->
-    <FieldContainerVue :model="getMetadaset(source, model.id)" />
+    {{refId}}
+    {{JSON.stringify(source)}}
+    <ChildFeildContainer :model="source" />
+
+
 </template>
 

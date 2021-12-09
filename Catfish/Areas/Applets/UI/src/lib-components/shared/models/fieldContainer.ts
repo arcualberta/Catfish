@@ -83,8 +83,8 @@ export interface OptionsField extends Field {
 }
 
 export interface FieldContainerReference extends Field {
-    ReferenceId: Guid;
-    RefType: eRefType;
+    refId: Guid;
+    refType: eRefType;
 }
 export class OptionsFieldMethods {
 

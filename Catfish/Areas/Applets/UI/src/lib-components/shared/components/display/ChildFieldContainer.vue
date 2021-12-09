@@ -8,9 +8,10 @@
     import DecimalField from './DecimalField.vue'
     import IntegerField from './IntegerField.vue'
     import DateField from './DateField.vue'
+    import ReferenceField from './FieldContainerReference.vue'
 
     export default defineComponent({
-		name: "ChildFieldContainer",
+        name: "FieldContainer",
         props: {
             model: null as PropType<FieldContainer> | null,
         },
@@ -20,7 +21,8 @@
             OptionsField,
             DecimalField,
             IntegerField,
-            DateField
+            DateField,
+            ReferenceField
         },
         methods: {
             getFieldType(field: Field): eFieldType {
@@ -58,6 +60,7 @@
             <DecimalField v-if="this.isDecimalField(field)" :model="field" />
             <IntegerField v-if="this.isIntegerField(field)" :model="field" />
             <DateField v-if="this.isDateField(field)" :model="field" />
+            <ReferenceField v-if="this.isFieldContainerReference(field)" :model="field" />
             <div v-if="this.isAttachmentField(model)">
                 AttachmentField
             </div>
