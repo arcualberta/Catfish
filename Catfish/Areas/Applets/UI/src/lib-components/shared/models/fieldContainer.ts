@@ -60,6 +60,8 @@ export interface FieldContainer {
     name: TextCollection | null;
     description: TextCollection | null;
     isTemplate: boolean | false;
+    model: FieldContainerReference | null;
+    source: FieldContainer[] | null;
 }
 
 export interface MultilingualTextField extends Field {
@@ -94,5 +96,20 @@ export class OptionsFieldMethods {
             )
             .join(", ")
     }
+}
+
+export class EntityModelMethods {
+
+    public static getSource(source: FieldContainer[]) {
+        return source;
+    }
+    public static getMetadataset(metadatasets: FieldContainer[], id: Guid) {
+        return metadatasets.find(m => m.id == id);
+    }
+
+    public static getDataContainer(datacontainers: FieldContainer[], id: Guid) {
+        return datacontainers.find(d => d.id == id);
+    }
+
 }
 
