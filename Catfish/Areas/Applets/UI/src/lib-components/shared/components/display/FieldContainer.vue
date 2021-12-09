@@ -4,7 +4,7 @@
     import { Field, FieldContainer, eFieldType } from '../../models/fieldContainer'
     import TextField from './TextField.vue'
     import EmailField from './EmailField.vue'
-    import OptionField from './OptionField.vue'
+    import CheckboxField from './CheckboxField.vue'
 
     export default defineComponent({
         name: "FieldContainerView",
@@ -14,7 +14,7 @@
         components: {
             TextField,
             EmailField,
-            OptionField
+            CheckboxField
         },
         methods: {
             getFieldType(field: Field): eFieldType {
@@ -52,14 +52,14 @@
 
         <TextField :model="field" v-if="this.isTextField(field)" />
         <EmailField :model="field" v-if="this.isEmailField(field)" />
+        <CheckboxField v-if="this.isCheckboxField(field)" :model="field" />
 
         <div v-if="this.isAttachmentField(model)">
             AttachmentField
         </div>
         <!--<div v-if="this.isCheckboxField(model)">
-            CheckboxField
-        </div>-->
-        <OptionField v-if="this.isCheckboxField(field)" :model="field"  />
+        CheckboxField
+    </div>-->
 
         <div v-if="this.isCompositeField(model)">
             CompositeField
@@ -71,8 +71,8 @@
             DecimalField
         </div>
         <!--<div v-if="this.isEmailField(model)">
-            EmailField
-        </div>-->
+        EmailField
+    </div>-->
         <div v-if="this.isFieldContainerReference(model)">
             FieldContainerReference
         </div>
@@ -83,8 +83,8 @@
             IntegerField
         </div>
         <!--<div v-if="this.isMonolingualTextField(model)">
-            MonolingualTextField
-        </div>-->
+        MonolingualTextField
+    </div>-->
         <TextField :model="field" v-if="this.isMonolingualTextField(model)" />
         <div v-if="this.isRadioField(model)">
             RadioField

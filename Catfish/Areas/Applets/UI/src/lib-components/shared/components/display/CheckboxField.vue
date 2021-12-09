@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
     import { defineComponent, PropType } from 'vue'
    
-    import {TextCollection } from '../../models/textModels'
+	import { OptionsField, OptionsFieldMethods } from '../../models/fieldContainer'
    
 
     export default defineComponent({
@@ -11,24 +11,20 @@
         },
         props: {
             model: {
-                type: Object as PropType<TextCollection> | null,
+                type: Object as PropType<OptionsField> | null,
                 required: true
            }
-
-        }
+        },
+        methods: {
+			concatenatedString(field: OptionsField) {
+				return OptionsFieldMethods.getSelectedFieldLabels(field.options);
+            }
+		}
     });
 </script>
 
 <template>
-    
-  
-     <div class="checkboxField" v-for="val in model.values" :key="val.id">
-           
-             <input type="checkbox" id="val.id" name="val.id" value="val.id "/>
-             {{val.value}}
-             
-    </div>
-    
+    {{concatenatedString(model)}}
 </template>
 
 <style scoped>

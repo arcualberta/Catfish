@@ -35,7 +35,6 @@
 </script>
 
 <template>
-   <div> Integer Field</div>
     <div>{{val.value}}</div>
 </template>
 

@@ -76,12 +76,23 @@ export interface MonolingualTextField extends Field {
 
 export interface Option {
     id: Guid;
-    optionText: TextCollection[] | null;
+    optionText: TextCollection | null;
     selected: boolean;
     extendedOption: boolean;
 }
 export interface OptionsField extends Field {
-    options: Option[] | null;
+    options: Option[];
 }
 
+export class OptionsFieldMethods {
+
+    public static getSelectedFieldLabels(options: Option[]) {
+        return options?.filter(opt => opt.selected)
+            .map(opt => opt.optionText?.values
+                .map(txt => txt.value)
+                .join(" / ")
+            )
+            .join(", ")
+    }
+}
 
