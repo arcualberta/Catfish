@@ -6,7 +6,7 @@ using Piranha;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-
+using System;
 
 namespace Catfish.Pages
 {
@@ -22,6 +22,8 @@ namespace Catfish.Pages
         public string Password { get; set; }
         public string ReturnUrl { get; set; }
        // private string returnUrl;
+
+        public string ErrorMessage { get; set; }
 
         public string GetReturnUrl()
         {
@@ -46,16 +48,31 @@ namespace Catfish.Pages
         /// Handle local sign in from public interface (front end)
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string ret)
         {
-            if (ModelState.IsValid && await _security.SignIn(HttpContext, Username, Password))
-                return new RedirectResult("/");
+            try
+            {
+                //We don't want someone who clicked on the login button from the change-password page
+                //or forgot-passwrod page to go back to those pages.
+                if (!string.IsNullOrEmpty(ret) && (ret.StartsWith("/changepassword") || ret.StartsWith("/forgotPassword")))
+                    ret = ""; 
 
+                if (ModelState.IsValid && await _security.SignIn(HttpContext, Username, Password))
+                    return new RedirectResult(string.IsNullOrEmpty(ret) ? "/" : ret);
+                else
+                    ErrorMessage = "Login Failed!";
+
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            }catch(Exception ex)
+            {
+                ErrorMessage = ex.Message;
+            }
             return Page();
         }
 
         public async Task<IActionResult> OnGetAsync(string returnUrl)
         {
+            ErrorMessage = "";
             this.SetReturnUrl(returnUrl);
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
