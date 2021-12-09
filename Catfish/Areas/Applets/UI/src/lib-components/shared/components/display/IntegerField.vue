@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType, ref} from 'vue'
+    import { defineComponent, PropType} from 'vue'
     import { MonolingualTextField } from '../../models/fieldContainer'
 
 
@@ -17,24 +17,12 @@
                 default: false
             }
 
-        },
-        setup(props) {
-
-            const val = ref(props.model?.values?.slice(0, 1));
-
-          
-
-            return {
-                val
-            }
-        },
-        methods: {
-
         }
+       
     });
 </script>
 
 <template>
-    <div>{{val.value}}</div>
+    <div v-for="val in model.values">{{val.value}}</div>
 </template>
 

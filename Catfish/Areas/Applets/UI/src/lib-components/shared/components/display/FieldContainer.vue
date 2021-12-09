@@ -5,7 +5,8 @@
     import TextField from './TextField.vue'
     import EmailField from './EmailField.vue'
 	import OptionsField from './OptionsField.vue'
-
+    import DecimalField from './DecimalField.vue'
+    import IntegerField from './IntegerField.vue'
     export default defineComponent({
         name: "FieldContainerView",
         props: {
@@ -14,7 +15,9 @@
         components: {
             TextField,
             EmailField,
-			OptionsField
+            OptionsField,
+            DecimalField,
+            IntegerField
         },
         methods: {
             getFieldType(field: Field): eFieldType {
@@ -49,6 +52,8 @@
             <TextField :model="field" v-if="this.isTextArea(field)" />
             <EmailField :model="field" v-if="this.isEmailField(field)" />
             <OptionsField v-if="this.isOptionsField(field)" :model="field" />
+            <DecimalField v-if="this.isDecimalField(field)" :model="field" />
+            <IntegerField v-if="this.isIntegerField(field)" :model="field" />
 
             <div v-if="this.isAttachmentField(model)">
                 AttachmentField
@@ -60,18 +65,18 @@
             <div v-if="this.isDateField(model)">
                 DateField
             </div>
-            <div v-if="this.isDecimalField(model)">
+            <!--<div v-if="this.isDecimalField(model)">
                 DecimalField
-            </div>
+            </div>-->
             <div v-if="this.isFieldContainerReference(model)">
                 FieldContainerReference
             </div>
             <div v-if="this.isInfoSection(model)">
                 InfoSection
             </div>
-            <div v-if="this.isIntegerField(model)">
+            <!--<div v-if="this.isIntegerField(model)">
                 IntegerField
-            </div>
+            </div>-->
             <!--<div v-if="this.isMonolingualTextField(model)">
                 MonolingualTextField
             </div>-->
