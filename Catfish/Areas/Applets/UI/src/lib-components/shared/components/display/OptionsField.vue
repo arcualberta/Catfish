@@ -5,7 +5,7 @@
    
 
     export default defineComponent({
-        name: "CheckboxField",
+		name: "OptionsField",
         components: {
             
         },
@@ -26,9 +26,3 @@
 <template>
     {{getSelectedFieldLabels(model)}}
 </template>
-
-<style scoped>
-    .checkboxField{
-        margin-right:15px ;
-    }
-</style>

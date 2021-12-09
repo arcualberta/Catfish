@@ -44,8 +44,6 @@
 </script>
 
 <template>
-    <p>Item Viewer</p>
-    <div>Item ID: {{queryParameters.iid}}</div>
     <FieldContainer :model="dataItem" v-if="dataItem"/>
 </template>
 
