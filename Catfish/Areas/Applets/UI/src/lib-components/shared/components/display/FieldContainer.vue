@@ -8,6 +8,7 @@
     import DecimalField from './DecimalField.vue'
     import IntegerField from './IntegerField.vue'
     import DateField from './DateField.vue'
+    import ReferenceField from './FieldContainerReference.vue'
 
     export default defineComponent({
         name: "FieldContainerView",
@@ -20,7 +21,8 @@
             OptionsField,
             DecimalField,
             IntegerField,
-            DateField
+            DateField,
+            ReferenceField
         },
         methods: {
             getFieldType(field: Field): eFieldType {
@@ -57,8 +59,8 @@
             <OptionsField v-if="this.isOptionsField(field)" :model="field" />
             <DecimalField v-if="this.isDecimalField(field)" :model="field" />
             <IntegerField v-if="this.isIntegerField(field)" :model="field" />
-            <DateField  v-if="this.isDateField(field)" :model="field" />
-
+            <DateField v-if="this.isDateField(field)" :model="field" />
+            <ReferenceField v-if="this.isFieldContainerReference(field)" :model="field" />
             <div v-if="this.isAttachmentField(model)">
                 AttachmentField
             </div>
@@ -67,23 +69,23 @@
                 CompositeField
             </div>
             <!--<div v-if="this.isDateField(model)">
-                DateField
-            </div>-->
+        DateField
+    </div>-->
             <!--<div v-if="this.isDecimalField(model)">
-                DecimalField
-            </div>-->
-            <div v-if="this.isFieldContainerReference(model)">
-                FieldContainerReference
-            </div>
+        DecimalField
+    </div>
+    <div v-if="this.isFieldContainerReference(model)">
+        FieldContainerReference
+    </div>-->
             <div v-if="this.isInfoSection(model)">
                 InfoSection
             </div>
             <!--<div v-if="this.isIntegerField(model)">
-                IntegerField
-            </div>-->
+        IntegerField
+    </div>-->
             <!--<div v-if="this.isMonolingualTextField(model)">
-                MonolingualTextField
-            </div>-->
+        MonolingualTextField
+    </div>-->
             <TextField :model="field" v-if="this.isMonolingualTextField(model)" />
             <div v-if="this.isTableField(model)">
                 TableField
