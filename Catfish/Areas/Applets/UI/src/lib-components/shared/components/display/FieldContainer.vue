@@ -10,6 +10,7 @@
     import DateField from './DateField.vue'
     import ReferenceField from './FieldContainerReference.vue'
     import AttachmentField from './AttachmentField.vue'
+    import InfoField from './InfoField.vue'
 
     export default defineComponent({
 		name: "FieldContainer",
@@ -24,7 +25,8 @@
             IntegerField,
             DateField,
             ReferenceField,
-            AttachmentField
+            AttachmentField,
+            InfoField
         },
         methods: {
             getFieldType(field: Field): eFieldType {
@@ -68,14 +70,17 @@
                 <IntegerField v-if="this.isIntegerField(field)" :model="field" />
                 <DateField v-if="this.isDateField(field)" :model="field" />
                 <TextField :model="field" v-if="this.isMonolingualTextField(model)" />
-                <AttachmentField v-if="this.isAttachmentField(field)" :model="field" />
-                
+                <AttachmentField v-if="this.isAttachmentField(field)" :model="field"  />
+               
+       
+                <InfoField  v-if="this.isInfoSection(field)" :model="field" />
                 <div v-if="this.isCompositeField(field)">
                     CompositeField
                 </div>
-                <div v-if="this.isInfoSection(field)">
-                    InfoSection
-                </div>
+                <!--<div v-if="this.isInfoSection(field)">
+                    InfoSection-->
+                    <!--{{field}}-->
+                <!--</div>-->
                 <div v-if="this.isTableField(field)">
                     TableField
                 </div>

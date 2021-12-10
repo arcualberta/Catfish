@@ -102,6 +102,12 @@ export interface AttachmentField extends Field {
     maxFileSize: number;
 }
 
+
+export interface InfoSection extends Field {
+    content: MonolingualTextField;
+  
+}
+
 export class EntityModelMethods {
 
     public static getSource(source: FieldContainer[]) {
