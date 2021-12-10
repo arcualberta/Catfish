@@ -96,7 +96,7 @@ export interface FileReference {
     modelType: string;
 }
 
-export interface AttachmentField {
+export interface AttachmentField extends Field {
     files: FileReference[];
     allowedExtensions: string[];
     maxFileSize: number;
