@@ -67,16 +67,16 @@
                 <DateField v-if="this.isDateField(field)" :model="field" />
                 <TextField :model="field" v-if="this.isMonolingualTextField(model)" />
 
-                <div v-if="this.isAttachmentField(model)">
-                    AttachmentField
+                <div v-if="this.isAttachmentField(field)">
+                    {{JSON.stringify(field)}}
                 </div>
-                <div v-if="this.isCompositeField(model)">
+                <div v-if="this.isCompositeField(field)">
                     CompositeField
                 </div>
-                <div v-if="this.isInfoSection(model)">
+                <div v-if="this.isInfoSection(field)">
                     InfoSection
                 </div>
-                <div v-if="this.isTableField(model)">
+                <div v-if="this.isTableField(field)">
                     TableField
                 </div>
             </div>

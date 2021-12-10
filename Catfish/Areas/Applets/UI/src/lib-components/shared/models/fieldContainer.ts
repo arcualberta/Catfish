@@ -1,24 +1,6 @@
 ﻿import { Guid } from "guid-typescript";
 import { TextCollection } from "./textModels";
 
-//export enum eFieldType {
-//  AttachmentField = "AttachmentField",
-//  CheckboxField = "CheckboxField",
-//  CompositeField = "CompositeField",
-//  DateField = "DateField",
-//  DecimalField = "DecimalField",
-//  EmailField = "EmailField",
-//  FieldContainerReference = "FieldContainerReference",
-//  InfoSection = "InfoSection",
-//  IntegerField = "IntegerField",
-//  MonolingualTextField = "MonolingualTextField",
-//  RadioField = "RadioField",
-//  SelectField = "SelectField",
-//  TableField = "TableField",
-//  TextArea = "TextArea",
-//  TextField = "TextField",
-//}
-
 export enum eRefType { undefined, data, metadata }
 
 export enum eFieldType {
@@ -84,10 +66,6 @@ export interface OptionsField extends Field {
     options: Option[];
 }
 
-export interface FieldContainerReference extends Field {
-    refId: Guid;
-    refType: eRefType;
-}
 export class OptionsFieldMethods {
 
     public static getSelectedFieldLabels(options: Option[]) {
@@ -98,6 +76,30 @@ export class OptionsFieldMethods {
             )
             .join(", ")
     }
+}
+
+export interface FieldContainerReference extends Field {
+    refId: Guid;
+    refType: eRefType;
+}
+
+export interface FileReference {
+    id: Guid;
+    fileName: string;
+    originalFileName: string;
+    thumbnail: string;
+    contentType: string;
+    size: number;
+    created: Date;
+    updated: Date;
+    cssClass: string;
+    modelType: string;
+}
+
+export interface AttachmentField {
+    files: FileReference[];
+    allowedExtensions: string[];
+    maxFileSize: number;
 }
 
 export class EntityModelMethods {
