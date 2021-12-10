@@ -8,7 +8,7 @@ export const getters: GetterTree<State, State> = {
     },
 
     metadataSet: (state) => (id: Guid) => {
-        console.log("metadataset getter id: " + id);
-        return state.item?.metadataSets?.find(ms => ms.id === id);
+        console.log("metadataset getter id: " + JSON.stringify(id));
+        return state.item?.metadataSets?.find(ms => ms.templateId === id);
     }
 }

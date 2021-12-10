@@ -42,13 +42,14 @@
             isMonolingualTextField(field: Field): boolean { return this.getFieldType(field) === eFieldType.MonolingualTextField },
             isTableField(field: Field): boolean { return this.getFieldType(field) === eFieldType.TableField },
             isTextArea(field: Field): boolean { return this.getFieldType(field) === eFieldType.TextArea },
-            isTextField(field: Field): boolean { return this.getFieldType(field) === eFieldType.TextField }
+			isTextField(field: Field): boolean { return this.getFieldType(field) === eFieldType.TextField },
+			cssClass(field: Field): string { return (field.cssClass ? field.cssClass : "") + " " + (field.fieldCssClass ? field.fieldCssClass : "") }
         }
     });
 </script>
 
 <template>
-    <div v-for="field in model.fields" class="row">
+    <div v-for="field in model.fields" class="row" :class="cssClass(field)">
         <div class="field-name col-md-3">
             {{field.name.concatenatedContent}}
         </div>

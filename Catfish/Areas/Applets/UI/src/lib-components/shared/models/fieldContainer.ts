@@ -1,5 +1,5 @@
 ﻿import { Guid } from "guid-typescript";
-import { TextCollection} from "./textModels";
+import { TextCollection } from "./textModels";
 
 //export enum eFieldType {
 //  AttachmentField = "AttachmentField",
@@ -22,38 +22,40 @@ import { TextCollection} from "./textModels";
 export enum eRefType { undefined, data, metadata }
 
 export enum eFieldType {
-  AttachmentField,
-  CheckboxField,
-  CompositeField,
-  DateField,
-  DecimalField,
-  EmailField,
-  FieldContainerReference,
-  InfoSection,
-  IntegerField,
-  MonolingualTextField,
-  RadioField,
-  SelectField,
-  TableField,
-  TextArea,
-  TextField,
+    AttachmentField,
+    CheckboxField,
+    CompositeField,
+    DateField,
+    DecimalField,
+    EmailField,
+    FieldContainerReference,
+    InfoSection,
+    IntegerField,
+    MonolingualTextField,
+    RadioField,
+    SelectField,
+    TableField,
+    TextArea,
+    TextField,
 }
 
 export interface Field {
-  id: Guid;
-  modelType: string;
-  name: TextCollection;
-  required: boolean;
-  allowMultipleValues: boolean;
-  readonly: boolean;
-  description: TextCollection;
-  created: Date;
-  updated: Date;
-  cssClass: string;
+    id: Guid;
+    modelType: string;
+    name: TextCollection;
+    required: boolean;
+    allowMultipleValues: boolean;
+    readonly: boolean;
+    description: TextCollection;
+    created: Date;
+    updated: Date;
+    cssClass: string;
+    fieldCssClass: string;
 }
 
 export interface FieldContainer {
     id: Guid;
+    templateId: Guid | null;
     modelType: string;
     fields: Field[];
     isRoot: boolean | false;
