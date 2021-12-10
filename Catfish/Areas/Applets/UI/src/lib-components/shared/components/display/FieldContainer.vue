@@ -9,6 +9,7 @@
     import IntegerField from './IntegerField.vue'
     import DateField from './DateField.vue'
     import ReferenceField from './FieldContainerReference.vue'
+    import AttachmentField from './AttachmentField.vue'
 
     export default defineComponent({
 		name: "FieldContainer",
@@ -22,7 +23,8 @@
             DecimalField,
             IntegerField,
             DateField,
-            ReferenceField
+            ReferenceField,
+            AttachmentField
         },
         methods: {
             getFieldType(field: Field): eFieldType {
@@ -66,10 +68,8 @@
                 <IntegerField v-if="this.isIntegerField(field)" :model="field" />
                 <DateField v-if="this.isDateField(field)" :model="field" />
                 <TextField :model="field" v-if="this.isMonolingualTextField(model)" />
-
-                <div v-if="this.isAttachmentField(field)">
-                    {{JSON.stringify(field)}}
-                </div>
+                <AttachmentField v-if="this.isAttachmentField(field)" :model="field" />
+                
                 <div v-if="this.isCompositeField(field)">
                     CompositeField
                 </div>
