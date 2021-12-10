@@ -1,17 +1,17 @@
 ﻿<script lang="ts">
-    import { Guid } from "guid-typescript";
+    //import { Guid } from "guid-typescript";
     import { defineComponent, PropType, ref } from 'vue'
     import { useStore } from 'vuex';
-    import { FieldContainerReference, EntityModelMethods, FieldContainer } from '../../models/fieldContainer'
+    import { FieldContainerReference } from '../../models/fieldContainer'
 
    // import { Item } from '../../../item-viewer/models/item'
   
-	import ChildFeildContainer from './ChildFeildContainer.vue'
+    import ChildFieldContainer from './ChildFieldContainer.vue'
 
     export default defineComponent({
         name: "FieldContainerReference",
         components: {
-			ChildFeildContainer
+           ChildFieldContainer
         },
         props: {
             model: {
@@ -23,16 +23,10 @@
         setup(p) {
             const store = useStore();
             const refId = ref(p.model.refId);
-            const source = ref(store.getters.metadataSet(p?.model?.refId));
+            const source = ref(store.getters.metadataSet(refId));
             
-           
-             //const  mdSets = store.state.item.metadataSets; //source.metadataSets;
-             //   console.log("metadatasets: " + JSON.stringify(mdSets));
-           
-             //  const dtContainer = source.dataContainer;
-
-           
-           /* console.log("datacontainer: " + JSON.stringify(dtContainer))*/
+            console.log("refId: " + JSON.stringify(refId))
+            console.log("source :" + JSON.stringify(source))
             return {
 				refId,
 				source
@@ -40,9 +34,9 @@
         },
         methods: {
 
-            getMetadaset(src: FieldContainer[], id: Guid) {
-                return EntityModelMethods.getMetadataset(src, id);
-            }
+            //getMetadaset(src: FieldContainer[], id: Guid) {
+            //    return EntityModelMethods.getMetadataset(src, id);
+            //}
         }
        
     });
@@ -52,7 +46,7 @@
     Field Container Reference
     {{refId}}
     {{JSON.stringify(source)}}
-    <ChildFeildContainer :model="source" />
+    <!--<ChildFieldContainer :model="source" />-->
 
 
 </template>
