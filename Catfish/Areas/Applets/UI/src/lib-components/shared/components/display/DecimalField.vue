@@ -32,7 +32,7 @@
         //    }
         //},
         methods: {
-            formatToDEcimal: (value : number, decimalPlaces : number) => {
+            formatToDecimal: (value : number, decimalPlaces : number) => {
                 return Number(value).toFixed(decimalPlaces);
             }
            
