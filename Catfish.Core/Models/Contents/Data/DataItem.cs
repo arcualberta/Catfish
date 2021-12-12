@@ -34,8 +34,6 @@ namespace Catfish.Core.Models.Contents.Data
             set => SetAttribute("owner-name", value);
         }
 
-        public string TestField { get; set; }
-
         public DataItem() : base(TagName) { Initialize(eGuidOption.Ensure); }
         public DataItem(XElement data) : base(data) { Initialize(eGuidOption.Ensure); }
 

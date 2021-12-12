@@ -1,10 +1,12 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType} from 'vue'
+    import { defineComponent, PropType } from 'vue'
+    import dayjs from "dayjs";
+
     import { MonolingualTextField } from '../../models/fieldContainer'
 
 
     export default defineComponent({
-        name: "IntegerField",
+        name: "DateField",
         props: {
             model: {
                 type: null as PropType<MonolingualTextField> | null,
@@ -17,12 +19,18 @@
                 default: false
             }
 
+        },
+        methods:{
+            formatDate(dateString: string) {
+                const date = dayjs(dateString);
+                return date.format('MMM DD, YYYY');
+            }
         }
        
     });
 </script>
 
 <template>
-    <div v-for="val in model.values">{{val.value}}</div>
+    <div v-for="val in model.values">{{formatDate(val.value)}}</div>
 </template>
 
