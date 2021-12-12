@@ -152,7 +152,7 @@ namespace Catfish.Areas.Applets.Controllers
 
                 Guid itemTemplateId = Guid.Parse(block.SelectedItemTemplate.Value);
                 string keywordFieldId = block.KeywordSourceId.Value;
-                string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/') + "/";
+                string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/');
 
                 KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
 
