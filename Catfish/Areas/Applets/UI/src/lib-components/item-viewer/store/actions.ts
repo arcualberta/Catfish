@@ -13,7 +13,7 @@ export const actions: ActionTree<State, any> = {
  
         const api = window.location.origin +
             `/applets/api/itemeditor/${store.state.id}`;
-        //console.log('Keyword Load API: ', api)
+        console.log('Item Load API: ', api)
 
         fetch(api)
             .then(response => response.json())

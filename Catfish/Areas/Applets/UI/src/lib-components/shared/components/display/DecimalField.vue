@@ -1,38 +1,38 @@
 ﻿<script lang="ts">
-    import { boolean, number } from 'joi';
-    import { defineComponent, PropType, ref} from 'vue'
-    import { MonolingualTextInput } from '../../models/fieldContainer'
+    import { defineComponent, PropType } from 'vue'
+    import { MonolingualTextField } from '../../models/fieldContainer'
     
 
     export default defineComponent({
         name: "DecimalField",
         props: {
             model: {
-                type: null as PropType<MonolingualTextInput> | null,
+                type: null as PropType<MonolingualTextField> | null,
                 required: true
            },
             isMultivalued: 
             {
-                type: boolean,
+                type: Boolean,
                 required: false,
                 default: false
             },
             numDecimalPlaces: {
-                type: number,
-                required: true  
+                type: Number,
+                required: false,
+                default: 2
             }
 
         },
-        setup(prop) {
-            const val = ref(prop.model?.values?.slice(0, 1));
-            let valNumber = Number(val.value);
+        //setup(prop) {
+        //    const val = ref(prop.model?.values?.slice(0, 1));
+        //    let valNumber = Number(val.value);
 
-            return {
-                valNumber
-            }
-        },
+        //    return {
+        //        valNumber
+        //    }
+        //},
         methods: {
-            formatToDEcimal: (value : number, decimalPlaces : number) => {
+            formatToDecimal: (value : number, decimalPlaces : number) => {
                 return Number(value).toFixed(decimalPlaces);
             }
            
@@ -41,7 +41,6 @@
 </script>
 
 <template>
-   <div> Decimal Field</div>
-    <div>{{formatToDecimal(valNumber, numDecimalPlaces)}}</div>
+    <div v-for="val in model.values">{{formatToDecimal(val, numDecimalPlaces)}}</div>
 </template>
 

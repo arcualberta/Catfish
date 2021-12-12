@@ -40,6 +40,10 @@ header {
         max-width: 100%;
     }
 
+.hidden{
+    display:none;
+}
+
 .teasers {
     margin-bottom: 1rem;
 }
