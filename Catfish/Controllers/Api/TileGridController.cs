@@ -53,6 +53,46 @@ namespace Catfish.Controllers.Api
             try
             {
 
+                //Grant access to SysAdmin users
+                bool accessPermitted = User!= null && User.IsInRole("SysAdmin");
+
+                if (!accessPermitted && !string.IsNullOrEmpty(User?.Identity?.Name))
+                {
+                    //Check if the current user holds the Member role within the TBLT group and if so grant access
+
+                    //TODO: ******** Get the ID of the Member role from the Piranha Roles table
+                    Guid? memberRoleId = Guid.NewGuid();
+                    if (!memberRoleId.HasValue)
+                        throw new Exception("No Member role found");
+
+                    //TODO: ******** Get the ID of the current user from the Piranha Users table
+                    Guid userId = Guid.NewGuid();
+
+                    Guid? tbltGroupId = _appDb.Groups
+                        .Where(g => g.Name.ToLower() == "tblt")
+                        .Select(g => g.Id)
+                        .FirstOrDefault();
+                    if (!tbltGroupId.HasValue)
+                        throw new Exception("No TBLT group found");
+
+
+                    Guid? tbltMemberGroupRoleId = _appDb.GroupRoles
+                        .Where(gr => gr.GroupId == tbltGroupId && gr.RoleId == memberRoleId)
+                        .Select(gr => gr.Id)
+                        .FirstOrDefault();
+                    if (!tbltMemberGroupRoleId.HasValue)
+                        throw new Exception("Member role is not associated with the TBLT group");
+
+                    Guid? userMemberRoleWithinTblt = _appDb.UserGroupRoles.
+                        Where(ugr => ugr.UserId == userId && ugr.GroupRoleId == tbltMemberGroupRoleId)
+                        .Select(ugr => ugr.Id)
+                        .FirstOrDefault();
+                    accessPermitted = userMemberRoleWithinTblt.HasValue;
+                }
+
+                if (!accessPermitted)
+                    return result;
+
                 var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
                 if (page == null)
                     return result;
@@ -61,7 +101,6 @@ namespace Catfish.Controllers.Api
                 if (block == null)
                     return result;
 
-                
                 string collectionId = block.SelectedCollection.Value;
                 string solrCollectionFieldName = "collection_s";
 
@@ -84,7 +123,14 @@ namespace Catfish.Controllers.Api
                     ? scope
                     : string.Format("{0} AND {1}", scope, query);
 
-               // System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
+                Guid? approvedStateId = _appDb.SystemStatuses
+                    .Where(s => s.NormalizedStatus == "APPROVED" && s.EntityTemplateId == Guid.Parse(itemTemplateId))
+                    .Select(s => s.Id)
+                    .FirstOrDefault();
+                if(approvedStateId.HasValue)
+                    query = string.Format("{0} AND status_s:{1}", query, approvedStateId.Value);
+
+                // System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
 
                 SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
 
