@@ -12,12 +12,14 @@ using Catfish.Core.Services.Solr;
 using Catfish.Core.Models.Solr;
 using SolrNet;
 using Catfish.Models.Fields;
+using Piranha;
 
 namespace Catfish.Models.Blocks
 {
     [BlockType(Name = "Controlled Vocabulary Search", Category = "Control", Component = "controlled-vocabulary-search", Icon = "fas fa-search")]
-    public class ControlledVocabularySearchBlock : VueComponent
+    public class ControlledVocabularySearchBlock : VueComponent, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<ControlledVocabularySearchBlock>();
 
         [Field(Title = "Search Block Title", Placeholder = "The name of the type of Search Block to be created")]
         public StringField SearchPageName { get; set; }

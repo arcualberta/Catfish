@@ -1,5 +1,7 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Models.Blocks;
 using Catfish.Models.Fields;
+using Piranha;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
 using System;
@@ -9,9 +11,11 @@ using System.Threading.Tasks;
 
 namespace Catfish.Areas.Applets.Models.Blocks
 {
-    [BlockType(Name = "Carousel", Category = "Content", Component = "carousel", Icon = "fas fa-search")]
-    public class Carousel : Block
+    [BlockType(Name = "Vue 3 Carousel", Category = "Content", Component = "carousel", Icon = "fas fa-search")]
+    public class Carousel : Block, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<Carousel>();
+
         [Field(Title = "Additional Keywords", Placeholder = "Please list keywords separated by comma")]
         public TextField KeywordList { get; set; }
         public CatfishSelectList<Collection> Collections { get; set; }

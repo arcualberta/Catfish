@@ -88,7 +88,7 @@
     },
     template:
         `<div  class= 'block-body'>
-            <h2>Carousel</h2>
+            <h2>Keyword Search</h2>
        </div>`
 });
 
