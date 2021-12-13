@@ -105,6 +105,8 @@ namespace Catfish.UnitTests
         [Test]
         public void TBlt_SubmitResourcesFormTest()
         {
+            bool saveChangesToDatabase = false;
+
             string lang = "en";
             string templateName = "Task-based Language Teaching Submit Suggest Resources Form Template";
             string _metadatsetName = "TBLT Category Metadata";
@@ -150,11 +152,13 @@ namespace Catfish.UnitTests
             bcpForm.IsRoot = true;
             bcpForm.SetDescription("This template is designed for Task-based Language Teaching Submit Suggest Resources Form", lang);
 
-            var name = bcpForm.CreateField<TextField>("Your name", lang, true);
+            var name = bcpForm.CreateField<TextField>("Submitted by", lang, true);
             name.IsListEntryTitle = true;
             var applicantEmail = bcpForm.CreateField<EmailField>("Email address", lang, true);
             var title =bcpForm.CreateField<TextField>("Title of task", lang, true);
             title.IsListEntryTitle = true;
+
+            bcpForm.CreateField<TextField>("Affiliation", lang, true);
 
             var other = bcpForm.CreateField<TextArea>("Short description", lang, true);
             other.Cols = 50;
@@ -199,7 +203,9 @@ namespace Catfish.UnitTests
             //
 
             Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, commentsForm, applicantEmail, "SubmitResource");
-            db.SaveChanges();
+
+            if (saveChangesToDatabase)
+                db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_SubmitResourceForm_generared.xml");
 
