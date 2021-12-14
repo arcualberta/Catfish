@@ -18,6 +18,9 @@ using Catfish.Core.Models.Contents;
 using Newtonsoft.Json;
 using Catfish.Core.Models.Solr;
 using ElmahCore;
+using Piranha;
+using Microsoft.AspNetCore.Identity;
+using Piranha.AspNetCore.Identity.Data;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -34,13 +37,17 @@ namespace Catfish.Controllers.Api
         private readonly AppDbContext _appDb;
         private readonly ISolrService _solr;
         private readonly ErrorLog _errorLog;
-        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr, ErrorLog errorLog)
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr, ErrorLog errorLog, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _loader = loader;
             _submissionService = submissionService;
             _appDb = db;
             _solr = solr;
             _errorLog = errorLog;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // GET: api/tilegrid
@@ -54,19 +61,28 @@ namespace Catfish.Controllers.Api
             {
 
                 //Grant access to SysAdmin users
-                bool accessPermitted = User!= null && User.IsInRole("SysAdmin");
+                bool accessPermitted = User!= null && User.Identity.IsAuthenticated && User.IsInRole("SysAdmin");
 
                 if (!accessPermitted && !string.IsNullOrEmpty(User?.Identity?.Name))
                 {
                     //Check if the current user holds the Member role within the TBLT group and if so grant access
 
-                    //TODO: ******** Get the ID of the Member role from the Piranha Roles table
+                   //1. Get "Member" role
                     Guid? memberRoleId = Guid.NewGuid();
-                    if (!memberRoleId.HasValue)
+                    var MemberRole = await _roleManager.FindByNameAsync("Member").ConfigureAwait(false);
+                    if(MemberRole == null)
+                    {
                         throw new Exception("No Member role found");
+                    }
+                    if (MemberRole != null)
+                        memberRoleId = Guid.Parse(MemberRole.Id);
 
-                    //TODO: ******** Get the ID of the current user from the Piranha Users table
-                    Guid userId = Guid.NewGuid();
+                    
+                    //Get user
+                    User loginUser = await _userManager.FindByNameAsync(User.Identity.Name).ConfigureAwait(false);
+                    Guid userId = new Guid();
+                    if (loginUser != null)
+                        userId = loginUser.Id;
 
                     Guid? tbltGroupId = _appDb.Groups
                         .Where(g => g.Name.ToLower() == "tblt")
