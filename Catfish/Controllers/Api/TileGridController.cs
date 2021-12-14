@@ -61,7 +61,7 @@ namespace Catfish.Controllers.Api
             {
 
                 //Grant access to SysAdmin users
-                bool accessPermitted = User!= null && User.Identity.IsAuthenticated && User.IsInRole("SysAdmin");
+                bool accessPermitted = User!= null && User.IsInRole("SysAdmin");
 
                 if (!accessPermitted && !string.IsNullOrEmpty(User?.Identity?.Name))
                 {
