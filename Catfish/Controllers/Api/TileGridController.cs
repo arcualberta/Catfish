@@ -37,17 +37,16 @@ namespace Catfish.Controllers.Api
         private readonly AppDbContext _appDb;
         private readonly ISolrService _solr;
         private readonly ErrorLog _errorLog;
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr, ErrorLog errorLog, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly Piranha.AspNetCore.Identity.IDb _db;
+        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr, ErrorLog errorLog, Piranha.AspNetCore.Identity.IDb piranhaDb)
         {
             _loader = loader;
             _submissionService = submissionService;
             _appDb = db;
             _solr = solr;
             _errorLog = errorLog;
-            _userManager = userManager;
-            _roleManager = roleManager;
+           
+            _db = piranhaDb;
         }
 
         // GET: api/tilegrid
@@ -69,17 +68,18 @@ namespace Catfish.Controllers.Api
 
                    //1. Get "Member" role
                     Guid? memberRoleId = Guid.NewGuid();
-                    var MemberRole = await _roleManager.FindByNameAsync("Member").ConfigureAwait(false);
-                    if(MemberRole == null)
+                  
+                    Role MemberRole = _db.Roles.Where(r => r.Name == "Member").FirstOrDefault();
+                    if (MemberRole == null)
                     {
                         throw new Exception("No Member role found");
                     }
                     if (MemberRole != null)
-                        memberRoleId = Guid.Parse(MemberRole.Id);
+                        memberRoleId = MemberRole.Id;
 
-                    
+
                     //Get user
-                    User loginUser = await _userManager.FindByNameAsync(User.Identity.Name).ConfigureAwait(false);
+                    User loginUser = _db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault(); 
                     Guid userId = new Guid();
                     if (loginUser != null)
                         userId = loginUser.Id;
