@@ -116,13 +116,13 @@ namespace Catfish
                 .AddPiranhaManagerOptions()
                 .AddRazorOptions(options =>
                 {
-                    //options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    //options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-          
-                    //options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    //options.ViewLocationExpanders.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    //options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                });
+                        //options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                        //options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+
+                        //options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                        //options.ViewLocationExpanders.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                        //options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    });
 
 
             //services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(options =>
@@ -229,9 +229,9 @@ namespace Catfish
             // Add custom policies
             services.AddAuthorization(o =>
             {
-                // Read secured posts
-                o.AddPolicy("ReadSecurePages", policy =>
-                {
+                    // Read secured posts
+                    o.AddPolicy("ReadSecurePages", policy =>
+                        {
                     policy.RequireClaim("ReadSecurePages", "ReadSecurePages");
                 });
             });
@@ -300,7 +300,7 @@ namespace Catfish
                 .AddType(typeof(Models.ItemPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
-               
+
                 .Build()
                 .DeleteOrphans();
 
@@ -458,7 +458,7 @@ namespace Catfish
         {
             var typeStr = blockConfig.GetSection("Type").Value;
             var t = Type.GetType(typeStr);
-            if(t == null)
+            if (t == null)
                 throw new Exception(string.Format("Could not find the \"type\" for {0}. Did you specify the fully qualified type correctly in appsettings?", typeStr));
 
             var inst = (Activator.CreateInstance(t) as ICatfishBlock);
