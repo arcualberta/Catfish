@@ -1,4 +1,4 @@
-﻿Vue.component("keyword-search", {
+﻿Vue.component("carousel", {
     props: ["uid", "toolbar", "model"],
     data() {
         return {
@@ -88,84 +88,7 @@
     },
     template:
         `<div  class= 'block-body'>
-            <h2>Keyword Search</h2>
-           <div>Please list your keywords separated by a comma.</div>
-         <textarea rows='2' cols='100' class='lead ' 
-            v-html='model.keywordList.value' contenteditable='true' v-on:blur='onBlur' name='keywordList'>
-        </textarea>
-           <div class='lead row'><label class='form-label col-md-3 required'>Collection: </label>
-           <select v-model="model.selectedCollection.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in model.collections.entries" :value="item.value">{{item.text}}</option>
-         </select></div>
-
-            <div class='lead row'><label class='form-label col-md-3'>Css class for Block:</label> <input type='text' class='form-control col-md-4' name='blockCss' v-model='model.blockCss.value' contenteditable='true' v-on:blur='onBlur' value='blockCssValue'  /></div>
-         <div class='lead row'><label class='form-label col-md-3'>Css class for each Tile:</label> <input type='text' class='form-control col-md-4' name='tileCss' v-model='model.tileCss.value' contenteditable='true' v-on:blur='onBlur' value='tileCssValue'  /></div>
-         
-        <div class='lead row'><label class='form-label col-md-3 required'>Item Template: </label>
-           <select v-model="model.selectedItemTemplate.value" class="form-control" style="width:auto;" v-on:change="selectItemTemplate(model.selectedItemTemplate.value)">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in model.itemTemplates.entries" :value="item.value">{{item.text}}</option>
-            </select></div>
-
-         <br/>
-        <div class="alert alert-info">Metadata Set</div>
-        <div class='lead row'><label class='form-label col-md-3 required'>Classification Metadata Set: </label>
-           <select v-model="model.classificationMetadataSetId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.metadatasets" :value="item.value">{{item.text}}</option>
-            </select></div>
-
-
-          <br/>
-        <div class="alert alert-info">Submission Form Field Mappings</div>
-        
-
-          <div class='lead row'><label class='form-label col-md-3 required'>Title: </label>
-           <select v-model="model.selectedMapTitleId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
-
-         </select></div>
-
-        <div class='lead row'><label class='form-label col-md-3 required'>Subtitle: </label>
-           <select v-model="model.selectedMapSubtitleId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
-
-            </select></div>
-
-           <div class='lead row'><label class='form-label col-md-3 required'>Content: </label>
-           <select v-model="model.selectedMapContentId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
-
-            </select></div>
-            <div class='lead row'><label class='form-label col-md-3 required'>Keyword Source: </label>
-           <select v-model="model.keywordSourceId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
-
-            </select><span class="text-info" style="font-size:.8em; padding-left:5px"><b> Please select a radio, checkbox or dropdown field</b></span></div>
-           <div class='lead row'><label class='form-label col-md-3 required'>Thumbnail: </label>
-           <select v-model="model.selectedMapThumbnailId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.itemFields" :value="item.value">{{item.text}}</option>
-
-         </select></div>
-
-        
-         <div class='lead row'>
-            <label class='form-label col-md-3'>Detailed View Url:</label>
-            <input type='text'
-                    class='form-control col-md-4'
-                    name='detailedViewUrl'
-                    v-model='model.detailedViewUrl.value'
-                    contenteditable='true'
-                    v-on:blur='onBlur'
-                    value='detailedViewUrlValue'  />
-            </div>
-          
+            <h2>Carousel</h2>
        </div>`
 });
 
