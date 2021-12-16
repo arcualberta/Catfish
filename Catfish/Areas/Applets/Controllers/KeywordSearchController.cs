@@ -160,8 +160,8 @@ namespace Catfish.Areas.Applets.Controllers
 
                 ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == itemTemplateId);
 
-                //TODO: Take the permissible state GUIDs from the Piranha bloclk (i.e. GUIDs of selected states)
-                var permissibleStateGuids = template.Workflow.States.Where(s => s.Value == "Submitted").Select(s =>s.Id).ToArray();
+                //Take the permissible state GUIDs from the Piranha bloclk (i.e. GUIDs of selected states)
+                var permissibleStateGuids = block.GetSelectedStates();
 
                 var permittedStatusIds = GetPermittedStateIdsForCurrentUser("tblt", template, "ListInstances", permissibleStateGuids);
 
