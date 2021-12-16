@@ -41,6 +41,7 @@ namespace Catfish.Areas.Applets.Models.Blocks
         public TextField ClassificationMetadataSetId { get; set; }
 
         public TextField SelectedStates { get; set; }
+        public TextField SelectedGroupId { get; set; }
         public string GetKeywords()
         {
             if (KeywordList != null)

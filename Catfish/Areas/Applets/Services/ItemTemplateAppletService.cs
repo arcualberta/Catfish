@@ -31,9 +31,9 @@ namespace Catfish.Areas.Applets.Services
         /// </summary>
         /// <param name="id">EntityTemplate Id</param>
         /// <returns></returns>
-        public List<Group> GetTemplateGroups(Guid id)
+        public List<Group> GetTemplateGroups(Guid? id)
         {
-            return _appDb.GroupTemplates.Where(g => g.EntityTemplateId == id).Select(g=>g.Group).ToList();
+            return _appDb.GroupTemplates.Where(g => g.EntityTemplateId == id.Value).Select(g=>g.Group).ToList();
         }
 
     }

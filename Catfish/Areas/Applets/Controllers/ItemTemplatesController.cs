@@ -2,6 +2,7 @@
 using Catfish.Core.Models;
 using ElmahCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 
@@ -31,12 +32,22 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpGet]
         [Route("groups/{id:Guid}")]
-        public List<Group> GetAssociatedGroups(Guid id)
+        public List<SelectListItem> GetAssociatedGroups(string id)
         {
-            List<Group> groups = _itemTemplateAppletService.GetTemplateGroups(id);
-            
 
-            return groups;
+            List<SelectListItem> result = new List<SelectListItem>();
+            if (! string.IsNullOrEmpty(id))
+            {
+                List<Group> groups = _itemTemplateAppletService.GetTemplateGroups(Guid.Parse(id));
+               
+                foreach (var g in groups)
+                {
+                    result.Add(new SelectListItem { Text = g.Name, Value = g.Id.ToString() });
+                }
+
+            }
+            return result;
+
         }
     }
 }
