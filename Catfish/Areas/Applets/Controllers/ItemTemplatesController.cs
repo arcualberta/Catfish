@@ -3,6 +3,7 @@ using Catfish.Core.Models;
 using ElmahCore;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace Catfish.Areas.Applets.Controllers
 {
@@ -26,6 +27,16 @@ namespace Catfish.Areas.Applets.Controllers
             ItemTemplate template = _itemTemplateAppletService.GetItemTemplate(id, User);
 
             return template;
+        }
+
+        [HttpGet]
+        [Route("groups/{id:Guid}")]
+        public List<Group> GetAssociatedGroups(Guid id)
+        {
+            List<Group> groups = _itemTemplateAppletService.GetTemplateGroups(id);
+            
+
+            return groups;
         }
     }
 }

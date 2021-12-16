@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
+
 
 namespace Catfish.Areas.Applets.Services
 {
@@ -26,5 +26,15 @@ namespace Catfish.Areas.Applets.Services
 
             return template;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">EntityTemplate Id</param>
+        /// <returns></returns>
+        public List<Group> GetTemplateGroups(Guid id)
+        {
+            return _appDb.GroupTemplates.Where(g => g.EntityTemplateId == id).Select(g=>g.Group).ToList();
+        }
+
     }
 }
