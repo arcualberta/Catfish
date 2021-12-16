@@ -108,23 +108,46 @@
           fetch('/api/Items/GetItemtemplateStatuses/' + this.model.selectedItemTemplate.value)
               .then(response => response.json())
               .then((data) => {
-                  this.statuses = data;
+                  this.statuses = data; //statuses from template
 
                   if (this.model.selectedStates.value !== null) {
+                      //select the checkbox if it's been selected
                       for (let i = 0; i < this.statuses.length; i++) {
                           if (this.model.selectedStates.value.includes(this.statuses[i].value)) {
                               this.statuses[i].checked = true;
                           }
                       }
 
-                      //colors.filter(function (e) {return e != null;});
-                      this.selectedStatuses = (this.model.selectedStates.value.split(',')).filter(e => e !== "");
-                      console.log("mount local selectedstatuses: " + JSON.stringify(this.selectedStatuses));
-                      this.model.selectedStates.value = this.selectedStatuses.toString();
+                      
+                      this.selectedStatuses = (this.model.selectedStates.value.split(',')).filter(e => e !== ""); //temporary array contain selected state/status in model
+                      
+
+
+                      //check if selected status/state still exist in the template
+                      //1. get the guid that's no longer in the template
+                      var tempSelected=[];
+                      for (let j = 0; j < this.selectedStatuses.length; j++) {
+                          var _temp = this.statuses.filter(e => e.value === this.selectedStatuses[j]);
+                          if (_temp !== null) {
+                              console.log("selected status is still remain in the template");
+                              tempSelected.push(this.selectedStatuses[j]);
+                          }
+                          else
+                              console.log("selected status has been remove from the template");
+                      }
+
+                      //console.log("tempSeelected length: " + tempSelected.length);
+                      if (tempSelected.length > 0  && tempSelected.length !== this.selectedStatuses.length) {
+                          //one or more selected status has been removed from the template
+                          this.selectedStatuses = tempSelected;
+                      }
+                      
+                     // console.log("mount local selectedstatuses: " + JSON.stringify(this.selectedStatuses));
+                      this.model.selectedStates.value = this.selectedStatuses.toString(); //value saved in the model
                   }
 
                   //this.selectedStatuses = this.model.selectedStates;
-                  console.log("mount model: " + this.model.selectedStates.value);
+                 // console.log("mount model: " + this.model.selectedStates.value);
               });
       }
     },
@@ -218,7 +241,7 @@
             <input type="checkbox" :id="item.value" v-model="item.checked" @click="selectStatus(item.value)" >
             <label :for="item.value">{{ item.text }}</label>
           </div>
-          
+          <div>{{this.model.selectedStates.value}}</div>
          
        </div>`
 });
