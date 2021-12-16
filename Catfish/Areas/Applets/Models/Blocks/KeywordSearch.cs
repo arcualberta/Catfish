@@ -50,5 +50,21 @@ namespace Catfish.Areas.Applets.Models.Blocks
 
             return "";
         }
+
+        public List<Guid> GetSelectedStates()
+        {
+            List<Guid> lStates = new List<Guid>();
+            if (SelectedStates != null)
+            {
+                string[] states = SelectedStates.Value.Split(",", StringSplitOptions.RemoveEmptyEntries);
+               
+                foreach(string stateId in states)
+                {
+                    lStates.Add(Guid.Parse(stateId));
+                }
+            }
+
+            return lStates;
+        }
     }
 }
