@@ -163,7 +163,7 @@ namespace Catfish.Areas.Applets.Controllers
                 //Take the permissible state GUIDs from the Piranha bloclk (i.e. GUIDs of selected states)
                 var permissibleStateGuids = block.GetSelectedStates();
 
-                var permittedStatusIds = GetPermittedStateIdsForCurrentUser("tblt", template, "ListInstances", permissibleStateGuids);
+                var permittedStatusIds = GetPermittedStateIdsForCurrentUser(Guid.Parse(block.SelectedGroupId.Value), template, "ListInstances", permissibleStateGuids);
 
 				if (permittedStatusIds.Count == 0)
 					return result;
@@ -262,7 +262,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         private List<Guid> GetPermittedStateIdsForCurrentUser(
-            string groupName,
+            Guid groupId,
             ItemTemplate template, 
             string actionFunction, 
             Guid[] permissibleStateIds)
@@ -293,11 +293,11 @@ namespace Catfish.Areas.Applets.Controllers
 
                 //Check if the current user holds the Member role within the TBLT group and if so grant access
                 Guid? tbltGroupId = _appDb.Groups
-                    .Where(g => g.Name.ToLower() == groupName)
+                    .Where(g => g.Id == groupId)
                     .Select(g => g.Id)
                     .FirstOrDefault();
                 if (!tbltGroupId.HasValue)
-                    throw new Exception(string.Format("No {0} group found", groupName));
+                    throw new Exception(string.Format("No {0} group found", groupId));
 
                 //Get user
                 User loginUser = _piranhaDb.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
@@ -313,7 +313,7 @@ namespace Catfish.Areas.Applets.Controllers
                 foreach (var stateRef in actionStateRefs)
                 {
                     if(stateRef.AuthorizedRoles.Where(ar => userRoleIdsWithinGroup.Contains(ar.RefId)).Any())
-                        permittedStateGuids.Add(stateRef.RefId);
+                        permittedStateGuids.Add(stateRef.RefId);          
                 }
 
                 return permittedStateGuids;
