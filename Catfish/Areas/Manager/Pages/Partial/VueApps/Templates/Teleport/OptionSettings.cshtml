@@ -1,0 +1,53 @@
+﻿@*Pop-up Template*@
+<teleport to="#modalContainer" :disabled="true">
+    <div v-if="activeTeleportModelId === opt.id" class="modal-backdrop">
+        <div class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="text-left col-10">
+                            <h4 class="modal-title">Option Settings</h4>
+                            <h6 class="mb-3 text-left">{{field.Name}}: {{opt.Label}}</h6>
+                        </div>
+                        <div class="text-right col-2">
+                            <button type="button" class="close col-2" @@click="cancelTeleportModelChanges()"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                    </div>
+                    <div class="modal-body text-left row">
+                        <div class="col-md-6 form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label">Price: $</label>
+                                <input :value="opt.Price" @@change="activeTeleportModelChanges.Price = $event.target.value" type="number" min="0" step=".01" class="price ml-1 w-50" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label">Limit:</label>
+                                <input :value="opt.Limit" @@change="activeTeleportModelChanges.Limit = $event.target.value" type="number" min="0" step="1" class="ml-1 w-50" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label">Start Date:</label>
+                                <input :value="opt.StartDate" @@change="activeTeleportModelChanges.StartDate = $event.target.value" type="date" class="ml-1 w-50" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label">End Date:</label>
+                                <input :value="opt.EndDate" @@change="activeTeleportModelChanges.EndDate = $event.target.value" type="date" class="ml-1 w-50" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @@click="updateOptionSettings(optIdx)">OK</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+    </div>
+</teleport>

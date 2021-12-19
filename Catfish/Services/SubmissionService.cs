@@ -129,6 +129,25 @@ namespace Catfish.Services
             return items;
 
         }
+        /// <summary>
+        /// Get all item in a given collection
+        /// </summary>
+        /// <param name="collectionId">CollectionID</param>
+        /// <returns></returns>
+        public List<Item> GetSubmissionList(Guid? collectionId)
+        {
+            List<Item> items = new List<Item>();
+           
+            try
+            {
+                items = _db.Items.Where(i => i.PrimaryCollectionId == collectionId).ToList();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+            return items;
+        }
 
         ///// <summary>
         ///// Get the submission details which passing from the parameter.  
@@ -237,7 +256,31 @@ namespace Catfish.Services
                 Item newItem = template.Instantiate<Item>();
                 Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
 
-                User user = _workflowService.GetLoggedUser();
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //MR- June 4 2021:  ===  BUG HERE == IF form set to "Public" it will still required user to login, recisely because( User user = _workflowService.GetLoggedUser();) -- where it try to get login user
+                // To fix this problem we need to:
+                // Check if the Initiate function template is set to "PUblic"
+                // if it's "public" the user info should come from the form
+                // otherwise the current implementation is fine
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //
+
+                XmlModelList<GetAction> actions = _entityTemplateService.GetTemplateActions(entityTemplateId);
+                var instantiateAction = actions.Where(a => a.Function == "Instantiate").FirstOrDefault();
+                string currUserEmail = "";
+                Guid currUserId = Guid.Empty;
+                string currUserName = "";
+                if (instantiateAction.Access == GetAction.eAccess.Public)
+                {
+                    //===================== TODO  =============================
+                }
+                else
+                {
+                    User user = _workflowService.GetLoggedUser();
+                    currUserEmail = user.Email;
+                    currUserId = user.Id;
+                    currUserName = user.UserName;
+                }
                 //We always pass on the next state with the state mapping irrespective of whether
                 //or not there is a "condition"
                 Guid statusId = stateMapping.Next; 
@@ -245,18 +288,20 @@ namespace Catfish.Services
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
                 newItem.GroupId = groupId;
-                newItem.UserEmail = user.Email;
+                newItem.UserEmail = currUserEmail; //user.Email;
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
                 newDataItem.UpdateFieldValues(value);
+                newItem.UpdateReferencedFieldContainers(value);
+
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
-                newDataItem.OwnerId = user.Id.ToString();
-                newDataItem.OwnerName = user.UserName;
+                newDataItem.OwnerId = currUserId.ToString(); //user.Id.ToString();
+                newDataItem.OwnerName = currUserName; //user.UserName;
 
                 //User user = _workflowService.GetLoggedUser();
                 var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
-                newItem.AddAuditEntry(user.Id,
+                newItem.AddAuditEntry(currUserId,
                     fromState,
                     newItem.StatusId.Value,
                     action

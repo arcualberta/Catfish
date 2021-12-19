@@ -1,0 +1,10 @@
+﻿@model Catfish.Models.Blocks.ICatfishBlock
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    var viewData = new ViewDataDictionary(this.ViewData)
+    {
+    };
+}
+
+<partial name="Shared/_AppletLoader" view-data="@viewData" />

@@ -1,0 +1,13 @@
+﻿@{
+    var page = ViewContext.RouteData.Values["Page"].ToString().Trim('/');
+    var vue3Pages = new List<string> { "FormEdit" };
+
+    if (vue3Pages.Contains(page))
+    {
+        Layout = "~/Areas/Manager/Shared/_Vue3Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Areas/Manager/Shared/_Layout.cshtml";
+    }
+}

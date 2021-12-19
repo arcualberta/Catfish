@@ -274,5 +274,9 @@ namespace Catfish.Core.Models
             return att == null ? defaultValue : (T) Enum.Parse(typeof(T), att.Value) ;
         }
 
+        public void SetAttribute<T>(string attName, T defaultValue) where T : Enum
+        {
+            Data.SetAttributeValue(attName, defaultValue);
+        }
     }
 }

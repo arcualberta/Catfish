@@ -30,8 +30,13 @@ namespace Catfish.Core.Models.Contents.Fields
             get => GetAttribute("max-chars", 0);
             set => SetAttribute("max-chars", value);
         }
+        public bool RichText
+        {
+            get => GetAttribute("rich-text", false);
+            set => SetAttribute("rich-text", value);
+        }
 
-        public TextArea SetSize(int rows, int cols) { Rows = rows; Cols = cols; return this; }
+        public TextArea SetSize(int rows, int cols, bool richText) { Rows = rows; Cols = cols; RichText = richText; return this; }
 
         public TextArea() : base() { DisplayLabel = "Paragraph"; }
         public TextArea(XElement data) : base(data) { DisplayLabel = "Paragraph"; }

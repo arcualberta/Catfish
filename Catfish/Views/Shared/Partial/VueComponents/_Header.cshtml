@@ -30,6 +30,8 @@
     string homepageUrlStartTag = "";
     string homepageUrlEndTag = "";
 
+    bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
+
 
     if (homepage != null)
     {
@@ -73,12 +75,12 @@
                     <div class="col-sm">
                         <partial name="/Views/Shared/Partial/_Menu.cshtml" />
                     </div>
-                    @if (_catfishAppConfig.IsAllowGoogleLogin())
+                    @if (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin)
                     {
                         <div class="signinout">
                             @if (!User.Identity.IsAuthenticated)
                             {
-                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login?ret=@pageUrl'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
+                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login?ret=@pageUrl'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
                             }
                             else
                             {
@@ -90,7 +92,7 @@
                                 {
                                     <button class="btn btn-link" onclick="window.location.href='/manager/groups'"><span class="fa fa-diamond"> Groups</span></button>
                                 }
-                                <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
+                                <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out-alt"> Sign Out</span></button>
                             }
 
 

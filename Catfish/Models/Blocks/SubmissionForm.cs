@@ -3,6 +3,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Models.Fields;
 using ElmahCore;
+using Piranha;
 using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
@@ -15,8 +16,10 @@ namespace Catfish.Models.Blocks
 
     // private Enum eCollection = Enum.TryParse(EType, "Collection");
     [BlockType(Name = "Submission Form", Category = "Workflow", Component = "submission-form", Icon = "fab fa-wpforms")]
-    public class SubmissionForm : Block
+    public class SubmissionForm : Block, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<SubmissionForm>();
+
         [Display(Name = "Css Class")]
         public StringField CssClass { get; set; }
 
@@ -37,8 +40,11 @@ namespace Catfish.Models.Blocks
 
         public TextField WorkflowGroup { get; set; }
 
-        public CheckBoxField LinkToGroup { get; set; }
+        public CheckBoxField UserMustSelectGroup { get; set; }
 
         public StringField GroupSelectorLabel { get; set; }
+
+        public TextField SelectedGroupId { get; set; }
+
     }
 }

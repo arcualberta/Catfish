@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models.Solr;
+using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
 using Catfish.Services;
 using ElmahCore;
@@ -19,10 +20,12 @@ namespace Catfish.Api.Controllers
     {
         private readonly IQueryService QueryService;
         private readonly IPageIndexingService _pageIndexingService;
-        public SolrController(IQueryService queryService, IPageIndexingService pageIndexingService)
+        private readonly ISolrBatchService _solrBatchService;
+        public SolrController(IQueryService queryService, IPageIndexingService pageIndexingService, ISolrBatchService solrBatchService)
         {
             QueryService = queryService;
             _pageIndexingService = pageIndexingService;
+            _solrBatchService = solrBatchService;
         }
 
         [Route("freetext")]
@@ -88,6 +91,7 @@ namespace Catfish.Api.Controllers
         public void IndexSite([FromForm] Guid siteId, [FromForm] string siteTypeId)
         {
             _pageIndexingService.IndexSite(siteId, siteTypeId);
+            _solrBatchService.IndexItems(true);
         }
     }
 }

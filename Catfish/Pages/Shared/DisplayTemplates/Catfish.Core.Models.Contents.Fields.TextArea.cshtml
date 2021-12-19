@@ -2,7 +2,7 @@
 
 <div class="control field-label @Model.FieldLabelCssClass">@Html.DisplayFor(model => model.Name, Model.Name.GetType().ToString())</div>
 <br />
-<div class="multilingual-input-block field-value @Model.CssClass @Model.FieldValueCssClass">
+<div data-model-id="@Model.Id" class="multilingual-input-block field-value @Model.CssClass @Model.FieldValueCssClass">
 
     @for (int i = 0; i < Model.Values.Count; ++i)
         @Html.DisplayFor(model => Model.Values[i], Model.Values[i].GetType().ToString(), null, new { multiline = true })

@@ -37,9 +37,14 @@
                 <div class="control field-label @Model.Fields[i].FieldLabelCssClass">
                     @Html.DisplayFor(model => Model.Fields[i].Name, Model.Fields[i].Name.GetType().ToString())
                     @if (Model.Fields[i].Required)
-                    {<span class="required"></span>}
+                    {
+                        <span class="required"></span>
+                        viewData.Add("data-msg-required", "This field is required");
+                    }
                     else
-                    {<span class="required" style="display:none"></span>}
+                    {
+                        <span class="required" style="display:none"></span>
+                    }
                 </div>
                 <div id="@fieldId" class="field-value @Model.Fields[i].CssClass @Model.Fields[i].FieldValueCssClass">
                     @Html.DisplayFor(mode => Model.Fields[i].Description, Model.Fields[i].Description.GetType().ToString())

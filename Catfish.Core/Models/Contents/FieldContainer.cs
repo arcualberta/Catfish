@@ -16,7 +16,13 @@ namespace Catfish.Core.Models.Contents
       
         [NotMapped]
         public MultilingualDescription Description { get; protected set; }
-        
+
+        public Guid? TemplateId
+        {
+            get => GetAttribute("template-id", null as Guid?);
+            set => Data.SetAttributeValue("template-id", value);
+        }
+
         public FieldContainer(string tagName) : base(tagName) 
         { 
             Initialize(eGuidOption.Ignore); 
@@ -45,7 +51,7 @@ namespace Catfish.Core.Models.Contents
             }
         }
 
-        public void SetName(string containerName, string lang)
+        public void SetName(string containerName, string lang = null)
         {
             Name.SetContent(containerName, lang);
         }
@@ -56,7 +62,7 @@ namespace Catfish.Core.Models.Contents
             return val != null ? val.Value : null;
         }
 
-        public void SetDescription(string containerDescription, string lang)
+        public void SetDescription(string containerDescription, string lang = null)
         {
             Description.SetContent(containerDescription, lang);
         }

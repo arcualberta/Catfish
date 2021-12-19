@@ -177,5 +177,12 @@ namespace Catfish.Core.Models.Contents.Fields
             }
             return false;
         }
+
+        public string[] GetSelectedOptionTexts()
+        {
+            return Options.Where(op => op.Selected)
+                .Select(op => op.OptionText.ConcatenatedContent)
+                .ToArray();
+        }
     }
 }

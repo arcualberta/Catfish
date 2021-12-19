@@ -1,0 +1,89 @@
+﻿@model Piranha.Extend.Block
+@using Newtonsoft.Json;
+
+@inject Piranha.AspNetCore.Services.IApplicationService _webApp
+@inject Catfish.Areas.Applets.Services.IAssetRegistry _assetRegistry;
+
+<noscript>
+    <strong>We're sorry but Keyword Search applet doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+
+@{
+    var pageId = _webApp.PageId;
+    var blockId = Model.Id;
+    var mountPointId = string.Format("app-{0}", blockId);
+
+    //Creating a dictionary of all data attributes
+    var dataAttributes = new Dictionary<string, object>();
+    foreach (var pair in ViewData)
+    {
+        if (pair.Key.StartsWith("data-"))
+            dataAttributes.Add(pair.Key.Substring(5), pair.Value);
+    }
+
+    //Registering assets
+    _assetRegistry.RegisterScript("/assets/js/vue3/vue.global.js", "/assets/js/vue3/vue.global.prod.js");
+    _assetRegistry.RegisterScript("/assets/js/vue3/vuex.global.js", "/assets/js/vue3/vuex.global.prod.js");
+    _assetRegistry.RegisterScript("/assets/dist/applets/applets.min.js", "/assets/dist/applets/applets.min.js");
+
+}
+
+<div id="@mountPointId"></div>
+
+@*<script src="/assets/js/vue3/vue.global.js"></script>*@
+@*<script src="/assets/js/vue3/vue.global.prod.js"></script>*@
+
+@*<script src="/assets/js/vue3/vuex.global.js"></script>*@
+@*<script src="/assets/js/vue3/vuex.global.prod.js"></script>*@
+
+@*<script src="/assets/dist/applets/applets.min.js"></script>*@
+
+<script type="module">
+
+    const applet = Applets.@Model.GetType().Name;
+    if (!applet)
+        throw "Applet \"@ViewData["applet"]\" not found.";
+
+    //TODO: Read all URL query parameters and build queryParams associative array    
+    let queryParams = {}; //Cresting a temporary associative array for now.
+
+    //grab the query parameters
+    let qparams = window.location.search.substr(1).split('&');
+    
+    qparams.forEach((q) => {
+        let keyPair = q.split("=");
+
+        //check if the value is a number
+        let keyName = keyPair[0];
+        let val = Number(keyPair[1]);
+        if (!Number.isNaN(val)) {
+            queryParams[keyName] = val;
+        } else {
+            queryParams[keyName] = keyPair[1];
+        }
+
+    });
+
+    console.log("query params after initialize: " + JSON.stringify(queryParams))
+
+
+    const app = Vue.createApp(applet, {
+        pageId: '@pageId',
+        blockId: '@blockId',
+        dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes)),
+        queryParameters: queryParams
+    });
+
+    if (applet.storeConfig) {
+        const state = applet.storeConfig.state;
+        const mutations = applet.storeConfig.mutations;
+        const actions = applet.storeConfig.actions;
+        const getters = applet.storeConfig.getters;
+
+        const store = Vuex.createStore({ state, mutations, actions, getters });
+        app.use(store);
+    }
+
+    app.mount('#@mountPointId');
+
+</script>

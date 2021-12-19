@@ -30,8 +30,9 @@
                         </div>
                         <div class="signinout">
                             @{ if (!User.Identity.IsAuthenticated)
-                                {
-                                  <button id="btnSignIn" onclick="window.location.href = '/login'; return false;" class="btn btn-default"><span class="fa fa-sign-in "> Sign In</span></button>
+                                        {
+                                            string here = "";
+                                  <button id="btnSignIn" onclick="window.location.href = '/login'; return false;" class="btn btn-default"><span class="fa fa-sign-in-alt"> Sign In</span></button>
                                 }
                                 else
                                 {
@@ -39,7 +40,7 @@
                                     {
                                         <button class="btn btn-default" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
                                     }
-                                    <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-default"><span class="fa fa-sign-out"> Sign Out</span></button>
+                                    <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-default"><span class="fa fa-sign-out-alt"> Sign Out</span></button>
                                 }
                             }
                         </div>

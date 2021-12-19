@@ -71,6 +71,10 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+        public BaseField GetField(Guid fieldId)
+        {
+            return Fields.FirstOrDefault(f => f.Id == fieldId);
+        }
 
         public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, bool? allowMultiple = null, object defaultValue = null)
             where T : MonolingualTextField
@@ -117,6 +121,20 @@ namespace Catfish.Core.Models.Contents
             else
                 field.SetValue("", lang);
 
+            return field;
+        }
+
+        public T CreateField<T>(string fieldName, string lang, FieldContainerReference.eRefType refType, Guid? refId)
+            where T : FieldContainerReference
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
+
+            Fields.Add(field);
+            field.SetName(fieldName, lang);
+
+            field.RefType = refType;
+            if (refId.HasValue)
+                field.RefId = refId.Value;
             return field;
         }
 
@@ -234,6 +252,13 @@ namespace Catfish.Core.Models.Contents
             if (isRequired.HasValue)
                 field.Required = isRequired.Value;
 
+            return field;
+        }
+
+        public T CreateField<T>() where T : BaseField
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
+            Fields.Add(field);
             return field;
         }
 

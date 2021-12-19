@@ -54,6 +54,13 @@ namespace Catfish.Core.Models.Contents.Fields
             return Values[valueIndex].Value;
         }
 
+        public string[] GetValues()
+        {
+            return Values.Where(v => !string.IsNullOrEmpty(v.Value))
+                .Select(v => v.Value)
+                .ToArray();
+        }
+
         public override void UpdateValues(BaseField srcField)
         {
             MonolingualTextField src = srcField as MonolingualTextField;

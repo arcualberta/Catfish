@@ -124,6 +124,9 @@ namespace Catfish.Core.Migrations
                     b.Property<Guid?>("TemplateId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UserEmail")
                         .HasColumnName("UserEmail")
                         .HasColumnType("nvarchar(max)");
@@ -196,6 +199,26 @@ namespace Catfish.Core.Migrations
                     b.HasIndex("GroupId");
 
                     b.ToTable("Catfish_GroupTemplates");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.IndexingHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastIndexedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ObjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_IndexingHistory");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>

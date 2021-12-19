@@ -28,9 +28,10 @@ const managerSideEntryPaths = {
     editItemBundle: "./wwwroot/assets/js/catfish.edititem.js",
 };
 
-/*const publicFacingEntryPaths = {
+const publicFacingEntryPaths = {
     //keywordsSearchBundle: "./wwwroot/assets/js/_public-facing/keywords-search-block-public.js"
-};*/
+    'calendar-block-vue': "./wwwroot/assets/js/_public-facing/calendar-block.js"
+};
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -129,33 +130,33 @@ module.exports = [
         devtool: devTool
     },
     //public-facing entry config
-    //{
-    //    mode: devMode,
-    //    entry: publicFacingEntryPaths,
-    //    output: {
-    //        path: outputPath, 
-    //        filename: filenamePath
-    //    },
+    {
+        mode: devMode,
+        entry: publicFacingEntryPaths,
+        output: {
+            path: outputPath, 
+            filename: filenamePath
+        },
 
-    //    module: {
-    //        rules: moduleRules
-    //    },
-    //    plugins: [new VueLoaderPlugin(),
-    //        new webpack.ProvidePlugin({
-    //            Vue: ['vue/dist/vue.esm.js', 'default']
-    //        })
-    //    ],
-    //    optimization: {
-    //        splitChunks: {
-    //            cacheGroups: {
-    //                commons: {
-    //                    test: /[\\/]node_modules[\\/]/,
-    //                    name: "vendorsPublicFacingSide",
-    //                    chunks: "all"
-    //                }
-    //            }
-    //        }
-    //    },
-    //    devtool: devTool
-    //}
+        module: {
+            rules: moduleRules
+        },
+        //plugins: [new VueLoaderPlugin(),
+        //    new webpack.ProvidePlugin({
+        //        Vue: ['vue/dist/vue.esm.js', 'default']
+        //    })
+        //],
+        //optimization: {
+        //    splitChunks: {
+        //        cacheGroups: {
+        //            commons: {
+        //                test: /[\\/]node_modules[\\/]/,
+        //                name: "vendorsPublicFacingSide",
+        //                chunks: "all"
+        //            }
+        //        }
+        //    }
+        //},
+        devtool: devTool
+    }
 ]; 

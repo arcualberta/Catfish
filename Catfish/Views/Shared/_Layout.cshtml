@@ -2,10 +2,15 @@
 @using Catfish.Models.SiteTypes
 @using Catfish.Helper
 @using Catfish.Models.Blocks;
+@using Piranha.Extend;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 @inject Catfish.Services.IAppService _appService;
+@inject Catfish.Helper.IBlockHelper _blockHelper;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
 
 @{
     if (ViewBag.Title == null)
@@ -13,25 +18,39 @@
         ViewBag.Title = Model.Title;
     }
 
-    var pageModel = Model == null ? null : typeof(StandardPage).IsAssignableFrom(Model.GetType()) ? Model as StandardPage : null;
     List<string> vueComponentNames = new List<string>();
     List<CssBlock> cssBlocks = new List<CssBlock>();
     List<JavascriptBlock> javascriptBlocks = new List<JavascriptBlock>();
 
-    if (pageModel != null)
+    if (Model != null)
     {
-        vueComponentNames = pageModel.Blocks
-            .Where(b => typeof(IVueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type IVueConponent or its derived type.*@
-        .Select(b => (b as IVueComponent).Component) @*Selecting all those blocks as IVueConponent blocks and getting their names.*@
-        .Distinct()
-        .ToList();
+        IList<Block> blocks;
 
-        cssBlocks = pageModel.Blocks
+        if (typeof(StandardPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as StandardPage).Blocks;
+        else if (typeof(ItemPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as ItemPage).Blocks;
+        else if (typeof(ItemPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as ItemPage).Blocks;
+        else if (typeof(StandardPost).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as StandardPost).Blocks;
+        else if (typeof(MediaPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as MediaPage).Blocks;
+        else if (typeof(StandardArchive).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as StandardArchive).Blocks;
+        else if (typeof(StartPage).IsAssignableFrom(Model.GetType()))
+            blocks = (Model as StartPage).Blocks;
+        else
+            blocks = new List<Block>();
+
+        vueComponentNames = _blockHelper.GetVueComponentNames(blocks).ToList();
+
+        cssBlocks = blocks
             .Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
             .Select(b => (b as CssBlock))
             .ToList();
 
-        javascriptBlocks = pageModel.Blocks
+        javascriptBlocks = blocks
             .Where(b => typeof(JavascriptBlock).IsAssignableFrom(b.GetType()))
             .Select(b => (b as JavascriptBlock))
             .ToList();
@@ -43,22 +62,25 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="google-signin-client_id" content="@_catfishAppConfig.GetGoogleClientId()">
+    @*Aug 4 2021*@
+    @*<meta name="google-signin-client_id" content="@_catfishAppConfig.GetGoogleClientId()">*@
 
     <link rel="shortcut icon" href="~/favicon.ico" />
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500">
-    @*<link rel="stylesheet" href="~/css/style.min.css">*@
+
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
-    @*<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>*@
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    @*<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>*@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.min.js" integrity="sha384-3ziFidFTgxJXHMDttyPJKDuTlmxJlwbSkojudK/CkRqKDOmeSbN6KLrGdrBQnT2n" crossorigin="anonymous"></script>
     @*<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" ></script>*@
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    @*   this is needed for Google-signIn
+        <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    *@
 
     <link href="~/assets/css/public/style.css" rel="stylesheet" />
     <link href="~/assets/css/public/componentStyles.css" rel="stylesheet" />
@@ -72,10 +94,15 @@
     <script src="~/assets/js/catfish.js"></script>
 
     <script src="~/assets/js/_public-facing/scripts/component-scripts.js"></script>
-    @*<script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>*@
+
     <script src="~/assets/js/_public-facing/scripts/item-list-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/contact-form-block-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/free-search-block-functions.js"></script>
+    <script src="/assets/js/_public-facing/scripts/modal-bootstrap-jquery.js"></script>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+
+    <link src="/assets/vendor/bootstrap-5/css/bootstrap.min.css">
 
     @{
         //Inserting custom CSS files
@@ -132,12 +159,51 @@
             <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
         }
     }
+
+    <partial name="Partial/_AssetRegistry.cshtml" />
 </head>
 
 <body>
     <div id="vueApp">
         <partial name="/Views/Shared/Partial/VueComponents/_Header.cshtml" />
-        @RenderBody()
+        @*@RenderBody()*@
+        @{
+            //Mr April 22 2021 -- Add ability to lockdown the whole site to limit access to Uofa users only (CAT-883)
+            bool domainUser = false;
+            string[] allowedDomains = _catfishAppConfig.GetAccessRestrictionAllowedDomains();
+            if (allowedDomains != null && allowedDomains.Length > 0)
+            {
+                if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                {
+                    foreach (string d in allowedDomains)
+                    {
+                        if (_httpContextAccessor.HttpContext.User.Identity.Name.Contains(d))
+                        {
+                            domainUser = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (allowedDomains.Contains("*"))
+                    domainUser = true;
+            }
+
+
+            bool allowedUser = domainUser || _httpContextAccessor.HttpContext.User.IsInRole("SysAdmin");
+
+
+            if (!allowedUser && allowedDomains != null)//allowedDomain !=null this to make sure it won't crashed of this section sections is not in the appSettings.jason
+            {
+                <div class="container alert alert-danger">@_catfishAppConfig.GetValue("SiteConfig:AccessRestriction:Message", "")</div>
+                IgnoreBody();
+                return;
+            }
+            else
+            {
+                @RenderBody();
+            }
+        }
 
         @{
             var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
@@ -151,15 +217,18 @@
                ? "" : currentSite.FooterContents.Css.Value;
         }
         <partial name="/Views/Shared/Partial/VueComponents/_Footer.cshtml" />
-        
+
 
     </div>@*End of vueApp div *@
 
     @* Header/Footer additional scripts/css *@
-    <script>
+
     @Html.Raw(javascriptCodeHeader)
     @Html.Raw(javascriptCodeFooter)
-    </script>
+
+
+
+
     <style>
     @Html.Raw(cssCodeHeader)
     @Html.Raw(cssCodeFooter)
@@ -181,18 +250,21 @@
         <link href="@url" rel="stylesheet" />
     }
 
-    <script>
-        new Vue({ el: '#vueApp' })
-    </script>
+    @if (vueComponentNames.Count > 0)
+    {
+        <script>
+            new Vue({ el: '#vueApp' })
+        </script>
+    }
 
     @RenderSection("script", required: false)
 
-<script>
-    function onLoad() {
+    <script>
+   /* function onLoad() {
         gapi.load('auth2', function () {
             gapi.auth2.init();
         });
-    }
+    }*/
 
     function signOut() {
         //signout local login
@@ -204,18 +276,18 @@
                     $('input:hidden[name="__RequestVerificationToken"]').val()
             }
         }).done(function (result) {
-            //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
-            try {
-                var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
-                auth2.signOut().then(function () {
-                    //console.log('User signed out.');
-                    auth2.disconnect();
-                    window.location.href = "/";
-                });
-                auth2.disconnect();
+            window.location.href = "/";
+            /*try {
+                //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
+                //var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
+                //auth2.signOut().then(function () {
+                //    auth2.disconnect();
+                //    window.location.href = "/";
+                //});
+                //auth2.disconnect();
             } catch (ex) {
                 window.location.href = "/";
-            }
+            }*/
 
 
         });
@@ -228,7 +300,7 @@
         }
     });
 
-</script>
+    </script>
     @*<script src="~/assets/dist/vendorsPublicFacingSide.js"></script>*@
 </body>
 

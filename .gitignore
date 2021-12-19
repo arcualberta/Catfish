@@ -12,7 +12,6 @@ Examples/
 [Dd]ebug/
 [Rr]elease/
 x64/
-build/
 [Bb]in/
 [Oo]bj/
 
@@ -153,6 +152,9 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
+#Vue applets compiled code
+/Catfish/wwwroot/assets/dist/applets/
+
 Catfish/App_Data
 /Catfish/Web.config
 /packages
@@ -175,6 +177,8 @@ Plugins
 /Catfish/wwwroot/uploads
 /Catfish/wwwroot/log
 
+.sonarqube/
+
 .vs/
 /Catfish.UnitTests/appsettings.test.json
 /*.tgitconfig
@@ -188,6 +192,18 @@ Plugins
 /Examples/centralAmericaRegistration_generared.xml
 /Examples/covidWeeklyInspectionWorkflow_generared.json
 /Examples/covidWeeklyInspectionWorkflow_generared.xml
+.sonarqube/
+Examples/*_generared.xml
+Examples/*_generared.json
+/Examples/CalendarMgmtItem.xml
+/Examples/Metadat Field Data Structure in JSON with comments.txt
+/Catfish.Test/appsettings.test.json
+/Examples/production/_prod_conf.xml
+/Examples/production/_prod_conf_with_report.xml
+/Examples/production/_prod_covid_inspection.xml
+/Examples/production/_prod_covid_inspection_with_report.xml
+/Examples/production/_prod_sas.xml
+/Examples/production/_prod_sas_with_report.xml
 
 # ARC's custom CSS file
 /Catfish/wwwroot/assets/css/public/custom-arc.css
@@ -199,3 +215,27 @@ Plugins
 /Examples/compositeFormFieldTest_generared.json
 /Examples/compositeFormFieldTest_generared.xml
 /Examples/AttachmentTest_generared.xml
+
+#public-facing built bundles 
+/Catfish/wwwroot/assets/js/_public-facing/calendaruibundle.js
+/Catfish/wwwroot/assets/js/_public-facing/calendaruibundle.js.map
+/Catfish/wwwroot/assets/js/_public-facing/calendar-block-vue.js.map
+/Catfish/wwwroot/assets/js/_public-facing/calendar-block-vue.js
+
+/Catfish.Test/appsettings.test.json
+/Catfish.UnitTests/*.json
+
+/SonarQubeCommands.txt
+
+# for sitewide custom css
+/Catfish/wwwroot/assets/css/public/custom.css
+
+# Future of the Past custom CSS
+/Catfish/wwwroot/assets/css/public/custom-future-of-the-past.css
+/package-lock.json
+
+# Anti-racism custom CSS
+/Catfish/wwwroot/assets/css/public/custom-anti-racism.css
+/Catfish/wwwroot/Vue/tile-grid-xxtmp
+/Design Documents/Tile Grid/Tile Grid.drawio
+/Design Documents/Tile Grid/Tile Grid.png

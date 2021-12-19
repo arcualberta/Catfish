@@ -418,20 +418,38 @@ namespace Catfish.Controllers.Api
         /// This method's called from Submission Block to get Function/group name from selected Item Template workflow
         /// </summary>
         /// <param name="id">This is Item Template Id</param>
+        /// 
+        /// Modified : April 28 2021 -- add option to retrieve sets of metadatasets instead of action/function that on the ItemTemplate
         /// <returns></returns>
-        [HttpGet("getSelectListItem/{id}")]
-        public List<SelectListItem> GetSelectListItem(string id)
+        [HttpGet("getSelectListItem/{id}/{metadataset}")]
+        public List<SelectListItem> GetSelectListItem(string id, bool metadataset=false)
         {
            
             List<SelectListItem> result = new List<SelectListItem>();
-            if (!string.IsNullOrEmpty(id) && id.ToLower() != "null")
+            if (!metadataset)
             {
-                var actions = _entityTemplateService.GetTemplateActions(Guid.Parse(id));
-            
-                foreach(Core.Models.Contents.Workflow.GetAction action in actions)
+                if (!string.IsNullOrEmpty(id) && id.ToLower() != "null")
                 {
-                   result.Add(new SelectListItem { Text = action.Function, Value = action.Function + "|" + action.Group });
-                 
+                    var actions = _entityTemplateService.GetTemplateActions(Guid.Parse(id));
+
+                    foreach (Core.Models.Contents.Workflow.GetAction action in actions)
+                    {
+                        result.Add(new SelectListItem { Text = action.Function, Value = action.Function + "|" + action.Group });
+
+                    }
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(id) && id.ToLower() != "null")
+                {
+                    var metadataSets = _entityTemplateService.GetTemplateMetadataSets(Guid.Parse(id));
+
+                    foreach (MetadataSet ms in metadataSets)
+                    {
+                        result.Add(new SelectListItem { Text = ms.Name.GetConcatenatedContent("|"), Value = ms.Id.ToString() });
+
+                    }
                 }
             }
 
@@ -506,5 +524,109 @@ namespace Catfish.Controllers.Api
 
             return NotFound();
         }
+
+        [HttpGet("getMetadatasetFields/{templateId}/{metadatasetId}")]
+        public List<SelectListItem> GetMetadatasetFields(string templateId, string metadatasetId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+           
+                if (!string.IsNullOrEmpty(templateId) && !string.IsNullOrEmpty(metadatasetId))
+                {
+                var fields = _entityTemplateService.GetTemplateMetadataSetFields(Guid.Parse(templateId), Guid.Parse(metadatasetId));
+
+                    foreach (BaseField field in fields)
+                    {
+                        result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString()});
+
+                    }
+                }
+           
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+
+        [HttpGet("getItemtemplateFields/{templateId}")]
+        public List<SelectListItem> GetItemTemplateFields(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                var fields = _entityTemplateService.GetTemplateDataItemFields(Guid.Parse(templateId));
+
+
+                foreach (BaseField field in fields)
+                {
+                    if (!string.IsNullOrEmpty(field.GetName()))
+                    {
+                        result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString() });
+                    }
+
+                }
+            }
+
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+        /// <summary>
+        ///  Oct 06 2021: This method wil retrieve all the metadatasets that attached to this Template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemtemplateMetadataSets/{templateId}")]
+        public List<SelectListItem> GetItemtemplateMetadataSets(string templateId)
+        {
+            List<SelectListItem> result = new List<SelectListItem>();
+
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                var metadatasets = _entityTemplateService.GetTemplateMetadataSets(Guid.Parse(templateId));
+
+
+                foreach (var md in metadatasets)
+                {
+                    var mdname = md.GetName("en");
+                    if (!string.IsNullOrEmpty(mdname))
+                    {
+                        result.Add(new SelectListItem { Text = mdname, Value = md.Id.ToString() });
+                    }
+
+                }
+            }
+
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+
+        /// <summary>
+        ///  Oct 06 2021: This method wil retrieve all the metadatasets that attached to this Template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemtemplateStatuses/{templateId}")]
+        public List<SelectListItem>  GetItemtemplateStatuses(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                var statuses = (List<SystemStatus>)_entityTemplateService.GetSystemStatuses(Guid.Parse(templateId));
+
+                foreach (var st in statuses)
+                {
+                    result.Add(new SelectListItem { Text = st.Status, Value = st.Id.ToString() });
+                }
+
+            }
+            return result;
+        }
+
+
     }
+
 }

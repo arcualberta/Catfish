@@ -23,13 +23,6 @@ namespace Catfish.Core.Models.Contents.Data
             set => SetAttribute("entity-id", value.ToString());
         }
 
-        public Guid? TemplateId
-        {
-            get => GetAttribute("template-id", null as Guid?);
-            set => Data.SetAttributeValue("template-id", value);
-        }
-
-
         public string OwnerId
         {
             get => GetAttribute("owner-id", null as string);
@@ -40,8 +33,6 @@ namespace Catfish.Core.Models.Contents.Data
             get => GetAttribute("owner-name", null as string);
             set => SetAttribute("owner-name", value);
         }
-
-        public string TestField { get; set; }
 
         public DataItem() : base(TagName) { Initialize(eGuidOption.Ensure); }
         public DataItem(XElement data) : base(data) { Initialize(eGuidOption.Ensure); }

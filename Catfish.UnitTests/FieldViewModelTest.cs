@@ -1,6 +1,5 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Services;
-using Catfish.Tests.Helpers;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Fields.ViewModels;
 using Newtonsoft.Json;
+using Catfish.Test.Helpers;
 
 namespace Catfish.UnitTests
 {

@@ -17,6 +17,11 @@
 }
 /*Google calendar panel*/
 
+.google-calendar-panel {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
 .calendar-default .calendar-event-dates {
     display: flex;
     justify-content: flex-end;
@@ -25,7 +30,8 @@
 }
 
 .calendar-event {
-    padding: 8px !important;
+    padding: 20px;
+    margin-bottom: 15px;
 }
 
 .date-month {
@@ -55,6 +61,385 @@
     padding: 10px;
 }*/
 
+/* Google Calendar Visual UI */
+.month-header-container{
+    display:flex;
+    justify-content: space-evenly;
+    padding-bottom: 10px;
+}
+
+    .month-header-container .fa.fa-chevron-right, .strip-week-and-arrow-container .fa.fa-chevron-right {
+        float: right;
+    }
+
+.calendar-month-container {
+    border: solid black 1px;
+}
+
+.month-title-container, .left-arrow, .right-arrow {
+    width: 100%;
+}
+
+.month-title-container{
+    text-align:center;
+}
+
+.events-title{
+    padding-bottom:10px;
+    padding-top: 10px;
+}
+
+.calendar-weekday-container{
+    display:flex;
+    justify-content:space-evenly;
+    color:white;
+    background-color: black;
+    font-weight:bold;
+}
+
+.week-container{
+    display:flex;
+}
+
+.days-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.calendar-day {
+    background-color: white;
+    flex-grow: 1;
+    width: 100%;
+    height: 80px;
+    border: solid black 1px;
+    flex: 1 7 14%;
+}
+
+.weekday-label-container {
+    width: 100%;
+    text-align: center;
+}
+
+.day-not-current-month {
+    background-color: lightgrey;
+}
+
+.today-is-the-day{
+    background-color: lightblue;
+}
+
+.event-day-color{
+    background-color:darkseagreen;
+}
+
+.clickable:hover{
+    cursor:pointer;
+}
+
+.days-container{
+    background-color: white;
+}
+
+/* Weekly strip calendar */
+
+.strip-week-container .calendar-day-container {
+    display: flex;
+    flex: 1 7 14%;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.month-year-title {
+    padding: 10px 20px 15px 15px;
+    margin-bottom: 0;
+}
+
+
+.strip-calendar-day{
+    flex: unset;
+}
+
+.title-spacing {
+    padding-left: 10px;
+    padding-right: 10px;
+    /*white-space: nowrap;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.calendar-day-title {
+    height: 50px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    display:flex;
+    min-width: 0;
+}
+
+.strip-month-header-container{
+    background-color: black;
+    color: white;
+}
+
+.strip-week-and-arrow-container {
+    display: flex;
+}
+
+    .strip-week-and-arrow-container .left-arrow, .strip-week-and-arrow-container .right-arrow {
+        width: 5%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        background-color: black;
+        color: white;
+    }
+
+.weekly-arrow {
+    padding-top: 24px;
+    padding-bottom: 50px;
+}
+
+.monthly-arrow {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.monthly-arrow.right-arrow {
+    align-items: flex-end;
+}
+
+.strip-week-container{
+    width:100%;
+}
+
+/* Calendar style for rounded theme */
+.rounded-style .calendar-day {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    border: white solid 1px;
+}
+
+.rounded-style .day-number{
+    text-align:center;
+    font-weight:bold;
+}
+
+.rounded-style .calendar-month-container{
+    border: unset;
+}
+
+.rounded-style .days-container {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.rounded-style .month-header-container {
+    background-color: black;
+    color: white;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.rounded-style .clickable.left-arrow {
+    border-bottom-left-radius: 5px;
+}
+
+.rounded-style .clickable.right-arrow {
+    border-bottom-right-radius: 5px;
+}
+
+.rounded-style .strip-month-header-container {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+
+/*****************************************************/
+
+/* ListDisplay styles */
+
+.list-display-block-container{
+    min-height: 700px;
+}
+
+.item-list-image {
+    width: 30%;
+    height: 100%;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.item-list-text-container{
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    padding-left: 10px;
+}
+
+.single-list-item {
+    position: relative;
+    display: flex;
+    margin: 4px;
+    border-radius: 5px;
+    background-color:white;
+    height:120px;
+}
+
+.list-display-block-container{
+    display:flex;
+}
+
+.items-top-title {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+}
+
+.itemlist-scroller-container{
+    min-height:inherit;
+    overflow-y: auto;
+    max-height:700px;
+}
+
+.selected-indicator {
+    width: 20px;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    position: absolute;
+}
+
+.no-image-extra-padding{
+    padding-left: 35px;
+}
+
+.mobile-list-display-button {
+    float: right;
+    margin: 20px;
+}
+
+.mobile-display-column {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.list-display-content-space {
+    padding:20px;
+}
+
+/*****************************************************/
+/* Card block styles (includes modal/pop-up) */
+.modal-image-container {
+    width: 100%;
+    flex-grow: 2;
+    flex-basis: 33%;
+}
+
+.modal-image-fitting {
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center top;
+    height: 100%;
+}
+
+.description-container {
+    padding: 15px;
+    padding-top: 0px;
+}
+.position-image-vertical{
+    height:100px;
+}
+.close-modal-button {
+    padding-top: 10px !important;
+    padding-right: 20px !important;
+    align-self: flex-end;
+    font-size: 3rem;
+    padding-bottom: 0px !important;
+}
+
+.card-body, .card-image {
+    text-align: center;
+}
+
+.card-body .btn {
+    background-color: transparent;
+}
+
+.card-image > .btn {
+    padding: 0;
+}
+
+.card-button-image {
+    width: 100%;
+    height: 300px;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: cover !important;
+}
+
+.CBflex-item .card {
+    max-width: 100%;
+}
+
+@media(max-width: 1199px) {
+    .modal-image-container {
+        display: none;
+    }
+}
+
+@media(max-width: 1030px) {
+    /*.card-image > .btn {
+        height: 256px;
+        width: 240px;
+        overflow: hidden;
+        padding: 13px;
+    }
+
+    .card-image img {
+        width: 260px;
+        height: 229px;
+        max-height: 300px;
+    }*/
+}
+
+@media(max-width: 767px) {
+    .card-image > .btn {
+        /*height: 327px;
+        width: 305px;
+        padding: 13px;*/
+        width: 300px;
+        height: 300px;
+    }
+
+    /*.card-image img {
+        width: 300px;
+        height: 330px;
+        max-height:300px;
+    }*/
+
+    .card, .card-image{
+        min-width: 300px;
+    }
+}
+
+/*****************************************************/
 /* Extended Gallery carousel*/
 .extended-gallery-block .carousel-indicators {
     position: static;
@@ -239,6 +624,125 @@
     margin-top: 15px;
 }
 
+
+/* Advance Search Block*/
+
+.advanced-search .search-field {
+    margin: 10px 0;
+    /*border: solid 1px blue;*/
+}
+
+.advanced-search .search-mode{
+    margin: 10px 0 20px 0;
+}
+.advanced-search .search-mode span {
+    margin: -5px 20px 0 5px;
+}
+
+.advanced-search .search-field label {
+    margin-bottom: 0;
+}
+
+.advanced-search .search-field input {
+    margin-bottom: 10px;
+    font-weight: bold;
+    /*border: solid 1px blue;*/
+}
+
+.advanced-search input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #888;
+    font-weight: normal;
+    opacity: 1; /* Firefox */
+}
+
+.advanced-search input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #888;
+    font-weight: normal;
+}
+
+.advanced-search input::-ms-input-placeholder { /* Microsoft Edge */
+    color: #888;
+    font-weight: normal;
+}
+
+.advanced-search #advanceSearchSubmitBtn {
+    margin-bottom: 25px;
+}
+
+.advanced-search .searchResults {
+    padding: 25px;
+}
+
+.advanced-search .search-controls{
+    margin-top: 25px;
+}
+
+/* advance Search page Slip Rendering Type */
+.searchResults {
+    width: 100%;
+}
+
+.slipEntry {
+    width: 100%;
+    min-height: 130px;
+    height: auto;
+    border: 1px solid grey;
+    padding: 13px;
+    padding-bottom: 0px;
+    margin-bottom: 50px;
+}
+
+.entryDescription {
+    min-height: 70px;
+    /*border-top: 1px solid grey;*/
+}
+
+.entryDetailLink, .entryTags {
+    padding-bottom: 10px;
+    margin-right: -15px;
+    margin-left: -15px;
+    padding-left: 15px;
+}
+
+.entryDetails{
+    margin-top: 10px;
+}
+
+.entryTags {
+    border-top: 1px solid grey;
+}
+.entryImg {
+    width: 100px;
+    height: 140px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x:center;
+    background-position-y:bottom;
+}
+
+.entryContent {
+    border-right: solid 1px grey;
+}
+
+.entryContentContainer {
+    border-top: 1px solid Grey;
+    /*border-bottom: 1px solid grey;*/
+}
+
+[data-toggle="collapse"].collapsed .if-not-collapsed {
+    display: none;
+}
+
+[data-toggle="collapse"]:not(.collapsed) .if-collapsed {
+    display: none;
+}
+
+/* ============================================== News Feed Block                    =============================== */
+.fbTimeline {
+    border: none;
+    overflow: hidden;
+    height: 600px;
+}
 /* Carousel: Overrides the user's set width when the screen is narrow, for mobile devices */
 @media screen and (max-width: 991px) {
     .image-in-carousel {

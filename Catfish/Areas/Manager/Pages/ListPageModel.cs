@@ -14,5 +14,6 @@ namespace Catfish.Areas.Manager.Pages
         public string DetailsPage { get; set; }
         public string ModelLabel { get; set; }
 
+        public List<ListEntry> Entries { get; set; } = new List<ListEntry>();
     }
 }

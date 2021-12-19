@@ -108,6 +108,7 @@ namespace Catfish.Core.Services
             {
                 IQueryable<Entity> entities = BuildEntityListRetrieveQuery<T>(offset, max, primaryCollectionId);
                 IQueryable<EntityListEntry> ret = entities.Select(e => new EntityListEntry(e));
+
                 return ret;
             }
             catch (Exception ex)
@@ -165,5 +166,19 @@ namespace Catfish.Core.Services
                 return null;
             }
         }
+        /// <summary>
+        /// Get Item created with particular template
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        public Item GetItem(Guid id, Guid? templateId)
+        {
+            Item item = Db.Entities.Include(e => e.Template).Where(e => e.Id == id && e.TemplateId == templateId.Value && e is Item)
+                                    .FirstOrDefault()as Item ;
+
+            return item;
+        }
+
     }
 }

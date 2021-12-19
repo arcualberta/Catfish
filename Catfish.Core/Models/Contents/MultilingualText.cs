@@ -38,6 +38,9 @@ namespace Catfish.Core.Models.Contents
             if (string.IsNullOrEmpty(lang))
                 lang = ConfigHelper.DefaultLanguageCode;
 
+            if (value == null)
+                value = "";
+
             Text elementInGivenLanguage = Values.Where(n => n.Language == lang).FirstOrDefault();
             if (elementInGivenLanguage == null)
                 Values.Add(new Text(value, lang));
