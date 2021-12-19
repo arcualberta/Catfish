@@ -18,6 +18,9 @@ using Catfish.Core.Models.Contents;
 using Newtonsoft.Json;
 using Catfish.Core.Models.Solr;
 using ElmahCore;
+using Piranha;
+using Microsoft.AspNetCore.Identity;
+using Piranha.AspNetCore.Identity.Data;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -34,13 +37,16 @@ namespace Catfish.Controllers.Api
         private readonly AppDbContext _appDb;
         private readonly ISolrService _solr;
         private readonly ErrorLog _errorLog;
-        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr, ErrorLog errorLog)
+        private readonly Piranha.AspNetCore.Identity.IDb _db;
+        public TileGridController(IModelLoader loader, ISubmissionService submissionService, AppDbContext db, ISolrService solr, ErrorLog errorLog, Piranha.AspNetCore.Identity.IDb piranhaDb)
         {
             _loader = loader;
             _submissionService = submissionService;
             _appDb = db;
             _solr = solr;
             _errorLog = errorLog;
+           
+            _db = piranhaDb;
         }
 
         // GET: api/tilegrid
@@ -53,6 +59,56 @@ namespace Catfish.Controllers.Api
             try
             {
 
+                //Grant access to SysAdmin users
+                bool accessPermitted = User!= null && User.IsInRole("SysAdmin");
+
+                if (!accessPermitted && !string.IsNullOrEmpty(User?.Identity?.Name))
+                {
+                    //Check if the current user holds the Member role within the TBLT group and if so grant access
+
+                   //1. Get "Member" role
+                    Guid? memberRoleId = Guid.NewGuid();
+                  
+                    Role MemberRole = _db.Roles.Where(r => r.Name == "Member").FirstOrDefault();
+                    if (MemberRole == null)
+                    {
+                        throw new Exception("No Member role found");
+                    }
+                    if (MemberRole != null)
+                        memberRoleId = MemberRole.Id;
+
+
+                    //Get user
+                    User loginUser = _db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault(); 
+                    Guid userId = new Guid();
+                    if (loginUser != null)
+                        userId = loginUser.Id;
+
+                    Guid? tbltGroupId = _appDb.Groups
+                        .Where(g => g.Name.ToLower() == "tblt")
+                        .Select(g => g.Id)
+                        .FirstOrDefault();
+                    if (!tbltGroupId.HasValue)
+                        throw new Exception("No TBLT group found");
+
+
+                    Guid? tbltMemberGroupRoleId = _appDb.GroupRoles
+                        .Where(gr => gr.GroupId == tbltGroupId && gr.RoleId == memberRoleId)
+                        .Select(gr => gr.Id)
+                        .FirstOrDefault();
+                    if (!tbltMemberGroupRoleId.HasValue)
+                        throw new Exception("Member role is not associated with the TBLT group");
+
+                    Guid? userMemberRoleWithinTblt = _appDb.UserGroupRoles.
+                        Where(ugr => ugr.UserId == userId && ugr.GroupRoleId == tbltMemberGroupRoleId)
+                        .Select(ugr => ugr.Id)
+                        .FirstOrDefault();
+                    accessPermitted = userMemberRoleWithinTblt.HasValue;
+                }
+
+                if (!accessPermitted)
+                    return result;
+
                 var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
                 if (page == null)
                     return result;
@@ -61,7 +117,6 @@ namespace Catfish.Controllers.Api
                 if (block == null)
                     return result;
 
-                
                 string collectionId = block.SelectedCollection.Value;
                 string solrCollectionFieldName = "collection_s";
 
@@ -84,7 +139,14 @@ namespace Catfish.Controllers.Api
                     ? scope
                     : string.Format("{0} AND {1}", scope, query);
 
-               // System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
+                Guid? approvedStateId = _appDb.SystemStatuses
+                    .Where(s => s.NormalizedStatus == "APPROVED" && s.EntityTemplateId == Guid.Parse(itemTemplateId))
+                    .Select(s => s.Id)
+                    .FirstOrDefault();
+                if(approvedStateId.HasValue)
+                    query = string.Format("{0} AND status_s:{1}", query, approvedStateId.Value);
+
+                // System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
 
                 SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
 

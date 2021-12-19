@@ -13,6 +13,7 @@ namespace Catfish.Core.Models.Contents.Workflow
         public XmlModelList<RoleReference> AuthorizedRoles { get; set; }
         public XmlModelList<EmailDomain> AuthorizedDomains { get; set; }
         public XmlModelList<FieldReference> AuthorizedEmailFields { get; set; }
+        public bool IsPublic { get; set; } = false;
 
         public StateRef(XElement data)
             : base(data)

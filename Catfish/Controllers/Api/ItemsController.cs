@@ -603,7 +603,30 @@ namespace Catfish.Controllers.Api
             return result;
         }
 
+        /// <summary>
+        ///  Oct 06 2021: This method wil retrieve all the metadatasets that attached to this Template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemtemplateStatuses/{templateId}")]
+        public List<SelectListItem>  GetItemtemplateStatuses(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                var statuses = (List<SystemStatus>)_entityTemplateService.GetSystemStatuses(Guid.Parse(templateId));
+
+                foreach (var st in statuses)
+                {
+                    result.Add(new SelectListItem { Text = st.Status, Value = st.Id.ToString() });
+                }
+
+            }
+            return result;
+        }
+
+
     }
 
-    
 }

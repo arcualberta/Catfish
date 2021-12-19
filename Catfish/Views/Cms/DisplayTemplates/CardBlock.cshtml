@@ -19,7 +19,11 @@
             break;
     }
 
-
+    Model.ModalDescription.Value = System.Web.HttpUtility.JavaScriptStringEncode(Model.ModalDescription.Value);
+    Model.CardTitle.Value = System.Web.HttpUtility.JavaScriptStringEncode(Model.CardTitle.Value);
+    Model.CardSubTitle.Value = System.Web.HttpUtility.JavaScriptStringEncode(Model.CardSubTitle.Value);
+    Model.ModalTitle.Value = System.Web.HttpUtility.JavaScriptStringEncode(Model.ModalTitle.Value);
+    Model.ModalSubTitle.Value = System.Web.HttpUtility.JavaScriptStringEncode(Model.ModalSubTitle.Value);
     var jsonData = JsonConvert.SerializeObject(Model);
 
     //'true' for the modal is actually default behaviour
@@ -54,8 +58,8 @@
                     }
                 </div>
                 <div class="card-body">
-                    <h4>@Model.CardTitle.Value</h4>
-                    <p>@Model.CardSubTitle.Value</p>
+                    <h4>@Html.Raw(Model.CardTitle.Value.Replace("\\u0027", "'"))</h4>
+                    <p>@Html.Raw(Model.CardSubTitle.Value.Replace("\\u0027", "'"))</p>
                 </div>
             }
             else
@@ -65,8 +69,8 @@
                 {
                     <div class="card-body">
                         <button id="btn_myModal_@Model.Id" class="btn" data-toggle="modal" data-target="#myModal_@Model.Id" style="width: 100%">
-                            <h4>@Model.CardTitle.Value</h4>
-                            <p>@Model.CardSubTitle.Value</p>
+                            <h4>@Html.Raw(Model.CardTitle.Value.Replace("\\u0027", "'"))</h4>
+                            <p>@Html.Raw(Model.CardSubTitle.Value.Replace("\\u0027", "'"))</p>
                         </button>
                     </div>
                 }
@@ -74,8 +78,8 @@
                 else
                 {
                     <div class="card-body">
-                        <h4>@Model.CardTitle.Value</h4>
-                        <p>@Model.CardSubTitle.Value</p>
+                        <h4>@Html.Raw(Model.CardTitle.Value.Replace("\\u0027", "'"))</h4>
+                        <p>@Html.Raw(Model.CardSubTitle.Value.Replace("\\u0027", "'"))</p>
                     </div>
                 }
 
@@ -86,14 +90,15 @@
         @if (Model.HasAModal.Value)
         {
             string flexDirection = "";// "column"; //image below -- column-reverse == image on top
-
+           
             <!-- Modal -->
             <div id="myModal_@Model.Id" class="modal" style="display: none;" aria-hidden="true" data-backdrop="@outsideClickValue">
                 <div class="modal-dialog" :class="{ 'modal-dialog-centered': isModalCenteredOnTheScreen, 'modal-lg': modalSizeLarge, 'modal-sm': modalSizeSmall }">
                     <div class="modal-content">
 
                         @switch (Model.ImagePosition.Value)
-                        {
+                          {
+                            
                             case Catfish.Models.Blocks.Positioning.Left:
                                 <!-- Modal body -->
                                 <div class="modal-body" style="display: flex; padding: 0;">
@@ -105,11 +110,12 @@
                                         </div>
                                         <div class="description-container">
                                             <div class="personal-name">
-                                                <h4>@Model.ModalTitle</h4>
+                                                <h4>@Html.Raw(Model.ModalTitle.Value.Replace("\\u0027", "'"))</h4>
                                             </div>
-                                            <div class="personal-institution"><em>@Model.ModalSubTitle</em></div>
+                                            <div class="personal-institution"><em>@Html.Raw(Model.ModalSubTitle.Value.Replace("\\u0027", "'"))</em></div>
                                             <div class="personal-bio">
-                                                <p>@Model.ModalDescription.Value</p>
+                                               
+                                                <p>@Html.Raw(Model.ModalDescription.Value.Replace("\\u0027", "'"))</p>
                                                 @if (Model.EmailAddress.Value != null)
                                                 {
                                                     <p><a href="mailto: @Model.EmailAddress.Value">@Model.EmailAddress.Value</a></p>
@@ -135,11 +141,11 @@
                                         </div>
                                         <div class="description-container">
                                             <div class="personal-name">
-                                                <h4>@Model.ModalTitle</h4>
+                                                <h4>@Html.Raw(Model.ModalTitle.Value.Replace("\\u0027", "'"))</h4>
                                             </div>
-                                            <div class="personal-institution"><em>@Model.ModalSubTitle</em></div>
+                                            <div class="personal-institution"><em>@Html.Raw(Model.ModalSubTitle.Value.Replace("\\u0027", "'"))</em></div>
                                             <div class="personal-bio">
-                                                <p>@Model.ModalDescription.Value</p>
+                                                <p>@Html.Raw(Model.ModalDescription.Value.Replace("\\u0027", "'"))</p>
                                                 @if (Model.EmailAddress.Value != null)
                                                 {
                                                     <p><a href="mailto: @Model.EmailAddress.Value">@Model.EmailAddress.Value</a></p>
@@ -167,11 +173,11 @@
 
                                         <div class="description-container col-sm-11">
                                             <div class="personal-name">
-                                                <h4>@Model.ModalTitle</h4>
+                                                <h4>@Html.Raw(Model.ModalTitle.Value.Replace("\\u0027", "'"))</h4>
                                             </div>
-                                            <div class="personal-institution"><em>@Model.ModalSubTitle</em></div>
+                                            <div class="personal-institution"><em>@Html.Raw(Model.ModalSubTitle.Value.Replace("\\u0027", "'"))</em></div>
                                             <div class="personal-bio">
-                                                <p>@Model.ModalDescription.Value</p>
+                                                <p>@Html.Raw(Model.ModalDescription.Value.Replace("\\u0027", "'"))</p>
                                                 @if (Model.EmailAddress.Value != null)
                                                 {
                                                     <p><a href="mailto: @Model.EmailAddress.Value">@Model.EmailAddress.Value</a></p>
@@ -204,11 +210,11 @@
                                                 </div>
                                                 <div class="description-container">
                                                     <div class="personal-name">
-                                                        <h4>@Model.ModalTitle</h4>
+                                                        <h4>@Html.Raw(Model.ModalTitle.Value.Replace("\\u0027", "'"))</h4>
                                                     </div>
-                                                    <div class="personal-institution"><em>@Model.ModalSubTitle</em></div>
+                                                    <div class="personal-institution"><em>@Html.Raw(Model.ModalSubTitle.Value.Replace("\\u0027", "'"))</em></div>
                                                     <div class="personal-bio">
-                                                        <p>@Model.ModalDescription.Value</p>
+                                                        <p>@Html.Raw(Model.ModalDescription.Value.Replace("\\u0027", "'"))</p>
                                                         @if (Model.EmailAddress.Value != null)
                                                         {
                                                             <p><a href="mailto: @Model.EmailAddress.Value">@Model.EmailAddress.Value</a></p>

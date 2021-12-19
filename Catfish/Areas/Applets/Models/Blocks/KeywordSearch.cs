@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Areas.Applets.Models.Blocks
 {
+   
     [BlockType(Name = "Keyword Search", Category = "Control", Component = "keyword-search", Icon = "fas fa-search")]
     public class KeywordSearch : Block, ICatfishBlock
     {
@@ -38,6 +39,9 @@ namespace Catfish.Areas.Applets.Models.Blocks
         public TextField KeywordSourceId { get; set; }
 
         public TextField ClassificationMetadataSetId { get; set; }
+
+        public TextField SelectedStates { get; set; }
+        public TextField SelectedGroupId { get; set; }
         public string GetKeywords()
         {
             if (KeywordList != null)
@@ -47,5 +51,7 @@ namespace Catfish.Areas.Applets.Models.Blocks
 
             return "";
         }
+
+        public Guid[] GetSelectedStates() => SelectedStates?.Value?.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(s => Guid.Parse(s)).ToArray();
     }
 }

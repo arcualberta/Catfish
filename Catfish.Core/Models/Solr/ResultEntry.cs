@@ -10,23 +10,39 @@ namespace Catfish.Core.Models.Solr
     {
         public Guid Id { get; set; }
         public Guid TemplateId { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
         public List<ResultEntryField> Fields { get; set; } = new List<ResultEntryField>();
 
         public ResultEntry(XElement doc)
         {
             //set the item ID
-            string idStr = doc.Elements("str")
+            string valStr = doc.Elements("str")
                 .Where(ele => ele.Attribute("name").Value == "id")
                 .Select(ele => ele.Value)
                 .FirstOrDefault();
-            Id = string.IsNullOrEmpty(idStr) ? Guid.Empty : Guid.Parse(idStr);
+            Id = string.IsNullOrEmpty(valStr) ? Guid.Empty : Guid.Parse(valStr);
 
             //set the item template ID
-            idStr = doc.Elements("str")
+            valStr = doc.Elements("str")
                 .Where(ele => ele.Attribute("name").Value == "template_s")
                 .Select(ele => ele.Value)
                 .FirstOrDefault();
-            TemplateId = string.IsNullOrEmpty(idStr) ? Guid.Empty : Guid.Parse(idStr);
+            TemplateId = string.IsNullOrEmpty(valStr) ? Guid.Empty : Guid.Parse(valStr);
+
+            valStr = doc.Elements("date")
+                .Where(ele => ele.Attribute("name").Value == "created_dt")
+                .Select(ele => ele.Value)
+                .FirstOrDefault();
+            if (!string.IsNullOrEmpty(valStr))
+                Created = DateTime.Parse(valStr);
+
+            valStr = doc.Elements("date")
+                .Where(ele => ele.Attribute("name").Value == "updated_dt")
+                .Select(ele => ele.Value)
+                .FirstOrDefault();
+            if (!string.IsNullOrEmpty(valStr))
+                Updated = DateTime.Parse(valStr);
 
             //Creating a dictionary of field names
             Dictionary<string, string> fieldNameDictionary = new Dictionary<string, string>();
