@@ -11,6 +11,7 @@ namespace Catfish.Core.Services
     public interface ISolrService
     {
         public void Index(Entity entity);
+        public void Index(IList<Entity> entities);
         public void Index(List<SolrDoc> docs);
         public void Commit();
         public SearchResult Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1);

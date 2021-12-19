@@ -1,10 +1,15 @@
-﻿import { Guid } from 'guid-typescript'
+﻿//import { Guid } from 'guid-typescript'
+
+import { IndexingStatus } from "../models";
 
 //Declare State interface
 export interface State {
-	id: Guid | null;
+	indexingStatus: IndexingStatus;
 }
 
 export const state: State = {
-  id: null
+	indexingStatus: {
+			pageIndexingInprogress: false,
+			dataIndexingInprogress: false
+	} as IndexingStatus
 }
