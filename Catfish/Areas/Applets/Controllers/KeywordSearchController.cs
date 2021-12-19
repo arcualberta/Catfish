@@ -208,6 +208,7 @@ namespace Catfish.Areas.Applets.Controllers
                 {
                     ResultItem resultItem = new ResultItem();
                     resultItem.Id = resultEntry.Id;
+                    resultItem.Date = resultEntry.Created;
                     resultItem.Title = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == titleFieldId)?.FieldContent);
                     resultItem.Subtitle = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == subtitleFieldId)?.FieldContent);
                     resultItem.Content = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == contentFieldId)?.FieldContent);

@@ -26,6 +26,8 @@ namespace Catfish.Core.Models.Solr
             AddField("template_s", src.TemplateId);
             AddField("collection_s", src.PrimaryCollectionId);
             AddField("doc_type_ss", typeof(Item).IsAssignableFrom(src.GetType()) ? "item" : "entity");
+            AddField("created_dt", src.Created);
+            AddField("updated_dt", src.Updated);
 
             foreach (var child in src.MetadataSets)
                 AddContainerFields("metadata", child, indexFieldNames);
