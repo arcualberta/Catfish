@@ -59,6 +59,15 @@ namespace Catfish.Core.Models.Contents.Fields
             Options.Add(opt);
         }
 
+        public void AddOption(string optionText, Guid newOptGuid,  string langs)
+        {
+            Option opt = new Option();      
+            opt.SetOptionText(optionText, langs);
+            opt.Id = newOptGuid;
+
+            Options.Add(opt);
+        }
+
         public void UpdateOptions(string[] optionText, string lang)
         {
             for (int i = 0; i < optionText.Length; ++i)
@@ -153,6 +162,20 @@ namespace Catfish.Core.Models.Contents.Fields
                         option.Selected = srcOption.Selected;
                 }
             }
+        }
+
+        public bool RemoveOption(Guid optionId)
+        {
+            try
+            {
+                Option optionToRemove = Options.Where(o => o.Id == optionId).FirstOrDefault();
+                Options.Remove(optionToRemove);
+                return true;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            return false;
         }
 
         public string[] GetSelectedOptionTexts()

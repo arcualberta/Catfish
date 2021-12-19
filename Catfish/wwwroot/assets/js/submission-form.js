@@ -106,4 +106,3 @@ Vue.component("submission-form", {
 </div>` 
 
 });
-

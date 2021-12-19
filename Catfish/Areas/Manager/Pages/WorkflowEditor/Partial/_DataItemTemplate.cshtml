@@ -4,10 +4,7 @@
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@{ 
-    var templateId = ViewData["template-id"];
-    string temp = "";
-}
+
 
 <div class="field-description">
     @Html.Raw(Model.Description.ConcatenatedRichText)
@@ -35,6 +32,16 @@
                     template += typeof(MonolingualTextField).ToString();
                 else if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
                     template += typeof(OptionsField).ToString();
+                else if (typeof(TableField).IsAssignableFrom(field.GetType()))
+                {
+                    template += typeof(TableField).ToString();
+                    <tr>
+                        <partial name="@template" model="field" view-data="ViewData" />
+                    </tr>
+
+                    <partial name="Partial/DataItemFields/_Catfish.Core.Models.Contents.Fields.TableRow" model="(field as TableField).TableHead" view-data="ViewData" />
+                    break;
+                }
                 else
                     template += field.GetType().ToString();
 
