@@ -166,9 +166,10 @@ namespace Catfish.Areas.Applets.Controllers
 
                 var permittedStatusIds = GetPermittedStateIdsForCurrentUser(Guid.Parse(block.SelectedGroupId.Value), template, "ListInstances", permissibleStateGuids);
 
-				if (permittedStatusIds.Count == 0)
-					return result;
-				#endregion
+				        if (permittedStatusIds.Count == 0)
+					          return result;
+                    
+				        #endregion
 
 
 

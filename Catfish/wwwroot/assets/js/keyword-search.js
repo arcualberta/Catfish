@@ -303,7 +303,6 @@
             <label :for="item.value">{{ item.text }}</label>
           </div>
           <div>{{this.model.selectedStates.value}}</div>
-         
        </div>`
 });
 
