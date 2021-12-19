@@ -40,8 +40,11 @@ namespace Catfish.Models.Blocks
 
         public TextField WorkflowGroup { get; set; }
 
-        public CheckBoxField LinkToGroup { get; set; }
+        public CheckBoxField UserMustSelectGroup { get; set; }
 
         public StringField GroupSelectorLabel { get; set; }
+
+        public TextField SelectedGroupId { get; set; }
+
     }
 }

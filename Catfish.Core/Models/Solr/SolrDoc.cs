@@ -22,6 +22,7 @@ namespace Catfish.Core.Models.Solr
         {
             AddId(src.Id);
             AddField("status_s", src.StatusId);
+            AddField("group_s", src.GroupId);
             AddField("template_s", src.TemplateId);
             AddField("collection_s", src.PrimaryCollectionId);
             AddField("doc_type_ss", typeof(Item).IsAssignableFrom(src.GetType()) ? "item" : "entity");

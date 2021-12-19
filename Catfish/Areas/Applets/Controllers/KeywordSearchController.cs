@@ -154,6 +154,7 @@ namespace Catfish.Areas.Applets.Controllers
                 Guid itemTemplateId = Guid.Parse(block.SelectedItemTemplate.Value);
                 string keywordFieldId = block.KeywordSourceId.Value;
                 string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/');
+                Guid? groupId = string.IsNullOrEmpty(block.SelectedGroupId.Value) ? null as Guid? : Guid.Parse(block.SelectedGroupId.Value);
 
 
                 #region Validating access-permission for the currently logged in user
@@ -183,6 +184,9 @@ namespace Catfish.Areas.Applets.Controllers
                 query = string.IsNullOrEmpty(query)
                     ? scope
                     : string.Format("{0} AND {1}", scope, query);
+
+                if (groupId.HasValue)
+                    query = string.Format("{0} AND group_s:{1}", query, groupId.Value);
 
                 List<string> stateLimits = new List<string>();
                 foreach (var stId in permittedStatusIds)
@@ -221,8 +225,6 @@ namespace Catfish.Areas.Applets.Controllers
                             {
                                 try
                                 {
-
-
                                     //This is a reference field
                                     var parts = cat.Substring(6).Split("_");
                                     var containerId = Guid.Parse(parts[1]);
