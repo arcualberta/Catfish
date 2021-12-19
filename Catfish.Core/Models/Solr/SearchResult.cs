@@ -32,8 +32,7 @@ namespace Catfish.Core.Models.Solr
             Offset = int.Parse(result.Attribute("start").Value);
 
             var highlightsContainer = resp.Elements("lst")
-                .Where(el => el.Attribute("name").Value == "highlighting")
-                .FirstOrDefault();
+                .FirstOrDefault(el => el.Attribute("name").Value == "highlighting");
 
             ResultEntries = new List<ResultEntry>();
             foreach (var doc in result.Elements("doc"))

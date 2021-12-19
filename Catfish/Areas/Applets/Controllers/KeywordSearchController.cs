@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Catfish.Core.Services;
 using ElmahCore;
 using Catfish.Core.Models.Solr;
+using Piranha.AspNetCore.Identity.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,12 +29,14 @@ namespace Catfish.Areas.Applets.Controllers
     {
         private readonly IModelLoader _loader;
         private readonly AppDbContext _appDb;
+        private readonly Piranha.AspNetCore.Identity.IDb _piranhaDb;
         private readonly ISolrService _solr;
         private readonly ErrorLog _errorLog;
-        public KeywordSearchController(IModelLoader loader, AppDbContext appDb, ISolrService solr, ErrorLog errorLog)
+        public KeywordSearchController(IModelLoader loader, AppDbContext appDb, Piranha.AspNetCore.Identity.IDb piranhaDb, ISolrService solr, ErrorLog errorLog)
         {
             _loader = loader;
             _appDb = appDb;
+            _piranhaDb = piranhaDb;
             _solr = solr;
             _errorLog = errorLog;
         }
@@ -138,7 +141,6 @@ namespace Catfish.Areas.Applets.Controllers
             SearchOutput result = new SearchOutput();
             try
             {
-
                 var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
                 if (page == null)
                     return result;
@@ -147,14 +149,31 @@ namespace Catfish.Areas.Applets.Controllers
                 if (block == null)
                     return result;
 
-
                 string collectionId = block.SelectedCollection.Value;
 
                 Guid itemTemplateId = Guid.Parse(block.SelectedItemTemplate.Value);
                 string keywordFieldId = block.KeywordSourceId.Value;
                 string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/');
+                Guid? groupId = string.IsNullOrEmpty(block.SelectedGroupId.Value) ? null as Guid? : Guid.Parse(block.SelectedGroupId.Value);
 
-                KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
+
+                #region Validating access-permission for the currently logged in user
+
+                ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == itemTemplateId);
+
+                //Take the permissible state GUIDs from the Piranha bloclk (i.e. GUIDs of selected states)
+                var permissibleStateGuids = block.GetSelectedStates();
+
+                var permittedStatusIds = GetPermittedStateIdsForCurrentUser(Guid.Parse(block.SelectedGroupId.Value), template, "ListInstances", permissibleStateGuids);
+
+				        if (permittedStatusIds.Count == 0)
+					          return result;
+                    
+				        #endregion
+
+
+
+				KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
 
                 string keywords = null;
                 string[] slectedKeywords = string.IsNullOrEmpty(keywords)
@@ -166,6 +185,14 @@ namespace Catfish.Areas.Applets.Controllers
                 query = string.IsNullOrEmpty(query)
                     ? scope
                     : string.Format("{0} AND {1}", scope, query);
+
+                if (groupId.HasValue)
+                    query = string.Format("{0} AND group_s:{1}", query, groupId.Value);
+
+                List<string> stateLimits = new List<string>();
+                foreach (var stId in permittedStatusIds)
+                    stateLimits.Add(string.Format("status_s:{0}", stId));
+                query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
 
                 // System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
 
@@ -182,6 +209,7 @@ namespace Catfish.Areas.Applets.Controllers
                 {
                     ResultItem resultItem = new ResultItem();
                     resultItem.Id = resultEntry.Id;
+                    resultItem.Date = resultEntry.Created;
                     resultItem.Title = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == titleFieldId)?.FieldContent);
                     resultItem.Subtitle = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == subtitleFieldId)?.FieldContent);
                     resultItem.Content = Combine(resultEntry.Fields.FirstOrDefault(field => field.FieldId == contentFieldId)?.FieldContent);
@@ -199,8 +227,6 @@ namespace Catfish.Areas.Applets.Controllers
                             {
                                 try
                                 {
-
-
                                     //This is a reference field
                                     var parts = cat.Substring(6).Split("_");
                                     var containerId = Guid.Parse(parts[1]);
@@ -239,6 +265,64 @@ namespace Catfish.Areas.Applets.Controllers
             return components == null ? null : string.Join(" / ", components);
         }
 
+        private List<Guid> GetPermittedStateIdsForCurrentUser(
+            Guid groupId,
+            ItemTemplate template, 
+            string actionFunction, 
+            Guid[] permissibleStateIds)
+        {
+
+            //Get the listing action from the workflow template
+            var action = template.Workflow.Actions.FirstOrDefault(action => action.Function == actionFunction);
+            if (action == null)
+                return new List<Guid>(); //Action with requested function does not exist, so returns an empty array.
+
+            //Get the states of the selected action, excluding the states that were requested to be excluded
+            var actionStateRefs = action.States.Where(st => permissibleStateIds.Contains(st.RefId));
+
+            //Grant access to SysAdmin users
+            if (User == null || string.IsNullOrEmpty(User?.Identity?.Name))
+            {
+                //Return the states of the item where the public can perform the specified acton.
+                return actionStateRefs.Where(st => st.IsPublic).Select(st => st.RefId).ToList();
+            }
+            else if (User.IsInRole("SysAdmin"))
+			{
+                //Return all the non-excluded states
+                return actionStateRefs.Select(st => st.RefId).ToList();
+            }
+            else 
+            {
+                List<Guid> permittedStateGuids = new List<Guid>();
+
+                //Check if the current user holds the Member role within the TBLT group and if so grant access
+                Guid? tbltGroupId = _appDb.Groups
+                    .Where(g => g.Id == groupId)
+                    .Select(g => g.Id)
+                    .FirstOrDefault();
+                if (!tbltGroupId.HasValue)
+                    throw new Exception(string.Format("No {0} group found", groupId));
+
+                //Get user
+                User loginUser = _piranhaDb.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                Guid userId = loginUser.Id;
+
+                //Select the list of roles where the current user is associated within the group.
+                var userRoleIdsWithinGroup = _appDb.UserGroupRoles
+                    .Where(ugr => ugr.UserId == userId)
+                    .Select(ugr => ugr.GroupRole.RoleId)
+                    .ToList();
+
+                //Iterate through all action states and select the subset of states where any of the above roleIds are authorized
+                foreach (var stateRef in actionStateRefs)
+                {
+                    if(stateRef.AuthorizedRoles.Where(ar => userRoleIdsWithinGroup.Contains(ar.RefId)).Any())
+                        permittedStateGuids.Add(stateRef.RefId);          
+                }
+
+                return permittedStateGuids;
+            }
+        }
 
     }
 }

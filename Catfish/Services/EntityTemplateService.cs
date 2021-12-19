@@ -227,6 +227,25 @@ namespace Catfish.Services
             return dataItem.Fields; 
 
         }
+        /// <summary>
+        /// Get Entity template statuses or states
+        /// </summary>
+        /// <param name="entityTemplateId">template Id</param>
+        /// <returns></returns>
+        public IList<SystemStatus> GetSystemStatuses(Guid entityTemplateId)
+        {
+            try
+            {
+                List<SystemStatus> sysStatuses = _db.SystemStatuses
+                    .Where(ss => ss.EntityTemplateId == entityTemplateId).ToList();
+                return sysStatuses;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
 
     }
 }

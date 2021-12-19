@@ -8,8 +8,10 @@ function submitWorkflowForm(stateId, button, postActionId, suffix, successMessag
         event.preventDefault();
         var groupId = null;
         var e = document.getElementById("groupId");
-        if (e != null) {
-             groupId = e.options[e.selectedIndex].value;
+        if (e !== null) {
+            groupId = (e.nodeName?.toLowerCase() === 'input')
+                ? e.value
+                : e.options[e.selectedIndex].value;
         }
         
         //Reguar expression for matching the variable name prefix up to the item's properties.

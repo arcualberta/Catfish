@@ -105,6 +105,8 @@ namespace Catfish.UnitTests
         [Test]
         public void TBlt_SubmitResourcesFormTest()
         {
+            bool saveChangesToDatabase = false;
+
             string lang = "en";
             string templateName = "Task-based Language Teaching Submit Suggest Resources Form Template";
             string _metadatsetName = "TBLT Category Metadata";
@@ -150,11 +152,13 @@ namespace Catfish.UnitTests
             bcpForm.IsRoot = true;
             bcpForm.SetDescription("This template is designed for Task-based Language Teaching Submit Suggest Resources Form", lang);
 
-            var name = bcpForm.CreateField<TextField>("Your name", lang, true);
+            var name = bcpForm.CreateField<TextField>("Submitted by", lang, true);
             name.IsListEntryTitle = true;
             var applicantEmail = bcpForm.CreateField<EmailField>("Email address", lang, true);
             var title =bcpForm.CreateField<TextField>("Title of task", lang, true);
             title.IsListEntryTitle = true;
+
+            bcpForm.CreateField<TextField>("Affiliation", lang, true);
 
             var other = bcpForm.CreateField<TextArea>("Short description", lang, true);
             other.Cols = 50;
@@ -201,7 +205,9 @@ namespace Catfish.UnitTests
             //
 
             Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, commentsForm, applicantEmail, "SubmitResource");
-            db.SaveChanges();
+
+            if (saveChangesToDatabase)
+                db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_SubmitResourceForm_generared.xml");
 
@@ -690,8 +696,10 @@ namespace Catfish.UnitTests
         [Test]
         public void TBlt_SubmitDiscussionFormTest()
         {
+            bool saveChangesToDatabase = false;
+
             string lang = "en";
-            string templateName = "Task-based Language Teaching Discussion Form Template";
+            string templateName = "TBLT Discussion Form Template";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -752,7 +760,9 @@ namespace Catfish.UnitTests
             commentsForm.CreateField<TextArea>("Comments", lang, true);
 
             Define_TBLT_DiscussionWorkflow(workflow, ref template, bcpForm, commentsForm, "SubmitDiscussion");
-            db.SaveChanges();
+
+            if (saveChangesToDatabase)
+                db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_DiscussionForm_generared.xml");
         }
@@ -765,8 +775,6 @@ namespace Catfish.UnitTests
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
-            State approvedState = workflow.AddState(ws.GetStatus(template.Id, "Approved", true));
-            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
 
             WorkflowRole editorRole = workflow.AddRole(auth.GetRole("Editor", true));
             WorkflowRole memberRole = workflow.AddRole(auth.GetRole("Member", true));
@@ -827,12 +835,7 @@ namespace Catfish.UnitTests
             // Added state referances
             listSubmissionsAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
-                .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(approvedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
-                .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(rejectedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
+                .AddAuthorizedRole(memberRole.Id)
                 .AddOwnerAuthorization();
 
             // ================================================
@@ -847,14 +850,8 @@ namespace Catfish.UnitTests
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
+                .AddAuthorizedRole(memberRole.Id)
                 .AddOwnerAuthorization();
-            viewDetailsSubmissionAction.AddStateReferances(approvedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
-                .AddOwnerAuthorization();
-            viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
-                .AddOwnerAuthorization();
-
 
             // ================================================
             // Edit submission-instances related workflow items
@@ -903,20 +900,12 @@ namespace Catfish.UnitTests
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
             deleteSubmissionPostAction.ValidateInputs = false;
 
-            //Defining state mappings
-            ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
-            deleteSubmissionPostAction.AddStateMapping(rejectedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postAction action
             PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
-            //Defining state referances
-            ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
-            ////////    .AddOwnerAuthorization();
-            deleteSubmissionAction.GetStateReference(rejectedState.Id, true)
-                .AddAuthorizedRole(editorRole.Id);
 
             // ================================================
             // Change State submission-instances related workflow items
@@ -930,10 +919,6 @@ namespace Catfish.UnitTests
             //Defining post actions
             PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
                                                                                 You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
-
-            //Defining state mappings
-            changeStatePostAction.AddStateMapping(submittedState.Id, approvedState.Id, "Approve");
-            changeStatePostAction.AddStateMapping(submittedState.Id, rejectedState.Id, "Reject");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp adjudicationDecisionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to make a decision ? ", "Once changed, you cannot revise this document.");

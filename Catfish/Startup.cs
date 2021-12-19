@@ -116,13 +116,13 @@ namespace Catfish
                 .AddPiranhaManagerOptions()
                 .AddRazorOptions(options =>
                 {
-                    //options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    //options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-          
-                    //options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    //options.ViewLocationExpanders.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                    //options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
-                });
+                        //options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                        //options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+
+                        //options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                        //options.ViewLocationExpanders.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                        //options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    });
 
 
             //services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(options =>
@@ -229,9 +229,9 @@ namespace Catfish
             // Add custom policies
             services.AddAuthorization(o =>
             {
-                // Read secured posts
-                o.AddPolicy("ReadSecurePages", policy =>
-                {
+                    // Read secured posts
+                    o.AddPolicy("ReadSecurePages", policy =>
+                        {
                     policy.RequireClaim("ReadSecurePages", "ReadSecurePages");
                 });
             });
@@ -300,7 +300,7 @@ namespace Catfish
                 .AddType(typeof(Models.ItemPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
-               
+
                 .Build()
                 .DeleteOrphans();
 
@@ -364,6 +364,9 @@ namespace Catfish
                 RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Experimental").GetChildren());
             }
 
+            //Registering other custom scripts
+            RegisterCustomScripts();
+
             //Performing Catfish system initialization
             using (var scope = app.ApplicationServices.CreateScope())
             {
@@ -400,54 +403,54 @@ namespace Catfish
             Piranha.App.MediaTypes.Documents.Add(".doc", "application/msword", false);
             Piranha.App.MediaTypes.Documents.Add(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingm", false);
         }
-        //private static void RegisterCustomScripts()
-        //{
-        //    //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
+		private static void RegisterCustomScripts()
+		{
+			App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
+			App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
+			App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
 
-        //    //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block-vue.js");
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
 
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block-vue.js");
 
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/form.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
-        //    //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
-        //    //App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/dist/editItemBundle.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
 
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/process-page.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/form.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
+			//    //App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/dist/editItemBundle.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
 
-        //    //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/process-page.js");
 
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
 
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
-        //    //App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
 
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
 
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/card-block-vue.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/news-feed-block-vue.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/tile-grid.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/keyword-search.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/carousel.js");
-        //    App.Modules.Manager().Scripts.Add("~/assets/js/item-template-editor.js");
-        //}
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/card-block-vue.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/news-feed-block-vue.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/tile-grid.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/keyword-search.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/carousel.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/item-template-editor.js");
+		}
 
         private void RegisterCustomBlocks(IEnumerable<IConfigurationSection> blockConfigList)
         {
@@ -458,7 +461,7 @@ namespace Catfish
         {
             var typeStr = blockConfig.GetSection("Type").Value;
             var t = Type.GetType(typeStr);
-            if(t == null)
+            if (t == null)
                 throw new Exception(string.Format("Could not find the \"type\" for {0}. Did you specify the fully qualified type correctly in appsettings?", typeStr));
 
             var inst = (Activator.CreateInstance(t) as ICatfishBlock);

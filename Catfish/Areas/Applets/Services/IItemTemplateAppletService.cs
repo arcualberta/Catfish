@@ -10,5 +10,6 @@ namespace Catfish.Areas.Applets.Services
     public interface IItemTemplateAppletService
     {
         public ItemTemplate GetItemTemplate(Guid id, ClaimsPrincipal user);
+        public List<Group> GetTemplateGroups(Guid? id);
     }
 }
