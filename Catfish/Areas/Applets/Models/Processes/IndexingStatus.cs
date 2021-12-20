@@ -7,7 +7,9 @@ namespace Catfish.Areas.Applets.Models.Processes
 {
 	public class IndexingStatus
 	{
-		public bool PageIndexingInprogress { get; set; }
-		public bool DataIndexingInprogress { get; set; }
+		public enum eIndexingStatus { InProgress = 1, Ready };
+
+		public eIndexingStatus pageIndexingStatus { get; set; }
+		public eIndexingStatus DataIndexingStatus { get; set; }
 	}
 }

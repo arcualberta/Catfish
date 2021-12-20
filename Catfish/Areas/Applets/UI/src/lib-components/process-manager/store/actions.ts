@@ -1,7 +1,7 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
 import { Mutations } from './mutations';
-import { IndexingStatus } from '../models';
+import { eIndexingStatus, IndexingStatus } from '../models';
 
 //Declare ActionTypes
 export enum Actions {
@@ -16,12 +16,14 @@ export const actions: ActionTree<State, any> = {
         const api = window.location.origin +
             `/applets/api/reindex/data`;
 
+        store.commit(Mutations.SET_REINDEX_DATA_STATUS, eIndexingStatus.InProgress)
+
         fetch(api, {
             method: 'POST'
         })
             .then(response => response.json())
             .then(data => {
-                store.commit(Mutations.SET_REINDEX_DATA_STATUS, data)
+                store.commit(Mutations.SET_REINDEX_DATA_STATUS, data as eIndexingStatus);
             })
             .catch(error => {
                 console.error('Data reindexing error:', error);
@@ -32,12 +34,14 @@ export const actions: ActionTree<State, any> = {
         const api = window.location.origin +
             `/applets/api/reindex/pages`;
 
+        store.commit(Mutations.SET_REINDEX_PAGE_STATUS, eIndexingStatus.InProgress);
+
         fetch(api, {
             method: 'POST'
         })
             .then(response => response.json())
             .then(data => {
-                store.commit(Mutations.SET_REINDEX_PAGE_STATUS, data)
+                store.commit(Mutations.SET_REINDEX_PAGE_STATUS, data as eIndexingStatus)
             })
             .catch(error => {
                 console.error('Page reindexing error:', error);
@@ -51,14 +55,7 @@ export const actions: ActionTree<State, any> = {
         fetch(api)
             .then(response => response.json())
             .then(data => {
-                const status = data as IndexingStatus;
-                store.commit(Mutations.SET_REINDEX_STATUS, status);
-
-                if (status.dataIndexingInprogress || status.pageIndexingInprogress) {
-                    //If an indexing is in-progress, check again in "ms" seconds
-                    const checkBackDelayMilliSec = 5000;
-                    new Promise(resolve => setTimeout(resolve, checkBackDelayMilliSec));
-				}
+                store.commit(Mutations.SET_REINDEX_STATUS, data as IndexingStatus);
             })
             .catch(error => {
                 console.error('Fetch reindexing status error:', error);

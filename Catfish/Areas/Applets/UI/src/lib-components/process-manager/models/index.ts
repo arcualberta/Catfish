@@ -1,5 +1,7 @@
 ﻿
+export enum eIndexingStatus { InProgress = 1, Ready }
+
 export interface IndexingStatus {
-	pageIndexingInprogress: boolean;
-	dataIndexingInprogress: boolean;
+	pageIndexingStatus: eIndexingStatus;
+	dataIndexingStatus: eIndexingStatus;
 }
