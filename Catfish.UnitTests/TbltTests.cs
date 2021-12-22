@@ -809,7 +809,7 @@ namespace Catfish.UnitTests
             //Defining post actions
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
                                                                                  @"<p>Thank you for submitting your post to the Task-based Language Teaching discussion forum. 
-                                                                                    Your post should be visible at the <a href='@SiteUrl/discussion/@Item.Id'> forum page. </a></p>");
+                                                                                    Your post should be visible at the <a href='@SiteUrl/discussion-forum'> forum page. </a></p>");
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
 
