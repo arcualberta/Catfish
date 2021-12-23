@@ -194,7 +194,7 @@ namespace Catfish.Areas.Applets.Controllers
                     stateLimits.Add(string.Format("status_s:{0}", stId));
                 query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
 
-                System.IO.File.WriteAllText("c:\\Temp\\solr_query.txt", query);
+                //System.IO.File.WriteAllText("c:\\solr_query.txt", query);
 
                 SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
 

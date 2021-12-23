@@ -350,6 +350,7 @@ namespace Catfish.UnitTests
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
+                .AddAuthorizedRole(memberRole.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(rejectedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
@@ -373,6 +374,7 @@ namespace Catfish.UnitTests
                 .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
+                .AddAuthorizedRole(memberRole.Id)
                 .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
