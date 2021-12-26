@@ -1,4 +1,5 @@
-﻿using Catfish.Areas.Applets.Models.Blocks;
+﻿using Catfish.Areas.Applets.Authorization;
+using Catfish.Areas.Applets.Models.Blocks;
 using Catfish.Areas.Applets.Services;
 using Catfish.Areas.Manager.Access;
 using Catfish.Core.Authorization.Handlers;
@@ -215,7 +216,7 @@ namespace Catfish
             services.AddScoped<IPageIndexingService, PageIndexingService>();
             services.AddScoped<ISolrService, SolrService>();
             services.AddScoped<ISolrBatchService, SolrBatchService>();
-
+            services.AddScoped<IItemAuthorizationHelper, ItemAuthorizationHelper>();
 
             //Configure policy claims
             CatfishSecurity.BuildAllPolicies(services);

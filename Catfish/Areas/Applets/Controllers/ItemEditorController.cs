@@ -1,4 +1,5 @@
-﻿using Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels;
+﻿using Catfish.Areas.Applets.Authorization;
+using Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels;
 using Catfish.Areas.Applets.Services;
 using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
@@ -12,7 +13,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Catfish.Areas.Applets.Controllers
@@ -27,10 +30,11 @@ namespace Catfish.Areas.Applets.Controllers
         private readonly IWorkflowService _workflowService;
         private readonly AppDbContext _appDb;
         private readonly ErrorLog _errorLog;
-        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, AppDbContext appDb, ErrorLog errorLog)
+        private readonly IItemAuthorizationHelper _itemAuthorizationHelper;
+        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog)
         {
             _itemAppletService = itemAppletService;
-
+            _itemAuthorizationHelper = itemAuthorizationHelper;
             _submissionService = submissionService;
             _entityTemplateService = entityTemplateService;
             _workflowService = workflowService;
@@ -62,14 +66,33 @@ namespace Catfish.Areas.Applets.Controllers
         [Route("{id:Guid}")]
         public ContentResult Get(Guid id)
         {
-            Item item = _itemAppletService.GetItem(id, User);
+            //We should ultimately implement permission checking using resource-based authorization.
+            //For the time being, we are going to implement a role-based authorization that is further limits access based on
+            //groups as follows:
+            //
+            //We grant the user access to an item if
+            //  1. Get the group where the instance belongs to
+            //  2. Check the roles which grants the user Read privilege on the template
+            //  3. See if the current user holds at least one of these roles within the group associated with the item.
+            //     If the user holds such a role, then grant access to the item; otherwise, deny permission.
+            //  4. Note: if the instance is not associated with any group, then simply check for all roles which grant the user
+            //     Read privilege and see if the current user has one of such roles 
 
-            var settings = new JsonSerializerSettings()
+
+            Item item = _appDb.Items.FirstOrDefault(it => it.Id == id);
+            item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+            if (_itemAuthorizationHelper.AuthorizebyRole(item, User, "Read"))
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
-            return Content(JsonConvert.SerializeObject(item, settings), "application/json");
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                return Content(JsonConvert.SerializeObject(item, settings), "application/json");
+            }
+            else
+                return Content("{}", "application/json");
+
         }
 
     }
