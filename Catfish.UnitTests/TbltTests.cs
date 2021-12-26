@@ -315,7 +315,7 @@ namespace Catfish.UnitTests
 
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
                                                                                  @"<p>Thank you for submitting your resource to the Task-based Language Teaching resource collection. 
-                                                                                    Your submission should be visible at the <a href='@SiteUrl/resources/@Item.Id'> resources page. </a></p>");
+                                                                                    We will review and add it to the  <a href='@SiteUrl/resources'> resources collection </a>.</p>");
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
 
