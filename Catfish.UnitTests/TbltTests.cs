@@ -315,7 +315,7 @@ namespace Catfish.UnitTests
 
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
                                                                                  @"<p>Thank you for submitting your resource to the Task-based Language Teaching resource collection. 
-                                                                                    Your submission should be visible at the <a href='@SiteUrl/resources/@Item.Id'> resources page. </a></p>");
+                                                                                    We will review and add it to the  <a href='@SiteUrl/resources'> resources collection </a>.</p>");
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
 
@@ -350,6 +350,7 @@ namespace Catfish.UnitTests
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
+                .AddAuthorizedRole(memberRole.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(rejectedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
@@ -373,6 +374,7 @@ namespace Catfish.UnitTests
                 .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
+                .AddAuthorizedRole(memberRole.Id)
                 .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
@@ -809,7 +811,7 @@ namespace Catfish.UnitTests
             //Defining post actions
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
                                                                                  @"<p>Thank you for submitting your post to the Task-based Language Teaching discussion forum. 
-                                                                                    Your post should be visible at the <a href='@SiteUrl/discussion/@Item.Id'> forum page. </a></p>");
+                                                                                    Your post should be visible at the <a href='@SiteUrl/discussion-forum'> forum page. </a></p>");
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
 
