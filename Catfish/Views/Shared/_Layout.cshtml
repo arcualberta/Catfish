@@ -205,7 +205,7 @@
 			else
 			{
 				//Checking whether the site is locked
-				if (currentSite?.Restrictions?.LockSite && !User.IsInRole("SysAdmin") && !WebApp.Url.StartsWith("/login"))
+				if (currentSite != null && currentSite.Restrictions?.LockSite && !User.IsInRole("SysAdmin") && !WebApp.Url.StartsWith("/login"))
 				{
 					<partial name="/Views/Shared/Partial/_SiteLock.cshtml" />
 					IgnoreBody();

@@ -361,11 +361,14 @@ namespace Catfish
 
             //Register Piranha Custom Blocks 
             RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Production").GetChildren());
-            RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Obsolete").GetChildren());
             if (env.IsDevelopment())
             {
                 RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Development").GetChildren());
                 RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Experimental").GetChildren());
+            }
+			else
+			{
+                RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Obsolete").GetChildren());
             }
 
             //Registering other custom scripts

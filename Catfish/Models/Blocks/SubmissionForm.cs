@@ -15,7 +15,7 @@ namespace Catfish.Models.Blocks
 {
 
     // private Enum eCollection = Enum.TryParse(EType, "Collection");
-    [BlockType(Name = "Submission Form", Category = "Workflow", Component = "submission-form", Icon = "fab fa-wpforms")]
+    [BlockType(Name = "Submission Form", Category = "Submissions", Component = "submission-form", Icon = "fab fa-wpforms")]
     public class SubmissionForm : Block, ICatfishBlock
     {
         public void RegisterBlock() => App.Blocks.Register<SubmissionForm>();
