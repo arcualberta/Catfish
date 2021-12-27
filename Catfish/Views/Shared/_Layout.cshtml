@@ -13,48 +13,50 @@
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
 
 @{
-    if (ViewBag.Title == null)
-    {
-        ViewBag.Title = Model.Title;
-    }
+	if (ViewBag.Title == null)
+	{
+		ViewBag.Title = Model.Title;
+	}
 
-    List<string> vueComponentNames = new List<string>();
-    List<CssBlock> cssBlocks = new List<CssBlock>();
-    List<JavascriptBlock> javascriptBlocks = new List<JavascriptBlock>();
+	var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
 
-    if (Model != null)
-    {
-        IList<Block> blocks;
+	List<string> vueComponentNames = new List<string>();
+	List<CssBlock> cssBlocks = new List<CssBlock>();
+	List<JavascriptBlock> javascriptBlocks = new List<JavascriptBlock>();
 
-        if (typeof(StandardPage).IsAssignableFrom(Model.GetType()))
-            blocks = (Model as StandardPage).Blocks;
-        else if (typeof(ItemPage).IsAssignableFrom(Model.GetType()))
-            blocks = (Model as ItemPage).Blocks;
-        else if (typeof(ItemPage).IsAssignableFrom(Model.GetType()))
-            blocks = (Model as ItemPage).Blocks;
-        else if (typeof(StandardPost).IsAssignableFrom(Model.GetType()))
-            blocks = (Model as StandardPost).Blocks;
-        else if (typeof(MediaPage).IsAssignableFrom(Model.GetType()))
-            blocks = (Model as MediaPage).Blocks;
-        else if (typeof(StandardArchive).IsAssignableFrom(Model.GetType()))
-            blocks = (Model as StandardArchive).Blocks;
-        else if (typeof(StartPage).IsAssignableFrom(Model.GetType()))
-            blocks = (Model as StartPage).Blocks;
-        else
-            blocks = new List<Block>();
+	if (Model != null)
+	{
+		IList<Block> blocks;
 
-        vueComponentNames = _blockHelper.GetVueComponentNames(blocks).ToList();
+		if (typeof(StandardPage).IsAssignableFrom(Model.GetType()))
+			blocks = (Model as StandardPage).Blocks;
+		else if (typeof(ItemPage).IsAssignableFrom(Model.GetType()))
+			blocks = (Model as ItemPage).Blocks;
+		else if (typeof(ItemPage).IsAssignableFrom(Model.GetType()))
+			blocks = (Model as ItemPage).Blocks;
+		else if (typeof(StandardPost).IsAssignableFrom(Model.GetType()))
+			blocks = (Model as StandardPost).Blocks;
+		else if (typeof(MediaPage).IsAssignableFrom(Model.GetType()))
+			blocks = (Model as MediaPage).Blocks;
+		else if (typeof(StandardArchive).IsAssignableFrom(Model.GetType()))
+			blocks = (Model as StandardArchive).Blocks;
+		else if (typeof(StartPage).IsAssignableFrom(Model.GetType()))
+			blocks = (Model as StartPage).Blocks;
+		else
+			blocks = new List<Block>();
 
-        cssBlocks = blocks
-            .Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
-            .Select(b => (b as CssBlock))
-            .ToList();
+		vueComponentNames = _blockHelper.GetVueComponentNames(blocks).ToList();
 
-        javascriptBlocks = blocks
-            .Where(b => typeof(JavascriptBlock).IsAssignableFrom(b.GetType()))
-            .Select(b => (b as JavascriptBlock))
-            .ToList();
-    }
+		cssBlocks = blocks
+			.Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
+			.Select(b => (b as CssBlock))
+			.ToList();
+
+		javascriptBlocks = blocks
+			.Where(b => typeof(JavascriptBlock).IsAssignableFrom(b.GetType()))
+			.Select(b => (b as JavascriptBlock))
+			.ToList();
+	}
 }
 
 <!doctype html>
@@ -164,102 +166,111 @@
 </head>
 
 <body>
-    <div id="vueApp">
-        <partial name="/Views/Shared/Partial/VueComponents/_Header.cshtml" />
-        @*@RenderBody()*@
-        @{
-            //Mr April 22 2021 -- Add ability to lockdown the whole site to limit access to Uofa users only (CAT-883)
-            bool domainUser = false;
-            string[] allowedDomains = _catfishAppConfig.GetAccessRestrictionAllowedDomains();
-            if (allowedDomains != null && allowedDomains.Length > 0)
-            {
-                if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-                {
-                    foreach (string d in allowedDomains)
-                    {
-                        if (_httpContextAccessor.HttpContext.User.Identity.Name.Contains(d))
-                        {
-                            domainUser = true;
-                            break;
-                        }
-                    }
-                }
 
-                if (allowedDomains.Contains("*"))
-                    domainUser = true;
-            }
+	<div id="vueApp">
+		<partial name="/Views/Shared/Partial/VueComponents/_Header.cshtml" />
 
+		@{
+			//Mr April 22 2021 -- Add ability to lockdown the whole site to limit access to Uofa users only (CAT-883)
+			bool domainUser = false;
+			string[] allowedDomains = _catfishAppConfig.GetAccessRestrictionAllowedDomains();
+			if (allowedDomains != null && allowedDomains.Length > 0)
+			{
+				if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+				{
+					foreach (string d in allowedDomains)
+					{
+						if (_httpContextAccessor.HttpContext.User.Identity.Name.Contains(d))
+						{
+							domainUser = true;
+							break;
+						}
+					}
+				}
 
-            bool allowedUser = domainUser || _httpContextAccessor.HttpContext.User.IsInRole("SysAdmin");
+				if (allowedDomains.Contains("*"))
+					domainUser = true;
+			}
 
 
-            if (!allowedUser && allowedDomains != null)//allowedDomain !=null this to make sure it won't crashed of this section sections is not in the appSettings.jason
-            {
-                <div class="container alert alert-danger">@_catfishAppConfig.GetValue("SiteConfig:AccessRestriction:Message", "")</div>
-                IgnoreBody();
-                return;
-            }
-            else
-            {
-                @RenderBody();
-            }
-        }
-
-        @{
-            var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
-            var javascriptCodeHeader = (currentSite == null || currentSite.HeaderContents == null || currentSite.HeaderContents.Javascript == null)
-                ? "" : currentSite.HeaderContents.Javascript.Value;
-            var cssCodeHeader = (currentSite == null || currentSite.HeaderContents == null || currentSite.HeaderContents.Css == null)
-               ? "" : currentSite.HeaderContents.Css.Value;
-            var javascriptCodeFooter = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
-                ? "" : currentSite.FooterContents.Javascript.Value;
-            var cssCodeFooter = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
-               ? "" : currentSite.FooterContents.Css.Value;
-        }
-        <partial name="/Views/Shared/Partial/VueComponents/_Footer.cshtml" />
+			bool allowedUser = domainUser || _httpContextAccessor.HttpContext.User.IsInRole("SysAdmin");
 
 
-    </div>@*End of vueApp div *@
+			if (!allowedUser && allowedDomains != null)//allowedDomain !=null this to make sure it won't crashed of this section sections is not in the appSettings.jason
+			{
+				<div class="container alert alert-danger">@_catfishAppConfig.GetValue("SiteConfig:AccessRestriction:Message", "")</div>
+				IgnoreBody();
+				return;
+			}
+			else
+			{
+				//Checking whether the site is locked
+				if (currentSite?.Restrictions?.LockSite && !User.IsInRole("SysAdmin") && !WebApp.Url.StartsWith("/login"))
+				{
+					<partial name="/Views/Shared/Partial/_SiteLock.cshtml" />
+					IgnoreBody();
+				}
+				else
+				{
+					@RenderBody();
+				}
+			}
+		}
 
-    @* Header/Footer additional scripts/css *@
+		@{
+			var javascriptCodeHeader = (currentSite == null || currentSite.HeaderContents == null || currentSite.HeaderContents.Javascript == null)
+				? "" : currentSite.HeaderContents.Javascript.Value;
+			var cssCodeHeader = (currentSite == null || currentSite.HeaderContents == null || currentSite.HeaderContents.Css == null)
+			   ? "" : currentSite.HeaderContents.Css.Value;
+			var javascriptCodeFooter = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
+				? "" : currentSite.FooterContents.Javascript.Value;
+			var cssCodeFooter = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
+			   ? "" : currentSite.FooterContents.Css.Value;
+		}
+		<partial name="/Views/Shared/Partial/VueComponents/_Footer.cshtml" />
 
-    @Html.Raw(javascriptCodeHeader)
-    @Html.Raw(javascriptCodeFooter)
+
+	</div>@*End of vueApp div *@
+
+	@* Header/Footer additional scripts/css *@
+
+	@Html.Raw(javascriptCodeHeader)
+	@Html.Raw(javascriptCodeFooter)
 
 
 
 
-    <style>
+	<style>
     @Html.Raw(cssCodeHeader)
     @Html.Raw(cssCodeFooter)
-    </style>
+	</style>
 
-    @RenderSection("script", required: false)
+	@RenderSection("script", required: false)
 
-    @*Scripts/styling for public side Controlled Vocab Search Block *@
-    <link href="~/assets/css/public/controlledVocabularySearchBlock.css" rel="stylesheet" />
-    @*<script src="~/assets/dist/keywordsSearchBundle.js"></script>*@
+	@*Scripts/styling for public side Controlled Vocab Search Block *@
+	<link href="~/assets/css/public/controlledVocabularySearchBlock.css" rel="stylesheet" />
+	@*<script src="~/assets/dist/keywordsSearchBundle.js"></script>*@
 
-    @* Rendering scripts and stylesheets registered by components before creating the vue app *@
-    @foreach (var url in _appService.GetScriptUrls())
-    {
-        <script src="@url"></script>
-    }
-    @foreach (var url in _appService.GetStylesheetUrls())
-    {
-        <link href="@url" rel="stylesheet" />
-    }
+	@* Rendering scripts and stylesheets registered by components before creating the vue app *@
+	@foreach (var url in _appService.GetScriptUrls())
+	{
+		<script src="@url"></script>
+	}
+	@foreach (var url in _appService.GetStylesheetUrls())
+	{
+		<link href="@url" rel="stylesheet" />
+	}
 
-    @if (vueComponentNames.Count > 0)
-    {
-        <script>
-            new Vue({ el: '#vueApp' })
-        </script>
-    }
+	@if (vueComponentNames.Count > 0)
+	{
+		<script>
+			new Vue({ el: '#vueApp' })
+		</script>
+	}
 
-    @RenderSection("script", required: false)
+	@RenderSection("script", required: false)
 
-    <script>
+	<script>
    /* function onLoad() {
         gapi.load('auth2', function () {
             gapi.auth2.init();
@@ -300,8 +311,8 @@
         }
     });
 
-    </script>
-    @*<script src="~/assets/dist/vendorsPublicFacingSide.js"></script>*@
+	</script>
+	@*<script src="~/assets/dist/vendorsPublicFacingSide.js"></script>*@
 </body>
 
 </html>
