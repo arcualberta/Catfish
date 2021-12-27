@@ -55,6 +55,9 @@
     <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\models\entityModel.ts" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Applets\UI\src\manager-js\item-viewer.js" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ElmahCore" Version="1.2.5" />
