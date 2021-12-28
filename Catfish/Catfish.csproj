@@ -54,8 +54,13 @@
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\models\entityModel.ts" />
+    <None Remove="Areas\Applets\UI\src\manager-js\card.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Applets\UI\src\manager-js\card.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="Areas\Applets\UI\src\manager-js\item-viewer.js" />
   </ItemGroup>
 
