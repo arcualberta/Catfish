@@ -15,11 +15,7 @@
 
             return {
                 model,
-                imageUrl: computed(() => model.value?.cardImage?.media?.publicUrl?.substring(1)),
-				imgStyle: computed(() => {
-                    const url = model.value?.cardImage?.media?.publicUrl;
-                    return { backgroundImage: "url(" + url?.substring(1) + ")" }
-				}),
+				imageUrl: computed(() => model.value?.cardImage?.media?.publicUrl?.replace(/^~+/g, '')), //NOTE: the REGEXP replaces any leading ~ characters
                 popupImageUrl: computed(() => model.value?.modalImage?.media?.publicUrl),
                 containerHeight: 250
             }
