@@ -15,13 +15,13 @@ namespace Catfish.Areas.Applets.Controllers
 {
     [Route("applets/api/[controller]")]
     [ApiController]
-    public class BlockContentController : ControllerBase
+    public class ContentController : ControllerBase
     {
         private readonly IModelLoader _loader;
         private readonly Piranha.AspNetCore.Identity.IDb _piranhaDb;
         private readonly ErrorLog _errorLog;
 
-        public BlockContentController(IModelLoader loader, Piranha.AspNetCore.Identity.IDb piranhaDb, ErrorLog errorLog)
+        public ContentController(IModelLoader loader, Piranha.AspNetCore.Identity.IDb piranhaDb, ErrorLog errorLog)
 		{
             _loader = loader;
             _piranhaDb = piranhaDb;
@@ -29,11 +29,26 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpGet]
-        [Route("page/{pageId:Guid}/grid/{gridId:Guid}")]
-        public async Task<ContentResult> Grid(Guid pageId, Guid gridId)
+        [Route("page/{pageId:Guid}")]
+        public async Task<ContentResult> Grid(Guid pageId)
         {
             var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
-            var block = page?.Blocks.FirstOrDefault(b => b.Id == gridId) as Grid;
+
+            var settings = new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            return Content(JsonConvert.SerializeObject(page, settings), "application/json");
+        }
+
+        [HttpGet]
+        [Route("page/{pageId:Guid}/block/{blockId:Guid}")]
+        public async Task<ContentResult> Grid(Guid pageId, Guid blockId)
+        {
+            var page = await _loader.GetPageAsync<StandardPage>(pageId, HttpContext.User, false).ConfigureAwait(false);
+            var block = page?.Blocks.FirstOrDefault(b => b.Id == blockId);
 
             var settings = new JsonSerializerSettings()
             {
