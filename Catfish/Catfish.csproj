@@ -53,7 +53,7 @@
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
-    <None Remove="Areas\Applets\UI\src\lib-components\shared\models\entityModel.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
     <None Remove="Areas\Applets\UI\src\manager-js\card.js" />
   </ItemGroup>
   <ItemGroup>
@@ -134,10 +134,8 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
-    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\models\fieldContainer.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
-    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\models\entityModel.ts" />
-    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\models\textModels.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
