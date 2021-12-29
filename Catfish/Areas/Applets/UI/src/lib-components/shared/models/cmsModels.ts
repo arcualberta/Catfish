@@ -1,6 +1,6 @@
 ﻿import { Guid } from "guid-typescript";
 
-export class Page {
+export interface Page {
 	id: Guid;
 	typeId: string;
 	title: string;
@@ -24,16 +24,16 @@ export class Page {
 }
 
 
-export class Block {
+export interface Block {
 	id: Guid;
 	type: string;
 }
 
-export class Grid extends Block {
+export interface Grid extends Block {
 	items: Card[];
 }
 
-export class Card extends Block {
+export interface Card extends Block {
 	cardImage: ImageField;
 	cardTitle: TextField;
 	cardSubTitle: TextField;

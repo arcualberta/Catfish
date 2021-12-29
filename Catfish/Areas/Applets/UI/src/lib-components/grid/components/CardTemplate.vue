@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-	import { defineComponent, toRef, ref, computed } from "vue";
+	import { defineComponent, PropType, toRefs/*, ref, onMounted*/, computed } from "vue";
     import { Card } from "../../shared/models/cmsModels";
 
 
@@ -7,19 +7,29 @@
 		name: "CardTemplate",
 
         props: {
-            model: Card
+            model: {
+                type: Object as PropType<Card>,
+                required: true
+            }
         },
 		setup(props) {
 
-            const model = toRef(props, 'model');
+            const { model } = toRefs(props);
 
             const hasCardImage = computed(() => model.value?.cardImage?.hasValue);
             const cardImageUrl = computed(() => model.value?.cardImage?.media?.publicUrl?.replace(/^~+/g, '')); //NOTE: the REGEXP replaces any leading ~ characters
             const cardImageaWidth = computed(() => hasCardImage.value ? model.value?.cardImage?.media?.width : 1);
             const cardImageaHeight = computed(() => hasCardImage.value ? model.value?.cardImage?.media?.height : 1);
             const cardImageaAspectRatio = computed(() => cardImageaWidth.value && cardImageaHeight.value ? cardImageaWidth.value / cardImageaHeight.value : 0);
-            const cardImgDiv = ref(null);
             const cardImageHeight = 250; //computed(() => cardImgDiv?.value?.cardImgDiv * cardImageaAspectRatio.value);
+
+   //         const cardImgDiv = ref<HTMLDivElement>();
+
+			//onMounted(() => {
+			//	// the DOM element will be assigned to the ref after initial render
+			//	console.log(JSON.stringify(cardImgDiv.value)) // <div>This is a root element</div>
+			//	console.log("Width: " , cardImgDiv.value?.clientWidth) // <div>This is a root element</div>
+   //         })
 
             const cardImageStyles = computed(() => {
                 return {
@@ -30,7 +40,7 @@
 
             return {
                 model,
-				cardImgDiv,
+				//cardImgDiv,
                 hasCardImage,
                 cardImageStyles,
 				cardImageaAspectRatio,
