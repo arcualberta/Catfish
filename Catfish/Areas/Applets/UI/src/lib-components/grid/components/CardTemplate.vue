@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
 	import { defineComponent, PropType, toRefs, ref/*, onMounted*/, computed } from "vue";
     import { Card } from "../../shared/models/cmsModels";
-
+	//import { useDebouncedRef } from '../../shared/functions/useDebouncedRef'
 
     export default defineComponent({
 		name: "CardTemplate",
@@ -14,14 +14,23 @@
         },
         methods: {
             resizeHandler() {
-                this.setViewHeight();
+                this.setViewHeight(false);
             },
-            setViewHeight() {
-                if (this.cardImgDiv) {
-					const h = this.cardImgDiv.clientWidth * this.cardImageHeight / this.cardImageWidth;
-                    this.cardImgDiv.style.height = `${h}px`;
-				}
-			}
+            setViewHeight(immediate: boolean) {
+                if (this.resizeTimeout)
+                    clearTimeout(this.resizeTimeout);
+
+                const delay = immediate ? 0 : 250;
+                this.resizeTimeout = setTimeout(() => {
+                    if (this.cardImgDiv) {
+                        const h = this.cardImgDiv.clientWidth * this.cardImageHeight / this.cardImageWidth;
+                        this.cardImgDiv.style.height = `${h}px`;
+                    }
+				}, delay)
+
+                //const h = this.cardImgDiv.clientWidth * this.cardImageHeight / this.cardImageWidth;
+                //this.cardDivHeight = this.cardImgDiv.clientWidth * this.cardImageHeight / this.cardImageWidth;
+            }
         },
         created() {
 			window.addEventListener("resize", this.resizeHandler);
@@ -32,7 +41,7 @@
 			console.log("Removed resize event listener")
         },
         mounted() {
-            this.setViewHeight();
+            this.setViewHeight(true);
 		},
         setup(props) {
 
@@ -44,7 +53,9 @@
 			const cardImageHeight = computed(() => hasCardImage.value ? model.value?.cardImage?.media?.height : 0);
 
             const cardImgDiv = ref<HTMLDivElement>();
-            const cardDivHeight = ref(0);
+
+            const resizeTimeout = ref<NodeJS.Timeout>();
+			const cardDivHeight = ref<number>(0);
 
     //        onMounted(() => {
     //            this.setViewHeight();
@@ -68,6 +79,8 @@
                 cardImageStyles,
 				cardImageWidth,
                 cardImageHeight,
+                cardDivHeight,
+				resizeTimeout,
                 popupImageUrl: computed(() => model.value?.modalImage?.media?.publicUrl),
             }
         }
