@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-	import { defineComponent, PropType, toRefs, ref, onMounted, computed } from "vue";
+	import { defineComponent, PropType, toRefs, ref/*, onMounted*/, computed } from "vue";
     import { Card } from "../../shared/models/cmsModels";
 
 
@@ -12,38 +12,62 @@
                 required: true
             }
         },
-		setup(props) {
+        methods: {
+            resizeHandler() {
+                this.setViewHeight();
+            },
+            setViewHeight() {
+                if (this.cardImgDiv) {
+					const h = this.cardImgDiv.clientWidth * this.cardImageHeight / this.cardImageWidth;
+                    this.cardImgDiv.style.height = `${h}px`;
+				}
+			}
+        },
+        created() {
+			window.addEventListener("resize", this.resizeHandler);
+			console.log("Added resize event listener")
+		},
+		destroyed() {
+			window.removeEventListener("resize", this.resizeHandler);
+			console.log("Removed resize event listener")
+        },
+        mounted() {
+            this.setViewHeight();
+		},
+        setup(props) {
 
             const { model } = toRefs(props);
 
             const hasCardImage = computed(() => model.value?.cardImage?.hasValue);
             const cardImageUrl = computed(() => model.value?.cardImage?.media?.publicUrl?.replace(/^~+/g, '')); //NOTE: the REGEXP replaces any leading ~ characters
-            const cardImageaWidth = computed(() => hasCardImage.value ? model.value?.cardImage?.media?.width : 1);
-            const cardImageaHeight = computed(() => hasCardImage.value ? model.value?.cardImage?.media?.height : 1);
-            const cardImageaAspectRatio = computed(() => cardImageaWidth.value && cardImageaHeight.value ? cardImageaWidth.value / cardImageaHeight.value : 0);
-            const cardImageHeight = 250; //computed(() => cardImgDiv?.value?.cardImgDiv * cardImageaAspectRatio.value);
+            const cardImageWidth = computed(() => hasCardImage.value ? model.value?.cardImage?.media?.width : 1);
+			const cardImageHeight = computed(() => hasCardImage.value ? model.value?.cardImage?.media?.height : 0);
 
             const cardImgDiv = ref<HTMLDivElement>();
+            const cardDivHeight = ref(0);
 
-			onMounted(() => {
-				// the DOM element will be assigned to the ref after initial render
-				//console.log(JSON.stringify(cardImgDiv.value)) // <div>This is a root element</div>
-				console.log("Width: " , cardImgDiv.value?.clientWidth) // <div>This is a root element</div>
-            })
+    //        onMounted(() => {
+    //            this.setViewHeight();
+				//// the DOM element will be assigned to the ref after initial render
+				////console.log(JSON.stringify(cardImgDiv.value)) // <div>This is a root element</div>
+				//console.log("Width: " , cardImgDiv.value?.clientWidth) // <div>This is a root element</div>
+    //        })
 
             const cardImageStyles = computed(() => {
                 return {
                     backgroundImage: `url(${cardImageUrl.value})`,
-					height: `${cardImageHeight}px`
+					height: `${cardDivHeight}px`
                 }
             });
+
 
             return {
                 model,
 				cardImgDiv,
                 hasCardImage,
                 cardImageStyles,
-				cardImageaAspectRatio,
+				cardImageWidth,
+                cardImageHeight,
                 popupImageUrl: computed(() => model.value?.modalImage?.media?.publicUrl),
             }
         }
