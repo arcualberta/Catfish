@@ -26,8 +26,8 @@
 
                 const delay = immediate ? 0 : this.debounceMs;
                 this.resizeTimeout = setTimeout(() => {
-					if (this.image && this.root) {
-                        const h = this.root.clientWidth * this.imageHeight / this.imageWidth;
+                    if (this.root) {
+                        const h = Math.round(this.root.clientWidth / this.aspectRatio);
                         this.root.style.height = `${h}px`;
                     }
 				}, delay)
@@ -48,32 +48,13 @@
             //console.log("ImgDiv setup ...")
 
 			const { image } = toRefs(props);
-            
-			const cardDivHeight = ref<number>(0);
 			const root = ref<HTMLDivElement>();
-
-			const resizeTimeout = ref<NodeJS.Timeout>();
-            ////const setViewHeight = (immediate: boolean) => {
-            ////    if (resizeTimeout.value)
-            ////        clearTimeout(resizeTimeout.value);
-
-            ////    const delay = immediate ? 0 : debounceMs.value;
-            ////    resizeTimeout.value = setTimeout(() => {
-            ////        if (image.value && root.value) {
-            ////            const h = root.value.clientWidth * image.value.width / image.value.height;
-            ////            root.value.style.height = `${h}px`;
-            ////        }
-            ////    }, delay)
-            ////};
-
+            const resizeTimeout = ref<NodeJS.Timeout>();
 
             return {
 				root,
-                image,
 				imageUrl: computed(() => image.value?.publicUrl?.replace(/^~+/g, '')), //NOTE: the REGEXP replaces any leading ~ characters
-				imageWidth: computed(() => image.value ? image.value.width : 1),
-				imageHeight: computed(() => image.value ? image.value.height : 0),
-                cardDivHeight,
+				aspectRatio: computed(() => image.value ? (image.value.width / image.value.height) : 1),
 				resizeTimeout
             }
         }
@@ -81,12 +62,11 @@
 </script>
 
 <template>
-    <div> Img DIV Setup</div>
-    <div>Image URL: {{imageUrl}}</div>
     <div ref="root"
-         v-bind:style="{ backgroundImage: `url(${imageUrl})`, height: `${cardDivHeight}px` }"
+         v-bind:style="{ backgroundImage: `url(${imageUrl})` }"
          style="background-size:cover"
-         v-bind:id="image.id"> </div>
+         v-bind:id="image.id"
+         class="cf-img-div"> </div>
 </template>
 
 
