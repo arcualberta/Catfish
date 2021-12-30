@@ -53,6 +53,7 @@
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\shared\components\display\ImgDiv.vue" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\functions\useDebouncedRef.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
     <None Remove="Areas\Applets\UI\src\manager-js\card.js" />
@@ -136,6 +137,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\components\display\cms\ImgDiv.vue" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\functions\useDebouncedRef.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
     <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">

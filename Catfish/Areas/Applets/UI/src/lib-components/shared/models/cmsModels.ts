@@ -81,7 +81,8 @@ export interface Media {
 	description: string;
 	size: number;
 	publicUrl: string;
-	width: number; height: number;
+	width: number;
+	height: number;
 	created: Date;
 	lastModified: Date;
 }
