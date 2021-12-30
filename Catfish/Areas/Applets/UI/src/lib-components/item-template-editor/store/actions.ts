@@ -21,7 +21,7 @@ export const actions: ActionTree<State, any> = {
             .then(data => {
                 
                 store.commit(Mutations.SET_TEMPLATE, data);
-               console.log("Loaded Template datacontainer: " + JSON.stringify(store.state.template?.dataContainer))
+               //console.log("Loaded Template datacontainer: " + JSON.stringify(store.state.template?.dataContainer))
                // console.log("Datacontainer count: " + store.state.template?.dataContainer.length)
             });
     },
