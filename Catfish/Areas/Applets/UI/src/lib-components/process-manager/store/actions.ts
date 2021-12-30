@@ -18,9 +18,7 @@ export const actions: ActionTree<State, any> = {
 
         store.commit(Mutations.SET_REINDEX_DATA_STATUS, eIndexingStatus.InProgress)
 
-        fetch(api, {
-            method: 'POST'
-        })
+        fetch(api, { method: 'POST' })
             .then(response => response.json())
             .then(data => {
                 store.commit(Mutations.SET_REINDEX_DATA_STATUS, data as eIndexingStatus);

@@ -7,7 +7,7 @@ using Piranha.Extend.Fields;
 
 namespace Catfish.Models.Blocks
 {
-    [BlockType(Name = "Item List", Category = "Workflow", Component = "item-list", Icon = "far fa-list-alt")]
+    [BlockType(Name = "Submission List", Category = "Submissions", Component = "item-list", Icon = "far fa-list-alt")]
     public class ItemListBlock : Block, ICatfishBlock
     {
         public void RegisterBlock() => App.Blocks.Register<ItemListBlock>();

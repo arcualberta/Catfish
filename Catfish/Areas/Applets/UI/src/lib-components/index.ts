@@ -5,3 +5,4 @@ export { default as ItemTemplateEditor } from './item-template-editor/Applet.vue
 export { default as ItemEditor } from './item-editor/Applet.vue';
 export { default as ItemViewer } from './item-viewer/Applet.vue';
 export { default as ProcessManager } from './process-manager/Applet.vue';
+export { default as Grid } from './grid/Applet.vue';
