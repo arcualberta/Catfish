@@ -1,5 +1,6 @@
 ﻿using Catfish.Areas.Applets.Services;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents.Data;
 using ElmahCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -48,6 +49,34 @@ namespace Catfish.Areas.Applets.Controllers
             }
             return result;
 
+        }
+
+        /// <summary>
+        /// Jan 6 2022 -- get all the child form that attached to the item template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemtemplateChildForms/{templateId}")]
+        public List<SelectListItem> GetItemTemplateChildForms(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+            List<DataItem> dataItems = _itemTemplateAppletService.GetDataItems(Guid.Parse(templateId));
+
+            foreach (DataItem itm in dataItems)
+            {
+                result.Add(new SelectListItem {Text= itm.GetName("en"), Value=itm.Id.ToString() });
+
+            }
+            return result;
+        }
+
+        [HttpGet("getChildForm/{templateId}/{childFormId}")]
+        public DataItem GetChildForm(Guid itemTemplateId, Guid childFormId)
+        {
+            DataItem dataItem = _itemTemplateAppletService.GetDataItem(itemTemplateId, childFormId);
+
+            return dataItem;
         }
     }
 }
