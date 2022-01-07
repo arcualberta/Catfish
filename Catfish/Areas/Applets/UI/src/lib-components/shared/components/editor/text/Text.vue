@@ -8,6 +8,12 @@
             model: {
                 type: null as PropType<Text> | null,
                 required: true
+            },
+            isRequired:
+            {
+                type: Boolean,
+                required: false,
+                default: false
             }
         }
         //methods: {
@@ -19,6 +25,6 @@
 </script>
 
 <template>
-    <input v-model="model"  />
+    <input v-model="model" required="{isRequired ? 'required' : ''}" class="form-control" />
 </template>
 
