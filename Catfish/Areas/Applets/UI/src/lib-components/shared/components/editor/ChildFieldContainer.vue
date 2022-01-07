@@ -50,8 +50,7 @@
 
 <template>
     <div>Child Field Container</div>
-    <div>{{JSON.stringify(model)}}</div>
-    <!--<div v-for="field in model.fields" class="row" :class="cssClass(field)">
+    <div v-for="field in model.fields" class="row" :class="cssClass(field)">
         <div class="field-name col-md-3">
             {{field.name.concatenatedContent}}
         </div>
@@ -83,15 +82,15 @@
             <div v-if="this.isInfoSection(model)">
                 InfoSection
             </div>
-            <<div v-if="this.isIntegerField(model)">
+            <div v-if="this.isIntegerField(model)">
                 IntegerField
-            </div><div v-if="this.isMonolingualTextField(model)">
+            </div>
+            <div v-if="this.isMonolingualTextField(model)">
                 MonolingualTextField
             </div>
-            <TextField :model="field" v-if="this.isMonolingualTextField(model)" />
             <div v-if="this.isTableField(model)">
                 TableField
             </div>
         </div>
-    </div>-->
+    </div>
 </template>
