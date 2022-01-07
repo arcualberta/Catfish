@@ -25,5 +25,6 @@
 
 <template>
     <div>Options Field</div>
+    <div>{{JSON.stringify(model)}}</div>
     <!--{{getSelectedFieldLabels(model)}}-->
 </template>

@@ -50,6 +50,7 @@
 
 <template>
     <div>Child Field Container</div>
+    <div>{{JSON.stringify(model)}}</div>
     <!--<div v-for="field in model.fields" class="row" :class="cssClass(field)">
         <div class="field-name col-md-3">
             {{field.name.concatenatedContent}}

@@ -32,6 +32,7 @@
 
 <template>
     <div>Date Field</div>
+    <div>{{JSON.stringify(model)}}</div>
     <!--<div v-for="val in model.values">{{formatDate(val.value)}}</div>-->
 </template>
 

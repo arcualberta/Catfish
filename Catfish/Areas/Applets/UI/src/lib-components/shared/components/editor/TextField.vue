@@ -31,6 +31,7 @@
 
 <template>
     <div>Text Field</div>
+    <div>{{JSON.stringify(model)}}</div>
    <!--<div v-for="val in model.values" :key="val.id">
        <TextCollection :model="val" />
    </div>-->

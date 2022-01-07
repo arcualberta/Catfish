@@ -39,6 +39,7 @@
 
 <template>
     <div>Attachment Field</div>
+    <div>{{JSON.stringify(model)}}</div>
     <!--<div v-for="file in model.files">
         <a :href="fileUrl + file.fileName" ><img :src="file.thumbnail" class="img-thumbnail"></a>{{file.originalFileName}}
     </div>-->

@@ -24,6 +24,7 @@
 
 <template>
     <div>Integer Field</div>
+    <div>{{JSON.stringify(model)}}</div>
     <!--<div v-for="val in model.values">{{val.value}}</div>-->
 </template>
 
