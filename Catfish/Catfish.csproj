@@ -63,6 +63,7 @@
     <None Remove="Areas\Applets\UI\src\manager-js\card.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Applets\UI\src\manager-js\child-form-submission.js" />
     <Content Include="Areas\Applets\UI\src\manager-js\card.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

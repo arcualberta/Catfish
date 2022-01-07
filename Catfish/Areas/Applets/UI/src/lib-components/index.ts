@@ -6,3 +6,4 @@ export { default as ItemEditor } from './item-editor/Applet.vue';
 export { default as ItemViewer } from './item-viewer/Applet.vue';
 export { default as ProcessManager } from './process-manager/Applet.vue';
 export { default as Grid } from './grid/Applet.vue';
+export { default as ChildFormSubmission } from './child-form-submission/Applet.vue'

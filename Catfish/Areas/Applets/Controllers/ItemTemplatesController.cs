@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Catfish.Areas.Applets.Controllers
 {
@@ -52,7 +53,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         /// <summary>
-        /// Jan 6 2022 -- get all the child form that attached to the item template
+        /// Get all the child form that attached to the item template
         /// </summary>
         /// <param name="templateId"></param>
         /// <returns></returns>
@@ -72,11 +73,12 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpGet("getChildForm/{templateId}/{childFormId}")]
-        public DataItem GetChildForm(Guid itemTemplateId, Guid childFormId)
+        public DataItem GetChildForm(Guid templateId, Guid childFormId)
         {
-            DataItem dataItem = _itemTemplateAppletService.GetDataItem(itemTemplateId, childFormId);
-
-            return dataItem;
+            //TODO: How do we want to handle security in this case?
+            ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
+            DataItem childForm = template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
+            return childForm;
         }
     }
 }
