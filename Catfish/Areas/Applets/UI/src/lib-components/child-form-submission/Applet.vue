@@ -8,9 +8,12 @@
 	import { getters } from './store/getters'
 	import { mutations, Mutations } from './store/mutations'
 
+	import FieldContainer from '../shared/components/editor/FieldContainer.vue'
+
     export default defineComponent({
         name: "ChildFormSubmission",
-        components: {
+		components: {
+			FieldContainer
         },
         props,
         setup(p) {
@@ -48,7 +51,9 @@
 <template>
 	<div>
 		<h3>Child Form</h3>
-		<div>{{JSON.stringify(childForm)}}</div>
+		<FieldContainer :model="childForm" v-if="childForm" />
+		<!--<div>{{JSON.stringify(childForm)}}</div>-->
+
 		<h3>Child Submissions</h3>
 		<div>{{JSON.stringify(childSubmissions)}}</div>
 	</div>
