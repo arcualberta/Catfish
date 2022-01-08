@@ -1,18 +1,15 @@
 ﻿import { Guid } from 'guid-typescript'
-import { FieldContainer, Option } from '../../shared/models/fieldContainer'
-import { Text } from '../../shared/models/textModels'
+import { FieldContainer } from '../../shared/models/fieldContainer'
+import { FlattenedFormFiledState } from '../../shared/store/form-submission/state'
 
 //Declare State interface
-export interface State {
+export interface State extends FlattenedFormFiledState {
   
     itemInstanceId: Guid | null;
     itemTemplateId: Guid | null;
     formId: Guid | null;
     form: FieldContainer | null;
-    flattenedTextModels: { [key: string]: Text };
-    flattenedOptionModels: { [key: string]: Option };
     formInstances: FieldContainer[];
-  
 }
 
 export const state: State = {
