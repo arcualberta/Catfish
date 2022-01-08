@@ -1,7 +1,7 @@
 ﻿
 <script lang="ts">
     import { defineComponent, PropType } from 'vue'
-   import Editor from '@tinymce/tinymce-vue'
+	import Editor from '@tinymce/tinymce-vue'
     import { Text } from '../../../models/textModels'
 
     export default defineComponent({
@@ -18,7 +18,9 @@
                 default: false
             }
         },
-        components: {Editor}
+        components: {
+			Editor
+        }
     });
 
     
