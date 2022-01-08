@@ -28,7 +28,13 @@
 
 <template>
     <div>
-        <Editor v-model="model" placeholder="add multiple lines" required="{isRequired ? 'required' : ''}" />
+        <Editor 
+                apiKey="0ohehg73era56wydy5kyws6ouf25550ogy2sifi1j41hk65l" 
+                v-model="model" 
+                placeholder="add multiple lines" 
+                required="{isRequired ? 'required' : ''}" 
+                />
+
         <!--<Editor   api-key="no-api-key"
        :init="{
       height: 500,
@@ -52,8 +58,8 @@
     /*.tox-notifications-container {
         display: none !important
     }*/
-    .mce-notification {
-        display: none !important;
-    }
+	.tox-tinymce-aux, .mce-notification {
+		display: none !important;
+	}
 </style>
 

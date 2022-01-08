@@ -47,11 +47,11 @@
     <label>{{model.name.concatenatedContent}} <span v-if="model.required" class="requiredField"></span></label>
     <div v-if="type.includes('Catfish.Core.Models.Contents.Fields.TextArea')">
        
-        <RichText v-if="model.richText" v-for="val in model.values" :key="val.id" :isRequired="model.required" />
-        <TextArea v-else v-for="val in model.values" :key="val.id" :isRequired="model.required" />
+        <RichText v-if="model.richText" v-for="val in model.values" :model="val" :key="val.id" :isRequired="model.required" />
+        <TextArea v-else v-for="val in model.values" :model="val" :key="val.id" :isRequired="model.required" />
     </div>
     <div v-else>
-      <TextInput  v-for="val in model.values"  :key="val.id" :isRequired="model.required" />
+      <TextInput  v-for="val in model.values" :model="val"  :key="val.id" :isRequired="model.required" />
     </div>
 
     

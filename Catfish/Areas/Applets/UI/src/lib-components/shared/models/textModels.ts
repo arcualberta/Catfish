@@ -2,6 +2,7 @@
 
 export interface Text {
     id: Guid;
+    $type: string;
     modelType: string;
     value: string;
     format: string;
@@ -14,6 +15,7 @@ export interface Text {
 
 export interface TextCollection {
     id: Guid;
+    $type: string;
     modelType: string;
     values: Text[];
     concatenatedContent: string;

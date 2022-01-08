@@ -1,5 +1,5 @@
 ﻿import { Guid } from "guid-typescript";
-import { TextCollection } from "./textModels";
+import { TextCollection, Text } from "./textModels";
 
 export enum eRefType { undefined, data, metadata }
 
@@ -23,6 +23,7 @@ export enum eFieldType {
 
 export interface Field {
     id: Guid;
+    $type: string;
     modelType: string;
     name: TextCollection;
     required: boolean;
@@ -38,6 +39,7 @@ export interface Field {
 export interface FieldContainer {
     id: Guid;
     templateId: Guid | null;
+    $type: string;
     modelType: string;
     fields: Field[];
     isRoot: boolean | false;
@@ -58,6 +60,7 @@ export interface MonolingualTextField extends Field {
 
 export interface Option {
     id: Guid;
+    $type: string;
     optionText: TextCollection | null;
     selected: boolean;
     extendedOption: boolean;
@@ -94,6 +97,7 @@ export interface FileReference {
     updated: Date;
     cssClass: string;
     modelType: string;
+    $type: string;
 }
 
 export interface AttachmentField extends Field {

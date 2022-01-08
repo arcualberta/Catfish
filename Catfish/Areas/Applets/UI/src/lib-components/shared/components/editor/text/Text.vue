@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType } from 'vue'
-    import { Text } from '../../../models/textModels'
+    import { defineComponent, PropType, computed } from 'vue'
+	import { useStore } from 'vuex';
+	import { Text } from '../../../models/textModels'
 
     export default defineComponent({
         name: "Text",
@@ -15,16 +16,35 @@
                 required: false,
                 default: false
             }
-        }
-        //methods: {
-        //    isUrl(text: string): boolean {
-        //        return text?.startsWith("http://") || text?.startsWith("https://")
-        //    }
-        //}
+        },
+        setup(p) {
+
+            const store = useStore();
+            const model = p.model;
+
+			console.log(store.state.form?.id);
+            console.log(model.id);
+
+            return {
+				content: computed(() => store.state.itemTemplateId.toString())
+			}
+            //return {
+            //    childForm: computed(() => {
+            //        return {
+            //            get(): string {
+            //                return model.value;
+            //            },
+            //            set(value: string): void {
+            //                store.commit('SET_TEXT_VALUE', { id: model.id, val: value });
+            //            }
+            //        }
+            //    }
+            //};
+        },
     });
 </script>
 
 <template>
-    <input v-model="model" required="{isRequired ? 'required' : ''}" class="form-control" />
+    <input v-model="content" required="{isRequired ? 'required' : ''}" class="form-control" />
 </template>
 
