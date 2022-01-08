@@ -1,6 +1,6 @@
 ﻿import { Guid } from 'guid-typescript'
 import { FieldContainer } from '../../shared/models/fieldContainer'
-import { FlattenedFormFiledState } from '../../shared/store/form-submission/state'
+import { FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
 
 //Declare State interface
 export interface State extends FlattenedFormFiledState {

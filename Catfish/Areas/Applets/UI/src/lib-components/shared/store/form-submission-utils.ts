@@ -1,6 +1,11 @@
-﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option } from '../../models/fieldContainer'
-import { TextCollection, Text } from '../../models/textModels';
-import { FlattenedFormFiledState } from './state'
+﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option } from '../models/fieldContainer'
+import { TextCollection, Text } from '../models/textModels';
+
+//Declare State interface
+export interface FlattenedFormFiledState {
+    flattenedTextModels: { [key: string]: Text };
+    flattenedOptionModels: { [key: string]: Option };
+}
 
 export function flattenFieldInputs(container: FieldContainer, state: FlattenedFormFiledState) {
 
