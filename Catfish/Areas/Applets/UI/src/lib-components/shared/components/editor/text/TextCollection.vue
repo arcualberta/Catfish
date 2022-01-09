@@ -9,7 +9,12 @@
             model: {
                 type: null as PropType<TextCollection> | null,
                 required: true
-           }
+           },
+			isRequired: {
+				type: Boolean,
+				required: false,
+				default: false
+			}
         },
         components: {
             Text
@@ -18,8 +23,6 @@
 </script>
 
 <template>
-    <div v-for="txt in model.values">
-        <Text :model="txt" />
-    </div>
+    <Text v-for="val in model.values" :model="val" :is-required="isRequired"/>
 </template>
 

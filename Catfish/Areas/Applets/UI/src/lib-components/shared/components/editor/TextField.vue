@@ -2,9 +2,6 @@
     import { defineComponent, PropType } from 'vue'
     import { MultilingualTextField } from '../../models/fieldContainer'
     import TextCollection from './text/TextCollection.vue'
-    import TextArea from './text/textArea.vue'
-    import TextInput from './text/text.vue'
-    import RichText from './text/RichText.vue'
 
     export default defineComponent({
         name: "TextField",
@@ -12,8 +9,13 @@
             model: {
                 type: null as PropType<MultilingualTextField> | null,
                 required: true
-           },
-            isMultivalued: 
+            },
+            isRequired: {
+                type: Boolean,
+                required: false,
+                default: false
+            },
+            isMultivalued:
             {
                 type: Boolean,
                 required: false,
@@ -27,10 +29,7 @@
 
         },
         components: {
-            TextCollection,
-            TextArea,
-            TextInput,
-            RichText
+            TextCollection
         },
         setup(p) {
 
@@ -43,17 +42,19 @@
 </script>
 
 <template>
+    <TextCollection v-for="val in model.values" :model="val" :is-required="isRequired" />
+
     <!--<div>{{type}} : {{JSON.stringify(model)}}</div>-->
-    <label>{{model.name.concatenatedContent}} <span v-if="model.required" class="requiredField"></span></label>
+    <!--<label>{{model.name.concatenatedContent}} <span v-if="model.required" class="requiredField"></span></label>
     <div v-if="type.includes('Catfish.Core.Models.Contents.Fields.TextArea')">
-       
+
         <RichText v-if="model.richText" v-for="val in model.values" :model="val" :key="val.id" :isRequired="model.required" />
         <TextArea v-else v-for="val in model.values" :model="val" :key="val.id" :isRequired="model.required" />
     </div>
     <div v-else>
       <TextInput  v-for="val in model.values" :model="val"  :key="val.id" :isRequired="model.required" />
-    </div>
+    </div>-->
 
-    
+
 </template>
 

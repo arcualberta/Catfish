@@ -7,6 +7,11 @@ export interface FlattenedFormFiledState {
     flattenedOptionModels: { [key: string]: Option };
 }
 
+export enum FlattenedFormFiledMutations {
+    SET_TEXT_VALUE = 'SET_TEXT_VALUE',
+    SET_OPTION_VALUE = 'SET_OPTION_VALUE'
+}
+
 export function flattenFieldInputs(container: FieldContainer, state: FlattenedFormFiledState) {
 
     //Populating the flattenedTextModels and flattenedOptionModels arrays

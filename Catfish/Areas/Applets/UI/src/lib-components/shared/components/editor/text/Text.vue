@@ -1,5 +1,6 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType, computed } from 'vue'
+	import { FlattenedFormFiledMutations } from '../../../store/form-submission-utils'
+	import { defineComponent, PropType } from 'vue'
 	import { useStore } from 'vuex';
 	import { Text } from '../../../models/textModels'
 
@@ -10,41 +11,53 @@
                 type: null as PropType<Text> | null,
                 required: true
             },
-            isRequired:
-            {
+            isRequired: {
                 type: Boolean,
                 required: false,
                 default: false
             }
         },
-        setup(p) {
+		computed: {
+			content: {
+				get(): string {
+					return this.model.value;
+				},
+				set(value: string) {
+					//console.log("id:", this.model.id, "   value: ", value)
+					this.store.commit(FlattenedFormFiledMutations.SET_TEXT_VALUE, { id: this.model.id, val: value });
+				}
+			}
+		},
+		setup(p) {
 
-            const store = useStore();
-            const model = p.model;
+			const store = useStore();
+			const model = p.model;
 
 			console.log(store.state.form?.id);
-            console.log(model.id);
+			console.log(model.id);
 
-            return {
-				content: computed(() => store.state.itemTemplateId.toString())
+			return {
+				store
 			}
-            //return {
-            //    childForm: computed(() => {
-            //        return {
-            //            get(): string {
-            //                return model.value;
-            //            },
-            //            set(value: string): void {
-            //                store.commit('SET_TEXT_VALUE', { id: model.id, val: value });
-            //            }
-            //        }
-            //    }
-            //};
-        },
+		},
+   //     setup(p) {
+
+   //         const store = useStore();
+   //         const model = p.model;
+
+			//console.log(store.state.form?.id);
+   //         console.log(model.id);
+
+   //         return {
+			//	content: computed(() => store.state.itemTemplateId.toString())
+			//}
+   //     },
     });
 </script>
 
 <template>
     <input v-model="content" required="{isRequired ? 'required' : ''}" class="form-control" />
+	<b>You entered:</b>
+	<p>{{content}}</p>
 </template>
 
