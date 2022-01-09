@@ -27,7 +27,6 @@
     "dayjs": "^1.10.7",
     "guid-typescript": "^1.0.9",
     "ts-node": "^10.4.0",
-    "v-switch-case": "^1.0.3",
     "vue-editor-js": "^2.0.2",
     "vuex": "^4.0.2"
   },
