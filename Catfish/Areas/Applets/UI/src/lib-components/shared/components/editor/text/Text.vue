@@ -60,6 +60,6 @@
 	<textarea v-else-if="isMultiline" v-model="content" required="{isRequired ? 'required' : ''}" />
 	<input v-else v-model="content" required="{isRequired ? 'required' : ''}" class="form-control" />
 	<b>You entered:</b>
-	<div>{{content}}</div>
+	<div v-html="content" />
 </template>
 
