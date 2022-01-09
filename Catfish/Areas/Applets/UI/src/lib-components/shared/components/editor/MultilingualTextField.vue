@@ -1,32 +1,19 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType } from 'vue'
+    import { defineComponent, PropType, computed } from 'vue'
     import { MultilingualTextField } from '../../models/fieldContainer'
     import TextCollection from './text/TextCollection.vue'
 
     export default defineComponent({
-        name: "TextField",
+		name: "MultilingualTextField",
         props: {
             model: {
                 type: null as PropType<MultilingualTextField> | null,
                 required: true
             },
-            isRequired: {
-                type: Boolean,
-                required: false,
-                default: false
-            },
-            isMultivalued:
-            {
-                type: Boolean,
-                required: false,
-                default: true
-            },
             isMultiline: {
                 type: Boolean,
-                required: false,
-                default: true
+                required: true
             }
-
         },
         components: {
             TextCollection
@@ -35,14 +22,15 @@
 
             const type = p.model.modelType;
             return {
-                type
+                type,
+                isRichText: computed(() => p.model.richText)
             }
         }
     });
 </script>
 
 <template>
-    <TextCollection v-for="val in model.values" :model="val" :is-required="isRequired" />
+    <TextCollection v-for="val in model.values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" />
 
     <!--<div>{{type}} : {{JSON.stringify(model)}}</div>-->
     <!--<label>{{model.name.concatenatedContent}} <span v-if="model.required" class="requiredField"></span></label>

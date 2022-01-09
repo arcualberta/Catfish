@@ -9,11 +9,14 @@
             model: {
                 type: null as PropType<TextCollection> | null,
                 required: true
-           },
-			isRequired: {
+			},
+			isMultiline: {
 				type: Boolean,
-				required: false,
-				default: false
+				required: true
+			},
+			isRichText: {
+				type: Boolean,
+				required: true
 			}
         },
         components: {
@@ -23,6 +26,6 @@
 </script>
 
 <template>
-    <Text v-for="val in model.values" :model="val" :is-required="isRequired"/>
+    <Text v-for="val in model.values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" />
 </template>
 

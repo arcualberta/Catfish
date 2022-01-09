@@ -50,11 +50,19 @@ export interface FieldContainer {
     source: FieldContainer[] | null;
 }
 
-export interface MultilingualTextField extends Field {
+export interface TextField extends Field {
+    richText: boolean;
+    rows: number;
+    cols: number;
+    maxWords: number;
+    maxChars: number;
+}
+
+export interface MultilingualTextField extends TextField {
     values: TextCollection[] | null;
 }
 
-export interface MonolingualTextField extends Field {
+export interface MonolingualTextField extends TextField {
     values: Text[] | null;
 }
 

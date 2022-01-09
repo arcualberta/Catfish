@@ -1,7 +1,9 @@
 ﻿<script lang="ts">
-	import { FlattenedFormFiledMutations } from '../../../store/form-submission-utils'
 	import { defineComponent, PropType } from 'vue'
 	import { useStore } from 'vuex';
+	import Editor from '@tinymce/tinymce-vue'
+
+	import { FlattenedFormFiledMutations } from '../../../store/form-submission-utils'
 	import { Text } from '../../../models/textModels'
 
     export default defineComponent({
@@ -10,20 +12,30 @@
             model: {
                 type: null as PropType<Text> | null,
                 required: true
-            },
+			},
+			isMultiline: {
+				type: Boolean,
+				required: true
+			},
+			isRichText: {
+				type: Boolean,
+				required: true
+			},
             isRequired: {
                 type: Boolean,
-                required: false,
+                required: true,
                 default: false
             }
         },
+		components: {
+			Editor
+		},
 		computed: {
 			content: {
 				get(): string {
 					return this.model.value;
 				},
 				set(value: string) {
-					//console.log("id:", this.model.id, "   value: ", value)
 					this.store.commit(FlattenedFormFiledMutations.SET_TEXT_VALUE, { id: this.model.id, val: value });
 				}
 			}
@@ -40,24 +52,14 @@
 				store
 			}
 		},
-   //     setup(p) {
-
-   //         const store = useStore();
-   //         const model = p.model;
-
-			//console.log(store.state.form?.id);
-   //         console.log(model.id);
-
-   //         return {
-			//	content: computed(() => store.state.itemTemplateId.toString())
-			//}
-   //     },
     });
 </script>
 
 <template>
-    <input v-model="content" required="{isRequired ? 'required' : ''}" class="form-control" />
+	<Editor v-if="isRichText" apiKey="0ohehg73era56wydy5kyws6ouf25550ogy2sifi1j41hk65l" v-model="content" placeholder="add multiple lines" required="{isRequired ? 'required' : ''}" />
+	<textarea v-else-if="isMultiline" v-model="content" required="{isRequired ? 'required' : ''}" />
+	<input v-else v-model="content" required="{isRequired ? 'required' : ''}" class="form-control" />
 	<b>You entered:</b>
-	<p>{{content}}</p>
+	<div>{{content}}</div>
 </template>
 

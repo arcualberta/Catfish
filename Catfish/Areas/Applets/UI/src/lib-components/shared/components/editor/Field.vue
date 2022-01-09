@@ -12,7 +12,7 @@
 	import IntegerField from './IntegerField.vue'
 	import RadioField from './RadioField.vue'
 	import SelectField from './SelectField.vue'
-	import TextField from './TextField.vue'
+	import MultilingualTextField from './MultilingualTextField.vue'
 
     export default defineComponent({
         name: "Field",
@@ -33,17 +33,16 @@
 			IntegerField,
 			RadioField,
 			SelectField,
-			TextField,
+			MultilingualTextField
 		},
         setup(p) {
             const fieldType: eFieldType = FieldContainerUtils.getFieldType(p.model);
-            const isRequired: boolean = p.model.required;
 			const cssClass: string = FieldContainerUtils.cssClass(p.model);
 
 			return {
 				FieldTypes: eFieldType,
                 fieldType,
-                isRequired,
+
 				cssClass
             }
         }
@@ -70,12 +69,11 @@
 			<IntegerField v-else-if="fieldType === FieldTypes.IntegerField" :model="model" />
 			<RadioField v-else-if="fieldType === FieldTypes.RadioField" :model="model" />
 			<SelectField v-else-if="fieldType === FieldTypes.SelectField" :model="model" />
-			<TextField v-else-if="fieldType === FieldTypes.TextArea" :model="model" />
-			<TextField v-else-if="fieldType === FieldTypes.TextField" :model="model" />
+			<MultilingualTextField v-else-if="fieldType === FieldTypes.TextArea" :model="model" :is-multiline="true" />
+			<MultilingualTextField v-else-if="fieldType === FieldTypes.TextField" :model="model" :is-multiline="false" />
 
 			<div v-else-if="fieldType === FieldTypes.CompositeField"> TODO: Implement editor template for the CompositeField</div>
 			<div v-else-if="fieldType === FieldTypes.TableField"> TODO: Implement editor template for the TableField</div>
-			<div v-else-if="fieldType === FieldTypes.MonolingualTextField"> TODO: Check if we really need an editor template for MonolingualTextField</div>
 		</div>
 	</div>
 </template>
