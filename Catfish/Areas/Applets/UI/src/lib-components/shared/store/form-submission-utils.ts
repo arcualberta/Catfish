@@ -12,6 +12,60 @@ export enum FlattenedFormFiledMutations {
     SET_OPTION_VALUE = 'SET_OPTION_VALUE'
 }
 
+export abstract class FieldContainerUtils {
+    public static cssClass(field: Field): string {
+        return field.cssClass + " " + field.fieldCssClass;
+    }
+    public static getFieldType(field: Field): eFieldType {
+        let typeName: string = field?.modelType.substring(0, field.$type.indexOf(","));
+        typeName = typeName?.substring(typeName.lastIndexOf(".") + 1);
+        return eFieldType[typeName as keyof typeof eFieldType];
+    }
+
+    public static isAttachmentField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.AttachmentField
+    }
+    public static isOptionsField(field: Field): boolean {
+        const fieldType = this.getFieldType(field);
+        return fieldType === eFieldType.CheckboxField
+            || fieldType === eFieldType.RadioField
+            || fieldType === eFieldType.SelectField
+    }
+    public static isCompositeField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.CompositeField
+    }
+    public static isDateField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.DateField
+    }
+    public static isDecimalField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.DecimalField
+    }
+    public static isEmailField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.EmailField
+    }
+    public static isFieldContainerReference(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.FieldContainerReference
+    }
+    public static isInfoSection(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.InfoSection
+    }
+    public static isIntegerField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.IntegerField
+    }
+    public static isMonolingualTextField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.MonolingualTextField
+    }
+    public static isTableField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.TableField
+    }
+    public static isTextArea(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.TextArea
+    }
+    public static isTextField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.TextField
+    }
+}
+
 export function flattenFieldInputs(container: FieldContainer, state: FlattenedFormFiledState) {
 
     //Populating the flattenedTextModels and flattenedOptionModels arrays
@@ -53,3 +107,4 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
     //console.log("flattenedOptionModels\n", JSON.stringify(state.flattenedOptionModels))
 
 }
+

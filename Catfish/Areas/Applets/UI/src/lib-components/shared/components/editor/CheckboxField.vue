@@ -5,7 +5,7 @@
    
 
     export default defineComponent({
-		name: "OptionsField",
+		name: "CheckboxField",
         components: {
             
         },

@@ -2,14 +2,14 @@
     //import { Guid } from "guid-typescript";
     import { defineComponent, PropType, ref, computed } from 'vue'
     import { useStore } from 'vuex';
-    import { FieldContainerReference } from '../../models/fieldContainer'
+	import { FieldContainerReference } from '../../models/fieldContainer'
 
    // import { Item } from '../../../item-viewer/models/item'
   
-    import ChildFieldContainer from './ChildFieldContainer.vue'
+    import ChildFieldContainer from './text/ChildFieldContainer.vue'
 
     export default defineComponent({
-        name: "FieldContainerReference",
+		name: "FieldContainerReference",
         components: {
            ChildFieldContainer
         },

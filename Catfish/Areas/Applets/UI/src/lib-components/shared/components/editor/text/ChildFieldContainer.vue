@@ -1,16 +1,17 @@
 ﻿<script lang="ts">
     import { defineComponent, PropType } from 'vue'
-    import { FieldContainer } from '../../models/fieldContainer'
-    import Field from './Field.vue'
 
+	import { FieldContainer } from '../../../models/fieldContainer'
+	import Field from '../Field.vue'
+   
     export default defineComponent({
-		name: "FieldContainer",
+        name: "ChildFieldContainer",
         props: {
             model: null as PropType<FieldContainer> | null,
         },
         components: {
-            Field
-        },
+			Field          
+        }
     });
 </script>
 
