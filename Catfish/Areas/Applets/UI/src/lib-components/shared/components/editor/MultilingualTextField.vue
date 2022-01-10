@@ -38,7 +38,7 @@
                 for (let i = 0; !valueFound && p.model?.values && (i < p.model.values.length); ++i) {
                     let txtCollection = p.model.values[i];
                     for (let k = 0; !valueFound && txtCollection.values && (k < txtCollection.values.length); ++k) {
-                        valueFound = txtCollection.values[k]?.value?.length > 0;
+                        valueFound = txtCollection.values[k]?.value?.trim().length > 0;
 					}
                 }
 
