@@ -17,7 +17,11 @@
 			isRichText: {
 				type: Boolean,
 				required: true
-			}
+			},
+			isRequired: {
+				type: Boolean,
+				required: true
+            }
         },
         components: {
             Text
@@ -26,6 +30,6 @@
 </script>
 
 <template>
-    <Text v-for="val in model.values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" />
+    <Text v-for="val in model.values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :is-required="isRequired" />
 </template>
 
