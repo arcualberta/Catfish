@@ -39,14 +39,9 @@
 				}
 			}
 		},
-		setup(p) {
+		setup() {
 
 			const store = useStore();
-			const model = p.model;
-			console.log("p.isRequired: ", p.isRequired)
-
-			console.log(store.state.form?.id);
-			console.log(model.id);
 
 			return {
 				store
@@ -59,8 +54,8 @@
 	<Editor v-if="isRichText" apiKey="0ohehg73era56wydy5kyws6ouf25550ogy2sifi1j41hk65l" v-model="content" placeholder="add multiple lines" required="{isRequired ? 'required' : ''}" />
 	<textarea v-else-if="isMultiline" v-model="content" required="{isRequired ? 'required' : ''}" />
 	<input v-else v-model="content" required="{isRequired ? 'required' : ''}" class="form-control" />
+	<div>isRequired: {{isRequired}}</div>
 	<div><b>You entered:</b></div>
 	<div v-html="content" />
-	<div>isRequired: {{isRequired}}</div>
 </template>
 

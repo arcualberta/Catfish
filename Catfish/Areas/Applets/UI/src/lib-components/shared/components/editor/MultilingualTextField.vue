@@ -21,10 +21,10 @@
         setup(p) {
 
             const type = p.model.modelType;
-			console.log("p.model: ", JSON.stringify(p.model))
+			//console.log("p.model: ", JSON.stringify(p.model))
 
             const isRequired = computed(() => {
-                console.log("p.model.required: ", p.model.required)
+                //console.log("p.model.required: ", p.model.required)
 
                 //If the field itself is not a required field, none of its inner fields are
                 //required to have any value
