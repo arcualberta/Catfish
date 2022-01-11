@@ -4,6 +4,7 @@ using Catfish.Core.Models.Contents.Data;
 using ElmahCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,13 +73,17 @@ namespace Catfish.Areas.Applets.Controllers
             return result;
         }
 
-        [HttpGet("getChildForm/{templateId}/{childFormId}")]
-        public DataItem GetChildForm(Guid templateId, Guid childFormId)
-        {
-            //TODO: How do we want to handle security in this case?
-            ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
-            DataItem childForm = template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
-            return childForm;
-        }
-    }
+		[HttpGet("getChildForm/{templateId}/{childFormId}")]
+		public ActionResult GetChildForm(Guid templateId, Guid childFormId)
+		{
+			//TODO: How do we want to handle security in this case?
+			ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
+			DataItem childForm = template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
+
+			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+			string jsonString = JsonConvert.SerializeObject(childForm, settings);
+			return Content(jsonString, "application/json");
+		}
+
+	}
 }
