@@ -108,8 +108,93 @@ namespace Catfish.UnitTests
             //string json = JsonConvert.SerializeObject(template);
             //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
+        [Test]
+        public void AntiRacism_BlogSubmissionFormTest()
+        {
+            string lang = "en";
+            string templateName = "Anti-racism de·col·o·nize blog submission form template";
 
-       
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            //ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = template.Workflow;
+
+            //Defining email templates
+
+            //Defininig the inspection form
+            DataItem bcpForm = template.GetDataItem(templateName, true, lang);
+            bcpForm.IsRoot = true;
+            bcpForm.SetDescription("This template is designed for collecting the de·col·o·nize blog submission form", lang);
+
+            bcpForm.CreateField<InfoSection>(null, null)
+                 .AppendContent("h1", "de·col·o·nize blog submission form", lang);
+            bcpForm.CreateField<InfoSection>(null, null)
+              .AppendContent("p", "To submit your entry for the Anti-racism Lab Blog, please fill out the form below", lang);
+
+            var name = bcpForm.CreateField<TextField>("Name", lang, true);
+            name.IsListEntryTitle = true;
+            var email = bcpForm.CreateField<EmailField>("Email Address", lang, true);
+            email.IsListEntryTitle = true;
+            bcpForm.CreateField<TextField>("Faculty/Department", lang, true);
+
+            string[] degrees = {"Undergraduate", "Masters","Doctoral","Professional Degree (i.e., Law, Medicine)" };
+            bcpForm.CreateField<RadioField>("Degree Type", lang,degrees, true);
+            bcpForm.CreateField<TextField>("Institution", lang, true);
+            bcpForm.CreateField<TextField>("Country", lang, true);
+            bcpForm.CreateField<TextField>("Please provide the title of your entry ", lang, true);
+
+            var bio = bcpForm.CreateField<TextArea>("Please provide a short bio (max 150 words)", lang, true);
+            bio.Cols = 50;
+            bio.Rows = 5;
+            var blog = bcpForm.CreateField<TextArea>("Please write a short description of your blog (150 words max)", lang, true);
+            blog.Cols = 50;
+            blog.Rows = 5;
+
+           
+            bcpForm.CreateField<AttachmentField>("Please attach a headshot of yourself", lang, true);
+
+            bcpForm.CreateField<AttachmentField>("Please attach your blog submission below", lang, true);
+
+            bcpForm.CreateField<InfoSection>(null, null)
+                 .AppendContent("div", "Personal information provided is collected in accordance with Section 33(c) of the Alberta Freedom of Information and Protection of Privacy Act (the FOIP Act) and will be protected under Part 2 of that Act.", lang, "alert alert-info");
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //                                                         Defininig roles                                             //
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //
+
+            Define_AR_RolesStatesWorkflow1(workflow, ref template, bcpForm);
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\AntiRacism_blogSubmission.xml");
+
+            //string json = JsonConvert.SerializeObject(template);
+            //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
+        }
+
         private EmailTemplate CreateApplicantEmailTemplate(ref ItemTemplate template, string formName=null)
         {
             string lang = "en";
