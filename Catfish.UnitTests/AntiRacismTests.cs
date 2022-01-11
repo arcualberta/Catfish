@@ -72,7 +72,7 @@ namespace Catfish.UnitTests
 
             bcpForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h1", "Anti-racism Lab: Documenting experiences of racism", lang)
-                 .AppendContent("p", "Please use this from to write about your everyday experiences of racism at the university. This is the online diary which we will ask you to keep doing for the next  6 months so that we can get an idea about the race climate of the university. Your everyday experiences can be racism experienced from other students, faculty and administrators. Try and write as fully as you can about the incident: what happened; who else was involved; what did/could you do; did you get any support from others who observed it; did you know where to go in the university for support; is there anywhere/anyone to go for support and how effective was it in helping you?", lang)
+                 .AppendContent("p", "Please use this form to write about your everyday experiences of racism at the university. This is the online diary which we will ask you to keep doing for the next  6 months so that we can get an idea about the race climate of the university. Your everyday experiences can be racism experienced from other students, faculty and administrators. Try and write as fully as you can about the incident: what happened; who else was involved; what did/could you do; did you get any support from others who observed it; did you know where to go in the university for support; is there anywhere/anyone to go to for support and how effective was it in helping you?", lang)
                  .AppendContent("p", "Please use the same pseudonym each time you write about experiences and, if possible, please record incidents as they happen so that it will be a good reflection of events. Thanks a lot for particpating.", lang);
 
            var name = bcpForm.CreateField<TextField>("Please provide a pseudonym which you'd like to have assigned to your experience.", lang,true);
@@ -87,13 +87,14 @@ namespace Catfish.UnitTests
             bcpForm.CreateField<DateField>("What date this incident occur?", lang, true);
 
             bcpForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("div", @"Please take a moment to read and sign the consent form provided here (<a href='https://drive.google.com/file/d/15qYj61n1t93PPd6gGB5ru8QE8DE_bRsD/view?usp=sharing' target='_blank'>https://drive.google.com/file/d/15qYj61n1t93PPd6gGB5ru8QE8DE_bRsD/view?usp=sharing</a>). Please attach the signed copy below", lang, "alert alert-info");
+                 //.AppendContent("div", @"Please take a moment to read and sign the consent form provided here (<a href='https://drive.google.com/file/d/15qYj61n1t93PPd6gGB5ru8QE8DE_bRsD/view?usp=sharing' target='_blank'>https://drive.google.com/file/d/15qYj61n1t93PPd6gGB5ru8QE8DE_bRsD/view?usp=sharing</a>). Please attach the signed copy below", lang, "alert alert-info");
+                  .AppendContent("div", @"Please take a moment to read the consent form provided here (<a href='https://drive.google.com/file/d/15qYj61n1t93PPd6gGB5ru8QE8DE_bRsD/view?usp=sharing' target='_blank'>https://drive.google.com/file/d/15qYj61n1t93PPd6gGB5ru8QE8DE_bRsD/view?usp=sharing</a>)", lang, "alert alert-info");
 
 
-            bcpForm.CreateField<AttachmentField>("Upload Consent Form", lang, true);
-        //    string[] permission = new string[] { "Yes" };
+            // bcpForm.CreateField<AttachmentField>("Upload Consent Form", lang, true);
+            string[] permission = new string[] { "Yes" };
             //var confParticipation = sasForm.CreateField<CheckboxField>("Conference Participation", lang, participationRoles);
-          //  bcpForm.CreateField<CheckboxField>("I confirm that I have already submitted the consent form or have it attached above.", lang,permission, true);
+            bcpForm.CreateField<CheckboxField>("I have read and agree to the details of the consent form.", lang,permission, true);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
