@@ -98,35 +98,25 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpPost]
-        [Route("appendchildforminstance/{itemTemplateId}")]
-        public DataItem AppendChildFormInstance(Guid itemTemplateId, [FromForm] String datamodel)
+        [Route("appendchildforminstance/{itemInstanceId}")]
+        public DataItem AppendChildFormInstance(Guid itemInstanceId, [FromForm] String datamodel)
         {
             var settings = new JsonSerializerSettings()
-
             {
-
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-
                 TypeNameHandling = TypeNameHandling.All,
-
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-
             };
 
-
-
             DataItem childForm = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
-            EntityTemplate itemTemplate1 = _entityTemplateService.GetTemplate(childForm.Id);
+          //  EntityTemplate itemTemplate1 = _entityTemplateService.GetTemplate(childForm.Id);
             childForm.TemplateId = childForm.Id; //Comment Form Id
             childForm.Id = Guid.NewGuid();
+            var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);
+            item.DataContainer.Add(childForm);
 
-            EntityTemplate itemTemplate = _entityTemplateService.GetTemplate(itemTemplateId);
+            _appDb.SaveChanges();
 
-            //Item childItem = new Item();
-            //childItem.
-            //itemTemplate.Instances.Add((Item)childForm);
-
-           
             return childForm;
         }
 

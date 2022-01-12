@@ -5,7 +5,8 @@ import { Mutations } from './mutations';
 //Declare ActionTypes
 export enum Actions {
     LOAD_FORM = "LOAD_FORM",
-    LOAD_SUBMISSIONS = "LOAD_SUBMISSIONS"
+    LOAD_SUBMISSIONS = "LOAD_SUBMISSIONS",
+    ADD_CHILD_FORM = "ADD_CHILD_FORM"
 }
 
 export const actions: ActionTree<State, any> = {
@@ -41,6 +42,26 @@ export const actions: ActionTree<State, any> = {
     //        .catch(error => {
     //            console.error('Submission loading error:', error);
     //        });
+    },
+
+    [Actions.ADD_CHILD_FORM](store) {
+        const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${store.state.itemInstanceId}`;
+
+        let formData = new FormData();
+        formData.append('datamodel', JSON.stringify(store.state.form));
+
+        fetch(api,
+            {
+                body: formData,
+                method: "post"
+            }).then(response =>
+                response.json())
+            .then(data => {
+                console.log(JSON.stringify(data));
+
+            })
+            .catch(error => console.log(error));;
+      
     },
 }
 

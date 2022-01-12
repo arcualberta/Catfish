@@ -3,7 +3,7 @@
 	import { defineComponent, computed } from 'vue';
 	import { useStore } from 'vuex';
 	import props, { QueryParameter, DataAttribute } from '../shared/props'
-	import { state } from './store/state'
+	import { state} from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
 	import { mutations, Mutations } from './store/mutations'
@@ -26,7 +26,8 @@
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
 			const childFormId = Guid.parse(dataAttributes["child-form-id"] as string);
 
-			const store = useStore();
+            const store = useStore();
+
 			store.commit(Mutations.SET_IDS, [itemId, itemTemplateId, childFormId]);
 
 			//load the data
@@ -36,9 +37,8 @@
          
 			return {
 				childForm: computed(() => store.state.form),
-				childSubmissions: computed(() => store.state.formInstances),
-                store,
-                itemTemplateId
+                childSubmissions: computed(() => store.state.formInstances),
+                store
               
             }
 		},
@@ -49,7 +49,7 @@
 			getters
         },
         methods: {
-            addChildForm(itemTemplateId: string, childForm: object) {
+            addChildForm() {
 
                 //const store = useStore();
 
@@ -57,23 +57,23 @@
               //  console.log("form content " + JSON.stringify(store.state.form));
                 //store.dispatch(Actions.ADD_CHILD_FORM);
 
-                const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${itemTemplateId}`;
+                //const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${itemInstanceId}`;
 
-                let formData = new FormData();
-                formData.append('datamodel', JSON.stringify(childForm) );
+                //let formData = new FormData();
+                //formData.append('datamodel', JSON.stringify(childForm) );
                
-                fetch(api,
-                    {
-                        body: formData,
-                        method: "post"
-                    }).then(response =>
-                        response.json())
-                    .then(data => {
-                       console.log(JSON.stringify(data));
+                //fetch(api,
+                //    {
+                //        body: formData,
+                //        method: "post"
+                //    }).then(response =>
+                //        response.json())
+                //    .then(data => {
+                //       console.log(JSON.stringify(data));
 
-                    })
-                    .catch(error => console.log(error));;
-
+                //    })
+                //    .catch(error => console.log(error));;
+                this.store.dispatch(Actions.ADD_CHILD_FORM);
             }
         }
     });
@@ -83,8 +83,8 @@
 	<div>
 		<FieldContainer :model="childForm" v-if="childForm" />
 
-		<button class="btn btn-primary" @click="addChildForm(itemTemplateId, childForm)">Submit</button>
-
+		<button class="btn btn-primary" @click="addChildForm()">Submit</button>
+     
 		<h3>Child Submissions</h3>
 		<div>{{JSON.stringify(childSubmissions)}}</div>
 	</div>
