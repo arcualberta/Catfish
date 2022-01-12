@@ -26,7 +26,7 @@
         },
         methods: {
             getFieldType(field: Field): eFieldType {
-                var typeName: string = field?.modelType.substring(0, field.modelType.indexOf(","));
+                var typeName: string = field?.$type.substring(0, field.$type.indexOf(","));
                 typeName = typeName?.substring(typeName.lastIndexOf(".") + 1);
                 return (<any>eFieldType)[typeName];
             },
@@ -49,7 +49,7 @@
 </script>
 
 <template>
-    <div v-for="field in model.fields" class="row" :class="cssClass(field)">
+    <div v-for="field in model.fields.$values" class="row" :class="cssClass(field)">
         <div class="field-name col-md-3">
             {{field.name.concatenatedContent}}
         </div>

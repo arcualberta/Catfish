@@ -86,6 +86,7 @@ namespace Catfish.Areas.Applets.Controllers
                 var settings = new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
                 return Content(JsonConvert.SerializeObject(item, settings), "application/json");

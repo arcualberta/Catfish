@@ -38,7 +38,7 @@
 </script>
 
 <template>
-    <div v-for="file in model.files">
+    <div v-for="file in model.files.$values">
         <a :href="fileUrl + file.fileName" ><img :src="file.thumbnail" class="img-thumbnail"></a>{{file.originalFileName}}
        
     </div>

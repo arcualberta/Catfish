@@ -75,7 +75,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
 		[HttpGet("getChildForm/{templateId}/{childFormId}")]
-		public ActionResult GetChildForm(Guid templateId, Guid childFormId)
+		public ContentResult GetChildForm(Guid templateId, Guid childFormId)
 		{
 			//TODO: How do we want to handle security in this case?
 			ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
