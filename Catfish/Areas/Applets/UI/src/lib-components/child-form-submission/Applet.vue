@@ -33,10 +33,13 @@
 			store.dispatch(Actions.LOAD_FORM);
 			store.dispatch(Actions.LOAD_SUBMISSIONS);
 
-
+         
 			return {
 				childForm: computed(() => store.state.form),
-				childSubmissions: computed(() => store.state.formInstances)
+				childSubmissions: computed(() => store.state.formInstances),
+                store,
+                itemTemplateId
+              
             }
 		},
 		storeConfig: {
@@ -44,14 +47,43 @@
 			actions,
 			mutations,
 			getters
-		}
+        },
+        methods: {
+            addChildForm(itemTemplateId: string, childForm: object) {
+
+                //const store = useStore();
+
+                // console.log(" item id " + store.state.itemInstanceId);
+              //  console.log("form content " + JSON.stringify(store.state.form));
+                //store.dispatch(Actions.ADD_CHILD_FORM);
+
+                const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${itemTemplateId}`;
+
+                let formData = new FormData();
+                formData.append('datamodel', JSON.stringify(childForm) );
+               
+                fetch(api,
+                    {
+                        body: formData,
+                        method: "post"
+                    }).then(response =>
+                        response.json())
+                    .then(data => {
+                       console.log(JSON.stringify(data));
+
+                    })
+                    .catch(error => console.log(error));;
+
+            }
+        }
     });
 </script>
 
 <template>
 	<div>
 		<FieldContainer :model="childForm" v-if="childForm" />
-		<!--<div>{{JSON.stringify(childForm)}}</div>-->
+
+		<button class="btn btn-primary" @click="addChildForm(itemTemplateId, childForm)">Submit</button>
 
 		<h3>Child Submissions</h3>
 		<div>{{JSON.stringify(childSubmissions)}}</div>

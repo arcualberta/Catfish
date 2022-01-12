@@ -10,7 +10,7 @@
         },
         components: {
             Field
-        },
+        }
     });
 </script>
 

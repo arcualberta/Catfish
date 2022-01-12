@@ -3,6 +3,7 @@ using Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels;
 using Catfish.Areas.Applets.Services;
 using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
@@ -95,6 +96,40 @@ namespace Catfish.Areas.Applets.Controllers
                 return Content("{}", "application/json");
 
         }
+
+        [HttpPost]
+        [Route("appendchildforminstance/{itemTemplateId}")]
+        public DataItem AppendChildFormInstance(Guid itemTemplateId, [FromForm] String datamodel)
+        {
+            var settings = new JsonSerializerSettings()
+
+            {
+
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+
+                TypeNameHandling = TypeNameHandling.All,
+
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+
+            };
+
+
+
+            DataItem childForm = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
+            EntityTemplate itemTemplate1 = _entityTemplateService.GetTemplate(childForm.Id);
+            childForm.TemplateId = childForm.Id; //Comment Form Id
+            childForm.Id = Guid.NewGuid();
+
+            EntityTemplate itemTemplate = _entityTemplateService.GetTemplate(itemTemplateId);
+
+            //Item childItem = new Item();
+            //childItem.
+            //itemTemplate.Instances.Add((Item)childForm);
+
+           
+            return childForm;
+        }
+
 
     }
 }

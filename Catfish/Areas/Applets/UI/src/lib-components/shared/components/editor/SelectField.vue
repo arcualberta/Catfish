@@ -16,8 +16,8 @@
            }
         },
         methods: {
-			getSelectedFieldLabels(field: OptionsField) {
-				return OptionsFieldMethods.getSelectedFieldLabels(field.options);
+            getSelectedFieldLabels(field: OptionsField) {
+                return OptionsFieldMethods.getSelectedFieldLabels(field.options.$values);
             }
 		}
     });
