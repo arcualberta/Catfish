@@ -50,7 +50,6 @@
 
 <template>
 	<div>
-		<h3>Child Form</h3>
 		<FieldContainer :model="childForm" v-if="childForm" />
 		<!--<div>{{JSON.stringify(childForm)}}</div>-->
 

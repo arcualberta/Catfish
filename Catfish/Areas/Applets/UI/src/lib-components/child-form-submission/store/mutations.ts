@@ -21,7 +21,7 @@ export const mutations: MutationTree<State> = {
     },
     [Mutations.SET_FORM](state: State, payload: FieldContainer) {
         state.form = payload
-        //console.log("form\n", JSON.stringify(state.form))
+        //console.log("state.form\n", JSON.stringify(state.form))
 
         flattenFieldInputs(state.form, state)
     },

@@ -19,11 +19,11 @@ export const actions: ActionTree<State, any> = {
         fetch(api)
             .then(response => response.json())
             .then(data => {
-
+                //console.log('Data:\n', JSON.stringify(data));
                 store.commit(Mutations.SET_FORM, data);
             })
             .catch(error => {
-                console.error('Child form loading error:', error);
+                console.error('Actions.LOAD_FORM Error: ', error);
             });
 ;
     },

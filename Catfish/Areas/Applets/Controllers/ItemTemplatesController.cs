@@ -5,6 +5,7 @@ using ElmahCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,7 +81,11 @@ namespace Catfish.Areas.Applets.Controllers
 			ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
 			DataItem childForm = template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
 
-			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+			JsonSerializerSettings settings = new JsonSerializerSettings 
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
 			string jsonString = JsonConvert.SerializeObject(childForm, settings);
 			return Content(jsonString, "application/json");
 		}

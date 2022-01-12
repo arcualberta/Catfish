@@ -17,7 +17,7 @@ export abstract class FieldContainerUtils {
         return field.cssClass + " " + field.fieldCssClass;
     }
     public static getFieldType(field: Field): eFieldType {
-        let typeName: string = field?.modelType.substring(0, field.$type.indexOf(","));
+        let typeName: string = field?.$type.substring(0, field.$type.indexOf(","));
         typeName = typeName?.substring(typeName.lastIndexOf(".") + 1);
         return eFieldType[typeName as keyof typeof eFieldType];
     }
@@ -69,7 +69,7 @@ export abstract class FieldContainerUtils {
 export function flattenFieldInputs(container: FieldContainer, state: FlattenedFormFiledState) {
 
     //Populating the flattenedTextModels and flattenedOptionModels arrays
-    container.fields.forEach((value: Field) => {
+    container?.fields?.$values?.forEach((value: Field) => {
 
         //Try to parse the field type into eFieldType
         const absTypeStr = value.$type?.substring(0, value.$type.indexOf(","));
@@ -88,16 +88,16 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
         }
         else if (isMultilingualField) {
             //Iterating through each value as a multilingual field
-            (value as MultilingualTextField).values?.forEach((multilingualVal: TextCollection) => {
+            (value as MultilingualTextField).values?.$values?.forEach((multilingualVal: TextCollection) => {
                 //Iterating through each text value and adding them to the flattened dictionary
-                multilingualVal.values.forEach((txtVal: Text) => {
+                multilingualVal.values?.$values?.forEach((txtVal: Text) => {
                     state.flattenedTextModels[txtVal.id.toString()] = txtVal;
                 })
             })
         }
         else if (isOptionsField) {
             //Itenrating through each option and adding them to the flattened options dictionary
-            (value as OptionsField).options.forEach((opt: Option) => {
+            (value as OptionsField).options?.forEach((opt: Option) => {
                 state.flattenedOptionModels[opt.id.toString()] = opt;
             })
         }

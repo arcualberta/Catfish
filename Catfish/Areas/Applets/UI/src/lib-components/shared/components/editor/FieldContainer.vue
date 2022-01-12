@@ -15,5 +15,5 @@
 </script>
 
 <template>
-    <Field v-for="field in model.fields" :model="field" />
+    <Field v-for="field in model.fields?.$values" :model="field" />
 </template>

@@ -17,6 +17,9 @@ export interface TextCollection {
     id: Guid;
     $type: string;
     modelType: string;
-    values: Text[];
+    values: {
+        $type: string;
+        $values: Text[];
+    };
     concatenatedContent: string;
 }

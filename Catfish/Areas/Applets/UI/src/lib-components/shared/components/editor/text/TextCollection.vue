@@ -30,6 +30,6 @@
 </script>
 
 <template>
-    <Text v-for="val in model.values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :is-required="isRequired" />
+    <Text v-for="val in model?.values?.$values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :is-required="isRequired" />
 </template>
 

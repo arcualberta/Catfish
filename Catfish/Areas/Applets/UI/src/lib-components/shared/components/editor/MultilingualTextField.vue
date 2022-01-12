@@ -35,10 +35,10 @@
                 //the field (which can potentially have multiple values) has at least one value
                 //in at least one language.
                 let valueFound: boolean = false;
-                for (let i = 0; !valueFound && p.model?.values && (i < p.model.values.length); ++i) {
-                    let txtCollection = p.model.values[i];
-                    for (let k = 0; !valueFound && txtCollection.values && (k < txtCollection.values.length); ++k) {
-                        valueFound = txtCollection.values[k]?.value?.trim().length > 0;
+                for (let i = 0; !valueFound && p.model?.values && (i < p.model.values?.$values?.length); ++i) {
+                    let txtCollection = p.model?.values?.$values[i];
+                    for (let k = 0; !valueFound && txtCollection.values && (k < txtCollection.values?.$values.length); ++k) {
+                        valueFound = txtCollection.values?.$values[k]?.value?.trim().length > 0;
 					}
                 }
 
@@ -60,7 +60,7 @@
 <template>
     <!--<div>MultilingualValue.isRichText: {{isRichText}}</div>
     <div>{{JSON.stringify(model)}}</div>-->
-    <TextCollection v-for="val in model.values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :is-required="isRequired" />
+    <TextCollection v-for="val in model.values?.$values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :is-required="isRequired" />
     <!--<div>{{type
         }} : {{JSON.stringify(model)}}
     </div>-->

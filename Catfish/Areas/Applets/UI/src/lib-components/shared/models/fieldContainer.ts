@@ -41,7 +41,10 @@ export interface FieldContainer {
     templateId: Guid | null;
     $type: string;
     modelType: string;
-    fields: Field[];
+    fields: {
+        $type: string;
+        $values: Field[];
+    };
     isRoot: boolean | false;
     name: TextCollection | null;
     description: TextCollection | null;
@@ -59,7 +62,10 @@ export interface TextField extends Field {
 }
 
 export interface MultilingualTextField extends TextField {
-    values: TextCollection[] | null;
+    values: {
+        $type: string;
+        $values: TextCollection[];
+    } | null;
 }
 
 export interface MonolingualTextField extends TextField {
