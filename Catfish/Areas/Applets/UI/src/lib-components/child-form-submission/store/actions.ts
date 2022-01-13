@@ -3,6 +3,7 @@ import { State } from './state';
 import { Mutations } from './mutations';
 import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
 
+
 //Declare ActionTypes
 export enum Actions {
     LOAD_FORM = "LOAD_FORM",
@@ -13,7 +14,7 @@ export enum Actions {
 export const actions: ActionTree<State, any> = {
 
     [Actions.LOAD_FORM](store) {
- 
+       
         const api = window.location.origin +
             `/applets/api/itemtemplates/getchildform/${store.state.itemTemplateId}/${store.state.formId}`;
         console.log('Form Load API: ', api)
@@ -46,6 +47,10 @@ export const actions: ActionTree<State, any> = {
     },
 
     [Actions.ADD_CHILD_FORM](store) {
+        
+        store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
+
+       
         const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${store.state.itemInstanceId}`;
 
         let formData = new FormData();
@@ -65,9 +70,13 @@ export const actions: ActionTree<State, any> = {
                 };
                 //clear the form content
                 clearForm(flattenModel);
+               store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
                 
             })
-            .catch(error => console.log(error));;
+            .catch(error => {
+                store.commit(Mutations.SET_SUBMISSION_STATUS, "Fail");
+                console.log(error)
+            });
       
     },
 }

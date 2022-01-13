@@ -116,7 +116,7 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
 
 export function clearForm(state: FlattenedFormFiledState) {
     //Iterate through all Text elements in state.flattenedTextModels 
-    console.log("state received before clear " + JSON.stringify(state))
+   // console.log("state received before clear " + JSON.stringify(state))
 
     Object.keys(state.flattenedTextModels).forEach(function (key) {
         state.flattenedTextModels[key].value = '';

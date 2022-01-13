@@ -4,11 +4,18 @@ import { Guid } from 'guid-typescript'
 import { FieldContainer } from '../../shared/models/fieldContainer';
 import { flattenFieldInputs, FlattenedFormFiledMutations } from '../../shared/store/form-submission-utils'
 
+export enum SubmissionStatus {
+    None = "None",
+    InProgress = "InProgress",
+    Success = "Success",
+    Fail = "Fail"
+}
 //Declare MutationTypes
 export enum Mutations {
     SET_IDS = 'SET_IDS',
     SET_FORM = 'SET_FORM',
-    SET_SUBMISSIONS = 'SET_SUBMISSIONS'
+    SET_SUBMISSIONS = 'SET_SUBMISSIONS',
+    SET_SUBMISSION_STATUS='SET_SUBMISSION_STATUS'
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -35,5 +42,10 @@ export const mutations: MutationTree<State> = {
     },
     [FlattenedFormFiledMutations.SET_OPTION_VALUE](state: State, payload: { id: Guid; isSelected: boolean }) {
         state.flattenedOptionModels[payload.id.toString()].selected = payload.isSelected;
-    }
+    },
+    [Mutations.SET_SUBMISSION_STATUS](state: State, status: string) {
+
+        //const fieldType: eFieldType = eFieldType[fieldTypeStr as keyof typeof eFieldType];
+        state.submissionStatus = SubmissionStatus[status as keyof typeof SubmissionStatus];
+    },
 }
