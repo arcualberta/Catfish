@@ -1,6 +1,7 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
 import { Mutations } from './mutations';
+import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
 
 //Declare ActionTypes
 export enum Actions {
@@ -58,7 +59,13 @@ export const actions: ActionTree<State, any> = {
                 response.json())
             .then(data => {
                 console.log(JSON.stringify(data));
-
+                const flattenModel: FlattenedFormFiledState ={          
+                    flattenedOptionModels : store.state.flattenedOptionModels,
+                    flattenedTextModels : store.state.flattenedTextModels,
+                };
+                //clear the form content
+                clearForm(flattenModel);
+                
             })
             .catch(error => console.log(error));;
       

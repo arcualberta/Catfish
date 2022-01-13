@@ -109,7 +109,7 @@ namespace Catfish.Areas.Applets.Controllers
             };
 
             DataItem childForm = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
-          //  EntityTemplate itemTemplate1 = _entityTemplateService.GetTemplate(childForm.Id);
+        
             childForm.TemplateId = childForm.Id; //Comment Form Id
             childForm.Id = Guid.NewGuid();
             var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);

@@ -50,29 +50,6 @@
         },
         methods: {
             addChildForm() {
-
-                //const store = useStore();
-
-                // console.log(" item id " + store.state.itemInstanceId);
-              //  console.log("form content " + JSON.stringify(store.state.form));
-                //store.dispatch(Actions.ADD_CHILD_FORM);
-
-                //const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${itemInstanceId}`;
-
-                //let formData = new FormData();
-                //formData.append('datamodel', JSON.stringify(childForm) );
-               
-                //fetch(api,
-                //    {
-                //        body: formData,
-                //        method: "post"
-                //    }).then(response =>
-                //        response.json())
-                //    .then(data => {
-                //       console.log(JSON.stringify(data));
-
-                //    })
-                //    .catch(error => console.log(error));;
                 this.store.dispatch(Actions.ADD_CHILD_FORM);
             }
         }
