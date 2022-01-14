@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
     import { defineComponent, PropType } from 'vue'
     import { TextCollection } from '../../../models/textModels'
+	import { FieldValidationStatus } from '../../../store/form-validators'
     import Text from './Text.vue'
 
     export default defineComponent({
@@ -18,8 +19,8 @@
 				type: Boolean,
 				required: true
 			},
-			isRequired: {
-				type: Boolean,
+			validationStatus: {
+				type: null as PropType<FieldValidationStatus> | null,
 				required: true
             }
         },
@@ -30,6 +31,6 @@
 </script>
 
 <template>
-    <Text v-for="val in model?.values?.$values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :is-required="isRequired" />
+    <Text v-for="val in model?.values?.$values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :validation-status="validationStatus" />
 </template>
 
