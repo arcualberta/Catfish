@@ -1,8 +1,9 @@
 ﻿<script lang="ts">
     import { defineComponent, PropType, computed } from 'vue'
     import { MultilingualTextField } from '../../models/fieldContainer'
-		import { validateMultilingualTextField } from '../../store/form-validators'
+    import { validateMultilingualTextField } from '../../store/form-validators'
     import TextCollection from './text/TextCollection.vue'
+    import { isRichTextField, isRequiredField } from '../../store/form-submission-utils'
 
     export default defineComponent({
 		name: "MultilingualTextField",
@@ -28,16 +29,17 @@
 
             return {
                 type,
-				isRichText: computed(() => p.model? p.model.richText : false),
-				validationStatus
+                isRichText: computed(() => isRichTextField(p.model)),
+                validationStatus,
+                isRequiredField: computed(() => isRequiredField(p.model)),
             }
         }
     });
 </script>
 
 <template>
-    <!--<div>MultilingualValue.isRichText: {{isRichText}}</div>
-    <div>{{JSON.stringify(model)}}</div>-->
+    <!--  <div>IsRequired: {{isRequiredField}}</div>
+      <div>{{JSON.stringify(model)}}</div>-->
     <TextCollection v-for="val in model.values?.$values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :validation-status="validationStatus" />
     <!--<div>{{type
         }} : {{JSON.stringify(model)}}

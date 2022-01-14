@@ -116,8 +116,6 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
 
 export function clearForm(state: FlattenedFormFiledState) {
     //Iterate through all Text elements in state.flattenedTextModels 
-   // console.log("state received before clear " + JSON.stringify(state))
-
     Object.keys(state.flattenedTextModels).forEach(function (key) {
         state.flattenedTextModels[key].value = '';
     });
@@ -126,5 +124,17 @@ export function clearForm(state: FlattenedFormFiledState) {
     Object.keys(state.flattenedOptionModels).forEach(function (key) {
         state.flattenedOptionModels[key].selected = false;
     });
+}
+
+export function isRequiredMultilingualField(field: MultilingualTextField) {
+    return field?.required ? field.required : false;
+}
+
+export function isRequiredField(field: Field) {
+    return field?.required ? field.required : false;
+}
+
+export function isRichTextField(field: MultilingualTextField) {
+    return field?.richText ? field.richText : false;
 }
 
