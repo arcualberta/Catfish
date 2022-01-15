@@ -38,11 +38,9 @@
         setup(p) {
             const fieldType: eFieldType = FieldContainerUtils.getFieldType(p.model);
 			const cssClass: string = FieldContainerUtils.cssClass(p.model);
-
 			return {
 				FieldTypes: eFieldType,
                 fieldType,
-
 				cssClass
             }
         }
@@ -58,7 +56,7 @@
 	<InfoField v-else-if="fieldType === FieldTypes.InfoSection" :model="model" :class="cssClass" />
 	<div v-else :class="cssClass + ' row'">
 		<div class="col-md-3 field-name">
-			{{model.name.concatenatedContent}}
+			{{model.name.concatenatedContent}} <span v-if="this.model.required" style="color:red">*</span>
 		</div>
 		<div class="col-md-9 field-value">
 			<AttachmentField v-if="fieldType === FieldTypes.AttachmentField" :model="model" />
