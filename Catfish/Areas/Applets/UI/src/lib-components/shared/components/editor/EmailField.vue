@@ -32,6 +32,8 @@ import { defineComponent, PropType } from 'vue'
 </script>
 
 <template>
-    <div v-for="val in model.values.$values">{{val.value}}</div>
+    <div>Email Field</div>
+    <div>{{JSON.stringify(model)}}</div>
+    <!--<div v-for="val in model.values">{{val.value}}</div>-->
 </template>
 

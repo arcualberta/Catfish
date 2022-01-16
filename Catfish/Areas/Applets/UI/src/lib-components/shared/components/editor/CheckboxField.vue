@@ -5,7 +5,7 @@
    
 
     export default defineComponent({
-		name: "OptionsField",
+		name: "CheckboxField",
         components: {
             
         },
@@ -24,5 +24,7 @@
 </script>
 
 <template>
-    {{getSelectedFieldLabels(model)}}
+    <div>Options Field</div>
+    <div>{{JSON.stringify(model)}}</div>
+    <!--{{getSelectedFieldLabels(model)}}-->
 </template>

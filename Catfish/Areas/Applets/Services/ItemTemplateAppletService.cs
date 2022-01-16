@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents.Data;
 using ElmahCore;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,21 @@ namespace Catfish.Areas.Applets.Services
         {
             return _appDb.GroupTemplates.Where(g => g.EntityTemplateId == id.Value).Select(g=>g.Group).ToList();
         }
+       
+        public DataItem GetDataItem(Guid itemTemplate, Guid ChildFormId)
+        {
+            ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == itemTemplate);
+            DataItem dataItem = template.GetDataItem(ChildFormId);
 
+            return dataItem;
+
+        }
+
+        public List<DataItem> GetDataItems(Guid itemTemplate, bool isRoot = false)
+        {
+            ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == itemTemplate);
+            var dataItems = template.GetAllNonRootDataItems();
+            return dataItems;
+        }
     }
 }
