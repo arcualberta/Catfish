@@ -31,6 +31,10 @@
 </script>
 
 <template>
-    <Text v-for="val in model?.values?.$values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :validation-status="validationStatus" />
+    <div v-for="val in model?.values?.$values">
+        <span v-if="model?.values?.$values?.length > 1">{{val.language}}: </span>
+        <Text :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :validation-status="validationStatus" />
+    </div>
+<!--    <Text v-for="val in model?.values?.$values" :model="val" :is-multiline="isMultiline" :is-rich-text="isRichText" :validation-status="validationStatus" />-->
 </template>
 

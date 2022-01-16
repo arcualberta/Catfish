@@ -54,8 +54,9 @@
 <template>
 	<Editor v-if="isRichText" apiKey="0ohehg73era56wydy5kyws6ouf25550ogy2sifi1j41hk65l" v-model="content" placeholder="add multiple lines" />
 	<textarea v-else-if="isMultiline" v-model="content" />
-	<div>validationStatus: {{validationStatus}}</div>
+	<input v-else type="text" v-model="content" />
+	<!--<div>validationStatus: {{validationStatus}}</div>
 	<div><b>You entered:</b></div>
-	<div v-html="content" />
+	<div v-html="content" />-->
 </template>
 
