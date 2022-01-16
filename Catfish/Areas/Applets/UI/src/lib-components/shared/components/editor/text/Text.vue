@@ -4,7 +4,7 @@
 	import Editor from '@tinymce/tinymce-vue'
 
 	import { FlattenedFormFiledMutations } from '../../../store/form-submission-utils'
-	import { FieldValidationStatus } from '../../../store/form-validators'
+	import { eFieldValidationStatus } from '../../../models/fieldContainer'
 	import { Text } from '../../../models/textModels'
 
     export default defineComponent({
@@ -23,7 +23,7 @@
 				required: true
 			},
 			validationStatus: {
-				type: null as PropType<FieldValidationStatus> | null,
+				type: null as PropType<eFieldValidationStatus> | null,
 				required: true
 			}
         },

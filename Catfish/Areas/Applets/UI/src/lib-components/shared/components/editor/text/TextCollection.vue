@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
     import { defineComponent, PropType } from 'vue'
     import { TextCollection } from '../../../models/textModels'
-	import { FieldValidationStatus } from '../../../store/form-validators'
+	import { eFieldValidationStatus } from '../../../models/fieldContainer'
     import Text from './Text.vue'
 
     export default defineComponent({
@@ -20,7 +20,7 @@
 				required: true
 			},
 			validationStatus: {
-				type: null as PropType<FieldValidationStatus> | null,
+				type: null as PropType<eFieldValidationStatus> | null,
 				required: true
             }
         },

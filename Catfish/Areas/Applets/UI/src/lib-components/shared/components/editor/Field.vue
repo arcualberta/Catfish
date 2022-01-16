@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
 	import { defineComponent, PropType } from 'vue'
-	import { Field, eFieldType, FieldValidationStatus } from '../../models/fieldContainer'
+	import { Field, eFieldType, eFieldValidationStatus } from '../../models/fieldContainer'
     import { FieldContainerUtils } from '../../store/form-submission-utils'
 
 	import AttachmentField from './AttachmentField.vue'
@@ -41,7 +41,7 @@
 			const cssClass: string = FieldContainerUtils.cssClass(p.model);
 			return {
 				FieldTypes: eFieldType,
-				ValidationStatus: FieldValidationStatus,
+				ValidationStatus: eFieldValidationStatus,
                 fieldType,
 				cssClass
             }
