@@ -15,10 +15,8 @@
 
 <template>
   
-   <div v-for="val in model.content.values.$values" :key="val.id">
-     
+   <div v-for="val in model?.content?.values" :key="val.id">
        <div v-html="val.value"></div>
-      
    </div>
     
 </template>

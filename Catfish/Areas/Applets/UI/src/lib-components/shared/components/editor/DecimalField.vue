@@ -41,6 +41,8 @@
 </script>
 
 <template>
-    <div v-for="val in model.values.$values">{{formatToDecimal(val, numDecimalPlaces)}}</div>
+    <div>Decimal Field</div>
+    <div>{{JSON.stringify(model)}}</div>
+    <!--<div v-for="val in model.values">{{formatToDecimal(val, numDecimalPlaces)}}</div>-->
 </template>
 

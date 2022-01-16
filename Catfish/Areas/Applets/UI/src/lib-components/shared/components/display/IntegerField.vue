@@ -23,6 +23,6 @@
 </script>
 
 <template>
-    <div v-for="val in model.values">{{val.value}}</div>
+    <div v-for="val in model.values.$values">{{val.value}}</div>
 </template>
 
