@@ -10,12 +10,14 @@
     import { mutations, Mutations, SubmissionStatus as eSubmissionStatus } from './store/mutations'
 	
 
-	import FieldContainer from '../shared/components/editor/FieldContainer.vue'
+	import ChildForm from '../shared/components/editor/FieldContainer.vue'
+	import ChildView from '../shared/components/display/FieldContainer.vue'
 
     export default defineComponent({
         name: "ChildFormSubmission",
 		components: {
-			FieldContainer
+			ChildForm,
+			ChildView
         },
         props,
         setup(p) {
@@ -40,7 +42,7 @@
 			//console.log("initial status " + JSON.stringify(submissionStatus));
 			return {
 				childForm: computed(() => store.state.form),
-                childSubmissions: computed(() => store.state.formInstances),
+                childSubmissions: computed(() => store.state.formInstances?.$values),
 				store,
 				submissionStatus: computed(() => store.state.submissionStatus),
 				eSubmissionStatus,
@@ -64,7 +66,7 @@
 
 <template>
 	<div v-if="childForm && Object.keys(childForm).length > 0">
-		<FieldContainer :model="childForm" />
+		<ChildForm :model="childForm" />
 
 		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">For validation failed.</div>
 		<div v-else>
@@ -73,7 +75,12 @@
 			<div v-if="submissionStatus === eSubmissionStatus.Fail" class="alert alert-danger">Submission failed</div>
 		</div>
 		<button class="btn btn-primary" @click="submitChildForm()">Submit</button>
-		<h3>Child Submissions</h3>
-		<div>{{JSON.stringify(childSubmissions)}}</div>
+	</div>
+	<div v-if="childSubmissions && childSubmissions.length > 0">
+		<h3>Responses</h3>
+		<div v-for="child in childSubmissions">
+			<ChildView :model="child" />
+			<hr />
+		</div>
 	</div>
 </template>

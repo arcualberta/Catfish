@@ -147,6 +147,30 @@ namespace Catfish.Areas.Applets.Controllers
             return childForm;
         }
 
+        [HttpGet("getchildformsubmissions/{instanceId}/{childFormId}")]
+        public ContentResult GetChildFormSubmissions(Guid instanceId, Guid childFormId)
+        {
+            Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
+            item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
 
+            //TODO: Update the following Authorization-checking in order to propoerly check authorizations specified for
+            //submitting child forms. For the time being, we limit it to the users who have permission to Read the
+            //main submission. This is only a quick shortcut we created to help TBLT site.
+            bool authorizedToSubmitChildForm = _itemAuthorizationHelper.AuthorizebyRole(item, User, "Read");
+            if (authorizedToSubmitChildForm)
+            {
+                var childSubmissions = item.DataContainer.Where(c => c.TemplateId == childFormId).ToList();
+
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                return Content(JsonConvert.SerializeObject(childSubmissions, settings), "application/json");
+            }
+            else
+                return Content("{}", "application/json");
+        }
     }
 }

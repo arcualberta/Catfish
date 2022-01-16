@@ -33,17 +33,17 @@ export const actions: ActionTree<State, any> = {
     [Actions.LOAD_SUBMISSIONS](store) {
 
         const api = window.location.origin +
-            `/applets/api/itemeditor/getchildforms/${store.state.itemInstanceId}/${store.state.formId}`;
-        console.log('NOT IMPLEMENTED YET::Child Submission Load API: ', api)
+            `/applets/api/itemeditor/getchildformsubmissions/${store.state.itemInstanceId}/${store.state.formId}`;
+        console.log('Child Submissions Load API: ', api)
 
-    //    fetch(api)
-    //        .then(response => response.json())
-    //        .then(data => {
-    //            store.commit(Mutations.SET_SUBMISSIONS, data);
-    //        })
-    //        .catch(error => {
-    //            console.error('Submission loading error:', error);
-    //        });
+        fetch(api)
+            .then(response => response.json())
+            .then(data => {
+                store.commit(Mutations.SET_SUBMISSIONS, data);
+            })
+            .catch(error => {
+                console.error('Submission loading error:', error);
+            });
     },
 
     [Actions.SUBMIT_CHILD_FORM](store) {
