@@ -21,6 +21,12 @@ export enum eFieldType {
     TextField,
 }
 
+export enum FieldValidationStatus {
+    VALID = 'VALID',
+    VALUE_REQUIRED = 'VALUE_REQUIRED',
+    VALUE_INVALID = 'VALUE_INVALID'
+}
+
 export interface Field {
     id: Guid;
     $type: string;
@@ -34,6 +40,7 @@ export interface Field {
     updated: Date;
     cssClass: string;
     fieldCssClass: string;
+    validationStatus: FieldValidationStatus;
 }
 
 export interface FieldContainer {

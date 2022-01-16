@@ -1,10 +1,5 @@
-﻿import { MonolingualTextField, MultilingualTextField, OptionsField } from '../models/fieldContainer'
-
-export enum FieldValidationStatus {
-    VALID = 'VALID',
-    VALUE_REQUIRED = 'VALUE_REQUIRED',
-    VALUE_INVALID = 'VALUE_INVALID'
-}
+﻿import { eFieldType, FieldContainer, FieldValidationStatus, MonolingualTextField, MultilingualTextField, OptionsField } from '../models/fieldContainer'
+import { FieldContainerUtils } from './form-submission-utils'
 
 
 export function validateMultilingualTextField(field: MultilingualTextField): FieldValidationStatus {
@@ -59,3 +54,49 @@ export function validateOptionsField(field: OptionsField): FieldValidationStatus
     return selectionFound ? FieldValidationStatus.VALID : FieldValidationStatus.VALUE_REQUIRED;
 }
 
+export function validateFields(form: FieldContainer): boolean {
+
+    let valid = true;
+    form.fields?.$values?.forEach(field => {
+        switch (FieldContainerUtils.getFieldType(field)) {
+            case eFieldType.AttachmentField:
+                break;
+            case eFieldType.CheckboxField:
+                field.validationStatus = validateOptionsField(field as OptionsField);
+                break;
+            case eFieldType.CompositeField:
+                break;
+            case eFieldType.DateField:
+                break;
+            case eFieldType.DecimalField:
+                break;
+            case eFieldType.EmailField:
+                break;
+            case eFieldType.FieldContainerReference:
+                break;
+            case eFieldType.IntegerField:
+                break;
+            case eFieldType.MonolingualTextField:
+                field.validationStatus = validateMonolingualTextField(field as MonolingualTextField);
+                break;
+            case eFieldType.RadioField:
+                field.validationStatus = validateOptionsField(field as OptionsField);
+                break;
+            case eFieldType.SelectField:
+                field.validationStatus = validateOptionsField(field as OptionsField);
+                break;
+            case eFieldType.TableField:
+                break;
+            case eFieldType.TextArea:
+                field.validationStatus = validateMultilingualTextField(field as MultilingualTextField);
+                break;
+            case eFieldType.TextField:
+                field.validationStatus = validateMultilingualTextField(field as MultilingualTextField);
+                break;
+        }
+
+        valid = valid && (field.validationStatus === FieldValidationStatus.VALID);
+    });
+
+    return valid;
+}

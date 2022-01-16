@@ -53,10 +53,8 @@
 			getters
         },
         methods: {
-			addChildForm() {
-               
-				this.store.dispatch(Actions.ADD_CHILD_FORM);
-               
+			submitChildForm() {
+				this.store.dispatch(Actions.SUBMIT_CHILD_FORM);
             }
         }
     });
@@ -66,7 +64,7 @@
 	<div>
 		<FieldContainer :model="childForm" v-if="childForm" />
 
-		<button class="btn btn-primary" @click="addChildForm()">Submit</button>
+		<button class="btn btn-primary" @click="submitChildForm()">Submit</button>
 		<div v-if="submissionStatus === eSubmissionStatus.InProgress" class="alert alert-info">Submitting...</div>
 		<div v-if="submissionStatus === eSubmissionStatus.Success" class="alert alert-info">Submission successful</div>
 		<div v-if="submissionStatus === eSubmissionStatus.Fail" class="alert alert-danger">Submission failed</div>

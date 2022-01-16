@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
 	import { defineComponent, PropType } from 'vue'
-	import { Field, eFieldType } from '../../models/fieldContainer'
+	import { Field, eFieldType, FieldValidationStatus } from '../../models/fieldContainer'
     import { FieldContainerUtils } from '../../store/form-submission-utils'
 
 	import AttachmentField from './AttachmentField.vue'
@@ -20,7 +20,8 @@
             model: {
                 type: null as PropType<Field> | null,
                 required: true
-            },
+			},
+
         },
         components: {
 			AttachmentField,
@@ -40,6 +41,7 @@
 			const cssClass: string = FieldContainerUtils.cssClass(p.model);
 			return {
 				FieldTypes: eFieldType,
+				ValidationStatus: FieldValidationStatus,
                 fieldType,
 				cssClass
             }
@@ -72,6 +74,11 @@
 
 			<div v-else-if="fieldType === FieldTypes.CompositeField"> TODO: Implement editor template for the CompositeField</div>
 			<div v-else-if="fieldType === FieldTypes.TableField"> TODO: Implement editor template for the TableField</div>
+
+			<div v-if="model?.validationStatus === ValidationStatus.VALUE_REQUIRED" style="color:red">Field value is required.</div>
+			<div v-if="model?.validationStatus === ValidationStatus.VALUE_INVALID" style="color:red">Field value is invalid.</div>
+
+
 		</div>
 	</div>
 </template>

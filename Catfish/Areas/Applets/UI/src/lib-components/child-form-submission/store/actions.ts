@@ -2,13 +2,13 @@
 import { State } from './state';
 import { Mutations } from './mutations';
 import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
-
+import { validateFields } from '../../shared/store/form-validators'
 
 //Declare ActionTypes
 export enum Actions {
     LOAD_FORM = "LOAD_FORM",
     LOAD_SUBMISSIONS = "LOAD_SUBMISSIONS",
-    ADD_CHILD_FORM = "ADD_CHILD_FORM"
+    SUBMIT_CHILD_FORM = "SUBMIT_CHILD_FORM"
 }
 
 export const actions: ActionTree<State, any> = {
@@ -46,8 +46,12 @@ export const actions: ActionTree<State, any> = {
     //        });
     },
 
-    [Actions.ADD_CHILD_FORM](store) {
-        
+    [Actions.SUBMIT_CHILD_FORM](store) {
+
+        //Validating the form
+        if (!store.state.form || !validateFields(store.state.form))
+            return;
+
         store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
 
        
