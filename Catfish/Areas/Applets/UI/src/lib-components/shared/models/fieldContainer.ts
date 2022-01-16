@@ -21,10 +21,10 @@ export enum eFieldType {
     TextField,
 }
 
-export enum eFieldValidationStatus {
+export enum eValidationStatus {
     VALID = 'VALID',
     VALUE_REQUIRED = 'VALUE_REQUIRED',
-    VALUE_INVALID = 'VALUE_INVALID'
+    INVALID = 'INVALID'
 }
 
 export interface Field {
@@ -40,7 +40,7 @@ export interface Field {
     updated: Date;
     cssClass: string;
     fieldCssClass: string;
-    validationStatus: eFieldValidationStatus | null;
+    validationStatus: eValidationStatus | null;
 }
 
 export interface FieldContainer {
@@ -58,6 +58,7 @@ export interface FieldContainer {
     isTemplate: boolean | false;
     model: FieldContainerReference | null;
     source: FieldContainer[] | null;
+    validationStatus: eValidationStatus | null;
 }
 
 export interface TextField extends Field {

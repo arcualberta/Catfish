@@ -3,6 +3,7 @@
 	import { defineComponent, computed } from 'vue';
 	import { useStore } from 'vuex';
 	import props, { QueryParameter, DataAttribute } from '../shared/props'
+	import { eValidationStatus } from '../shared/models/fieldContainer'
 	import { state } from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
@@ -42,7 +43,8 @@
                 childSubmissions: computed(() => store.state.formInstances),
 				store,
 				submissionStatus: computed(() => store.state.submissionStatus),
-                eSubmissionStatus
+				eSubmissionStatus,
+				eValidationStatus
               
             }
 		},
@@ -64,10 +66,13 @@
 	<div>
 		<FieldContainer :model="childForm" v-if="childForm" />
 
+		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">For validation failed.</div>
+		<div v-else>
+			<div v-if="submissionStatus === eSubmissionStatus.InProgress" class="alert alert-info">Submitting...</div>
+			<div v-if="submissionStatus === eSubmissionStatus.Success" class="alert alert-info">Submission successful</div>
+			<div v-if="submissionStatus === eSubmissionStatus.Fail" class="alert alert-danger">Submission failed</div>
+		</div>
 		<button class="btn btn-primary" @click="submitChildForm()">Submit</button>
-		<div v-if="submissionStatus === eSubmissionStatus.InProgress" class="alert alert-info">Submitting...</div>
-		<div v-if="submissionStatus === eSubmissionStatus.Success" class="alert alert-info">Submission successful</div>
-		<div v-if="submissionStatus === eSubmissionStatus.Fail" class="alert alert-danger">Submission failed</div>
 		<h3>Child Submissions</h3>
 		<div>{{JSON.stringify(childSubmissions)}}</div>
 	</div>

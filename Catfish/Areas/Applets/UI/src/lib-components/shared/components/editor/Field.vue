@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
 	import { defineComponent, PropType } from 'vue'
-	import { Field, eFieldType, eFieldValidationStatus } from '../../models/fieldContainer'
+	import { Field, eFieldType, eValidationStatus } from '../../models/fieldContainer'
     import { FieldContainerUtils } from '../../store/form-submission-utils'
 
 	import AttachmentField from './AttachmentField.vue'
@@ -41,7 +41,7 @@
 			const cssClass: string = FieldContainerUtils.cssClass(p.model);
 			return {
 				FieldTypes: eFieldType,
-				ValidationStatus: eFieldValidationStatus,
+				ValidationStatus: eValidationStatus,
                 fieldType,
 				cssClass
             }
@@ -61,6 +61,9 @@
 			{{model.name.concatenatedContent}} <span v-if="this.model.required" style="color:red">*</span>
 		</div>
 		<div class="col-md-9 field-value">
+			<div v-if="model?.validationStatus === ValidationStatus.VALUE_REQUIRED" style="color:red">This field requires a value.</div>
+			<div v-if="model?.validationStatus === ValidationStatus.INVALID" style="color:red">This field has an invalid value.</div>
+
 			<AttachmentField v-if="fieldType === FieldTypes.AttachmentField" :model="model" />
 			<CheckboxField v-else-if="fieldType === FieldTypes.CheckboxField" :model="model" />
 			<DateField v-else-if="fieldType === FieldTypes.DateField" :model="model" />
@@ -74,11 +77,6 @@
 
 			<div v-else-if="fieldType === FieldTypes.CompositeField"> TODO: Implement editor template for the CompositeField</div>
 			<div v-else-if="fieldType === FieldTypes.TableField"> TODO: Implement editor template for the TableField</div>
-
-			<div v-if="model?.validationStatus === ValidationStatus.VALUE_REQUIRED" style="color:red">Field value is required.</div>
-			<div v-if="model?.validationStatus === ValidationStatus.VALUE_INVALID" style="color:red">Field value is invalid.</div>
-
-
 		</div>
 	</div>
 </template>

@@ -1,12 +1,12 @@
-﻿import { eFieldType, FieldContainer, eFieldValidationStatus, MonolingualTextField, MultilingualTextField, OptionsField } from '../models/fieldContainer'
+﻿import { eFieldType, FieldContainer, eValidationStatus, MonolingualTextField, MultilingualTextField, OptionsField } from '../models/fieldContainer'
 import { FieldContainerUtils } from './form-submission-utils'
 
 
-export function validateMultilingualTextField(field: MultilingualTextField): eFieldValidationStatus {
+export function validateMultilingualTextField(field: MultilingualTextField): eValidationStatus {
     //If the field itself is not a required field, any contents in inner fields 
     //will be valid, including none
     if (!field.required)
-        return eFieldValidationStatus.VALID;
+        return eValidationStatus.VALID;
 
     //We are here means, this is a required field. This means, we need to make sure
     //the field (which can potentially have multiple values) has at least one value
@@ -20,14 +20,14 @@ export function validateMultilingualTextField(field: MultilingualTextField): eFi
     }
 
     //Validation is successful as long as some value is in an inner field.
-    return valueFound ? eFieldValidationStatus.VALID : eFieldValidationStatus.VALUE_REQUIRED;
+    return valueFound ? eValidationStatus.VALID : eValidationStatus.VALUE_REQUIRED;
 }
 
-export function validateMonolingualTextField(field: MonolingualTextField): eFieldValidationStatus {
+export function validateMonolingualTextField(field: MonolingualTextField): eValidationStatus {
     //If the field itself is not a required field, any contents in inner fields 
     //will be valid, including none
     if (!field.required)
-        return eFieldValidationStatus.VALID;
+        return eValidationStatus.VALID;
 
     //We are here means, this is a required field. This means, we need to make sure
     //the field (which can potentially have multiple values) has at least one value
@@ -38,24 +38,23 @@ export function validateMonolingualTextField(field: MonolingualTextField): eFiel
     }
 
     //Validation is successful as long as some value is in an inner field.
-    return valueFound ? eFieldValidationStatus.VALID : eFieldValidationStatus.VALUE_REQUIRED;
+    return valueFound ? eValidationStatus.VALID : eValidationStatus.VALUE_REQUIRED;
 }
 
-export function validateOptionsField(field: OptionsField): eFieldValidationStatus {
+export function validateOptionsField(field: OptionsField): eValidationStatus {
     //If the field itself is not a required field, no need to select a value, so the field is always valid
     if (!field.required)
-        return eFieldValidationStatus.VALID;
+        return eValidationStatus.VALID;
 
     let selectionFound = false;
     for (let i = 0; !selectionFound && field.options?.$values && i < field.options?.$values?.length; ++i) {
         selectionFound = field.options?.$values[i].selected;
     }
 
-    return selectionFound ? eFieldValidationStatus.VALID : eFieldValidationStatus.VALUE_REQUIRED;
+    return selectionFound ? eValidationStatus.VALID : eValidationStatus.VALUE_REQUIRED;
 }
 
 export function validateFields(form: FieldContainer): boolean {
-
     let valid = true;
     form.fields?.$values?.forEach(field => {
         switch (FieldContainerUtils.getFieldType(field)) {
@@ -95,8 +94,9 @@ export function validateFields(form: FieldContainer): boolean {
                 break;
         }
 
-        valid = valid && (field.validationStatus === eFieldValidationStatus.VALID);
+        valid = valid && (field.validationStatus === eValidationStatus.VALID);
     });
 
+    form.validationStatus = valid ? null : eValidationStatus.INVALID
     return valid;
 }
