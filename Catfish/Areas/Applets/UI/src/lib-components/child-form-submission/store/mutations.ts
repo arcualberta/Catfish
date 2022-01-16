@@ -29,9 +29,12 @@ export const mutations: MutationTree<State> = {
     },
     [Mutations.SET_FORM](state: State, payload: FieldContainer) {
         state.form = payload
-        //console.log("state.form\n", JSON.stringify(state.form))
 
+        state.flattenedTextModels = {};
+        state.flattenedOptionModels = {};
         flattenFieldInputs(state.form, state)
+
+    //    console.log("state\n", JSON.stringify(state))
     },
     [Mutations.SET_SUBMISSIONS](state: State, payload: FieldContainer[]) {
         state.formInstances = payload

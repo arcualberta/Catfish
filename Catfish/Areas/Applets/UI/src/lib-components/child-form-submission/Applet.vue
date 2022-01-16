@@ -63,8 +63,8 @@
 </script>
 
 <template>
-	<div>
-		<FieldContainer :model="childForm" v-if="childForm" />
+	<div v-if="childForm && Object.keys(childForm).length > 0">
+		<FieldContainer :model="childForm" />
 
 		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">For validation failed.</div>
 		<div v-else>

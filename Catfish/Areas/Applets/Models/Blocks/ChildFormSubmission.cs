@@ -14,6 +14,7 @@ namespace Catfish.Areas.Applets.Models.Blocks
         public Catfish.Models.Fields.CatfishSelectList<ItemTemplate> ItemTemplates { get; set; }
         public TextField SelectedItemTemplate { get; set; }
         public TextField SelectedChildForm { get; set; }
+        public TextField QueryParameter { get; set; }
         public CheckBoxField DisplayChildList { get; set; }
     }
 }

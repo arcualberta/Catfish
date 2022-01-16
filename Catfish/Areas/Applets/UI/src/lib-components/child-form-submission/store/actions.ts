@@ -16,7 +16,7 @@ export const actions: ActionTree<State, any> = {
     [Actions.LOAD_FORM](store) {
        
         const api = window.location.origin +
-            `/applets/api/itemtemplates/getchildform/${store.state.itemTemplateId}/${store.state.formId}`;
+            `/applets/api/itemeditor/getchildform/${store.state.itemInstanceId}/${store.state.formId}`;
         console.log('Form Load API: ', api)
 
         fetch(api)
@@ -33,7 +33,7 @@ export const actions: ActionTree<State, any> = {
     [Actions.LOAD_SUBMISSIONS](store) {
 
         const api = window.location.origin +
-            `/applets/api/items/getchildforms/${store.state.itemInstanceId}/${store.state.formId}`;
+            `/applets/api/itemeditor/getchildforms/${store.state.itemInstanceId}/${store.state.formId}`;
         console.log('NOT IMPLEMENTED YET::Child Submission Load API: ', api)
 
     //    fetch(api)
