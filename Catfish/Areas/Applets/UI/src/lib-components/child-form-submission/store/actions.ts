@@ -60,6 +60,8 @@ export const actions: ActionTree<State, any> = {
         let formData = new FormData();
         formData.append('datamodel', JSON.stringify(store.state.form));
 
+        console.log(JSON.stringify(store.state.form));
+
         fetch(api,
             {
                 body: formData,

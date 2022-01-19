@@ -40,9 +40,9 @@ export const mutations: MutationTree<State> = {
         state.formInstances = payload
     },
     [FlattenedFormFiledMutations.SET_TEXT_VALUE](state: State, payload: { id: Guid; val: string }) {
-        //console.log("payload id:", payload.id, "   payload value: ", payload.val)
+        console.log("payload id:", payload.id, "   payload value: ", payload.val)
         state.flattenedTextModels[payload.id.toString()].value = payload.val;
-        //console.log("state flattenedTextModels", JSON.stringify(state.flattenedTextModels))
+        console.log("state flattenedTextModels", JSON.stringify(state.flattenedTextModels))
 
         //Re-validating the form
         if (state.form?.validationStatus === eValidationStatus.INVALID)

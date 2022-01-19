@@ -77,7 +77,14 @@ export interface MultilingualTextField extends TextField {
 }
 
 export interface MonolingualTextField extends TextField {
-    values: Text[] | null;
+    $type: string;
+    modelType: string;
+    values: {
+        $type: string;
+        $values: Text[];
+    } | null;
+
+   // values: Text[] | null;
 }
 
 export interface Option {
