@@ -2,7 +2,7 @@
 import { defineComponent, PropType , computed} from 'vue'
     import { MonolingualTextField } from '../../models/fieldContainer'
     import Text from './text/Text.vue'
-    import { validateMonolingualTextField } from '../../store/form-validators'
+	import { validateMonolingualTextField, RegExpressions } from '../../store/form-validators'
 
     export default defineComponent({
         name: "EmailField",
@@ -24,7 +24,7 @@ import { defineComponent, PropType , computed} from 'vue'
         },
    
         setup(p) {
-            const validationStatus = computed(() => validateMonolingualTextField(p.model));
+            const validationStatus = computed(() => validateMonolingualTextField(p.model, RegExpressions.Email));
             const type = p.model.modelType;
             return {
               
