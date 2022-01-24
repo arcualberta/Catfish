@@ -43,7 +43,6 @@ import { defineComponent, PropType , computed} from 'vue'
     
         <div v-for="val in model?.values?.$values">
             <Text :model="val" :is-multiline="false" :is-rich-text="false" :validation-status="validationStatus" field="email" />
-            <div>Validation Status: {{validationStatus}}</div>
         </div>
    
 </template>
