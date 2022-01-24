@@ -1,7 +1,7 @@
 ﻿import { eFieldType, FieldContainer, eValidationStatus, MonolingualTextField, MultilingualTextField, OptionsField } from '../models/fieldContainer'
 import { FieldContainerUtils } from './form-submission-utils'
 
-export class RegExpressions {
+export abstract class RegExpressions {
     public static Email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 }
