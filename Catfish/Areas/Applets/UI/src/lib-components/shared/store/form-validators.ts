@@ -26,15 +26,16 @@ export function validateMultilingualTextField(field: MultilingualTextField): eVa
 export function validateMonolingualTextField(field: MonolingualTextField): eValidationStatus {
     //If the field itself is not a required field, any contents in inner fields 
     //will be valid, including none
+
+    console.log("validateMonolingualTextField: field.required", field.required)
     if (!field.required)
         return eValidationStatus.VALID;
 
     //We are here means, this is a required field. This means, we need to make sure
-    //the field (which can potentially have multiple values) has at least one value
-    //in at least one language.
+    //the field (which can potentially have multiple values) has at least one value.
     let valueFound = false;
-    for (let i = 0; !valueFound && field?.values && (i < field.values?.length); ++i) {
-        valueFound = field.values[i]?.value?.trim().length > 0;
+    for (let i = 0; !valueFound && field?.values && (i < field.values?.$values.length); ++i) {
+        valueFound = field.values.$values[i]?.value?.trim().length > 0;
     }
 
     //Validation is successful as long as some value is in an inner field.
