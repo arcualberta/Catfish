@@ -71,6 +71,7 @@ export function validateFields(form: FieldContainer): boolean {
             case eFieldType.DecimalField:
                 break;
             case eFieldType.EmailField:
+                field.validationStatus = validateMonolingualTextField(field as MonolingualTextField);
                 break;
             case eFieldType.FieldContainerReference:
                 break;
