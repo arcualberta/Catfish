@@ -22,7 +22,7 @@
         props,
         setup(p) {
            
-            console.log('props: ', JSON.stringify(p));
+           // console.log('props: ', JSON.stringify(p));
 			const queryParameters = p.queryParameters as QueryParameter;
 			const dataAttributes = p.dataAttributes as DataAttribute;
 
@@ -68,7 +68,7 @@
 	<div v-if="childForm && Object.keys(childForm).length > 0">
 		<ChildForm :model="childForm" />
 
-		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">For validation failed.</div>
+		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Form validation failed.</div>
 		<div v-else>
 			<div v-if="submissionStatus === eSubmissionStatus.InProgress" class="alert alert-info">Submitting...</div>
 			<div v-if="submissionStatus === eSubmissionStatus.Success" class="alert alert-info">Submission successful</div>

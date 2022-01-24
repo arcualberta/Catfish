@@ -82,7 +82,7 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
 
         if (isMonoLinqualField) {
             //Iterating through each text value and adding them to the flattened dictionary
-            (value as MonolingualTextField).values?.forEach((txtVal: Text) => {
+            (value as MonolingualTextField).values?.$values?.forEach((txtVal: Text) => {
                 state.flattenedTextModels[txtVal.id.toString()] = txtVal;
             })
         }

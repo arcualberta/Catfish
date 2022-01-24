@@ -88,15 +88,17 @@ namespace Catfish.UnitTests
             commentsForm.IsRoot = false;
             commentsForm.SetDescription("This is the form to be filled by theeditor when make a decision.", lang);
             commentsForm.CreateField<TextArea>("Comments", lang, true);
+
+           
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
 
             Define_TBLT_ContactWorkflow(workflow, ref template, bcpForm, commentsForm, applicantEmail);
-            db.SaveChanges();
+           // db.SaveChanges();
 
-            template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_ContactForm_generared.xml");
+            template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_ContactForm_generaredTest.xml");
 
             //string json = JsonConvert.SerializeObject(template);
             //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
@@ -761,12 +763,15 @@ namespace Catfish.UnitTests
             commentsForm.SetDescription("This is the form to be filled by the editor when make a decision.", lang);
             commentsForm.CreateField<TextArea>("Comments", lang, true);
 
+            //DEBUG only
+            commentsForm.CreateField<EmailField>("Email", lang, false);
+
             Define_TBLT_DiscussionWorkflow(workflow, ref template, bcpForm, commentsForm, "SubmitDiscussion");
 
             if (saveChangesToDatabase)
                 db.SaveChanges();
 
-            template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_DiscussionForm_generared.xml");
+            template.Data.Save("..\\..\\..\\..\\Examples\\TBLT_DiscussionForm_generared1.xml");
         }
 
         private void Define_TBLT_DiscussionWorkflow(Workflow workflow, ref ItemTemplate template, DataItem tbltForm, DataItem commentsForm, string formName = null)

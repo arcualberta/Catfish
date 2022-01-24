@@ -1,6 +1,10 @@
 ﻿import { eFieldType, FieldContainer, eValidationStatus, MonolingualTextField, MultilingualTextField, OptionsField } from '../models/fieldContainer'
 import { FieldContainerUtils } from './form-submission-utils'
 
+export class RegExpressions {
+    public static Email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+}
 
 export function validateMultilingualTextField(field: MultilingualTextField): eValidationStatus {
     //If the field itself is not a required field, any contents in inner fields 
@@ -23,22 +27,28 @@ export function validateMultilingualTextField(field: MultilingualTextField): eVa
     return valueFound ? eValidationStatus.VALID : eValidationStatus.VALUE_REQUIRED;
 }
 
-export function validateMonolingualTextField(field: MonolingualTextField): eValidationStatus {
-    //If the field itself is not a required field, any contents in inner fields 
-    //will be valid, including none
-    if (!field.required)
-        return eValidationStatus.VALID;
+export function validateMonolingualTextField(field: MonolingualTextField, validationRegExp: RegExp | null): eValidationStatus {
 
-    //We are here means, this is a required field. This means, we need to make sure
-    //the field (which can potentially have multiple values) has at least one value
-    //in at least one language.
+    //Go through each value in the monolingual field. Set valueFound to true if at least one value is found.
+    //If validationRegExp is specified, then validate each non-empty value against the validationRegExp.
+    //If any reg-exp validations failed, then set the final validation result to validation error.
     let valueFound = false;
-    for (let i = 0; !valueFound && field?.values && (i < field.values?.length); ++i) {
-        valueFound = field.values[i]?.value?.trim().length > 0;
+    let validationStatus = eValidationStatus.VALID;
+    for (let i = 0; field?.values && (i < field.values?.$values.length); ++i) {
+        const valStr = field.values.$values[i]?.value?.trim();
+        if (valStr?.length > 0) {
+            valueFound = true;
+
+            if (validationRegExp && !validationRegExp.test(valStr))
+                validationStatus = eValidationStatus.INVALID;
+		}
     }
 
+    if (field.required && !valueFound)
+        validationStatus = eValidationStatus.VALUE_REQUIRED;
+
     //Validation is successful as long as some value is in an inner field.
-    return valueFound ? eValidationStatus.VALID : eValidationStatus.VALUE_REQUIRED;
+    return validationStatus;
 }
 
 export function validateOptionsField(field: OptionsField): eValidationStatus {
@@ -70,13 +80,14 @@ export function validateFields(form: FieldContainer): boolean {
             case eFieldType.DecimalField:
                 break;
             case eFieldType.EmailField:
+                field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, RegExpressions.Email);
                 break;
             case eFieldType.FieldContainerReference:
                 break;
             case eFieldType.IntegerField:
                 break;
             case eFieldType.MonolingualTextField:
-                field.validationStatus = validateMonolingualTextField(field as MonolingualTextField);
+                field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, null);
                 break;
             case eFieldType.RadioField:
                 field.validationStatus = validateOptionsField(field as OptionsField);
