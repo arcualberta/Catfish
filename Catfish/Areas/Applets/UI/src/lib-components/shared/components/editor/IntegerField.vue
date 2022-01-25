@@ -1,6 +1,8 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType} from 'vue'
+    import { defineComponent, PropType, computed} from 'vue'
     import { MonolingualTextField } from '../../models/fieldContainer'
+    import Text from './text/Text.vue'
+    import { validateMonolingualTextField, RegExpressions } from '../../store/form-validators'
 
 
     export default defineComponent({
@@ -17,14 +19,29 @@
                 default: false
             }
 
+        },
+        components: {
+            Text
+        },
+        setup(p) {
+            const validationStatus = computed(() => validateMonolingualTextField(p.model, RegExpressions.Number));
+            const type = p.model.modelType;
+            return {
+
+                validationStatus,
+                type
+
+            }
+
         }
        
     });
 </script>
 
 <template>
-    <div>Integer Field</div>
-    <div>{{JSON.stringify(model)}}</div>
-    <!--<div v-for="val in model.values">{{val.value}}</div>-->
+    
+    <div v-for="val in model?.values?.$values">
+        <Text :model="val" :is-multiline="false" :is-rich-text="false" :validation-status="validationStatus" field="number" />
+    </div>
 </template>
 

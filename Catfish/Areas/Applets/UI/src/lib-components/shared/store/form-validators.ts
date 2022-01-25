@@ -3,6 +3,8 @@ import { FieldContainerUtils } from './form-submission-utils'
 
 export abstract class RegExpressions {
     public static Email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    public static Number = /^\d+$/;
+    public static Decimal = /^[+-]?(\d+\.?\d*|\.\d+)$/;
 
 }
 
@@ -85,6 +87,7 @@ export function validateFields(form: FieldContainer): boolean {
             case eFieldType.FieldContainerReference:
                 break;
             case eFieldType.IntegerField:
+                field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, RegExpressions.Number);
                 break;
             case eFieldType.MonolingualTextField:
                 field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, null);

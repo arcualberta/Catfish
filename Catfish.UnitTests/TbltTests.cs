@@ -765,7 +765,7 @@ namespace Catfish.UnitTests
 
             //DEBUG only
             commentsForm.CreateField<EmailField>("Email", lang, false);
-
+            commentsForm.CreateField<IntegerField>("Number of people", lang, false);
             Define_TBLT_DiscussionWorkflow(workflow, ref template, bcpForm, commentsForm, "SubmitDiscussion");
 
             if (saveChangesToDatabase)

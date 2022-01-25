@@ -49,7 +49,6 @@ export const actions: ActionTree<State, any> = {
     [Actions.SUBMIT_CHILD_FORM](store) {
 
         //Validating the form
-        console.log("before submit form : " + JSON.stringify(store.state.form))
         if (!store.state.form || !validateFields(store.state.form))
             return;
 

@@ -64,7 +64,7 @@
 	<textarea v-else-if="isMultiline" v-model="content" />
 	<div v-else>
 		<input v-if="field === 'text'" type="text" v-model="content" />
-		<input  v-else :type="{field}" v-model="content" />
+		<input  v-else :type="field" v-model="content" />
 	
 	</div>
 </template>
