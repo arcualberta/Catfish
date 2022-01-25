@@ -100,6 +100,7 @@ export function validateFields(form: FieldContainer): boolean {
             case eFieldType.CompositeField:
                 break;
             case eFieldType.DateField:
+                field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, null);
                 break;
             case eFieldType.DecimalField:
             case eFieldType.IntegerField:
