@@ -1,6 +1,7 @@
 ﻿using Catfish.Areas.Applets.Authorization;
 using Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels;
 using Catfish.Areas.Applets.Services;
+using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
@@ -8,6 +9,7 @@ using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
 using ElmahCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -18,6 +20,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Catfish.Areas.Applets.Controllers
 {
@@ -32,7 +35,8 @@ namespace Catfish.Areas.Applets.Controllers
         private readonly AppDbContext _appDb;
         private readonly ErrorLog _errorLog;
         private readonly IItemAuthorizationHelper _itemAuthorizationHelper;
-        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog)
+        private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
         {
             _itemAppletService = itemAppletService;
             _itemAuthorizationHelper = itemAuthorizationHelper;
@@ -41,6 +45,7 @@ namespace Catfish.Areas.Applets.Controllers
             _workflowService = workflowService;
             _appDb = appDb;
             _errorLog = errorLog;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -99,7 +104,7 @@ namespace Catfish.Areas.Applets.Controllers
 
 
         [HttpGet("getChildForm/{instanceId}/{childFormId}")]
-        public ContentResult GetChildForm(Guid instanceId, Guid childFormId)
+        public async Task<ContentResult> GetChildFormAsync(Guid instanceId, Guid childFormId)
         {
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
@@ -107,8 +112,9 @@ namespace Catfish.Areas.Applets.Controllers
             //TODO: Update the following Authorization-checking in order to propoerly check authorizations specified for
             //submitting child forms. For the time being, we limit it to the users who have permission to Read the
             //main submission. This is only a quick shortcut we created to help TBLT site.
-            bool authorizedToSubmitChildForm = _itemAuthorizationHelper.AuthorizebyRole(item, User, "Read");
-            if (authorizedToSubmitChildForm)
+            //bool authorizedToSubmitChildForm = _itemAuthorizationHelper.AuthorizebyRole(item, User, "Read");
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
+.Succeeded)
             {
                 DataItem childForm = item.Template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
 
@@ -122,6 +128,7 @@ namespace Catfish.Areas.Applets.Controllers
             }
             else
                 return Content("{}", "application/json");
+            
         }
 
         [HttpPost]
