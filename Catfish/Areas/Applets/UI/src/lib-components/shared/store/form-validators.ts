@@ -53,6 +53,28 @@ export function validateMonolingualTextField(field: MonolingualTextField, valida
     return validationStatus;
 }
 
+export function validateMonolingualNumberField(field: MonolingualTextField): eValidationStatus {
+
+    //Go through each value in the monolingual field. Set valueFound to true if at least one value is found.
+   
+    let valueFound = false;
+    let validationStatus = eValidationStatus.VALID;
+    for (let i = 0; field?.values && (i < field.values?.$values.length); ++i) {
+        const valStr = field.values.$values[i]?.value;
+       //if it's empty or null the typeof will not return string 'number'
+        if (typeof (valStr) === 'number') {
+            valueFound = true;
+           // console.log("type: number")
+        }
+    }
+
+    if (field.required && !valueFound)
+        validationStatus = eValidationStatus.VALUE_REQUIRED;
+
+    //Validation is successful as long as some value is in an inner field.
+    return validationStatus;
+}
+
 export function validateOptionsField(field: OptionsField): eValidationStatus {
     //If the field itself is not a required field, no need to select a value, so the field is always valid
     if (!field.required)
@@ -80,15 +102,17 @@ export function validateFields(form: FieldContainer): boolean {
             case eFieldType.DateField:
                 break;
             case eFieldType.DecimalField:
+            case eFieldType.IntegerField:
+                field.validationStatus = validateMonolingualNumberField(field as MonolingualTextField);
                 break;
             case eFieldType.EmailField:
                 field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, RegExpressions.Email);
                 break;
             case eFieldType.FieldContainerReference:
                 break;
-            case eFieldType.IntegerField:
-                field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, RegExpressions.Number);
-                break;
+            //case eFieldType.IntegerField:
+            //    field.validationStatus = validateMonolingualNumberField(field as MonolingualTextField);
+            //    break;
             case eFieldType.MonolingualTextField:
                 field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, null);
                 break;
