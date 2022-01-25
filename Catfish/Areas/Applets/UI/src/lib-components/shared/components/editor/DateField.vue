@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
     import { defineComponent, PropType, computed} from 'vue'
-    import dayjs from "dayjs";
+    //import dayjs from "dayjs";
     import Text from './text/Text.vue'
    import { validateMonolingualTextField /*, RegExpressions*/ } from '../../store/form-validators'
     import { MonolingualTextField } from '../../models/fieldContainer'
