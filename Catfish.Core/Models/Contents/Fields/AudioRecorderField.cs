@@ -12,7 +12,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class AudioRecordingField : BaseField
+    public class AudioRecorderField : BaseField
     {
         public static string FileContainerTag = "files";
         public XmlModelList<FileReference> Files { get; set; }
@@ -27,9 +27,9 @@ namespace Catfish.Core.Models.Contents.Fields
         //    set => SetAttribute("maxFileSize", value);
         //}
 
-        public AudioRecordingField() { DisplayLabel = "Audio Recording Field"; }
-        public AudioRecordingField(XElement data) : base(data) { DisplayLabel = "Audio Recording Field"; }
-        public AudioRecordingField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Audio Recording Field"; }
+        public AudioRecorderField() { DisplayLabel = "Audio Recording Field"; }
+        public AudioRecorderField(XElement data) : base(data) { DisplayLabel = "Audio Recording Field"; }
+        public AudioRecorderField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Audio Recording Field"; }
 
         public override void Initialize(eGuidOption guidOption)
         {

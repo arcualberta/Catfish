@@ -238,7 +238,7 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
         public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, string format=null)
-           where T : AudioRecordingField
+           where T : AudioRecorderField
         {
             T field = Activator.CreateInstance(typeof(T)) as T;
 

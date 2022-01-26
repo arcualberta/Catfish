@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
-    import { defineComponent } from 'vue'
-      
+    import { defineComponent, PropType } from 'vue'
+    import { AudioRecorderField } from '../../models/fieldContainer'
 
     export default defineComponent({
 		name: "AudioRecorder",
@@ -9,6 +9,8 @@
         },
         props: {
             model: {
+                type: Object as PropType<AudioRecorderField> | null,
+                required: true
            }
         },
         methods: {

@@ -92,6 +92,9 @@ export function validateFields(form: FieldContainer): boolean {
             case eFieldType.TextField:
                 field.validationStatus = validateMultilingualTextField(field as MultilingualTextField);
                 break;
+            case eFieldType.AudioRecordingField:
+                
+                break;
         }
 
         valid = valid && (field.validationStatus === eValidationStatus.VALID);
