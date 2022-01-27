@@ -19,6 +19,7 @@ export enum eFieldType {
     TableField,
     TextArea,
     TextField,
+    AudioRecorderField
 }
 
 export enum eValidationStatus {
@@ -136,6 +137,11 @@ export interface AttachmentField extends Field {
     files: FileReference[];
     allowedExtensions: string[];
     maxFileSize: number;
+}
+export interface AudioRecorderField extends Field {
+    files: FileReference[];
+   
+    format: string;
 }
 
 
