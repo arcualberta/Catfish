@@ -15,7 +15,7 @@ export const actions: ActionTree<State, any> = {
     [Actions.LOAD_FORM](store) {
        
         const api = window.location.origin +
-            `/applets/api/itemeditor/getchildform/${store.state.itemInstanceId}/${store.state.formId}`;
+            `/applets/api/itemtemplates/${store.state.itemTemplateId}/data-form/${store.state.formId}`;
         console.log('Form Load API: ', api)
 
         fetch(api)

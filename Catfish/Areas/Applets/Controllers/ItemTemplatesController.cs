@@ -94,22 +94,31 @@ namespace Catfish.Areas.Applets.Controllers
             return result;
         }
 
-        
-        //[HttpGet("getChildForm/{templateId}/{childFormId}")]
-        //public ContentResult GetChildForm(Guid templateId, Guid childFormId)
-        //{
-        //	//TODO: How do we want to handle security in this case?
-        //	ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
-        //	DataItem childForm = template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
 
-        //	JsonSerializerSettings settings = new JsonSerializerSettings 
-        //          {
-        //              TypeNameHandling = TypeNameHandling.All,
-        //              ContractResolver = new CamelCasePropertyNamesContractResolver()
-        //          };
-        //	string jsonString = JsonConvert.SerializeObject(childForm, settings);
-        //	return Content(jsonString, "application/json");
-        //}
+
+        [HttpGet("{templateId}/data-form/{formId}")]
+        public ContentResult DataForm(Guid templateId, Guid formId)
+        {
+            //TODO: Implement security
+
+            ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == templateId);
+            DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == formId);
+            bool authorizationSuccessful = true;
+
+			if (authorizationSuccessful)
+			{
+
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                return Content(JsonConvert.SerializeObject(dataForm, settings), "application/json");
+            }
+            else
+                return Content("{}", "application/json");
+        }
 
     }
 }
