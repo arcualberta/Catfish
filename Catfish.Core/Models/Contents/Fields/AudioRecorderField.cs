@@ -42,7 +42,7 @@ namespace Catfish.Core.Models.Contents.Fields
 
         public override void UpdateValues(BaseField srcField)
         {
-            AttachmentField src = srcField as AttachmentField;
+            AudioRecorderField src = srcField as AudioRecorderField;
 
             //Removing existing file references
             Files.Clear();
