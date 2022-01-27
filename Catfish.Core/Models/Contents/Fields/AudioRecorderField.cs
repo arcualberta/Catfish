@@ -27,9 +27,9 @@ namespace Catfish.Core.Models.Contents.Fields
         //    set => SetAttribute("maxFileSize", value);
         //}
 
-        public AudioRecorderField() { DisplayLabel = "Audio Recording Field"; }
-        public AudioRecorderField(XElement data) : base(data) { DisplayLabel = "Audio Recording Field"; }
-        public AudioRecorderField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Audio Recording Field"; }
+        public AudioRecorderField() { DisplayLabel = "Audio Recorder Field"; }
+        public AudioRecorderField(XElement data) : base(data) { DisplayLabel = "Audio Recorder Field"; }
+        public AudioRecorderField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Audio Recorder Field"; }
 
         public override void Initialize(eGuidOption guidOption)
         {
@@ -76,7 +76,12 @@ namespace Catfish.Core.Models.Contents.Fields
 
         public string FileNames { get; set; }
 
-      
+        public string Format
+        {
+            get => GetAttribute("format", "");
+            set => SetAttribute("format", value);
+        }
+
 
     }
 }
