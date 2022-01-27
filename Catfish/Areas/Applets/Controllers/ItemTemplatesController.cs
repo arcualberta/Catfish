@@ -55,7 +55,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         /// <summary>
-        /// Get all the child form that attached to the item template
+        /// Get all the child forms that attached to the item template
         /// </summary>
         /// <param name="templateId"></param>
         /// <returns></returns>
@@ -64,7 +64,7 @@ namespace Catfish.Areas.Applets.Controllers
         {
 
             List<SelectListItem> result = new List<SelectListItem>();
-            List<DataItem> dataItems = _itemTemplateAppletService.GetDataItems(Guid.Parse(templateId));
+            List<DataItem> dataItems = _itemTemplateAppletService.GetDataItems(Guid.Parse(templateId), false);
 
             foreach (DataItem itm in dataItems)
             {
@@ -74,21 +74,42 @@ namespace Catfish.Areas.Applets.Controllers
             return result;
         }
 
-		//[HttpGet("getChildForm/{templateId}/{childFormId}")]
-		//public ContentResult GetChildForm(Guid templateId, Guid childFormId)
-		//{
-		//	//TODO: How do we want to handle security in this case?
-		//	ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
-		//	DataItem childForm = template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
+        /// <summary>
+        /// Get all the root forms that attached to the item template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemTemplateRootForms/{templateId}")]
+        public List<SelectListItem> GetItemTemplateRootForms(string templateId)
+        {
 
-		//	JsonSerializerSettings settings = new JsonSerializerSettings 
-  //          {
-  //              TypeNameHandling = TypeNameHandling.All,
-  //              ContractResolver = new CamelCasePropertyNamesContractResolver()
-  //          };
-		//	string jsonString = JsonConvert.SerializeObject(childForm, settings);
-		//	return Content(jsonString, "application/json");
-		//}
+            List<SelectListItem> result = new List<SelectListItem>();
+            List<DataItem> dataItems = _itemTemplateAppletService.GetDataItems(Guid.Parse(templateId), true);
 
-	}
+            foreach (DataItem itm in dataItems)
+            {
+                result.Add(new SelectListItem { Text = itm.GetName("en"), Value = itm.Id.ToString() });
+
+            }
+            return result;
+        }
+
+        
+        //[HttpGet("getChildForm/{templateId}/{childFormId}")]
+        //public ContentResult GetChildForm(Guid templateId, Guid childFormId)
+        //{
+        //	//TODO: How do we want to handle security in this case?
+        //	ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
+        //	DataItem childForm = template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
+
+        //	JsonSerializerSettings settings = new JsonSerializerSettings 
+        //          {
+        //              TypeNameHandling = TypeNameHandling.All,
+        //              ContractResolver = new CamelCasePropertyNamesContractResolver()
+        //          };
+        //	string jsonString = JsonConvert.SerializeObject(childForm, settings);
+        //	return Content(jsonString, "application/json");
+        //}
+
+    }
 }
