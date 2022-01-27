@@ -33,7 +33,7 @@ namespace Catfish.UnitTests
         public void AudioRecordingFormTest()
         {
             string lang = "en";
-            string templateName = "Audio Recording Form Template";
+            string templateName = "Audio Recorder Form Template";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -66,17 +66,17 @@ namespace Catfish.UnitTests
             //Defining email templates
            
             //Defininig the inspection form
-            DataItem bcpForm = template.GetDataItem("Audio Recording Form", true, lang);
+            DataItem bcpForm = template.GetDataItem("Audio Recorder Form", true, lang);
             bcpForm.IsRoot = true;
             bcpForm.SetDescription("This template is designed for collecting metadata for audio recording object", lang);
 
             bcpForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("h1", "Audio Recording", lang);
+                 .AppendContent("h1", "Audio Recorder", lang);
                 
            var name = bcpForm.CreateField<TextField>("Title", lang,true);
             name.IsListEntryTitle = true;
             
-            var country = bcpForm.CreateField<AudioRecordingField>("Record",lang, true, "mp3");
+            var country = bcpForm.CreateField<AudioRecorderField>("Record",lang, true, "mp3");
             
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
