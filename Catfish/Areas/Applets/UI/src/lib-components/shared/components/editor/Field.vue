@@ -63,7 +63,6 @@
 			{{model.name.concatenatedContent}} <span v-if="this.model.required" style="color:red">*</span>
 		</div>
 		<div class="col-md-9 field-value">
-			{{fieldType}}
 			<div v-if="model?.validationStatus === ValidationStatus.VALUE_REQUIRED" style="color:red">This field requires a value.</div>
 			<div v-if="model?.validationStatus === ValidationStatus.INVALID" style="color:red">This field has an invalid value.</div>
 

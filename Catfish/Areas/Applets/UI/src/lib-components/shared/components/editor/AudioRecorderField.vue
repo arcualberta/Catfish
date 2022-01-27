@@ -20,5 +20,5 @@
 
 <template>
     <div>Audio Recorder</div>
-    <div>{{JSON.stringify(model)}}</div>
+    <!--<div>{{JSON.stringify(model)}}</div>-->
 </template>
