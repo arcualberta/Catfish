@@ -64,6 +64,9 @@ export abstract class FieldContainerUtils {
     public static isTextField(field: Field): boolean {
         return this.getFieldType(field) === eFieldType.TextField
     }
+    public static isAudioRecorderField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.AudioRecorderField
+    }
 }
 
 export function flattenFieldInputs(container: FieldContainer, state: FlattenedFormFiledState) {
