@@ -22,9 +22,8 @@ export enum Mutations {
 export const mutations: MutationTree<State> = {
 
     [Mutations.SET_IDS](state: State, payload: Guid[]) {
-        state.itemInstanceId = payload[0];
-        state.itemTemplateId = payload[1];
-        state.formId = payload[2];
+        state.itemTemplateId = payload[0];
+        state.formId = payload[1];
     },
     [Mutations.SET_FORM](state: State, payload: FieldContainer) {
         state.form = payload

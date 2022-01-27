@@ -2,7 +2,7 @@
 	import { Guid } from 'guid-typescript'
 	import { defineComponent, computed } from 'vue';
 	import { useStore } from 'vuex';
-	import props, { QueryParameter, DataAttribute } from '../shared/props'
+	import props, { DataAttribute } from '../shared/props'
 	import { eValidationStatus } from '../shared/models/fieldContainer'
 	import { state } from './store/state'
 	import { actions, Actions } from './store/actions'
@@ -21,16 +21,14 @@
         setup(p) {
            
             console.log('props: ', JSON.stringify(p));
-			const queryParameters = p.queryParameters as QueryParameter;
 			const dataAttributes = p.dataAttributes as DataAttribute;
 
-			const itemId = Guid.parse(queryParameters.iid as string);
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
-			const childFormId = Guid.parse(dataAttributes["child-form-id"] as string);
+			const childFormId = Guid.parse(dataAttributes["form-id"] as string);
 
             const store = useStore();
 
-			store.commit(Mutations.SET_IDS, [itemId, itemTemplateId, childFormId]);
+			store.commit(Mutations.SET_IDS, [itemTemplateId, childFormId]);
 
 			//load the data
 			store.dispatch(Actions.LOAD_FORM);
