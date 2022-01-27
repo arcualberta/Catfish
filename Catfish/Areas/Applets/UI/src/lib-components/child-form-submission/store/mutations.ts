@@ -50,6 +50,8 @@ export const mutations: MutationTree<State> = {
 
     },
     [FlattenedFormFiledMutations.SET_OPTION_VALUE](state: State, payload: { id: Guid; isSelected: boolean }) {
+
+        console.log("id: " + payload.id + " selected: " + payload.isSelected);
         state.flattenedOptionModels[payload.id.toString()].selected = payload.isSelected;
     },
     [Mutations.SET_SUBMISSION_STATUS](state: State, status: string) {

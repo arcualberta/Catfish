@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
     
-    import { defineComponent, PropType, ref } from 'vue'
-    import { useStore } from 'vuex';
+    import { defineComponent, PropType, ref} from 'vue'
+    //import { useStore } from 'vuex';
 
     import { AttachmentField} from '../../models/fieldContainer'
 
@@ -18,19 +18,19 @@
 
 
         },
-        
-        setup(p) {
-            const store = useStore();
-            const itemId = ref(store.state.item.id);
-            
-            const dataItemId = ref(store.getters.dataItemId);
-            
-            const fileUrl = '/api/items/' + itemId.value + '/' + dataItemId.value + '/' + p.model.id + '/';
-            
-            return {
-                itemId,
-                fileUrl
-               
+        setup() {
+            const file = ref(null); //ref(p.model.files);
+
+            const handleFileUpload = () => {
+                // debugger;
+                console.log("selected file " + JSON.stringify(file));
+                //Upload to server
+
+
+                return {
+                    handleFileUpload,
+                    file
+                }
             }
         }
            
@@ -40,15 +40,12 @@
 <template>
     <div>Attachment Field</div>
     <div>{{JSON.stringify(model)}}</div>
-    <!--<div v-for="file in model.files">
-        <a :href="fileUrl + file.fileName" ><img :src="file.thumbnail" class="img-thumbnail"></a>{{file.originalFileName}}
-    </div>-->
+
+   
+    <!--<div v-for="f in this.model.files" >-->
+    <!--<input type="file" ref="file"  @change="handleFileUpload()" />-->
+
+  
+    <!--</div>-->
 </template>
 
-<style scoped>
-    .img-thumbnail{
-        width:35px;
-        height: auto;
-        margin-right: 10px;
-    }
-</style>

@@ -764,8 +764,13 @@ namespace Catfish.UnitTests
             commentsForm.CreateField<TextArea>("Comments", lang, true);
 
             //DEBUG only
-           // commentsForm.CreateField<EmailField>("Email", lang, false);
-            commentsForm.CreateField<DateField>("Date", lang, false);
+            // commentsForm.CreateField<EmailField>("Email", lang, false);
+            //  commentsForm.CreateField<AttachmentField>("Attachment File", lang, false);
+            string[] optionText = new string[] { "option 1", "option 2" , "option 3" };
+            commentsForm.CreateField<RadioField>("Radio Options", lang, optionText, false);
+            commentsForm.CreateField<CheckboxField>("Checkbox Options", lang, optionText, false);
+            commentsForm.CreateField<SelectField>("Select Options", lang, optionText, false);
+
             Define_TBLT_DiscussionWorkflow(workflow, ref template, bcpForm, commentsForm, "SubmitDiscussion");
 
             if (saveChangesToDatabase)

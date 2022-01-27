@@ -95,6 +95,8 @@ export function validateFields(form: FieldContainer): boolean {
             case eFieldType.AttachmentField:
                 break;
             case eFieldType.CheckboxField:
+            case eFieldType.RadioField:
+            case eFieldType.SelectField:
                 field.validationStatus = validateOptionsField(field as OptionsField);
                 break;
             case eFieldType.CompositeField:
@@ -117,12 +119,12 @@ export function validateFields(form: FieldContainer): boolean {
             case eFieldType.MonolingualTextField:
                 field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, null);
                 break;
-            case eFieldType.RadioField:
-                field.validationStatus = validateOptionsField(field as OptionsField);
-                break;
-            case eFieldType.SelectField:
-                field.validationStatus = validateOptionsField(field as OptionsField);
-                break;
+            //case eFieldType.RadioField:
+            //    field.validationStatus = validateOptionsField(field as OptionsField);
+            //    break;
+            //case eFieldType.SelectField:
+            //    field.validationStatus = validateOptionsField(field as OptionsField);
+            //    break;
             case eFieldType.TableField:
                 break;
             case eFieldType.TextArea:
