@@ -49,7 +49,7 @@ namespace Catfish.Areas.Applets.Services
         public List<DataItem> GetDataItems(Guid itemTemplate, bool isRoot = false)
         {
             ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == itemTemplate);
-            var dataItems = template.GetAllNonRootDataItems();
+            var dataItems = template.DataContainer.Where(di => di.IsRoot == isRoot).ToList();
             return dataItems;
         }
     }
