@@ -1,7 +1,6 @@
 ﻿<script lang="ts">
 	import { defineComponent, PropType } from 'vue'
 	import { useStore } from 'vuex';
-	import Editor from '@tinymce/tinymce-vue'
 
 	import { FlattenedFormFiledMutations } from '../../../store/form-submission-utils'
 	import { eValidationStatus } from '../../../models/fieldContainer'
@@ -23,17 +22,14 @@
 				required: true
             }
         },
-		components: {
-			Editor
-		},
 		computed: {
-			content: {
+			selected: {
 				get(): boolean {
 					return this.model.selected;
 				},
 				set(value: boolean) {
-                    //console.log("value to be set: " + value + " id: " + this.model.id);
-                    this.store.commit(FlattenedFormFiledMutations.SET_OPTION_VALUE, { id: this.model.id, isSelected: value });
+                    console.log("selected value: ", value);
+                    //this.store.commit(FlattenedFormFiledMutations.SET_OPTION_VALUE, { id: this.model.id, isSelected: value });
                 }
             }
 		},
@@ -67,8 +63,7 @@
 
 <template>
 	<div v-for="text in model.optionText.values.$values">
-		<!--<input type="radio" :model="model.selected" :value="model.id" :name="name" @change="selectOption($event, model)" :selected="model.selected"/><label>{{text.value}}</label>-->
-		<input type="radio" :model="content" :value="model.id" :name="name" :id="model.id" @change="selectOption($event, model)"/><label>{{text.value}}</label>
+		<input type="radio" :name="name" :id="model.id" :value="model.id" v-model="selected" /> <labe :for="model.id">{{text.value}}</labe>
 	</div>
 	<!--{{JSON.stringify(model.optionText.values?.$values)}}-->
 </template>

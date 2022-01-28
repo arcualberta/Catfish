@@ -100,15 +100,9 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
         }
         else if (isOptionsField) {
             //Itenrating through each option and adding them to the flattened options dictionary
-            var valOptions = (value as OptionsField).options;
-            if (Array.isArray(valOptions)) {
-                //(value as OptionsField).options?.forEach((opt: Option) => {
-                //    state.flattenedOptionModels[opt.id.toString()] = opt;
-                //})
-                valOptions.forEach((opt: Option) => {
-                    state.flattenedOptionModels[opt.id.toString()] = opt;
-                })
-            }
+            (value as OptionsField).options?.$values?.forEach((opt: Option) => {
+                state.flattenedOptionModels[opt.id.toString()] = opt;
+			})
         }
     })
 
