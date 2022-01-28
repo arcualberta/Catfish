@@ -57,7 +57,6 @@
 </script>
 
 <template>
-    <!--<div>{{JSON.stringify(model.options.$values)}}</div>-->
     <div v-for="option in model.options.$values">
         <input type="radio" :name="name" :id="option.id" :value="option.id" v-model="selected" /> <labe :for="option.id">{{this.getConcatenatedOptionLabels(option)}}</labe>
     </div>
