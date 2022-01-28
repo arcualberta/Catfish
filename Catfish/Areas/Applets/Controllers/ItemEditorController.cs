@@ -70,7 +70,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
-        public ContentResult Get(Guid id)
+        public async Task<ContentResult> GetAsync(Guid id)
         {
             //We should ultimately implement permission checking using resource-based authorization.
             //For the time being, we are going to implement a role-based authorization that is further limits access based on
@@ -87,7 +87,8 @@ namespace Catfish.Areas.Applets.Controllers
 
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == id);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
-            if (_itemAuthorizationHelper.AuthorizebyRole(item, User, "Read"))
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
+.Succeeded)
             {
                 var settings = new JsonSerializerSettings()
                 {
@@ -133,7 +134,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("appendchildforminstance/{itemInstanceId}")]
-        public DataItem AppendChildFormInstance(Guid itemInstanceId, [FromForm] String datamodel)
+        public async Task<DataItem> AppendChildFormInstanceAsync(Guid itemInstanceId, [FromForm] String datamodel)
         {
             var settings = new JsonSerializerSettings()
             {
@@ -147,15 +148,20 @@ namespace Catfish.Areas.Applets.Controllers
             childForm.TemplateId = childForm.Id; //Comment Form Id
             childForm.Id = Guid.NewGuid();
             var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);
-            item.DataContainer.Add(childForm);
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
+            .Succeeded)
+            {
+                item.DataContainer.Add(childForm);
 
-            _appDb.SaveChanges();
+                _appDb.SaveChanges();
+            }
+                
 
             return childForm;
         }
 
         [HttpGet("getchildformsubmissions/{instanceId}/{childFormId}")]
-        public ContentResult GetChildFormSubmissions(Guid instanceId, Guid childFormId)
+        public async Task<ContentResult> GetChildFormSubmissionsAsync(Guid instanceId, Guid childFormId)
         {
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
@@ -163,8 +169,8 @@ namespace Catfish.Areas.Applets.Controllers
             //TODO: Update the following Authorization-checking in order to propoerly check authorizations specified for
             //submitting child forms. For the time being, we limit it to the users who have permission to Read the
             //main submission. This is only a quick shortcut we created to help TBLT site.
-            bool authorizedToSubmitChildForm = _itemAuthorizationHelper.AuthorizebyRole(item, User, "Read");
-            if (authorizedToSubmitChildForm)
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
+            .Succeeded)
             {
                 var childSubmissions = item.DataContainer.Where(c => c.TemplateId == childFormId).ToList();
 

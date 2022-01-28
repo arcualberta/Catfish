@@ -59,7 +59,7 @@ namespace Catfish.Core.Authorization.Handlers
                 }
                 if (!context.User.Identity.IsAuthenticated) 
                 {
-                    throw new AuthorizationException("Authorization faild, Please login to the system.");
+                    return Task.CompletedTask;
                 }
                 bool isSysAdmin = context.User.IsInRole("SysAdmin");
                 if (workflowAction.Access == GetAction.eAccess.AnyLoggedIn || isSysAdmin)
