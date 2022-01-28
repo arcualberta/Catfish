@@ -1,8 +1,8 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
 import { Mutations } from './mutations';
-import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
-import { validateFields } from '../../shared/store/form-validators'
+//import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
+//import { validateFields } from '../../shared/store/form-validators'
 
 //Declare ActionTypes
 export enum Actions {
@@ -31,13 +31,13 @@ export const actions: ActionTree<State, any> = {
     [Actions.SUBMIT_FORM](store) {
 
         //Validating the form
-        if (!store.state.form || !validateFields(store.state.form))
+        if (!store.state.form /*|| !validateFields(store.state.form)*/)
             return;
 
         store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
 
        
-        const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${store.state.itemInstanceId}`;
+        const api = window.location.origin + `/applets/api/itemeditor/`;
 
         let formData = new FormData();
         formData.append('datamodel', JSON.stringify(store.state.form));
@@ -50,13 +50,13 @@ export const actions: ActionTree<State, any> = {
                 response.json())
             .then(data => {
                 console.log(JSON.stringify(data));
-                const flattenModel: FlattenedFormFiledState ={          
-                    flattenedOptionModels : store.state.flattenedOptionModels,
-                    flattenedTextModels : store.state.flattenedTextModels,
-                };
-                //clear the form content
-                clearForm(flattenModel);
-               store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
+               // const flattenModel: FlattenedFormFiledState ={          
+               //     flattenedOptionModels : store.state.flattenedOptionModels,
+               //     flattenedTextModels : store.state.flattenedTextModels,
+               // };
+               // //clear the form content
+               // clearForm(flattenModel);
+               //store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
                 
             })
             .catch(error => {
