@@ -4,15 +4,11 @@
 	import { useStore } from 'vuex';
 
 	import { Option, OptionsField, OptionsFieldMethods } from '../../models/fieldContainer'
-    import Radio from './option/Radio.vue'
     import { validateOptionsField } from '../../store/form-validators'
 	import { FlattenedFormFiledMutations } from '../../store/form-submission-utils'
 
     export default defineComponent({
 		name: "RadioField",
-        components: {
-            Radio
-        },
         props: {
             model: {
                 type: Object as PropType<OptionsField> | null,
