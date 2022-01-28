@@ -1,4 +1,4 @@
-﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option } from '../models/fieldContainer'
+﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option, AttachmentField } from '../models/fieldContainer'
 import { TextCollection, Text } from '../models/textModels';
 
 //Declare State interface
@@ -135,3 +135,9 @@ export function isRichTextField(field: MultilingualTextField) {
     return field?.richText ? field.richText : false;
 }
 
+export function allowFileExtension(field: AttachmentField) {
+    return field.allowedExtensions.toString();
+}
+export function isAllowMultiple(field: AttachmentField) {
+    return field.allowMultipleValues;
+}
