@@ -7,8 +7,8 @@
 	import { state } from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
-    import { mutations, Mutations, SubmissionStatus as eSubmissionStatus } from './store/mutations'
-	
+	import { Mutations, SubmissionStatus as eSubmissionStatus } from '../form-submission/store/mutations'
+	import { mutations, Mutations as ChildMutations } from './store/mutations'
 
 	import ChildForm from '../shared/components/editor/FieldContainer.vue'
 	import ChildView from '../shared/components/display/FieldContainer.vue'
@@ -32,7 +32,9 @@
 
             const store = useStore();
 
-			store.commit(Mutations.SET_IDS, [itemId, itemTemplateId, childFormId]);
+			store.commit(Mutations.SET_ITEM_TEMPLATE_ID, itemTemplateId);
+			store.commit(Mutations.SET_FORM_ID, childFormId);
+			store.commit(ChildMutations.SET_PATENT_ITEM_ID, itemId);
 
 			//load the data
 			store.dispatch(Actions.LOAD_FORM);

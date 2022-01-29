@@ -1,6 +1,8 @@
 ﻿import { ActionTree } from 'vuex';
+
 import { State } from './state';
-import { Mutations } from './mutations';
+import { Mutations as ChildFormMutations } from './mutations'
+import { Mutations } from '../../form-submission/store/mutations'
 import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
 import { validateFields } from '../../shared/store/form-validators'
 
@@ -14,7 +16,7 @@ export enum Actions {
 export const actions: ActionTree<State, any> = {
 
     [Actions.LOAD_FORM](store) {
-       
+
         const api = window.location.origin +
             `/applets/api/itemeditor/getchildform/${store.state.itemInstanceId}/${store.state.formId}`;
         console.log('Form Load API: ', api)
@@ -28,7 +30,6 @@ export const actions: ActionTree<State, any> = {
             .catch(error => {
                 console.error('Actions.LOAD_FORM Error: ', error);
             });
-;
     },
     [Actions.LOAD_SUBMISSIONS](store) {
 
@@ -39,7 +40,7 @@ export const actions: ActionTree<State, any> = {
         fetch(api)
             .then(response => response.json())
             .then(data => {
-                store.commit(Mutations.SET_SUBMISSIONS, data);
+                store.commit(ChildFormMutations.SET_SUBMISSIONS, data);
             })
             .catch(error => {
                 console.error('Submission loading error:', error);
@@ -54,10 +55,10 @@ export const actions: ActionTree<State, any> = {
 
         store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
 
-       
+
         const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${store.state.itemInstanceId}`;
 
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append('datamodel', JSON.stringify(store.state.form));
 
         console.log(JSON.stringify(store.state.form));
@@ -66,24 +67,24 @@ export const actions: ActionTree<State, any> = {
             {
                 body: formData,
                 method: "post"
-            }).then(response =>
+            })
+            .then(response =>
                 response.json())
             .then(data => {
                 console.log(JSON.stringify(data));
-                const flattenModel: FlattenedFormFiledState ={          
-                    flattenedOptionModels : store.state.flattenedOptionModels,
-                    flattenedTextModels : store.state.flattenedTextModels,
+                const flattenModel: FlattenedFormFiledState = {
+                    flattenedOptionModels: store.state.flattenedOptionModels,
+                    flattenedTextModels: store.state.flattenedTextModels,
                 };
                 //clear the form content
                 clearForm(flattenModel);
-               store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
-                
+                store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
+
             })
             .catch(error => {
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Fail");
                 console.log(error)
             });
-      
     },
 }
 
