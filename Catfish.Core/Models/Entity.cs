@@ -319,11 +319,5 @@ namespace Catfish.Core.Models
             }
             return ms;
         }
-
-        public List<DataItem> GetAllNonRootDataItems()
-        {
-            return this.DataContainer
-                .Where(di => di.IsRoot == false).ToList();
-        }
     }
 }

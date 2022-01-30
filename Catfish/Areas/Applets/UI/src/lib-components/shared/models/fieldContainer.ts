@@ -19,6 +19,7 @@ export enum eFieldType {
     TableField,
     TextArea,
     TextField,
+    AudioRecorderField
 }
 
 export enum eValidationStatus {
@@ -77,7 +78,14 @@ export interface MultilingualTextField extends TextField {
 }
 
 export interface MonolingualTextField extends TextField {
-    values: Text[] | null;
+    $type: string;
+    modelType: string;
+    values: {
+        $type: string;
+        $values: Text[];
+    } | null;
+
+   // values: Text[] | null;
 }
 
 export interface Option {
@@ -129,6 +137,11 @@ export interface AttachmentField extends Field {
     files: FileReference[];
     allowedExtensions: string[];
     maxFileSize: number;
+}
+export interface AudioRecorderField extends Field {
+    files: FileReference[];
+   
+    format: string;
 }
 
 

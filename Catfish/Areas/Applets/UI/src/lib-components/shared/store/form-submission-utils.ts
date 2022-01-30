@@ -1,6 +1,13 @@
 ﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option } from '../models/fieldContainer'
 import { TextCollection, Text } from '../models/textModels';
 
+export enum eSubmissionStatus {
+    None = "None",
+    InProgress = "InProgress",
+    Success = "Success",
+    Fail = "Fail"
+}
+
 //Declare State interface
 export interface FlattenedFormFiledState {
     flattenedTextModels: { [key: string]: Text };
@@ -64,6 +71,9 @@ export abstract class FieldContainerUtils {
     public static isTextField(field: Field): boolean {
         return this.getFieldType(field) === eFieldType.TextField
     }
+    public static isAudioRecorderField(field: Field): boolean {
+        return this.getFieldType(field) === eFieldType.AudioRecorderField
+    }
 }
 
 export function flattenFieldInputs(container: FieldContainer, state: FlattenedFormFiledState) {
@@ -82,7 +92,7 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
 
         if (isMonoLinqualField) {
             //Iterating through each text value and adding them to the flattened dictionary
-            (value as MonolingualTextField).values?.forEach((txtVal: Text) => {
+            (value as MonolingualTextField).values?.$values?.forEach((txtVal: Text) => {
                 state.flattenedTextModels[txtVal.id.toString()] = txtVal;
             })
         }
@@ -97,15 +107,9 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
         }
         else if (isOptionsField) {
             //Itenrating through each option and adding them to the flattened options dictionary
-            var valOptions = (value as OptionsField).options;
-            if (Array.isArray(valOptions)) {
-                //(value as OptionsField).options?.forEach((opt: Option) => {
-                //    state.flattenedOptionModels[opt.id.toString()] = opt;
-                //})
-                valOptions.forEach((opt: Option) => {
-                    state.flattenedOptionModels[opt.id.toString()] = opt;
-                })
-            }
+            (value as OptionsField).options?.$values?.forEach((opt: Option) => {
+                state.flattenedOptionModels[opt.id.toString()] = opt;
+			})
         }
     })
 

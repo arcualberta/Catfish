@@ -25,7 +25,12 @@
 			validationStatus: {
 				type: null as PropType<eValidationStatus> | null,
 				required: true
-			}
+			},
+			field: {
+				type: String,
+				required: false,
+				default: "text"
+            }
         },
 		components: {
 			Editor
@@ -36,16 +41,19 @@
 					return this.model.value;
 				},
 				set(value: string) {
+					//console.log("value to be set: " + value + " id: " + this.model.id);
 					this.store.commit(FlattenedFormFiledMutations.SET_TEXT_VALUE, { id: this.model.id, val: value });
 				}
 			}
 		},
-		setup() {
+		setup(p) {
 
 			const store = useStore();
-
+			const field = p.field;
+            console.log("validationStatus: " + p.validationStatus)
 			return {
-				store
+				store,
+				field
 			}
 		},
     });
@@ -54,9 +62,11 @@
 <template>
 	<Editor v-if="isRichText" apiKey="0ohehg73era56wydy5kyws6ouf25550ogy2sifi1j41hk65l" v-model="content" placeholder="add multiple lines" />
 	<textarea v-else-if="isMultiline" v-model="content" />
-	<input v-else type="text" v-model="content" />
-	<!--<div>validationStatus: {{validationStatus}}</div>
-	<div><b>You entered:</b></div>
-	<div v-html="content" />-->
+	<div v-else>
+		<input v-if="field === 'text'" type="text" v-model="content" />
+		<input v-else-if="field === 'decimal'" type="number" v-model="content" step="0.01" placeholder="0.00" />
+		<input v-else :type="field" v-model="content" />
+
+	</div>
 </template>
 
