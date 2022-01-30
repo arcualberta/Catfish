@@ -7,7 +7,8 @@
 	import { state } from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
-    import { mutations, Mutations, SubmissionStatus as eSubmissionStatus } from './store/mutations'
+	import { mutations, Mutations } from './store/mutations'
+	import { eSubmissionStatus } from '../shared/store/form-submission-utils'
 	
 
 	import SubmissionForm from '../shared/components/editor/FieldContainer.vue'
