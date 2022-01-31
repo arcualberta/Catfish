@@ -39,7 +39,7 @@ export const actions: ActionTree<State, any> = {
        
         const api = window.location.origin + `/applets/api/itemeditor/`;
 
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append('datamodel', JSON.stringify(store.state.form));
 
         fetch(api,

@@ -1,6 +1,13 @@
 ﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option, AttachmentField } from '../models/fieldContainer'
 import { TextCollection, Text } from '../models/textModels';
 
+export enum eSubmissionStatus {
+    None = "None",
+    InProgress = "InProgress",
+    Success = "Success",
+    Fail = "Fail"
+}
+
 //Declare State interface
 export interface FlattenedFormFiledState {
     flattenedTextModels: { [key: string]: Text };

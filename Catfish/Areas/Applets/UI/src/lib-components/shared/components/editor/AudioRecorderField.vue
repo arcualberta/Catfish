@@ -19,6 +19,6 @@
 </script>
 
 <template>
-    <div>Audio Recorder</div>
+    <div>My Audio Recorder</div>
     <!--<div>{{JSON.stringify(model)}}</div>-->
 </template>

@@ -13,17 +13,20 @@ export enum SubmissionStatus {
 }
 //Declare MutationTypes
 export enum Mutations {
-    SET_IDS = 'SET_IDS',
+    SET_ITEM_TEMPLATE_ID = 'SET_ITEM_TEMPLATE_ID',
+    SET_FORM_ID = 'SET_FORM_ID',
     SET_FORM = 'SET_FORM',
-    SET_SUBMISSION_STATUS='SET_SUBMISSION_STATUS'
+    SET_SUBMISSION_STATUS='SET_SUBMISSION_STATUS',
 }
 
 //Create a mutation tree that implement all mutation interfaces
 export const mutations: MutationTree<State> = {
 
-    [Mutations.SET_IDS](state: State, payload: Guid[]) {
-        state.itemTemplateId = payload[0];
-        state.formId = payload[1];
+    [Mutations.SET_ITEM_TEMPLATE_ID](state: State, payload: Guid) {
+        state.itemTemplateId = payload;
+    },
+    [Mutations.SET_FORM_ID](state: State, payload: Guid) {
+        state.formId = payload;
     },
     [Mutations.SET_FORM](state: State, payload: FieldContainer) {
         state.form = payload

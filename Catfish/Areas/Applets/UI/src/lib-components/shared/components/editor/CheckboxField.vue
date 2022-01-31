@@ -33,11 +33,11 @@
            // const validationStatus = computed(() => validateOptionsField(p.model));
             
             const store = useStore();
-            const selectedoptions = computed(() => p.model.options.$values.filter((opt) => opt.selected === true).map(opt=>opt.id)); //Guid[] | undefined;
+
             return {
                 store,
                // validationStatus,
-                selectedoptions
+				selectedoptions: computed(() => p.model.options.$values.filter((opt) => opt.selected === true).map(opt => opt.id))
               
             }
 

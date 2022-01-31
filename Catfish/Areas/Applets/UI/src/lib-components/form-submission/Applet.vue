@@ -7,7 +7,8 @@
 	import { state } from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
-    import { mutations, Mutations, SubmissionStatus as eSubmissionStatus } from './store/mutations'
+	import { mutations, Mutations } from './store/mutations'
+	import { eSubmissionStatus } from '../shared/store/form-submission-utils'
 	
 
 	import SubmissionForm from '../shared/components/editor/FieldContainer.vue'
@@ -24,20 +25,19 @@
 			const dataAttributes = p.dataAttributes as DataAttribute;
 
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
-			const childFormId = Guid.parse(dataAttributes["form-id"] as string);
+			const formId = Guid.parse(dataAttributes["form-id"] as string);
 
             const store = useStore();
 
-			store.commit(Mutations.SET_IDS, [itemTemplateId, childFormId]);
+			store.commit(Mutations.SET_ITEM_TEMPLATE_ID, itemTemplateId);
+			store.commit(Mutations.SET_FORM_ID, formId);
 
 			//load the data
 			store.dispatch(Actions.LOAD_FORM);
-			//const submissionStatus = store.state.submissionStatus as SubmissionStatus;
-           // const submissionStatus: eSubmissionStatus = store.state.submissionStatus as eSubmissionStatus;
-			//console.log("initial status " + JSON.stringify(submissionStatus));
+
 			return {
-				submissionForm: computed(() => store.state.form),
 				store,
+				submissionForm: computed(() => store.state.form),
 				submissionStatus: computed(() => store.state.submissionStatus),
 				eSubmissionStatus,
 				eValidationStatus
