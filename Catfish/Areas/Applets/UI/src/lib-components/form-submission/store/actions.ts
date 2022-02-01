@@ -16,7 +16,7 @@ export const actions: ActionTree<State, any> = {
        
         const api = window.location.origin +
             `/applets/api/itemtemplates/${store.state.itemTemplateId}/data-form/${store.state.formId}`;
-        console.log('Form Load API: ', api)
+       // console.log('Form Load API: ', api)
 
         fetch(api)
             .then(response => response.json())

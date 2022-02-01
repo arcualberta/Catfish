@@ -71,13 +71,15 @@ export const actions: ActionTree<State, any> = {
             .then(response =>
                 response.json())
             .then(data => {
-                console.log(JSON.stringify(data));
+                //console.log(JSON.stringify(data));
                 const flattenModel: FlattenedFormFiledState = {
                     flattenedOptionModels: store.state.flattenedOptionModels,
                     flattenedTextModels: store.state.flattenedTextModels,
                 };
                 //clear the form content
                 clearForm(flattenModel);
+
+                store.commit(ChildFormMutations.APPEND_CHILD_INSTANCE, data);
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
 
             })
