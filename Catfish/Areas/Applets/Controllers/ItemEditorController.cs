@@ -166,6 +166,7 @@ namespace Catfish.Areas.Applets.Controllers
             childForm.TemplateId = childForm.Id; //Comment Form Id
             childForm.Id = Guid.NewGuid();
             childForm.Created = DateTime.Now;
+            childForm.Updated = DateTime.Now;
             //update created date
             var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
