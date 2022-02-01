@@ -157,6 +157,8 @@ namespace Catfish.Areas.Applets.Controllers
         
             childForm.TemplateId = childForm.Id; //Comment Form Id
             childForm.Id = Guid.NewGuid();
+            childForm.Created = DateTime.Now;
+            //update created date
             var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);
             item.DataContainer.Add(childForm);
 
@@ -177,7 +179,7 @@ namespace Catfish.Areas.Applets.Controllers
             bool authorizedToSubmitChildForm = _itemAuthorizationHelper.AuthorizebyRole(item, User, "Read");
             if (authorizedToSubmitChildForm)
             {
-                var childSubmissions = item.DataContainer.Where(c => c.TemplateId == childFormId).ToList();
+                var childSubmissions = item.DataContainer.Where(c => c.TemplateId == childFormId).OrderByDescending(c => c.Created).ToList();
 
                 var settings = new JsonSerializerSettings()
                 {
