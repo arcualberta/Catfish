@@ -38,12 +38,10 @@ import { defineComponent, PropType , computed} from 'vue'
 </script>
 
 <template>
-    
-    <!--<div>{{JSON.stringify(model)}}</div>-->
-    
-        <div v-for="val in model?.values?.$values">
-            <Text :model="val" :is-multiline="false" :is-rich-text="false" :validation-status="validationStatus" field="email" />
-        </div>
+ 
+    <div v-for="val in model?.values?.$values">
+        <Text :model="val" :is-multiline="false" :is-rich-text="false" :validation-status="validationStatus" field="email" />
+     </div>
    
 </template>
 

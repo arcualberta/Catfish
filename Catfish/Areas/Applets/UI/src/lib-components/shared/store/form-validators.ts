@@ -3,6 +3,8 @@ import { FieldContainerUtils } from './form-submission-utils'
 
 export abstract class RegExpressions {
     public static Email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    public static Number = /^\d+$/;
+    public static Decimal = /^[+-]?(\d+\.?\d*|\.\d+)$/;
 
 }
 
@@ -51,6 +53,28 @@ export function validateMonolingualTextField(field: MonolingualTextField, valida
     return validationStatus;
 }
 
+export function validateMonolingualNumberField(field: MonolingualTextField): eValidationStatus {
+
+    //Go through each value in the monolingual field. Set valueFound to true if at least one value is found.
+   
+    let valueFound = false;
+    let validationStatus = eValidationStatus.VALID;
+    for (let i = 0; field?.values && (i < field.values?.$values.length); ++i) {
+        const valStr = field.values.$values[i]?.value;
+       //if it's empty or null the typeof will not return string 'number'
+        if (typeof (valStr) === 'number') {
+            valueFound = true;
+           // console.log("type: number")
+        }
+    }
+
+    if (field.required && !valueFound)
+        validationStatus = eValidationStatus.VALUE_REQUIRED;
+
+    //Validation is successful as long as some value is in an inner field.
+    return validationStatus;
+}
+
 export function validateOptionsField(field: OptionsField): eValidationStatus {
     //If the field itself is not a required field, no need to select a value, so the field is always valid
     if (!field.required)
@@ -71,30 +95,36 @@ export function validateFields(form: FieldContainer): boolean {
             case eFieldType.AttachmentField:
                 break;
             case eFieldType.CheckboxField:
+            case eFieldType.RadioField:
+            case eFieldType.SelectField:
                 field.validationStatus = validateOptionsField(field as OptionsField);
                 break;
             case eFieldType.CompositeField:
                 break;
             case eFieldType.DateField:
+                field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, null);
                 break;
             case eFieldType.DecimalField:
+            case eFieldType.IntegerField:
+                field.validationStatus = validateMonolingualNumberField(field as MonolingualTextField);
                 break;
             case eFieldType.EmailField:
                 field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, RegExpressions.Email);
                 break;
             case eFieldType.FieldContainerReference:
                 break;
-            case eFieldType.IntegerField:
-                break;
+            //case eFieldType.IntegerField:
+            //    field.validationStatus = validateMonolingualNumberField(field as MonolingualTextField);
+            //    break;
             case eFieldType.MonolingualTextField:
                 field.validationStatus = validateMonolingualTextField(field as MonolingualTextField, null);
                 break;
-            case eFieldType.RadioField:
-                field.validationStatus = validateOptionsField(field as OptionsField);
-                break;
-            case eFieldType.SelectField:
-                field.validationStatus = validateOptionsField(field as OptionsField);
-                break;
+            //case eFieldType.RadioField:
+            //    field.validationStatus = validateOptionsField(field as OptionsField);
+            //    break;
+            //case eFieldType.SelectField:
+            //    field.validationStatus = validateOptionsField(field as OptionsField);
+            //    break;
             case eFieldType.TableField:
                 break;
             case eFieldType.TextArea:
@@ -102,6 +132,9 @@ export function validateFields(form: FieldContainer): boolean {
                 break;
             case eFieldType.TextField:
                 field.validationStatus = validateMultilingualTextField(field as MultilingualTextField);
+                break;
+            case eFieldType.AudioRecorderField:
+                field.validationStatus = eValidationStatus.VALID;
                 break;
         }
 

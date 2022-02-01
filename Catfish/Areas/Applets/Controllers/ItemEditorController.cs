@@ -103,6 +103,24 @@ namespace Catfish.Areas.Applets.Controllers
 
         }
 
+        [HttpPost]
+        public ContentResult Post([FromForm] String datamodel)
+		{
+            var settings = new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
+            itemInstance.TemplateId = itemInstance.Id;
+            itemInstance.Id = Guid.NewGuid();
+
+
+
+            throw new NotImplementedException();
+		}
 
         [HttpGet("getChildForm/{instanceId}/{childFormId}")]
         public async Task<ContentResult> GetChildFormAsync(Guid instanceId, Guid childFormId)
