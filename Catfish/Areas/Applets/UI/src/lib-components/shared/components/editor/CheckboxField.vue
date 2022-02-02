@@ -46,12 +46,9 @@
 </script>
 
 <template>
-  
     <div v-for="option in model.options.$values">
-      
         <input type="checkbox" :id="option.id" :value="option.id" v-model="selectedoptions" @change="selectoption($event)" />
-
         <label :for="option.id"> {{this.getConcatenatedOptionLabels(option)}}</label>
     </div>
-    Selected chekboxes: {{JSON.stringify(selectedoptions)}}
+    <!--Selected chekboxes: {{JSON.stringify(selectedoptions)}}-->
 </template>

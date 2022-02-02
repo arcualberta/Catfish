@@ -31,20 +31,12 @@
 
             const validationStatus = computed(() => validateMonolingualNumberField(p.model));
             const type = p.model.modelType;
-            return {
 
+            return {
                 validationStatus,
                 type
-
             }
-         
         },
-        //methods: {
-        //    formatToDecimal: (value : number, decimalPlaces : number) => {
-        //        return Number(value).toFixed(decimalPlaces);
-        //    }
-           
-        //}
     });
 </script>
 
