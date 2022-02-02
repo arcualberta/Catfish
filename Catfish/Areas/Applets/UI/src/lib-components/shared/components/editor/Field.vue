@@ -13,6 +13,7 @@
 	import RadioField from './RadioField.vue'
 	import SelectField from './SelectField.vue'
 	import MultilingualTextField from './MultilingualTextField.vue'
+	import AudioRecorderField from './AudioRecorderField.vue'
 
     export default defineComponent({
         name: "Field",
@@ -34,7 +35,8 @@
 			IntegerField,
 			RadioField,
 			SelectField,
-			MultilingualTextField
+			MultilingualTextField,
+            AudioRecorderField
 		},
         setup(p) {
             const fieldType: eFieldType = FieldContainerUtils.getFieldType(p.model);
@@ -74,7 +76,7 @@
 			<SelectField v-else-if="fieldType === FieldTypes.SelectField" :model="model" />
 			<MultilingualTextField v-else-if="fieldType === FieldTypes.TextArea" :model="model" :is-multiline="true" />
 			<MultilingualTextField v-else-if="fieldType === FieldTypes.TextField" :model="model" :is-multiline="false" />
-
+			<AudioRecorderField v-else-if="fieldType === FieldTypes.AudioRecorderField" :model="model" />
 			<div v-else-if="fieldType === FieldTypes.CompositeField"> TODO: Implement editor template for the CompositeField</div>
 			<div v-else-if="fieldType === FieldTypes.TableField"> TODO: Implement editor template for the TableField</div>
 		</div>

@@ -112,6 +112,8 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
                 UpdateDataModelValues(targetField as OptionsField);
             else if (typeof(AttachmentField).IsAssignableFrom(targetField.GetType()))
                 UpdateDataModelValues(targetField as AttachmentField);
+            else if (typeof(AudioRecorderField).IsAssignableFrom(targetField.GetType()))
+                UpdateDataModelValues(targetField as AudioRecorderField);
             else if (typeof(TableField).IsAssignableFrom(targetField.GetType()))
                 UpdateDataModelValues(targetField as TableField);
             else if (typeof(CompositeField).IsAssignableFrom(targetField.GetType()))
@@ -213,6 +215,11 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
         }
 
         public void UpdateDataModelValues(AttachmentField targetField)
+        {
+            throw new NotImplementedException(string.Format("Not yet implemented for {0}", targetField.GetType().FullName));
+        }
+
+        public void UpdateDataModelValues(AudioRecorderField targetField)
         {
             throw new NotImplementedException(string.Format("Not yet implemented for {0}", targetField.GetType().FullName));
         }

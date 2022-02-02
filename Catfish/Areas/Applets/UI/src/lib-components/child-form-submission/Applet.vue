@@ -7,8 +7,9 @@
 	import { state } from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
-    import { mutations, Mutations, SubmissionStatus as eSubmissionStatus } from './store/mutations'
-	
+	import { Mutations } from '../form-submission/store/mutations'
+	import { mutations, Mutations as ChildMutations } from './store/mutations'
+	import { eSubmissionStatus } from '../shared/store/form-submission-utils'
 
 	import ChildForm from '../shared/components/editor/FieldContainer.vue'
 	import ChildView from '../shared/components/display/FieldContainer.vue'
@@ -22,7 +23,7 @@
         props,
         setup(p) {
            
-            console.log('props: ', JSON.stringify(p));
+           // console.log('props: ', JSON.stringify(p));
 			const queryParameters = p.queryParameters as QueryParameter;
 			const dataAttributes = p.dataAttributes as DataAttribute;
 
@@ -32,7 +33,9 @@
 
             const store = useStore();
 
-			store.commit(Mutations.SET_IDS, [itemId, itemTemplateId, childFormId]);
+			store.commit(Mutations.SET_ITEM_TEMPLATE_ID, itemTemplateId);
+			store.commit(Mutations.SET_FORM_ID, childFormId);
+			store.commit(ChildMutations.SET_PATENT_ITEM_ID, itemId);
 
 			//load the data
 			store.dispatch(Actions.LOAD_FORM);
@@ -68,7 +71,7 @@
 	<div v-if="childForm && Object.keys(childForm).length > 0">
 		<ChildForm :model="childForm" />
 
-		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">For validation failed.</div>
+		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Form validation failed.</div>
 		<div v-else>
 			<div v-if="submissionStatus === eSubmissionStatus.InProgress" class="alert alert-info">Submitting...</div>
 			<div v-if="submissionStatus === eSubmissionStatus.Success" class="alert alert-info">Submission successful</div>

@@ -1,7 +1,8 @@
 ﻿<script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType , computed} from 'vue'
     import { MonolingualTextField } from '../../models/fieldContainer'
-
+    import Text from './text/Text.vue'
+	import { validateMonolingualTextField, RegExpressions } from '../../store/form-validators'
 
     export default defineComponent({
         name: "EmailField",
@@ -18,22 +19,29 @@ import { defineComponent, PropType } from 'vue'
             }
 
         },
-    //    methods: {
-
-    //    },
-    //    setup(props) {
-
-    //        const val = ref(props.model?.values?.slice(0, 1));
-    //        return {
-    //            val
-    //        }
-    //    }
+        components: {
+            Text
+        },
+   
+        setup(p) {
+            const validationStatus = computed(() => validateMonolingualTextField(p.model, RegExpressions.Email));
+            const type = p.model.modelType;
+            return {
+              
+                validationStatus,
+                type
+                
+            }
+            
+        }
     });
 </script>
 
 <template>
-    <div>Email Field</div>
-    <div>{{JSON.stringify(model)}}</div>
-    <!--<div v-for="val in model.values">{{val.value}}</div>-->
+ 
+    <div v-for="val in model?.values?.$values">
+        <Text :model="val" :is-multiline="false" :is-rich-text="false" :validation-status="validationStatus" field="email" />
+     </div>
+   
 </template>
 
