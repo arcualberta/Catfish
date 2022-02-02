@@ -67,7 +67,7 @@
 		<input v-if="field === 'text'" type="text" v-model="content" />
 		<input v-else-if="field === 'decimal'" type="number" v-model="content" step="0.01" placeholder="0.00" />
 		<input v-else :type="field" v-model="content" />
-
+		<!--{{JSON.stringify(content)}}-->
 	</div>
 </template>
 

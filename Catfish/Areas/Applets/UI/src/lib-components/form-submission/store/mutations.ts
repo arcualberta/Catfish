@@ -16,7 +16,9 @@ export enum Mutations {
     SET_ITEM_TEMPLATE_ID = 'SET_ITEM_TEMPLATE_ID',
     SET_FORM_ID = 'SET_FORM_ID',
     SET_FORM = 'SET_FORM',
-    SET_SUBMISSION_STATUS='SET_SUBMISSION_STATUS',
+    SET_SUBMISSION_STATUS = 'SET_SUBMISSION_STATUS',
+    SET_COLLECTION_ID = 'SET_COLLECTION_ID',
+    SET_GROUP_ID='SET_GROUP_ID'
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -27,6 +29,12 @@ export const mutations: MutationTree<State> = {
     },
     [Mutations.SET_FORM_ID](state: State, payload: Guid) {
         state.formId = payload;
+    },
+    [Mutations.SET_COLLECTION_ID](state: State, payload: Guid) {
+        state.collectionId = payload;
+    },
+    [Mutations.SET_GROUP_ID](state: State, payload: Guid) {
+        state.groupId = payload;
     },
     [Mutations.SET_FORM](state: State, payload: FieldContainer) {
         state.form = payload

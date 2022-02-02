@@ -483,5 +483,12 @@ namespace Catfish.Services
                 return "";
             }
         }
+
+        public List<Collection> GetCollectionList()
+        {
+            List<Collection> collections = _db.Collections.ToList();
+
+            return collections;
+        }
     }
 }

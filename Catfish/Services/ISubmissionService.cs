@@ -28,6 +28,8 @@ namespace Catfish.Services
         Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action);
         string SetSuccessMessage(Guid entityTemplateId, Guid postActionId, Guid itemId);
         List<Item> GetSubmissionList(Guid? collectionId);
+
+        List<Collection> GetCollectionList();
     }
     public class ItemField
     {

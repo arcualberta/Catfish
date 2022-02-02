@@ -6,8 +6,6 @@
     import { validateOptionsField } from '../../store/form-validators'
     import { FlattenedFormFiledMutations } from '../../store/form-submission-utils'
 
-   
-
     export default defineComponent({
 		name: "SelectField",
         components: {
@@ -60,6 +58,6 @@
             <option disabled value="">Please select one</option>
             <option v-for="option in model.options.$values" :id="option.id" :value="option.id">{{this.getConcatenatedOptionLabels(option)}}</option>
         </select>
-        <span>Selected: {{ selected }}</span>
+        <!--<span>Selected: {{ selected }}</span>-->
     </div>
 </template>

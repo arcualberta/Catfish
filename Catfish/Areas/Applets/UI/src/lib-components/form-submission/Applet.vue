@@ -26,12 +26,15 @@
 
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
 			const formId = Guid.parse(dataAttributes["form-id"] as string);
+			const collectionId = Guid.parse(dataAttributes["collection-id"] as string);
+			const groupId = Guid.parse(dataAttributes["group-id"] as string);
 
             const store = useStore();
 
 			store.commit(Mutations.SET_ITEM_TEMPLATE_ID, itemTemplateId);
 			store.commit(Mutations.SET_FORM_ID, formId);
-
+			store.commit(Mutations.SET_COLLECTION_ID, collectionId);
+			store.commit(Mutations.SET_GROUP_ID, groupId);
 			//load the data
 			store.dispatch(Actions.LOAD_FORM);
 
