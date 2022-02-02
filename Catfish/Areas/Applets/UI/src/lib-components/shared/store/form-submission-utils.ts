@@ -1,7 +1,18 @@
-﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option } from '../models/fieldContainer'
+﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option, AttachmentField } from '../models/fieldContainer'
 import { TextCollection, Text } from '../models/textModels';
 
-//Declare State interface
+export enum eSubmissionStatus {
+    None = "None",
+    InProgress = "InProgress",
+    Success = "Success",
+    Fail = "Fail"
+}
+
+export interface TypedArray<T> {
+    $type: string;
+    $values: T[];
+}
+
 export interface FlattenedFormFiledState {
     flattenedTextModels: { [key: string]: Text };
     flattenedOptionModels: { [key: string]: Option };
@@ -85,7 +96,7 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
 
         if (isMonoLinqualField) {
             //Iterating through each text value and adding them to the flattened dictionary
-            (value as MonolingualTextField).values?.forEach((txtVal: Text) => {
+            (value as MonolingualTextField).values?.$values?.forEach((txtVal: Text) => {
                 state.flattenedTextModels[txtVal.id.toString()] = txtVal;
             })
         }
@@ -100,15 +111,9 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
         }
         else if (isOptionsField) {
             //Itenrating through each option and adding them to the flattened options dictionary
-            var valOptions = (value as OptionsField).options;
-            if (Array.isArray(valOptions)) {
-                //(value as OptionsField).options?.forEach((opt: Option) => {
-                //    state.flattenedOptionModels[opt.id.toString()] = opt;
-                //})
-                valOptions.forEach((opt: Option) => {
-                    state.flattenedOptionModels[opt.id.toString()] = opt;
-                })
-            }
+            (value as OptionsField).options?.$values?.forEach((opt: Option) => {
+                state.flattenedOptionModels[opt.id.toString()] = opt;
+			})
         }
     })
 
@@ -141,3 +146,9 @@ export function isRichTextField(field: MultilingualTextField) {
     return field?.richText ? field.richText : false;
 }
 
+export function allowFileExtension(field: AttachmentField) {
+    return field.allowedExtensions.toString();
+}
+export function isAllowMultiple(field: AttachmentField) {
+    return field.allowMultipleValues;
+}

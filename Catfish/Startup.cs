@@ -226,6 +226,7 @@ namespace Catfish
             services.AddScoped<IAuthorizationHandler, EntityTemplateAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, GroupAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, ItemEditorAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, ItemAuthorizationHandler>();
             //services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationCrudHandler>();
 
             services.AddScoped<IBackupService, BackupService>();
