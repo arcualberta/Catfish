@@ -152,7 +152,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("appendchildforminstance/{itemInstanceId}")]
-        public async Task<DataItem> AppendChildFormInstanceAsync(Guid itemInstanceId, [FromForm] String datamodel)
+        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, [FromForm] String datamodel)
         {
             var settings = new JsonSerializerSettings()
             {
@@ -162,9 +162,12 @@ namespace Catfish.Areas.Applets.Controllers
             };
 
             DataItem childForm = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
-        
+
             childForm.TemplateId = childForm.Id; //Comment Form Id
             childForm.Id = Guid.NewGuid();
+            childForm.Created = DateTime.Now;
+            childForm.Updated = childForm.Created;
+            
             var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
             .Succeeded)
@@ -173,9 +176,8 @@ namespace Catfish.Areas.Applets.Controllers
 
                 _appDb.SaveChanges();
             }
-                
 
-            return childForm;
+            return Content(JsonConvert.SerializeObject(childForm, settings), "application/json");
         }
 
         [HttpGet("getchildformsubmissions/{instanceId}/{childFormId}")]
@@ -190,7 +192,7 @@ namespace Catfish.Areas.Applets.Controllers
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
             .Succeeded)
             {
-                var childSubmissions = item.DataContainer.Where(c => c.TemplateId == childFormId).ToList();
+                var childSubmissions = item.DataContainer.Where(c => c.TemplateId == childFormId).OrderByDescending(c => c.Created).ToList();
 
                 var settings = new JsonSerializerSettings()
                 {
