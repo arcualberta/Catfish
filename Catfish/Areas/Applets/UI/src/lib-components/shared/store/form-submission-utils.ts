@@ -1,4 +1,4 @@
-﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option } from '../models/fieldContainer'
+﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option, AttachmentField } from '../models/fieldContainer'
 import { TextCollection, Text } from '../models/textModels';
 
 export enum eSubmissionStatus {
@@ -8,7 +8,11 @@ export enum eSubmissionStatus {
     Fail = "Fail"
 }
 
-//Declare State interface
+export interface TypedArray<T> {
+    $type: string;
+    $values: T[];
+}
+
 export interface FlattenedFormFiledState {
     flattenedTextModels: { [key: string]: Text };
     flattenedOptionModels: { [key: string]: Option };
@@ -142,3 +146,9 @@ export function isRichTextField(field: MultilingualTextField) {
     return field?.richText ? field.richText : false;
 }
 
+export function allowFileExtension(field: AttachmentField) {
+    return field.allowedExtensions.toString();
+}
+export function isAllowMultiple(field: AttachmentField) {
+    return field.allowMultipleValues;
+}
