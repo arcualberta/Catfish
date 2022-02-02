@@ -1,6 +1,7 @@
 ﻿using Catfish.Areas.Applets.Authorization;
 using Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels;
 using Catfish.Areas.Applets.Services;
+using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
@@ -8,6 +9,7 @@ using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
 using ElmahCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -29,16 +31,20 @@ namespace Catfish.Areas.Applets.Controllers
         private readonly ISubmissionService _submissionService;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IWorkflowService _workflowService;
+        private readonly IJobService _jobService;
         private readonly AppDbContext _appDb;
         private readonly ErrorLog _errorLog;
         private readonly IItemAuthorizationHelper _itemAuthorizationHelper;
-        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog)
+        private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, IJobService jobService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
         {
             _itemAppletService = itemAppletService;
             _itemAuthorizationHelper = itemAuthorizationHelper;
             _submissionService = submissionService;
             _entityTemplateService = entityTemplateService;
             _workflowService = workflowService;
+            _jobService = jobService;
+            _authorizationService = authorizationService;
             _appDb = appDb;
             _errorLog = errorLog;
         }
@@ -98,7 +104,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpPost]
-        public ContentResult Post([FromForm] String datamodel)
+        public async Task<ContentResult> PostAsync([FromForm] String datamodel)
 		{
             var settings = new JsonSerializerSettings()
             {
@@ -108,8 +114,33 @@ namespace Catfish.Areas.Applets.Controllers
             };
 
             DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
-            itemInstance.TemplateId = itemInstance.Id;
-            itemInstance.Id = Guid.NewGuid();
+            if ((await _authorizationService.AuthorizeAsync(User, itemInstance, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
+.Succeeded)
+            {
+                try
+                {
+                    Guid collectionId = Guid.Empty;
+                    Guid templateId = Guid.Empty;
+                    Guid groupId = Guid.Empty;
+                    Guid stateId = Guid.Empty;
+                    string actionButton = "";
+                    itemInstance.TemplateId = itemInstance.Id;
+                    itemInstance.Id = Guid.NewGuid();
+                    Item newItem = _submissionService.SetSubmission(itemInstance, templateId, collectionId, groupId, stateId, actionButton);
+                    _appDb.Items.Add(newItem);
+                    _appDb.SaveChanges();
+
+                    bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
+
+                }
+                catch (Exception ex)
+                {
+
+                    return Content("{}", "application/json");
+                }
+                
+            }
+
 
 
 
