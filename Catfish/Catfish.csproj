@@ -61,8 +61,10 @@
     <None Remove="Areas\Applets\UI\src\lib-components\shared\functions\useDebouncedRef.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
     <None Remove="Areas\Applets\UI\src\manager-js\card.js" />
+    <None Remove="Areas\Applets\UI\src\manager-js\form-submission.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Applets\UI\src\manager-js\form-submission.js" />
     <Content Include="Areas\Applets\UI\src\manager-js\child-form-submission.js" />
     <Content Include="Areas\Applets\UI\src\manager-js\card.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -169,6 +171,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="appsettings.example.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
     <Content Update="Views\Cms\DisplayTemplates\ControlledVocabularySearchBlock.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>

@@ -1,7 +1,8 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType } from 'vue'
+    import { defineComponent, PropType, computed} from 'vue'
     import { MonolingualTextField } from '../../models/fieldContainer'
-    
+    import Text from './text/Text.vue'
+    import { validateMonolingualNumberField /*, RegExpressions*/ } from '../../store/form-validators'
 
     export default defineComponent({
         name: "DecimalField",
@@ -23,26 +24,33 @@
             }
 
         },
-        //setup(prop) {
-        //    const val = ref(prop.model?.values?.slice(0, 1));
-        //    let valNumber = Number(val.value);
+        components: {
+            Text
+        },
+        setup(p) {
 
-        //    return {
-        //        valNumber
-        //    }
-        //},
-        methods: {
-            formatToDecimal: (value : number, decimalPlaces : number) => {
-                return Number(value).toFixed(decimalPlaces);
+            const validationStatus = computed(() => validateMonolingualNumberField(p.model));
+            const type = p.model.modelType;
+            return {
+
+                validationStatus,
+                type
+
             }
+         
+        },
+        //methods: {
+        //    formatToDecimal: (value : number, decimalPlaces : number) => {
+        //        return Number(value).toFixed(decimalPlaces);
+        //    }
            
-        }
+        //}
     });
 </script>
 
 <template>
-    <div>Decimal Field</div>
-    <div>{{JSON.stringify(model)}}</div>
-    <!--<div v-for="val in model.values">{{formatToDecimal(val, numDecimalPlaces)}}</div>-->
+    <div v-for="val in model?.values?.$values">
+        <Text :model="val" :is-multiline="false" :is-rich-text="false" :validation-status="validationStatus" field="decimal" />
+    </div>
 </template>
 

@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Exceptions;
+﻿using Catfish.Core.Authorization.Handlers;
+using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -8,32 +9,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Catfish.Core.Authorization.Handlers
+namespace Catfish.Areas.Applets.Authorization
 {
-    public class ItemEditorAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Item>
+    public class ItemAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Item>
     {
         public readonly IAuthorizationHelper _authHelper;
         public readonly IWorkflowService _workflowService;
         public readonly AppDbContext _appDb;
 
-        public ItemEditorAuthorizationHandler(IAuthorizationHelper authHelper, IWorkflowService workflowService, AppDbContext db)
+        public ItemAuthorizationHandler(IAuthorizationHelper authHelper, IWorkflowService workflowService, AppDbContext db)
         {
             _authHelper = authHelper;
             _workflowService = workflowService;
             _appDb = db;
         }
         protected override Task HandleRequirementAsync(
-            AuthorizationHandlerContext context, 
-            OperationAuthorizationRequirement requirement, 
+            AuthorizationHandlerContext context,
+            OperationAuthorizationRequirement requirement,
             Item resource)
         {
-
             if (context == null || requirement == null || resource == null)
                 throw new AuthorizationException("AuthorizationHandlerContext, Requirement, and Item cannot be null.");
-
 
             if (resource == null)
             {
@@ -50,16 +48,16 @@ namespace Catfish.Core.Authorization.Handlers
 
                     return Task.CompletedTask; //Cannot proceed on without a get action that matches the action identified in the requirement
                 }
-
                 //If this is a pulicly accessible action, no further checking is needed.
                 if (workflowAction.Access == GetAction.eAccess.Public)
                 {
                     context.Succeed(requirement);
                     return Task.CompletedTask;
                 }
-                if (!context.User.Identity.IsAuthenticated) 
+                if (!context.User.Identity.IsAuthenticated)
                 {
                     return Task.CompletedTask;
+                    //throw new AuthorizationException("Authorization faild, Please login to the system.");
                 }
                 bool isSysAdmin = context.User.IsInRole("SysAdmin");
                 if (workflowAction.Access == GetAction.eAccess.AnyLoggedIn || isSysAdmin)
@@ -67,16 +65,16 @@ namespace Catfish.Core.Authorization.Handlers
                     context.Succeed(requirement);
                     return Task.CompletedTask;
                 }
+
                 if (!resource.StatusId.HasValue)
                     return Task.CompletedTask; //Cannot evaluate authorization for objects with no status value
 
 
-                //Select the state reference defined in the workflow to perform the specified action on 
-                // entities with the above status
                 var stateReference = workflowAction.States.Where(sr => sr.RefId == resource.StatusId).FirstOrDefault();
 
                 if (stateReference == null)
                     return Task.CompletedTask; //If no state reference is found, we cannot continue the authorization beyond this point
+
 
                 //Authorization successful if the current user is the owner of the entity AND
                 //the requested action is authorized to the owner
@@ -103,8 +101,6 @@ namespace Catfish.Core.Authorization.Handlers
                     return Task.CompletedTask;
                 }
 
-
-
                 //At this point, the user is authenticated and the permission-requested GetAction is restricted to 
                 //specific user roles.
                 //Therefore, we need to check whether the user possesses one of those roles within a group where the
@@ -129,12 +125,7 @@ namespace Catfish.Core.Authorization.Handlers
                     context.Succeed(requirement);
                     return Task.CompletedTask;
                 }
-
-                
             }
-
-
-
             return Task.CompletedTask;
         }
     }
