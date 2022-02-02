@@ -2,15 +2,15 @@
 import { State } from './state';
 import { Guid } from 'guid-typescript'
 import { eValidationStatus, FieldContainer } from '../../shared/models/fieldContainer';
-import { flattenFieldInputs, FlattenedFormFiledMutations } from '../../shared/store/form-submission-utils'
+import { flattenFieldInputs, FlattenedFormFiledMutations, eSubmissionStatus } from '../../shared/store/form-submission-utils'
 import { validateFields } from '../../shared/store/form-validators';
 
-export enum SubmissionStatus {
-    None = "None",
-    InProgress = "InProgress",
-    Success = "Success",
-    Fail = "Fail"
-}
+//export enum SubmissionStatus {
+//    None = "None",
+//    InProgress = "InProgress",
+//    Success = "Success",
+//    Fail = "Fail"
+//}
 //Declare MutationTypes
 export enum Mutations {
     SET_ITEM_TEMPLATE_ID = 'SET_ITEM_TEMPLATE_ID',
@@ -53,6 +53,6 @@ export const mutations: MutationTree<State> = {
     [Mutations.SET_SUBMISSION_STATUS](state: State, status: string) {
 
         //const fieldType: eFieldType = eFieldType[fieldTypeStr as keyof typeof eFieldType];
-        state.submissionStatus = SubmissionStatus[status as keyof typeof SubmissionStatus];
+        state.submissionStatus = eSubmissionStatus[status as keyof typeof eSubmissionStatus];
     },
 }

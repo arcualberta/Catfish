@@ -24,7 +24,7 @@
             const store = useStore();
             const refId = ref(p.model.refId);
            
-            console.log("refId: " + JSON.stringify(refId))
+          //  console.log("refId: " + JSON.stringify(refId))
             return {
                 refId,
                 source: computed(() => store.getters.metadataSet(refId.value)),

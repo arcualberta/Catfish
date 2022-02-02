@@ -7,8 +7,9 @@
 	import { state } from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
-	import { Mutations, SubmissionStatus as eSubmissionStatus } from '../form-submission/store/mutations'
+	import { Mutations } from '../form-submission/store/mutations'
 	import { mutations, Mutations as ChildMutations } from './store/mutations'
+	import { eSubmissionStatus } from '../shared/store/form-submission-utils'
 
 	import ChildForm from '../shared/components/editor/FieldContainer.vue'
 	import ChildView from '../shared/components/display/FieldContainer.vue'
