@@ -28,29 +28,18 @@
 
             const validationStatus = computed(() => validateMonolingualTextField(p.model, null));
             const type = p.model.modelType;
-            return {
 
+            return {
                 validationStatus,
                 type
-
             }
-
         }
-        //methods:{
-        //    formatDate(dateString: string) {
-        //        const date = dayjs(dateString);
-        //        return date.format('MMM DD, YYYY');
-        //    }
-        //}
-       
     });
 </script>
 
 <template>
-   
     <div v-for="val in model?.values?.$values">
         <Text :model="val" :is-multiline="false" :is-rich-text="false" :validation-status="validationStatus" field="date" />
     </div>
-
 </template>
 
