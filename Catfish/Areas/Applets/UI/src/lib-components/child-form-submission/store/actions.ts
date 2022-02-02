@@ -55,13 +55,11 @@ export const actions: ActionTree<State, any> = {
 
         store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
 
-
         const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${store.state.itemInstanceId}`;
 
         const formData = new FormData();
         formData.append('datamodel', JSON.stringify(store.state.form));
 
-        console.log(JSON.stringify(store.state.form));
 
         fetch(api,
             {
@@ -71,7 +69,6 @@ export const actions: ActionTree<State, any> = {
             .then(response =>
                 response.json())
             .then(data => {
-                //console.log(JSON.stringify(data));
                 const flattenModel: FlattenedFormFiledState = {
                     flattenedOptionModels: store.state.flattenedOptionModels,
                     flattenedTextModels: store.state.flattenedTextModels,

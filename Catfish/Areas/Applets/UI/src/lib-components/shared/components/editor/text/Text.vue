@@ -50,7 +50,8 @@
 
 			const store = useStore();
 			const field = p.field;
-            console.log("validationStatus: " + p.validationStatus)
+            //console.log("validationStatus: " + p.validationStatus)
+
 			return {
 				store,
 				field

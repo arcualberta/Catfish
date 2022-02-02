@@ -8,7 +8,11 @@ export enum eSubmissionStatus {
     Fail = "Fail"
 }
 
-//Declare State interface
+export interface TypedArray<T> {
+    $type: string;
+    $values: T[];
+}
+
 export interface FlattenedFormFiledState {
     flattenedTextModels: { [key: string]: Text };
     flattenedOptionModels: { [key: string]: Option };
