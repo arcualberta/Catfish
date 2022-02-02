@@ -31,6 +31,6 @@
 </script>
 
 <template>
-    <div v-for="val in model.values">{{formatDate(val.value)}}</div>
+    <div v-for="val in model.values.$values">{{formatDate(val.value)}}</div>
 </template>
 

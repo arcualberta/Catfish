@@ -90,7 +90,7 @@
                                 }
                                 if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.PageAccess)).Succeeded)
                                 {
-                                    <button class="btn btn-link" onclick="window.location.href='/manager/groups'"><span class="fa fa-diamond"> Groups</span></button>
+                                    <button class="btn btn-link" onclick="window.location.href='/manager/groups'"><span class="fas fa-users-cog"> Groups</span></button>
                                 }
                                 <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out-alt"> Sign Out</span></button>
                             }

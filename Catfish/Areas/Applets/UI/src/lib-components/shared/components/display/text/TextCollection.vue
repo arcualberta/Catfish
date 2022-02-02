@@ -18,7 +18,7 @@
 </script>
 
 <template>
-    <div v-for="txt in model.values">
+    <div v-for="txt in model.values.$values">
         <Text :model="txt" />
     </div>
 </template>

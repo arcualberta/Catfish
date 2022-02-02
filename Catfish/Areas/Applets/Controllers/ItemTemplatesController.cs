@@ -1,10 +1,14 @@
 ﻿using Catfish.Areas.Applets.Services;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents.Data;
 using ElmahCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Catfish.Areas.Applets.Controllers
 {
@@ -49,5 +53,72 @@ namespace Catfish.Areas.Applets.Controllers
             return result;
 
         }
+
+        /// <summary>
+        /// Get all the child forms that attached to the item template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemtemplateChildForms/{templateId}")]
+        public List<SelectListItem> GetItemTemplateChildForms(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+            List<DataItem> dataItems = _itemTemplateAppletService.GetDataItems(Guid.Parse(templateId), false);
+
+            foreach (DataItem itm in dataItems)
+            {
+                result.Add(new SelectListItem {Text= itm.GetName("en"), Value=itm.Id.ToString() });
+
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Get all the root forms that attached to the item template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemTemplateRootForms/{templateId}")]
+        public List<SelectListItem> GetItemTemplateRootForms(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+            List<DataItem> dataItems = _itemTemplateAppletService.GetDataItems(Guid.Parse(templateId), true);
+
+            foreach (DataItem itm in dataItems)
+            {
+                result.Add(new SelectListItem { Text = itm.GetName("en"), Value = itm.Id.ToString() });
+
+            }
+            return result;
+        }
+
+
+
+        [HttpGet("{templateId}/data-form/{formId}")]
+        public ContentResult DataForm(Guid templateId, Guid formId)
+        {
+            //TODO: Implement security
+
+            ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == templateId);
+            DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == formId);
+            bool authorizationSuccessful = true;
+
+			if (authorizationSuccessful)
+			{
+
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                return Content(JsonConvert.SerializeObject(dataForm, settings), "application/json");
+            }
+            else
+                return Content("{}", "application/json");
+        }
+
     }
 }

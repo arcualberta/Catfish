@@ -88,6 +88,10 @@ namespace Catfish.ModelBinders
                 {
                     (modelMetadata, modelBinder) = binders[typeof(AttachmentField)];
                 }
+                else if (typeof(AudioRecorderField).IsAssignableFrom(modelType))
+                {
+                    (modelMetadata, modelBinder) = binders[typeof(AudioRecorderField)];
+                }
                 else if (typeof(EmailField).IsAssignableFrom(modelType))
                 {
                     (modelMetadata, modelBinder) = binders[typeof(EmailField)];

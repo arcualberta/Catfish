@@ -30,6 +30,7 @@ namespace Catfish.ModelBinders
                 typeof(TextField),
                 typeof(CompositeField),
                 typeof(AttachmentField),
+                 typeof(AudioRecorderField),
                 typeof(EmailField),
                 typeof(TableField),
                 typeof(FieldContainerReference)

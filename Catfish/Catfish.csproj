@@ -9,21 +9,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Areas\Applets\applets\**" />
+    <Compile Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
     <Compile Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
     <Compile Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <Compile Remove="Areas\Applets\Views\PagePartials\**" />
     <Compile Remove="wwwroot\applet-root\**" />
     <Content Remove="Areas\Applets\applets\**" />
+    <Content Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
     <Content Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
     <Content Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <Content Remove="Areas\Applets\Views\PagePartials\**" />
     <Content Remove="wwwroot\applet-root\**" />
     <EmbeddedResource Remove="Areas\Applets\applets\**" />
+    <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
     <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
     <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <EmbeddedResource Remove="Areas\Applets\Views\PagePartials\**" />
     <EmbeddedResource Remove="wwwroot\applet-root\**" />
     <None Remove="Areas\Applets\applets\**" />
+    <None Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <None Remove="Areas\Applets\Views\PagePartials\**" />
@@ -57,8 +61,11 @@
     <None Remove="Areas\Applets\UI\src\lib-components\shared\functions\useDebouncedRef.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
     <None Remove="Areas\Applets\UI\src\manager-js\card.js" />
+    <None Remove="Areas\Applets\UI\src\manager-js\form-submission.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Applets\UI\src\manager-js\form-submission.js" />
+    <Content Include="Areas\Applets\UI\src\manager-js\child-form-submission.js" />
     <Content Include="Areas\Applets\UI\src\manager-js\card.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -164,6 +171,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="appsettings.example.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
     <Content Update="Views\Cms\DisplayTemplates\ControlledVocabularySearchBlock.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>

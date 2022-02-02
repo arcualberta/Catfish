@@ -30,9 +30,8 @@
 </script>
 
 <template>
-   <div v-for="val in model.values" :key="val.id">
+   <div v-for="val in model.values.$values" :key="val.id">
        <TextCollection :model="val" />
    </div>
-    
 </template>
 
