@@ -37,7 +37,7 @@ export const actions: ActionTree<State, any> = {
         store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
 
        
-        const api = window.location.origin + `/applets/api/itemeditor/`;
+        const api = window.location.origin + `/applets/api/itemeditor/?itemTemplateId=${store.state.itemTemplateId}&groupId=${store.state.groupId}&collectionId=${store.state.collectionId}`;
 
         const formData = new FormData();
         formData.append('datamodel', JSON.stringify(store.state.form));

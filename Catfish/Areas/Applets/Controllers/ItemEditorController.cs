@@ -49,7 +49,6 @@ namespace Catfish.Areas.Applets.Controllers
             _authorizationService = authorizationService;
             _appDb = appDb;
             _errorLog = errorLog;
-            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -108,7 +107,8 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpPost]
-        public async Task<ContentResult> PostAsync([FromForm] String datamodel)
+        //[Route("{templateId:Guid}")]
+        public async Task<ContentResult> PostAsync( Guid itemTemplateId, Guid groupId, Guid collectionId, [FromForm] String datamodel)
 		{
             var settings = new JsonSerializerSettings()
             {
@@ -118,38 +118,32 @@ namespace Catfish.Areas.Applets.Controllers
             };
 
             DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
-            if ((await _authorizationService.AuthorizeAsync(User, itemInstance, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
-.Succeeded)
-            {
+            
                 try
                 {
-                    Guid collectionId = Guid.Empty;
-                    Guid templateId = Guid.Empty;
-                    Guid groupId = Guid.Empty;
-                    Guid stateId = Guid.Empty;
-                    string actionButton = "";
+                    //Guid collectionId = Guid.Parse("9ed65277-6a9e-4a96-c86a-e6825889234a"); ;
+                    //Guid groupId = Guid.Parse("2BD48E47-3DD7-4DA0-9F07-BEB72EE3542D");
+                Guid stateMappingId = _workflowService.GetSubmitStateMappingId(itemTemplateId);//Guid.Parse("57a5509e-6aa2-463c-9cb6-b18178450aca");
+                    string actionButton = "Submit";
                     itemInstance.TemplateId = itemInstance.Id;
                     itemInstance.Id = Guid.NewGuid();
-                    Item newItem = _submissionService.SetSubmission(itemInstance, templateId, collectionId, groupId, stateId, actionButton);
+                    Item newItem = _submissionService.SetSubmission(itemInstance, itemTemplateId, collectionId, groupId, stateMappingId, actionButton);
+                if ((await _authorizationService.AuthorizeAsync(User, newItem, new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate }))
+.Succeeded)
+                {
                     _appDb.Items.Add(newItem);
                     _appDb.SaveChanges();
 
                     bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
-
+                }
                 }
                 catch (Exception ex)
                 {
 
                     return Content("{}", "application/json");
                 }
-                
-            }
-
-
-
-
-            throw new NotImplementedException();
-		}
+            return Content(JsonConvert.SerializeObject("Sucess", settings), "application/json");
+        }
 
         [HttpGet("getChildForm/{instanceId}/{childFormId}")]
         public async Task<ContentResult> GetChildFormAsync(Guid instanceId, Guid childFormId)
