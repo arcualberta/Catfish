@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Guid } from 'guid-typescript'
+    import dayjs from "dayjs";
 	import { defineComponent, computed } from 'vue';
 	import { useStore } from 'vuex';
 	import props, { QueryParameter, DataAttribute } from '../shared/props'
@@ -62,6 +63,10 @@
         methods: {
 			submitChildForm() {
 				this.store.dispatch(Actions.SUBMIT_CHILD_FORM);
+			},
+            formatDate(dateString: string) {
+                const date = dayjs(dateString);
+                return date.format('MMM DD, YYYY');
             }
         }
     });
@@ -82,6 +87,7 @@
 	<div v-if="childSubmissions && childSubmissions.length > 0">
 		<h3>Responses</h3>
 		<div v-for="child in childSubmissions">
+			<div>{{formatDate(child.created)}}</div>
 			<ChildView :model="child" />
 			<hr />
 		</div>
