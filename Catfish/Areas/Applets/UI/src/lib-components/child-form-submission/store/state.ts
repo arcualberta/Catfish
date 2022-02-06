@@ -7,11 +7,15 @@ import { TypedArray } from '../../shared/store/form-submission-utils'
 //Declare State interface
 export interface State extends FormSubmissionStateInterface {
     itemInstanceId: Guid | null;
+    childResponseFormId: Guid | null;
+    childResponseForm: FieldContainer | null;
     formInstances: TypedArray<FieldContainer> | null;
 }
 
 export const state: State = {
     itemInstanceId: null,
+    childResponseFormId: null,
+    childResponseForm: null,
     formInstances: null,
     ...formSubmissionStateObject
 }

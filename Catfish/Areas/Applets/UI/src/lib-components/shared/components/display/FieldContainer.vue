@@ -16,6 +16,7 @@
 		name: "FieldContainer",
         props: {
             model: null as PropType<FieldContainer> | null,
+			hideFieldNames: Boolean
         },
         components: {
             TextField,
@@ -58,7 +59,7 @@
             <ReferenceField :model="field" />
         </div>
         <div v-else class="row" :class="cssClass(field)">
-            <div class="field-name col-md-3">
+            <div class="field-name col-md-3" v-if="!hideFieldNames">
                 {{field.name.concatenatedContent}}
             </div>
             <div class="field-value col-md-9">

@@ -13,6 +13,7 @@ import { validateFields } from '../../shared/store/form-validators';
 //}
 //Declare MutationTypes
 export enum Mutations {
+    CLEAR_FLATTENED_FIELD_MODELS = 'CLEAR_FLATTENED_FIELD_mODELS',
     SET_ITEM_TEMPLATE_ID = 'SET_ITEM_TEMPLATE_ID',
     SET_FORM_ID = 'SET_FORM_ID',
     SET_FORM = 'SET_FORM',
@@ -24,6 +25,10 @@ export enum Mutations {
 //Create a mutation tree that implement all mutation interfaces
 export const mutations: MutationTree<State> = {
 
+    [Mutations.CLEAR_FLATTENED_FIELD_MODELS](state: State) {
+        state.flattenedTextModels = {};
+        state.flattenedOptionModels = {};
+    },
     [Mutations.SET_ITEM_TEMPLATE_ID](state: State, payload: Guid) {
         state.itemTemplateId = payload;
     },
@@ -38,12 +43,8 @@ export const mutations: MutationTree<State> = {
     },
     [Mutations.SET_FORM](state: State, payload: FieldContainer) {
         state.form = payload
-
-        state.flattenedTextModels = {};
-        state.flattenedOptionModels = {};
         flattenFieldInputs(state.form, state)
-
-    //    console.log("state\n", JSON.stringify(state))
+        //console.log("state\n", JSON.stringify(state))
     },
     [FlattenedFormFiledMutations.SET_TEXT_VALUE](state: State, payload: { id: Guid; val: string }) {
         //console.log("payload id:", payload.id, "   payload value: ", payload.val)

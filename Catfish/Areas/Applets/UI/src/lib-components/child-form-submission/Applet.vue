@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Guid } from 'guid-typescript'
-	import { defineComponent, computed } from 'vue';
+	import { defineComponent, computed, ref } from 'vue';
 	import { useStore } from 'vuex';
 	import props, { QueryParameter, DataAttribute } from '../shared/props'
-	import { eValidationStatus } from '../shared/models/fieldContainer'
+	import { eValidationStatus, FieldContainer } from '../shared/models/fieldContainer'
 	import { state } from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
@@ -30,27 +30,62 @@
 			const itemId = Guid.parse(queryParameters.iid as string);
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
 			const childFormId = Guid.parse(dataAttributes["child-form-id"] as string);
+			const childResponseFormIdStr = dataAttributes["response-form-id"] as string;
+			const childResponseFormId = childResponseFormIdStr?.length > 0 ? Guid.parse(childResponseFormIdStr) : undefined;
 
             const store = useStore();
 
+			store.commit(Mutations.CLEAR_FLATTENED_FIELD_MODELS);
 			store.commit(Mutations.SET_ITEM_TEMPLATE_ID, itemTemplateId);
 			store.commit(Mutations.SET_FORM_ID, childFormId);
-			store.commit(ChildMutations.SET_PATENT_ITEM_ID, itemId);
+			store.commit(ChildMutations.SET_PARENT_ITEM_ID, itemId);
 
 			//load the data
 			store.dispatch(Actions.LOAD_FORM);
 			store.dispatch(Actions.LOAD_SUBMISSIONS);
+			if (childResponseFormId) {
+				store.commit(ChildMutations.SET_RESPONSE_FORM_ID, childResponseFormId);
+				store.dispatch(Actions.LOAD_RESPONSE_FORM);
+			}
+
 			//const submissionStatus = store.state.submissionStatus as SubmissionStatus;
-           // const submissionStatus: eSubmissionStatus = store.state.submissionStatus as eSubmissionStatus;
+            //const submissionStatus: eSubmissionStatus = store.state.submissionStatus as eSubmissionStatus;
 			//console.log("initial status " + JSON.stringify(submissionStatus));
+
+			const responseDisplayFlags = ref([] as boolean[]);
+			const childSubmissions = computed(() => store.state.formInstances?.$values);
+
+			const toggleDisplayResponse = (index: number) => {
+				if (responseDisplayFlags.value[index] != undefined) {
+					responseDisplayFlags.value[index] = !responseDisplayFlags.value[index]
+				}
+				else {
+					responseDisplayFlags.value[index] = true;
+				}
+
+				//Closing all other response boxes
+				responseDisplayFlags.value.forEach((val, idx) => {
+					if (val && idx !== index)
+						responseDisplayFlags.value[idx] = false;
+				})
+			}
+
+			const submitChildResponse = (index: number) => {
+				store.dispatch(Actions.SUBMIT_CHILD_RESPONSE_FORM, (childSubmissions.value[index] as FieldContainer)?.id)
+			}
+
 			return {
 				childForm: computed(() => store.state.form),
                 childSubmissions: computed(() => store.state.formInstances?.$values),
 				store,
 				submissionStatus: computed(() => store.state.submissionStatus),
 				eSubmissionStatus,
-				eValidationStatus
-              
+				eValidationStatus,
+				childResponseFormId,
+				childResponseForm: computed(() => store.state.childResponseForm),
+				responseDisplayFlags,
+				toggleDisplayResponse,
+				submitChildResponse
             }
 		},
 		storeConfig: {
@@ -62,7 +97,7 @@
         methods: {
 			submitChildForm() {
 				this.store.dispatch(Actions.SUBMIT_CHILD_FORM);
-            }
+			}
         }
     });
 </script>
@@ -70,7 +105,6 @@
 <template>
 	<div v-if="childForm && Object.keys(childForm).length > 0">
 		<ChildForm :model="childForm" />
-
 		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Form validation failed.</div>
 		<div v-else>
 			<div v-if="submissionStatus === eSubmissionStatus.InProgress" class="alert alert-info">Submitting...</div>
@@ -79,10 +113,24 @@
 		</div>
 		<button class="btn btn-primary" @click="submitChildForm()">Submit</button>
 	</div>
-	<div v-if="childSubmissions && childSubmissions.length > 0">
+	<div v-if="childSubmissions && childSubmissions.length > 0" class="mt-2">
 		<h3>Responses</h3>
-		<div v-for="child in childSubmissions">
-			<ChildView :model="child" />
+		<div v-for="(child, index) in childSubmissions">
+			<ChildView :model="child" :hide-field-names="true" />
+			<!--{{JSON.stringify(child)}}-->
+			<div class="ml-3">
+				<div v-for="(response, resIdx) in child.childFieldContainers.$values">
+					<ChildView :model="response" :hide-field-names="true" />
+				</div>
+				<div v-if="childResponseFormId" class="mb-2">
+					<div class="text-right"><a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;">+ reply</a></div>
+					<div v-if="responseDisplayFlags[index]">
+						<ChildForm :model="childResponseForm" />
+						<div v-if="childResponseForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Response validation failed.</div>
+						<button class="btn btn-primary" @click="submitChildResponse(index)">Submit</button>
+					</div>
+				</div>
+			</div>
 			<hr />
 		</div>
 	</div>
