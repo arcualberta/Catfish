@@ -123,17 +123,14 @@ export const actions: ActionTree<State, any> = {
             .then(response =>
                 response.json())
             .then(data => {
-                console.log("Response Data: \n", JSON.stringify(data))
-                //const flattenModel: FlattenedFormFiledState = {
-                //    flattenedOptionModels: store.state.flattenedOptionModels,
-                //    flattenedTextModels: store.state.flattenedTextModels,
-                //};
-                ////clear the form content
-                //clearForm(flattenModel);
-
-                //store.commit(ChildFormMutations.APPEND_CHILD_INSTANCE, data);
-                //store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
-
+                //console.log("Response Data: \n", JSON.stringify(data))
+                store.commit(ChildFormMutations.APPEND_CHILD_RESPONSE_INSTANCE, data)
+                const flattenModel: FlattenedFormFiledState = {
+                    flattenedOptionModels: store.state.flattenedOptionModels,
+                    flattenedTextModels: store.state.flattenedTextModels,
+                };
+                //clear the form content
+                clearForm(flattenModel);
             })
             .catch(error => {
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Fail");

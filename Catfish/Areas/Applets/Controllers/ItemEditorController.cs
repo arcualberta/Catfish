@@ -203,7 +203,10 @@ namespace Catfish.Areas.Applets.Controllers
                 //this item, then add the childForm as a child to that data item. Otherwise, add
                 //the child form directly to the data container.
                 if (parent != null)
+				{
+                    childForm.ParentId = parent.Id;
                     parent.ChildFieldContainers.Add(childForm);
+                }
                 else
                     item.DataContainer.Add(childForm);
 

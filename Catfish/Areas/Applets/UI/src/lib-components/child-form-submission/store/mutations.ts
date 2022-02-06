@@ -13,6 +13,7 @@ export enum Mutations  {
     APPEND_CHILD_INSTANCE = 'APPEND_CHILD_INSTANCE',
     SET_RESPONSE_FORM_ID = 'SET_RESPONSE_FORM_ID',
     SET_RESPONSE_FORM = 'SET_RESPONSE_FORM',
+    APPEND_CHILD_RESPONSE_INSTANCE = 'APPEND_CHILD_RESPONSE_INSTANCE',
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -33,5 +34,11 @@ export const mutations: MutationTree<State> = {
         state.childResponseForm = payload
         flattenFieldInputs(state.childResponseForm, state)
     },
-    ...formSubmissionMutations
+    [Mutations.APPEND_CHILD_RESPONSE_INSTANCE](state: State, payload: FieldContainer) {
+        const parent = state.formInstances?.$values.find(inst => inst.id === payload?.parentId);
+        if (parent) {
+            parent.childFieldContainers?.$values.push(payload)
+		}
+    },
+ ...formSubmissionMutations
 }
