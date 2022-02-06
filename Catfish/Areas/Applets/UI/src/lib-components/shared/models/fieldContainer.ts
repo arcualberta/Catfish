@@ -47,6 +47,7 @@ export interface Field {
 export interface FieldContainer {
     id: Guid;
     templateId: Guid | null;
+    parentId: Guid | null;
     $type: string;
     modelType: string;
     fields: {

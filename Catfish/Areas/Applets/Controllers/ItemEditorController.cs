@@ -175,7 +175,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("appendchildforminstance/{itemInstanceId}")]
-        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, [FromForm] String datamodel)
+        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, Guid? parentId, [FromForm] String datamodel)
         {
             var settings = new JsonSerializerSettings()
             {
@@ -190,6 +190,9 @@ namespace Catfish.Areas.Applets.Controllers
             childForm.Id = Guid.NewGuid();
             childForm.Created = DateTime.Now;
             childForm.Updated = childForm.Created;
+
+            if (parentId.HasValue)
+                childForm.ParentId = parentId;
             
             var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
@@ -204,7 +207,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpGet("getchildformsubmissions/{instanceId}/{childFormId}")]
-        public async Task<ContentResult> GetChildFormSubmissionsAsync(Guid instanceId, Guid childFormId)
+        public async Task<ContentResult> GetChildFormSubmissionsAsync(Guid instanceId, Guid childFormId, Guid? parentId)
         {
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
@@ -215,7 +218,11 @@ namespace Catfish.Areas.Applets.Controllers
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
             .Succeeded)
             {
-                var childSubmissions = item.DataContainer.Where(c => c.TemplateId == childFormId).OrderByDescending(c => c.Created).ToList();
+                var query = item.DataContainer.Where(c => c.TemplateId == childFormId);
+                if (parentId.HasValue)
+                    query = query.Where(c => c.ParentId == parentId);
+
+                var childSubmissions = query.OrderByDescending(c => c.Created).ToList();
 
                 var settings = new JsonSerializerSettings()
                 {

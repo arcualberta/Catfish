@@ -23,6 +23,12 @@ namespace Catfish.Core.Models.Contents
             set => Data.SetAttributeValue("template-id", value);
         }
 
+        public Guid? ParentId
+        {
+            get => GetAttribute("parent-id", null as Guid?);
+            set => Data.SetAttributeValue("parent-id", value);
+        }
+
         public FieldContainer(string tagName) : base(tagName) 
         { 
             Initialize(eGuidOption.Ignore); 
