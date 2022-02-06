@@ -29,6 +29,9 @@ namespace Catfish.Core.Models.Contents
             set => Data.SetAttributeValue("parent-id", value);
         }
 
+        [NotMapped]
+        public FieldContainerList Children { get; protected set; }
+
         public FieldContainer(string tagName) : base(tagName) 
         { 
             Initialize(eGuidOption.Ignore); 

@@ -4,6 +4,7 @@ using Catfish.Areas.Applets.Services;
 using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -175,7 +176,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("appendchildforminstance/{itemInstanceId}")]
-        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, Guid? parentId, [FromForm] String datamodel)
+        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, Guid? parentDataItemId, [FromForm] String datamodel)
         {
             var settings = new JsonSerializerSettings()
             {
@@ -191,14 +192,26 @@ namespace Catfish.Areas.Applets.Controllers
             childForm.Created = DateTime.Now;
             childForm.Updated = childForm.Created;
 
-            if (parentId.HasValue)
-                childForm.ParentId = parentId;
             
             var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
             .Succeeded)
             {
-                item.DataContainer.Add(childForm);
+                DataItem parent = null;
+
+                if (parentDataItemId.HasValue)
+                {
+                    childForm.ParentId = parentDataItemId;
+                    parent = item.DataContainer.FirstOrDefault(di => di.Id == parentDataItemId);
+                }
+
+                //If a data item with the given parentDataItemId is found in the DataContainer of
+                //this item, then add the childForm as a child to that data item. Otherwise, add
+                //the child form directly to the data container.
+                if (parent != null)
+                    parent.Children.Add(childForm);
+                else
+                    item.DataContainer.Add(childForm);
 
                 _appDb.SaveChanges();
             }
