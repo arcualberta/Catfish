@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Contents.Fields;
+﻿using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -30,7 +31,7 @@ namespace Catfish.Core.Models.Contents
         }
 
         [NotMapped]
-        public FieldContainerList Children { get; protected set; }
+        public FieldContainerList ChildFieldContainers { get; protected set; }
 
         public FieldContainer(string tagName) : base(tagName) 
         { 
@@ -47,6 +48,7 @@ namespace Catfish.Core.Models.Contents
 
             Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
             Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
+            ChildFieldContainers = new FieldContainerList(GetElement("child-field-containers", true));
         }
 
         public string GetName(string lang)

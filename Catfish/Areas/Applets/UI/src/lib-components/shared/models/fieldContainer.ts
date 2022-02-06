@@ -54,6 +54,10 @@ export interface FieldContainer {
         $type: string;
         $values: Field[];
     };
+    childFieldContainers: {
+        $type: string;
+        $values: FieldContainer[];
+    };
     isRoot: boolean | false;
     name: TextCollection | null;
     description: TextCollection | null;

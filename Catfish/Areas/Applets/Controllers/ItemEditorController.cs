@@ -176,7 +176,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("appendchildforminstance/{itemInstanceId}")]
-        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, Guid? parentDataItemId, [FromForm] String datamodel)
+        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, [FromForm] Guid? parentId, [FromForm] String datamodel)
         {
             var settings = new JsonSerializerSettings()
             {
@@ -197,19 +197,13 @@ namespace Catfish.Areas.Applets.Controllers
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
             .Succeeded)
             {
-                DataItem parent = null;
-
-                if (parentDataItemId.HasValue)
-                {
-                    childForm.ParentId = parentDataItemId;
-                    parent = item.DataContainer.FirstOrDefault(di => di.Id == parentDataItemId);
-                }
+                DataItem parent = parentId.HasValue ? item.DataContainer.FirstOrDefault(di => di.Id == parentId.Value) : null;
 
                 //If a data item with the given parentDataItemId is found in the DataContainer of
                 //this item, then add the childForm as a child to that data item. Otherwise, add
                 //the child form directly to the data container.
                 if (parent != null)
-                    parent.Children.Add(childForm);
+                    parent.ChildFieldContainers.Add(childForm);
                 else
                     item.DataContainer.Add(childForm);
 
