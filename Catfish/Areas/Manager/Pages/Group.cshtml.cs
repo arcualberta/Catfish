@@ -22,7 +22,7 @@ namespace Catfish.Areas.Manager.Pages
 
         private IGroupService _srv;
         public readonly AppDbContext _appDb;
-
+        public readonly IdentitySQLServerDb _piranhaDb;
         [BindProperty]
         public Group Group { get; set; }
 
@@ -35,11 +35,12 @@ namespace Catfish.Areas.Manager.Pages
         [BindProperty]
         public List<UserGroupRole> Users { get; set; }
 
-        
-        public GroupModel(IGroupService srv, AppDbContext appDb)
+
+        public GroupModel(IGroupService srv, AppDbContext appDb, IdentitySQLServerDb pdb)
         {
             _srv = srv;
             _appDb = appDb;
+            _piranhaDb = pdb;
         }
         public void OnGet(Guid? id)
         {
@@ -50,7 +51,7 @@ namespace Catfish.Areas.Manager.Pages
                 {
                     GroupStatus = Group.eGroupStatus.Inactive,
                     Id = Guid.NewGuid()
-                   
+
                 };
                 _appDb.Add(Group);
                 _appDb.SaveChanges();
@@ -59,7 +60,7 @@ namespace Catfish.Areas.Manager.Pages
             {
                 Group = _appDb.Groups.FirstOrDefault(g => g.Id == id);
             }
-               
+
 
             if (Group == null)
                 throw new Exception(NotFound);
@@ -69,7 +70,7 @@ namespace Catfish.Areas.Manager.Pages
             Roles = _srv.SetRoleAttribute(Group.Id);
 
             Users = _srv.SetUserAttribute(Group.Id);
-            
+
 
         }
 
@@ -78,18 +79,20 @@ namespace Catfish.Areas.Manager.Pages
             Group group = _srv.SaveGroupRoles(Group, Roles);
             _srv.SaveGroupTemplates(group, Templates);
             _appDb.SaveChanges();
-           
-            return RedirectToPage("GroupEdit","Manager", new { id = group.Id });
+
+            return RedirectToPage("GroupEdit", "Manager", new { id = group.Id });
         }
 
 
         public void OnPostDelete(Guid id, Guid userGroupRoleId)
         {
             _srv.DeleteUserGroupRole(userGroupRoleId);
+
             _appDb.SaveChanges();
+            _piranhaDb.SaveChanges();
             OnGet(id);
         }
-        
+
 
     }
 }
