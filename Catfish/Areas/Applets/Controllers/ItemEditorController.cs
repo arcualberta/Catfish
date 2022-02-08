@@ -4,6 +4,7 @@ using Catfish.Areas.Applets.Services;
 using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -175,7 +176,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("appendchildforminstance/{itemInstanceId}")]
-        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, [FromForm] String datamodel)
+        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, [FromForm] Guid? parentId, [FromForm] String datamodel)
         {
             var settings = new JsonSerializerSettings()
             {
@@ -190,12 +191,24 @@ namespace Catfish.Areas.Applets.Controllers
             childForm.Id = Guid.NewGuid();
             childForm.Created = DateTime.Now;
             childForm.Updated = childForm.Created;
+
             
             var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
             .Succeeded)
             {
-                item.DataContainer.Add(childForm);
+                DataItem parent = parentId.HasValue ? item.DataContainer.FirstOrDefault(di => di.Id == parentId.Value) : null;
+
+                //If a data item with the given parentDataItemId is found in the DataContainer of
+                //this item, then add the childForm as a child to that data item. Otherwise, add
+                //the child form directly to the data container.
+                if (parent != null)
+				{
+                    childForm.ParentId = parent.Id;
+                    parent.ChildFieldContainers.Add(childForm);
+                }
+                else
+                    item.DataContainer.Add(childForm);
 
                 _appDb.SaveChanges();
             }
@@ -204,7 +217,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpGet("getchildformsubmissions/{instanceId}/{childFormId}")]
-        public async Task<ContentResult> GetChildFormSubmissionsAsync(Guid instanceId, Guid childFormId)
+        public async Task<ContentResult> GetChildFormSubmissionsAsync(Guid instanceId, Guid childFormId, Guid? parentId)
         {
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
@@ -215,7 +228,11 @@ namespace Catfish.Areas.Applets.Controllers
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
             .Succeeded)
             {
-                var childSubmissions = item.DataContainer.Where(c => c.TemplateId == childFormId).OrderByDescending(c => c.Created).ToList();
+                var query = item.DataContainer.Where(c => c.TemplateId == childFormId);
+                if (parentId.HasValue)
+                    query = query.Where(c => c.ParentId == parentId);
+
+                var childSubmissions = query.OrderByDescending(c => c.Created).ToList();
 
                 var settings = new JsonSerializerSettings()
                 {

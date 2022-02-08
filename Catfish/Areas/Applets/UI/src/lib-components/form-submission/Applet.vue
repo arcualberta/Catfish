@@ -31,6 +31,7 @@
 
             const store = useStore();
 
+			store.commit(Mutations.CLEAR_FLATTENED_FIELD_MODELS);
 			store.commit(Mutations.SET_ITEM_TEMPLATE_ID, itemTemplateId);
 			store.commit(Mutations.SET_FORM_ID, formId);
 			store.commit(Mutations.SET_COLLECTION_ID, collectionId);
