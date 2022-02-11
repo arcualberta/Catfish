@@ -60,7 +60,7 @@
 					responseDisplayFlags.value[index] = !responseDisplayFlags.value[index]
 				}
 				else {
-					responseDisplayFlags.value[index] = true;
+                    responseDisplayFlags.value[index] = !responseDisplayFlags.value[index] //true;
 				}
 
 				//Closing all other response boxes
@@ -68,10 +68,13 @@
 					if (val && idx !== index)
 						responseDisplayFlags.value[idx] = false;
 				})
+
+				return false;
 			}
 
 			const submitChildResponse = (index: number) => {
 				store.dispatch(Actions.SUBMIT_CHILD_RESPONSE_FORM, (childSubmissions.value[index] as FieldContainer)?.id)
+				toggleDisplayResponse(index);
 			}
 
 			return {
@@ -117,13 +120,21 @@
 		<h3>Responses</h3>
 		<div v-for="(child, index) in childSubmissions">
 			<ChildView :model="child" :hide-field-names="true" />
+			<div class="text-right" v-if="!responseDisplayFlags[index]">
+				<a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;"><span class="fas fa-reply"></span></a>
+			</div>
 			<!--{{JSON.stringify(child)}}-->
 			<div class="ml-3">
 				<div v-for="(response, resIdx) in child.childFieldContainers.$values">
 					<ChildView :model="response" :hide-field-names="true" />
+					
+					<div class="text-right"><span class="fas fa-remove"></span></div>
 				</div>
 				<div v-if="childResponseFormId" class="mb-2">
-					<div class="text-right"><a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;">+ reply</a></div>
+					<!--<div class="text-right">
+			   <a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;">+ reply</a>
+
+			</div>-->
 					<div v-if="responseDisplayFlags[index]">
 						<ChildForm :model="childResponseForm" />
 						<div v-if="childResponseForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Response validation failed.</div>
@@ -135,3 +146,9 @@
 		</div>
 	</div>
 </template>
+
+<style scoped>
+    .fa-remove{
+		color: red;
+    }
+</style>
