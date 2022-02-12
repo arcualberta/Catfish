@@ -140,7 +140,7 @@ export const actions: ActionTree<State, any> = {
             });
     },
 
-    [Actions.DELETE_CHILD_FORM](store, payload: FieldContainer /*{ item: FieldContainer, indexToRemove: number }*/) {
+    [Actions.DELETE_CHILD_FORM](store, payload: FieldContainer) {
 
 
         store.commit(ChildFormMutations.DELETE_CHILD_FORM, payload);
