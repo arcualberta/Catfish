@@ -14,6 +14,7 @@ export enum Mutations  {
     SET_RESPONSE_FORM_ID = 'SET_RESPONSE_FORM_ID',
     SET_RESPONSE_FORM = 'SET_RESPONSE_FORM',
     APPEND_CHILD_RESPONSE_INSTANCE = 'APPEND_CHILD_RESPONSE_INSTANCE',
+    DELETE_CHILD_FORM = 'DELETE_CHILD_FORM',
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -39,6 +40,22 @@ export const mutations: MutationTree<State> = {
         if (parent) {
             parent.childFieldContainers?.$values.push(payload)
 		}
+    },
+
+    [Mutations.DELETE_CHILD_FORM](state: State, payload: FieldContainer) {
+      
+        const parent = state.formInstances?.$values.find(inst => inst.id === payload?.parentId);
+ 
+        if (parent) {
+            let indexToRemove = parent?.childFieldContainers?.$values.indexOf(payload);
+            indexToRemove = indexToRemove >= 0 ? parseInt(indexToRemove.toString()) : -1;
+
+            console.log("index to remove " + indexToRemove);
+            if (indexToRemove >= 0)
+                parent.childFieldContainers?.$values.splice(indexToRemove, 1);
+       
+        }
+
     },
  ...formSubmissionMutations
 }

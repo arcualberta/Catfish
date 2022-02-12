@@ -100,7 +100,14 @@
         methods: {
 			submitChildForm() {
 				this.store.dispatch(Actions.SUBMIT_CHILD_FORM);
-			}
+			},
+
+			removeResponseForm(itemToRemove: FieldContainer) {
+
+                console.log("parentId: " + itemToRemove.parentId );
+
+				this.store.dispatch(Actions.REMOVE_CHILD_RESPONSE_FORM,itemToRemove);
+            }
         }
     });
 </script>
@@ -127,8 +134,9 @@
 			<div class="ml-3">
 				<div v-for="(response, resIdx) in child.childFieldContainers.$values">
 					<ChildView :model="response" :hide-field-names="true" />
+
 					
-					<div class="text-right"><span class="fas fa-remove"></span></div>
+					<div class="text-right"><span class="fas fa-remove" @click="removeResponseForm(response);"></span></div>
 				</div>
 				<div v-if="childResponseFormId" class="mb-2">
 					<!--<div class="text-right">
