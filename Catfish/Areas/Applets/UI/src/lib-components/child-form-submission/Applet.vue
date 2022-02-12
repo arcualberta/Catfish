@@ -106,7 +106,7 @@
 
                 console.log("parentId: " + itemToRemove.parentId );
 
-				this.store.dispatch(Actions.REMOVE_CHILD_RESPONSE_FORM,itemToRemove);
+                this.store.dispatch(Actions.DELETE_CHILD_FORM,itemToRemove);
             }
         }
     });
