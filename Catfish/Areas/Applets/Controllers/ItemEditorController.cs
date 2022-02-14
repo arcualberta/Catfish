@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -243,6 +244,20 @@ namespace Catfish.Areas.Applets.Controllers
                 return Content(JsonConvert.SerializeObject(childSubmissions, settings), "application/json");
             }
             else
+                return Content("{}", "application/json");
+        }
+        [HttpPost("deleteChildForm/{instanceId}/{childFormId}")]
+        public async Task<ContentResult> DeleteChildFormAsync(Guid instanceId, Guid childFormId)
+        {
+            Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
+            item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormDelete }))
+            .Succeeded)
+            {
+                User user = _workflowService.GetLoggedUser();
+                var child = item.DataContainer.Where(c => c.TemplateId == childFormId);
+                item.AddAuditEntry(user.Id, child, item.StatusId.Value, Guid.NewGuid, "DeleteChildForm");
+            }
                 return Content("{}", "application/json");
         }
     }

@@ -40,7 +40,7 @@ namespace Catfish.Core.Models.Contents
             set => SetAttribute(ActionAtt, value);
         }
         [NotMapped]
-        public XmlModelList<DataItem> Content { get; protected set; }
+        public XmlModelList<XmlModel> Content { get; protected set; }
 
         public DateTime TimeStamp
         {
