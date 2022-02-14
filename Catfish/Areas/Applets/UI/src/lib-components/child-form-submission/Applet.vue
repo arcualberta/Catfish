@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Guid } from 'guid-typescript'
 
-	import dayjs from "dayjs";
 	//import { defineComponent, computed } from 'vue';
 	import { defineComponent, computed, ref } from 'vue';
 	import { useStore } from 'vuex';
@@ -104,15 +103,13 @@
 			submitChildForm() {
 				this.store.dispatch(Actions.SUBMIT_CHILD_FORM);
 			},
-			formatDate(dateString: string) {
-				const date = dayjs(dateString);
-				return date.format('MMM DD, YYYY');
-			},
+			
 			removeResponseForm(itemToRemove: FieldContainer) {
 
-				console.log("parentId: " + itemToRemove.parentId);
-
-				this.store.dispatch(Actions.DELETE_CHILD_FORM, itemToRemove);
+				
+				if (confirm("Do you really want to delete this item?")) {
+					this.store.dispatch(Actions.DELETE_CHILD_FORM, itemToRemove);
+				}
 			}
 		}
 	});
@@ -132,10 +129,11 @@
 	<div v-if="childSubmissions && childSubmissions.length > 0" class="mt-2">
 		<h3>Responses</h3>
 		<div v-for="(child, index) in childSubmissions">
-			<div>{{formatDate(child.created)}}</div>
+			
 			<ChildView :model="child" :hide-field-names="true" />
 			<div class="text-right" v-if="!responseDisplayFlags[index]">
 				<a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;"><span class="fas fa-reply"></span></a>
+				<!--<span class="fas fa-remove" @click="removeResponseForm(child);"></span>-->
 			</div>
 			<!--{{JSON.stringify(child)}}-->
 			<div class="ml-3">
@@ -166,5 +164,6 @@
 <style scoped>
 	.fa-remove {
 		color: red;
+		margin-left: 30px;
 	}
 </style>
