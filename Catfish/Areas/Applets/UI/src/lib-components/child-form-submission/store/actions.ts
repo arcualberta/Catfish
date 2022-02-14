@@ -6,6 +6,7 @@ import { Mutations } from '../../form-submission/store/mutations'
 import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
 import { validateFields } from '../../shared/store/form-validators'
 import { Guid } from 'guid-typescript';
+import { FieldContainer } from '../../shared/models/fieldContainer';
 
 //Declare ActionTypes
 export enum Actions {
@@ -13,7 +14,8 @@ export enum Actions {
     LOAD_SUBMISSIONS = "LOAD_SUBMISSIONS",
     LOAD_RESPONSE_FORM = "LOAD_RESPONSE_FORM",
     SUBMIT_CHILD_FORM = "SUBMIT_CHILD_FORM",
-    SUBMIT_CHILD_RESPONSE_FORM = "SUBMIT_CHILD_RESPONSE_FORM"
+    SUBMIT_CHILD_RESPONSE_FORM = "SUBMIT_CHILD_RESPONSE_FORM",
+    DELETE_CHILD_FORM = "DELETE_CHILD_FORM"
 }
 
 export const actions: ActionTree<State, any> = {
@@ -101,7 +103,7 @@ export const actions: ActionTree<State, any> = {
             });
     },
 
-    [Actions.SUBMIT_CHILD_RESPONSE_FORM](store, parentId: Guid |undefined) {
+    [Actions.SUBMIT_CHILD_RESPONSE_FORM](store, parentId: Guid | undefined) {
 
         //Validating the form
         if (!store.state.childResponseForm || !validateFields(store.state.childResponseForm))
@@ -136,6 +138,13 @@ export const actions: ActionTree<State, any> = {
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Fail");
                 console.log(error)
             });
+    },
+
+    [Actions.DELETE_CHILD_FORM](store, payload: FieldContainer) {
+
+
+        store.commit(ChildFormMutations.DELETE_CHILD_FORM, payload);
+        
     },
 }
 
