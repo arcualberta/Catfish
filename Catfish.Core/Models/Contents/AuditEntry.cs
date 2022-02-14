@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Catfish.Core.Models.Contents.Data;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Xml.Linq;
 
@@ -13,7 +15,7 @@ namespace Catfish.Core.Models.Contents
         public static readonly string ToAtt = "status-to";
         public static readonly string ActionAtt = "action";
         public static readonly string TimeStampAtt = "timestamp";
-
+        public static readonly string ContentRootTag = "content";
 
         public Guid? UserId
         {
@@ -37,6 +39,9 @@ namespace Catfish.Core.Models.Contents
             get => GetAttribute(ActionAtt, null as string);
             set => SetAttribute(ActionAtt, value);
         }
+        [NotMapped]
+        public XmlModelList<DataItem> Content { get; protected set; }
+
         public DateTime TimeStamp
         {
             get => GetDateTimeAttribute(TimeStampAtt).Value;
@@ -49,8 +54,17 @@ namespace Catfish.Core.Models.Contents
         
         public new void Initialize(eGuidOption guidOption)
         {
+            if (Data == null)
+                Data = new XElement(TagName);
+
+            //Wrapping the XElement "Data" in an XmlModel wrapper so that it can be used by the
+            //rest of this initialization routine.
+            XmlModel xml = new XmlModel(Data);
+
             //Ensuring that each metadata set has a unique ID
             base.Initialize(guidOption == eGuidOption.Ignore ? eGuidOption.Ensure : guidOption);
+            //Building the DataContainer
+            Content = new XmlModelList<DataItem>(xml.GetElement(ContentRootTag, true), true);
         }
 
         public DateTime? GetDateTimeAttribute(string key)

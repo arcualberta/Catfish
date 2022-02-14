@@ -86,6 +86,12 @@ namespace Catfish.Core.Migrations
                     b.Property<string>("FormName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TemplateId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("datetime2");
 

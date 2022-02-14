@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Guid } from 'guid-typescript'
 
-    //import dayjs from "dayjs";
+    import dayjs from "dayjs";
 	//import { defineComponent, computed } from 'vue';
 	import { defineComponent, computed, ref } from 'vue';
 	import { useStore } from 'vuex';
@@ -101,14 +101,14 @@
 			submitChildForm() {
 				this.store.dispatch(Actions.SUBMIT_CHILD_FORM);
 
-			//},
-   //         formatDate(dateString: string) {
-   //             const date = dayjs(dateString);
-   //             return date.format('MMM DD, YYYY');
-   //         }
+			},
+            formatDate(dateString: string) {
+                const date = dayjs(dateString);
+                return date.format('MMM DD, YYYY');
+            }
 
-			}
-//
+	//		}
+
         }
     });
 </script>
@@ -127,12 +127,12 @@
 	<div v-if="childSubmissions && childSubmissions.length > 0" class="mt-2">
 		<h3>Responses</h3>
 
-		<!--<div v-for="child in childSubmissions">
+		<div v-for="child in childSubmissions">
 			<div>{{formatDate(child.created)}}</div>
-			<ChildView :model="child" />-->
+			<ChildView :model="child" />
 
-		<div v-for="(child, index) in childSubmissions">
-			<ChildView :model="child" :hide-field-names="true" />
+		<!--<div v-for="(child, index) in childSubmissions">
+			<ChildView :model="child" :hide-field-names="true" />-->
 			<!--{{JSON.stringify(child)}}-->
 			<div class="ml-3">
 				<div v-for="(response, resIdx) in child.childFieldContainers.$values">
