@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Guid } from 'guid-typescript'
 
-    //import dayjs from "dayjs";
+	import dayjs from "dayjs";
 	//import { defineComponent, computed } from 'vue';
 	import { defineComponent, computed, ref } from 'vue';
 	import { useStore } from 'vuex';
@@ -17,16 +17,16 @@
 	import ChildForm from '../shared/components/editor/FieldContainer.vue'
 	import ChildView from '../shared/components/display/FieldContainer.vue'
 
-    export default defineComponent({
-        name: "ChildFormSubmission",
+	export default defineComponent({
+		name: "ChildFormSubmission",
 		components: {
 			ChildForm,
 			ChildView
-        },
-        props,
-        setup(p) {
-           
-           // console.log('props: ', JSON.stringify(p));
+		},
+		props,
+		setup(p) {
+
+			// console.log('props: ', JSON.stringify(p));
 			const queryParameters = p.queryParameters as QueryParameter;
 			const dataAttributes = p.dataAttributes as DataAttribute;
 
@@ -36,7 +36,7 @@
 			const childResponseFormIdStr = dataAttributes["response-form-id"] as string;
 			const childResponseFormId = childResponseFormIdStr?.length > 0 ? Guid.parse(childResponseFormIdStr) : undefined;
 
-            const store = useStore();
+			const store = useStore();
 
 			store.commit(Mutations.CLEAR_FLATTENED_FIELD_MODELS);
 			store.commit(Mutations.SET_ITEM_TEMPLATE_ID, itemTemplateId);
@@ -52,7 +52,7 @@
 			}
 
 			//const submissionStatus = store.state.submissionStatus as SubmissionStatus;
-            //const submissionStatus: eSubmissionStatus = store.state.submissionStatus as eSubmissionStatus;
+			//const submissionStatus: eSubmissionStatus = store.state.submissionStatus as eSubmissionStatus;
 			//console.log("initial status " + JSON.stringify(submissionStatus));
 
 			const responseDisplayFlags = ref([] as boolean[]);
@@ -63,7 +63,7 @@
 					responseDisplayFlags.value[index] = !responseDisplayFlags.value[index]
 				}
 				else {
-					responseDisplayFlags.value[index] = true;
+					responseDisplayFlags.value[index] = !responseDisplayFlags.value[index] //true;
 				}
 
 				//Closing all other response boxes
@@ -71,15 +71,18 @@
 					if (val && idx !== index)
 						responseDisplayFlags.value[idx] = false;
 				})
+
+				return false;
 			}
 
 			const submitChildResponse = (index: number) => {
 				store.dispatch(Actions.SUBMIT_CHILD_RESPONSE_FORM, (childSubmissions.value[index] as FieldContainer)?.id)
+				toggleDisplayResponse(index);
 			}
 
 			return {
 				childForm: computed(() => store.state.form),
-                childSubmissions: computed(() => store.state.formInstances?.$values),
+				childSubmissions: computed(() => store.state.formInstances?.$values),
 				store,
 				submissionStatus: computed(() => store.state.submissionStatus),
 				eSubmissionStatus,
@@ -89,28 +92,30 @@
 				responseDisplayFlags,
 				toggleDisplayResponse,
 				submitChildResponse
-            }
+			}
 		},
 		storeConfig: {
 			state,
 			actions,
 			mutations,
 			getters
-        },
-        methods: {
+		},
+		methods: {
 			submitChildForm() {
 				this.store.dispatch(Actions.SUBMIT_CHILD_FORM);
+			},
+			formatDate(dateString: string) {
+				const date = dayjs(dateString);
+				return date.format('MMM DD, YYYY');
+			},
+			removeResponseForm(itemToRemove: FieldContainer) {
 
-			//},
-   //         formatDate(dateString: string) {
-   //             const date = dayjs(dateString);
-   //             return date.format('MMM DD, YYYY');
-   //         }
+				console.log("parentId: " + itemToRemove.parentId);
 
+				this.store.dispatch(Actions.DELETE_CHILD_FORM, itemToRemove);
 			}
-//
-        }
-    });
+		}
+	});
 </script>
 
 <template>
@@ -126,20 +131,25 @@
 	</div>
 	<div v-if="childSubmissions && childSubmissions.length > 0" class="mt-2">
 		<h3>Responses</h3>
-
-		<!--<div v-for="child in childSubmissions">
-			<div>{{formatDate(child.created)}}</div>
-			<ChildView :model="child" />-->
-
 		<div v-for="(child, index) in childSubmissions">
+			<div>{{formatDate(child.created)}}</div>
 			<ChildView :model="child" :hide-field-names="true" />
+			<div class="text-right" v-if="!responseDisplayFlags[index]">
+				<a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;"><span class="fas fa-reply"></span></a>
+			</div>
 			<!--{{JSON.stringify(child)}}-->
 			<div class="ml-3">
 				<div v-for="(response, resIdx) in child.childFieldContainers.$values">
 					<ChildView :model="response" :hide-field-names="true" />
+
+
+					<div class="text-right"><span class="fas fa-remove" @click="removeResponseForm(response);"></span></div>
 				</div>
 				<div v-if="childResponseFormId" class="mb-2">
-					<div class="text-right"><a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;">+ reply</a></div>
+					<!--<div class="text-right">
+					   <a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;">+ reply</a>
+
+					</div>-->
 					<div v-if="responseDisplayFlags[index]">
 						<ChildForm :model="childResponseForm" />
 						<div v-if="childResponseForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Response validation failed.</div>
@@ -152,3 +162,9 @@
 		</div>
 	</div>
 </template>
+
+<style scoped>
+	.fa-remove {
+		color: red;
+	}
+</style>
