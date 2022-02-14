@@ -255,8 +255,8 @@ namespace Catfish.Areas.Applets.Controllers
             .Succeeded)
             {
                 User user = _workflowService.GetLoggedUser();
-                var child = item.DataContainer.Where(c => c.TemplateId == childFormId);
-                item.AddAuditEntry(user.Id, child, item.StatusId.Value, Guid.NewGuid, "DeleteChildForm");
+                var child = item.DataContainer.FirstOrDefault(c => c.TemplateId == childFormId);
+                item.AddAuditEntry(user.Id, child, item.StatusId.Value, Guid.NewGuid(), "DeleteChildForm");
             }
                 return Content("{}", "application/json");
         }
