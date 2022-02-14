@@ -206,7 +206,7 @@ namespace Catfish.UnitTests
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
 
-            Define_TBLT_RolesStatesWorkflow(workflow, ref template, bcpForm, commentsForm, applicantEmail, "SubmitResource");
+            Define_TBLT_ResourcesForumWorkflow(workflow, ref template, bcpForm, commentsForm, applicantEmail, "SubmitResource");
 
             if (saveChangesToDatabase)
                 db.SaveChanges();
@@ -263,7 +263,7 @@ namespace Catfish.UnitTests
             return applicantNotification;
 
         }
-        private void Define_TBLT_RolesStatesWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, EmailField applicantEmail=null, string formName=null)
+        private void Define_TBLT_ResourcesForumWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm, DataItem commentsForm, EmailField applicantEmail=null, string formName=null)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -478,7 +478,34 @@ namespace Catfish.UnitTests
 
             //Defining states and their authorizatios
             changeStateAction.GetStateReference(submittedState.Id, true)
-                .AddAuthorizedRole(editorRole.Id); 
+                .AddAuthorizedRole(editorRole.Id);
+
+            // ================================================
+            // Delete Comment related workflow items
+            // ================================================
+
+            GetAction deleteCommentAction = workflow.AddAction("Delete Comment", nameof(TemplateOperations.DeleteComment), "Details");
+            deleteCommentAction.Access = GetAction.eAccess.Restricted;
+
+            //Define Revision Template
+            //changeStateAction.AddTemplate(commentsForm.Id, "Comments");
+            //Defining post actions
+            PostAction deleteCommentPostAction = deleteCommentAction.AddPostAction("Delete Comment", @"<p>Your Comment deleted successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+
+            //Defining state mappings
+            //deleteCommentPostAction.AddStateMapping(submittedState.Id, approvedState.Id, "Approve");
+            //deleteCommentPostAction.AddStateMapping(submittedState.Id, rejectedState.Id, "Reject");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp deleteCommentPopUpopUp = deleteCommentPostAction.AddPopUp("Confirmation", "Do you really want to delete this comment ? ", "Once deleted, you cannot revise this comment.");
+            deleteCommentPopUpopUp.AddButtons("Yes", "true");
+            deleteCommentPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining states and their authorizatios
+            deleteCommentAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
 
         }
         private void Define_TBLT_ContactWorkflow(Workflow workflow, ref ItemTemplate template, DataItem tbltForm, DataItem commentsForm, EmailField applicantEmail = null, string formName = null)
@@ -940,6 +967,33 @@ namespace Catfish.UnitTests
             //Defining states and their authorizatios
             changeStateAction.GetStateReference(submittedState.Id, true)
                 .AddAuthorizedRole(editorRole.Id);
+
+            // ================================================
+            // Delete Comment related workflow items
+            // ================================================
+
+            GetAction deleteCommentAction = workflow.AddAction("Delete Comment", nameof(TemplateOperations.DeleteComment), "Details");
+            deleteCommentAction.Access = GetAction.eAccess.Restricted;
+
+            //Define Revision Template
+            //changeStateAction.AddTemplate(commentsForm.Id, "Comments");
+            //Defining post actions
+            PostAction deleteCommentPostAction = deleteCommentAction.AddPostAction("Delete Comment", @"<p>Your Comment deleted successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+
+            //Defining state mappings
+            //deleteCommentPostAction.AddStateMapping(submittedState.Id, approvedState.Id, "Approve");
+            //deleteCommentPostAction.AddStateMapping(submittedState.Id, rejectedState.Id, "Reject");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp deleteCommentPopUpopUp = deleteCommentPostAction.AddPopUp("Confirmation", "Do you really want to delete this comment ? ", "Once deleted, you cannot revise this comment.");
+            deleteCommentPopUpopUp.AddButtons("Yes", "true");
+            deleteCommentPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining states and their authorizatios
+            deleteCommentAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(editorRole.Id)
+                .AddOwnerAuthorization();
 
         }
 

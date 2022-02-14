@@ -626,8 +626,18 @@ namespace Catfish.Core.Services
             try
             {
                 UserGroupRole userGroupRole = _appDb.UserGroupRoles.Where(ugr => ugr.Id == userGroupRoleId).FirstOrDefault();
+                var groupRole = _appDb.GroupRoles.Where(gr => gr.Id == userGroupRole.GroupRoleId).FirstOrDefault();
+
+                var roleDetails = _piranhaDb.UserRoles.Where(ur => ur.RoleId == groupRole.RoleId && ur.UserId == userGroupRole.UserId).FirstOrDefault();
+                var groupRoles = _appDb.UserGroupRoles.Where(ugr => ugr.UserId == userGroupRole.UserId).Select(ugr => ugr.GroupRole);
+                int countExsitingRoles = 0;
+                foreach (var groupRoleData in groupRoles)
+                    if (groupRoleData.RoleId.Equals(groupRole.RoleId))
+                        countExsitingRoles++;
                 if (userGroupRole != null)
                     _appDb.UserGroupRoles.Remove(userGroupRole);
+                if (!(countExsitingRoles > 1))
+                    _piranhaDb.UserRoles.Remove(roleDetails);
             }
             catch (Exception ex)
             {
