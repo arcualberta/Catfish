@@ -15,7 +15,7 @@ export enum Actions {
     LOAD_RESPONSE_FORM = "LOAD_RESPONSE_FORM",
     SUBMIT_CHILD_FORM = "SUBMIT_CHILD_FORM",
     SUBMIT_CHILD_RESPONSE_FORM = "SUBMIT_CHILD_RESPONSE_FORM",
-    DELETE_CHILD_FORM = "DELETE_CHILD_FORM"
+    DELETE_CHILD_RESPONSE_INSTANCE = "DELETE_CHILD_RESPONSE_INSTANCE"
 }
 
 export const actions: ActionTree<State, any> = {
@@ -140,10 +140,10 @@ export const actions: ActionTree<State, any> = {
             });
     },
 
-    [Actions.DELETE_CHILD_FORM](store, payload: FieldContainer) {
+    [Actions.DELETE_CHILD_RESPONSE_INSTANCE](store, payload: FieldContainer) {
 
 
-        store.commit(ChildFormMutations.DELETE_CHILD_FORM, payload);
+        store.commit(ChildFormMutations.DELETE_CHILD_RESPONSE_INSTANCE, payload);
         
     },
 }

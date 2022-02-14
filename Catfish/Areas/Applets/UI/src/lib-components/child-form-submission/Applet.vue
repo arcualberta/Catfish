@@ -108,7 +108,7 @@
 
 				
 				if (confirm("Do you really want to delete this item?")) {
-					this.store.dispatch(Actions.DELETE_CHILD_FORM, itemToRemove);
+                    this.store.dispatch(Actions.DELETE_CHILD_RESPONSE_INSTANCE, itemToRemove);
 				}
 			}
 		}
@@ -133,7 +133,7 @@
 			<ChildView :model="child" :hide-field-names="true" />
 			<div class="text-right" v-if="!responseDisplayFlags[index]">
 				<a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;"><span class="fas fa-reply"></span></a>
-				<!--<span class="fas fa-remove" @click="removeResponseForm(child);"></span>-->
+				<span class="fas fa-remove" @click="removeResponseForm(child);"></span>
 			</div>
 			<!--{{JSON.stringify(child)}}-->
 			<div class="ml-3">
