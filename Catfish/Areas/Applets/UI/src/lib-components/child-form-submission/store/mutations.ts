@@ -15,6 +15,7 @@ export enum Mutations  {
     SET_RESPONSE_FORM = 'SET_RESPONSE_FORM',
     APPEND_CHILD_RESPONSE_INSTANCE = 'APPEND_CHILD_RESPONSE_INSTANCE',
     DELETE_CHILD_RESPONSE_INSTANCE = 'DELETE_CHILD_RESPONSE_INSTANCE',
+    DELETE_CHILD_INSTANCE ='DELETE_CHILD_INSTANCE'
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -51,6 +52,16 @@ export const mutations: MutationTree<State> = {
             //console.log("index to remove " + indexToRemove);
             if (indexToRemove >= 0)
                 parent.childFieldContainers?.$values.splice(indexToRemove, 1);
+        }
+
+    },
+    [Mutations.DELETE_CHILD_INSTANCE](state: State, payload: FieldContainer) {
+  
+            const indexToRemove = state.formInstances?.$values?.indexOf(payload);
+           
+        if (typeof indexToRemove != 'undefined' && indexToRemove >= 0) {
+           
+            state.formInstances?.$values.splice(indexToRemove, 1);
         }
 
     },
