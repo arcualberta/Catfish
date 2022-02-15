@@ -301,8 +301,10 @@ namespace Catfish.Services
 
                 //User user = _workflowService.GetLoggedUser();
                 var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
+
+                DataItem emptyDataItem = new DataItem();
                 newItem.AddAuditEntry(currUserId,
-                    null,
+                    emptyDataItem,
                     fromState,
                     newItem.StatusId.Value,
                     action
@@ -347,9 +349,10 @@ namespace Catfish.Services
                 dataItem.UpdateFieldValues(value);
                 //item.DataContainer.Add(dataItem);
 
+                DataItem emptyDataItem = new DataItem();
                 User user = _workflowService.GetLoggedUser();
                 item.AddAuditEntry(user.Id,
-                    null,
+                    emptyDataItem,
                     oldStatus,
                     item.StatusId.Value,
                     action
@@ -408,8 +411,9 @@ namespace Catfish.Services
                 item.StatusId = nextStatusId;
                 item.Updated = DateTime.Now;
                 User user = _workflowService.GetLoggedUser();
+                DataItem emptyDataItem = new DataItem();
                 item.AddAuditEntry(user.Id,
-                    null,
+                    emptyDataItem,
                     currentStatusId,
                     nextStatusId,
                     action);
@@ -440,7 +444,8 @@ namespace Catfish.Services
                 var state = postAction.StateMappings.Where(sm => sm.Id == buttonId).FirstOrDefault();
                 parentItem.StatusId = state.Next;
                 parentItem.Updated = DateTime.Now;
-                parentItem.AddAuditEntry(user.Id,null, state.Current, state.Next, state.ButtonLabel);
+                DataItem emptyDataItem = new DataItem();
+                parentItem.AddAuditEntry(user.Id,emptyDataItem, state.Current, state.Next, state.ButtonLabel);
 
                 // instantantiate a version of the child and update it
                 DataItem newChildItem = template.InstantiateDataItem(value.Id);
