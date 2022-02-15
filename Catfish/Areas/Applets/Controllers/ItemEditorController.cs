@@ -263,6 +263,8 @@ namespace Catfish.Areas.Applets.Controllers
                     TypeNameHandling = TypeNameHandling.All,
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
+
+                _appDb.SaveChanges();
                 return Content(JsonConvert.SerializeObject(item, settings), "application/json");
             }
             else
