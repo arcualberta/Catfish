@@ -302,6 +302,7 @@ namespace Catfish.Services
                 //User user = _workflowService.GetLoggedUser();
                 var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
                 newItem.AddAuditEntry(currUserId,
+                    null,
                     fromState,
                     newItem.StatusId.Value,
                     action
@@ -348,6 +349,7 @@ namespace Catfish.Services
 
                 User user = _workflowService.GetLoggedUser();
                 item.AddAuditEntry(user.Id,
+                    null,
                     oldStatus,
                     item.StatusId.Value,
                     action
@@ -407,6 +409,7 @@ namespace Catfish.Services
                 item.Updated = DateTime.Now;
                 User user = _workflowService.GetLoggedUser();
                 item.AddAuditEntry(user.Id,
+                    null,
                     currentStatusId,
                     nextStatusId,
                     action);
@@ -437,7 +440,7 @@ namespace Catfish.Services
                 var state = postAction.StateMappings.Where(sm => sm.Id == buttonId).FirstOrDefault();
                 parentItem.StatusId = state.Next;
                 parentItem.Updated = DateTime.Now;
-                parentItem.AddAuditEntry(user.Id, state.Current, state.Next, state.ButtonLabel);
+                parentItem.AddAuditEntry(user.Id,null, state.Current, state.Next, state.ButtonLabel);
 
                 // instantantiate a version of the child and update it
                 DataItem newChildItem = template.InstantiateDataItem(value.Id);

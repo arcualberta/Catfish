@@ -484,7 +484,7 @@ namespace Catfish.UnitTests
             // Delete Comment related workflow items
             // ================================================
 
-            GetAction deleteCommentAction = workflow.AddAction("Delete Comment", nameof(TemplateOperations.DeleteComment), "Details");
+            GetAction deleteCommentAction = workflow.AddAction("Delete Comment", nameof(TemplateOperations.ChildFormDelete), "Details");
             deleteCommentAction.Access = GetAction.eAccess.Restricted;
 
             //Define Revision Template
@@ -972,7 +972,7 @@ namespace Catfish.UnitTests
             // Delete Comment related workflow items
             // ================================================
 
-            GetAction deleteCommentAction = workflow.AddAction("Delete Comment", nameof(TemplateOperations.DeleteComment), "Details");
+            GetAction deleteCommentAction = workflow.AddAction("Delete Comment", nameof(TemplateOperations.ChildFormDelete), "Details");
             deleteCommentAction.Access = GetAction.eAccess.Restricted;
 
             //Define Revision Template
