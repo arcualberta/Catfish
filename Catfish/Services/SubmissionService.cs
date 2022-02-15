@@ -458,6 +458,25 @@ namespace Catfish.Services
             }
         }
 
+        public Item DeleteChild(Guid instanceId, Guid childFormId, string fileNames = null)
+        {
+            try
+            {
+                // Get Parent Item to which Child will be added
+                Item item = _db.Items.FirstOrDefault(it => it.Id == instanceId);
+                item.Template = _db.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+                User user = _workflowService.GetLoggedUser();
+                var child = item.DataContainer.FirstOrDefault(c => c.TemplateId == childFormId);
+                item.AddAuditEntry(user.Id, child, item.StatusId.Value, item.StatusId.Value, "DeleteChildForm");
+                return item;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
         public string SetSuccessMessage(Guid entityTemplateId, Guid postActionId, Guid itemId)
         {
             try

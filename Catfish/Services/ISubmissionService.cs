@@ -23,6 +23,7 @@ namespace Catfish.Services
         Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames=null);
         Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid status, string action, string fileNames = null);
         Item AddChild(DataItem value, Guid entityTemplateId, Guid itemId, Guid stateId, Guid buttonId, string fileNames = null);
+        Item DeleteChild(Guid instanceId, Guid childFormId, string fileNames = null);
         //       bool SendEmail(EmailTemplate emailTemplate, string recipient);
         bool ExecuteTriggers(Guid entityTemplateId,Item item, Guid postActionId);
         Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action);

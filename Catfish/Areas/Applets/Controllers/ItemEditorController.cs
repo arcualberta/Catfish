@@ -246,6 +246,7 @@ namespace Catfish.Areas.Applets.Controllers
             else
                 return Content("{}", "application/json");
         }
+        
         [HttpPost("deleteChildForm/{instanceId}/{childFormId}")]
         public async Task<ContentResult> DeleteChildFormAsync(Guid instanceId, Guid childFormId)
         {
@@ -254,11 +255,21 @@ namespace Catfish.Areas.Applets.Controllers
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormDelete }))
             .Succeeded)
             {
-                User user = _workflowService.GetLoggedUser();
-                var child = item.DataContainer.FirstOrDefault(c => c.TemplateId == childFormId);
-                item.AddAuditEntry(user.Id, child, item.StatusId.Value, Guid.NewGuid(), "DeleteChildForm");
+                item = _submissionService.DeleteChild(instanceId, childFormId);
+                
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                return Content(JsonConvert.SerializeObject(item, settings), "application/json");
             }
+            else
+            {
                 return Content("{}", "application/json");
+            }
+                
         }
     }
 }
