@@ -8,6 +8,7 @@
 		{ "data-child-form-id", Model.SelectedChildForm.Value },
 		{ "data-display-child-list", Model.DisplayChildList.Value },
 		{ "data-response-form-id", Model.DisplayChildList.Value ? Model.SelectedResponseForm.Value : "" },
+		{ "data-is-admin", User.IsInRole("SysAdmin") },
 
 	};
 }

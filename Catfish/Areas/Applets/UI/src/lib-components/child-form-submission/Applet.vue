@@ -33,6 +33,7 @@
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
 			const childFormId = Guid.parse(dataAttributes["child-form-id"] as string);
 			const childResponseFormIdStr = dataAttributes["response-form-id"] as string;
+			const isAdmin = dataAttributes["is-admin"] as string;
 			const childResponseFormId = childResponseFormIdStr?.length > 0 ? Guid.parse(childResponseFormIdStr) : undefined;
 
 			const store = useStore();
@@ -90,7 +91,8 @@
 				childResponseForm: computed(() => store.state.childResponseForm),
 				responseDisplayFlags,
 				toggleDisplayResponse,
-				submitChildResponse
+				submitChildResponse,
+				isAdmin
 			}
 		},
 		storeConfig: {
@@ -138,7 +140,7 @@
 			<ChildView :model="child" :hide-field-names="true" />
 			<div class="text-right" v-if="!responseDisplayFlags[index]">
 				<a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;"><span class="fas fa-reply"></span></a>
-				<span class="fas fa-remove" @click="removeChildForm(child);"></span>
+				<span v-if="isAdmin" class="fas fa-remove" @click="removeChildForm(child);"></span>
 			</div>
 			<!--{{JSON.stringify(child)}}-->
 			<div class="ml-3">
@@ -146,7 +148,7 @@
 					<ChildView :model="response" :hide-field-names="true" />
 
 
-					<div class="text-right"><span class="fas fa-remove" @click="removeResponseForm(response);"></span></div>
+					<div class="text-right" v-if="isAdmin"><span class="fas fa-remove" @click="removeResponseForm(response);"></span></div>
 				</div>
 				<div v-if="childResponseFormId" class="mb-2">
 					<!--<div class="text-right">
