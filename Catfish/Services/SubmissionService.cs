@@ -371,6 +371,46 @@ namespace Catfish.Services
 
         }
         /// <summary>
+        /// this method used to delete an item. in here basically we do a state change to item delete state.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public Item DeleteSubmission(Item item)
+        {
+            try
+            {
+                string buttonName = "Deleted";
+                // get entity template using entityTemplateId
+                EntityTemplate template = _entityTemplateService.GetTemplate(item.TemplateId);
+
+                //current status should be item status.
+                Guid currentState = (Guid)item.StatusId;
+
+                //next status should take from workflow. That need to get from workflow status id whichnbelongs to Deleted status Id
+                Guid nextState = template.Workflow.States.Where(s => s.Value == buttonName).Select(s=>s.Id).FirstOrDefault();
+                DataItem emptyDataItem = new DataItem();
+                User user = _workflowService.GetLoggedUser();
+                
+                item.StatusId = nextState;
+                item.Updated = DateTime.Now;
+                //add to audit entry 
+                item.AddAuditEntry(user.Id,
+                    emptyDataItem,
+                    currentState,
+                    nextState,
+                    buttonName
+                    );
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+        /// <summary>
         /// This method used to execute all triggers in a given workflow. need to pass the entity template, function and group.
         /// </summary>
         /// <param name="entityTemplateId"></param>
@@ -555,5 +595,7 @@ namespace Catfish.Services
 
             return collections;
         }
+
+        
     }
 }

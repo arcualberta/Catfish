@@ -273,5 +273,40 @@ namespace Catfish.Areas.Applets.Controllers
             }
                 
         }
+        [HttpPost("deleteItem/{itemId}")]
+        public async Task<IActionResult> DeleteItemAsync(Guid itemId)
+        {
+            //retrive item data according to the item id
+            Item item = _appDb.Items.FirstOrDefault(it => it.Id == itemId);
+            //check item, if it is not null, then it can process. Otherwise need to return Status404NotFound
+            if (item != null)
+            {
+                //check the user has permission to delete item, if yes, it can process, otherwise return Status401Unauthorized
+                if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Delete }))
+            .Succeeded)
+                {
+                    Item deletedItem = _submissionService.DeleteSubmission(item);
+                    //check item deleted sucessfully. if yes, return Status200OK, Otherwise return Status500InternalServerError
+                    if (deletedItem != null)
+                    {
+                        _appDb.SaveChanges();
+                        return StatusCode(StatusCodes.Status200OK);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+        }
     }
 }
