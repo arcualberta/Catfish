@@ -248,14 +248,14 @@ namespace Catfish.Areas.Applets.Controllers
         }
         
         [HttpPost("deleteChildForm/{instanceId}/{childFormId}")]
-        public async Task<ContentResult> DeleteChildFormAsync(Guid instanceId, Guid childFormId)
+        public async Task<ContentResult> DeleteChildFormAsync(Guid instanceId, Guid childFormId, Guid? parentId)
         {
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormDelete }))
             .Succeeded)
             {
-                item = _submissionService.DeleteChild(instanceId, childFormId);
+                item = _submissionService.DeleteChild(instanceId, childFormId, parentId);
                 
                 var settings = new JsonSerializerSettings()
                 {

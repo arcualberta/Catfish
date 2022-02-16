@@ -143,14 +143,47 @@ export const actions: ActionTree<State, any> = {
 
     [Actions.DELETE_CHILD_RESPONSE_INSTANCE](store, payload: FieldContainer) {
 
+        const api = window.location.origin + `/applets/api/itemeditor/deleteChildForm/${store.state.itemInstanceId}/${payload.id}?parentId=${payload.parentId}`;
 
-        store.commit(ChildFormMutations.DELETE_CHILD_RESPONSE_INSTANCE, payload);
-        
+        fetch(api,
+            {
+                method: "post"
+            })
+            .then(response =>
+                response.json())
+            .then(data => {
+                if (data.id) {
+                    console.log("deleteChildForm response received")
+                    store.commit(ChildFormMutations.DELETE_CHILD_RESPONSE_INSTANCE, payload);
+				}
+            })
+            .catch(error => {
+                store.commit(Mutations.SET_SUBMISSION_STATUS, "Fail");
+                console.log(error)
+            });        
     },
     [Actions.DELETE_CHILD_INSTANCE](store, payload: FieldContainer) {
 
+        const api = window.location.origin + `/applets/api/itemeditor/deleteChildForm/${store.state.itemInstanceId}/${payload.id}`;
 
-        store.commit(ChildFormMutations.DELETE_CHILD_INSTANCE, payload);
+        fetch(api,
+            {
+                method: "post"
+            })
+            .then(response =>
+                response.json())
+            .then(data => {
+                if (data.id) {
+                    console.log("deleteChildForm response received")
+                    store.commit(ChildFormMutations.DELETE_CHILD_RESPONSE_INSTANCE, payload);
+                }
+            })
+            .catch(error => {
+                store.commit(Mutations.SET_SUBMISSION_STATUS, "Fail");
+                console.log(error)
+            });
+
+        
 
     },
 }

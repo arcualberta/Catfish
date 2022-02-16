@@ -463,16 +463,54 @@ namespace Catfish.Services
             }
         }
 
-        public Item DeleteChild(Guid instanceId, Guid childFormId, string fileNames = null)
+        public Item DeleteChild(Guid instanceId, Guid childFormId, Guid? parentId, string fileNames = null)
         {
             try
             {
+                /*
+                DataItem parent = parentId.HasValue ? item.DataContainer.FirstOrDefault(di => di.Id == parentId.Value) : null;
+
+                //If a data item with the given parentDataItemId is found in the DataContainer of
+                //this item, then add the childForm as a child to that data item. Otherwise, add
+                //the child form directly to the data container.
+                if (parent != null)
+				{
+                    childForm.ParentId = parent.Id;
+                    parent.ChildFieldContainers.Add(childForm);
+                }
+                else
+                    item.DataContainer.Add(childForm);
+
+                 
+                 */
+
                 // Get Parent Item to which Child will be added
                 Item item = _db.Items.FirstOrDefault(it => it.Id == instanceId);
                 item.Template = _db.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
                 User user = _workflowService.GetLoggedUser();
-                var child = item.DataContainer.FirstOrDefault(c => c.TemplateId == childFormId);
-                item.AddAuditEntry(user.Id, child, item.StatusId.Value, item.StatusId.Value, "DeleteChildForm");
+
+                //If the parentID is defined, then we should get the parent from the DataContainer and then delete the
+                //child from the contents in its ChildFieldContainers array. Otherwise, we take the child directly from the
+                //DataContainer of the item.
+                if (parentId.HasValue)
+				{
+                    var parent = item.DataContainer.FirstOrDefault(c => c.Id == parentId);
+                    var child = parent?.ChildFieldContainers.FirstOrDefault(c => c.Id == childFormId);
+                    if (child != null)
+                    {
+                        item.AddAuditEntry(user.Id, child, item.StatusId.Value, item.StatusId.Value, "DeleteChildFormResponse");
+                        parent.ChildFieldContainers.Remove(child);
+                    }
+                }
+				else
+				{
+                    var child = item.DataContainer.FirstOrDefault(c => c.Id == childFormId);
+                    if (child != null)
+                    {
+                        item.DataContainer.Remove(child);
+                        item.AddAuditEntry(user.Id, child, item.StatusId.Value, item.StatusId.Value, "DeleteChildForm");
+                    }
+                }
                 return item;
             }
             catch (Exception ex)
