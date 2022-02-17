@@ -57,9 +57,8 @@ export const mutations: MutationTree<State> = {
     },
     [Mutations.DELETE_CHILD_INSTANCE](state: State, payload: FieldContainer) {
   
-            const indexToRemove = state.formInstances?.$values?.indexOf(payload);
-           
-        if (indexToRemove && indexToRemove >= 0) {
+        const indexToRemove = state.formInstances?.$values?.indexOf(payload);
+        if (typeof indexToRemove !== 'undefined' && indexToRemove >= 0) {
            
             state.formInstances?.$values.splice(indexToRemove, 1);
         }
