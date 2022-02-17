@@ -175,7 +175,7 @@ export const actions: ActionTree<State, any> = {
             .then(data => {
                 if (data.id) {
                     console.log("deleteChildForm response received")
-                    store.commit(ChildFormMutations.DELETE_CHILD_RESPONSE_INSTANCE, payload);
+                    store.commit(ChildFormMutations.DELETE_CHILD_INSTANCE, payload);
                 }
             })
             .catch(error => {

@@ -143,27 +143,21 @@
 				<span v-if="isAdmin" class="fas fa-remove" @click="removeChildForm(child);"></span>
 			</div>
 			<!--{{JSON.stringify(child)}}-->
-			<div class="ml-3 submissionInstanceList" >
-				<div v-for="(response, resIdx) in child.childFieldContainers.$values" class="submissionInstance">
-					<ChildView :model="response" :hide-field-names="true"  />
-
-
-					<div class="text-right" v-if="isAdmin"><span class="fas fa-remove deleteBtn" @click="removeResponseForm(response);"></span></div>
-				</div>
+			<div class="ml-3 submissionInstanceList">
 				<div v-if="childResponseFormId" class="mb-2">
-					<!--<div class="text-right">
-					   <a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;">+ reply</a>
-
-					</div>-->
 					<div v-if="responseDisplayFlags[index]" class="childResponseForm">
 						<ChildForm :model="childResponseForm" />
 						<div v-if="childResponseForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Response validation failed.</div>
 						<button class="btn btn-primary submitBtn" @click="submitChildResponse(index)">Submit</button>
 					</div>
-				</div> 
-			</div>
+				</div>
+				<div v-for="(response, resIdx) in child.childFieldContainers.$values" class="submissionInstance">
+					<ChildView :model="response" :hide-field-names="true" />
 
-			<hr />
+
+					<div class="text-right" v-if="isAdmin"><span class="fas fa-remove deleteBtn" @click="removeResponseForm(response);"></span></div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
