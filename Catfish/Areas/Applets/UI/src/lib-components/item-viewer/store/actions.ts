@@ -24,20 +24,34 @@ export const actions: ActionTree<State, any> = {
               store.commit(Mutations.SET_ITEM, data);
             });
     },
-    [Actions.CHANGE_STATE](store, payload: { itemId: Guid, state: string }) {
+    [Actions.CHANGE_STATE](store, payload: Guid ) {
 
         console.log(JSON.stringify(store.state));
 
         const api = window.location.origin +
-            `/applets/api/itemeditor/${payload.itemId}/changestate/${payload.state}`;
+            `/applets/api/itemeditor/deleteItem/${payload}`;
         console.log('Item Load API: ', api)
 
-        //fetch(api)
-        //    .then(response => response.json())
-        //    .then(data => {
-        //        console.log(JSON.stringify(data));
-        //        store.commit(Mutations.CHANGE_STATE, payload);
-        //    });
+        fetch(api,
+            {
+                method: "post"
+            })
+            .then(response =>
+                response.json())
+            .then(data => {
+                console.log(data.status);
+                //if (data.status == 200) {
+                //    console.log("status ok "  + data.status);
+                //    //window.location.href = window.location.origin;
+                //} else {
+                //    alert("HTTP response return status code " + data.status);
+                //}
+            })
+            .catch(error => {
+                alert(" Error: HTTP response return status code 500");
+                console.log(error)
+            });
+       
     },
 }
 

@@ -48,12 +48,12 @@
         },
         methods: {
 
-            changeItemState(itemId: Guid, itemState: string) {
+            changeItemState(itemId: Guid) {
 
                 if (confirm("Do you really want to delete this item?")) {
                     // this.store.dispatch(Actions.DELETE_CHILD_INSTANCE, itemToRemove);
-                    console.log("id: " + itemId + "  change state to: " + itemState);
-                    this.store.dispatch(Actions.CHANGE_STATE, { itemId, itemState });
+                    console.log("id: " + itemId);
+                    this.store.dispatch(Actions.CHANGE_STATE, itemId);
                 }
             }
         }
@@ -61,7 +61,7 @@
 </script>
 
 <template>
-    <div class="text-right" v-if="isAdmin"><span class="fas fa-remove" @click="changeItemState(dataItem.id, 'DELETE');"></span></div>
+    <div class="text-right" v-if="isAdmin"><span class="fas fa-remove" @click="changeItemState(queryParams.iid);"></span></div>
     <FieldContainer :model="dataItem" v-if="dataItem" class="item"/>
 </template>
 
