@@ -36,19 +36,39 @@ export const actions: ActionTree<State, any> = {
             {
                 method: "post"
             })
-            .then(response =>
-                response.json())
-            .then(data => {
-                console.log(data.status);
-                //if (data.status == 200) {
-                //    console.log("status ok "  + data.status);
-                //    //window.location.href = window.location.origin;
-                //} else {
-                //    alert("HTTP response return status code " + data.status);
-                //}
+            .then(response => {
+                //response.json()
+                console.log(response.status)
+                switch (response.status) {
+                    case 200:
+                        window.location.href = "/";
+                        //alert("TODO: change me to redirect to home page.");
+                        break;
+                    case 401:
+                        alert("Authorization failed.")
+                        break;
+                    case 404:
+                        alert("Item not found.")
+                        break;
+                    case 500:
+                        alert("Internal server error occurred.")
+                        break;
+                    default:
+                        alert("Unknown error occurred.")
+                        break;
+				}
             })
+            ////.then(data => {
+            ////    console.log(data);
+            ////    //if (data.status == 200) {
+            ////    //    console.log("status ok "  + data.status);
+            ////    //    //window.location.href = window.location.origin;
+            ////    //} else {
+            ////    //    alert("HTTP response return status code " + data.status);
+            ////    //}
+            ////})
             .catch(error => {
-                alert(" Error: HTTP response return status code 500");
+                alert("Unknown error occurred.")
                 console.log(error)
             });
        
