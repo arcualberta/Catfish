@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Guid } from 'guid-typescript'
 
-	import dayjs from "dayjs";
 	//import { defineComponent, computed } from 'vue';
 	import { defineComponent, computed, ref } from 'vue';
 	import { useStore } from 'vuex';
@@ -34,6 +33,7 @@
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
 			const childFormId = Guid.parse(dataAttributes["child-form-id"] as string);
 			const childResponseFormIdStr = dataAttributes["response-form-id"] as string;
+			const isAdmin = dataAttributes["is-admin"] as string;
 			const childResponseFormId = childResponseFormIdStr?.length > 0 ? Guid.parse(childResponseFormIdStr) : undefined;
 
 			const store = useStore();
@@ -91,7 +91,8 @@
 				childResponseForm: computed(() => store.state.childResponseForm),
 				responseDisplayFlags,
 				toggleDisplayResponse,
-				submitChildResponse
+				submitChildResponse,
+				isAdmin
 			}
 		},
 		storeConfig: {
@@ -104,22 +105,25 @@
 			submitChildForm() {
 				this.store.dispatch(Actions.SUBMIT_CHILD_FORM);
 			},
-			formatDate(dateString: string) {
-				const date = dayjs(dateString);
-				return date.format('MMM DD, YYYY');
-			},
+			
 			removeResponseForm(itemToRemove: FieldContainer) {
+		
+				if (confirm("Do you really want to delete this item?")) {
+                    this.store.dispatch(Actions.DELETE_CHILD_RESPONSE_INSTANCE, itemToRemove);
+				}
+			},
+            removeChildForm(itemToRemove: FieldContainer) {
 
-				console.log("parentId: " + itemToRemove.parentId);
-
-				this.store.dispatch(Actions.DELETE_CHILD_FORM, itemToRemove);
-			}
+                if (confirm("Do you really want to delete this item?")) {
+                    this.store.dispatch(Actions.DELETE_CHILD_INSTANCE, itemToRemove);
+                }
+            }
 		}
 	});
 </script>
 
-<template>
-	<div v-if="childForm && Object.keys(childForm).length > 0">
+<template  class="childFormSubmissionApplet">
+	<div v-if="childForm && Object.keys(childForm).length > 0" class="submissionForm">
 		<ChildForm :model="childForm" />
 		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Form validation failed.</div>
 		<div v-else>
@@ -129,36 +133,31 @@
 		</div>
 		<button class="btn btn-primary" @click="submitChildForm()">Submit</button>
 	</div>
-	<div v-if="childSubmissions && childSubmissions.length > 0" class="mt-2">
+	<div v-if="childSubmissions && childSubmissions.length > 0" class="mt-2 submissionInstanceList">
 		<h3>Responses</h3>
-		<div v-for="(child, index) in childSubmissions">
-			<div>{{formatDate(child.created)}}</div>
-			<ChildView :model="child" :hide-field-names="true" />
+		<div v-for="(child, index) in childSubmissions" class="submissionInstance">
+			
+			<ChildView :model="child" :hide-field-names="true"  />
 			<div class="text-right" v-if="!responseDisplayFlags[index]">
-				<a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;"><span class="fas fa-reply"></span></a>
+				<a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;"><span class="fas fa-reply replyBtn"></span></a>
+				<span v-if="isAdmin" class="fas fa-remove" @click="removeChildForm(child);"></span>
 			</div>
 			<!--{{JSON.stringify(child)}}-->
-			<div class="ml-3">
-				<div v-for="(response, resIdx) in child.childFieldContainers.$values">
+			<div class="ml-3 submissionInstanceList">
+				<div v-if="childResponseFormId" class="mb-2">
+					<div v-if="responseDisplayFlags[index]" class="childResponseForm">
+						<ChildForm :model="childResponseForm" />
+						<div v-if="childResponseForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Response validation failed.</div>
+						<button class="btn btn-primary submitBtn" @click="submitChildResponse(index)">Submit</button>
+					</div>
+				</div>
+				<div v-for="(response, resIdx) in child.childFieldContainers.$values" class="submissionInstance">
 					<ChildView :model="response" :hide-field-names="true" />
 
 
-					<div class="text-right"><span class="fas fa-remove" @click="removeResponseForm(response);"></span></div>
-				</div>
-				<div v-if="childResponseFormId" class="mb-2">
-					<!--<div class="text-right">
-					   <a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;">+ reply</a>
-
-					</div>-->
-					<div v-if="responseDisplayFlags[index]">
-						<ChildForm :model="childResponseForm" />
-						<div v-if="childResponseForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Response validation failed.</div>
-						<button class="btn btn-primary" @click="submitChildResponse(index)">Submit</button>
-					</div>
+					<div class="text-right" v-if="isAdmin"><span class="fas fa-remove deleteBtn" @click="removeResponseForm(response);"></span></div>
 				</div>
 			</div>
-
-			<hr />
 		</div>
 	</div>
 </template>
@@ -166,5 +165,6 @@
 <style scoped>
 	.fa-remove {
 		color: red;
+		margin-left: 30px;
 	}
 </style>

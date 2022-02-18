@@ -40,7 +40,7 @@ namespace Catfish.Core.Models.Contents
             set => SetAttribute(ActionAtt, value);
         }
         [NotMapped]
-        public XmlModelList<DataItem> Content { get; protected set; }
+        public XmlModelList<XmlModel> Content { get; protected set; }
 
         public DateTime TimeStamp
         {
@@ -64,7 +64,7 @@ namespace Catfish.Core.Models.Contents
             //Ensuring that each metadata set has a unique ID
             base.Initialize(guidOption == eGuidOption.Ignore ? eGuidOption.Ensure : guidOption);
             //Building the DataContainer
-            Content = new XmlModelList<DataItem>(xml.GetElement(ContentRootTag, true), true);
+            Content = new XmlModelList<XmlModel>(xml.GetElement(ContentRootTag, true), true);
         }
 
         public DateTime? GetDateTimeAttribute(string key)

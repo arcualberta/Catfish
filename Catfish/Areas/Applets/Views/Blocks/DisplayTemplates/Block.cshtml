@@ -4,6 +4,7 @@
 @{
     var viewData = new ViewDataDictionary(this.ViewData)
     {
+         { "data-is-admin", User.IsInRole("SysAdmin") },
     };
 }
 

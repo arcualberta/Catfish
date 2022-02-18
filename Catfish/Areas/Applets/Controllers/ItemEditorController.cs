@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -244,6 +245,68 @@ namespace Catfish.Areas.Applets.Controllers
             }
             else
                 return Content("{}", "application/json");
+        }
+        
+        [HttpPost("deleteChildForm/{instanceId}/{childFormId}")]
+        public async Task<ContentResult> DeleteChildFormAsync(Guid instanceId, Guid childFormId, Guid? parentId)
+        {
+            Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
+            item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormDelete }))
+            .Succeeded)
+            {
+                item = _submissionService.DeleteChild(instanceId, childFormId, parentId);
+                
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
+                _appDb.SaveChanges();
+                return Content(JsonConvert.SerializeObject(item, settings), "application/json");
+            }
+            else
+            {
+                return Content("{}", "application/json");
+            }
+                
+        }
+        [HttpPost("deleteItem/{itemId}")]
+        public async Task<IActionResult> DeleteItemAsync(Guid itemId)
+        {
+            //retrive item data according to the item id
+            Item item = _appDb.Items.FirstOrDefault(it => it.Id == itemId);
+            //check item, if it is not null, then it can process. Otherwise need to return Status404NotFound
+            if (item != null)
+            {
+                //check the user has permission to delete item, if yes, it can process, otherwise return Status401Unauthorized
+                if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Delete }))
+            .Succeeded)
+                {
+                    Item deletedItem = _submissionService.DeleteSubmission(item);
+                    //check item deleted sucessfully. if yes, return Status200OK, Otherwise return Status500InternalServerError
+                    if (deletedItem != null)
+                    {
+                        _appDb.SaveChanges();
+                        return StatusCode(StatusCodes.Status200OK);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
     }
 }
