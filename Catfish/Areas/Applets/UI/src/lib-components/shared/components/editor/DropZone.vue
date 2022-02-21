@@ -34,9 +34,9 @@
          @drop.prevent="toggleActive"
          :class="{ 'active-dropzone': active }"
          class="dropzone">
-        <span>Drag or Drop File</span>
+        <span>Drag and Drop File(s)</span>
         <span>OR</span>
-        <label :for="id">Select File</label>
+        <label :for="id">Select File(s)</label>
         <input type="file" :id="id" class="dropzoneFile" multiple/>
     </div>
 </template>
