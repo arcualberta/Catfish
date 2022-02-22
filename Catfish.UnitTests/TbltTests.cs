@@ -269,11 +269,8 @@ namespace Catfish.UnitTests
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
-            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
-            State approvedState = workflow.AddState(ws.GetStatus(template.Id, "Approved", true));
-            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
 
             WorkflowRole editorRole = workflow.AddRole(auth.GetRole("Editor", true));
             WorkflowRole memberRole = workflow.AddRole(auth.GetRole("Member", true));
@@ -344,18 +341,9 @@ namespace Catfish.UnitTests
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
 
             // Added state referances
-            listSubmissionsAction.AddStateReferances(savedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
-                .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
-                .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(approvedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
                 .AddAuthorizedRole(memberRole.Id)
-                .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(rejectedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
                 .AddOwnerAuthorization();
 
             // ================================================
@@ -368,18 +356,9 @@ namespace Catfish.UnitTests
             viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
 
             // Added state referances
-            viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
-                .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(editorRole.Id)
-                .AddOwnerAuthorization();
-            viewDetailsSubmissionAction.AddStateReferances(approvedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
                 .AddAuthorizedRole(memberRole.Id)
-                .AddOwnerAuthorization();
-            viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
-                .AddAuthorizedRole(editorRole.Id)
                 .AddOwnerAuthorization();
 
 
@@ -401,9 +380,6 @@ namespace Catfish.UnitTests
                                                                                                 Your editor has been automatically notified to provide an assessment about your application.
                                                                                              You can view your application and it's status by <a href='@SiteUrl/items/@Item.Id'> click on here. </a></p>");
             //Defining state mappings
-            editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
-            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, submittedState.Id, "Submit");
-            editSubmissionPostActionSave.AddStateMapping(submittedState.Id, savedState.Id, "Save");
             editSubmissionPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
@@ -421,9 +397,7 @@ namespace Catfish.UnitTests
             }
 
                 //Defining state referances
-                editSubmissionAction.GetStateReference(savedState.Id, true)
-                .AddOwnerAuthorization();
-            editSubmissionAction.GetStateReference(submittedState.Id, true)
+                editSubmissionAction.GetStateReference(submittedState.Id, true)
                 .AddAuthorizedRole(editorRole.Id);
 
             
@@ -441,7 +415,7 @@ namespace Catfish.UnitTests
 
             //Defining state mappings
             ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
-            deleteSubmissionPostAction.AddStateMapping(rejectedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postAction action
             PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
@@ -451,7 +425,7 @@ namespace Catfish.UnitTests
             //Defining state referances
             ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
             ////////    .AddOwnerAuthorization();
-            deleteSubmissionAction.GetStateReference(rejectedState.Id, true)
+            deleteSubmissionAction.GetStateReference(submittedState.Id, true)
                 .AddAuthorizedRole(editorRole.Id);
 
             // ================================================
@@ -467,10 +441,7 @@ namespace Catfish.UnitTests
             PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
                                                                                 You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
 
-            //Defining state mappings
-            changeStatePostAction.AddStateMapping(submittedState.Id, approvedState.Id, "Approve");
-            changeStatePostAction.AddStateMapping(submittedState.Id, rejectedState.Id, "Reject");
-
+            
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp adjudicationDecisionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to make a decision ? ", "Once changed, you cannot revise this document.");
             adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
