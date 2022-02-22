@@ -19,7 +19,7 @@ export enum Mutations {
     SET_FORM = 'SET_FORM',
     SET_SUBMISSION_STATUS = 'SET_SUBMISSION_STATUS',
     SET_COLLECTION_ID = 'SET_COLLECTION_ID',
-    SET_GROUP_ID='SET_GROUP_ID'
+    SET_GROUP_ID = 'SET_GROUP_ID',
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -63,5 +63,13 @@ export const mutations: MutationTree<State> = {
 
         //const fieldType: eFieldType = eFieldType[fieldTypeStr as keyof typeof eFieldType];
         state.submissionStatus = eSubmissionStatus[status as keyof typeof eSubmissionStatus];
+    },
+    [FlattenedFormFiledMutations.ADD_FILE](state: State, payload: { id: Guid; val: File }) {
+        if (!state.flattenedFileModels[payload.id.toString()])
+            state.flattenedFileModels[payload.id.toString()] = [] as File[];
+        state.flattenedFileModels[payload.id.toString()].push(payload.val);
+    },
+    [FlattenedFormFiledMutations.REMOVE_FILE](state: State, payload: { id: Guid; index: number }) {
+        state.flattenedFileModels[payload.id.toString()]?.splice(payload.index, 1);
     },
 }

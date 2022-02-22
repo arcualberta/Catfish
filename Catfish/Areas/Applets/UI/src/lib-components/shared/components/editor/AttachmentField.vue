@@ -1,14 +1,19 @@
 ﻿<script lang="ts">
-    
-    import { defineComponent, PropType/*, ref*/} from 'vue'
-    //import { useStore } from 'vuex';
+    // References: 
+    //  https://www.youtube.com/watch?v=wWKhKPN_Pmw
+    //  https://github.com/johnkomarnicki/vue-3-dropzone
 
-    import { AttachmentField} from '../../models/fieldContainer'
+	import { defineComponent, PropType, computed} from 'vue'
+    import { useStore } from 'vuex';
+
+    import { AttachmentField } from '../../models/fieldContainer'
+    import { FlattenedFormFiledMutations, FlattenedFormFiledState } from '../../store/form-submission-utils'
+	import DropZone from './DropZone.vue'
 
     export default defineComponent({
         name: "AttachmentField",
         components: {
-
+			DropZone
         },
         props: {
             model: {
@@ -16,48 +21,55 @@
                 required: true
             },
 
-
         },
-        methods: {
-         
-             handleFileUpload(e: any) {
-                //const target = <HTMLInputElement>e.target;
+        setup(p) {
+            const store = useStore();
 
-                //if (target !== null) {
-                //  //  const url = URL.createObjectURL(target.files && target.files[0]);
-                //    var file = target.files && target;//.files[0];
-                //    console.log("selected file: " + JSON.stringify(file));
-                //}
-                console.log(e.target.files[0]);
-            }
-        },
-        setup() {
-            //const file = ref(null); //ref(p.model.files);
+            const drop = (e: any) => {
+                Array.from(e.dataTransfer.files as FileList).forEach(file => {
+                    store.commit(FlattenedFormFiledMutations.ADD_FILE, { id: p.model.id, val: file })
+                });
+            };
 
-           
-              
-                //Upload to server
+            const selectFiles = () => {
+                const inputElement = document.getElementById(p.model.id.toString()) as HTMLInputElement;
+				Array.from(inputElement?.files as FileList).forEach(file => {
+					store.commit(FlattenedFormFiledMutations.ADD_FILE, { id: p.model.id, val: file })
+				});
+			};
 
 
-                return {
-                    //handleFileUpload,
-                    //file
-                }
-            }
-        
+            const selectedFiles = computed(() => {
+                return (store.state as FlattenedFormFiledState).flattenedFileModels[p.model.id.toString()]
+            });
+
+            const selectedFileNames = computed(() => {
+                return selectedFiles?.value?.map(file => file.name)
+			});
+
+            return {
+                drop,
+				selectFiles,
+                selectedFiles,
+				selectedFileNames
+            };
+        }
            
     });
 </script>
 
 <template>
+
+    <div>{{JSON.stringify(selectedFileNames)}}</div>
+    <DropZone :id="model.id" @drop.prevent="drop" @change="selectFiles" />
+
+
     <!--<div>Attachment Field</div>
-    <div>{{JSON.stringify(model)}}</div>-->
-
-   
+    <div>{{JSON.stringify(model)
+        }}
+    </div>-->
     <!--<div v-for="f in this.model.files" >-->
-    <input type="file" @change="handleFileUpload($event)" />
-
-  
+    <!--<input type="file" @change="handleFileUpload($event)" />-->
     <!--</div>-->
 </template>
 
