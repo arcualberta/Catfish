@@ -118,18 +118,16 @@ namespace Catfish.Core.Services
 
         }
 
-        public List<ICollection<Collection>> GetCollectionDetails(Guid? id)
+        public ICollection<Collection> GetCollectionDetails(Guid? groupTemplateId)
         {
             try
             {
-                List<ICollection<Collection>> Collections = new List<ICollection<Collection>>();
-                Collections = _appDb.GroupTemplates.Include(gt => gt.Collections).Where(gt => gt.Id == id).Select(gt=>gt.Collections).ToList();
-                return Collections;
+                return _appDb.GroupTemplates.Include(gt => gt.Collections).FirstOrDefault(gt => gt.Id == groupTemplateId).Collections;
             }
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
-                return null;
+				return new List<Collection>();
             }
 
         }

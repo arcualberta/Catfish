@@ -1,6 +1,6 @@
 ﻿@model Catfish.Core.Models.ViewModels.GroupTemplateAssignmentVM
 @inject Piranha.Manager.ManagerLocalizer Localizer
-@inject Catfish.Core.Services.GroupService UserGroupService
+@inject Catfish.Core.Services.IGroupService UserGroupService
 
 <div class="card-body">
     <label class="title">@Localizer.General[Model.TemplateName]</label>
@@ -24,12 +24,12 @@
                     {
                         <tr>
                             <td>
-                                <span class="title">@collection.Select(c => c.Name)</span>
+                                <span class="title">@collection.Name)</span>
                             </td>
                             <td class="actions one">
                                 @*@if (!(UserGroupService.CheckLoggedUser(user.UserId, Model.CollectionId)))
                         {*@
-                                <a class="danger" href="#" data-toggle="modal" data-target="#userModal" data-content="@collection.Select(c=>c.Id)" onclick="deleteUser('@collection.Select(c=>c.Id)'); return false;">
+                                <a class="danger" href="#" data-toggle="modal" data-target="#userModal" data-content="@collection.Id" onclick="deleteUser('@collection.Id'); return false;">
                                     <span class="fas fa-trash"></span>
                                 </a>
                                 <!-- Modal -->

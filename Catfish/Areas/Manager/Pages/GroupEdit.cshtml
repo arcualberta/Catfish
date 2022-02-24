@@ -128,10 +128,9 @@
             </div>
             <div class="card-body">
                 <form asp-page-handler="delete" method="post">
-                    @foreach (var template in Model.Templates.Where(r => r.Assigned))
+                    @foreach (var template in Model.Templates.Where(t => t.Assigned))
                     {
                         
-                            var collections = Model.Collections.Where(c => c.TemplateGroupId == template.TemplateGroupId);
                             <partial model="@template" name="Partial/Groups/GroupTemplateAssignmentVM.cshtml" />
                         
                     } @*ENDS foreach (var role in Model.Roles.Where(r => r.Assigned))*@
