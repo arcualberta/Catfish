@@ -1,0 +1,84 @@
+﻿@model Catfish.Core.Models.ViewModels.GroupTemplateAssignmentVM
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@inject Catfish.Core.Services.GroupService UserGroupService
+
+<div class="card-body">
+    <label class="title">@Localizer.General[Model.TemplateName]</label>
+    <div class="container-fluid">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@Localizer.General["Collections"]</th>
+                    <th class="actions one"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    //TODO: initialize the offset and max using variables passed through the page model.
+                    int offset = 0;
+                    int max = 10000;
+                }
+                @foreach (var collection in UserGroupService.GetCollectionDetails(Model.TemplateGroupId))
+                {
+                    if (Model.HasCollections)
+                    {
+                        <tr>
+                            <td>
+                                <span class="title">@collection.Select(c => c.Name)</span>
+                            </td>
+                            <td class="actions one">
+                                @*@if (!(UserGroupService.CheckLoggedUser(user.UserId, Model.CollectionId)))
+                        {*@
+                                <a class="danger" href="#" data-toggle="modal" data-target="#userModal" data-content="@collection.Select(c=>c.Id)" onclick="deleteUser('@collection.Select(c=>c.Id)'); return false;">
+                                    <span class="fas fa-trash"></span>
+                                </a>
+                                <!-- Modal -->
+                                <div id="userModal" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="myModalLabel">User Delete Confirmation</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+
+                                                        <h5>Do you Really want to delete this User?</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <input type="hidden" name="UserGroupRoleId" id="UserGroupRoleId" value="" />
+                                                <button id="deleteConfirm" type="submit" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*}*@
+
+
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+    <div class="float-right">
+        <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("user/{0}", Model.TemplateGroupId)">  @Localizer.General["Add Collection"]</a>
+    </div>
+    <br>
+</div>
+<script>
+                function deleteUser(id) {
+                    $(".modal-footer #UserGroupRoleId").val(id);
+                    // As pointed out in comments,
+                    // it is unnecessary to have to manually call the modal.
+                    // $('#addBookDialog').modal('show');
+
+                }
+</script>

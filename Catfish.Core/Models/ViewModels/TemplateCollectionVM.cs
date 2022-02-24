@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Catfish.Core.Models.ViewModels
 {
-    class TemplateCollectionVM
+    public class TemplateCollectionVM
     {
         public Guid CollectionId { get; set; }
         public Guid? TemplateGroupId { get; set; }
