@@ -4,12 +4,11 @@ using System.Text;
 
 namespace Catfish.Core.Models.ViewModels
 {
-    public class GroupTemplateAssignmentVM
+    public class TemplateCollectionVM
     {
-        public Guid TemplateId { get; set; }
+        public Guid CollectionId { get; set; }
         public Guid? TemplateGroupId { get; set; }
-        public string TemplateName { get; set; }
+        public string CollectionName { get; set; }
         public bool Assigned { get; set; }
-        public bool HasCollections { get; set; }
     }
 }

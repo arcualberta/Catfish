@@ -33,6 +33,9 @@ namespace Catfish.Areas.Manager.Pages
         public List<GroupTemplateAssignmentVM> Templates { get; set; }
 
         [BindProperty]
+        public List<TemplateCollectionVM> Collections { get; set; }
+
+        [BindProperty]
         public List<UserGroupRole> Users { get; set; }
 
 
@@ -70,6 +73,8 @@ namespace Catfish.Areas.Manager.Pages
             Roles = _srv.SetRoleAttribute(Group.Id);
 
             Users = _srv.SetUserAttribute(Group.Id);
+
+            Collections = _srv.SetCollectionAttribute(Group.Id);
 
 
         }

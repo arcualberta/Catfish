@@ -16,11 +16,14 @@ export interface TypedArray<T> {
 export interface FlattenedFormFiledState {
     flattenedTextModels: { [key: string]: Text };
     flattenedOptionModels: { [key: string]: Option };
+    flattenedFileModels: { [key: string]: File[] };
 }
 
 export enum FlattenedFormFiledMutations {
     SET_TEXT_VALUE = 'SET_TEXT_VALUE',
-    SET_OPTION_VALUE = 'SET_OPTION_VALUE'
+    SET_OPTION_VALUE = 'SET_OPTION_VALUE',
+    ADD_FILE = 'ADD_FILE',
+    REMOVE_FILE = 'REMOVE_FILE'
 }
 
 export abstract class FieldContainerUtils {

@@ -110,7 +110,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         //[Route("{templateId:Guid}")]
-        public async Task<ContentResult> PostAsync( Guid itemTemplateId, Guid groupId, Guid collectionId, [FromForm] String datamodel)
+        public async Task<ContentResult> PostAsync( Guid itemTemplateId, Guid? groupId, Guid collectionId, [FromForm] String datamodel)
 		{
             var settings = new JsonSerializerSettings()
             {

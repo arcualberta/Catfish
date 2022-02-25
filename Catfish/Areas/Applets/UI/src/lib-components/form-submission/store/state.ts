@@ -23,6 +23,7 @@ export const state: State = {
     form: null,
     flattenedTextModels: {},
     flattenedOptionModels: {},
+    flattenedFileModels: {},
     submissionStatus: eSubmissionStatus.None,
     formLoadAPI: null,
     formSubmissionAPI: null

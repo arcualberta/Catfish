@@ -27,7 +27,7 @@
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
 			const formId = Guid.parse(dataAttributes["form-id"] as string);
 			const collectionId = Guid.parse(dataAttributes["collection-id"] as string);
-			const groupId = Guid.parse(dataAttributes["group-id"] as string);
+			const groupId = dataAttributes["group-id"] ? Guid.parse(dataAttributes["group-id"] as string) : null;
 
             const store = useStore();
 
