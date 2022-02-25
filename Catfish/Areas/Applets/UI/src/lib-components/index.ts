@@ -8,3 +8,4 @@ export { default as ProcessManager } from './process-manager/Applet.vue';
 export { default as Grid } from './grid/Applet.vue';
 export { default as ChildFormSubmission } from './child-form-submission/Applet.vue'
 export { default as FormSubmission } from './form-submission/Applet.vue'
+export { default as Report } from './report/Applet.vue'
