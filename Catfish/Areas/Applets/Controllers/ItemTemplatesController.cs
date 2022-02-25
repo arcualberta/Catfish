@@ -1,6 +1,8 @@
 ﻿using Catfish.Areas.Applets.Services;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
+using Catfish.Services;
 using ElmahCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,11 +21,13 @@ namespace Catfish.Areas.Applets.Controllers
         private readonly IItemTemplateAppletService _itemTemplateAppletService;
         private readonly AppDbContext _appDb;
         private readonly ErrorLog _errorLog;
-        public ItemTemplatesController(IItemTemplateAppletService itemTemplateAppletService, AppDbContext appDb, ErrorLog errorLog)
+        private readonly IEntityTemplateService _entityTemplateService;
+        public ItemTemplatesController(IItemTemplateAppletService itemTemplateAppletService, AppDbContext appDb,IEntityTemplateService entityTemplateService, ErrorLog errorLog)
         {
             _itemTemplateAppletService = itemTemplateAppletService;
             _appDb = appDb;
             _errorLog = errorLog;
+            _entityTemplateService = entityTemplateService;
         }
         [HttpGet]
         [Route("{id:Guid}")]
@@ -94,6 +98,20 @@ namespace Catfish.Areas.Applets.Controllers
             return result;
         }
 
+        [HttpGet("getAllItemTemplateForms/{templateId}")]
+        public List<SelectListItem> GetAllItemTemplateForms(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+            List<DataItem> dataItems = _itemTemplateAppletService.GetAllDataItems(Guid.Parse(templateId));
+
+            foreach (DataItem itm in dataItems)
+            {
+                result.Add(new SelectListItem { Text = itm.GetName("en"), Value = itm.Id.ToString() });
+
+            }
+            return result;
+        }
 
 
         [HttpGet("{templateId}/data-form/{formId}")]
@@ -120,5 +138,52 @@ namespace Catfish.Areas.Applets.Controllers
                 return Content("{}", "application/json");
         }
 
+        [HttpGet("getItemtemplateFields/{templateId}/{dataItemId}")]
+        public List<ReportField> GetItemTemplateFields(string templateId, string dataItemId)
+        {
+
+            // List<SelectListItem> result = new List<SelectListItem>();
+            List<ReportField> result = new List<ReportField>();
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == Guid.Parse(templateId));
+                DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == Guid.Parse(dataItemId));
+
+                var fields = _entityTemplateService.GetTemplateDataItemFields(Guid.Parse(templateId), Guid.Parse(dataItemId));
+                
+                SelectListGroup group = new SelectListGroup();
+                group.Name = dataItemId + ":" + dataForm.GetName("en");
+                
+
+
+                foreach (BaseField field in fields)
+                {
+                    if (!string.IsNullOrEmpty(field.GetName()))
+                    {
+                        ReportField rf = new ReportField();
+                        rf.FormId = dataItemId;
+                        rf.FormName = dataForm.GetName("en");
+                        rf.FieldId = field.Id.ToString();
+                        rf.FieldName = field.GetName();
+                        // result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString(), Group=group });
+                        result.Add(rf);
+                    }
+
+                }
+            }
+
+
+            result = result.OrderBy(li => li.FieldName).ToList();
+            return result;
+        }
+
+    }
+
+    public class ReportField
+    {
+        public string FormId { get; set; }
+        public string FormName { get; set; }
+        public string FieldId { get; set; }
+        public string FieldName { get; set; }
     }
 }
