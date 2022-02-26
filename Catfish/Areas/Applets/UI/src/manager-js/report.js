@@ -27,37 +27,26 @@
          //},
       selectItemTemplate: function (selected) {
 
-            //fetch('/applets/api/ItemTemplates/GetItemTemplateRootForms/' + selected)
-            //    .then(response => response.json())
-            //    .then((data) => {
-            //        this.mainForm = data;
-
-            //    });
-
+            
              fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + selected)
                  .then(response => response.json())
                  .then((data) => {
                      this.allForms = data;
 
                  });
-             //fetch('/api/Items/GetItemtemplateFields/' + selected)
-             //    .then(response => response.json())
-             //    .then((data) => {
-             //        this.itemFields = data;
-
-             //    });
+          
             fetch('/applets/api/itemtemplates/groups/' + this.model.selectedItemTemplateId.value)
                 .then(response => response.json())
                 .then((data) => {
                     this.groups = data;
                 });
-             fetch('/api/Items/GetCollectionList')
-                 .then(response => response.json())
-                 .then((data) => {
-                    // this.collections = data;
-                     this.model.collections = data;
+             //fetch('/api/Items/GetCollectionList')
+             //    .then(response => response.json())
+             //    .then((data) => {
+             //       // this.collections = data;
+             //        this.model.collections = data;
                    
-                 });
+             //    });
          },
 
          selectItemField: function (fieldVal) {
@@ -72,7 +61,7 @@
              this.selectedItemFields.push(field);
              
              //Update this.model.selectedFields
-             this.model.selectedFields = this.selectedItemFields;
+             this.model.selectedFieldList.value = JSON.stringify(this.selectedItemFields);
 
              //organize array for display
             
@@ -98,8 +87,8 @@
              this.selectedItemFields = filtered;
             
              //Update this.model.selectedFields
-             this.model.selectedFields = this.selectedItemFields;
-
+             //this.model.selectedFields = this.selectedItemFields;
+             this.model.selectedFieldList.value = JSON.stringify(this.selectedItemFields);
              
              this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
                  r[a.formName] = r[a.formName] || [];
@@ -147,19 +136,29 @@
                   this.groups = data;
               });
 
+          fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + this.model.selectedItemTemplateId.value)
+              .then(response => response.json())
+              .then((data) => {
+                  this.allForms = data;
 
+              });
 
-      }
+          }
+         
+          if (this.model.selectedFieldList?.value) {
+              this.selectedItemFields = JSON.parse(this.model.selectedFieldList.value);
+              console.log("onmounted selectedItemFields " + JSON.stringify(this.selectedItemFields))
+
+              this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
+                  r[a.formName] = r[a.formName] || [];
+                  r[a.formName].push(a);
+
+                  return r;
+              }, Object.create(null));
+          }
+
     },
-    computed: {
-        //fieldsGroups() {
-
-        //    this.selectedForms = groupBy(this.selectedItemFields, 'formName');
-        //    console.log(JSON.stringify(selectedForms));
-        //    return groupBy(this.selectedItemFields, 'formName');
-        //}
-
-    },
+   
     template:
         `<div  class= 'block-body'>
             <h2>Report</h2>
