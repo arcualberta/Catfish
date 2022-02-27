@@ -14,7 +14,7 @@ export const actions: ActionTree<State, any> = {
   [Actions.LOAD_ITEM](store) {
  
         const api = window.location.origin +
-            `/applets/api/itemeditor/${store.state.id}`;
+            `/applets/api/items/${store.state.id}`;
         console.log('Item Load API: ', api)
 
         fetch(api)
@@ -29,7 +29,7 @@ export const actions: ActionTree<State, any> = {
         console.log(JSON.stringify(store.state));
 
         const api = window.location.origin +
-            `/applets/api/itemeditor/deleteItem/${payload}`;
+            `/applets/api/items/deleteItem/${payload}`;
         console.log('Item Load API: ', api)
 
         fetch(api,
