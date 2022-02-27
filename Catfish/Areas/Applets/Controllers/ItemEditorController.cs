@@ -28,7 +28,7 @@ namespace Catfish.Areas.Applets.Controllers
 {
     [Route("applets/api/[controller]")]
     [ApiController]
-    public class ItemEditorController : ControllerBase
+    public class ItemsController : ControllerBase
     {
         private readonly IItemAppletService _itemAppletService;
         private readonly ISubmissionService _submissionService;
@@ -39,7 +39,7 @@ namespace Catfish.Areas.Applets.Controllers
         private readonly ErrorLog _errorLog;
         private readonly IItemAuthorizationHelper _itemAuthorizationHelper;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
-        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, IJobService jobService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
+        public ItemsController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, IJobService jobService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
 
         {
             _itemAppletService = itemAppletService;
