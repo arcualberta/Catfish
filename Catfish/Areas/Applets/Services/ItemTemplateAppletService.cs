@@ -52,7 +52,12 @@ namespace Catfish.Areas.Applets.Services
             var dataItems = template.DataContainer.Where(di => di.IsRoot == isRoot).ToList();
             return dataItems;
         }
+        public List<DataItem> GetAllDataItems(Guid itemTemplate)
+        {
+            ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == itemTemplate);
+            var dataItems = template.DataContainer.ToList();
+            return dataItems;
+        }
 
-       
     }
 }

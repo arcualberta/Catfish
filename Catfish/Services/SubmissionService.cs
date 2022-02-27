@@ -1,12 +1,15 @@
 ﻿using Catfish.Core.Authorization.Requirements;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Helper;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 //using Microsoft.AspNetCore.Authorization;
 using Piranha.AspNetCore.Identity.Data;
 using System;
@@ -31,7 +34,8 @@ namespace Catfish.Services
         private readonly ErrorLog _errorLog;
         private readonly IServiceProvider _serviceProvider;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
-        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
+        private readonly ItemService _itemService;
+        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService, ItemService itemService)
         {
             _authorizationService = auth;
             _emailService = email;
@@ -42,6 +46,7 @@ namespace Catfish.Services
             _errorLog = errorLog;
             _serviceProvider = serviceProvider;
             _dotnetAuthorizationService = dotnetAuthorizationService;
+            _itemService = itemService;
         }
 
         ///// <summary>
@@ -244,7 +249,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid stateMappingId, string action, string fileNames=null)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid stateMappingId, string action, List<IFormFile> files = null, List<string> fileKeys = null)
         {
             try
             {
@@ -292,6 +297,8 @@ namespace Catfish.Services
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
                 newDataItem.UpdateFieldValues(value);
+                 if(files != null && fileKeys != null)
+                    AttachFiles(files, fileKeys, newDataItem);
                 newItem.UpdateReferencedFieldContainers(value);
 
                 newItem.DataContainer.Add(newDataItem);
@@ -322,6 +329,30 @@ namespace Catfish.Services
             }
             
         }
+
+        protected void AttachFiles(List<IFormFile> files, List<string> fileKeys, DataItem dst)
+		{
+            //Grouping files by attachment field IDs into a dictionary
+            Dictionary<Guid, List<IFormFile>> groupdFileList = new Dictionary<Guid, List<IFormFile>>();
+            for(int i=0; i< Math.Min(files.Count, fileKeys.Count); ++i)
+			{
+                Guid attachmentId = Guid.Parse(fileKeys[i]);
+                if (!groupdFileList.ContainsKey(attachmentId))
+                    groupdFileList.Add(attachmentId, new List<IFormFile>());
+
+                groupdFileList[attachmentId].Add(files[i]);
+			}
+
+            string uploadRoot = ConfigHelper.GetAttachmentsFolder(true);
+            foreach (var key in groupdFileList.Keys)
+            {
+                List<FileReference> fileReferences = _itemService.UploadFiles(groupdFileList[key], uploadRoot);
+                AttachmentField field = dst.Fields.First(f => f.Id == key) as AttachmentField;
+                foreach (FileReference fileReference in fileReferences)
+                    field.Files.Add(fileReference);
+            }                   
+		}
+
         public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid stateMappingId, string action, string fileNames = null)
         {
             try

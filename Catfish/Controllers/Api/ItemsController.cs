@@ -573,6 +573,7 @@ namespace Catfish.Controllers.Api
             return result;
         }
 
+       
         [HttpGet("getCollectionList")]
         public List<SelectListItem> GetCollectionList()
         {

@@ -32,5 +32,8 @@ namespace Catfish.Core.Services
         bool CheckLoggedUser(Guid userId, Guid groupRoleId);
         List<string> GetUserEmailListByRole(Guid roleId, Guid groupId);
         bool isGroupAdmin(Guid userId, Guid groupId);
+        List<TemplateCollectionVM> SetCollectionAttribute(Guid id);
+        ICollection<Collection> GetCollectionDetails(Guid? groupTemplateId);
+
     }
 }
