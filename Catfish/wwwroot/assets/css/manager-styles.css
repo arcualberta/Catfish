@@ -156,3 +156,27 @@
     padding: 5px;
 }
     /*=======================================================================================================================================================*/
+
+    /* ========================  REPORT             ================================================================================ */
+.field{
+    background: lightgray;
+    border-radius: 25px;
+    padding: 5px;
+    font-size: .7em;
+    margin-right: 5px;
+}
+
+.formGroup {
+    border: 1px solid lightgrey;
+    border-radius: 4px;
+    /*margin-left: 12px; */
+    padding: 5px;
+    margin-bottom:10px;
+}
+
+.formName {
+    background: lightgray;
+    font-size: .8em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}

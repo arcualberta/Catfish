@@ -27,5 +27,8 @@ namespace Catfish.Services
         public FieldList GetTemplateDataItemFields(Guid? templateId);
         //MR - Dec 14 2021
         public IList<SystemStatus> GetSystemStatuses(Guid entityTemplateId);
+
+        //MR: Feb 23 2022
+        public FieldList GetTemplateDataItemFields(Guid? templateId, Guid? dataItemId);
     }
 }

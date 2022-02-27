@@ -56,5 +56,5 @@
     <div v-for="option in model.options.$values">
         <input type="radio" :name="name" :id="option.id" :value="option.id" v-model="selected" /> <label :for="option.id">{{this.getConcatenatedOptionLabels(option)}}</label>
     </div>
-    {{JSON.stringify(selected)}}
+    <!--{{JSON.stringify(selected)}}-->
 </template>

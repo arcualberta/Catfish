@@ -5,7 +5,8 @@
     var viewData = new ViewDataDictionary(this.ViewData)
     {
         { "data-label", Model.Label.Value },
-       
+        { "data-is-admin", User.IsInRole("SysAdmin") },
+
     };
 }
 <partial name="Shared/_AppletLoader" view-data="@viewData"/>

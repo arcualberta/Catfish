@@ -27,6 +27,9 @@ namespace Catfish.Core.Authorization.Requirements
         public static new readonly OperationAuthorizationRequirement ChildFormView
          = new OperationAuthorizationRequirement() { Name = nameof(ChildFormView) };
 
+        public static new readonly OperationAuthorizationRequirement ChildFormDelete
+         = new OperationAuthorizationRequirement() { Name = nameof(ChildFormDelete) };
+
         public static new readonly OperationAuthorizationRequirement Review
          = new OperationAuthorizationRequirement() { Name = nameof(Review) };
     }

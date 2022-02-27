@@ -4,6 +4,7 @@ using Catfish.Areas.Applets.Services;
 using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -26,26 +28,29 @@ namespace Catfish.Areas.Applets.Controllers
 {
     [Route("applets/api/[controller]")]
     [ApiController]
-    public class ItemEditorController : ControllerBase
+    public class ItemsController : ControllerBase
     {
         private readonly IItemAppletService _itemAppletService;
         private readonly ISubmissionService _submissionService;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IWorkflowService _workflowService;
+        private readonly IJobService _jobService;
         private readonly AppDbContext _appDb;
         private readonly ErrorLog _errorLog;
         private readonly IItemAuthorizationHelper _itemAuthorizationHelper;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
-        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
+        public ItemsController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, IJobService jobService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
+
         {
             _itemAppletService = itemAppletService;
             _itemAuthorizationHelper = itemAuthorizationHelper;
             _submissionService = submissionService;
             _entityTemplateService = entityTemplateService;
             _workflowService = workflowService;
+            _jobService = jobService;
+            _authorizationService = authorizationService;
             _appDb = appDb;
             _errorLog = errorLog;
-            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -104,7 +109,8 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpPost]
-        public ContentResult Post([FromForm] String datamodel)
+        //[Route("{templateId:Guid}")]
+        public async Task<ContentResult> PostAsync( Guid itemTemplateId, Guid? groupId, Guid collectionId, [FromForm] String datamodel, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
 		{
             var settings = new JsonSerializerSettings()
             {
@@ -114,13 +120,42 @@ namespace Catfish.Areas.Applets.Controllers
             };
 
             DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
-            itemInstance.TemplateId = itemInstance.Id;
-            itemInstance.Id = Guid.NewGuid();
 
+            try
+            {
+                //Guid collectionId = Guid.Parse("9ed65277-6a9e-4a96-c86a-e6825889234a"); ;
+                //Guid groupId = Guid.Parse("2BD48E47-3DD7-4DA0-9F07-BEB72EE3542D");
 
+                Guid stateMappingId = _workflowService.GetSubmitStateMappingId(itemTemplateId);//Guid.Parse("57a5509e-6aa2-463c-9cb6-b18178450aca");
+                string actionButton = "Submit";
+                itemInstance.TemplateId = itemInstance.Id;
+                itemInstance.Id = Guid.NewGuid();
+                Item newItem = _submissionService.SetSubmission(itemInstance, itemTemplateId, collectionId, groupId, stateMappingId, actionButton, files, fileKeys);
 
-            throw new NotImplementedException();
-		}
+                //Handling file uploads
+                for(int i=0; i< fileKeys.Count; ++i)
+				{
+                    Guid key = Guid.Parse(fileKeys[i]);
+                    IFormFile file = files[i];
+
+				}
+                var x = files.Count;
+
+                if ((await _authorizationService.AuthorizeAsync(User, newItem, new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate })).Succeeded)
+                {
+                    _appDb.Items.Add(newItem);
+                    _appDb.SaveChanges();
+
+                    bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
+                }
+                }
+                catch (Exception ex)
+                {
+
+                    return Content("{}", "application/json");
+                }
+            return Content(JsonConvert.SerializeObject("Sucess", settings), "application/json");
+        }
 
         [HttpGet("getChildForm/{instanceId}/{childFormId}")]
         public async Task<ContentResult> GetChildFormAsync(Guid instanceId, Guid childFormId)
@@ -152,7 +187,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("appendchildforminstance/{itemInstanceId}")]
-        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, [FromForm] String datamodel)
+        public async Task<ContentResult> AppendChildFormInstanceAsync(Guid itemInstanceId, [FromForm] Guid? parentId, [FromForm] String datamodel)
         {
             var settings = new JsonSerializerSettings()
             {
@@ -167,12 +202,24 @@ namespace Catfish.Areas.Applets.Controllers
             childForm.Id = Guid.NewGuid();
             childForm.Created = DateTime.Now;
             childForm.Updated = childForm.Created;
+
             
             var item = _appDb.Items.FirstOrDefault(i => i.Id == itemInstanceId);
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
             .Succeeded)
             {
-                item.DataContainer.Add(childForm);
+                DataItem parent = parentId.HasValue ? item.DataContainer.FirstOrDefault(di => di.Id == parentId.Value) : null;
+
+                //If a data item with the given parentDataItemId is found in the DataContainer of
+                //this item, then add the childForm as a child to that data item. Otherwise, add
+                //the child form directly to the data container.
+                if (parent != null)
+				{
+                    childForm.ParentId = parent.Id;
+                    parent.ChildFieldContainers.Add(childForm);
+                }
+                else
+                    item.DataContainer.Add(childForm);
 
                 _appDb.SaveChanges();
             }
@@ -181,7 +228,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpGet("getchildformsubmissions/{instanceId}/{childFormId}")]
-        public async Task<ContentResult> GetChildFormSubmissionsAsync(Guid instanceId, Guid childFormId)
+        public async Task<ContentResult> GetChildFormSubmissionsAsync(Guid instanceId, Guid childFormId, Guid? parentId)
         {
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
@@ -192,7 +239,11 @@ namespace Catfish.Areas.Applets.Controllers
             if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
             .Succeeded)
             {
-                var childSubmissions = item.DataContainer.Where(c => c.TemplateId == childFormId).OrderByDescending(c => c.Created).ToList();
+                var query = item.DataContainer.Where(c => c.TemplateId == childFormId);
+                if (parentId.HasValue)
+                    query = query.Where(c => c.ParentId == parentId);
+
+                var childSubmissions = query.OrderByDescending(c => c.Created).ToList();
 
                 var settings = new JsonSerializerSettings()
                 {
@@ -204,6 +255,68 @@ namespace Catfish.Areas.Applets.Controllers
             }
             else
                 return Content("{}", "application/json");
+        }
+        
+        [HttpPost("deleteChildForm/{instanceId}/{childFormId}")]
+        public async Task<ContentResult> DeleteChildFormAsync(Guid instanceId, Guid childFormId, Guid? parentId)
+        {
+            Item item = _appDb.Items.FirstOrDefault(it => it.Id == instanceId);
+            item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormDelete }))
+            .Succeeded)
+            {
+                item = _submissionService.DeleteChild(instanceId, childFormId, parentId);
+                
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
+                _appDb.SaveChanges();
+                return Content(JsonConvert.SerializeObject(item, settings), "application/json");
+            }
+            else
+            {
+                return Content("{}", "application/json");
+            }
+                
+        }
+        [HttpPost("deleteItem/{itemId}")]
+        public async Task<IActionResult> DeleteItemAsync(Guid itemId)
+        {
+            //retrive item data according to the item id
+            Item item = _appDb.Items.FirstOrDefault(it => it.Id == itemId);
+            //check item, if it is not null, then it can process. Otherwise need to return Status404NotFound
+            if (item != null)
+            {
+                //check the user has permission to delete item, if yes, it can process, otherwise return Status401Unauthorized
+                if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Delete }))
+            .Succeeded)
+                {
+                    Item deletedItem = _submissionService.DeleteSubmission(item);
+                    //check item deleted sucessfully. if yes, return Status200OK, Otherwise return Status500InternalServerError
+                    if (deletedItem != null)
+                    {
+                        _appDb.SaveChanges();
+                        return StatusCode(StatusCodes.Status200OK);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
     }
 }

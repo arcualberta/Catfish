@@ -744,6 +744,19 @@ namespace Catfish.Core.Services
             return entityTemplate;
         }
 
+        public Guid GetSubmitStateMappingId(Guid templateId)
+        {
+            EntityTemplate entityTemplate = _db.EntityTemplates.Where(et => et.Id == templateId).FirstOrDefault();
+            var emptyStateId = entityTemplate.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
+            var postActions = entityTemplate.Workflow.Actions.Where(a => a.Function == "Instantiate").Select(a=>a.PostActions).FirstOrDefault();
+            foreach(var postAction in postActions)
+            {
+                if (postAction.ButtonLabel.Equals("Submit"))
+                    return postAction.StateMappings.Select(sm =>sm.Id).FirstOrDefault();
+            }
+            return Guid.Empty;
+        }
+
         //public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid? templateId)
         //{
         //    throw new NotImplementedException();

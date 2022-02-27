@@ -55,7 +55,7 @@
                 </select>
             </div>
 
-            <div class='lead row'><label class='form-label col-md-3 required'>Child Forms: </label>
+            <div class='lead row'><label class='form-label col-md-3 required'>Child Form: </label>
                <select v-model="model.selectedChildForm.value" class="form-control" style="width:auto;" >
                     <option disabled value="">Please select one</option>
                     <option v-for="item in this.childForms" :value="item.value">{{item.text}}</option>
@@ -63,7 +63,7 @@
             </div>
 
             <div class='lead row'>
-                <label class='form-label col-md-3 required'>Query Parameters: </label>
+                <label class='form-label col-md-3 required'>Item ID Query Parameter: </label>
                 <input class='form-control col-md-2'
                        type='text'
                        name='QueryParameter'
@@ -74,9 +74,16 @@
             </div>
 
            <div class='lead row'>
-                <label class='form-label col-md-3' for="display-child-list">Display Child List?</label>
+                <label class='form-label col-md-3' for="display-child-list">Display Submissions</label>
                 <input type="checkbox" id="display-child-list" v-model="model.displayChildList.value">
            </div>
+
+            <div class='lead row' v-if="model.displayChildList.value"><label class='form-label col-md-3 required'>Response Form: </label>
+               <select v-model="model.selectedResponseForm.value" class="form-control" style="width:auto;" >
+                    <option disabled value="">Please select one</option>
+                    <option v-for="item in this.childForms" :value="item.value">{{item.text}}</option>
+                </select>
+            </div>
         </div>`
 
 });

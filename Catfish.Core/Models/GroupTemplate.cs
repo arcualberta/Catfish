@@ -13,6 +13,8 @@ namespace Catfish.Core.Models
         public Group Group { get; set; }
         public Guid EntityTemplateId { get; set; }
         public EntityTemplate EntityTemplate { get; set; }
+
+        public ICollection<Collection> Collections { get; set; } = new List<Collection>();
     }
     public class GroupTemplateComparer : IEqualityComparer<GroupTemplate>
     {

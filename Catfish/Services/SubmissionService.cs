@@ -1,12 +1,15 @@
 ﻿using Catfish.Core.Authorization.Requirements;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Helper;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 //using Microsoft.AspNetCore.Authorization;
 using Piranha.AspNetCore.Identity.Data;
 using System;
@@ -31,7 +34,8 @@ namespace Catfish.Services
         private readonly ErrorLog _errorLog;
         private readonly IServiceProvider _serviceProvider;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
-        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
+        private readonly ItemService _itemService;
+        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService, ItemService itemService)
         {
             _authorizationService = auth;
             _emailService = email;
@@ -42,6 +46,7 @@ namespace Catfish.Services
             _errorLog = errorLog;
             _serviceProvider = serviceProvider;
             _dotnetAuthorizationService = dotnetAuthorizationService;
+            _itemService = itemService;
         }
 
         ///// <summary>
@@ -244,7 +249,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid stateMappingId, string action, string fileNames=null)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid stateMappingId, string action, List<IFormFile> files = null, List<string> fileKeys = null)
         {
             try
             {
@@ -292,6 +297,8 @@ namespace Catfish.Services
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
                 newDataItem.UpdateFieldValues(value);
+                 if(files != null && fileKeys != null)
+                    AttachFiles(files, fileKeys, newDataItem);
                 newItem.UpdateReferencedFieldContainers(value);
 
                 newItem.DataContainer.Add(newDataItem);
@@ -301,7 +308,10 @@ namespace Catfish.Services
 
                 //User user = _workflowService.GetLoggedUser();
                 var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
+
+                DataItem emptyDataItem = new DataItem();
                 newItem.AddAuditEntry(currUserId,
+                    emptyDataItem,
                     fromState,
                     newItem.StatusId.Value,
                     action
@@ -319,6 +329,30 @@ namespace Catfish.Services
             }
             
         }
+
+        protected void AttachFiles(List<IFormFile> files, List<string> fileKeys, DataItem dst)
+		{
+            //Grouping files by attachment field IDs into a dictionary
+            Dictionary<Guid, List<IFormFile>> groupdFileList = new Dictionary<Guid, List<IFormFile>>();
+            for(int i=0; i< Math.Min(files.Count, fileKeys.Count); ++i)
+			{
+                Guid attachmentId = Guid.Parse(fileKeys[i]);
+                if (!groupdFileList.ContainsKey(attachmentId))
+                    groupdFileList.Add(attachmentId, new List<IFormFile>());
+
+                groupdFileList[attachmentId].Add(files[i]);
+			}
+
+            string uploadRoot = ConfigHelper.GetAttachmentsFolder(true);
+            foreach (var key in groupdFileList.Keys)
+            {
+                List<FileReference> fileReferences = _itemService.UploadFiles(groupdFileList[key], uploadRoot);
+                AttachmentField field = dst.Fields.First(f => f.Id == key) as AttachmentField;
+                foreach (FileReference fileReference in fileReferences)
+                    field.Files.Add(fileReference);
+            }                   
+		}
+
         public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid stateMappingId, string action, string fileNames = null)
         {
             try
@@ -346,8 +380,10 @@ namespace Catfish.Services
                 dataItem.UpdateFieldValues(value);
                 //item.DataContainer.Add(dataItem);
 
+                DataItem emptyDataItem = new DataItem();
                 User user = _workflowService.GetLoggedUser();
                 item.AddAuditEntry(user.Id,
+                    emptyDataItem,
                     oldStatus,
                     item.StatusId.Value,
                     action
@@ -364,6 +400,46 @@ namespace Catfish.Services
                 return null;
             }
 
+        }
+        /// <summary>
+        /// this method used to delete an item. in here basically we do a state change to item delete state.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public Item DeleteSubmission(Item item)
+        {
+            try
+            {
+                string buttonName = "Deleted";
+                // get entity template using entityTemplateId
+                EntityTemplate template = _entityTemplateService.GetTemplate(item.TemplateId);
+
+                //current status should be item status.
+                Guid currentState = (Guid)item.StatusId;
+
+                //next status should take from workflow. That need to get from workflow status id whichnbelongs to Deleted status Id
+                Guid nextState = template.Workflow.States.Where(s => s.Value == buttonName).Select(s=>s.Id).FirstOrDefault();
+                DataItem emptyDataItem = new DataItem();
+                User user = _workflowService.GetLoggedUser();
+                
+                item.StatusId = nextState;
+                item.Updated = DateTime.Now;
+                //add to audit entry 
+                item.AddAuditEntry(user.Id,
+                    emptyDataItem,
+                    currentState,
+                    nextState,
+                    buttonName
+                    );
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
         }
         /// <summary>
         /// This method used to execute all triggers in a given workflow. need to pass the entity template, function and group.
@@ -406,7 +482,9 @@ namespace Catfish.Services
                 item.StatusId = nextStatusId;
                 item.Updated = DateTime.Now;
                 User user = _workflowService.GetLoggedUser();
+                DataItem emptyDataItem = new DataItem();
                 item.AddAuditEntry(user.Id,
+                    emptyDataItem,
                     currentStatusId,
                     nextStatusId,
                     action);
@@ -437,7 +515,8 @@ namespace Catfish.Services
                 var state = postAction.StateMappings.Where(sm => sm.Id == buttonId).FirstOrDefault();
                 parentItem.StatusId = state.Next;
                 parentItem.Updated = DateTime.Now;
-                parentItem.AddAuditEntry(user.Id, state.Current, state.Next, state.ButtonLabel);
+                DataItem emptyDataItem = new DataItem();
+                parentItem.AddAuditEntry(user.Id,emptyDataItem, state.Current, state.Next, state.ButtonLabel);
 
                 // instantantiate a version of the child and update it
                 DataItem newChildItem = template.InstantiateDataItem(value.Id);
@@ -447,6 +526,63 @@ namespace Catfish.Services
                 parentItem.DataContainer.Add(newChildItem);
 
                 return parentItem;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        public Item DeleteChild(Guid instanceId, Guid childFormId, Guid? parentId, string fileNames = null)
+        {
+            try
+            {
+                /*
+                DataItem parent = parentId.HasValue ? item.DataContainer.FirstOrDefault(di => di.Id == parentId.Value) : null;
+
+                //If a data item with the given parentDataItemId is found in the DataContainer of
+                //this item, then add the childForm as a child to that data item. Otherwise, add
+                //the child form directly to the data container.
+                if (parent != null)
+				{
+                    childForm.ParentId = parent.Id;
+                    parent.ChildFieldContainers.Add(childForm);
+                }
+                else
+                    item.DataContainer.Add(childForm);
+
+                 
+                 */
+
+                // Get Parent Item to which Child will be added
+                Item item = _db.Items.FirstOrDefault(it => it.Id == instanceId);
+                item.Template = _db.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+                User user = _workflowService.GetLoggedUser();
+
+                //If the parentID is defined, then we should get the parent from the DataContainer and then delete the
+                //child from the contents in its ChildFieldContainers array. Otherwise, we take the child directly from the
+                //DataContainer of the item.
+                if (parentId.HasValue)
+				{
+                    var parent = item.DataContainer.FirstOrDefault(c => c.Id == parentId);
+                    var child = parent?.ChildFieldContainers.FirstOrDefault(c => c.Id == childFormId);
+                    if (child != null)
+                    {
+                        item.AddAuditEntry(user.Id, child, item.StatusId.Value, item.StatusId.Value, "DeleteChildFormResponse");
+                        parent.ChildFieldContainers.Remove(child);
+                    }
+                }
+				else
+				{
+                    var child = item.DataContainer.FirstOrDefault(c => c.Id == childFormId);
+                    if (child != null)
+                    {
+                        item.DataContainer.Remove(child);
+                        item.AddAuditEntry(user.Id, child, item.StatusId.Value, item.StatusId.Value, "DeleteChildForm");
+                    }
+                }
+                return item;
             }
             catch (Exception ex)
             {
@@ -483,5 +619,14 @@ namespace Catfish.Services
                 return "";
             }
         }
+
+        public List<Collection> GetCollectionList()
+        {
+            List<Collection> collections = _db.Collections.ToList();
+
+            return collections;
+        }
+
+        
     }
 }

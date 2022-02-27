@@ -271,15 +271,21 @@ namespace Catfish.Core.Models
         }
 
 
-        public Entity AddAuditEntry(Guid? userId, Guid statusFrom, Guid statusTo, string action)
+        public Entity AddAuditEntry(Guid? userId, FieldContainer content, Guid statusFrom, Guid statusTo, string action)
         {
-            AuditTrail.Add(new AuditEntry()
+            AuditEntry entry = new AuditEntry()
             {
                 UserId = userId,
                 StatusFrom = statusFrom,
                 StatusTo = statusTo,
                 Action = action
-            }) ;
+
+            };
+            entry.Content.Add(content);
+            AuditTrail.Add(entry);
+
+            
+            
             return this;
         }
 

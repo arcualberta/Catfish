@@ -118,6 +118,20 @@ namespace Catfish.Core.Services
 
         }
 
+        public ICollection<Collection> GetCollectionDetails(Guid? groupTemplateId)
+        {
+            try
+            {
+                return _appDb.GroupTemplates.Include(gt => gt.Collections).FirstOrDefault(gt => gt.Id == groupTemplateId).Collections;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+				return new List<Collection>();
+            }
+
+        }
+
         /// <summary>
         /// This will returns user details which belongs to a given user id.
         /// </summary>
@@ -335,6 +349,8 @@ namespace Catfish.Core.Services
                         var currentAssociation = groupTemplates.Where(gt => gt.EntityTemplateId == template.Id).FirstOrDefault();
                         groupTemplateVM.TemplateGroupId = currentAssociation == null ? null as Guid? : currentAssociation.Id;
                         groupTemplateVM.Assigned = groupTemplateVM.TemplateGroupId.HasValue;
+                        groupTemplateVM.HasCollections = _appDb.GroupTemplates.Include(gt=>gt.Collections).Where(gt => gt.EntityTemplateId == template.Id).Select(gt => gt.Collections).Any();
+
                         templatesList.Add(groupTemplateVM);
                     }
                     catch (Exception ex)
@@ -417,6 +433,41 @@ namespace Catfish.Core.Services
             }
             catch (Exception ex)
             {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+        public List<TemplateCollectionVM> SetCollectionAttribute(Guid groupId)
+        {
+            try
+            {
+                var templates = _appDb.ItemTemplates.ToList();
+                var collections = _appDb.Collections.ToList();
+                var groupTemplates = _appDb.GroupTemplates.Include(gt=>gt.Collections).Where(gt => gt.GroupId == groupId).ToList();
+
+                List<TemplateCollectionVM> templateCollectionList = new List<TemplateCollectionVM>();
+
+                foreach (var template in groupTemplates) 
+                {
+                    try
+                    {
+                        var templateCollectionVM = new TemplateCollectionVM()
+                        {
+                            TemplateGroupId = template.Id
+                        };
+                        //templateCollectionVM.CollectionId = template.Collections.Select()
+                    }
+                    catch (Exception ex)
+                    {
+                        _errorLog.Log(new Error(ex));
+                    }
+                }
+                return templateCollectionList;
+
+            }
+            catch (Exception ex)
+            {
+
                 _errorLog.Log(new Error(ex));
                 return null;
             }
@@ -626,8 +677,18 @@ namespace Catfish.Core.Services
             try
             {
                 UserGroupRole userGroupRole = _appDb.UserGroupRoles.Where(ugr => ugr.Id == userGroupRoleId).FirstOrDefault();
+                var groupRole = _appDb.GroupRoles.Where(gr => gr.Id == userGroupRole.GroupRoleId).FirstOrDefault();
+
+                var roleDetails = _piranhaDb.UserRoles.Where(ur => ur.RoleId == groupRole.RoleId && ur.UserId == userGroupRole.UserId).FirstOrDefault();
+                var groupRoles = _appDb.UserGroupRoles.Where(ugr => ugr.UserId == userGroupRole.UserId).Select(ugr => ugr.GroupRole);
+                int countExsitingRoles = 0;
+                foreach (var groupRoleData in groupRoles)
+                    if (groupRoleData.RoleId.Equals(groupRole.RoleId))
+                        countExsitingRoles++;
                 if (userGroupRole != null)
                     _appDb.UserGroupRoles.Remove(userGroupRole);
+                if (!(countExsitingRoles > 1))
+                    _piranhaDb.UserRoles.Remove(roleDetails);
             }
             catch (Exception ex)
             {
@@ -705,5 +766,7 @@ namespace Catfish.Core.Services
                 return false;
             }
         }
+
+        
     }
 }
