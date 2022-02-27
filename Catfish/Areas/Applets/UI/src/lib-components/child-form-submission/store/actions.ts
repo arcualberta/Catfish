@@ -24,7 +24,7 @@ export const actions: ActionTree<State, any> = {
     [Actions.LOAD_FORM](store) {
 
         const api = window.location.origin +
-            `/applets/api/itemeditor/getchildform/${store.state.itemInstanceId}/${store.state.formId}`;
+            `/applets/api/items/getchildform/${store.state.itemInstanceId}/${store.state.formId}`;
 
         fetch(api)
             .then(response => response.json())
@@ -38,7 +38,7 @@ export const actions: ActionTree<State, any> = {
     [Actions.LOAD_RESPONSE_FORM](store) {
 
         const api = window.location.origin +
-            `/applets/api/itemeditor/getchildform/${store.state.itemInstanceId}/${store.state.childResponseFormId}`;
+            `/applets/api/items/getchildform/${store.state.itemInstanceId}/${store.state.childResponseFormId}`;
 
         fetch(api)
             .then(response => response.json())
@@ -52,7 +52,7 @@ export const actions: ActionTree<State, any> = {
     [Actions.LOAD_SUBMISSIONS](store) {
 
         const api = window.location.origin +
-            `/applets/api/itemeditor/getchildformsubmissions/${store.state.itemInstanceId}/${store.state.formId}`;
+            `/applets/api/items/getchildformsubmissions/${store.state.itemInstanceId}/${store.state.formId}`;
         console.log('Child Submissions Load API: ', api)
 
         fetch(api)
@@ -73,7 +73,7 @@ export const actions: ActionTree<State, any> = {
 
         store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
 
-        const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${store.state.itemInstanceId}`;
+        const api = window.location.origin + `/applets/api/items/appendchildforminstance/${store.state.itemInstanceId}`;
 
         const formData = new FormData();
         formData.append('datamodel', JSON.stringify(store.state.form));
@@ -90,6 +90,7 @@ export const actions: ActionTree<State, any> = {
                 const flattenModel: FlattenedFormFiledState = {
                     flattenedOptionModels: store.state.flattenedOptionModels,
                     flattenedTextModels: store.state.flattenedTextModels,
+                    flattenedFileModels: store.state.flattenedFileModels
                 };
                 //clear the form content
                 clearForm(flattenModel);
@@ -110,7 +111,7 @@ export const actions: ActionTree<State, any> = {
         if (!store.state.childResponseForm || !validateFields(store.state.childResponseForm))
             return;
 
-        const api = window.location.origin + `/applets/api/itemeditor/appendchildforminstance/${store.state.itemInstanceId}`;
+        const api = window.location.origin + `/applets/api/items/appendchildforminstance/${store.state.itemInstanceId}`;
 
         const formData = new FormData();
         formData.append('datamodel', JSON.stringify(store.state.childResponseForm));
@@ -131,6 +132,7 @@ export const actions: ActionTree<State, any> = {
                 const flattenModel: FlattenedFormFiledState = {
                     flattenedOptionModels: store.state.flattenedOptionModels,
                     flattenedTextModels: store.state.flattenedTextModels,
+                    flattenedFileModels: store.state.flattenedFileModels
                 };
                 //clear the form content
                 clearForm(flattenModel);
@@ -143,7 +145,7 @@ export const actions: ActionTree<State, any> = {
 
     [Actions.DELETE_CHILD_RESPONSE_INSTANCE](store, payload: FieldContainer) {
 
-        const api = window.location.origin + `/applets/api/itemeditor/deleteChildForm/${store.state.itemInstanceId}/${payload.id}?parentId=${payload.parentId}`;
+        const api = window.location.origin + `/applets/api/items/deleteChildForm/${store.state.itemInstanceId}/${payload.id}?parentId=${payload.parentId}`;
 
         fetch(api,
             {
@@ -164,7 +166,7 @@ export const actions: ActionTree<State, any> = {
     },
     [Actions.DELETE_CHILD_INSTANCE](store, payload: FieldContainer) {
 
-        const api = window.location.origin + `/applets/api/itemeditor/deleteChildForm/${store.state.itemInstanceId}/${payload.id}`;
+        const api = window.location.origin + `/applets/api/items/deleteChildForm/${store.state.itemInstanceId}/${payload.id}`;
 
         fetch(api,
             {

@@ -62,7 +62,9 @@
 
 <template>
     <div class="text-right" v-if="isAdmin"><span class="fas fa-remove" @click="changeItemState(queryParams.iid);"></span></div>
-    <FieldContainer :model="dataItem" v-if="dataItem" class="item"/>
+    <div class="item">
+        <FieldContainer :model="dataItem" v-if="dataItem" />
+    </div>
 </template>
 
 <style scoped>
