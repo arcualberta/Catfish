@@ -135,6 +135,12 @@ export function clearForm(state: FlattenedFormFiledState) {
     Object.keys(state.flattenedOptionModels).forEach(function (key) {
         state.flattenedOptionModels[key].selected = false;
     });
+
+    // Iterate through attachment in state.flattenedOptionModels
+    Object.keys(state.flattenedFileModels).forEach(function (key) {
+        state.flattenedFileModels[key] = [] as File[];
+    });
+
 }
 
 export function isRequiredMultilingualField(field: MultilingualTextField) {

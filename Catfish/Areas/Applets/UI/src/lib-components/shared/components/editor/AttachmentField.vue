@@ -60,7 +60,7 @@
 
 <template>
 
-    <div>{{JSON.stringify(selectedFileNames)}}</div>
+    <div>{{selectedFileNames?.join(' | ')}}</div>
     <DropZone :id="model.id" @drop.prevent="drop" @change="selectFiles" />
 
 

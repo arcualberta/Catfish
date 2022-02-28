@@ -28,7 +28,7 @@ namespace Catfish.Areas.Applets.Controllers
 {
     [Route("applets/api/[controller]")]
     [ApiController]
-    public class ItemEditorController : ControllerBase
+    public class ItemsController : ControllerBase
     {
         private readonly IItemAppletService _itemAppletService;
         private readonly ISubmissionService _submissionService;
@@ -39,7 +39,7 @@ namespace Catfish.Areas.Applets.Controllers
         private readonly ErrorLog _errorLog;
         private readonly IItemAuthorizationHelper _itemAuthorizationHelper;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
-        public ItemEditorController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, IJobService jobService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
+        public ItemsController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, IJobService jobService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
 
         {
             _itemAppletService = itemAppletService;
@@ -110,7 +110,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         //[Route("{templateId:Guid}")]
-        public async Task<ContentResult> PostAsync( Guid itemTemplateId, Guid? groupId, Guid collectionId, [FromForm] String datamodel)
+        public async Task<ContentResult> PostAsync( Guid itemTemplateId, Guid? groupId, Guid collectionId, [FromForm] String datamodel, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
 		{
             var settings = new JsonSerializerSettings()
             {
@@ -120,18 +120,28 @@ namespace Catfish.Areas.Applets.Controllers
             };
 
             DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
-            
-                try
-                {
-                    //Guid collectionId = Guid.Parse("9ed65277-6a9e-4a96-c86a-e6825889234a"); ;
-                    //Guid groupId = Guid.Parse("2BD48E47-3DD7-4DA0-9F07-BEB72EE3542D");
+
+            try
+            {
+                //Guid collectionId = Guid.Parse("9ed65277-6a9e-4a96-c86a-e6825889234a"); ;
+                //Guid groupId = Guid.Parse("2BD48E47-3DD7-4DA0-9F07-BEB72EE3542D");
+
                 Guid stateMappingId = _workflowService.GetSubmitStateMappingId(itemTemplateId);//Guid.Parse("57a5509e-6aa2-463c-9cb6-b18178450aca");
-                    string actionButton = "Submit";
-                    itemInstance.TemplateId = itemInstance.Id;
-                    itemInstance.Id = Guid.NewGuid();
-                    Item newItem = _submissionService.SetSubmission(itemInstance, itemTemplateId, collectionId, groupId, stateMappingId, actionButton);
-                if ((await _authorizationService.AuthorizeAsync(User, newItem, new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate }))
-.Succeeded)
+                string actionButton = "Submit";
+                itemInstance.TemplateId = itemInstance.Id;
+                itemInstance.Id = Guid.NewGuid();
+                Item newItem = _submissionService.SetSubmission(itemInstance, itemTemplateId, collectionId, groupId, stateMappingId, actionButton, files, fileKeys);
+
+                //Handling file uploads
+                for(int i=0; i< fileKeys.Count; ++i)
+				{
+                    Guid key = Guid.Parse(fileKeys[i]);
+                    IFormFile file = files[i];
+
+				}
+                var x = files.Count;
+
+                if ((await _authorizationService.AuthorizeAsync(User, newItem, new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate })).Succeeded)
                 {
                     _appDb.Items.Add(newItem);
                     _appDb.SaveChanges();

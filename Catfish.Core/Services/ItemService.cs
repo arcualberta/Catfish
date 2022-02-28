@@ -141,9 +141,11 @@ namespace Catfish.Core.Services
             }
         }
 
-        public List<FileReference> UploadFiles(ICollection<IFormFile> files)
+        public List<FileReference> UploadFiles(ICollection<IFormFile> files, string uploadRoot = null)
         {
-            string uploadRoot = ConfigHelper.GetUploadTempFolder(true);
+            if (string.IsNullOrEmpty(uploadRoot))
+                uploadRoot = ConfigHelper.GetUploadTempFolder(true);
+
             List<FileReference> fileReferences = new List<FileReference>();
             foreach (IFormFile file in files)
             {
