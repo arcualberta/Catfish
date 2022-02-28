@@ -24,18 +24,7 @@
 
                  });
           
-            fetch('/applets/api/itemtemplates/groups/' + this.model.selectedItemTemplateId.value)
-                .then(response => response.json())
-                .then((data) => {
-                    this.groups = data;
-                });
-             //fetch('/api/Items/GetCollectionList')
-             //    .then(response => response.json())
-             //    .then((data) => {
-             //       // this.collections = data;
-             //        this.model.collections = data;
-                   
-             //    });
+          
          },
 
          selectItemField: function (fieldVal) {
@@ -101,29 +90,12 @@
 
     },
       mounted() {
-        //getCollectionList
-      //fetch('/api/Items/GetCollectionList')
-      //      .then(response => response.json())
-      //      .then((data) => {
-      //          this.collections = data;
-               
-      //      });
-
+      
 
       if (this.model.selectedItemTemplateId?.value) {
-          //applets/api/[controller]
-          //fetch('/applets/api/ItemTemplates/GetItemTemplateRootForms/' + this.model.selectedItemTemplateId.value)
-          //.then(response => response.json())
-          //.then((data) => {
-          //  this.childForms = data;
+         
 
-          //});
-
-          fetch('/applets/api/itemtemplates/groups/' + this.model.selectedItemTemplateId.value)
-              .then(response => response.json())
-              .then((data) => {
-                  this.groups = data;
-              });
+        
 
           fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + this.model.selectedItemTemplateId.value)
               .then(response => response.json())
@@ -157,36 +129,44 @@
                     <option v-for="item in model.itemTemplates.entries" :value="item.value">{{item.text}}</option>
                 </select>
             </div>
-            
-         <div  class='lead row'><label class='form-label col-md-3 required'>Group: </label>
-           <select v-model="model.selectedGroupId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.groups" :value="item.value">{{item.text}}</option>
-            </select></div>
-          <div  class='lead row'><label class='form-label col-md-3 required'>Forms: </label>
-           <select v-model="model.selectedFormId.value" class="form-control" style="width:auto;" v-on:change="getFormFields(model.selectedItemTemplateId.value,model.selectedFormId.value)">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.allForms" :value="item.value">{{item.text}}</option>
-            </select></div>
+         <br/>
+         <div class="alert alert-info">Please select the item fields you would like to see appear on the page </div>
+         <div class="itemLayout" style="border: solid 1px lightgrey;">
+           <div class='lead row'>
+            <label class='form-label col-md-1'>Type:</label>
+            <select class='form-control col-md-2' name="modalSize"  :value='model.selectedType.value' >
+                <option value="h1">H1</option>
+                <option value="h2">H2</option>
+                <option value="h3">H3</option>
+                <option value="h4">H4</option>
+                <option value="h5">H5</option>
+                <option value="div">Div</option>
+                <option value="p">Paragraph</option>
+                <option value="img">IMG</option>
+                <option value="file">AttachmentField</option>
+             </select>
+             <label class='form-label col-md-2'>Class(es):</label>
+             <input type="text" v-model="model.selectedClass.value" />
+               <label class='form-label col-md-1'>Id:</label>
+             <input type="text" v-model="model.selectedElementId.value" />
+        </div>
+         <div  class='lead row'>
+             <label class='form-label col-md-1 '>Form: </label>
+               <select v-model="model.selectedFormId.value" class="form-control" style="width:auto;" v-on:change="getFormFields(model.selectedItemTemplateId.value,model.selectedFormId.value)">
+                    <option disabled value="">Please select one</option>
+                    <option v-for="item in this.allForms" :value="item.value">{{item.text}}</option>
+                </select>
        
-           <div  class='lead row'><label class='form-label col-md-3 required'>Select Field: </label>
+           <label class='form-label col-md-2'>Select Field: </label>
            <select v-model="model.selectedField.value" class="form-control" style="width:auto;" v-on:change="selectItemField(model.selectedField.value)">
                 <option disabled value="">Please select one</option>
                 <option v-for="item in this.itemFields" :value="item.fieldId">{{item.fieldName}}</option>
-            </select></div>
-
-           <div  class='lead row'><label class='form-label col-md-3 required'>Selected Fields {{this.model.selectedFields?.length}}</label>
-              <div class="col-md-9 fieldList" style="margin-left: -15px">
-                  <div class="formGroup" v-for="(value, name, index) in this.fieldGroups">
-                        <div class="formName">{{name}}</div>
-             
-                        <div   style="width:auto;display:flex" >
-                            <div class="field" v-for="f in value" :key="f.fieldId">{{f.fieldName}} <span class="fas fa-times-circle" v-on:click="removeSelectedField(f.fieldId)"> </span></div>
-                        </div>
-                    </div>
-               </div>
-           </div>
-
+            </select>
+              <label class='form-label col-md-1'>Style:</label>
+             <textarea v-model="model.selectedStyle.value" cols="30" rows="2" />
+          </div>
+         </div>
+         <button><span class="fas fa-plus"> Add</span></button>
         </div>`
         
 
