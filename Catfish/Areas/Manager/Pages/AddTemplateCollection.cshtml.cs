@@ -28,14 +28,20 @@ namespace Catfish.Areas.Manager.Pages
         [BindProperty]
         public List<TemplateCollectionVM> Collections { get; set; }
 
-        [BindProperty(SupportsGet = true)]
-        public string Searching { get; set; }
-
-        [BindProperty]
-        public string AdditinalUsers { get; set; }
         
-        public void OnGet()
+        public AddTemplateCollectionModel(IGroupService srv, AppDbContext appDb, IdentitySQLServerDb pdb, UserManager<User> userManager, ICatfishAppConfiguration catfishConfig)
         {
+            _srv = srv;
+            _appDb = appDb;
+            _piranhaDb = pdb;
+            _userManager = userManager;
+            _catfishConfig = catfishConfig;
+
+        }
+        public async Task OnGetAsync(Guid id)
+        {
+            GroupTemplate = _srv.GetGroupTemplateDetails(id);
+            Collections = _srv.SetTemplateCollectionAttribute(id);
         }
     }
 }
