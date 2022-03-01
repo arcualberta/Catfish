@@ -1,0 +1,69 @@
+﻿@page "~/manager/groups/edit/collection/{id:Guid?}"
+@model Catfish.Areas.Manager.Pages.AddTemplateCollectionModel
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishConfig;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using Catfish.Core.Models
+
+@{
+    string addUserDescription = _catfishConfig.GetValue("SiteConfig:AddingUserDescription", "");
+
+    if (string.IsNullOrWhiteSpace(addUserDescription))
+        addUserDescription = "Please enter user email address(es) one line per email (please use UAlberta CCID email whenever applicable)!";
+}
+@*@Html.HiddenFor(m => m.Group.Id)*@
+<div class="top">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">@Localizer.General["Settings"]</li>
+            <li class="breadcrumb-item">@Localizer.General["Groups"]</li>
+            @*<li class="breadcrumb-item" aria-current="page"><a href="@string.Format("../{0}", Model.GroupTemplate.GroupId">@Localizer.General["Edit"]</a></li>*@
+            <li class="breadcrumb-item active" aria-current="page">@Localizer.General["Add Collection"]</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="container-fluid">
+    <div class="card">
+        
+        <form id="item-edit-form" class="edit-form" method="post" novalidate>
+            <div class="card-body">
+                <div class="container-fluid">
+                    <div class="float-right">
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Save)).Succeeded)
+                        {
+                            <button type="submit" class="btn btn-labeled btn-success pull-left">
+                                <span class="btn-label">
+                                    <i class="fas fa-user-plus"></i>
+                                </span>
+                                @Localizer.General["Add Collection(s)"]
+                            </button>
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="container-fluid">
+
+                        <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>@Localizer.General["Collection"]</th>
+                                        <th class="actions one"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int cnt = 0; cnt < Model.Collections.Count; ++cnt)
+                                    {
+                                        @Html.EditorFor(model => model.Collections[cnt])
+                                    }
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
