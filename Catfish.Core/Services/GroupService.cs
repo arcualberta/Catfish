@@ -232,6 +232,27 @@ namespace Catfish.Core.Services
                 return null;
             }
         }
+
+        public GroupTemplate AddTemplateCollections(Guid groupTemplateId, Guid collectionId)
+        {
+            try
+            {
+                GroupTemplate groupTemplate = _appDb.GroupTemplates.Where(gt => gt.Id == groupTemplateId).FirstOrDefault();
+                Collection collection = _appDb.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                groupTemplate.Collections.Add(collection);
+                return groupTemplate;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IList<Guid> GetAllCollectionIds()
         {
             try
@@ -326,7 +347,7 @@ namespace Catfish.Core.Services
                         {
                             CollectionId = collection.Id,
                             TemplateGroupId = groupTemplateId,
-                            CollectionName =collection.Name.ToString(),
+                            CollectionName =collection.ConcatenatedName,
                             Assigned = false
                         };
                         Collections.Add(templateCollectionVM);

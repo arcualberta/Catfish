@@ -24,34 +24,34 @@
                     {
                         <tr>
                             <td>
-                                <span class="title">@collection.Name)</span>
+                                <span class="title">@collection.ConcatenatedName</span>
                             </td>
                             <td class="actions one">
                                 @*@if (!(UserGroupService.CheckLoggedUser(user.UserId, Model.CollectionId)))
                         {*@
-                                <a class="danger" href="#" data-toggle="modal" data-target="#userModal" data-content="@collection.Id" onclick="deleteUser('@collection.Id'); return false;">
+                                <a class="danger" href="#" data-toggle="modal" data-target="#collectionModal" data-content="@collection.Id" onclick="deleteCollection('@collection.Id'); return false;">
                                     <span class="fas fa-trash"></span>
                                 </a>
                                 <!-- Modal -->
-                                <div id="userModal" class="modal fade" role="dialog">
+                                <div id="collectionModal" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
                                         <!-- Modal content-->
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="myModalLabel">User Delete Confirmation</h5>
+                                                <h5 class="modal-title" id="myModalLabel">Collection Delete Confirmation</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="card-body">
                                                     <div class="form-group">
 
-                                                        <h5>Do you Really want to delete this User?</h5>
+                                                        <h5>Do you Really want to delete this Collection?</h5>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <input type="hidden" name="UserGroupRoleId" id="UserGroupRoleId" value="" />
+                                                <input type="hidden" name="CollectionId" id="CollectionId" value="" />
                                                 <button id="deleteConfirm" type="submit" class="btn btn-danger">Delete</button>
                                             </div>
                                         </div>
@@ -69,16 +69,17 @@
         </table>
     </div>
     <div class="float-right">
-        <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("collection/{0}", Model.TemplateGroupId)">  @Localizer.General["Add Collection"]</a>
+        <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("collection/{0}", Model.TemplateGroupId)">  @Localizer.General["Add Collections"]</a>
     </div>
     <br>
 </div>
 <script>
-                function deleteUser(id) {
-                    $(".modal-footer #UserGroupRoleId").val(id);
-                    // As pointed out in comments,
-                    // it is unnecessary to have to manually call the modal.
-                    // $('#addBookDialog').modal('show');
+    function deleteCollection(id) {
+        $(".modal-footer #UserGroupRoleId").val(id);
+        // As pointed out in comments,
+        // it is unnecessary to have to manually call the modal.
+        // $('#addBookDialog').modal('show');
 
-                }
+    }
 </script>
+

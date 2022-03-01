@@ -38,6 +38,7 @@ namespace Catfish.Core.Services
         GroupTemplate GetGroupTemplateDetails(Guid id);
         IList<Guid> GetAllCollectionIds();
         IList<Guid>  GetTemplateCollecollectionIds(Guid groupTemplateId);
+        GroupTemplate AddTemplateCollections(Guid groupTemplateId, Guid collectionId);
 
     }
 }
