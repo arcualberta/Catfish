@@ -185,6 +185,9 @@
     border: 1px solid lightgrey;
     border-radius: 5px;
     padding: 5px;
+    height: fit-content;
 }
-
+.itemLayout{
+    margin-bottom: 10px;
+}
   

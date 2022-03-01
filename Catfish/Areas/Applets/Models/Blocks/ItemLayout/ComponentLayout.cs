@@ -10,6 +10,7 @@ namespace Catfish.Areas.Applets.Models.Blocks.ItemLayout
 		public string Type { get; set; }
 		public string CssClasses { get; set; }
 		public string ElementId { get; set; }
+		public string CssStyle { get; set; }
 		public string Label { get; set; }
 	}
 }
