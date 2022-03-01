@@ -2,124 +2,135 @@
     props: ["uid", "toolbar", "model"],
     data() {
         return {
+            layoutComponents: [],
             mainForm: [],
-            allForms:[],
+            allForms: [],
             validationError: '',
             groups: [],
             itemFields: [],
             selectedItemFields: [],
-          
-            fieldGroups:[]
+            fieldGroups: []
         }
     },
-     methods: {
-         
-      selectItemTemplate: function (selected) {
+    methods: {
 
-            
-             fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + selected)
-                 .then(response => response.json())
-                 .then((data) => {
-                     this.allForms = data;
-
-                 });
-          
-          
-         },
-
-         selectItemField: function (fieldVal) {
-           
-             var field = this.itemFields.find(f => {
-                 
-                 return f.fieldId == fieldVal
-             });
-           
+        selectItemTemplate: function (selected) {
 
 
-             this.selectedItemFields.push(field);
-             
-             //Update this.model.selectedFields
-             this.model.selectedFieldList.value = JSON.stringify(this.selectedItemFields);
+            fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + selected)
+                .then(response => response.json())
+                .then((data) => {
+                    this.allForms = data;
 
-             //organize array for display
-            
-          
-             this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
-                 r[a.formName] = r[a.formName] || [];
-                 r[a.formName].push(a);
-                
-                 return r;
-             }, Object.create(null));
-             
-            
-         },
+                });
 
-         removeSelectedField: function (fvalue) {
-             //console.log("field val: " + fvalue);
-             var filtered = this.selectedItemFields.filter(function (field, index, arr) {
-                
-                 return field.fieldId !== fvalue;
-             });
-            
-             //update the selectedField array
-             this.selectedItemFields = filtered;
-            
-             //Update this.model.selectedFields
-             //this.model.selectedFields = this.selectedItemFields;
-             this.model.selectedFieldList.value = JSON.stringify(this.selectedItemFields);
-             
-             this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
-                 r[a.formName] = r[a.formName] || [];
-                 r[a.formName].push(a);
-                
-                 return r;
-             }, Object.create(null));
-          
-         },
-         getFormFields: function (itemTemplateId, formId) {
-           
-             fetch('/applets/api/itemtemplates/getItemtemplateFields/' + itemTemplateId + "/" + formId)
-                 .then(response => response.json())
-                 .then((data) => {
-                     this.itemFields = data;
-                   
-                 });
-         },
 
-        
+        },
 
-    },
-      mounted() {
-      
+        selectItemField: function (fieldVal) {
 
-      if (this.model.selectedItemTemplateId?.value) {
-         
+            var field = this.itemFields.find(f => {
 
-        
+                return f.fieldId == fieldVal
+            });
 
-          fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + this.model.selectedItemTemplateId.value)
-              .then(response => response.json())
-              .then((data) => {
-                  this.allForms = data;
 
-              });
 
-          }
-         
-          if (this.model.selectedFieldList?.value) {
-              this.selectedItemFields = JSON.parse(this.model.selectedFieldList.value);
-              console.log("onmounted selectedItemFields " + JSON.stringify(this.selectedItemFields))
+            this.selectedItemFields.push(field);
 
-              this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
-                  r[a.formName] = r[a.formName] || [];
-                  r[a.formName].push(a);
+            //Update this.model.selectedFields
+            this.model.selectedFieldList.value = JSON.stringify(this.selectedItemFields);
 
-                  return r;
-              }, Object.create(null));
-          }
+            //organize array for display
+
+
+            this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
+                r[a.formName] = r[a.formName] || [];
+                r[a.formName].push(a);
+
+                return r;
+            }, Object.create(null));
+
+
+        },
+
+        removeSelectedField: function (fvalue) {
+            //console.log("field val: " + fvalue);
+            var filtered = this.selectedItemFields.filter(function (field, index, arr) {
+
+                return field.fieldId !== fvalue;
+            });
+
+            //update the selectedField array
+            this.selectedItemFields = filtered;
+
+            //Update this.model.selectedFields
+            //this.model.selectedFields = this.selectedItemFields;
+            this.model.selectedFieldList.value = JSON.stringify(this.selectedItemFields);
+
+            this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
+                r[a.formName] = r[a.formName] || [];
+                r[a.formName].push(a);
+
+                return r;
+            }, Object.create(null));
+
+        },
+        getFormFields: function (itemTemplateId, formId) {
+
+            fetch('/applets/api/itemtemplates/getItemtemplateFields/' + itemTemplateId + "/" + formId)
+                .then(response => response.json())
+                .then((data) => {
+                    this.itemFields = data;
+
+                });
+        },
+        onAddComponent: function (componentLabel) {
+            console.log(componentLabel);
+            let selectedComponent = this.model.componentTemplates.find(ele => ele.label === componentLabel);
+            if (selectedComponent) {
+                let clone = JSON.parse(JSON.stringify(selectedComponent));
+                clone.id = new Date().getTime()
+                this.layoutComponents.push(clone);
+            }
+        },
+        getFormsOfSelectedTemplate() {
+            return this.allForms;
+        }
+
 
     },
-   
+    mounted() {
+
+
+        if (this.model.selectedItemTemplateId?.value) {
+
+
+
+
+            fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + this.model.selectedItemTemplateId.value)
+                .then(response => response.json())
+                .then((data) => {
+                    this.allForms = data;
+
+                });
+
+        }
+
+        if (this.model.selectedFieldList?.value) {
+            this.selectedItemFields = JSON.parse(this.model.selectedFieldList.value);
+            console.log("onmounted selectedItemFields " + JSON.stringify(this.selectedItemFields))
+
+            this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
+                r[a.formName] = r[a.formName] || [];
+                r[a.formName].push(a);
+
+                return r;
+            }, Object.create(null));
+        }
+
+    },
+
     template:
         `<div  class= 'block-body'>
             <h2>Item Layout</h2>
@@ -166,9 +177,37 @@
              <textarea v-model="model.selectedStyle.value" cols="30" rows="2" />
           </div>
          </div>
-         <button><span class="fas fa-plus"> Add</span></button>
+
+        <div>
+            <div v-for="component in layoutComponents" :key="component.id">
+              
+                {{component.label}}
+
+               <div v-if="component.label === 'Form Field'">
+                   <label class='form-label col-md-1 '>Form: </label>
+                    <select v-model="component.formId" class="form-control" style="width:auto;" v-on:change="getFormFields(model.selectedItemTemplateId.value,model.selectedFormId.value)">
+                        <option disabled value="">Please select one</option>
+                        <option v-for="form in getFormsOfSelectedTemplate()" :value="form.value">{{form.text}}</option>
+                    </select>
+                </div>
+               <div v-if="component.label === 'Static Text'">
+                    Content: <textarea />                
+                </div>
+
+                </hr />
+            </div>
+        </div>
+
+        <div>
+            <button v-for="component in model.componentTemplates" @click="onAddComponent(component.label)">
+                + {{component.label}}
+            </button>
+        </div>
+        <hr />
+        <hr />
+        <div>{{JSON.stringify(layoutComponents)}}</div>
         </div>`
-        
+
 
 });
 

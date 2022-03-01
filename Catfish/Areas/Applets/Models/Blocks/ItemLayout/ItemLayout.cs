@@ -5,8 +5,9 @@ using Piranha.Extend.Fields;
 using Catfish.Models.Fields;
 using Catfish.Core.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
-namespace Catfish.Areas.Applets.Models.Blocks
+namespace Catfish.Areas.Applets.Models.Blocks.ItemLayout
 {
     [BlockType(Name = "Item Layout", Category = "Content", Component = "item-layout", Icon = "fas fa-server")]
     public class ItemLayout : Block , ICatfishBlock
@@ -26,6 +27,18 @@ namespace Catfish.Areas.Applets.Models.Blocks
         public TextField SelectedStyle { get; set; }
         public TextField SelectedClass { get; set; }
         public TextField SelectedElementId { get; set; }
+
+        public List<ComponentLayout> ComponentTemplates { get; set; }
+
+
+        public ItemLayout()
+		{
+            ComponentTemplates = new List<ComponentLayout>()
+            {
+                new FieldLayout(),
+                new StaticText()
+            };
+        }
 
 
     }
