@@ -180,3 +180,11 @@
     font-weight: bold;
     margin-bottom: 5px;
 }
+/* ============================= Item Layout Block   ================================================================================ */
+.itemLayout, .itemLayout > .lead > input, .itemLayout > .lead > textarea {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+  
