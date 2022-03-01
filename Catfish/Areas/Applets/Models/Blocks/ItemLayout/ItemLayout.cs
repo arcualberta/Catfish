@@ -4,7 +4,7 @@ using Piranha;
 using Piranha.Extend.Fields;
 using Catfish.Models.Fields;
 using Catfish.Core.Models;
-using System.ComponentModel.DataAnnotations;
+
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,16 +18,6 @@ namespace Catfish.Areas.Applets.Models.Blocks.ItemLayout
       
         public CatfishSelectList<ItemTemplate> ItemTemplates { get; set; }
         public TextField SelectedItemTemplateId { get; set; }
-       
-        //public TextField SelectedFieldList { get; set; } 
-        //public TextField SelectedField { get; set; }
-       
-        //public TextField SelectedFormId { get; set; }
-
-        //public TextField SelectedType { get; set; }
-        //public TextField SelectedStyle { get; set; }
-        //public TextField SelectedClass { get; set; }
-        //public TextField SelectedElementId { get; set; }
         
         [NotMapped]
         public List<ComponentLayout> ComponentTemplates { get; set; }
