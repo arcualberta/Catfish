@@ -172,8 +172,60 @@ namespace Catfish.Areas.Applets.Controllers
                 }
             }
 
-
             result = result.OrderBy(li => li.FieldName).ToList();
+            return result;
+        }
+        /// <summary>
+        /// Get mutiple form fields
+        /// </summary>
+        /// <param name="templateId">Item template id</param>
+        /// <param name="dataItemIds">Ids of the forms</param>
+        /// <returns></returns>
+        [HttpGet("getMutipleFormFields/{templateId}/{dataItemIds}")]
+        public Dictionary<string, List<ReportField>> GetMutipleFormFields(string templateId, string dataItemIds)
+        {
+
+            // List<SelectListItem> result = new List<SelectListItem>();
+            Dictionary<string, List<ReportField>> result = new Dictionary<string, List<ReportField>>();
+            string[] formIds = dataItemIds.Split(",");
+
+            if (!string.IsNullOrEmpty(templateId))
+            {
+               
+                foreach (string dataItemId in formIds)
+                {
+                    List<ReportField> rptFields = new List<ReportField>();
+                    ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == Guid.Parse(templateId));
+                    DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == Guid.Parse(dataItemId));
+
+                    var fields = _entityTemplateService.GetTemplateDataItemFields(Guid.Parse(templateId), Guid.Parse(dataItemId));
+
+                    SelectListGroup group = new SelectListGroup();
+                    group.Name = dataItemId + ":" + dataForm.GetName("en");
+
+
+
+                    foreach (BaseField field in fields)
+                    {
+                        if (!string.IsNullOrEmpty(field.GetName()))
+                        {
+                            ReportField rf = new ReportField();
+                            rf.FormId = dataItemId;
+                            rf.FormName = dataForm.GetName("en");
+                            rf.FieldId = field.Id.ToString();
+                            rf.FieldName = field.GetName();
+                            // result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString(), Group=group });
+                            rptFields.Add(rf);
+                        }
+
+                    }
+
+                    rptFields = rptFields.OrderBy(li => li.FieldName).ToList();
+                    result.Add(dataItemId, rptFields);
+                }
+
+               // result = result.OrderBy(li => li.FieldName).ToList();
+            }
             return result;
         }
 

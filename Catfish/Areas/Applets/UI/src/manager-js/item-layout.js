@@ -3,13 +3,8 @@
     data() {
         return {
             layoutComponents: [],
-            mainForm: [],
             allForms: [],
-            validationError: '',
-            groups: [],
             itemFields: [],
-            selectedItemFields: [],
-            fieldGroups: []
         }
     },
     methods: {
@@ -36,12 +31,16 @@
 
         },
         
-        getFormFields: function (itemTemplateId, formId) {  
-            fetch('/applets/api/itemtemplates/getItemtemplateFields/' + itemTemplateId + "/" + formId)
+        getFormFields: function (itemTemplateId, formId) {
+
+            let uniqueFormIds = [...new Set(this.layoutComponents.map(com => com.formId))];
+
+            fetch('/applets/api/itemtemplates/getMutipleFormFields/' + itemTemplateId + "/" + uniqueFormIds)
                 .then(response => response.json())
                 .then((data) => {
                     this.itemFields = data;
                 });
+           
         },
         onAddComponent: function (componentLabel) {
             console.log(componentLabel);
@@ -58,15 +57,14 @@
         getFormsOfSelectedTemplate() {
             return this.allForms;
         },
-        getSelectedFormFields() {
+        getSelectedFormFields(formId) {
            
-            return this.itemFields;
+            return this.itemFields[formId];
         }
 
 
     },
     mounted() {
-
 
         if (this.model.selectedItemTemplateId?.value) {
             fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + this.model.selectedItemTemplateId.value)
@@ -80,15 +78,16 @@
         if (this.model.selectedComponents?.value) {
             this.layoutComponents = JSON.parse(this.model.selectedComponents.value);
 
-            let selectedFormId = this.layoutComponents[0].formId;
-            fetch('/applets/api/itemtemplates/getItemtemplateFields/' + this.model.selectedItemTemplateId?.value + "/" + selectedFormId)
-                .then(response => response.json())
-                .then((data) => {
-                    this.itemFields = data;
-                });
-          
-        }
+            let uniqueFormIds = [...new Set(this.layoutComponents.map(com => com.formId))];
+           
+            fetch('/applets/api/itemtemplates/getMutipleFormFields/' + this.model.selectedItemTemplateId?.value + "/" + uniqueFormIds)
+                        .then(response => response.json())
+                        .then((data) => {
+                            this.itemFields = data;
 
+                           // console.log("multiple " + JSON.stringify(this.itemFields));
+             });
+        }
     },
 
     template:
@@ -135,7 +134,7 @@
                 <label class='form-label col-md-2'>Select Field: </label>
                 <select v-model="component.fieldId" class="form-control" style="width:auto;" @change="updateSelectedComponents()">
                     <option disabled value="">Please select one</option>
-                    <option v-for="fld in getSelectedFormFields()" :value="fld.fieldId">{{fld.fieldName}}</option>
+                    <option v-for="fld in getSelectedFormFields(component.formId)" :value="fld.fieldId">{{fld.fieldName}}</option>
                  </select>
              </div>
              <div v-if="component.label === 'Static Text'" class='lead row'>
@@ -153,7 +152,6 @@
             </button>
         </div>
        
-          <div> {{this.model.selectedComponents.value}} </div>
         </div>`
 
 
