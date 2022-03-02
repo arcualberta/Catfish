@@ -318,5 +318,50 @@ namespace Catfish.Areas.Applets.Controllers
                 return StatusCode(StatusCodes.Status404NotFound);
             }
         }
+        /// <summary>
+        /// Get Item instances for the given item/form ids
+        /// </summary>
+        /// <param name="itemIds">form instance ids</param>
+        /// <returns></returns>
+        //[HttpGet("getItems/{templateId}/{itemIds}")]
+        [HttpGet("getItems/{templateId}")]
+        public List<Item> GetItemsAsync(Guid templateId/*,string itemIds*/)
+        {
+            //string[] itmIds = itemIds.Split(",");
+            //List<DataItem> result = new List<DataItem>();
+           
+            //EntityTemplate template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == templateId);
+            List<Item> items = _appDb.Items.Where(it => it.TemplateId == templateId).ToList();
+            //foreach (Item item in items)
+            //{
+            //    foreach (string itemId in itmIds)
+            //    {
+            //        //retrive item data according to the item id
+
+            //        //check item, if it is not null, then it can process. Otherwise need to return Status404NotFound
+            //        if (item != null)
+            //        {
+            //            var query = item.DataContainer.Where(c => c.TemplateId == Guid.Parse(itemId));
+            //            //if (parentId.HasValue)
+            //            //    query = query.Where(c => c.ParentId == parentId);
+
+            //            var dataItem = query.FirstOrDefault();
+
+
+
+            //            result.Add(dataItem);
+
+            //        }
+            //    }
+            //}
+            //var settings = new JsonSerializerSettings()
+            //{
+            //    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            //    TypeNameHandling = TypeNameHandling.All,
+            //    ContractResolver = new CamelCasePropertyNamesContractResolver()
+            //};
+            // return Content(JsonConvert.SerializeObject(items, settings), "application/json");
+            return items;//result;
+        }
     }
 }
