@@ -69,10 +69,10 @@
         <h3>ItemLayout</h3>
         {{selectedComponents}}
       
-        <div>
+        <!--<div>
             Items
             {{items}}
-        </div>
+        </div>-->
         <!--<div>
             <h3>Item </h3>
             {{sate.item}}

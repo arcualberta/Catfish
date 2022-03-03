@@ -31,9 +31,9 @@
 
         },
 
-        getFormFields: function (itemTemplateId, formId) {
+        getFormFields: function (itemTemplateId, formTemplateId) {
 
-            let uniqueFormIds = [...new Set(this.layoutComponents.map(com => com.formId))];
+            let uniqueFormIds = [...new Set(this.layoutComponents.map(com => com.formTemplateId))];
 
             fetch('/applets/api/itemtemplates/getMutipleFormFields/' + itemTemplateId + "/" + uniqueFormIds)
                 .then(response => response.json())
@@ -57,9 +57,9 @@
         getFormsOfSelectedTemplate() {
             return this.allForms;
         },
-        getSelectedFormFields(formId) {
+        getSelectedFormFields(formTemplateId) {
 
-            return this.itemFields[formId];
+            return this.itemFields[formTemplateId];
         }
 
 
@@ -78,7 +78,7 @@
         if (this.model.selectedComponents?.value) {
             this.layoutComponents = JSON.parse(this.model.selectedComponents.value);
 
-            let uniqueFormIds = [...new Set(this.layoutComponents.map(com => com.formId))];
+            let uniqueFormIds = [...new Set(this.layoutComponents.map(com => com.formTemplateId))];
 
             fetch('/applets/api/itemtemplates/getMutipleFormFields/' + this.model.selectedItemTemplateId?.value + "/" + uniqueFormIds)
                 .then(response => response.json())
@@ -93,6 +93,16 @@
     template:
         `<div  class= 'block-body'>
             <h2>Item Layout</h2>
+            <div class='lead row'>
+                <label class='form-label col-md-3 required'>Query Parameters: </label>
+                <input class='form-control col-md-2'
+                       type='text'
+                       name='QueryParameter'
+                       v-model='model.queryParameter.value'
+                       contenteditable='true'
+                />
+                <span v-if='!isValid' style='color:red'>&nbsp;{{validationError}}</span>
+            </div>
             <div class='lead row'><label class='form-label col-md-3 required'>Item Template: </label>
                <select v-model="model.selectedItemTemplateId.value" class="form-control" style="width:auto;" v-on:change="selectItemTemplate(model.selectedItemTemplateId.value)">
                     <option disabled value="">Please select one</option>
@@ -108,7 +118,7 @@
                 <div v-if="component.label === 'Form Field'" class='lead row'>
                     <div class="col-md-5 row" style="margin:5px">
                         <label class='form-label' style="margin:5px">Form: </label>
-                        <select v-model="component.formId" class="form-control col-md-9" @change="getFormFields(model.selectedItemTemplateId.value,component.formId)">
+                        <select v-model="component.formTemplateId" class="form-control col-md-9" @change="getFormFields(model.selectedItemTemplateId.value,component.formTemplateId)">
                             <option disabled value="">Please select one</option>
                             <option v-for="form in getFormsOfSelectedTemplate()" :value="form.value">{{form.text}}</option>
                         </select>
@@ -117,7 +127,7 @@
                     <label class='form-label' style="margin:5px;">Select Field: </label>
                     <select v-model="component.fieldId" class="form-control col-md-8" style="width:auto;" @change="updateSelectedComponents()">
                         <option disabled value="">Please select one</option>
-                        <option v-for="fld in getSelectedFormFields(component.formId)" :value="fld.fieldId">{{fld.fieldName}}</option>
+                        <option v-for="fld in getSelectedFormFields(component.formTemplateId)" :value="fld.fieldId">{{fld.fieldName}}</option>
                     </select>
                     </div>
                 </div>
