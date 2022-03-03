@@ -53,18 +53,26 @@
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\componentLayout.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\fieldLayout.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\itemLayout.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\itemTemplate.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\staticText.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\fieldContainer.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\item.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\components\display\ImgDiv.vue" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\functions\useDebouncedRef.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
     <None Remove="Areas\Applets\UI\src\manager-js\card.js" />
     <None Remove="Areas\Applets\UI\src\manager-js\form-submission.js" />
+    <None Remove="Areas\Applets\UI\src\manager-js\item-layout.js" />
     <None Remove="Areas\Applets\UI\src\manager-js\report.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Applets\UI\src\manager-js\item-layout.js" />
     <Content Include="Areas\Applets\UI\src\manager-js\report.js" />
     <Content Include="Areas\Applets\UI\src\manager-js\form-submission.js" />
     <Content Include="Areas\Applets\UI\src\manager-js\child-form-submission.js" />
@@ -132,6 +140,7 @@
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\store\" />
     <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\components\" />
     <Folder Include="Areas\Applets\UI\src\lib-components\item-viewer\store\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\report\store\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
     <Folder Include="Models\FormBuilder\" />
     <Folder Include="wwwroot\assets\js\vue3\" />
@@ -144,6 +153,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\item.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\componentLayout.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\fieldLayout.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\staticText.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\itemLayout.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\itemTemplate.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\components\display\cms\ImgDiv.vue" />

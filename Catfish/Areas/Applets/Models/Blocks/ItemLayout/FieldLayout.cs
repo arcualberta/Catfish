@@ -7,7 +7,7 @@ namespace Catfish.Areas.Applets.Models.Blocks.ItemLayout
 {
 	public class FieldLayout: ComponentLayout
 	{
-		public Guid FormId { get; set; }
+		public Guid FormTemplateId { get; set; }
 		public Guid FieldId { get; set; }
 		public FieldLayout() { Label = "Form Field"; }
 

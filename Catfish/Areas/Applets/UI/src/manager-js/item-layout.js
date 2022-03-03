@@ -3,87 +3,44 @@
     data() {
         return {
             layoutComponents: [],
-            mainForm: [],
             allForms: [],
-            validationError: '',
-            groups: [],
             itemFields: [],
-            selectedItemFields: [],
-            fieldGroups: []
         }
     },
     methods: {
-
+        onBlur: function (e) {
+            this.model.selectedComponents.value = JSON.stringify(this.layoutComponents);
+        },
         selectItemTemplate: function (selected) {
-
-
             fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + selected)
                 .then(response => response.json())
                 .then((data) => {
                     this.allForms = data;
 
                 });
-
-
         },
+        removeComponent: function (componentId) {
 
-        selectItemField: function (fieldVal) {
+            this.layoutComponents
+            var filtered = this.layoutComponents.filter(function (field, index, arr) {
 
-            var field = this.itemFields.find(f => {
-
-                return f.fieldId == fieldVal
+                return field.id !== componentId;
             });
-
-
-
-            this.selectedItemFields.push(field);
-
-            //Update this.model.selectedFields
-            this.model.selectedFieldList.value = JSON.stringify(this.selectedItemFields);
-
-            //organize array for display
-
-
-            this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
-                r[a.formName] = r[a.formName] || [];
-                r[a.formName].push(a);
-
-                return r;
-            }, Object.create(null));
-
+            this.layoutComponents = filtered;
+            this.model.selectedComponents.value = JSON.stringify(this.layoutComponents);
 
         },
 
-        removeSelectedField: function (fvalue) {
-            //console.log("field val: " + fvalue);
-            var filtered = this.selectedItemFields.filter(function (field, index, arr) {
+        getFormFields: function (itemTemplateId, formTemplateId) {
 
-                return field.fieldId !== fvalue;
-            });
+            let uniqueFormIds = [...new Set(this.layoutComponents.map(com => com.formTemplateId))];
 
-            //update the selectedField array
-            this.selectedItemFields = filtered;
-
-            //Update this.model.selectedFields
-            //this.model.selectedFields = this.selectedItemFields;
-            this.model.selectedFieldList.value = JSON.stringify(this.selectedItemFields);
-
-            this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
-                r[a.formName] = r[a.formName] || [];
-                r[a.formName].push(a);
-
-                return r;
-            }, Object.create(null));
-
-        },
-        getFormFields: function (itemTemplateId, formId) {
-
-            fetch('/applets/api/itemtemplates/getItemtemplateFields/' + itemTemplateId + "/" + formId)
+            fetch('/applets/api/itemtemplates/getMutipleFormFields/' + itemTemplateId + "/" + uniqueFormIds)
                 .then(response => response.json())
                 .then((data) => {
                     this.itemFields = data;
-
                 });
+
         },
         onAddComponent: function (componentLabel) {
             console.log(componentLabel);
@@ -94,46 +51,58 @@
                 this.layoutComponents.push(clone);
             }
         },
+        updateSelectedComponents() {
+            this.model.selectedComponents.value = JSON.stringify(this.layoutComponents);
+        },
         getFormsOfSelectedTemplate() {
             return this.allForms;
+        },
+        getSelectedFormFields(formTemplateId) {
+
+            return this.itemFields[formTemplateId];
         }
 
 
     },
     mounted() {
 
-
         if (this.model.selectedItemTemplateId?.value) {
-
-
-
-
             fetch('/applets/api/ItemTemplates/GetAllItemTemplateForms/' + this.model.selectedItemTemplateId.value)
                 .then(response => response.json())
                 .then((data) => {
                     this.allForms = data;
 
                 });
-
         }
 
-        if (this.model.selectedFieldList?.value) {
-            this.selectedItemFields = JSON.parse(this.model.selectedFieldList.value);
-            console.log("onmounted selectedItemFields " + JSON.stringify(this.selectedItemFields))
+        if (this.model.selectedComponents?.value) {
+            this.layoutComponents = JSON.parse(this.model.selectedComponents.value);
 
-            this.fieldGroups = this.selectedItemFields.reduce(function (r, a) {
-                r[a.formName] = r[a.formName] || [];
-                r[a.formName].push(a);
+            let uniqueFormIds = [...new Set(this.layoutComponents.map(com => com.formTemplateId))];
 
-                return r;
-            }, Object.create(null));
+            fetch('/applets/api/itemtemplates/getMutipleFormFields/' + this.model.selectedItemTemplateId?.value + "/" + uniqueFormIds)
+                .then(response => response.json())
+                .then((data) => {
+                    this.itemFields = data;
+
+                    // console.log("multiple " + JSON.stringify(this.itemFields));
+                });
         }
-
     },
 
     template:
         `<div  class= 'block-body'>
             <h2>Item Layout</h2>
+            <div class='lead row'>
+                <label class='form-label col-md-3 required'>Query Parameters: </label>
+                <input class='form-control col-md-2'
+                       type='text'
+                       name='QueryParameter'
+                       v-model='model.queryParameter.value'
+                       contenteditable='true'
+                />
+                <span v-if='!isValid' style='color:red'>&nbsp;{{validationError}}</span>
+            </div>
             <div class='lead row'><label class='form-label col-md-3 required'>Item Template: </label>
                <select v-model="model.selectedItemTemplateId.value" class="form-control" style="width:auto;" v-on:change="selectItemTemplate(model.selectedItemTemplateId.value)">
                     <option disabled value="">Please select one</option>
@@ -142,70 +111,59 @@
             </div>
          <br/>
          <div class="alert alert-info">Please select the item fields you would like to see appear on the page </div>
-         <div class="itemLayout" style="border: solid 1px lightgrey;">
-           <div class='lead row'>
-            <label class='form-label col-md-1'>Type:</label>
-            <select class='form-control col-md-2' name="modalSize"  :value='model.selectedType.value' >
-                <option value="h1">H1</option>
-                <option value="h2">H2</option>
-                <option value="h3">H3</option>
-                <option value="h4">H4</option>
-                <option value="h5">H5</option>
-                <option value="div">Div</option>
-                <option value="p">Paragraph</option>
-                <option value="img">IMG</option>
-                <option value="file">AttachmentField</option>
-             </select>
-             <label class='form-label col-md-2'>Class(es):</label>
-             <input type="text" v-model="model.selectedClass.value" />
-               <label class='form-label col-md-1'>Id:</label>
-             <input type="text" v-model="model.selectedElementId.value" />
-        </div>
-         <div  class='lead row'>
-             <label class='form-label col-md-1 '>Form: </label>
-               <select v-model="model.selectedFormId.value" class="form-control" style="width:auto;" v-on:change="getFormFields(model.selectedItemTemplateId.value,model.selectedFormId.value)">
-                    <option disabled value="">Please select one</option>
-                    <option v-for="item in this.allForms" :value="item.value">{{item.text}}</option>
-                </select>
-       
-           <label class='form-label col-md-2'>Select Field: </label>
-           <select v-model="model.selectedField.value" class="form-control" style="width:auto;" v-on:change="selectItemField(model.selectedField.value)">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.itemFields" :value="item.fieldId">{{item.fieldName}}</option>
-            </select>
-              <label class='form-label col-md-1'>Style:</label>
-             <textarea v-model="model.selectedStyle.value" cols="30" rows="2" />
-          </div>
-         </div>
-
+        
         <div>
-            <div v-for="component in layoutComponents" :key="component.id">
-              
-                {{component.label}}
-
-               <div v-if="component.label === 'Form Field'">
-                   <label class='form-label col-md-1 '>Form: </label>
-                    <select v-model="component.formId" class="form-control" style="width:auto;" v-on:change="getFormFields(model.selectedItemTemplateId.value,model.selectedFormId.value)">
+            <div v-for="component in layoutComponents" :key="component.id" class="itemLayout" >
+                <div class="text-right"><span class="fas fa-times-circle text-danger" @click="removeComponent(component.id)"></span></div>
+                <div v-if="component.label === 'Form Field'" class='lead row'>
+                    <div class="col-md-5 row" style="margin:5px">
+                        <label class='form-label' style="margin:5px">Form: </label>
+                        <select v-model="component.formTemplateId" class="form-control col-md-9" @change="getFormFields(model.selectedItemTemplateId.value,component.formTemplateId)">
+                            <option disabled value="">Please select one</option>
+                            <option v-for="form in getFormsOfSelectedTemplate()" :value="form.value">{{form.text}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5 row" style="margin-left:15px;">
+                    <label class='form-label' style="margin:5px;">Select Field: </label>
+                    <select v-model="component.fieldId" class="form-control col-md-8" style="width:auto;" @change="updateSelectedComponents()">
                         <option disabled value="">Please select one</option>
-                        <option v-for="form in getFormsOfSelectedTemplate()" :value="form.value">{{form.text}}</option>
+                        <option v-for="fld in getSelectedFormFields(component.formTemplateId)" :value="fld.fieldId">{{fld.fieldName}}</option>
                     </select>
+                    </div>
                 </div>
-               <div v-if="component.label === 'Static Text'">
-                    Content: <textarea />                
+                <div v-if="component.label === 'Static Text'" class='lead row'>
+                   <label class='form-label col-md-2 '>Content: </label>
+                   <textarea v-model="component.content" cols="50" rows="2"  class="col-md-9" v-on:blur="onBlur" />
                 </div>
-
-                </hr />
+                <div class='lead row'>
+                    <label class='form-label col-md-1'>Type:</label>
+                    <select class='form-control col-md-2' name="modalSize"  v-model='component.type' @change="updateSelectedComponents()">
+                        <option value="h1">H1</option>
+                        <option value="h2">H2</option>
+                        <option value="h3">H3</option>
+                        <option value="h4">H4</option>
+                        <option value="h5">H5</option>
+                        <option value="div">Div</option>
+                        <option value="p">Paragraph</option>
+                        <option value="img">Image</option>
+                        <option value="file">File</option>
+                     </select>
+                     <label class='form-label'  style="margin-left: 10px; margin-right: 10px">Class(es):</label>
+                     <input type="text" v-model="component.cssClasses" class="col-md-2"  v-on:blur="onBlur" />
+                       <label class='form-label' style="margin-left: 10px; margin-right: 10px">Id:</label>
+                     <input type="text" v-model="component.elementId"  class="col-md-2" v-on:blur="onBlur" />
+                      <label class='form-label' style="margin-left: 10px; margin-right: 10px">Style:</label>
+                     <textarea v-model="component.cssStyle" cols="20" rows="2"  class="col-md-2" v-on:blur="onBlur" />
+                </div>
             </div>
         </div>
 
         <div>
-            <button v-for="component in model.componentTemplates" @click="onAddComponent(component.label)">
-                + {{component.label}}
+            <button v-for="component in model.componentTemplates" @click="onAddComponent(component.label)" class="btn btn-default btn-success" style="margin-right: 10px;">
+                <span class="fas fa-plus" > {{component.label}}</span>
             </button>
         </div>
-        <hr />
-        <hr />
-        <div>{{JSON.stringify(layoutComponents)}}</div>
+       
         </div>`
 
 
