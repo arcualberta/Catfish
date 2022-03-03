@@ -7,7 +7,7 @@
     import { actions, Actions} from './store/actions'
     import { getters } from './store/getters'
     import { mutations, Mutations } from './store/mutations'
-    import props, { /*QueryParameter,*/ DataAttribute } from '../shared/props'
+    import props, { QueryParameter, DataAttribute } from '../shared/props'
     import { FieldLayout} from "./models/fieldLayout"
    
 
@@ -21,7 +21,7 @@
         setup(p) {
             const store = useStore();
             const dataAttributes = p.dataAttributes as DataAttribute;
-            const queryParams = dataAttributes["query-parameter"] as string;
+           // const queryParams = dataAttributes["query-parameter"] as string;
             const isAdmin = dataAttributes["is-admin"] as string;
             const templateId = dataAttributes["template-id"] as string;
             const selectedComponents = dataAttributes["selected-components"] as string;
@@ -29,16 +29,19 @@
            // console.log(JSON.stringify(components));
 
             //get all the unique formIds
-            let uniqueFormIds = [...new Set(components.map((com: FieldLayout) => com.formId))];
+            let uniqueFormIds = [...new Set(components.map((com: FieldLayout) => com.formTemplateId))];
 
             console.log("selected Forms Ids" + JSON.stringify(uniqueFormIds));
-            // const queryParams = p.queryParameters as QueryParameter;
+            const queryParams = p.queryParameters as QueryParameter;
+
+            store.commit(Mutations.SET_ID, queryParams.iid);
+
             store.commit(Mutations.SET_TEMPLATE_ID, templateId);
             store.commit(Mutations.SET_FORM_IDS, uniqueFormIds);
 
             //load the data
-            store.dispatch(Actions.LOAD_ITEMS);
-            console.log("selected Forms" + JSON.stringify(state.items));
+           store.dispatch(Actions.LOAD_ITEM);
+           console.log("selected Forms" + JSON.stringify(state.item));
             return {
                 store,
                 queryParams,
@@ -67,17 +70,15 @@
    
     <div class="item">
         <h3>ItemLayout</h3>
-        {{queryParams}}
+       
         {{selectedComponents}}
+
       
-        <!--<div>
-            Items
-            {{items}}
-        </div>-->
-        <!--<div>
-            <h3>Item </h3>
-            {{sate.item}}
-        </div>-->
+        <div>
+        <h3>Item </h3>
+            id : {{store.state.id}}
+        {{store.state.item}}
+    </div>
     </div>
 </template>
 
