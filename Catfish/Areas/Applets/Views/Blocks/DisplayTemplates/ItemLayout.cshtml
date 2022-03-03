@@ -6,7 +6,8 @@
 {
         { "data-template-id", Model.SelectedItemTemplateId.Value },  
         { "data-selected-components", Model.SelectedComponents.Value},
-        { "data-is-admin", User.IsInRole("SysAdmin") }
+        { "data-is-admin", User.IsInRole("SysAdmin") },
+        { "data-query-parameter", Model.QueryParameter.Value }
 
     };
 }

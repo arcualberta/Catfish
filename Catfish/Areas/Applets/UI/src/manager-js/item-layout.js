@@ -5,6 +5,7 @@
             layoutComponents: [],
             allForms: [],
             itemFields: [],
+            validationError: ''
         }
     },
     methods: {
@@ -89,7 +90,20 @@
                 });
         }
     },
+    computed: {
+        isValid: function () {
+            if (!this.model.queryParameter.value) {
+                this.$data.validationError = "Specify a query parameter.";
+                return false;
+            }
+            else if (this.model.queryParameter.value.toLowerCase() === "id") {
+                this.$data.validationError = "Unacceptable query parameter value.";
+                return false;
+            }
 
+            return true;
+        }
+    },
     template:
         `<div  class= 'block-body'>
             <h2>Item Layout</h2>
@@ -100,11 +114,12 @@
                        name='QueryParameter'
                        v-model='model.queryParameter.value'
                        contenteditable='true'
+                       required
                 />
                 <span v-if='!isValid' style='color:red'>&nbsp;{{validationError}}</span>
             </div>
             <div class='lead row'><label class='form-label col-md-3 required'>Item Template: </label>
-               <select v-model="model.selectedItemTemplateId.value" class="form-control" style="width:auto;" v-on:change="selectItemTemplate(model.selectedItemTemplateId.value)">
+               <select v-model="model.selectedItemTemplateId.value" class="form-control" style="width:auto;" v-on:change="selectItemTemplate(model.selectedItemTemplateId.value)" required>
                     <option disabled value="">Please select one</option>
                     <option v-for="item in model.itemTemplates.entries" :value="item.value">{{item.text}}</option>
                 </select>
@@ -117,15 +132,15 @@
                 <div class="text-right"><span class="fas fa-times-circle text-danger" @click="removeComponent(component.id)"></span></div>
                 <div v-if="component.label === 'Form Field'" class='lead row'>
                     <div class="col-md-5 row" style="margin:5px">
-                        <label class='form-label' style="margin:5px">Form: </label>
-                        <select v-model="component.formTemplateId" class="form-control col-md-9" @change="getFormFields(model.selectedItemTemplateId.value,component.formTemplateId)">
+                        <label class='form-label required' style="margin:5px">Form: </label>
+                        <select v-model="component.formTemplateId" class="form-control col-md-9" @change="getFormFields(model.selectedItemTemplateId.value,component.formTemplateId)" required>
                             <option disabled value="">Please select one</option>
                             <option v-for="form in getFormsOfSelectedTemplate()" :value="form.value">{{form.text}}</option>
                         </select>
                     </div>
                     <div class="col-md-5 row" style="margin-left:15px;">
-                    <label class='form-label' style="margin:5px;">Select Field: </label>
-                    <select v-model="component.fieldId" class="form-control col-md-8" style="width:auto;" @change="updateSelectedComponents()">
+                    <label class='form-label required' style="margin:5px;">Field: </label>
+                    <select v-model="component.fieldId" class="form-control col-md-8" style="width:auto;" @change="updateSelectedComponents()" required>
                         <option disabled value="">Please select one</option>
                         <option v-for="fld in getSelectedFormFields(component.formTemplateId)" :value="fld.fieldId">{{fld.fieldName}}</option>
                     </select>

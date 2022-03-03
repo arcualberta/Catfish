@@ -21,7 +21,7 @@
         setup(p) {
             const store = useStore();
             const dataAttributes = p.dataAttributes as DataAttribute;
-           
+            const queryParams = dataAttributes["query-parameter"] as string;
             const isAdmin = dataAttributes["is-admin"] as string;
             const templateId = dataAttributes["template-id"] as string;
             const selectedComponents = dataAttributes["selected-components"] as string;
@@ -41,7 +41,7 @@
             console.log("selected Forms" + JSON.stringify(state.items));
             return {
                 store,
-                //queryParams,
+                queryParams,
                 dataItem: computed(() => store.getters.rootDataItem),
                 isAdmin,
               //  components,
@@ -67,6 +67,7 @@
    
     <div class="item">
         <h3>ItemLayout</h3>
+        {{queryParams}}
         {{selectedComponents}}
       
         <!--<div>
