@@ -1,13 +1,15 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
-import { Mutations } from './mutations';
+import {actions as itemActions } from "../../item-viewer/store/actions"
+//import { Mutations } from './mutations';
 //import { Guid } from 'guid-typescript';
 
 //Declare ActionTypes
-export enum Actions {
+export enum Actions{
     LOAD_ITEM = "LOAD_ITEM",
     LOAD_TEMPLATE = "LOAD_TEMPLATE",
-    LOAD_ITEMS="LOAD_ITEMS"
+   // LOAD_ITEMS="LOAD_ITEMS"
+    
 }
 
 export const actions: ActionTree<State, any> = {
@@ -26,35 +28,35 @@ export const actions: ActionTree<State, any> = {
     //            // console.log("Datacontainer count: " + store.state.template?.dataContainer.length)
     //        });
     //},
-  [Actions.LOAD_ITEM](store) {
+  //[Actions.LOAD_ITEM](store) {
  
-        const api = window.location.origin +
-            `/applets/api/items/${store.state.id}`;
-        console.log('Item Load API: ', api)
+  //      const api = window.location.origin +
+  //          `/applets/api/items/${store.state.id}`;
+  //      console.log('Item Load API: ', api)
 
-        fetch(api)
-            .then(response => response.json())
-            .then(data => {
+  //      fetch(api)
+  //          .then(response => response.json())
+  //          .then(data => {
 
-              store.commit(Mutations.SET_ITEM, data);
-            });
-    },
+  //            store.commit(Mutations.SET_ITEM, data);
+  //          });
+  //  },
 
-    [Actions.LOAD_ITEMS](store) {
+    //[Actions.LOAD_ITEMS](store) {
 
-        //const api = window.location.origin +
-        //    `/applets/api/items/getItems/${store.state.templateId}/${store.state.formIds}`;
-        const api = window.location.origin +
-            `/applets/api/items/getItems/${store.state.templateId}`;
-        console.log('Load Items API: ', api)
+    //    //const api = window.location.origin +
+    //    //    `/applets/api/items/getItems/${store.state.templateId}/${store.state.formIds}`;
+    //    const api = window.location.origin +
+    //        `/applets/api/items/getItems/${store.state.templateId}`;
+    //    console.log('Load Items API: ', api)
 
-        fetch(api)
-            .then(response => response.json())
-            .then(data => {
+    //    fetch(api)
+    //        .then(response => response.json())
+    //        .then(data => {
 
-                store.commit(Mutations.SET_ITEMS, data);
-            });
-    },
-   
+    //            store.commit(Mutations.SET_ITEMS, data);
+    //        });
+    //},
+   ...itemActions
 }
 

@@ -4,7 +4,8 @@
     import { useStore } from 'vuex';
 
     import { state } from './store/state'
-    import { actions, Actions} from './store/actions'
+    import { actions/*, Actions */} from './store/actions'
+    import { Actions as ItemAction } from '../item-viewer/store/actions'
     import { getters } from './store/getters'
     import { mutations, Mutations } from './store/mutations'
     import props, { QueryParameter, DataAttribute } from '../shared/props'
@@ -40,8 +41,8 @@
             store.commit(Mutations.SET_FORM_IDS, uniqueFormIds);
 
             //load the data
-           store.dispatch(Actions.LOAD_ITEM);
-           console.log("selected Forms" + JSON.stringify(state.item));
+            store.dispatch(ItemAction.LOAD_ITEM);
+           console.log("selected Forms" + JSON.stringify(store.state.item));
             return {
                 store,
                 queryParams,
@@ -49,7 +50,7 @@
                 isAdmin,
               //  components,
                 selectedComponents,
-                items: computed(() => store.state.items)
+                //items: computed(() => store.state.items)
             }
         },
         storeConfig: {
@@ -74,10 +75,11 @@
         {{selectedComponents}}
 
       
+    <div>
+        <h3>Item id : {{store.state.id}}</h3>
         <div>
-        <h3>Item </h3>
-            id : {{store.state.id}}
-        {{store.state.item}}
+            {{store.state.item}}
+        </div>
     </div>
     </div>
 </template>
