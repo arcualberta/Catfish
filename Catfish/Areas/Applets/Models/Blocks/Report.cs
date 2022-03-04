@@ -22,7 +22,8 @@ namespace Catfish.Areas.Applets.Models.Blocks
        
         public TextField SelectedFieldList { get; set; } 
         public TextField SelectedField { get; set; }
-       
+        public TextField SelectedCollectionId { get; set; }
+
         public TextField SelectedFormId { get; set; }
 
       

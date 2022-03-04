@@ -51,7 +51,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <input type="hidden" name="CollectionId" id="CollectionId" value="" />
+                                                <input type="hidden" name="GroupTemplateId" id="GroupTemplateId" value="" />
                                                 <button id="deleteConfirm" type="submit" class="btn btn-danger">Delete</button>
                                             </div>
                                         </div>
@@ -75,7 +75,7 @@
 </div>
 <script>
     function deleteCollection(id) {
-        $(".modal-footer #UserGroupRoleId").val(id);
+        $(".modal-footer #GroupTemplateId").val(id);
         // As pointed out in comments,
         // it is unnecessary to have to manually call the modal.
         // $('#addBookDialog').modal('show');

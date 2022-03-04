@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
-
 namespace Catfish.Areas.Applets.Services
 {
     public class ItemTemplateAppletService : IItemTemplateAppletService
@@ -57,6 +56,31 @@ namespace Catfish.Areas.Applets.Services
             ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == itemTemplate);
             var dataItems = template.DataContainer.ToList();
             return dataItems;
+        }
+
+
+        /// <summary>
+        /// This method will return all collectios related to a group template.
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public ICollection<Collection> GetAllGroupTemplateCollections(Guid templateId, Guid groupId)
+        {
+            try
+            {
+                var collections = _appDb.GroupTemplates
+                                    .Where(gt => gt.EntityTemplateId == templateId && gt.GroupId == groupId)
+                                    .Select(gt => gt.Collections)
+                                    .FirstOrDefault();
+                return collections;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return new List<Collection>();
+            }
+            
         }
 
     }

@@ -113,8 +113,22 @@ namespace Catfish.Areas.Applets.Controllers
             return result;
         }
 
+        [HttpGet("getAllCollectionsRelatedToGroupTemplate/{templateId}/{groupId}")]
+        public List<SelectListItem> GetAllCollectionsRelatedToGroupTemplate(Guid templateId, Guid groupId)
+        {
+            List<SelectListItem> result = new List<SelectListItem>();
 
-        [HttpGet("{templateId}/data-form/{formId}")]
+            ICollection<Collection> collections = _itemTemplateAppletService.GetAllGroupTemplateCollections(templateId, groupId);
+            foreach (Collection collection in collections)
+            {
+                result.Add(new SelectListItem { Text = collection.ConcatenatedName, Value = collection.Id.ToString() });
+
+            }
+
+            return result;
+        }
+
+            [HttpGet("{templateId}/data-form/{formId}")]
         public ContentResult DataForm(Guid templateId, Guid formId)
         {
             //TODO: Implement security

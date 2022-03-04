@@ -54,10 +54,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for (int cnt = 0; cnt < Model.Collections.Count; ++cnt)
-                                    {
-                                        @Html.EditorFor(model => model.Collections[cnt])
-                                    }
+                                    
+                                        @Html.EditorFor(model => model.Collections)
                                 </tbody>
                         </table>
                     </div>
