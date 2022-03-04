@@ -29,7 +29,7 @@
                             <td class="actions one">
                                 @*@if (!(UserGroupService.CheckLoggedUser(user.UserId, Model.CollectionId)))
                         {*@
-                                <a class="danger" href="#" data-toggle="modal" data-target="#collectionModal" data-content="@collection.Id" onclick="deleteCollection('@collection.Id'); return false;">
+                                <a class="danger" href="#" data-toggle="modal" data-target="#collectionModal" data-content="@collection.Id" onclick="deleteCollection('@collection.Id','@Model.TemplateGroupId'); return false;">
                                     <span class="fas fa-trash"></span>
                                 </a>
                                 <!-- Modal -->
@@ -51,6 +51,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <input type="hidden" name="CollectionId" id="CollectionId" value="" />
                                                 <input type="hidden" name="GroupTemplateId" id="GroupTemplateId" value="" />
                                                 <button id="deleteConfirm" type="submit" class="btn btn-danger">Delete</button>
                                             </div>
@@ -74,8 +75,9 @@
     <br>
 </div>
 <script>
-    function deleteCollection(id) {
-        $(".modal-footer #GroupTemplateId").val(id);
+    function deleteCollection(collectionId,groupTemplateId) {
+        $(".modal-footer #CollectionId").val(collectionId);
+        $(".modal-footer #GroupTemplateId").val(groupTemplateId);
         // As pointed out in comments,
         // it is unnecessary to have to manually call the modal.
         // $('#addBookDialog').modal('show');

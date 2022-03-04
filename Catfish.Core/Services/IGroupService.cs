@@ -30,6 +30,7 @@ namespace Catfish.Core.Services
         void DeleteGroup(Guid groupId);
         bool CheckUserGroupRole(Guid groupId);
         void DeleteUserGroupRole(Guid userGroupRoleId);
+        void DeleteGroupTemplateCollection(Guid groupTemplateId, Guid collectionId);
         bool CheckLoggedUser(Guid userId, Guid groupRoleId);
         List<string> GetUserEmailListByRole(Guid roleId, Guid groupId);
         bool isGroupAdmin(Guid userId, Guid groupId);

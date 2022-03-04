@@ -97,11 +97,10 @@ namespace Catfish.Areas.Manager.Pages
             _piranhaDb.SaveChanges();
             OnGet(id);
         }
-        public void OnPostEdit(Guid id, Guid groupTemplateId)
+        public void OnPostEdit(Guid id, Guid collectionId, Guid groupTemplateId)
         {
-            //_srv.DeleteGroupTemplateCollection);
+            _srv.DeleteGroupTemplateCollection(groupTemplateId, collectionId);
             _appDb.SaveChanges();
-            _piranhaDb.SaveChanges();
             OnGet(id);
         }
 

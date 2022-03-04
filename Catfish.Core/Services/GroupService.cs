@@ -827,6 +827,26 @@ namespace Catfish.Core.Services
             }
         }
 
+        /// <summary>
+        /// This method will delete collection from a given group template
+        /// </summary>
+        /// <param name="groupTemplateId"></param>
+        /// <param name="collectionId"></param>
+        public void DeleteGroupTemplateCollection(Guid groupTemplateId, Guid collectionId)
+        {
+            try
+            {
+                GroupTemplate groupTemplate = _appDb.GroupTemplates.Where(gt => gt.Id == groupTemplateId).FirstOrDefault();
+                var collection = _appDb.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                groupTemplate.Collections.Remove(collection);
+                _appDb.GroupTemplates.Update(groupTemplate);
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+        }
+
         public bool CheckLoggedUser(Guid userId, Guid groupRoleId)
         {
             try
