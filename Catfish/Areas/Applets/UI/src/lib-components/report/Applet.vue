@@ -1,12 +1,12 @@
 <script lang="ts">
-	//import { Guid } from 'guid-typescript'
+	import { Guid } from 'guid-typescript'
 
 	//import { defineComponent, computed } from 'vue';
 	import { defineComponent } from 'vue';
 	import { useStore } from 'vuex';
 	import props, {  DataAttribute } from '../shared/props'
-	
 
+	import { Mutations } from './store/mutations'
 	
 	export default defineComponent({
 		name: "Report",
@@ -16,18 +16,27 @@
 		props,
 		setup(p) {
 
+			const store = useStore();
+
 			// console.log('props: ', JSON.stringify(p));
 			//const queryParameters = p.queryParameters as QueryParameter;
 			const dataAttributes = p.dataAttributes as DataAttribute;
 
-			
-			//const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
+
+			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
+			store.commit(Mutations.SET_TEMPLATE_ID, itemTemplateId)
+
+			console.log("Item template ID: ", itemTemplateId);
+
+			store.state.itemTemplateId = itemTemplateId;
+
+
+
 			const selectedFields = dataAttributes["selected-fields"] as string;
             //console.log("item template id " + itemTemplateId)
             //console.log("selected Fields: " + selectedFields)
 			const isAdmin = dataAttributes["is-admin"] as string;
 			
-			const store = useStore();
 
 			
 

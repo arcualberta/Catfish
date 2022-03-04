@@ -63,6 +63,8 @@
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\item.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\report\store\mutations.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\report\store\state.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\components\display\ImgDiv.vue" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\functions\useDebouncedRef.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
@@ -140,7 +142,6 @@
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\store\" />
     <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\components\" />
     <Folder Include="Areas\Applets\UI\src\lib-components\item-viewer\store\" />
-    <Folder Include="Areas\Applets\UI\src\lib-components\report\store\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
     <Folder Include="Models\FormBuilder\" />
     <Folder Include="wwwroot\assets\js\vue3\" />
@@ -167,6 +168,8 @@
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\itemTemplate.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\mutations.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\state.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\components\display\cms\ImgDiv.vue" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\functions\useDebouncedRef.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
