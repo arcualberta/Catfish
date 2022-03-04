@@ -3,15 +3,12 @@ import { GetterTree } from 'vuex';
 import { State } from './state';
 
 export const getters: GetterTree<State, State> = {
-    rootDataItem: state => {
-        return state.item?.dataContainer?.$values?.filter(dc => dc.isRoot)[0];
+   
+    dataItem: (state) => (itemTemplateId: Guid) => {
+        return (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === itemTemplateId)[0]);
     },
+    field: (state) => (itemTemplateId: Guid, fieldId: Guid) => {
 
-    metadataSet: (state) => (id: Guid) => {
-        console.log("metadataset getter id: " + JSON.stringify(id));
-        return state.item?.metadataSets?.$values?.find(ms => ms.templateId === id);
-    },
-    dataItemId: state => {
-        return (state.item?.dataContainer?.$values?.filter(dc => dc.isRoot)[0])?.id;
+        return (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === itemTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fieldId);
     }
 }

@@ -15,7 +15,7 @@ namespace Catfish.Areas.Applets.Models.Blocks.ItemLayout
     {
         public void RegisterBlock() => App.Blocks.Register<ItemLayout>();
 
-      
+        public TextField QueryParameter { get; set; }
         public CatfishSelectList<ItemTemplate> ItemTemplates { get; set; }
         public TextField SelectedItemTemplateId { get; set; }
         
