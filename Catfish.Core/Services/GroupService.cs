@@ -232,6 +232,27 @@ namespace Catfish.Core.Services
                 return null;
             }
         }
+
+        public GroupTemplate AddTemplateCollections(Guid groupTemplateId, Guid collectionId)
+        {
+            try
+            {
+                GroupTemplate groupTemplate = _appDb.GroupTemplates.Where(gt => gt.Id == groupTemplateId).FirstOrDefault();
+                Collection collection = _appDb.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                groupTemplate.Collections.Add(collection);
+                return groupTemplate;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IList<Guid> GetAllCollectionIds()
         {
             try
@@ -326,7 +347,7 @@ namespace Catfish.Core.Services
                         {
                             CollectionId = collection.Id,
                             TemplateGroupId = groupTemplateId,
-                            CollectionName =collection.Name.ToString(),
+                            CollectionName =collection.ConcatenatedName,
                             Assigned = false
                         };
                         Collections.Add(templateCollectionVM);
@@ -799,6 +820,26 @@ namespace Catfish.Core.Services
                     _appDb.UserGroupRoles.Remove(userGroupRole);
                 if (!(countExsitingRoles > 1))
                     _piranhaDb.UserRoles.Remove(roleDetails);
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+        }
+
+        /// <summary>
+        /// This method will delete collection from a given group template
+        /// </summary>
+        /// <param name="groupTemplateId"></param>
+        /// <param name="collectionId"></param>
+        public void DeleteGroupTemplateCollection(Guid groupTemplateId, Guid collectionId)
+        {
+            try
+            {
+                GroupTemplate groupTemplate = _appDb.GroupTemplates.Where(gt => gt.Id == groupTemplateId).FirstOrDefault();
+                var collection = _appDb.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                groupTemplate.Collections.Remove(collection);
+                _appDb.GroupTemplates.Update(groupTemplate);
             }
             catch (Exception ex)
             {

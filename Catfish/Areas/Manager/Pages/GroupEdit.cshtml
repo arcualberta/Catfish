@@ -127,7 +127,7 @@
                 <span class="title">@Localizer.General["Configure Templates"]</span>
             </div>
             <div class="card-body">
-                <form asp-page-handler="delete" method="post">
+                <form asp-page-handler="edit" method="post">
                     @foreach (var template in Model.Templates.Where(t => t.Assigned))
                     {
                         

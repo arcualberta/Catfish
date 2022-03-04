@@ -46,19 +46,15 @@
                 </div>
                 <div class="form-group">
                     <div class="container-fluid">
-
                         <table class="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th>@Localizer.General["Collection"]</th>
+                                        <th>@Localizer.General["Collections"]</th>
                                         <th class="actions one"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for (int cnt = 0; cnt < Model.Collections.Count; ++cnt)
-                                    {
-                                        @Html.EditorFor(model => model.Collections[cnt])
-                                    }
+                                        @Html.EditorFor(model => model.Collections)
                                 </tbody>
                         </table>
                     </div>

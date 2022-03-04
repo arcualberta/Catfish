@@ -43,5 +43,16 @@ namespace Catfish.Areas.Manager.Pages
             GroupTemplate = _srv.GetGroupTemplateDetails(id);
             Collections = _srv.SetTemplateCollectionAttribute(id);
         }
+
+        public IActionResult OnPost()
+        {
+            GroupTemplate = _srv.GetGroupTemplateDetails(GroupTemplate.Id);
+            foreach (var collection in Collections.Where(ugr => ugr.Assigned))
+                _srv.AddTemplateCollections(GroupTemplate.Id, collection.CollectionId);
+
+            _appDb.SaveChanges();
+            return RedirectToPage("GroupEdit", "Manager", new { id = GroupTemplate.GroupId });
+
+        }
     }
 }

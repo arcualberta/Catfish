@@ -1,0 +1,16 @@
+﻿@model Catfish.Core.Models.ViewModels.TemplateCollectionVM
+
+@Html.HiddenFor(model => model.TemplateGroupId)
+@Html.HiddenFor(model => model.CollectionId)
+
+
+@{
+    var id = Html.IdFor(model => model);
+    var name = Html.NameFor(model => model);
+}
+<div class="checkbox">
+    <label class="mb-0">
+        @Html.CheckBoxFor(model => model.Assigned) @Model.CollectionName.ToString()
+        @*<input id="@id" name="@name" type="checkbox" value="@Model.Assigned" checked="@Model.Assigned"> @Model.RoleName*@
+    </label>
+</div>
