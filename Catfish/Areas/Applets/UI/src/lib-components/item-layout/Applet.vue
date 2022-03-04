@@ -48,7 +48,7 @@
                 queryParams,
                 dataItem: computed(() => store.getters.rootDataItem),
                 isAdmin,
-              //  components,
+                components,
                 selectedComponents,
                 //items: computed(() => store.state.items)
             }
@@ -77,8 +77,10 @@
       
     <div>
         <h3>Item id : {{store.state.id}}</h3>
-        <div>
-            {{store.state.item}}
+        <h5>Selected Fields</h5>
+        <div v-for="com in components">
+            {{store.getters.field(com.formTemplateId, com.fieldId)}}
+            <hr />
         </div>
     </div>
     </div>
