@@ -49,9 +49,11 @@ namespace Catfish.Helpers
                     .Include(r => r.RegionTemplate)
                     .Where(r => r.PageId == page.Id && r.RegionTemplate.InternalId == "PageTitle")
                     .FirstOrDefault();
-
-                MultilingualText pageTitle = new JavaScriptSerializer().Deserialize<MultilingualText>(pageTitleRegion.InternalBody);
-                menuItemText = pageTitle.GetContent(culture.TwoLetterISOLanguageName);
+                if (pageTitleRegion != null)
+                {
+                    MultilingualText pageTitle = new JavaScriptSerializer().Deserialize<MultilingualText>(pageTitleRegion.InternalBody);
+                    menuItemText = pageTitle.GetContent(culture.TwoLetterISOLanguageName);
+                }
             }
             catch (Exception)
             {

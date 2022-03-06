@@ -74,11 +74,7 @@ namespace Catfish.Models.ViewModels
                 
                 foreach (CFEntity member in ((CFAggregation)entity).ChildMembers)
                 {
-                    if (previousEntities.ContainsKey(member.Guid))
-                    {
-                        Children.Add(previousEntities[member.Guid]);
-                    }
-                    else
+                    if (!previousEntities.ContainsKey(member.Guid))
                     {
                         EntityViewModel child = new EntityViewModel(member, languageCodes, previousEntities);
                         Children.Add(child);
