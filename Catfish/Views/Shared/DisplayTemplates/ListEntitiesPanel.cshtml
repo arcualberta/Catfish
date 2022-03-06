@@ -166,10 +166,8 @@
             $("[name='listEntitiesPanel_page_number']").val(currPage);
 
             if (currPage < totalPages) {
-                totalPages = currPage + 1;
                 $("[name='listEntitiesPanel_next_button']").show();
             } else {
-                totalPages = currPage;
                 $("[name='listEntitiesPanel_next_button']").hide();
             }
 

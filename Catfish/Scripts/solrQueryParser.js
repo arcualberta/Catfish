@@ -126,7 +126,7 @@ var SolrParser = function (langCode) {
             if (value == null) {
                 return null;
             }
-            
+
             return typeof (value) == "string" ? value : value.value;
         }
 
@@ -150,7 +150,7 @@ var SolrParser = function (langCode) {
                 return null;
             }
 
-            return typeof(value) == "string" ? value : value.value;
+            return typeof (value) == "string" ? value : value.value;
         }
 
         TokenEnumerator.prototype.currentRaw = function () {
@@ -319,9 +319,9 @@ var SolrParser = function (langCode) {
                 case "\"":
                     var value = decodeQuotation.call(this, tokens);
                     if (name == null) {
-                        name = "\"" + token + "\"";
+                        name = "\"" + value + "\"";
                     } else {
-                        name += " " + "\"" + token + "\"";
+                        name += " " + "\"" + value + "\"";
                     }
                     break;
 
@@ -488,7 +488,7 @@ var SolrParser = function (langCode) {
 
         return result.trim();
     }
-    
+
     SolrParser.prototype.decode = function (queryString) {
         var result = {};
 
@@ -517,7 +517,7 @@ var SolrParser = function (langCode) {
                 case "\"":
                     name = decodeQuotation.call(this, tokens);
                     break;
-                    
+
                 default:
                     name = token;
             }

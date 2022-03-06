@@ -27,6 +27,13 @@ Restart Solr by visiting the following URL on the browser. Please make sure you 
 http://localhost:8983/solr/admin/cores?action=RELOAD&core=CoreName
 ```
 
+### Update Solr Field Configuration
+Update the definitions of multi-valued-string type solr fields if they should be search against for case insensitive words. If this is not done, they will only match case-sensitive full-string matchs.
+```
+	<field name="title_ss" type="text_general" indexed="true" stored="true" multiValued="true" required="false"/>
+	<field name="content_ss" type="text_general" indexed="true" stored="true" multiValued="true" required="false"/>
+```
+
 ## Source Code Setup
 * Clone or download the source code from this GitHub repository. This solution contains the following projects:
    * Catfish - the primary web application
@@ -51,6 +58,5 @@ PM> Update-Database
    
    
   
-
 
 

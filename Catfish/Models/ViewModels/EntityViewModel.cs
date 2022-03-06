@@ -144,7 +144,7 @@ namespace Catfish.Models.ViewModels
 
         public DataFileViewModel GetFirstDataFile(MimeType type, ref int depth, int maxDepth = int.MaxValue)
         {
-            if(depth >= maxDepth)
+            if (depth >= maxDepth)
             {
                 return null;
             }
