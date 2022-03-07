@@ -3,22 +3,20 @@
 //import { MultilingualTextField } from '../../shared/models/fieldContainer';
     import { ComponentField } from "../models/componentField"
  // import { Field, MultilingualTextField } from "../../shared/models/fieldContainer"
-
-
+  
+   
    export default defineComponent({
             name: "FieldComponent",
-        components: {
-
+       components: {
+         
+         
         },
         props: {
             model: {
             type: null as PropType<ComponentField> | null,
             required: true
             },
-            //fieldlayout:{
-            //    type: null as PropType<ComponentLayout> | null,
-            //    required: false
-            //}
+           
 
         },
         setup(p) {
@@ -46,9 +44,8 @@
         <h3>Field Component</h3>
         {{JSON.stringify(model.field)}}
         <h3>HTML field type</h3>
-        {{type}}
-      
-   
+        <component :is="type" >{{type}} </component>
+        
     </div>
 </template>
 

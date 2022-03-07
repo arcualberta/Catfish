@@ -25,7 +25,7 @@ export const getters: GetterTree<State, State> = {
            
             //let fld: Field;
             let fld = (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === frmTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fldId);
-       //     console.log("the field: " + JSON.stringify(fld));
+            //console.log("the field: " + fld.n);
             let comField: ComponentField = { component: components[i], field: fld as unknown as Field };
            
 
