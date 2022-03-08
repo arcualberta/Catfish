@@ -9,7 +9,7 @@ export interface State extends ItemStateInterface{
    // item: Item | null;
     items: Item[] | null;
     template: ItemTemplate | null;
-    formIds: String | null;
+    formIds: string | null;
     templateId: Guid | null;
 }
 
