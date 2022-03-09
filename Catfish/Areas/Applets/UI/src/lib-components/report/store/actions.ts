@@ -3,11 +3,12 @@ import { State } from './state';
 import { Mutations } from './mutations';
 
 export enum Actions {
+    LOAD_DATA = 'LOAD_DATA',
     INIT_FILTER = 'INIT_FILTER',
     FRESH_SEARCH = 'FRESH_SEARCH'
 }
 export const actions: ActionTree<State, any> = {
-    [Actions.INIT_FILTER](store) {
+    [Actions.LOAD_DATA](store) {
 
         //console.log('Store: ', JSON.stringify(store.state))
 

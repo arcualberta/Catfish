@@ -7,7 +7,8 @@
 	import props, {  DataAttribute } from '../shared/props'
 
 	import { Mutations } from './store/mutations'
-	
+	import { Actions } from './store/actions'
+
 	export default defineComponent({
 		name: "Report",
 		components: {
@@ -31,7 +32,6 @@
 			store.state.itemTemplateId = itemTemplateId;
 
 
-
 			const selectedFields = dataAttributes["selected-fields"] as string;
             //console.log("item template id " + itemTemplateId)
             //console.log("selected Fields: " + selectedFields)
@@ -40,8 +40,8 @@
 
 			
 
-			//load the data
-			//store.dispatch(Actions.LOAD_FORM);
+			
+
 			//store.dispatch(Actions.LOAD_SUBMISSIONS);
 			//if (childResponseFormId) {
 			//	store.commit(ChildMutations.SET_RESPONSE_FORM_ID, childResponseFormId);
@@ -55,10 +55,10 @@
 			
 
 			return {
-				
 				store,
                 selectedFields,
-				isAdmin
+				isAdmin,
+				loadData: () => store.dispatch(Actions.LOAD_DATA)
 			}
 		},
 		storeConfig: {
