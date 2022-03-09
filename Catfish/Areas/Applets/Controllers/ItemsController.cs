@@ -318,13 +318,37 @@ namespace Catfish.Areas.Applets.Controllers
                 return StatusCode(StatusCodes.Status404NotFound);
             }
         }
-        /// <summary>
-        /// Get Item instances for the given item/form ids
-        /// </summary>
-        /// <param name="itemIds">form instance ids</param>
-        /// <returns></returns>
-        //[HttpGet("getItems/{templateId}/{itemIds}")]
-        [HttpGet("getItems/{templateId}")]
+
+        [HttpGet("reports/group/{groupId}/template/{templateId}/collection/{collectionID}")]
+        public async Task<ContentResult> GetReportDataAsync(Guid groupId, Guid templateId, Guid collectionID)
+        {
+            try
+            {
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
+                List<Item> items = _submissionService.GetSubmissionList(groupId, templateId, collectionID);
+                return Content(JsonConvert.SerializeObject(items, settings), "application/json");
+            }
+            catch (Exception ex)
+            {
+
+                return Content("{}", "application/json");
+            }
+            
+        }
+
+            /// <summary>
+            /// Get Item instances for the given item/form ids
+            /// </summary>
+            /// <param name="itemIds">form instance ids</param>
+            /// <returns></returns>
+            //[HttpGet("getItems/{templateId}/{itemIds}")]
+            [HttpGet("getItems/{templateId}")]
         public List<Item> GetItemsAsync(Guid templateId/*,string itemIds*/)
         {
             //string[] itmIds = itemIds.Split(",");

@@ -134,6 +134,18 @@ namespace Catfish.Services
             return items;
 
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="templateId"></param>
+        /// <param name="collectionId"></param>
+        /// <returns></returns>
+        public List<Item> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId)
+        {
+            return _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
+        }
         /// <summary>
         /// Get all item in a given collection
         /// </summary>

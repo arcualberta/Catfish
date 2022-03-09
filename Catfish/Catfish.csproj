@@ -63,6 +63,7 @@
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\item.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\report\store\actions.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\report\store\mutations.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\report\store\state.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\shared\components\display\ImgDiv.vue" />
@@ -168,6 +169,7 @@
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\itemTemplate.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\actions.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\mutations.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\state.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\components\display\cms\ImgDiv.vue" />
