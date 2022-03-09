@@ -1,8 +1,9 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType, computed  /*, ref , computed */} from 'vue'
-//import { MultilingualTextField } from '../../shared/models/fieldContainer';
+    import { defineComponent, PropType, computed  /*, ref  */} from 'vue'
+
     import { ComponentField } from "../models/componentField"
- // import { Field, MultilingualTextField } from "../../shared/models/fieldContainer"
+  //  import {/* Field,*/ MultilingualTextField } from "../../shared/models/fieldContainer"
+
   
    
    export default defineComponent({
@@ -31,7 +32,9 @@
                  //   store,
             //   field,
               //  layout
-                type: computed(() => p.model.component.type)
+                type: computed(() => p.model.component.type),
+                field: computed(() => p.model.field )
+                //textValues: computed(() => (p.model.field as MultilingualTextField).values?.$values )
             }
         }
        
@@ -41,11 +44,9 @@
 <template>
    
     <div class="fieldType">
-        <h3>Field Component</h3>
-        {{JSON.stringify(model.field)}}
-        <h3>HTML field type</h3>
-        <component :is="type" >{{type}} </component>
-        
-    </div>
+        <label>{{field[0].name.concatenatedContent}}</label>
+        <component :is="type"> {{field[0].values.$values[0].concatenatedContent}} </component>
+
+  </div>
 </template>
 
