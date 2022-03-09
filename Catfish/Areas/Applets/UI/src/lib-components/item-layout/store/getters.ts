@@ -1,4 +1,5 @@
-﻿import { Guid } from 'guid-typescript';
+﻿/// <reference path="mutations.ts" />
+import { Guid } from 'guid-typescript';
 import { GetterTree } from 'vuex';
 import { FieldLayout } from '../models/fieldLayout';
 import { State } from './state';
@@ -15,24 +16,17 @@ export const getters: GetterTree<State, State> = {
         return (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === itemTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fieldId);
     },
     fields: (state) => (components: FieldLayout[]) => {
-        let flds:ComponentField[] = [];
-       // console.log("Item: " + JSON.stringify(state.item));
+        const flds:ComponentField[] = [];
         for (let i = 0; i < components?.length; i++) {
 
-            let frmTemplateId = components[i].formTemplateId;
-            let fldId = components[i].fieldId;
-           // console.log("form template Id : " + frmTemplateId + "field id: " + fldId);
+            const frmTemplateId = components[i].formTemplateId;
+            const fldId = components[i].fieldId;
            
-            //let fld: Field;
-            let fld = (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === frmTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fldId);
-            //console.log("the field: " + fld.n);
-            let comField: ComponentField = { component: components[i], field: fld as unknown as Field };
-           
+            const fld = (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === frmTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fldId);
+            const comField: ComponentField = { component: components[i], field: fld as unknown as Field };
 
             flds.push(comField);
         }
-        //console.log("fields:")
-      //  console.log(JSON.stringify(flds));
         return flds;
     }
 }
