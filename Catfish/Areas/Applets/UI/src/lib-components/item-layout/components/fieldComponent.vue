@@ -2,7 +2,7 @@
     import { defineComponent, PropType, computed  /*, ref  */} from 'vue'
 
     import { ComponentField } from "../models/componentField"
-  //  import {/* Field,*/ MultilingualTextField } from "../../shared/models/fieldContainer"
+    import {/* Field,*/ MultilingualTextField } from "../../shared/models/fieldContainer"
 
   
    
@@ -33,8 +33,8 @@
             //   field,
               //  layout
                 type: computed(() => p.model.component.type),
-                field: computed(() => p.model.field )
-                //textValues: computed(() => (p.model.field as MultilingualTextField).values?.$values )
+                field: computed(() => p.model.field ),
+                multiTextField: computed(() => (p.model.field as MultilingualTextField))
             }
         }
        
@@ -47,6 +47,10 @@
         <label>{{field[0].name.concatenatedContent}}</label>
         <component :is="type"> {{field[0].values.$values[0].concatenatedContent}} </component>
 
+        <!--cast to MultiText Fied
+        <div v-for="val in multiTextField.values?.$values">
+            {{val.value}}
+        </div>-->
   </div>
 </template>
 
