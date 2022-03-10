@@ -319,7 +319,7 @@ namespace Catfish.Areas.Applets.Controllers
             }
         }
 
-        [HttpGet("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
+        [HttpPost("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
         public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID)
         {
             try
