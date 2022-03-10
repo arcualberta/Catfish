@@ -1,6 +1,6 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
-import { Mutations } from './mutations';
+//import { Mutations } from './mutations';
 
 export enum Actions {
     LOAD_DATA = 'LOAD_DATA',
@@ -16,12 +16,12 @@ export const actions: ActionTree<State, any> = {
             `/applets/api/items/GetReportData/${store.state.groupId}/template/${store.state.itemTemplateID}/collection/${store.state.collectionID}`;
         console.log('reports Load API: ', api)
 
-        fetch(api)
-            .then(response => response.json())
-            .then(data => {
-                store.commit(Mutations.SET_REPORT_DATA, data)
+    //    fetch(api)
+    //        .then(response => response.json())
+    //        .then(data => {
+    //            store.commit(Mutations.SET_REPORT_DATA, data)
 
-            });
+    //        });
     },
 
     

@@ -6,8 +6,10 @@
 	import { useStore } from 'vuex';
 	import props, {  DataAttribute } from '../shared/props'
 
-	import { Mutations } from './store/mutations'
-	import { Actions } from './store/actions'
+	import { state } from './store/state'
+	import { actions, Actions } from './store/actions'
+	import { getters } from './store/getters'
+	import { mutations, Mutations } from './store/mutations'
 
 	export default defineComponent({
 		name: "Report",
@@ -62,23 +64,23 @@
 			}
 		},
 		storeConfig: {
-			//state,
-			//actions,
-			//mutations,
-			//getters
+			state,
+			actions,
+			mutations,
+			getters
 		},
-		methods: {
-            LoadForm() {
-                this.store.dispatch(Actions.LOAD_DATA);
-            }
-        }
+		//methods: {
+  //          LoadData() {
+  //              this.store.dispatch(Actions.LOAD_DATA);
+  //          }
+  //      }
 			
 	});
 </script>
 
 <template class="report">
 	<h3>Report</h3>
-	<button class="btn btn-primary" @click="LoadForm()">Execute</button>
+	<button class="btn btn-primary" @click="loadData()">Execute</button>
 	<div>{{selectedFields}}</div>
 
 </template>
