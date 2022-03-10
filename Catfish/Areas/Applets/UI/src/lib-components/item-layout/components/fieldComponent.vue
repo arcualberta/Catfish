@@ -12,28 +12,18 @@
          
          
         },
-        props: {
-            model: {
-            type: null as PropType<ComponentField> | null,
-            required: true
-            },
-           
-
-        },
+       props: {
+           model: {
+               type: null as PropType<ComponentField> | null,
+               required: true
+           },
+       },
         setup(p) {
-            //  const store = useStore();
-          //  const field = p.model.field;
-          //  const layout = p.model.component;
-            
-            //  console.log("field in fieldComponent: " + JSON.stringify(field));
-            //const type = p.model.component.type;
             return {
-               // model: computed(() => p.model)
-                 //   store,
-            //   field,
-              //  layout
-                type: computed(() => p.model.component.type),
+                htmlWrapperTag: computed(() => p.model.component.type?.length > 0 ? p.model.component.type : "div"),
+				componentType: computed(() => p.model.component.$type.split(',')[0]),
                 field: computed(() => p.model.field ),
+				fieldType: computed(() => p.model.field.$type.split(',')[0]),
                 multiTextField: computed(() => (p.model.field as MultilingualTextField))
             }
         }
@@ -42,15 +32,24 @@
 </script>
 
 <template>
+
    
     <div class="fieldType">
-        <label>{{field[0].name.concatenatedContent}}</label>
-        <component :is="type"> {{field[0].values.$values[0].concatenatedContent}} </component>
-
-        <!--cast to MultiText Fied
-        <div v-for="val in multiTextField.values?.$values">
-            {{val.value}}
-        </div>-->
-  </div>
+        {{JSON.stringify(model)}} <br />
+        {{htmlWrapperTag}}: {{compType}}
+        <hr />
+        <component :is="htmlWrapperTag" v-if="componentType === 'Catfish.Areas.Applets.Models.Blocks.ItemLayout.StaticText'"> {{model.component.content}} </component>
+        <div  v-else v-if="fieldType === 'Catfish.Core.Models.Contents.Fields.TextArea' || fieldType === 'Catfish.Core.Models.Contents.Fields.TextField'">
+			<div v-for="multilingualValue in field.values.$values">
+                <component :is="htmlWrapperTag" v-for="valueInOneLanguage in multilingualValue.values.$values">
+                    {{valueInOneLanguage.value}}
+                </component>
+			</div>
+        </div>
+        <br />
+        <hr />
+        <hr />
+        <!--<component :is="type"> {{field[0].values.$values[0].concatenatedContent}} </component>-->
+    </div>
 </template>
 

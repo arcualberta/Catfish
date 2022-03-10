@@ -16,17 +16,17 @@ export const getters: GetterTree<State, State> = {
         return (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === itemTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fieldId);
     },
     fields: (state) => (components: FieldLayout[]) => {
-        const flds:ComponentField[] = [];
+        const fields: ComponentField[] = [];
         for (let i = 0; i < components?.length; i++) {
 
             const frmTemplateId = components[i].formTemplateId;
             const fldId = components[i].fieldId;
-           
-            const fld = (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === frmTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fldId);
-            const comField: ComponentField = { component: components[i], field: fld as unknown as Field };
 
-            flds.push(comField);
+            const field = (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === frmTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fldId)[0];
+            const comField: ComponentField = { component: components[i], field: field as Field };
+
+            fields.push(comField);
         }
-        return flds;
+        return fields;
     }
 }
