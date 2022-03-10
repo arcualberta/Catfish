@@ -81,27 +81,6 @@
 		<!--{{JSON.stringify(components)}}-->
 
 		<FieldComponent v-for="field in fields" :model="field" />
-
-		<!--<h4>Item</h4>
-		{{JSON.stringify(fields)}}-->
-
-		<!--<div>
-	<h3>Item id : {{store.state.id}}</h3>
-	<h5>Selected Fields</h5>-->
-		<!--<div v-for="com in components">
-		{{store.getters.field(com.formTemplateId, com.fieldId)}}
-		<hr />
-	</div>-->
-		<!--{{JSON.stringify(fields)}}-->
-		<!--<div v-for="field in fields">
-			<h4>Field Model</h4>
-			{{JSON.stringify(field)}}
-			<hr />
-			<FieldComponent :model="field" />
-			<hr />
-			<hr />
-		</div>
-	</div>-->
 	</div>
 </template>
 

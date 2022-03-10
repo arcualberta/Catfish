@@ -1,8 +1,9 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType, computed  /*, ref  */} from 'vue'
+    import { defineComponent, PropType, computed, ref } from 'vue'
+    import { useStore } from 'vuex';
     import dayjs from "dayjs";
     import { ComponentField } from "../models/componentField"
-    import {/* Field,*/ MultilingualTextField, OptionsField, OptionsFieldMethods} from "../../shared/models/fieldContainer"
+    import {/* Field,*/  OptionsField, OptionsFieldMethods, AttachmentField } from "../../shared/models/fieldContainer"
    
   
    
@@ -18,13 +19,27 @@
                required: true
            },
        },
-        setup(p) {
+       setup(p) {
+
+          
+           const store = useStore();
+
+           if (p.model.field.$type.includes("AttachmentField")) {
+               const itemId = ref(store.state.item.id);
+
+               const dataItemId = ref(store.getters.dataItemId(p.model.component.formTemplateId));
+               const fieldId = ref(p.model.component.fieldId);
+               const fileName = ref((p.model.field as AttachmentField).files.$values[0].fileName); //ref((p.model.field as AttachmentField)
+               const fileUrl = '/api/items/' + itemId.value + '/' + dataItemId.value + '/' + fieldId.value + '/' + fileName.value;
+               console.log("url: " + fileUrl);
+           }
+         
             return {
                 htmlWrapperTag: computed(() => p.model.component.type?.length > 0 ? p.model.component.type : "div"),
 				componentType: computed(() => p.model.component.$type.split(',')[0]),
-                field: computed(() => p.model.field ),
-				fieldType: computed(() => p.model.field.$type.split(',')[0]),
-                multiTextField: computed(() => (p.model.field as MultilingualTextField))
+                field: computed(() => p.model.field),
+                fieldType: computed(() => p.model.field.$type?.split(',')[0])
+               //fieldType: computed(() => p.model.field.$type)
             }
        },
        methods: {
@@ -37,7 +52,8 @@
            },
            getSelectedFieldLabels(field: OptionsField) {
                return OptionsFieldMethods.getSelectedFieldLabels(field.options.$values);
-           }
+           },
+           
        }
        
     });
@@ -59,7 +75,7 @@
                     </component>
                 </div>
             </div>
-            <div v-else-if="fieldType === 'Catfish.Core.Models.Contents.Fields.EmailField' || fieldType === 'Catfish.Core.Models.Contents.Fields.MonolingualTextField' || fieldType === 'Catfish.Core.Models.Contents.Fields.IntegerField'">
+            <div v-else-if="fieldType.includes('Catfish.Core.Models.Contents.Fields.EmailField') || fieldType === 'Catfish.Core.Models.Contents.Fields.MonolingualTextField' || fieldType === 'Catfish.Core.Models.Contents.Fields.IntegerField'">
                 <component :is="htmlWrapperTag" v-for="val in field.values.$values">
                     {{val.value}}
                 </component>
@@ -80,12 +96,13 @@
                 </component>
 
             </div>
-            <!--   <div v-else-if="fieldType === 'Catfish.Core.Models.Contents.Fields.AttachmentField' || fieldType === 'Catfish.Core.Models.Contents.Fields.AudioRecorderField'">
-           <component :is="htmlWrapperTag" >
+           <div v-else-if="fieldType.includes('Catfish.Core.Models.Contents.Fields.AttachmentField') || fieldType === 'Catfish.Core.Models.Contents.Fields.AudioRecorderField'">
+            {{JSON.stringify(field)}}
+               <component :is="htmlWrapperTag" >
                TODO
-           </component>
-             </div>
-         -->
+              </component>
+           </div>
+        
         </div>
         <br />
         <hr />

@@ -28,5 +28,8 @@ export const getters: GetterTree<State, State> = {
             fields.push(comField);
         }
         return fields;
+    },
+    dataItemId: (state) => (formTemplateId: Guid) => {
+        return (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === formTemplateId)[0])?.id;
     }
 }

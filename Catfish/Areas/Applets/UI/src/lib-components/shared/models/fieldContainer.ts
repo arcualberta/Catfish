@@ -139,7 +139,10 @@ export interface FileReference {
 }
 
 export interface AttachmentField extends Field {
-    files: FileReference[];
+    files: {
+        $type: string,
+        $values: FileReference[];
+        }
     allowedExtensions: string[];
     maxFileSize: number;
 }

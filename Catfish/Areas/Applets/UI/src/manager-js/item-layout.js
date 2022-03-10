@@ -159,9 +159,10 @@
                         <option value="h4">H4</option>
                         <option value="h5">H5</option>
                         <option value="div">Div</option>
-                        <option value="p">Paragraph</option>
+                        <option value="audio">Audio</option>
+                        <option value="embed">Embed</option>
                         <option value="img">Image</option>
-                        <option value="file">File</option>
+                        <option value="p">Paragraph</option> 
                      </select>
                      <label class='form-label'  style="margin-left: 10px; margin-right: 10px">Class(es):</label>
                      <input type="text" v-model="component.cssClasses" class="col-md-2"  v-on:blur="onBlur" />
