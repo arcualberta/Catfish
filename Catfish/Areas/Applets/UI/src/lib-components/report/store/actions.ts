@@ -13,7 +13,7 @@ export const actions: ActionTree<State, any> = {
         //console.log('Store: ', JSON.stringify(store.state))
 
         const api = window.location.origin +
-            `/applets/api/reports/group/${store.state.groupId}/template/${store.state.itemTemplateID}/collection/${store.state.collectionID}`;
+            `/applets/api/items/GetReportData/${store.state.groupId}/template/${store.state.itemTemplateID}/collection/${store.state.collectionID}`;
         console.log('reports Load API: ', api)
 
         fetch(api)

@@ -319,8 +319,8 @@ namespace Catfish.Areas.Applets.Controllers
             }
         }
 
-        [HttpGet("reports/group/{groupId}/template/{templateId}/collection/{collectionID}")]
-        public async Task<ContentResult> GetReportDataAsync(Guid groupId, Guid templateId, Guid collectionID)
+        [HttpGet("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
+        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID)
         {
             try
             {
@@ -339,16 +339,16 @@ namespace Catfish.Areas.Applets.Controllers
 
                 return Content("{}", "application/json");
             }
-            
+
         }
 
-            /// <summary>
-            /// Get Item instances for the given item/form ids
-            /// </summary>
-            /// <param name="itemIds">form instance ids</param>
-            /// <returns></returns>
-            //[HttpGet("getItems/{templateId}/{itemIds}")]
-            [HttpGet("getItems/{templateId}")]
+        /// <summary>
+        /// Get Item instances for the given item/form ids
+        /// </summary>
+        /// <param name="itemIds">form instance ids</param>
+        /// <returns></returns>
+        //[HttpGet("getItems/{templateId}/{itemIds}")]
+        [HttpGet("getItems/{templateId}")]
         public List<Item> GetItemsAsync(Guid templateId/*,string itemIds*/)
         {
             //string[] itmIds = itemIds.Split(",");

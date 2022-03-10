@@ -66,14 +66,20 @@
 			//actions,
 			//mutations,
 			//getters
-		}
-		
+		},
+		methods: {
+            LoadForm() {
+                this.store.dispatch(Actions.LOAD_DATA);
+            }
+        }
 			
 	});
 </script>
 
-<template  class="report">
+<template class="report">
 	<h3>Report</h3>
+	<button class="btn btn-primary" @click="LoadForm()">Execute</button>
 	<div>{{selectedFields}}</div>
+
 </template>
 
