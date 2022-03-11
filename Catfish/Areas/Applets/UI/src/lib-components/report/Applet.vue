@@ -28,11 +28,15 @@
 
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
 			store.commit(Mutations.SET_TEMPLATE_ID, itemTemplateId)
-
-			console.log("Item template ID: ", itemTemplateId);
-
 			store.state.itemTemplateId = itemTemplateId;
 
+			const collectionId = Guid.parse(dataAttributes["collection-id"] as string);
+            store.commit(Mutations.SET_COLLECTION_ID, collectionId)
+			store.state.collectionId = collectionId;
+
+            const groupId = Guid.parse(dataAttributes["group-id"] as string);
+            store.commit(Mutations.SET_GROUP_ID, groupId)
+            store.state.groupId = groupId;
 
 			const selectedFields = dataAttributes["selected-fields"] as string;
             //console.log("item template id " + itemTemplateId)
