@@ -3,7 +3,7 @@
     import { useStore } from 'vuex';
     import dayjs from "dayjs";
     import { ComponentField } from "../models/componentField"
-    import {/* Field,*/  OptionsField, OptionsFieldMethods, AttachmentField } from "../../shared/models/fieldContainer"
+    import {/* Field,*/  OptionsField, OptionsFieldMethods/*, AttachmentField*/ } from "../../shared/models/fieldContainer"
    
   
    
@@ -23,23 +23,24 @@
 
           
            const store = useStore();
-
+           let fileUrl = "";
            if (p.model.field.$type.includes("AttachmentField")) {
                const itemId = ref(store.state.item.id);
 
                const dataItemId = ref(store.getters.dataItemId(p.model.component.formTemplateId));
                const fieldId = ref(p.model.component.fieldId);
-               const fileName = ref((p.model.field as AttachmentField).files.$values[0].fileName); //ref((p.model.field as AttachmentField)
-               const fileUrl = '/api/items/' + itemId.value + '/' + dataItemId.value + '/' + fieldId.value + '/' + fileName.value;
-               console.log("url: " + fileUrl);
+               //const fileName = ref((p.model.field as AttachmentField).files.$values[0].fileName); //ref((p.model.field as AttachmentField)
+               fileUrl = window.location.origin + '/api/items/' + itemId.value + '/' + dataItemId.value + '/' + fieldId.value + '/';// + fileName.value;
+              // console.log("url: " + fileUrl);
            }
          
             return {
                 htmlWrapperTag: computed(() => p.model.component.type?.length > 0 ? p.model.component.type : "div"),
 				componentType: computed(() => p.model.component.$type.split(',')[0]),
                 field: computed(() => p.model.field),
-                fieldType: computed(() => p.model.field.$type?.split(',')[0])
+                fieldType: computed(() => p.model.field.$type?.split(',')[0]),
                //fieldType: computed(() => p.model.field.$type)
+                fileUrl
             }
        },
        methods: {
@@ -98,9 +99,11 @@
             </div>
            <div v-else-if="fieldType.includes('Catfish.Core.Models.Contents.Fields.AttachmentField') || fieldType === 'Catfish.Core.Models.Contents.Fields.AudioRecorderField'">
             {{JSON.stringify(field)}}
-               <component :is="htmlWrapperTag" >
-               TODO
-              </component>
+               <div v-for="val in field.files.$values">
+                   <!-- if user choose to display attachment file as image, audio or video, embed -- if not choose any -- the default id 'div' -->
+                   <component :is="htmlWrapperTag" v-if="htmlWrapperTag !== 'div'" :src="fileUrl + val.fileName">
+                   </component>
+               </div>
            </div>
         
         </div>
