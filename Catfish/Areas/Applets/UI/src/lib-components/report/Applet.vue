@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { Guid } from 'guid-typescript'
 
-	//import { defineComponent, computed } from 'vue';
-	import { defineComponent } from 'vue';
+	import { defineComponent, computed } from 'vue';
 	import { useStore } from 'vuex';
 	import props, {  DataAttribute } from '../shared/props'
 
@@ -38,7 +37,7 @@
             store.commit(Mutations.SET_GROUP_ID, groupId)
             store.state.groupId = groupId;
 
-			const selectedFields = dataAttributes["selected-fields"] as string;
+			const selectedFields = JSON.parse(dataAttributes["selected-fields"] as string);
             //console.log("item template id " + itemTemplateId)
             //console.log("selected Fields: " + selectedFields)
 			const isAdmin = dataAttributes["is-admin"] as string;
@@ -62,7 +61,8 @@
 
 			return {
 				store,
-                selectedFields,
+				selectedFields,
+				reportRows: computed(() => state.reportData),
 				isAdmin,
 				loadData: () => store.dispatch(Actions.LOAD_DATA)
 			}
@@ -86,6 +86,23 @@
 	<h3>Report</h3>
 	<button class="btn btn-primary" @click="loadData()">Execute</button>
 	<div>{{selectedFields}}</div>
+	<div>{{selectedFields.length}}</div>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th v-for="field in selectedFields">{{field.fieldName}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="reportRow in reportRows">
+				<td v-for="cell in reportRow.cells">
+					{{cell.value}}
+				</td>
+
+			</tr>
+		</tbody>
+	</table>
 
 </template>
 

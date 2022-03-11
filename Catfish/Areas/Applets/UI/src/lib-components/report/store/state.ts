@@ -6,6 +6,7 @@ export interface State{
     collectionID: Guid | null;
     groupId: Guid | null;
     reportFields: ReportField[] | null;
+    reportData: ReportRow[] | null;
 
 }
 export interface ReportField {
@@ -17,10 +18,22 @@ export interface ReportField {
     dataContainer:FieldContainer | null;
     metadataSets:FieldContainer | null;
 }
+
+export interface ReportCell {
+    formId: Guid | null;
+    fieldId: Guid | null;
+    value: string;
+}
+
+export interface ReportRow {
+    cells: ReportCell[];
+}
+
 export const state: State = {
 
     itemTemplateID: null,
     collectionID: null,
     groupId: null,
-    reportFields: null
+    reportFields: null,
+    reportData: null
 }

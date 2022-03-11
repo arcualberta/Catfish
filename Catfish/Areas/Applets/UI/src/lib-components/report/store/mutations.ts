@@ -1,6 +1,7 @@
 ﻿import { Guid } from "guid-typescript";
 import { MutationTree } from "vuex";
-import { State } from "./state";
+import { Item } from "../../item-viewer/models/item";
+import { State, ReportCell, ReportRow } from "./state";
 
 
 
@@ -24,5 +25,19 @@ export const mutations: MutationTree<State> = {
     },
     [Mutations.SET_GROUP_ID](state: State, payload: Guid) {
         state.groupId = payload
+    },
+    [Mutations.SET_REPORT_DATA](state: State, payload: Item[]) {
+        state.reportData = [] as ReportRow[];
+        for (let i = 0; i < payload.length; ++i) {
+            const item = payload[i];
+            const reportRow = {} as ReportRow
+            state.reportFields?.forEach(repField => {
+                const form = item.dataContainer.$values.filter(frm => frm.id === repField.formId)[0];
+                const field = form?.fields.$values.filter(fld => fld.id === repField.fieldId)[0];
+                const cell = { formId: repField.formId, fieldId: repField.fieldId, value: field.id.toString() } as ReportCell;
+                reportRow.cells?.push(cell)
+            })
+            state.reportData?.push(reportRow);
+		}
     },
 }
