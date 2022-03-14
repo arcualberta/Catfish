@@ -65,12 +65,12 @@ namespace Catfish.UnitTests
             //Defining email templates
            
             //Defininig the inspection form
-            DataItem wrForm = template.GetDataItem("Writer-in-Resident Application Form", true, lang);
+            DataItem wrForm = template.GetDataItem("Writer-in-Resident Application Form 2023-24", true, lang);
             wrForm.IsRoot = true;
             wrForm.SetDescription("This template is designed for Writer-in-Resident Application Form", lang);
 
             wrForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("h3", "2022-2023 University of Alberta Writer-in-Residence Application", lang, "alert alert-info")
+                 .AppendContent("h3", "2023-2024 University of Alberta Writer-in-Residence Application", lang, "alert alert-info")
                   .AppendContent("div", "<span class='required'></span> Required", lang, "alert alert-warning"); 
                 
                 
@@ -88,11 +88,10 @@ namespace Catfish.UnitTests
             string[] options = new string[] {"Yes", "No" };
 
             var eligible = wrForm.CreateField<RadioField>("Are you eligible to work in Canada?",lang,options, true);
-           // eligible.FieldLabelCssClass = "col-md-12";
-           // eligible.FieldValueCssClass = "col-md-12";
-            wrForm.CreateField<InfoSection>(null, null)
-              //  .AppendContent("h5", "Application", lang)
-                .AppendContent("div", "This application can accept files up to 10 MB in size.If you need to include a larger file with your application, please email it to efs@ualberta.ca.You may attach up to 10 documents that, together, equal no more than 1 GB. Preferred format for your application is PDF files, but this website can accept documents, spreadsheets, presentations and images.", lang, "alert alert-info");
+           
+         //   wrForm.CreateField<InfoSection>(null, null)
+           
+          //      .AppendContent("div", "This application can accept files up to 10 MB in size.If you need to include a larger file with your application, please email it to efs@ualberta.ca.You may attach up to 10 documents that, together, equal no more than 1 GB. Preferred format for your application is PDF files, but this website can accept documents, spreadsheets, presentations and images.", lang, "alert alert-info");
 
 
             wrForm.CreateField<InfoSection>(null, null)
@@ -103,8 +102,15 @@ namespace Catfish.UnitTests
             wrForm.CreateField<AttachmentField>("Attachment 4 - Description", lang, true).SetDescription("Single-page description of the writing project(s) to be undertaken during the residency", lang);
 
             wrForm.CreateField<AttachmentField>("Attachment 5", lang, false).SetDescription("Other supporting documents", lang);
-           
 
+
+            string[] aboutUs = new string[] { "Dept.English & Film Studies Website", "EFS/WRITE Social Media (Facebook, Twitter, etc.)", "WiR Event(s)", "UofA/Department email",
+                                             "Canadian Literature Centre event(s)", "Vancouver Writers Festival","Word of mouth","Search engine (Google, Yahoo, etc.)", "Other"
+                                              };
+
+           var abtUs =  wrForm.CreateField<SelectField>("How did you hear about the program?", lang,aboutUs,true);
+            wrForm.CreateField<TextField>("If 'Other', please specify", lang, false)
+                 .VisibilityCondition.AppendLogicalExpression(abtUs, ComputationExpression.eRelational.EQUAL, abtUs.GetOption("Other", lang)); ;
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
