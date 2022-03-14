@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Models.Contents.Workflow;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -18,7 +19,7 @@ namespace Catfish.Services
         //string SaveSubmission(Entity submission);
         List<Item> GetSubmissionList();
         List<Item> GetSubmissionList(ClaimsPrincipal user, Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null);
-        List<Item> GetSubmissionList(Guid  groupId, Guid templateId, Guid collectionId);
+        List<ReportRow> GetSubmissionList(Guid  groupId, Guid templateId, Guid collectionId, List<ReportDataFields> fields);
         Item GetSubmissionDetails(Guid itemId);
         List<ItemField> GetAllField(string xml);
         SystemStatus GetStatus(Guid? statusId);

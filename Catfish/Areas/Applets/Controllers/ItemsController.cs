@@ -6,6 +6,7 @@ using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
@@ -319,8 +320,8 @@ namespace Catfish.Areas.Applets.Controllers
             }
         }
 
-        [HttpGet("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
-        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID)
+        [HttpGet("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}/fields/{fields}")]
+        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, List<ReportDataFields> fields)
         {
             try
             {
@@ -331,7 +332,7 @@ namespace Catfish.Areas.Applets.Controllers
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
 
-                List<Item> items = _submissionService.GetSubmissionList(groupId, templateId, collectionID);
+                List<ReportRow> items = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields);
                 return Content(JsonConvert.SerializeObject(items, settings), "application/json");
             }
             catch (Exception ex)

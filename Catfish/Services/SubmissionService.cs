@@ -4,6 +4,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Helper;
@@ -142,9 +143,12 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public List<Item> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId)
+        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, List<ReportDataFields> fields)
         {
-            return _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
+            var items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
+
+            return null;
+           // return _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
         }
         /// <summary>
         /// Get all item in a given collection

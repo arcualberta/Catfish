@@ -38,6 +38,8 @@
             store.state.groupId = groupId;
 
 			const selectedFields = JSON.parse(dataAttributes["selected-fields"] as string);
+            store.commit(Mutations.SET_REPORT_FIELDS, selectedFields)
+            store.state.reportFields = selectedFields;
             //console.log("item template id " + itemTemplateId)
             //console.log("selected Fields: " + selectedFields)
 			const isAdmin = dataAttributes["is-admin"] as string;
