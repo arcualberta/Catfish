@@ -4,14 +4,15 @@
     import dayjs from "dayjs";
     import { ComponentField } from "../models/componentField"
     import {/* Field,*/  OptionsField, OptionsFieldMethods/*, AttachmentField*/ } from "../../shared/models/fieldContainer"
-   
+    import ImageCarousel from "./imageCarousel.vue"
+    import ImageGallery from "./imageGallery.vue"
   
    
    export default defineComponent({
             name: "FieldComponent",
        components: {
-         
-         
+           ImageCarousel,
+           ImageGallery
         },
        props: {
            model: {
@@ -33,14 +34,19 @@
                fileUrl = window.location.origin + '/api/items/' + itemId.value + '/' + dataItemId.value + '/' + fieldId.value + '/';// + fileName.value;
               // console.log("url: " + fileUrl);
            }
-         
+           let displayImagesMode = "";
+           if (p.model.component.displayImagesMode) {
+               displayImagesMode = p.model.component.displayImagesMode == 'gallery' ? 'gallery' : 'carousel';
+           }
+          
             return {
                 htmlWrapperTag: computed(() => p.model.component.type?.length > 0 ? p.model.component.type : "div"),
 				componentType: computed(() => p.model.component.$type.split(',')[0]),
                 field: computed(() => p.model.field),
                 fieldType: computed(() => p.model.field.$type?.split(',')[0]),
                //fieldType: computed(() => p.model.field.$type)
-                fileUrl
+                fileUrl,
+                displayImagesMode
             }
        },
        methods: {
@@ -64,8 +70,7 @@
 
    
     <div class="fieldType">
-        <!--{{JSON.stringify(model)}} <br />
-        {{htmlWrapperTag}}: {{compType}}-->
+       
         <hr />
         <component :is="htmlWrapperTag" v-if="componentType === 'Catfish.Areas.Applets.Models.Blocks.ItemLayout.StaticText'"> {{model.component.content}} </component>
         <div v-else>
@@ -97,14 +102,23 @@
                 </component>
 
             </div>
-           <div v-else-if="fieldType.includes('Catfish.Core.Models.Contents.Fields.AttachmentField') || fieldType === 'Catfish.Core.Models.Contents.Fields.AudioRecorderField'">
-            {{JSON.stringify(field)}}
-               <div v-for="val in field.files.$values">
-                   <!-- if user choose to display attachment file as image, audio or video, embed -- if not choose any -- the default id 'div' -->
-                   <component :is="htmlWrapperTag" v-if="htmlWrapperTag !== 'div'" :src="fileUrl + val.fileName">
-                   </component>
-               </div>
-           </div>
+            <div v-else-if="fieldType.includes('Catfish.Core.Models.Contents.Fields.AttachmentField') || fieldType === 'Catfish.Core.Models.Contents.Fields.AudioRecorderField'">
+               
+                <ImageCarousel v-if="displayImagesMode === 'carousel'" :model="field" :fileUrl="fileUrl" />
+                <ImageGallery v-else-if="displayImagesMode === 'gallery'" :model="field" :fileUrl="fileUrl" />
+
+                <div v-else v-for="val in field.files.$values">
+
+                    <a v-if="val.contentType.includes('pdf')" :href="fileUrl + val.fileName">{{val.originalFileName}}</a>
+                    <img v-if="val.contentType.includes('image')" :src="fileUrl + val.fileName" />
+                    <audio controls v-if="val.contentType.includes('audio')">
+                        <source :src="fileUrl + val.fileName" :type="val.contentType">
+
+                        Your browser does not support the audio element.
+                    </audio>
+
+                </div>
+            </div>
         
         </div>
         <br />

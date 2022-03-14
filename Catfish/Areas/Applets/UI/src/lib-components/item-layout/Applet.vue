@@ -37,28 +37,21 @@
 
 			const isAdmin = dataAttributes["is-admin"] as string;
 
-			//get all the unique formIds
-			//let uniqueFormIds = [...new Set(components.map((com: FieldLayout) => com.formTemplateId))];
-			//  console.log("selected Forms Ids" + JSON.stringify(uniqueFormIds));
-
-
-			//store.commit(Mutations.SET_FORM_IDS, uniqueFormIds);
+		
 
 			//load the data
 			store.dispatch(ItemAction.LOAD_ITEM);
 			// console.log("selected Forms" + JSON.stringify(store.state.item));
 
-			//get all the selected Fields
-			//const fields = store.getters.fields(components);
+			
 
 			return {
 				store,
 				item: computed(() => store.state.item),
-				queryParams,
-				//dataItem: computed(() => store.getters.rootDataItem),
+				queryParams,	
 				isAdmin,
 				components,
-				//items: computed(() => store.state.items)
+			
 				fields: computed(() => store.getters.fields(components))
 			}
 		},
@@ -77,8 +70,6 @@
 	<div class="item">
 		<h3>ItemLayout</h3>
 
-		<h4>Compunents</h4>
-		<!--{{JSON.stringify(components)}}-->
 
 		<FieldComponent v-for="field in fields" :model="field" />
 	</div>

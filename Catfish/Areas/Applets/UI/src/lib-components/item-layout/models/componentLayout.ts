@@ -5,5 +5,6 @@
     elementId: string;
     cssStyle: string;
     label: string;
+    displayImagesMode: string;
 }
 
