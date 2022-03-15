@@ -320,8 +320,8 @@ namespace Catfish.Areas.Applets.Controllers
             }
         }
 
-        [HttpGet("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}/fields/{fields}")]
-        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, List<ReportDataFields> fields)
+        [HttpPost("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
+        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] String datamodel)
         {
             try
             {
@@ -331,6 +331,8 @@ namespace Catfish.Areas.Applets.Controllers
                     TypeNameHandling = TypeNameHandling.All,
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
+
+                var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, settings);
 
                 List<ReportRow> items = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields);
                 return Content(JsonConvert.SerializeObject(items, settings), "application/json");

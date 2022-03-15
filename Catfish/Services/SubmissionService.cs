@@ -143,7 +143,7 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, List<ReportDataFields> fields)
+        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] fields)
         {
             var items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
 

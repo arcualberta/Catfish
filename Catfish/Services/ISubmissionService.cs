@@ -19,7 +19,7 @@ namespace Catfish.Services
         //string SaveSubmission(Entity submission);
         List<Item> GetSubmissionList();
         List<Item> GetSubmissionList(ClaimsPrincipal user, Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null);
-        List<ReportRow> GetSubmissionList(Guid  groupId, Guid templateId, Guid collectionId, List<ReportDataFields> fields);
+        List<ReportRow> GetSubmissionList(Guid  groupId, Guid templateId, Guid collectionId, ReportDataFields[] fields);
         Item GetSubmissionDetails(Guid itemId);
         List<ItemField> GetAllField(string xml);
         SystemStatus GetStatus(Guid? statusId);

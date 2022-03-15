@@ -11,10 +11,20 @@ export const actions: ActionTree<State, any> = {
         console.log('Store: ', JSON.stringify(store.state))
 
         const api = window.location.origin +
-            `/applets/api/items/GetReportData/${store.state.groupId}/template/${store.state.itemTemplateID}/collection/${store.state.collectionID}/fields/${store.state.reportFields}`;
+            `/applets/api/items/GetReportData/${store.state.groupId}/template/${store.state.itemTemplateID}/collection/${store.state.collectionID}`;
         console.log('reports Load API: ', api)
+        const formData = new FormData();
 
-        fetch(api)
+        //Setting the serialized JSON form model to the datamodel variable in formData
+        formData.append('datamodel', JSON.stringify(store.state.reportFields));
+        fetch(api, {
+            body: formData,
+            method: "post",
+            headers: {
+                //"Content-Type": "multipart/form-data"
+                "encType": "multipart/form-data"
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 store.commit(Mutations.SET_REPORT_DATA, data)
