@@ -47,7 +47,8 @@
                 field: computed(() => p.model.field),
                 fieldType: computed(() => p.model.field?.$type?.split(',')[0]),
                 fileUrl,
-                displayImagesMode
+                displayImagesMode,
+                cssClasses: computed(() => p.model.component.cssClasses ? p.model.component.cssClasses : "")
             }
        },
        methods: {
@@ -75,29 +76,29 @@
         <hr />
        
         <div v-if="fieldType === 'Catfish.Core.Models.Contents.Fields.TextArea' || fieldType === 'Catfish.Core.Models.Contents.Fields.TextField'">
-                <div v-for="multilingualValue in field.values.$values">
-                    <component :is="htmlWrapperTag" v-for="valueInOneLanguage in multilingualValue.values.$values">
+                <div v-for="multilingualValue in field.values.$values" >
+                    <component :is="htmlWrapperTag" v-for="valueInOneLanguage in multilingualValue.values.$values" :class="cssClasses">
                         {{valueInOneLanguage.value}}
                     </component>
                 </div>
         </div>
         <div v-else-if="fieldType.includes('Catfish.Core.Models.Contents.Fields.EmailField') || fieldType === 'Catfish.Core.Models.Contents.Fields.MonolingualTextField' || fieldType === 'Catfish.Core.Models.Contents.Fields.IntegerField'">
-                <component :is="htmlWrapperTag" v-for="val in field.values.$values">
+                <component :is="htmlWrapperTag" v-for="val in field.values.$values" :class="cssClasses">
                     {{val.value}}
                 </component>
         </div>
         <div v-else-if="fieldType === 'Catfish.Core.Models.Contents.Fields.DecimalField'">
-                <component :is="htmlWrapperTag" v-for="val in field.values.$values">
+                <component :is="htmlWrapperTag" v-for="val in field.values.$values" :class="cssClasses">
                     {{formatToDecimal(val.value, 2)}}
                 </component>
         </div>
         <div v-else-if="fieldType === 'Catfish.Core.Models.Contents.Fields.DateField'">
-                <component :is="htmlWrapperTag" v-for="val in field.values.$values">
+                <component :is="htmlWrapperTag" v-for="val in field.values.$values" :class="cssClasses">
                     {{formatDate(val.value)}}
                 </component>
          </div>
          <div v-else-if="fieldType === 'Catfish.Core.Models.Contents.Fields.OptionsField' || fieldType === 'Catfish.Core.Models.Contents.Fields.CheckboxField' || fieldType === 'Catfish.Core.Models.Contents.Fields.RadioField' || fieldType === 'Catfish.Core.Models.Contents.Fields.SelectField'">
-                <component :is="htmlWrapperTag">
+                <component :is="htmlWrapperTag" :class="cssClasses">
                     {{getSelectedFieldLabels(field)}}
                 </component>
 
@@ -107,9 +108,9 @@
                 <ImageCarousel v-if="displayImagesMode === 'carousel'" :model="field" :fileUrl="fileUrl" />
                 <ImageGallery v-else-if="displayImagesMode === 'gallery'" :model="field" :fileUrl="fileUrl" />
 
-                <div v-else v-for="val in field.files.$values">
+                <div v-else v-for="val in field.files.$values"  :class="cssClasses">
 
-                    <a v-if="val.contentType.includes('pdf')" :href="fileUrl + val.fileName">{{val.originalFileName}}</a>
+                    <a v-if="val.contentType.includes('pdf')" :href="fileUrl + val.fileName" >{{val.originalFileName}}</a>
                     <img v-if="val.contentType.includes('image')" :src="fileUrl + val.fileName" />
                     <audio controls v-if="val.contentType.includes('audio')">
                         <source :src="fileUrl + val.fileName" :type="val.contentType">

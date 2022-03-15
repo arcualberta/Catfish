@@ -33,7 +33,7 @@
     <div class="staticType">
         <h3>Static Field</h3>
      
-        <component :is="htmlWrapperTag"> {{model.content}} </component>
+        <component :is="htmlWrapperTag" :class="model.cssClasses" > {{model.content}} </component>
         
     </div>
 </template>
