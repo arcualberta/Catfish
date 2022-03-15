@@ -35,9 +35,9 @@ export const mutations: MutationTree<State> = {
             const item = payload[i];
             const reportRow = {} as ReportRow
             state.reportFields?.forEach(repField => {
-                const form = item.dataContainer.$values.filter(frm => frm.id === repField.formId)[0];
+                const form = item.dataContainer.$values.filter(frm => frm.id === repField.formTemplateId)[0];
                 const field = form?.fields.$values.filter(fld => fld.id === repField.fieldId)[0];
-                const cell = { formId: repField.formId, fieldId: repField.fieldId, value: field.id.toString() } as ReportCell;
+                const cell = { formId: repField.formTemplateId, fieldId: repField.fieldId, value: field.id.toString() } as ReportCell;
                 reportRow.cells?.push(cell)
             })
             state.reportData?.push(reportRow);

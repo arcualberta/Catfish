@@ -334,8 +334,8 @@ namespace Catfish.Areas.Applets.Controllers
 
                 var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, settings);
 
-                List<ReportRow> items = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields);
-                return Content(JsonConvert.SerializeObject(items, settings), "application/json");
+                List<ReportRow> rows = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields);
+                return Content(JsonConvert.SerializeObject(rows, settings), "application/json");
             }
             catch (Exception ex)
             {

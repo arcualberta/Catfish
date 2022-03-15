@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Catfish.Core.Models.Contents.Reports
+namespace Catfish.Areas.Applets.Models.Report
 {
-    public class ReportDataFields
-    {
+	public class ReportField
+	{
         public Guid FormTemplateId { get; set; }
         public string FormName { get; set; }
         public Guid FieldId { get; set; }
         public string FieldName { get; set; }
     }
 }
+

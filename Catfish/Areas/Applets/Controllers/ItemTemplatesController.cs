@@ -1,4 +1,5 @@
-﻿using Catfish.Areas.Applets.Services;
+﻿using Catfish.Areas.Applets.Models.Report;
+using Catfish.Areas.Applets.Services;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
@@ -128,7 +129,7 @@ namespace Catfish.Areas.Applets.Controllers
             return result;
         }
 
-            [HttpGet("{templateId}/data-form/{formId}")]
+        [HttpGet("{templateId}/data-form/{formId}")]
         public ContentResult DataForm(Guid templateId, Guid formId)
         {
             //TODO: Implement security
@@ -153,17 +154,17 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpGet("getItemtemplateFields/{templateId}/{dataItemId}")]
-        public List<ReportField> GetItemTemplateFields(string templateId, string dataItemId)
+        public List<ReportField> GetItemTemplateFields(Guid templateId, Guid dataItemId)
         {
 
             // List<SelectListItem> result = new List<SelectListItem>();
             List<ReportField> result = new List<ReportField>();
-            if (!string.IsNullOrEmpty(templateId))
+            if (templateId != Guid.Empty)
             {
-                ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == Guid.Parse(templateId));
-                DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == Guid.Parse(dataItemId));
+                ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == templateId);
+                DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == dataItemId);
 
-                var fields = _entityTemplateService.GetTemplateDataItemFields(Guid.Parse(templateId), Guid.Parse(dataItemId));
+                var fields = _entityTemplateService.GetTemplateDataItemFields(templateId, dataItemId);
                 
                 SelectListGroup group = new SelectListGroup();
                 group.Name = dataItemId + ":" + dataForm.GetName("en");
@@ -175,9 +176,9 @@ namespace Catfish.Areas.Applets.Controllers
                     if (!string.IsNullOrEmpty(field.GetName()))
                     {
                         ReportField rf = new ReportField();
-                        rf.FormId = dataItemId;
+                        rf.FormTemplateId = dataItemId;
                         rf.FormName = dataForm.GetName("en");
-                        rf.FieldId = field.Id.ToString();
+                        rf.FieldId = field.Id;
                         rf.FieldName = field.GetName();
                         // result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString(), Group=group });
                         result.Add(rf);
@@ -196,23 +197,23 @@ namespace Catfish.Areas.Applets.Controllers
         /// <param name="dataItemIds">Ids of the forms</param>
         /// <returns></returns>
         [HttpGet("getMutipleFormFields/{templateId}/{dataItemIds}")]
-        public Dictionary<string, List<ReportField>> GetMutipleFormFields(string templateId, string dataItemIds)
+        public Dictionary<string, List<ReportField>> GetMutipleFormFields(Guid templateId, string dataItemIds)
         {
 
             // List<SelectListItem> result = new List<SelectListItem>();
             Dictionary<string, List<ReportField>> result = new Dictionary<string, List<ReportField>>();
-            string[] formIds = dataItemIds.Split(",");
+            Guid[] formIds = dataItemIds.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(str => Guid.Parse(str)).ToArray();
 
-            if (!string.IsNullOrEmpty(templateId))
+            if (templateId != Guid.Empty)
             {
                
-                foreach (string dataItemId in formIds)
+                foreach (Guid dataItemId in formIds)
                 {
                     List<ReportField> rptFields = new List<ReportField>();
-                    ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == Guid.Parse(templateId));
-                    DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == Guid.Parse(dataItemId));
+                    ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == templateId);
+                    DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == dataItemId);
 
-                    var fields = _entityTemplateService.GetTemplateDataItemFields(Guid.Parse(templateId), Guid.Parse(dataItemId));
+                    var fields = _entityTemplateService.GetTemplateDataItemFields(templateId, dataItemId);
 
                     SelectListGroup group = new SelectListGroup();
                     group.Name = dataItemId + ":" + dataForm.GetName("en");
@@ -224,9 +225,9 @@ namespace Catfish.Areas.Applets.Controllers
                         if (!string.IsNullOrEmpty(field.GetName()))
                         {
                             ReportField rf = new ReportField();
-                            rf.FormId = dataItemId;
+                            rf.FormTemplateId = dataItemId;
                             rf.FormName = dataForm.GetName("en");
-                            rf.FieldId = field.Id.ToString();
+                            rf.FieldId = field.Id;
                             rf.FieldName = field.GetName();
                             // result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString(), Group=group });
                             rptFields.Add(rf);
@@ -235,7 +236,7 @@ namespace Catfish.Areas.Applets.Controllers
                     }
 
                     rptFields = rptFields.OrderBy(li => li.FieldName).ToList();
-                    result.Add(dataItemId, rptFields);
+                    result.Add(dataItemId.ToString(), rptFields);
                 }
 
                // result = result.OrderBy(li => li.FieldName).ToList();
@@ -243,13 +244,5 @@ namespace Catfish.Areas.Applets.Controllers
             return result;
         }
 
-    }
-
-    public class ReportField
-    {
-        public string FormId { get; set; }
-        public string FormName { get; set; }
-        public string FieldId { get; set; }
-        public string FieldName { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace Catfish.Core.Models.Contents.Reports
 {
     public class ReportRow
     {
-        public List<ReportCell> Cells { get; set; }
+        public List<ReportCell> Cells { get; set; } = new List<ReportCell>();
     }
 }

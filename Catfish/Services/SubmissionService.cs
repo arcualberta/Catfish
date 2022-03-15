@@ -143,28 +143,41 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] fields)
+        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields)
         {
-            var items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
             List<ReportRow> reportRows = new List<ReportRow>();
+
+            var items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
             foreach(var item in items)
             {
-                ReportRow[] row = new ReportRow[fields.Length];
-                int i = 0;
-                foreach(var field in fields)
-                {
-                    var form = item.DataContainer.Where(dc => dc.TemplateId == field.FormId).FirstOrDefault();
-                    var fieldData = form.Fields.Where(f => f.Id == field.FieldId).FirstOrDefault();
-                    var value = fieldData.Content.FirstOrDefault();
-                    
+                ReportRow row = new ReportRow();
+                reportRows.Add(row);
+                foreach (var reportField in reportFields)
+				{
+                    ReportCell reportCell = new ReportCell()
+                    {
+                        FormTemplateId = reportField.FormTemplateId,
+                        FieldId = reportField.FieldId
+                    };
 
-                }
-                
-                
+                    row.Cells.Add(reportCell);
+
+                    var forms = item.DataContainer.Where(frm => frm.TemplateId == reportField.FormTemplateId).ToList();
+                    foreach(var form in forms)
+					{
+                        var field = form.Fields.FirstOrDefault(f => f.Id == reportField.FieldId) as IValueField;
+                        if (field != null)
+                        {
+                            ReportCellValue cellValue = new ReportCellValue() { FormInstanceId = form.Id };
+                            cellValue.Values.AddRange(field.GetValues());
+                            reportCell.Values.Add(cellValue);
+                        }
+                    }
+				}
             }
-            return null;
-           // return _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
+            return reportRows;
         }
+
         /// <summary>
         /// Get all item in a given collection
         /// </summary>

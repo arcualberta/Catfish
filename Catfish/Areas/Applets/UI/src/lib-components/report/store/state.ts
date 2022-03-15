@@ -10,13 +10,13 @@ export interface State{
 
 }
 export interface ReportField {
-    formId: Guid | null;
+    formTemplateId: Guid | null;
     fieldId: Guid | null;
     formName: string | null;
     itemId: Guid|null;
     templateId: Guid | null;
-    dataContainer:FieldContainer | null;
-    metadataSets:FieldContainer | null;
+    dataContainer: FieldContainer | null;
+    metadataSets: FieldContainer | null;
 }
 
 export interface ReportCell {
