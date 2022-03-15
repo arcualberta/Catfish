@@ -172,7 +172,7 @@
                       <label class='form-label' style="margin-left: 10px; margin-right: 10px">Style:</label>
                      <textarea v-model="component.cssStyle" cols="20" rows="2"  class="col-md-2" v-on:blur="onBlur" />
                 </div>
-                <div class='lead row'>
+                <div class='lead row' v-if="component.label === 'Form Field'">
                   <div class="alert alert-info" style="margin-left:30px;">If this is an "AttchmentField" that contain multiple images, how would you display your images?</div>
                   <br/>
                    <div class="col-md-12" style="margin-left:30px;">
