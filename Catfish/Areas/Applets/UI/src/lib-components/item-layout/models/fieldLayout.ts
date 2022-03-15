@@ -6,5 +6,5 @@ export interface FieldLayout extends ComponentLayout {
     formTemplateId: Guid;
     fieldId: Guid;
     label: "Form Field";
-    $type: string;
+   
 }

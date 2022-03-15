@@ -13,12 +13,14 @@
 	import props, { QueryParameter, DataAttribute } from '../shared/props'
 	//import { FieldLayout } from "./models/fieldLayout"
 	import FieldComponent from "./components/fieldComponent.vue"
+	import StaticComponent from './components/staticComponent.vue';
 
 
 	export default defineComponent({
 		name: "ItemLayout",
 		components: {
-			FieldComponent
+			FieldComponent,
+			StaticComponent
 		},
 		props,
 		setup(p) {
@@ -42,17 +44,23 @@
 			//load the data
 			store.dispatch(ItemAction.LOAD_ITEM);
 			// console.log("selected Forms" + JSON.stringify(store.state.item));
+            console.log("components length:" + components.length);
+			//const fields = store.getters.fields(components);
 
-			
+           // console.log("fields length:" + fields.length);
 
+            const staticFields = components.filter((comp:any) => comp.$type.includes("StaticText"));
+            console.log("static Field:" + staticFields.length);
+			console.log(JSON.stringify(staticFields));
 			return {
 				store,
 				item: computed(() => store.state.item),
 				queryParams,	
 				isAdmin,
 				components,
-			
-				fields: computed(() => store.getters.fields(components))
+                staticFields,
+				fields: computed(() => store.getters.fields(components)),
+              
 			}
 		},
 		storeConfig: {
@@ -69,8 +77,8 @@
 
 	<div class="item">
 		<h3>ItemLayout</h3>
-
-
+		<StaticComponent v-for="field in staticFields" :model="field" />
+		<!--{{JSON.stringify(fields)}}-->
 		<FieldComponent v-for="field in fields" :model="field" />
 	</div>
 </template>

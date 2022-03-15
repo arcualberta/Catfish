@@ -18,15 +18,25 @@ export const getters: GetterTree<State, State> = {
     fields: (state) => (components: FieldLayout[]) => {
         const fields: ComponentField[] = [];
         for (let i = 0; i < components?.length; i++) {
-
+            //console.log("component count: " + components?.length);
+           // console.log("fieldId: " + components[i].fieldId);
             const frmTemplateId = components[i].formTemplateId;
             const fldId = components[i].fieldId;
+            if (typeof fldId != 'undefined' && fldId) {
+                const field = (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === frmTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fldId)[0];
 
-            const field = (state.item?.dataContainer?.$values?.filter(dc => dc.templateId === frmTemplateId)[0])?.fields.$values?.filter(fd => fd.id === fldId)[0];
-            const comField: ComponentField = { component: components[i], field: field as Field };
+                const comField: ComponentField = { component: components[i], field: field as Field };
+                fields.push(comField);
+            }
+           // else {
+            //    const comField: ComponentField = {
+            //        component: components[i], field: {} as Field};
+            //    fields.push(comField);
+            //}
 
-            fields.push(comField);
+           
         }
+       // console.log("fields: " + JSON.stringify(fields));
         return fields;
     },
     dataItemId: (state) => (formTemplateId: Guid) => {
