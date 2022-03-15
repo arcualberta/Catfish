@@ -146,7 +146,22 @@ namespace Catfish.Services
         public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] fields)
         {
             var items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
+            List<ReportRow> reportRows = new List<ReportRow>();
+            foreach(var item in items)
+            {
+                ReportRow[] row = new ReportRow[fields.Length];
+                int i = 0;
+                foreach(var field in fields)
+                {
+                    var form = item.DataContainer.Where(dc => dc.TemplateId == field.FormId).FirstOrDefault();
+                    var fieldData = form.Fields.Where(f => f.Id == field.FieldId).FirstOrDefault();
+                    var value = fieldData.Content.FirstOrDefault();
+                    
 
+                }
+                
+                
+            }
             return null;
            // return _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
         }
