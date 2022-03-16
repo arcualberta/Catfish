@@ -6,13 +6,14 @@
     import {/* Field,*/  OptionsField, OptionsFieldMethods/*, AttachmentField*/ } from "../../shared/models/fieldContainer"
     import ImageCarousel from "./imageCarousel.vue"
     import ImageGallery from "./imageGallery.vue"
-  
+    import PdfViewer from "./pdfViewer.vue"
    
    export default defineComponent({
             name: "FieldComponent",
        components: {
            ImageCarousel,
-           ImageGallery
+           ImageGallery,
+           PdfViewer
         },
        props: {
            model: {
@@ -72,7 +73,7 @@
 
    
     <div class="fieldType">
-       
+      
         <hr />
        
         <div v-if="fieldType === 'Catfish.Core.Models.Contents.Fields.TextArea' || fieldType === 'Catfish.Core.Models.Contents.Fields.TextField'">
@@ -108,10 +109,12 @@
                 <ImageCarousel v-if="displayImagesMode === 'carousel'" :model="field" :fileUrl="fileUrl" />
                 <ImageGallery v-else-if="displayImagesMode === 'gallery'" :model="field" :fileUrl="fileUrl" />
 
-                <div v-else v-for="val in field.files.$values"  :class="cssClasses">
-
-                    <a v-if="val.contentType.includes('pdf')" :href="fileUrl + val.fileName" >{{val.originalFileName}}</a>
+                <div v-else v-for="val in field.files.$values" :class="cssClasses">
+                    <PdfViewer :fileUrl="fileUrl + val.fileName" v-if="val.contentType.includes('pdf')" />
+                    <a v-if="val.contentType.includes('pdf')" :href="fileUrl + val.fileName">{{val.originalFileName}}</a>
+                    <br />
                     <img v-if="val.contentType.includes('image')" :src="fileUrl + val.fileName" />
+                    <br />
                     <audio controls v-if="val.contentType.includes('audio')">
                         <source :src="fileUrl + val.fileName" :type="val.contentType">
 
