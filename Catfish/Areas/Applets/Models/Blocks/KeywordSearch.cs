@@ -42,6 +42,11 @@ namespace Catfish.Areas.Applets.Models.Blocks
 
         public TextField SelectedStates { get; set; }
         public TextField SelectedGroupId { get; set; }
+
+        public TextField BlockTitle { get; set; }
+        public TextField Description { get; set; }
+        public CheckBoxField EnabledFreeTextSearch { get; set; }
+        public TextField SelectedDisplayFormat { get; set; }
         public string GetKeywords()
         {
             if (KeywordList != null)
