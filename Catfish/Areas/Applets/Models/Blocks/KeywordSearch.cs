@@ -58,5 +58,14 @@ namespace Catfish.Areas.Applets.Models.Blocks
         }
 
         public Guid[] GetSelectedStates() => SelectedStates?.Value?.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(s => Guid.Parse(s)).ToArray();
+
+        public string GetSelectedDisplayFormat()
+        {
+            if(SelectedDisplayFormat != null)
+            {
+                return SelectedDisplayFormat.Value;
+            }
+            return "List";
+        }
     }
 }

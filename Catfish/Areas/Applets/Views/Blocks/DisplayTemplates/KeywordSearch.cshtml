@@ -4,13 +4,18 @@
 @inject Catfish.Areas.Applets.Services.IAssetRegistry _assetRegistry;
 
 @{
+   
     var viewData = new ViewDataDictionary(this.ViewData)
 {
-        { "data-display-format", "List" },
+      
         { "data-collection-id", Model.SelectedCollection?.Value },
         { "data-template-id", Model.SelectedItemTemplate?.Value },
         { "data-keyword-metadata-set-id", Model.ClassificationMetadataSetId?.Value },
-        { "data-keyword-source-id", Model.KeywordSourceId?.Value }
+        { "data-keyword-source-id", Model.KeywordSourceId?.Value },
+        { "data-block-title", Model.BlockTitle?.Value },
+        { "data-block-description", Model.Description?.Value },
+        { "data-enable-freetext-search", Model.EnabledFreeTextSearch?.Value},
+        { "data-display-format", Model.GetSelectedDisplayFormat()}
     };
 
     //Registering assets
