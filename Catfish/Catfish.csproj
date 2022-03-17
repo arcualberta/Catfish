@@ -53,6 +53,10 @@
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\components\fieldComponent.vue" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\components\imageCarousel.vue" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\components\imageGallery.vue" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\componentField.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\componentLayout.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\fieldLayout.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\itemLayout.ts" />
@@ -61,7 +65,6 @@
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\fieldContainer.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
-    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\item.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\report\store\actions.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\report\store\mutations.ts" />
@@ -155,7 +158,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\item.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\components\imageGallery.vue">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\components\imageCarousel.vue">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\components\fieldComponent.vue" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\componentField.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\componentLayout.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

@@ -190,4 +190,9 @@
 .itemLayout{
     margin-bottom: 10px;
 }
+
+.required:after {
+    content: " *";
+    color: red;
+}
   

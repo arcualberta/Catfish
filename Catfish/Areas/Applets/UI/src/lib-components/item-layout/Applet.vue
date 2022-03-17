@@ -1,82 +1,85 @@
 ﻿<script lang="ts">
-   // import { Guid } from 'guid-typescript'
-    import { defineComponent, computed } from 'vue'
-    import { useStore } from 'vuex';
+	// import { Guid } from 'guid-typescript'
+	import { defineComponent, computed } from 'vue'
+	import { useStore } from 'vuex';
 
-    import { state } from './store/state'
-    import { actions, Actions} from './store/actions'
-    import { getters } from './store/getters'
-    import { mutations, Mutations } from './store/mutations'
-    import props, { /*QueryParameter,*/ DataAttribute } from '../shared/props'
-    import { FieldLayout} from "./models/fieldLayout"
-   
+	import { state } from './store/state'
+	import { actions/*, Actions */ } from './store/actions'
+	import { Actions as ItemAction } from '../item-viewer/store/actions'
+	import { getters } from './store/getters'
+	import { mutations,  } from './store/mutations'
+	import { Mutations } from '../item-viewer/store/mutations';
+
+	import props, { QueryParameter, DataAttribute } from '../shared/props'
+	//import { FieldLayout } from "./models/fieldLayout"
+	import FieldComponent from "./components/fieldComponent.vue"
+	import StaticComponent from './components/staticComponent.vue';
 
 
-    export default defineComponent({
-        name: "ItemLayout",
-        components: {
-          
-        },
-        props,
-        setup(p) {
-            const store = useStore();
-            const dataAttributes = p.dataAttributes as DataAttribute;
-           
-            const isAdmin = dataAttributes["is-admin"] as string;
-            const templateId = dataAttributes["template-id"] as string;
-            const selectedComponents = dataAttributes["selected-components"] as string;
-            const components = JSON.parse(selectedComponents);
-           // console.log(JSON.stringify(components));
+	export default defineComponent({
+		name: "ItemLayout",
+		components: {
+			FieldComponent,
+			StaticComponent
+		},
+		props,
+		setup(p) {
+			const store = useStore();
 
-            //get all the unique formIds
-            let uniqueFormIds = [...new Set(components.map((com: FieldLayout) => com.formId))];
+			const queryParams = p.queryParameters as QueryParameter;
+			store.commit(Mutations.SET_ID, queryParams.iid);
 
-            console.log("selected Forms Ids" + JSON.stringify(uniqueFormIds));
-            // const queryParams = p.queryParameters as QueryParameter;
-            store.commit(Mutations.SET_TEMPLATE_ID, templateId);
-            store.commit(Mutations.SET_FORM_IDS, uniqueFormIds);
+			const dataAttributes = p.dataAttributes as DataAttribute;
 
-            //load the data
-            store.dispatch(Actions.LOAD_ITEMS);
-            console.log("selected Forms" + JSON.stringify(state.items));
-            return {
-                store,
-                //queryParams,
-                dataItem: computed(() => store.getters.rootDataItem),
-                isAdmin,
-              //  components,
-                selectedComponents,
-                items: computed(() => store.state.items)
-            }
-        },
-        storeConfig: {
-            state,
-            actions,
-            mutations,
-            getters,
+			//const templateId = dataAttributes["template-id"] as string;
+			//store.commit(Mutations.SET_TEMPLATE_ID, templateId);
 
-        },
-        methods: {
+			const selectedComponents = dataAttributes["selected-components"] as string;
+			const components = JSON.parse(selectedComponents);
 
-          
-        }
-    });
+			const isAdmin = dataAttributes["is-admin"] as string;
+
+		
+
+			//load the data
+			store.dispatch(ItemAction.LOAD_ITEM);
+			// console.log("selected Forms" + JSON.stringify(store.state.item));
+            console.log("components length:" + components.length);
+			//const fields = store.getters.fields(components);
+
+           // console.log("fields length:" + fields.length);
+
+            const staticFields = components.filter((comp:any) => comp.$type.includes("StaticText"));
+            console.log("static Field:" + staticFields.length);
+			console.log(JSON.stringify(staticFields));
+			return {
+				store,
+				item: computed(() => store.state.item),
+				queryParams,	
+				isAdmin,
+				components,
+                staticFields,
+				fields: computed(() => store.getters.fields(components)),
+              
+			}
+		},
+		storeConfig: {
+			state,
+			actions,
+			mutations,
+			getters,
+
+		}
+	});
 </script>
 
 <template>
-   
-    <div class="item">
-        <h3>ItemLayout</h3>
-        {{selectedComponents}}
-      
-        <!--<div>
-            Items
-            {{items}}
-        </div>-->
-        <!--<div>
-            <h3>Item </h3>
-            {{sate.item}}
-        </div>-->
-    </div>
+
+	<div class="item">
+		<h3>ItemLayout</h3>
+		<StaticComponent v-for="field in staticFields" :model="field" />
+		<!--{{JSON.stringify(fields)}}-->
+		<FieldComponent v-for="field in fields" :model="field" />
+	</div>
 </template>
 

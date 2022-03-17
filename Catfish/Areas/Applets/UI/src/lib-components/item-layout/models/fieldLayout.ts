@@ -3,7 +3,8 @@
 import { ComponentLayout } from "./componentLayout";
 
 export interface FieldLayout extends ComponentLayout {
-    formId: Guid;
+    formTemplateId: Guid;
     fieldId: Guid;
     label: "Form Field";
+   
 }

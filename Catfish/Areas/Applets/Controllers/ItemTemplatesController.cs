@@ -215,8 +215,8 @@ namespace Catfish.Areas.Applets.Controllers
 
                     var fields = _entityTemplateService.GetTemplateDataItemFields(templateId, dataItemId);
 
-                    SelectListGroup group = new SelectListGroup();
-                    group.Name = dataItemId + ":" + dataForm.GetName("en");
+                        SelectListGroup group = new SelectListGroup();
+                        group.Name = dataItemId + ":" + dataForm.GetName("en");
 
 
 
@@ -233,7 +233,7 @@ namespace Catfish.Areas.Applets.Controllers
                             rptFields.Add(rf);
                         }
 
-                    }
+                        }
 
                     rptFields = rptFields.OrderBy(li => li.FieldName).ToList();
                     result.Add(dataItemId.ToString(), rptFields);
