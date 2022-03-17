@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
     import { defineComponent, PropType } from 'vue'
-
+    import dayjs from "dayjs";
     import { Field, FieldContainer, eFieldType } from '../../models/fieldContainer'
     import TextField from './TextField.vue'
     import EmailField from './EmailField.vue'
@@ -16,6 +16,7 @@
 		name: "FieldContainer",
         props: {
             model: null as PropType<FieldContainer> | null,
+			hideFieldNames: Boolean
         },
         components: {
             TextField,
@@ -47,18 +48,25 @@
             isTableField(field: Field): boolean { return this.getFieldType(field) === eFieldType.TableField },
             isTextArea(field: Field): boolean { return this.getFieldType(field) === eFieldType.TextArea },
             isTextField(field: Field): boolean { return this.getFieldType(field) === eFieldType.TextField },
-            cssClass(field: Field): string { return field.cssClass + " " + field.fieldCssClass; }
+            cssClass(field: Field): string { return field.cssClass + " " + field.fieldCssClass; },
+
+            formatDate(dateString: string) {
+                const date = dayjs(dateString);
+                return date.format('MMM DD, YYYY');
+            },
         }
     });
 </script>
 
 <template>
+    <div class="timeStamp">{{formatDate(model.created)}}</div>
     <div v-for="field in model.fields.$values">
         <div v-if="this.isFieldContainerReference(field)" :class="cssClass(field)">
             <ReferenceField :model="field" />
         </div>
         <div v-else class="row" :class="cssClass(field)">
-            <div class="field-name col-md-3">
+            <div class="field-name col-md-3" v-if="!hideFieldNames">
+
                 {{field.name.concatenatedContent}}
             </div>
             <div class="field-value col-md-9">
@@ -70,16 +78,16 @@
                 <IntegerField v-if="this.isIntegerField(field)" :model="field" />
                 <DateField v-if="this.isDateField(field)" :model="field" />
                 <TextField :model="field" v-if="this.isMonolingualTextField(model)" />
-                <AttachmentField v-if="this.isAttachmentField(field)" :model="field"  />
-               
-       
-                <InfoField  v-if="this.isInfoSection(field)" :model="field" />
+                <AttachmentField v-if="this.isAttachmentField(field)" :model="field" />
+
+
+                <InfoField v-if="this.isInfoSection(field)" :model="field" />
                 <div v-if="this.isCompositeField(field)">
                     CompositeField
                 </div>
                 <!--<div v-if="this.isInfoSection(field)">
                     InfoSection-->
-                    <!--{{field}}-->
+                <!--{{field}}-->
                 <!--</div>-->
                 <div v-if="this.isTableField(field)">
                     TableField

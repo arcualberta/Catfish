@@ -121,6 +121,24 @@
 
     </form>
 
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <span class="title">@Localizer.General["Configure Templates"]</span>
+            </div>
+            <div class="card-body">
+                <form asp-page-handler="edit" method="post">
+                    @foreach (var template in Model.Templates.Where(t => t.Assigned))
+                    {
+                        
+                            <partial model="@template" name="Partial/Groups/GroupTemplateAssignmentVM.cshtml" />
+                        
+                    } @*ENDS foreach (var role in Model.Roles.Where(r => r.Assigned))*@
+                </form>
+            </div> @*Ends "card-body"*@
+        </div> @*End: "cards"*@
+
+    </div>
 
     <div class="container-fluid">
         <div class="card">

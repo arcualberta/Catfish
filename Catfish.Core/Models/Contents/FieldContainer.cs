@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Contents.Fields;
+﻿using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -23,6 +24,15 @@ namespace Catfish.Core.Models.Contents
             set => Data.SetAttributeValue("template-id", value);
         }
 
+        public Guid? ParentId
+        {
+            get => GetAttribute("parent-id", null as Guid?);
+            set => Data.SetAttributeValue("parent-id", value);
+        }
+
+        [NotMapped]
+        public FieldContainerList ChildFieldContainers { get; protected set; }
+
         public FieldContainer(string tagName) : base(tagName) 
         { 
             Initialize(eGuidOption.Ignore); 
@@ -38,6 +48,7 @@ namespace Catfish.Core.Models.Contents
 
             Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
             Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
+            ChildFieldContainers = new FieldContainerList(GetElement("child-field-containers", true));
         }
 
         public string GetName(string lang)

@@ -129,7 +129,17 @@ namespace Catfish.Core.Models.Contents.Fields
 
         public IEnumerable<Text> GetValues(string lang = null)
         {
-            throw new NotImplementedException();
+            List<Text> ret = new List<Text>();
+            var selectedOptions = Options.Where(op => op.Selected);
+            foreach (var op in selectedOptions)
+			{
+                if (!string.IsNullOrEmpty(lang))
+                    ret.Add(op.OptionText.Values.FirstOrDefault(txt => txt.Language == lang));
+                else
+                    ret.AddRange(op.OptionText.Values);
+            }
+
+            return ret;
         }
 
         public string GetValues(string separator, string lang = null)

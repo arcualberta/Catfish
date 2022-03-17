@@ -16,11 +16,14 @@ export interface TypedArray<T> {
 export interface FlattenedFormFiledState {
     flattenedTextModels: { [key: string]: Text };
     flattenedOptionModels: { [key: string]: Option };
+    flattenedFileModels: { [key: string]: File[] };
 }
 
 export enum FlattenedFormFiledMutations {
     SET_TEXT_VALUE = 'SET_TEXT_VALUE',
-    SET_OPTION_VALUE = 'SET_OPTION_VALUE'
+    SET_OPTION_VALUE = 'SET_OPTION_VALUE',
+    ADD_FILE = 'ADD_FILE',
+    REMOVE_FILE = 'REMOVE_FILE'
 }
 
 export abstract class FieldContainerUtils {
@@ -132,6 +135,12 @@ export function clearForm(state: FlattenedFormFiledState) {
     Object.keys(state.flattenedOptionModels).forEach(function (key) {
         state.flattenedOptionModels[key].selected = false;
     });
+
+    // Iterate through attachment in state.flattenedOptionModels
+    Object.keys(state.flattenedFileModels).forEach(function (key) {
+        state.flattenedFileModels[key] = [] as File[];
+    });
+
 }
 
 export function isRequiredMultilingualField(field: MultilingualTextField) {

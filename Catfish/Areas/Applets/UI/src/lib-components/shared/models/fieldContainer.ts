@@ -47,11 +47,16 @@ export interface Field {
 export interface FieldContainer {
     id: Guid;
     templateId: Guid | null;
+    parentId: Guid | null;
     $type: string;
     modelType: string;
     fields: {
         $type: string;
         $values: Field[];
+    };
+    childFieldContainers: {
+        $type: string;
+        $values: FieldContainer[];
     };
     isRoot: boolean | false;
     name: TextCollection | null;
@@ -134,7 +139,10 @@ export interface FileReference {
 }
 
 export interface AttachmentField extends Field {
-    files: FileReference[];
+    files: {
+        $type: string,
+        $values: FileReference[];
+        }
     allowedExtensions: string[];
     maxFileSize: number;
 }

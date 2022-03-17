@@ -6,6 +6,7 @@ import { Mutations } from './mutations';
 export enum Actions {
     LOAD_BLOCK = 'LOAD_BLOCK',
     LOAD_PAGE = 'LOAD_PAGE'
+   
 }
 
 export const actions: ActionTree<State, any> = {
@@ -49,5 +50,6 @@ export const actions: ActionTree<State, any> = {
                 console.error('LOAD_PAGE error:', error);
             });
     }
+    
 }
 

@@ -572,6 +572,33 @@ namespace Catfish.Controllers.Api
             result = result.OrderBy(li => li.Text).ToList();
             return result;
         }
+
+       
+        [HttpGet("getCollectionList")]
+        public List<SelectListItem> GetCollectionList()
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+
+           
+                var collections = _submissionService.GetCollectionList();
+
+
+                foreach (var c in collections)
+                {
+                    if (!string.IsNullOrEmpty(c.ConcatenatedName))
+                    {
+                        result.Add(new SelectListItem { Text = c.ConcatenatedName, Value = c.Id.ToString() });
+                    }
+
+                }
+            
+
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+
         /// <summary>
         ///  Oct 06 2021: This method wil retrieve all the metadatasets that attached to this Template
         /// </summary>

@@ -10,5 +10,6 @@ namespace Catfish.Core.Models.ViewModels
         public Guid? TemplateGroupId { get; set; }
         public string TemplateName { get; set; }
         public bool Assigned { get; set; }
+        public bool HasCollections { get; set; }
     }
 }

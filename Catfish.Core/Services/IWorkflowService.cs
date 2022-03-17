@@ -57,5 +57,6 @@ namespace Catfish.Core.Services
         Mapping GetStateMappingByStateMappingId(EntityTemplate entityTemplate, Guid stateMappingId);
         EntityTemplate GetEntityTemplateByEntityTemplateId(Guid entityTemplateId);
         bool UpdateItemTemplateSchema(Guid id, string SchemaXml, out string successMessage);
+        Guid GetSubmitStateMappingId(Guid templateId);
     }
 }

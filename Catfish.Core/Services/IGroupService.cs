@@ -24,13 +24,22 @@ namespace Catfish.Core.Services
         List<GroupTemplateAssignmentVM> SetTemplateAttribute(Guid groupId);
         List<GroupRoleAssignmentVM> SetRoleAttribute(Guid groupId);
         List<UserGroupRole> SetUserAttribute(Guid groupId);
+        List<TemplateCollectionVM> SetTemplateCollectionAttribute(Guid groupTemplateId);
         Group SaveGroupRoles(Group group, List<GroupRoleAssignmentVM> roles);
         void SaveGroupTemplates(Group group, List<GroupTemplateAssignmentVM> templates);
         void DeleteGroup(Guid groupId);
         bool CheckUserGroupRole(Guid groupId);
         void DeleteUserGroupRole(Guid userGroupRoleId);
+        void DeleteGroupTemplateCollection(Guid groupTemplateId, Guid collectionId);
         bool CheckLoggedUser(Guid userId, Guid groupRoleId);
         List<string> GetUserEmailListByRole(Guid roleId, Guid groupId);
         bool isGroupAdmin(Guid userId, Guid groupId);
+        List<TemplateCollectionVM> SetCollectionAttribute(Guid id);
+        ICollection<Collection> GetCollectionDetails(Guid? groupTemplateId);
+        GroupTemplate GetGroupTemplateDetails(Guid id);
+        IList<Guid> GetAllCollectionIds();
+        IList<Guid>  GetTemplateCollecollectionIds(Guid groupTemplateId);
+        GroupTemplate AddTemplateCollections(Guid groupTemplateId, Guid collectionId);
+
     }
 }

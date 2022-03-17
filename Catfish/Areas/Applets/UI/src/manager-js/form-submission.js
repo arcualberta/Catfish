@@ -3,7 +3,9 @@
     data() {
         return {
             childForms:[],
-            validationError: ''
+            validationError: '',
+            groups: [],
+            collections:[]
         }
     },
     methods: {
@@ -16,9 +18,24 @@
                     this.childForms = data;
 
                 });
+
+            fetch('/applets/api/itemtemplates/groups/' + this.model.selectedItemTemplate.value)
+                .then(response => response.json())
+                .then((data) => {
+                    this.groups = data;
+                });
         }
     },
-  mounted() {
+    mounted() {
+        //getCollectionList
+        fetch('/api/Items/GetCollectionList')
+            .then(response => response.json())
+            .then((data) => {
+                this.collections = data;
+
+            });
+
+
       if (this.model.selectedItemTemplate?.value) {
           //applets/api/[controller]
           fetch('/applets/api/ItemTemplates/GetItemTemplateRootForms/' + this.model.selectedItemTemplate.value)
@@ -27,6 +44,15 @@
             this.childForms = data;
 
           });
+
+          fetch('/applets/api/itemtemplates/groups/' + this.model.selectedItemTemplate.value)
+              .then(response => response.json())
+              .then((data) => {
+                  this.groups = data;
+              });
+
+
+
       }
     },
     computed: {
@@ -46,7 +72,12 @@
     template:
         `<div  class= 'block-body'>
             <h2>Form Submission</h2>
-          
+
+       <div class='lead row'><label class='form-label col-md-3 required'>Collection: </label>
+           <select v-model="model.selectedCollection.value" class="form-control" style="width:auto;">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in this.collections" :value="item.value">{{item.text}}</option>
+         </select></div>
          
             <div class='lead row'><label class='form-label col-md-3 required'>Item Template: </label>
                <select v-model="model.selectedItemTemplate.value" class="form-control" style="width:auto;" v-on:change="selectItemTemplate(model.selectedItemTemplate.value)">
@@ -61,6 +92,18 @@
                     <option v-for="item in this.childForms" :value="item.value">{{item.text}}</option>
                 </select>
             </div>
+ <div class='lead row'><label class='form-label col-md-3 required'>User Must Select Group:</label><label class='form-label'>
+<input class='' type='checkbox' v-model='model.userMustSelectGroup.value' contenteditable='true' value='model.userMustSelectGroup.value' /></label></div>
+         <div v-if='model.userMustSelectGroup.value' class='lead row'><label class='form-label col-md-3 required'>Group: </label>
+           <select v-model="model.selectedGroupId.value" class="form-control" style="width:auto;">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in this.groups" :value="item.value">{{item.text}}</option>
+            </select></div>
+        <div v-else class='lead row'>
+              <label class='form-label col-md-3'>Group Dropdown Label: </label>
+              <input class='form-control col-md-8' type='text' v-model='model.groupSelectorLabel.value' contenteditable='true' value='model.groupSelectorLabel.value' />
+        </div>
+       
         </div>`
 
 });

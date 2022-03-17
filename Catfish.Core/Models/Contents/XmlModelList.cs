@@ -24,19 +24,25 @@ namespace Catfish.Core.Models.Contents
         /// <param name="populateChildren">Set to true if the constructor should go through the
         /// the children of the container and build the list of children into the array.
         /// </param>
-        /// <param name="childTag">Only applicable if populateChildren is set to true.
-        /// If childTag is specified, selects child elements with that tag name for 
-        /// building the list.
+        /// <param name="childTags">Only applicable if populateChildren is set to true.
+        /// If childTags is assigned a single tag name, selects child elements with that tag name for 
+        /// building the list. If it is assigned with a comman-separted list of tag names, then 
+        /// the returned list will contain elements with any of those tags.
         /// </param>
-        public XmlModelList(XElement data, bool populateChildren = true, string childTag = null)
+        public XmlModelList(XElement data, bool populateChildren = true, string childTags = null)
         {
             mData = data;
 
             if (populateChildren)
             {
-                var elements = childTag != null ? data.Elements(childTag) : data.Elements();
+
+                IEnumerable<XElement> elements = data.Elements();
+                string[] tags = string.IsNullOrEmpty(childTags) ? null : childTags.Split(new char[] { ',' });
                 foreach (var ele in elements)
                 {
+                    if (tags != null && !tags.Contains(ele.Name.LocalName))
+                        continue;
+
                     T child = XmlModel.InstantiateContentModel(ele) as T;
                     if (child != null)
                     {

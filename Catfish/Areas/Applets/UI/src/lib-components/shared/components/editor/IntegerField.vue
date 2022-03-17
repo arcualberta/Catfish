@@ -27,19 +27,15 @@
             const validationStatus = computed(() => validateMonolingualNumberField(p.model));
             const type = p.model.modelType;
             return {
-
                 validationStatus,
                 type
-
             }
-
         }
        
     });
 </script>
 
 <template>
-    
     <div v-for="val in model?.values?.$values">
         <Text :model="val" :is-multiline="false" :is-rich-text="false" :validation-status="validationStatus" field="number" />
     </div>
