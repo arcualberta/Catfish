@@ -129,7 +129,7 @@ namespace Catfish.Areas.Applets.Controllers
             return result;
         }
 
-        [HttpGet("{templateId}/data-form/{formId}")]
+            [HttpGet("{templateId}/data-form/{formId}")]
         public ContentResult DataForm(Guid templateId, Guid formId)
         {
             //TODO: Implement security
