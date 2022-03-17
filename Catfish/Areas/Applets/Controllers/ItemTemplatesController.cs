@@ -208,34 +208,37 @@ namespace Catfish.Areas.Applets.Controllers
                
                 foreach (string dataItemId in formIds)
                 {
-                    List<ReportField> rptFields = new List<ReportField>();
-                    ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == Guid.Parse(templateId));
-                    DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == Guid.Parse(dataItemId));
-
-                    var fields = _entityTemplateService.GetTemplateDataItemFields(Guid.Parse(templateId), Guid.Parse(dataItemId));
-
-                    SelectListGroup group = new SelectListGroup();
-                    group.Name = dataItemId + ":" + dataForm.GetName("en");
-
-
-
-                    foreach (BaseField field in fields)
+                    if (!string.IsNullOrEmpty(dataItemId))
                     {
-                        if (!string.IsNullOrEmpty(field.GetName()))
+                        List<ReportField> rptFields = new List<ReportField>();
+                        ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(it => it.Id == Guid.Parse(templateId));
+                        DataItem dataForm = template.DataContainer.FirstOrDefault(di => di.Id == Guid.Parse(dataItemId));
+
+                        var fields = _entityTemplateService.GetTemplateDataItemFields(Guid.Parse(templateId), Guid.Parse(dataItemId));
+
+                        SelectListGroup group = new SelectListGroup();
+                        group.Name = dataItemId + ":" + dataForm.GetName("en");
+
+
+
+                        foreach (BaseField field in fields)
                         {
-                            ReportField rf = new ReportField();
-                            rf.FormId = dataItemId;
-                            rf.FormName = dataForm.GetName("en");
-                            rf.FieldId = field.Id.ToString();
-                            rf.FieldName = field.GetName();
-                            // result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString(), Group=group });
-                            rptFields.Add(rf);
+                            if (!string.IsNullOrEmpty(field.GetName()))
+                            {
+                                ReportField rf = new ReportField();
+                                rf.FormId = dataItemId;
+                                rf.FormName = dataForm.GetName("en");
+                                rf.FieldId = field.Id.ToString();
+                                rf.FieldName = field.GetName();
+                                // result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString(), Group=group });
+                                rptFields.Add(rf);
+                            }
+
                         }
 
+                        rptFields = rptFields.OrderBy(li => li.FieldName).ToList();
+                        result.Add(dataItemId, rptFields);
                     }
-
-                    rptFields = rptFields.OrderBy(li => li.FieldName).ToList();
-                    result.Add(dataItemId, rptFields);
                 }
 
                // result = result.OrderBy(li => li.FieldName).ToList();

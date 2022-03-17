@@ -159,9 +159,11 @@
                         <option value="h4">H4</option>
                         <option value="h5">H5</option>
                         <option value="div">Div</option>
-                        <option value="p">Paragraph</option>
+                        <option value="audio">Audio</option>
+                        <option value="embed">Embed</option>
                         <option value="img">Image</option>
-                        <option value="file">File</option>
+                        <option value="a">Link</option>
+                        <option value="p">Paragraph</option> 
                      </select>
                      <label class='form-label'  style="margin-left: 10px; margin-right: 10px">Class(es):</label>
                      <input type="text" v-model="component.cssClasses" class="col-md-2"  v-on:blur="onBlur" />
@@ -169,6 +171,16 @@
                      <input type="text" v-model="component.elementId"  class="col-md-2" v-on:blur="onBlur" />
                       <label class='form-label' style="margin-left: 10px; margin-right: 10px">Style:</label>
                      <textarea v-model="component.cssStyle" cols="20" rows="2"  class="col-md-2" v-on:blur="onBlur" />
+                </div>
+                <div class='lead row' v-if="component.label === 'Form Field'">
+                  <div class="alert alert-info" style="margin-left:30px;">If this is an "AttchmentField" that contain multiple images, how would you display your images?</div>
+                  <br/>
+                   <div class="col-md-12" style="margin-left:30px;">
+                        <input type="radio" id="gallery-radio" name="imagesLayoutRadio" v-model="component.displayImagesMode" value="gallery" class="form-check-input" :selected="component.displayImagesMode == 'gallery'" v-on:blur="onBlur"/><span>Gallery </span>
+                        <br/>
+                        <input type="radio" id="carousel-radio" name="imagesLayoutRadio" v-model="component.displayImagesMode" value="carousel" class="form-check-input" :selected="component.displayImagesMode == 'carousel'" v-on:blur="onBlur" /><span> Carousel</span>
+                   </div>
+                  
                 </div>
             </div>
         </div>

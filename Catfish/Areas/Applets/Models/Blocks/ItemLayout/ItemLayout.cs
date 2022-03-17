@@ -23,6 +23,8 @@ namespace Catfish.Areas.Applets.Models.Blocks.ItemLayout
         public List<ComponentLayout> ComponentTemplates { get; set; }
         public TextField SelectedComponents { get; set; }
 
+        
+
         public ItemLayout()
 		{
             ComponentTemplates = new List<ComponentLayout>()

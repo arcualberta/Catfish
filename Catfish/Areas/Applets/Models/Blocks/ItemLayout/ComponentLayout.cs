@@ -12,5 +12,7 @@ namespace Catfish.Areas.Applets.Models.Blocks.ItemLayout
 		public string ElementId { get; set; }
 		public string CssStyle { get; set; }
 		public string Label { get; set; }
+
+		public string DisplayImagesMode { get; set; }
 	}
 }
