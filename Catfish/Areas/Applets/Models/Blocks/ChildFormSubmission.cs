@@ -16,5 +16,6 @@ namespace Catfish.Areas.Applets.Models.Blocks
         public TextField SelectedChildForm { get; set; }
         public TextField QueryParameter { get; set; }
         public CheckBoxField DisplayChildList { get; set; }
+        public TextField SelectedResponseForm { get; set; }
     }
 }

@@ -214,7 +214,7 @@ namespace Catfish.Services
 
         }
         /// <summary>
-        /// MR: Sept 22 2021 - Get all the Field in the Data-Item in the Item Template
+        /// MR: Sept 22 2021 - Get all the Field in the Data-Item (root) in the Item Template
         /// </summary>
         /// <param name="templateId">Item Template Id</param>
         /// <returns></returns>
@@ -225,6 +225,21 @@ namespace Catfish.Services
             var dataItem = template.GetRootDataItem(false);
             
             return dataItem.Fields; 
+
+        }
+        /// <summary>
+        /// This method will retrieve the form (dataItem) fields for a given itemTemplat and Form(DataItem) Ids
+        /// </summary>
+        /// <param name="templateId">Item Template Id</param>
+        /// <param name="dataItemId">Selected Form Id</param>
+        /// <returns></returns>
+        public FieldList GetTemplateDataItemFields(Guid? templateId, Guid? dataItemId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+
+            var dataItem = template.GetDataItem(dataItemId.Value);
+
+            return dataItem.Fields;
 
         }
         /// <summary>

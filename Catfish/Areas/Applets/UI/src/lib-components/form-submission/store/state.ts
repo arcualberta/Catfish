@@ -7,6 +7,8 @@ import { FlattenedFormFiledState, eSubmissionStatus } from '../../shared/store/f
 export interface State extends FlattenedFormFiledState {
     itemTemplateId: Guid | null;
     formId: Guid | null;
+    collectionId: Guid | null;
+    groupId: Guid | null;
     form: FieldContainer | null;
     submissionStatus: eSubmissionStatus;
     formLoadAPI: string | null;
@@ -16,9 +18,12 @@ export interface State extends FlattenedFormFiledState {
 export const state: State = {
     itemTemplateId: null,
     formId: null,
+    collectionId: null,
+    groupId: null,
     form: null,
     flattenedTextModels: {},
     flattenedOptionModels: {},
+    flattenedFileModels: {},
     submissionStatus: eSubmissionStatus.None,
     formLoadAPI: null,
     formSubmissionAPI: null
