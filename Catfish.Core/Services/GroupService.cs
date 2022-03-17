@@ -66,6 +66,20 @@ namespace Catfish.Core.Services
             }
         }
 
+        private List<Collection> GetCollections(int offset = 0, int max = 25)
+        {
+            try
+            {
+                return _appDb.Collections.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// This method return users who belongs to the given role group.
@@ -171,6 +185,25 @@ namespace Catfish.Core.Services
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public GroupTemplate GetGroupTemplateDetails(Guid id)
+        {
+            try
+            {
+                var groupTemplate = _appDb.GroupTemplates.Where(gt => gt.Id == id).FirstOrDefault();
+                return groupTemplate;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="userId"></param>
         /// <param name="groupRoleId"></param>
         /// <returns></returns>
@@ -200,6 +233,38 @@ namespace Catfish.Core.Services
             }
         }
 
+        public GroupTemplate AddTemplateCollections(Guid groupTemplateId, Guid collectionId)
+        {
+            try
+            {
+                GroupTemplate groupTemplate = _appDb.GroupTemplates.Where(gt => gt.Id == groupTemplateId).FirstOrDefault();
+                Collection collection = _appDb.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                groupTemplate.Collections.Add(collection);
+                return groupTemplate;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IList<Guid> GetAllCollectionIds()
+        {
+            try
+            {
+                return _appDb.Collections.Select(c => c.Id).ToList();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -235,13 +300,79 @@ namespace Catfish.Core.Services
                 return null;
             }
         }
+
+        public IList<Guid> GetTemplateCollecollectionIds(Guid groupTemplateId)
+        {
+            try
+            {
+                var collections =  GetCollectionDetails(groupTemplateId);
+                return collections.Select(c => c.Id).ToList();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="groupRoleId"></param>
+        /// <param name="groupTemplateId"></param>
         /// <param name="searching"></param>
         /// <returns></returns>
-        public List<GroupRoleUserAssignmentVM> SetUserAttribute(Guid groupRoleId, string searching)
+        public List<TemplateCollectionVM> SetTemplateCollectionAttribute(Guid groupTemplateId)
+        {
+            try
+            {
+                //get all collections which has the selected template
+                var allTemplateCollections = GetAllCollectionIds();
+
+                //get collectionId's who already selected for perticular template
+                var addedTemplateCollections = GetTemplateCollecollectionIds(groupTemplateId);
+
+
+                //get Collections which doesn't selected to a perticular group template
+                var toBeAddedTemplateCollections = allTemplateCollections.Except(addedTemplateCollections).ToList();
+
+                //get all Collection details
+                var collections = GetCollections();
+                List<TemplateCollectionVM> Collections = new List<TemplateCollectionVM>();
+                foreach (var newCollection in toBeAddedTemplateCollections)
+                {
+                    try
+                    {
+                        var collection = collections.Where(c => c.Id == newCollection).FirstOrDefault();
+                        var templateCollectionVM = new TemplateCollectionVM()
+                        {
+                            CollectionId = collection.Id,
+                            TemplateGroupId = groupTemplateId,
+                            CollectionName =collection.ConcatenatedName,
+                            Assigned = false
+                        };
+                        Collections.Add(templateCollectionVM);
+                    }
+                    catch (Exception ex)
+                    {
+                        _errorLog.Log(new Error(ex));
+                    }
+                }
+                return Collections;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="groupRoleId"></param>
+            /// <param name="searching"></param>
+            /// <returns></returns>
+            public List<GroupRoleUserAssignmentVM> SetUserAttribute(Guid groupRoleId, string searching)
         {
             try
             {
@@ -689,6 +820,26 @@ namespace Catfish.Core.Services
                     _appDb.UserGroupRoles.Remove(userGroupRole);
                 if (!(countExsitingRoles > 1))
                     _piranhaDb.UserRoles.Remove(roleDetails);
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+        }
+
+        /// <summary>
+        /// This method will delete collection from a given group template
+        /// </summary>
+        /// <param name="groupTemplateId"></param>
+        /// <param name="collectionId"></param>
+        public void DeleteGroupTemplateCollection(Guid groupTemplateId, Guid collectionId)
+        {
+            try
+            {
+                GroupTemplate groupTemplate = _appDb.GroupTemplates.Where(gt => gt.Id == groupTemplateId).FirstOrDefault();
+                var collection = _appDb.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                groupTemplate.Collections.Remove(collection);
+                _appDb.GroupTemplates.Update(groupTemplate);
             }
             catch (Exception ex)
             {

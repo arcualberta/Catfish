@@ -16,5 +16,6 @@ namespace Catfish.Areas.Applets.Services
 
         public List<DataItem> GetDataItems(Guid itemTemplate, bool isRoot=false);
         public List<DataItem> GetAllDataItems(Guid itemTemplate);
+        ICollection<Collection> GetAllGroupTemplateCollections(Guid templateId, Guid groupId);
     }
 }
