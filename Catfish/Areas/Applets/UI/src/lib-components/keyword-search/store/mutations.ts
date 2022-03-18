@@ -9,7 +9,8 @@ export enum Mutations {
   SET_KEYWORDS = 'SET_KEYWORDS',
   SET_RESULTS = 'SET_RESULTS',
   SET_OFFSET = 'SET_OFFSET',
-  SET_PAGE_SIZE = 'SET_PAGE_SIZE'
+  SET_PAGE_SIZE = 'SET_PAGE_SIZE',
+  SET_FREE_TEXT_SEARCH ='SET_FREE_TEXT_SEARCH'
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -38,6 +39,10 @@ export const mutations: MutationTree<State> = {
   [Mutations.SET_PAGE_SIZE](state: State, payload: number) {
     //console.log('SET_PAGE_SIZE: payload: ', payload)
     state.max = payload;
-  }
+    },
+    [Mutations.SET_FREE_TEXT_SEARCH](state: State, payload: string) {
+        //console.log('SET_PAGE_SIZE: payload: ', payload)
+        state.freeSearchText = payload;
+    }
 
 }

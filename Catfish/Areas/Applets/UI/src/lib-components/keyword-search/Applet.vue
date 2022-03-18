@@ -9,7 +9,7 @@
     import { SearchParams } from "./models"
     import DictionaryView from './components/DictionaryView.vue'
     import ListView from './components/ListView.vue'
-   
+    import FreeTextSearch from './components/FreeTextSearch.vue'
 
   
 
@@ -20,7 +20,8 @@
         components: {
          
             DictionaryView,
-            ListView
+            ListView,
+            FreeTextSearch
         },
         props,
         setup(p) {
@@ -60,12 +61,15 @@
             onMounted(() => store.dispatch(Actions.FILTER_BY_KEYWORDS));
 
             const keywordQueryModel = ref(store.state.keywordQueryModel);
+         
             return {
+            
                 keywordQueryModel,
                 displayFormat,
                 blogTitle,
                 blogDescription,
-                enableFreeTextSearch
+                enableFreeTextSearch,
+              
             };
         },
         storeConfig: {
@@ -74,6 +78,7 @@
             mutations,
             getters
         }
+       
     });
 </script>
 
@@ -81,9 +86,8 @@
     <div v-if="displayFormat === 'Dictionary'">
         <h1 class="dir-title">{{blogTitle}}</h1>
         <div class="dir-description">{{blogDescription}}</div>
-        <div class="input-group dir-text-search" v-if="enableFreeTextSearch === true">
-            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-            <button type="button" class="btn btn-outline-primary">search</button>
+        <div v-if="enableFreeTextSearch === true">
+           <FreeTextSearch />
         </div>
         <DictionaryView />
        

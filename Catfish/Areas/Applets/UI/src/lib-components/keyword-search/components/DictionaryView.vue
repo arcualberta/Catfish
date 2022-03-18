@@ -14,7 +14,8 @@
 
             return {
                 runFreshSearch,
-                keywordQueryModel: computed(() => store.state.keywordQueryModel)
+                keywordQueryModel: computed(() => store.state.keywordQueryModel),
+                results: computed(() => store.state.searchResult)
             }
         },
         methods: {
@@ -29,24 +30,50 @@
 <template>
     <h3>Dictionary View</h3>
     <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
-        <!-- <div v-if="keywordQueryModel?.containers.length > 1 && container?.name?.length > 0">{{container.name}}</div>-->
+      
         <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
-            <!-- <div v-if="field.name.length > 0" class="font-weight-bold">{{field.name}}</div>-->
-            <span v-for="(value, vIdx) in field.values" :key="value">
-                <!--<input type="checkbox" :value="value" v-model="keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx]" @change="runFreshSearch" />
-                <label class="ml-1">{{ value }}</label>-->
-                <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword">{{ value }}</button>
+            
+            <span v-for="(value, vIdx) in field.values" :key="value" class="dir-keyword">
+                <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button">{{ value }}</button>
             </span>
         </div>
     </div>
 
     {{keywordQueryModel}}
+
+    <div>RESULTS</div>
+    <div>{{results}}</div>
+
 </template>
 
 <style scoped>
     .keywordContainer {
-        width: 100%;
-        overflow-x: auto;
+        
+        overflow-x: scroll;
+        overflow-y: visible;
         white-space: nowrap;
+        position: relative;
+        display: inline-block;
+        height: 150px;
+        width: 100%;
+    }
+    .dir-keyword {
+        display: inline-block;
+        margin-top: 15px;
+    }
+    .dir-keyword-button {
+        position: relative;
+        color: grey;
+        
+        text-align: center;
+        border-radius: 60px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 10px;
+        padding-right: 10px
+    }
+
+    .dir-keyword-button:focus {
+        background-color: yellow;
     }
 </style>

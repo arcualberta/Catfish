@@ -10,8 +10,10 @@ export enum Actions {
   FILTER_BY_KEYWORDS = 'FILTER_BY_KEYWORDS',
   NEXT_PAGE = 'NEXT_PAGE',
   PREVIOUS_PAGE = 'PREVIOUS_PAGE',
-    FRESH_SEARCH = 'FRESH_SEARCH',
-  SAVE_KEYWORDS ='SAVE_KEYWORDS'
+  FRESH_SEARCH = 'FRESH_SEARCH',
+  SAVE_KEYWORDS = 'SAVE_KEYWORDS',
+  SEARCH_FREE_TEXT = 'SEARCH_FREE_TEXT',
+  SET_SEARCH_TEXT='SET_SEARCH_TEXT'
 }
 
 export const actions: ActionTree<State, any> = {
@@ -96,7 +98,7 @@ export const actions: ActionTree<State, any> = {
     [Actions.SAVE_KEYWORDS](store, source: KeywordSource) {
         console.log("save keywords action :" + JSON.stringify(source));
         store.commit(Mutations.SET_KEYWORDS, source);
-  }
+  },
 
   ////async [Actions.INIT_FILTER_ASYNC](store, source: KeywordSource) {
 
@@ -110,8 +112,24 @@ export const actions: ActionTree<State, any> = {
   ////  const data = await res.json()
   ////  store.commit(Mutations.SET_KEYWORDS, data);
   ////},
+  [Actions.SET_SEARCH_TEXT](store, text: string) {
 
+        store.commit(Mutations.SET_FREE_TEXT_SEARCH, text);
+  },
+[Actions.SEARCH_FREE_TEXT](store) {
 
+        //console.log('Store: ', JSON.stringify(store.state))
+
+    const api = window.location.origin +
+        `/api/solr/freetext/${store.state.freeSearchText}`;
+        fetch(api)
+            .then(response => response.json())
+            .then(data => {
+                
+                console.log(data)
+
+            });
+    }
 
 }
 
