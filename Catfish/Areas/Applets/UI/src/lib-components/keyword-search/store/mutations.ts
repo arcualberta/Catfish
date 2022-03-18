@@ -41,7 +41,7 @@ export const mutations: MutationTree<State> = {
     state.max = payload;
     },
     [Mutations.SET_FREE_TEXT_SEARCH](state: State, payload: string) {
-        console.log('mutation set text: payload: ', payload)
+       // console.log('mutation set text: payload: ', payload)
         state.freeSearchText = payload;
     }
 

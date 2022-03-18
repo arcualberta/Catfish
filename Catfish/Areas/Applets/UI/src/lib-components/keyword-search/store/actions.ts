@@ -96,7 +96,7 @@ export const actions: ActionTree<State, any> = {
     },
 
     [Actions.SAVE_KEYWORDS](store, source: KeywordSource) {
-        console.log("save keywords action :" + JSON.stringify(source));
+       // console.log("save keywords action :" + JSON.stringify(source));
         store.commit(Mutations.SET_KEYWORDS, source);
   },
 
@@ -114,22 +114,21 @@ export const actions: ActionTree<State, any> = {
   ////},
   [Actions.SET_SEARCH_TEXT](store, text: string) {
 
-      console.log("set serch text: " + text);
+     // console.log("set serch text: " + text);
         store.commit(Mutations.SET_FREE_TEXT_SEARCH, text);
   },
 [Actions.SEARCH_FREE_TEXT](store) {
-
-        //console.log('Store: ', JSON.stringify(store.state))
-
+    console.log("executing search for: " + store.state.freeSearchText?.toString());
     const api = window.location.origin +
-        `/api/solr/freetext/${store.state.freeSearchText}`;
-        fetch(api)
-            .then(response => response.json())
-            .then(data => {
-                
-                console.log(data)
+        `/api/solr/executefreetext/${store.state.freeSearchText?.toString()}`
+  
+      fetch(api)
+     .then(response => response.json())
+     .then(data => {
+       console.log("results:")     
+       console.log(data)
 
-            });
+      });
     }
 
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, computed, PropType} from 'vue'
+    import { defineComponent, computed} from 'vue'
     import { useStore } from 'vuex'
 
     import { state } from '../store/state'
@@ -25,7 +25,7 @@
             //console.log("saved Text " + savedText);
             return {
                store,  
-                freeTextSearch: computed(() => store.state.freeTextSearch),
+                freeTextSearch: computed(() => store.state.freeSearchText),
               
             };
         },
@@ -41,6 +41,11 @@
                 if (e.target.value.length > 0) {
                     this.store.dispatch(Actions.SET_SEARCH_TEXT, e.target.value);
                 }
+            },
+
+            executeSearch: function () {
+                console.log("executing search ....");
+                this.store.dispatch(Actions.SEARCH_FREE_TEXT);
             }
         }
        
@@ -52,8 +57,8 @@
     <div class="input-group dir-text-search">
             <input type="text"  class="form-control rounded" placeholder="searchText" aria-label="Search" aria-describedby="search-addon"  @blur="onBlur($event)" />
            
-            <button type="button" class="btn btn-outline-primary">search</button> 
-            <span>{{freeTextSearch}} </span>
+            <button type="button" class="btn btn-outline-primary" @click="executeSearch">search</button> 
+          
     </div>
        
 </template>
