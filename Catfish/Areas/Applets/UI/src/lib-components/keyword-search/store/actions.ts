@@ -114,6 +114,7 @@ export const actions: ActionTree<State, any> = {
   ////},
   [Actions.SET_SEARCH_TEXT](store, text: string) {
 
+      console.log("set serch text: " + text);
         store.commit(Mutations.SET_FREE_TEXT_SEARCH, text);
   },
 [Actions.SEARCH_FREE_TEXT](store) {
