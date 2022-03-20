@@ -144,6 +144,8 @@
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\components\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\models\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\store\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\entity-manager\components\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\entity-manager\models\" />
     <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\components\" />
     <Folder Include="Areas\Applets\UI\src\lib-components\item-viewer\store\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
