@@ -75,8 +75,8 @@
     }
     .dir-keyword-button {
         position: relative;
-        color: grey;
-        
+        color: Black;
+        font-size:0.60em;
         text-align: center;
         border-radius: 60px;
         padding-top: 30px;
@@ -88,4 +88,9 @@
     .dir-keyword-button:focus {
         background-color: yellow;
     }
+        .dir-keyword-button:hover {
+            transform: scale(1.2);
+            z-index:100;
+            opacity:50%;
+        }
 </style>
