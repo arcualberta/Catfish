@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed, /* watch*/ } from "vue";
+    import { defineComponent, computed, /* watch*/ onMounted } from "vue";
     import { useStore } from 'vuex';
     import { Actions } from '../store/actions';
 
@@ -11,7 +11,19 @@
             //console.log("Store: ", store)
 
             const runFreshSearch = () => store.dispatch(Actions.FRESH_SEARCH);
+            onMounted(() => {
+                const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
+              
+                btns.forEach((b) => {
+                    let color = "hsla(" + ~~(360 * Math.random()) + "," +
+                        "70%," +
+                        "80%,1)";
+                   
+                    b.setAttribute("style", "background-color: " + color );
 
+                });
+
+            })
             return {
                 runFreshSearch,
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
@@ -19,7 +31,7 @@
             }
         },
         methods: {
-            addKeyword(cIdx: Number | any, fIdx: Number|any, vIdx: Number|any) {
+            addKeyword(cIdx: Number | any, fIdx: Number | any, vIdx: Number | any) {
                 this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] = !this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx];
                 this.runFreshSearch;
             }
@@ -34,7 +46,7 @@
         <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
             
             <span v-for="(value, vIdx) in field.values" :key="value" class="dir-keyword">
-                <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button">{{ value }}</button>
+                <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
             </span>
         </div>
     </div>
