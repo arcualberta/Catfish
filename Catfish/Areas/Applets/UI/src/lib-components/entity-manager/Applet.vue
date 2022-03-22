@@ -1,5 +1,4 @@
 ﻿<script lang="ts">
-	// import { Guid } from 'guid-typescript'
 	import { defineComponent, computed } from 'vue'
 	import { useStore } from 'vuex';
 
@@ -11,16 +10,10 @@
 	import { Mutations } from '../item-viewer/store/mutations';
 
 	import props, { QueryParameter, DataAttribute } from '../shared/props'
-	//import { FieldLayout } from "./models/fieldLayout"
-	import FieldComponent from "./components/fieldComponent.vue"
-	import StaticComponent from './components/staticComponent.vue';
-
 
 	export default defineComponent({
 		name: "ItemLayout",
 		components: {
-			FieldComponent,
-			StaticComponent
 		},
 		props,
 		setup(p) {
@@ -74,12 +67,7 @@
 </script>
 
 <template>
-
 	<div class="item">
-		<h3>ItemLayout</h3>
-		<StaticComponent v-for="field in staticFields" :model="field" />
-		<!--{{JSON.stringify(fields)}}-->
-		<FieldComponent v-for="field in fields" :model="field" />
 	</div>
 </template>
 
