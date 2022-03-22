@@ -105,6 +105,6 @@
 			</tr>
 		</tbody>
 	</table>
-
+	<div>{{reportRows}}</div>
 </template>
 
