@@ -33,6 +33,8 @@
             const blogTitle = dataAttributes["block-title"] as string;
             const blogDescription = dataAttributes["block-description"] as string;
             const enableFreeTextSearch = dataAttributes["enable-freetext-search"] as string;
+            const hexColors = dataAttributes["hex-color-list"] as string;
+            
             //We need to use store in this setup method. so let's load it first.
             const store = useStore()
 
@@ -69,6 +71,7 @@
                 blogTitle,
                 blogDescription,
                 enableFreeTextSearch,
+                hexColors
               
             };
         },
@@ -89,7 +92,7 @@
         <div v-if="enableFreeTextSearch === true">
            <FreeTextSearch />
         </div>
-        <DictionaryView />
+        <DictionaryView :colorScheme="hexColors"/>
        
     </div>
     <div class="row" v-if="displayFormat === 'List'">

@@ -326,7 +326,10 @@
                 <option value="Dictionary">Dictionary</option>
 
          </select></div>
-        
+        <div  class='lead'>
+               <label >List of hex color codes for 'Dictionary' layout, separated by a comma,including the # key at the beginning, (i.e: #00b19d, #5175a5, ...): </label>
+               <input type="text"  v-model="model.hexColorList.value" class="form-control">
+         </div>
        </div>`
 });
 

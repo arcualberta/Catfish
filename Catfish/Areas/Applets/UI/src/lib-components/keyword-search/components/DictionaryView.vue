@@ -1,25 +1,36 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed, /* watch*/ onMounted } from "vue";
+    import { defineComponent, computed, PropType, onMounted } from "vue";
     import { useStore } from 'vuex';
     import { Actions } from '../store/actions';
 
     export default defineComponent({
         name: "DictionaryView",
-        setup() {
+        props: {
+            colorScheme: {
+                type: null as PropType<string> | null,
+                required: false
+            }
+        },
+        setup(p) {
 
             const store = useStore();
             //console.log("Store: ", store)
 
             const runFreshSearch = () => store.dispatch(Actions.FRESH_SEARCH);
+            let hexColorList = p.colorScheme ? p.colorScheme.split(',') : null;
             onMounted(() => {
                 const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
-              
+                let i = 0;
                 btns.forEach((b) => {
-                    let color = "hsla(" + ~~(360 * Math.random()) + "," +
-                        "70%," +
-                        "80%,1)";
-                   
-                    b.setAttribute("style", "background-color: " + color );
+                    if (hexColorList !== null) {
+                        b.setAttribute("style", "background-color: " + hexColorList[i]);
+                        i++
+                        i = i <= hexColorList.length - 1 ? i : 0;
+
+                    } else {
+                        let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
+                        b.setAttribute("style", "background-color: " + color);
+                    }
 
                 });
 
@@ -34,6 +45,9 @@
             addKeyword(cIdx: Number | any, fIdx: Number | any, vIdx: Number | any) {
                 this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] = !this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx];
                 this.runFreshSearch;
+            },
+            generateRandomColor() {
+                return "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
             }
         }
     });
@@ -41,7 +55,7 @@
 
 <template>
     <h3>Dictionary View</h3>
-    <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
+    <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container" >
       
         <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
             
@@ -60,7 +74,6 @@
 
 <style scoped>
     .keywordContainer {
-        
         overflow-x: scroll;
         overflow-y: visible;
         white-space: nowrap;
@@ -68,29 +81,61 @@
         display: inline-block;
         height: 150px;
         width: 100%;
+        scroll-behavior: smooth;
+        align-content:center;
     }
     .dir-keyword {
         display: inline-block;
         margin-top: 15px;
+        margin-right: 5px;
     }
     .dir-keyword-button {
         position: relative;
         color: Black;
-        font-size:0.60em;
+        font-size: 0.80em;
         text-align: center;
         border-radius: 60px;
         padding-top: 30px;
         padding-bottom: 30px;
         padding-left: 10px;
-        padding-right: 10px
+        padding-right: 10px;
+        max-width: 150px;
+        white-space: normal;
     }
 
     .dir-keyword-button:focus {
         background-color: yellow;
     }
-        .dir-keyword-button:hover {
-            transform: scale(1.2);
-            z-index:100;
-            opacity:50%;
-        }
+    .dir-keyword-button:hover {
+       transform: scale(1.2);
+       z-index:100;
+       opacity:50%;
+    }
+   
+   
+        /* Works on Chrome, Edge, and Safari */
+    .keywordContainer::-webkit-scrollbar {
+        width: 12px;
+        height: 5px;
+        overflow-x: scroll;
+        background-color: transparent;
+    }
+
+    .keywordContainer::-webkit-scrollbar-track {
+        background-color: transparent;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+    }
+
+    .keywordContainer::-webkit-scrollbar-thumb {
+        background-color: grey;
+        border-radius: 10px;
+        /* border: 1px solid Green;*/
+    }
+    .keywordContainer::-webkit-scrollbar-track-piece:end {
+        margin-right: 75px;
+    }
+
+    .keywordContainer::-webkit-scrollbar-track-piece:start {
+        margin-left: 175px;
+    }
 </style>

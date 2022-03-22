@@ -47,6 +47,7 @@ namespace Catfish.Areas.Applets.Models.Blocks
         public TextField Description { get; set; }
         public CheckBoxField EnabledFreeTextSearch { get; set; }
         public TextField SelectedDisplayFormat { get; set; }
+        public TextField HexColorList { get; set; }
         public string GetKeywords()
         {
             if (KeywordList != null)
