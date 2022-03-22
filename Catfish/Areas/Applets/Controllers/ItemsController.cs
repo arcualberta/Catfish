@@ -325,17 +325,25 @@ namespace Catfish.Areas.Applets.Controllers
         {
             try
             {
-                var settings = new JsonSerializerSettings()
+                var deserializationSettings = new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     TypeNameHandling = TypeNameHandling.All,
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
 
-                var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, settings);
+                var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, deserializationSettings);
 
                 List<ReportRow> rows = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields);
-                return Content(JsonConvert.SerializeObject(rows, settings), "application/json");
+
+                var serializationSettings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.None,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
+                return Content(JsonConvert.SerializeObject(rows, serializationSettings), "application/json");
             }
             catch (Exception ex)
             {

@@ -151,6 +151,7 @@ namespace Catfish.Services
             foreach(var item in items)
             {
                 ReportRow row = new ReportRow();
+                row.ItemId = item.Id;
                 reportRows.Add(row);
                 foreach (var reportField in reportFields)
 				{
@@ -171,6 +172,17 @@ namespace Catfish.Services
                             ReportCellValue cellValue = new ReportCellValue() { FormInstanceId = form.Id };
                             cellValue.Values.AddRange(field.GetValues());
                             reportCell.Values.Add(cellValue);
+
+                            if (field is Text)
+                                cellValue.RenderType = "MultilingualText";
+                            else if(field is OptionsField)
+                                cellValue.RenderType = "Options";
+                            else if (field is MonolingualTextField)
+                                cellValue.RenderType = "MonolingualText";
+                            else if (field is AttachmentField)
+                                cellValue.RenderType = "Attachment";
+                            else if (field is AudioRecorderField)
+                                cellValue.RenderType = "Audio";
                         }
                     }
 				}

@@ -64,7 +64,7 @@
 			return {
 				store,
 				selectedFields,
-				reportRows: computed(() => state.reportData),
+				reportRows: computed(() => store.state.reportData),
 				isAdmin,
 				loadData: () => store.dispatch(Actions.LOAD_DATA)
 			}
@@ -93,18 +93,41 @@
 	<table class="table">
 		<thead>
 			<tr>
+				<th></th>
 				<th v-for="field in selectedFields">{{field.fieldName}}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr v-for="reportRow in reportRows">
+				<td>{{reportRow.itemId}}</td>
 				<td v-for="cell in reportRow.cells">
-					{{cell.value}}
+					<div v-for="cellValue in cell.values">
+						<div v-if="cellValue.renderType === 'MultilingualText'">
+							<div v-for="txt in cellValue.values">
+								{{txt.value}}
+							</div>
+						</div>
+						<div v-if="cellValue.renderType === 'Options'">
+
+						</div>
+					</div>
 				</td>
 
 			</tr>
 		</tbody>
 	</table>
-	<div>{{reportRows}}</div>
+
+	<!--<div v-for="reportRow in reportRows">
+		<h3>Row</h3>
+		<div v-for="cell in reportRow.cells.$values">
+			<h4>Cell</h4>
+			<div v-for="cellValue in cell.values.$values">
+				<h5>Cell Value</h5>
+				{{cellValue.$type}}
+				{{cellValue.formInstanceId}}
+			</div>
+		</div>
+
+	</div>-->
 </template>
 
