@@ -17,17 +17,22 @@
             //console.log("Store: ", store)
 
             const runFreshSearch = () => store.dispatch(Actions.FRESH_SEARCH);
-            let hexColorList = p.colorScheme ? p.colorScheme.split(',') : null;
+         
+            let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
+                return c.trim();
+            }) : null;
+            
             onMounted(() => {
                 const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
                 let i = 0;
                 btns.forEach((b) => {
-                    if (hexColorList !== null) {
+                    if (hexColorList !== null && hexColorList[i] !== "") {
                         b.setAttribute("style", "background-color: " + hexColorList[i]);
                         i++
                         i = i <= hexColorList.length - 1 ? i : 0;
 
                     } else {
+                       
                         let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
                         b.setAttribute("style", "background-color: " + color);
                     }
@@ -38,7 +43,7 @@
             return {
                 runFreshSearch,
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
-                results: computed(() => store.state.searchResult)
+                results: computed(() => store.state.searchResult) 
             }
         },
         methods: {
@@ -54,7 +59,7 @@
 </script>
 
 <template>
-    <h3>Dictionary View</h3>
+   
     <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container" >
       
         <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
@@ -109,7 +114,8 @@
     .dir-keyword-button:hover {
        transform: scale(1.2);
        z-index:100;
-       opacity:50%;
+       opacity:90%;
+       text-decoration:underline;
     }
    
    
