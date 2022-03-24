@@ -2,15 +2,15 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-	var viewData = new ViewDataDictionary(this.ViewData)
-	{
-		{ "data-template-id", Model.SelectedItemTemplateId.Value },
-		{ "data-group-id", Model.SelectedGroupId.Value },
-		{ "data-collection-id", Model.SelectedCollectionId.Value },
-		{ "data-selected-fields", Model.SelectedFieldList.Value},
-		{ "data-is-admin", User.IsInRole("SysAdmin") }
+    var viewData = new ViewDataDictionary(this.ViewData)
+    {
+        { "data-template-id", Model.SelectedItemTemplateId.Value },
+        { "data-group-id", Model.SelectedGroupId.Value },
+        { "data-collection-id", Model.SelectedCollectionId.Value },
+        { "data-selected-fields", Model.SelectedFieldList.Value},
+        { "data-detailed-url", Model.DetailedViewUrl.Value }
 
-	};
+    };
 }
 
 <partial name="Shared/_AppletLoader" view-data="@viewData" />

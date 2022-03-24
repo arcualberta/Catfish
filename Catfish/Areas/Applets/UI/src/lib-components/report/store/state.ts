@@ -8,7 +8,8 @@ export interface State{
     groupId: Guid | null;
     reportFields: ReportField[] | null;
     reportData: ReportRow[] | null;
-
+    detailedViewUrl: string | null;
+    id: Guid | null;
 }
 
 export const state: State = {
@@ -17,7 +18,9 @@ export const state: State = {
     collectionID: null,
     groupId: null,
     reportFields: null,
-    reportData: null
+    reportData: null,
+    detailedViewUrl: null,
+    id: null
 }
 
 export interface ReportField {

@@ -3,7 +3,7 @@
 
 	import { defineComponent, computed } from 'vue';
 	import { useStore } from 'vuex';
-	import props, {  DataAttribute } from '../shared/props'
+    import props, { DataAttribute, QueryParameter } from '../shared/props'
 
 	import { state } from './store/state'
 	import { actions, Actions } from './store/actions'
@@ -39,34 +39,30 @@
 
 			const selectedFields = JSON.parse(dataAttributes["selected-fields"] as string);
             store.commit(Mutations.SET_REPORT_FIELDS, selectedFields)
-            store.state.reportFields = selectedFields;
-            //console.log("item template id " + itemTemplateId)
+			store.state.reportFields = selectedFields;
+
+            const queryParams = p.queryParameters as QueryParameter;
+            store.commit(Mutations.SET_ID, queryParams.iid);
+
+            const detailedViewURL = dataAttributes["detailed-url"] as string;
+            store.commit(Mutations.SET_DETAILED_VIEW_URL, detailedViewURL)
+            store.state.detailedViewUrl = detailedViewURL;
+		
+
+            console.log("detailed-view-url " + detailedViewURL)
             //console.log("selected Fields: " + selectedFields)
-			const isAdmin = dataAttributes["is-admin"] as string;
 			
 
 			
 
-			
-
-			//store.dispatch(Actions.LOAD_SUBMISSIONS);
-			//if (childResponseFormId) {
-			//	store.commit(ChildMutations.SET_RESPONSE_FORM_ID, childResponseFormId);
-			//	store.dispatch(Actions.LOAD_RESPONSE_FORM);
-			//}
-
-			//const submissionStatus = store.state.submissionStatus as SubmissionStatus;
-			//const submissionStatus: eSubmissionStatus = store.state.submissionStatus as eSubmissionStatus;
-			//console.log("initial status " + JSON.stringify(submissionStatus));
-
-			
 
 			return {
 				store,
 				selectedFields,
-				reportRows: computed(() => store.state.reportData),
-				isAdmin,
-				loadData: () => store.dispatch(Actions.LOAD_DATA)
+                reportRows: computed(() => store.state.reportData),
+                loadData: () => store.dispatch(Actions.LOAD_DATA),
+				queryParams,
+                detailedViewURL
 			}
 		},
 		storeConfig: {
@@ -99,7 +95,10 @@
 		</thead>
 		<tbody>
 			<tr v-for="reportRow in reportRows">
-				<td>{{reportRow.itemId}}</td>
+				<td>
+					<button class="item-list-image" @click="$router.push({name: '{{detailedViewURL}}', params: { id: '{{reportRow.itemId'}} }})"></button>
+					<!--<div class="item-list-image">{{reportRow.itemId}}</div>-->
+				</td>
 				<td v-for="cell in reportRow.cells">
 					<div v-for="cellValue in cell.values">
 						<div v-if="cellValue.renderType === 'MultilingualText'">
@@ -108,7 +107,24 @@
 							</div>
 						</div>
 						<div v-if="cellValue.renderType === 'Options'">
-
+							<div v-for="txt in cellValue.values">
+								{{txt.value}}
+							</div>
+						</div>
+						<div v-if="cellValue.renderType === 'MonolingualText'">
+							<div v-for="txt in cellValue.values">
+								{{txt.value}}
+							</div>
+						</div>
+						<div v-if="cellValue.renderType === 'Attachment'">
+							<div v-for="txt in cellValue.values">
+								{{txt.value}}
+							</div>
+						</div>
+						<div v-if="cellValue.renderType === 'Audio'">
+							<div v-for="txt in cellValue.values">
+								{{txt.value}}
+							</div>
 						</div>
 					</div>
 				</td>

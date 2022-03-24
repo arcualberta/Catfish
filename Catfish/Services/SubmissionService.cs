@@ -175,7 +175,9 @@ namespace Catfish.Services
 
                             if (field is Text)
                                 cellValue.RenderType = "MultilingualText";
-                            else if(field is OptionsField)
+                            else if(field is TextField)
+                                cellValue.RenderType = "MultilingualText";
+                            else if (field is OptionsField)
                                 cellValue.RenderType = "Options";
                             else if (field is MonolingualTextField)
                                 cellValue.RenderType = "MonolingualText";
