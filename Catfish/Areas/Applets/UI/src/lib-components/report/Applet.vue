@@ -44,12 +44,12 @@
             const queryParams = p.queryParameters as QueryParameter;
             store.commit(Mutations.SET_ID, queryParams.iid);
 
-            const detailedViewURL = dataAttributes["detailed-url"] as string;
-            store.commit(Mutations.SET_DETAILED_VIEW_URL, detailedViewURL)
-            store.state.detailedViewUrl = detailedViewURL;
+            const detailedViewUrlPath = dataAttributes["detailed-url"] as string;
+            //store.commit(Mutations.SET_DETAILED_VIEW_URL, detailedViewURL)
+            //store.state.detailedViewUrl = detailedViewURL;
 		
 
-            console.log("detailed-view-url " + detailedViewURL)
+            //console.log("detailed-view-url " + detailedViewURL)
             //console.log("selected Fields: " + selectedFields)
 			
 
@@ -62,7 +62,7 @@
                 reportRows: computed(() => store.state.reportData),
                 loadData: () => store.dispatch(Actions.LOAD_DATA),
 				queryParams,
-                detailedViewURL
+				detailedViewURL: (id: Guid) => { const url = detailedViewUrlPath + id; console.log(url); return url; },
 			}
 		},
 		storeConfig: {
@@ -96,8 +96,7 @@
 		<tbody>
 			<tr v-for="reportRow in reportRows">
 				<td>
-					<button class="item-list-image" @click="$router.push({name: '{{detailedViewURL}}', params: { id: '{{reportRow.itemId'}} }})"></button>
-					<!--<div class="item-list-image">{{reportRow.itemId}}</div>-->
+					<a :href="detailedViewURL(reportRow.itemId)" class="fa fa-eye" target="_blank"></a>
 				</td>
 				<td v-for="cell in reportRow.cells">
 					<div v-for="cellValue in cell.values">
