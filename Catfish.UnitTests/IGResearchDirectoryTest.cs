@@ -120,8 +120,8 @@ Any public disclosures of information from the directory will be in aggregate fo
                   .AppendLogicalExpression(position, position.GetOption("Another", lang),true);
             posAnother.RequiredCondition.AppendLogicalExpression(position, position.GetOption("Another", lang), true);
             string[] options = new string[] { "Yes", "No" };
-            var pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
-            pubDisplay.CssClass = "radio-inline";
+           // var pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
+           // pubDisplay.CssClass = "radio-inline";
 
             rdForm.CreateField<TextField>("Faculty", lang, true);
             rdForm.CreateField<TextField>("Department", lang, true);
@@ -148,8 +148,8 @@ Any public disclosures of information from the directory will be in aggregate fo
                 .AppendLogicalExpression(disabilities, disabilities.GetOption("Another", lang), true);
             disAnother.RequiredCondition.AppendLogicalExpression(disabilities, disabilities.GetOption("Another", lang), true);
 
-            pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
-            pubDisplay.CssClass = "radio-inline";
+            //pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
+           // pubDisplay.CssClass = "radio-inline";
             string[] raceList = new string[] { "Indigenous", "Black", "Person of Colour", "White", "Another" };
 
             var race = rdForm.CreateField<CheckboxField>("Race", lang, raceList, true);
@@ -159,12 +159,12 @@ Any public disclosures of information from the directory will be in aggregate fo
             .AppendLogicalExpression(race, race.GetOption("Another", lang), true);
             raceAnother.RequiredCondition.AppendLogicalExpression(race, race.GetOption("Another", lang), true);
 
-            pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
-            pubDisplay.CssClass = "radio-inline";
+           // pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
+          //  pubDisplay.CssClass = "radio-inline";
 
             rdForm.CreateField<TextField>("Ethnicity", lang);
-            pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options);
-            pubDisplay.CssClass = "radio-inline";
+            //pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options);
+           // pubDisplay.CssClass = "radio-inline";
 
 
             string[] genderList = new string[] { "Two-Spirit", "Gender non-binary", "Genderfluid", "Transgender", "Woman", "Man", "Another" };
@@ -174,10 +174,10 @@ Any public disclosures of information from the directory will be in aggregate fo
             genAnother.VisibilityCondition
                 .AppendLogicalExpression(gender, ComputationExpression.eRelational.EQUAL, gender.GetOption("Another", lang));
             genAnother.RequiredCondition.AppendLogicalExpression(gender, ComputationExpression.eRelational.EQUAL, gender.GetOption("Another", lang));
-            pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
-            pubDisplay.CssClass = "radio-inline";
 
-
+            string[] pubDisplayList = GetQuestionsToPublicDisplay();
+            
+          
 
             //////////////////////////////////////                         SECTION 3    ////////////////////////////////////////////////////////////////////////////////
             ///
@@ -212,8 +212,12 @@ Any public disclosures of information from the directory will be in aggregate fo
                 .SetDescription(@"Examples: Websites/blogs, social media pages/accounts (FB, IG, Twitter, tumblr, etc.) <br/>
                              Publications/reports or other digital content relevant to your work (google scholar, Academia.edu). 
                              Digital media (radio, podcast)", lang);
-            pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
-            pubDisplay.CssClass = "radio-inline";
+            // pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
+            //  pubDisplay.CssClass = "radio-inline";
+
+            var pubDisplay = rdForm.CreateField<CheckboxField>("Display this on my public profile?", lang, pubDisplayList, true);
+            pubDisplay.CssClass = "publicDisplayMultiCheck";
+
 
             //////////////////////////////////////                         SECTION 5    ////////////////////////////////////////////////////////////////////////////////
             ///
@@ -720,6 +724,11 @@ Any public disclosures of information from the directory will be in aggregate fo
                 "Science", "Sport", "Social justice", "Transgender", " Two-spirit", "Violence", "Work"
 
             };
+        }
+
+        private string[] GetQuestionsToPublicDisplay()
+        {
+            return new string[] {"Pronouns", "Position", "Living with disability", "Race", "Ethnicity", "Gender identity", "The links to my work" };
         }
     }
 }
