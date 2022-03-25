@@ -147,11 +147,13 @@ namespace Catfish.Services
         {
             List<ReportRow> reportRows = new List<ReportRow>();
 
-            var items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
+            var items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).Include(i => i.Status).ToList();
             foreach(var item in items)
             {
                 ReportRow row = new ReportRow();
                 row.ItemId = item.Id;
+                row.Created = item.Created.ToString("dd/MM/yyyy");
+                row.Status = GetStatus(item.StatusId).Status;
                 reportRows.Add(row);
                 foreach (var reportField in reportFields)
 				{

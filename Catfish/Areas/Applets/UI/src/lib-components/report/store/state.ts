@@ -27,7 +27,9 @@ export interface ReportField {
     formTemplateId: Guid | null;
     fieldId: Guid | null;
     formName: string | null;
-    itemId: Guid|null;
+    itemId: Guid | null;
+    created: string | null;
+    status: string | null;
     templateId: Guid | null;
     dataContainer: FieldContainer | null;
     metadataSets: FieldContainer | null;
@@ -37,6 +39,8 @@ export interface ReportField {
 export interface ReportRow {
     cells: {
         itemId: Guid | null;
+        created: string | null;
+        status: string | null;
         values: ReportCell[];
     };
 }

@@ -62,7 +62,7 @@
                 reportRows: computed(() => store.state.reportData),
                 loadData: () => store.dispatch(Actions.LOAD_DATA),
 				queryParams,
-				detailedViewURL: (id: Guid) => { const url = detailedViewUrlPath + id; console.log(url); return url; },
+				detailedViewURL: (id: Guid) => { const url = detailedViewUrlPath + id; return url; },
 			}
 		},
 		storeConfig: {
@@ -83,14 +83,14 @@
 <template class="report">
 	<h3>Report</h3>
 	<button class="btn btn-primary" @click="loadData()">Execute</button>
-	<div>{{selectedFields}}</div>
-	<div>{{selectedFields.length}}</div>
-
+	
 	<table class="table">
 		<thead>
 			<tr>
 				<th></th>
 				<th v-for="field in selectedFields">{{field.fieldName}}</th>
+				<th>Submitted Date</th>
+				<th>Status</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -126,6 +126,12 @@
 							</div>
 						</div>
 					</div>
+				</td>
+				<td>
+					<div>{{reportRow.created}}</div>
+				</td>
+				<td>
+					<div>{{reportRow.status}}</div>
 				</td>
 
 			</tr>

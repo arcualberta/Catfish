@@ -8,5 +8,7 @@ namespace Catfish.Core.Models.Contents.Reports
     {
         public Guid ItemId { get; set; }
         public List<ReportCell> Cells { get; set; } = new List<ReportCell>();
+        public string Created { get; set; }
+        public string Status { get; set; }
     }
 }
