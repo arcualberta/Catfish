@@ -71,7 +71,7 @@ namespace Catfish.UnitTests
 
             //TO DO !!!!!!
             string[] keywords = GetKeywords();
-           keywordMeta.CreateField<CheckboxField>("Identify keywords that are related to your research area.", lang,keywords);
+           keywordMeta.CreateField<CheckboxField>("Keywords", lang,keywords, true);
           
         //    string[] modes = GetDeliveryModes();
         //    keywordMeta.CreateField<CheckboxField>("Mode", lang, modes, true);
@@ -185,9 +185,12 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", "Section 3: Keywords", lang, "alert alert-info");
+           var definedkeys =  rdForm.CreateField<FieldContainerReference>("Identify keywords that are related to your research area", lang,
+                FieldContainerReference.eRefType.metadata, keywordMeta.Id);
+            definedkeys.CssClass = "multiSelectKeywords";
 
-           var key =  rdForm.CreateField<TextField>("Identify keywords that are related to your research area.", lang, true);
-            key.CssClass = "autocompleteText";
+            //var key =  rdForm.CreateField<TextField>("Identify keywords that are related to your research area.", lang, true);
+            //key.CssClass = "autocompleteText";
             rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, true);
 
 
@@ -728,7 +731,7 @@ Any public disclosures of information from the directory will be in aggregate fo
 
         private string[] GetQuestionsToPublicDisplay()
         {
-            return new string[] {"Pronouns", "Position", "Living with disability", "Race", "Ethnicity", "Gender identity", "The links to my work" };
+            return new string[] {"Pronouns", "Position", "Living with disability", "Race", "Ethnicity", "Gender identity", "The links to my work", "None"};
         }
     }
 }
