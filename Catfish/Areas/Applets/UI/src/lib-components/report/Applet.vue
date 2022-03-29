@@ -99,19 +99,20 @@
 					<a :href="detailedViewURL(reportRow.itemId)" class="fa fa-eye" target="_blank"></a>
 				</td>
 				<td v-for="cell in reportRow.cells">
-					<div v-for="cellValue in cell.values">
-						<div v-if="cellValue.renderType === 'MultilingualText'">
-							<div v-for="txt in cellValue.values">
+                    <div v-for="cellValue in cell.values">
+                        <div v-if="cellValue.renderType === 'MultilingualText'">
+                            <div v-for="txt in cellValue.values">
 								{{txt.value}}
-							</div>
-						</div>
-						<div v-if="cellValue.renderType === 'Options'">
-							<div v-for="txt in cellValue.values">
-								{{txt.value}}
-							</div>
-						</div>
+                            </div>
+                        </div>
+                        <ul v-if="cellValue.renderType === 'Options'">
+                            <li v-for="txt in cellValue.values">
+                                {{txt.value}}
+                            </li>
+                        </ul>
 						<div v-if="cellValue.renderType === 'MonolingualText'">
 							<div v-for="txt in cellValue.values">
+								<!--<div v-if="txt"></div>-->
 								{{txt.value}}
 							</div>
 						</div>

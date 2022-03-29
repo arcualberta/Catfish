@@ -9,7 +9,7 @@
             collections: [],
             itemFields: [],
             selectedItemFields: [],
-            detailedViewUrl,
+
             fieldGroups: []
         }
     },
@@ -41,6 +41,7 @@
                 .then((data) => {
                     this.groups = data;
                 });
+
         },
 
         selectItemField: function (fieldVal) {
@@ -147,8 +148,14 @@
                     this.allForms = data;
 
                 });
-            //-------------------------
-            
+            fetch('/applets/api/ItemTemplates/getAllCollectionsRelatedToGroupTemplate/' + this.model.selectedItemTemplateId.value + '/' + this.model.selectedGroupId.value)
+                .then(response => response.json())
+                .then((data) => {
+                    this.collections = data;
+                    //this.model.collections = data;
+
+                });
+
         }
 
         if (this.model.selectedFieldList?.value) {
@@ -209,13 +216,11 @@
                     </div>
                </div>
            </div>
-        <div class='lead row'><label class='form-label col-md-3'>Detailed View Url:</label>
-            <input type='text' class='form-control col-md-4' name='detailedViewUrl' v-model='model.detailedViewUrl.value' value='detailedViewUrlValue'  />
-         </div>
 
         </div>`
 
 
 });
+
 
 
