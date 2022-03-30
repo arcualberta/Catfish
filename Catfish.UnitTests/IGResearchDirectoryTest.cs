@@ -826,8 +826,23 @@ Any public disclosures of information from the directory will be in aggregate fo
                                 else if (f.ModelType.Contains("RadioField"))
                                 {
                                     //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
-                                    
+                                    string[] vals = colValue.Split(","); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
+                                    foreach (string v in vals)
+                                    {
+
+                                        for (int j = 0; j < (f as RadioField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
+                                        {
+                                            if (v == (f as RadioField).Options[j].OptionText.GetContent("en"))
+                                            {
+                                                (_newDataItem.Fields[k] as RadioField).Options[j].SetAttribute("selected", true);
+                                                break;
+                                            }
+                                        }
+                                    }
+
                                     break;
+
+                                    
                                 }
                                 else if (f.ModelType.Contains("CheckboxField"))
                                 {
@@ -849,9 +864,27 @@ Any public disclosures of information from the directory will be in aggregate fo
                                 }
                                 else if (f.ModelType.Contains("FieldContainerReference"))
                                 {
-                                    //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
-                                 
-                                    break;
+                                    string[] vals = colValue.Split(","); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
+                                    //check the checkbox in the metadataset
+                                    foreach (var fld in ms.Fields)
+                                    {
+                                        if (fld.ModelType.Contains("CheckboxField"))
+                                        {
+                                            foreach (string v in vals)
+                                            {
+
+                                                for (int j = 0; j < (fld as CheckboxField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
+                                                {
+                                                    if (v == (fld as CheckboxField).Options[j].OptionText.GetContent("en"))
+                                                    {
+                                                        (ms.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                    }
+                                   
+                                   
                                 }
                                 
                             }
