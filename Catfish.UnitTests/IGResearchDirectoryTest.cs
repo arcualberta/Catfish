@@ -12,6 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
 
 namespace Catfish.UnitTests
 {
@@ -20,12 +25,17 @@ namespace Catfish.UnitTests
         private protected AppDbContext _db;
         private protected TestHelper _testHelper;
         string[] YesNoOptionsText = new string[] { "Yes", "No" };
+        string _templateName = "IG Research Directory Submission Form Template";
+        string _metadataSetName = "IG Research Directory Submission Metadata";
+        string lang = "en";
+        string _apiKey = "";
 
         [SetUp]
         public void Setup()
         {
             _testHelper = new TestHelper();
             _db = _testHelper.Db;
+            _apiKey = _testHelper.Configuration.GetSection("GoogleApiKey").Value;
         }
 
        
@@ -36,9 +46,9 @@ namespace Catfish.UnitTests
         {
             bool saveChangesToDatabase = true;
 
-            string lang = "en";
+            //string lang = "en";
             string templateName = "IG Research Directory Submission Form Template";
-            string _metadatsetName = "IG Research Directory Submission Metadata";
+           // string _metadatsetName = "IG Research Directory Submission Metadata";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -66,7 +76,7 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            MetadataSet keywordMeta = template.GetMetadataSet(_metadatsetName, true, lang);
+            MetadataSet keywordMeta = template.GetMetadataSet(_metadataSetName, true, lang);
             keywordMeta.IsTemplate = false;
 
             //TO DO !!!!!!
@@ -733,5 +743,323 @@ Any public disclosures of information from the directory will be in aggregate fo
         {
             return new string[] {"Pronouns", "Position", "Living with disability", "Race", "Ethnicity", "Gender identity", "The links to my work", "None"};
         }
+
+        [Test]
+        public void ImportData()
+        {
+            bool clearCurrentData = false;
+
+            //Set maxEntries to a positive value to limit the maximum number of data entries to be imported.
+            int maxEntries = -1;
+
+           // string multiValueSeparator = ";";
+
+
+            if (clearCurrentData)
+            {
+                var entities = _db.Items.ToList();
+                _db.Entities.RemoveRange(entities);
+            }
+
+
+            //Filling the form
+            var template = _db.ItemTemplates.Where(it => it.TemplateName == _templateName).FirstOrDefault();
+            Assert.IsNotNull(template);
+
+            DataItem dataItem = template.GetRootDataItem(false); //root data item in the template
+
+            int rowCount = 1;
+            foreach (RowData row in ReadGoogleSheet())
+            {
+                string lang = "en";
+                //Create a new item
+                var item = template.Instantiate<Item>();
+
+                //retrieve and populate metadat fields
+                var ms = item.GetMetadataSet(_metadataSetName, false, lang);
+                // Assert.IsNotNull(ms);
+
+                DataItem _newDataItem = template.InstantiateDataItem(dataItem.Id); //new DataItem();
+              
+                _newDataItem.Created = DateTime.Now;
+
+                string[] colHeadings = GetColHeaders();
+
+                int i = 0;
+                foreach (var col in row.Values)
+                {
+                   
+                   // FieldList fields = new FieldList();
+                    
+
+                    string colHeading = colHeadings[i];
+                    string colValue = col.FormattedValue;
+                    //col headding with "*" represent interested heading
+                    if (colHeading.Contains("*") && !string.IsNullOrEmpty(colValue))
+                    {
+                        for(int k=0; k < _newDataItem.Fields.Count; k++)//foreach(var f in dataItem.Fields)
+                        {
+                            var f = _newDataItem.Fields[k];
+                            string fieldLabel = _newDataItem.Fields[k].GetName();
+                            string _colHeading = colHeading.Substring(0, colHeading.Length - 1);
+                            //this will work if the header on the form field and the g sheet are the similiar
+                            if (!string.IsNullOrEmpty(fieldLabel) && (_colHeading.Contains(fieldLabel, StringComparison.OrdinalIgnoreCase) || fieldLabel.Contains(_colHeading, StringComparison.OrdinalIgnoreCase))) {
+             
+                                if (f.ModelType.Contains("TextField")) {
+                                 
+                                    _newDataItem.SetFieldValue<TextField>(fieldLabel, lang, colValue, lang, false);
+                                    break;
+                                }
+                                else if (f.ModelType.Contains("EmailField"))
+                                {
+                                    
+                                    (_newDataItem.Fields[k] as EmailField).SetValue(colValue);
+                                   
+                                    break;
+                                }
+                                else if (f.ModelType.Contains("TextArea"))
+                                {
+                                    _newDataItem.SetFieldValue<TextArea>(fieldLabel, lang, colValue, lang, false);
+                                    break;
+                                 
+                                }
+                                else if (f.ModelType.Contains("RadioField"))
+                                {
+                                    //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
+                                    
+                                    break;
+                                }
+                                else if (f.ModelType.Contains("CheckboxField"))
+                                {
+                                    //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
+                                    string[] vals = colValue.Split(","); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
+                                    foreach(string v in vals)
+                                    {
+                                        
+                                        for(int j=0; j< (f as CheckboxField).Options.Count; j++ )//foreach(Option op in (f as CheckboxField).Options)
+                                        {
+                                           if(v == (f as CheckboxField).Options[j].OptionText.GetContent("en")){
+                                                (_newDataItem.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);
+                                                break;
+                                           }
+                                        }
+                                    }
+                                 
+                                    break;
+                                }
+                                else if (f.ModelType.Contains("FieldContainerReference"))
+                                {
+                                    //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
+                                 
+                                    break;
+                                }
+                                
+                            }
+
+                            //_newDataItem.Fields.Add(f);
+                        }//end of each field
+                    }
+
+
+                   
+                    i++;
+                }
+
+                item.DataContainer.Add(_newDataItem);
+                // _db.Items.Add(item);
+
+                if (maxEntries > 0 && rowCount == maxEntries)
+                    break;
+
+                rowCount++;
+            }
+
+          //  _db.SaveChanges();
+        }
+
+        [Test]
+        public void ReIndex()
+        {
+            bool reindexAll = true;
+            _testHelper.SolrBatchService.IndexItems(reindexAll);
+        }
+
+
+        public List<RowData> ReadGoogleSheet()
+        {
+            //https://docs.google.com/spreadsheets/d/e/2PACX-1vSPTFgPPcCiCngUPXFE8PdsOgxg7Xybq91voXFxHMFd4JpjUIZGLj7U_piRJZV4WZx3YEW31Pln7XV4/pubhtml => this is my own copy
+            String spreadsheetId = "1m-oYJH-15DbqhE31dznAldB-gz75BJu1XAV5p5WJwxo";//==>google sheet Id
+            String ranges = "A3:AI";// read from col A to AI, starting 3rd row
+
+            SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "Google-Sheets",
+                ApiKey = _apiKey
+            });
+
+
+            bool includeGridData = true;
+
+            SpreadsheetsResource.GetRequest request = sheetsService.Spreadsheets.Get(spreadsheetId);
+            request.Ranges = ranges;
+            request.IncludeGridData = includeGridData;
+
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Google.Apis.Sheets.v4.Data.Spreadsheet response = request.Execute(); //await request.ExecuteAsync();
+
+
+            // Read all the rows
+            var values = response.Sheets[0].Data.Select(d => d).ToList();
+
+            List<RowData> rows = values[0].RowData.ToList();
+
+            return rows;
+        }
+        public static UserCredential GetCredential()
+        {
+            // TODO: Change placeholder below to generate authentication credentials. See:
+            // https://developers.google.com/sheets/quickstart/dotnet#step_3_set_up_the_sample
+            //
+            // Authorize using one of the following scopes:
+            //     "https://www.googleapis.com/auth/drive"
+            //     "https://www.googleapis.com/auth/drive.file"
+            //     "https://www.googleapis.com/auth/drive.readonly"
+            //     "https://www.googleapis.com/auth/spreadsheets"
+            //     "https://www.googleapis.com/auth/spreadsheets.readonly"
+            return null;
+        }
+
+
+        private string[] GetColHeaders()
+        {
+            //Mr Maarch 29 2022
+            //header on the sheet
+            //* marked the column contain that we're interested
+            return new string[] {
+                "sequence_id",
+                "status",
+                "name*",
+                "Code",
+                "email*",
+                "Sub Code",
+                "position*",
+                "category",
+                "main_disciplines",
+                "faculty_or_department",
+                "primary_area_of_research",
+                "long_description",
+                "Length",
+                "Follow-up?",
+                "website",
+                "accepting_grad_students",
+                "rig_affiliate",
+                "open_to_contact_from_other_researchers_external_organizations_community_groups_and_nfps_and_other_rig-related_groups_",
+                "looking_for_assistance_with_or_collaboration_in",
+                "username",
+                "fee_id",
+                "expires_on",
+                "Layout",
+                "race",
+                "ethnicity",
+                "gender",
+                "pronouns",
+                "living with disability",
+                "Intersectional",
+                "keywords",
+                "intersectional",
+                "Research",
+                "description under 50 words",
+                "Community based projects",
+                "Collaborations",
+                "Consent to share profile",
+                "Photo",
+                "Profile Link"
+            };
+
+        }
+
+        //private Item SetItem  (DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid stateMappingId, string action, List<IFormFile> files = null, List<string> fileKeys = null)
+        //{
+        //    try
+        //    {
+        //        EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+        //        if (template == null)
+        //            throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
+
+        //        //When we instantantiate an instance from the template, we do not need to clone metadata sets
+        //        Item newItem = template.Instantiate<Item>();
+        //        Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
+
+        //        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //        //MR- June 4 2021:  ===  BUG HERE == IF form set to "Public" it will still required user to login, recisely because( User user = _workflowService.GetLoggedUser();) -- where it try to get login user
+        //        // To fix this problem we need to:
+        //        // Check if the Initiate function template is set to "PUblic"
+        //        // if it's "public" the user info should come from the form
+        //        // otherwise the current implementation is fine
+        //        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //        //
+
+        //        XmlModelList<GetAction> actions = _entityTemplateService.GetTemplateActions(entityTemplateId);
+        //        var instantiateAction = actions.Where(a => a.Function == "Instantiate").FirstOrDefault();
+        //        string currUserEmail = "";
+        //        Guid currUserId = Guid.Empty;
+        //        string currUserName = "";
+        //        if (instantiateAction.Access == GetAction.eAccess.Public)
+        //        {
+        //            //===================== TODO  =============================
+        //        }
+        //        else
+        //        {
+        //            //User user = _workflowService.GetLoggedUser();
+        //            //currUserEmail = user.Email;
+        //            //currUserId = user.Id;
+        //            //currUserName = user.UserName;
+        //        }
+        //        //We always pass on the next state with the state mapping irrespective of whether
+        //        //or not there is a "condition"
+        //        Guid statusId = stateMapping.Next;
+        //        newItem.StatusId = statusId;
+        //        newItem.PrimaryCollectionId = collectionId;
+        //        newItem.TemplateId = entityTemplateId;
+        //        newItem.GroupId = groupId;
+        //        newItem.UserEmail = currUserEmail; //user.Email;
+
+        //        DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
+        //        newDataItem.UpdateFieldValues(value);
+        //        //if (files != null && fileKeys != null)
+        //        //    AttachFiles(files, fileKeys, newDataItem);
+        //        //newItem.UpdateReferencedFieldContainers(value);
+
+        //        newItem.DataContainer.Add(newDataItem);
+        //        newDataItem.EntityId = newItem.Id;
+        //        newDataItem.OwnerId = currUserId.ToString(); //user.Id.ToString();
+        //        newDataItem.OwnerName = currUserName; //user.UserName;
+
+        //        //User user = _workflowService.GetLoggedUser();
+        //        var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
+
+        //        DataItem emptyDataItem = new DataItem();
+        //        newItem.AddAuditEntry(currUserId,
+        //            emptyDataItem,
+        //            fromState,
+        //            newItem.StatusId.Value,
+        //            action
+        //            );
+
+        //        if (groupId.HasValue)
+        //            newItem.GroupId = groupId;
+
+        //        return newItem;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //_errorLog.Log(new Error(ex));
+        //        return null;
+        //    }
+
+        //}
+
     }
 }
