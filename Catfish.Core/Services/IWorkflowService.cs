@@ -25,6 +25,8 @@ namespace Catfish.Core.Services
 
         public List<string> GetUserRoles();
 
+        public List<SystemStatus> GetTemplateStatus(Guid templateId);
+
         public EntityTemplate GetTemplate();
 
         public SystemStatus GetStatus(Guid templateId, string status, bool createIfNotExist);

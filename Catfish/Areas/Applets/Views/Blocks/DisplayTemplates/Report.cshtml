@@ -1,15 +1,16 @@
 ﻿@model Catfish.Areas.Applets.Models.Blocks.Report
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Catfish.Core.Services.IWorkflowService _workflowService;
 
 @{
     var viewData = new ViewDataDictionary(this.ViewData)
-    {
+{
         { "data-template-id", Model.SelectedItemTemplateId.Value },
         { "data-group-id", Model.SelectedGroupId.Value },
         { "data-collection-id", Model.SelectedCollectionId.Value },
         { "data-selected-fields", Model.SelectedFieldList.Value},
-        { "data-detailed-url", Model.DetailedViewUrl.Value }
-
+        { "data-detailed-url", Model.DetailedViewUrl.Value },
+        { "data-status", _workflowService.GetTemplateStatus(Guid.Parse(Model.SelectedItemTemplateId.Value)) }
     };
 }
 

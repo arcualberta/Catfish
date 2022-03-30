@@ -9,6 +9,7 @@ export interface State{
     reportFields: ReportField[] | null;
     reportData: ReportRow[] | null;
     detailedViewUrl: string | null;
+    templateStatus: SystemStatus[] | null;
     id: Guid | null;
 }
 
@@ -20,6 +21,7 @@ export const state: State = {
     reportFields: null,
     reportData: null,
     detailedViewUrl: null,
+    templateStatus: null,
     id: null
 }
 
@@ -55,4 +57,11 @@ export interface ReportCellValue {
     fieldType: string;
     formInstanceId: Guid | null;
     values: Text[];
+}
+
+export interface SystemStatus {
+    id: Guid;
+    entityTemplateId: Guid;
+    status: string;
+    normalizedStatus: string;
 }
