@@ -148,6 +148,13 @@
                     this.allForms = data;
 
                 });
+            fetch('/applets/api/ItemTemplates/getAllCollectionsRelatedToGroupTemplate/' + this.model.selectedItemTemplateId.value + '/' + this.model.selectedGroupId.value)
+                .then(response => response.json())
+                .then((data) => {
+                    this.collections = data;
+                    //this.model.collections = data;
+
+                });
 
         }
 
@@ -214,5 +221,6 @@
 
 
 });
+
 
 

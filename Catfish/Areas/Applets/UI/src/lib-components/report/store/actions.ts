@@ -1,17 +1,17 @@
 ﻿import { ActionTree } from 'vuex';
-import { State } from './state';
+import { State, SearchParams } from './state';
 import { Mutations } from './mutations';
 
 export enum Actions {
     LOAD_DATA = 'LOAD_DATA'
 }
 export const actions: ActionTree<State, any> = {
-    [Actions.LOAD_DATA](store) {
+    [Actions.LOAD_DATA](store, searchParams: SearchParams) {
 
         console.log('Store: ', JSON.stringify(store.state))
 
         const api = window.location.origin +
-            `/applets/api/items/GetReportData/${store.state.groupId}/template/${store.state.itemTemplateID}/collection/${store.state.collectionID}`;
+            `/applets/api/items/GetReportData/${store.state.groupId}/template/${store.state.itemTemplateID}/collection/${store.state.collectionID}?startDate=${searchParams.startDate ? searchParams.startDate : ""}&endDate=${searchParams.endDate ? searchParams.endDate : ""}&status=${searchParams.status ? searchParams.status : ""}`;
         console.log('reports Load API: ', api)
         const formData = new FormData();
 

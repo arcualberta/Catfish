@@ -159,9 +159,17 @@ namespace Catfish.Core.Services
             throw new NotImplementedException();
         }
 
-        
+        /// <summary>
+        /// This method will return list of status which related to a entity template.
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        public List<SystemStatus> GetTemplateStatus(Guid templateId)
+        {
+            return _db.SystemStatuses.Where(ss => ss.EntityTemplateId == templateId).OrderBy(ss=>ss.Status).ToList();
+        }
 
-        
+
 
         public SystemStatus GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
         {

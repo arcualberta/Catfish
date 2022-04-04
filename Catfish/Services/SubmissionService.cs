@@ -143,14 +143,25 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields)
+        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, DateTime? startDate, DateTime? endDate, Guid? status)
         {
             List<ReportRow> reportRows = new List<ReportRow>();
 
-            var items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
-            foreach(var item in items)
+            DateTime from = startDate == null ? DateTime.MinValue : startDate.Value;
+            DateTime to = endDate == null ? DateTime.Now : endDate.Value.AddDays(1);
+            Guid state = status == null ? Guid.Empty : status.Value;
+            List<Item> items=new List<Item>();
+            if (state == Guid.Empty)
+                items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to)).Include(i => i.Status).ToList();
+            else
+                items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to) && i.StatusId == state).Include(i => i.Status).ToList();
+
+            foreach (var item in items)
             {
                 ReportRow row = new ReportRow();
+                row.ItemId = item.Id;
+                row.Created = item.Created.ToString("dd/MM/yyyy");
+                row.Status = GetStatus(item.StatusId).Status;
                 reportRows.Add(row);
                 foreach (var reportField in reportFields)
 				{
@@ -171,6 +182,19 @@ namespace Catfish.Services
                             ReportCellValue cellValue = new ReportCellValue() { FormInstanceId = form.Id };
                             cellValue.Values.AddRange(field.GetValues());
                             reportCell.Values.Add(cellValue);
+
+                            if (field is Text)
+                                cellValue.RenderType = "MultilingualText";
+                            else if(field is TextField)
+                                cellValue.RenderType = "MultilingualText";
+                            else if (field is OptionsField)
+                                cellValue.RenderType = "Options";
+                            else if (field is MonolingualTextField)
+                                cellValue.RenderType = "MonolingualText";
+                            else if (field is AttachmentField)
+                                cellValue.RenderType = "Attachment";
+                            else if (field is AudioRecorderField)
+                                cellValue.RenderType = "Audio";
                         }
                     }
 				}
