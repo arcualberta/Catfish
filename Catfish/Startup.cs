@@ -556,12 +556,12 @@ namespace Catfish
             int groupId = 1;
 
             //Entities group
-            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Entities").FirstOrDefault() == null)
+            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Data").FirstOrDefault() == null)
             {
                 Piranha.Manager.Menu.Items.Insert(groupId++, new MenuItem
                 {
-                    InternalId = "Entities",
-                    Name = "Entities",
+                    InternalId = "Data",
+                    Name = "Data",
                     Policy = AppSecurity.AccessEntities,
                     Css = "fas fa-object-group"
 
@@ -582,6 +582,7 @@ namespace Catfish
 
 
             var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Content").FirstOrDefault();
+            menubar.Name = "Web";
             menubar.Items.Insert(menubar.Items.Count, new MenuItem
             {
                 InternalId = "CustomStyles",
@@ -628,7 +629,7 @@ namespace Catfish
             ///
             /// Entities Group Content Menus
             ///
-            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault();
+            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Data").FirstOrDefault();
             idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem
