@@ -6,23 +6,35 @@
     import { Actions, actions } from './store/actions'
     import { Mutations, mutations } from './store/mutations'
     import { getters } from './store/getters'
-    import KeywordFilter from './components/KeywordFilter.vue'
     import { SearchParams } from "./models"
+    import DictionaryView from './components/DictionaryView.vue'
+    import ListView from './components/ListView.vue'
+    import FreeTextSearch from './components/FreeTextSearch.vue'
 
-    import ItemList from './components/ItemList.vue'
+  
 
-    import props from '../shared/props'
+    import props, { DataAttribute } from '../shared/props'
 
     export default defineComponent({
         name: "Applet",
         components: {
-            KeywordFilter,
-            ItemList
+         
+            DictionaryView,
+            ListView,
+            FreeTextSearch
         },
         props,
         setup(p) {
             console.log('Keyword Search setup ...', p)
 
+            const dataAttributes = p.dataAttributes as DataAttribute;
+
+            const displayFormat = dataAttributes["display-format"] as string;
+            const blogTitle = dataAttributes["block-title"] as string;
+            const blogDescription = dataAttributes["block-description"] as string;
+            const enableFreeTextSearch = dataAttributes["enable-freetext-search"] as string;
+            const hexColors = dataAttributes["hex-color-list"] as string;
+            
             //We need to use store in this setup method. so let's load it first.
             const store = useStore()
 
@@ -51,8 +63,16 @@
             onMounted(() => store.dispatch(Actions.FILTER_BY_KEYWORDS));
 
             const keywordQueryModel = ref(store.state.keywordQueryModel);
+         
             return {
-                keywordQueryModel
+            
+                keywordQueryModel,
+                displayFormat,
+                blogTitle,
+                blogDescription,
+                enableFreeTextSearch,
+                hexColors
+              
             };
         },
         storeConfig: {
@@ -61,17 +81,24 @@
             mutations,
             getters
         }
+       
     });
 </script>
 
 <template>
-    <div class="row">
-        <div class="col-md-4 text-left">
-            <KeywordFilter />
+    <div v-if="displayFormat === 'Dictionary'">
+        <h1 class="dir-title">{{blogTitle}}</h1>
+        <div class="dir-description">{{blogDescription}}</div>
+        <div v-if="enableFreeTextSearch === true">
+           <FreeTextSearch />
         </div>
-        <div class="col-md-8">
-            <ItemList />
-        </div>
+        <DictionaryView :colorScheme="hexColors"/>
+       
     </div>
+    <div class="row" v-if="displayFormat === 'List'">
+       
+        <ListView />
+    </div>
+
 </template>
 

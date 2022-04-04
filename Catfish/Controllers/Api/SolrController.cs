@@ -27,7 +27,7 @@ namespace Catfish.Api.Controllers
             _pageIndexingService = pageIndexingService;
             _solrBatchService = solrBatchService;
         }
-
+        [HttpGet]
         [Route("freetext")]
         public IList<SolrEntry> FreeText([FromForm] string searchTerm)
         {
@@ -93,5 +93,25 @@ namespace Catfish.Api.Controllers
             _pageIndexingService.IndexSite(siteId, siteTypeId);
             _solrBatchService.IndexItems(true);
         }
+
+
+        [HttpGet]
+        [Route("executefreetext/{searchTerm}")]
+        public IList<SolrEntry> ExecuteFreeText(string searchTerm)
+        {
+            try
+            {
+                var parameters = new SearchParameters();
+                parameters.FreeSearch = searchTerm;
+                IList<SolrEntry> result = QueryService.FreeSearch(parameters);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                HttpContext.Request.HttpContext.RiseError(ex);
+                return new List<SolrEntry>();
+            }
+        }
+
     }
 }

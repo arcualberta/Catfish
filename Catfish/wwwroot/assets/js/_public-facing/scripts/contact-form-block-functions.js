@@ -14,7 +14,11 @@ $(function () {
             });
             return;
         }
-        var body = $("textarea[name='cf-body']").val();
+
+        var userInfo = "Name: " + cfName + "<br/>";
+        userInfo += "Email: " + email + "<br/>";
+
+        var body = userInfo + $("textarea[name='cf-body']").val();
 
         var subject = document.getElementById('subject-value').innerText;
         var recipient = document.getElementById('recipient-value').innerText;

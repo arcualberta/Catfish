@@ -1,0 +1,14 @@
+﻿@model Catfish.Areas.Applets.Models.Blocks.ItemLayout.ItemLayout
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+	var viewData = new ViewDataDictionary(this.ViewData)
+{
+		{ "data-template-id", Model.SelectedItemTemplateId.Value },
+		{ "data-is-admin", User.IsInRole("SysAdmin") },
+		{ "data-selected-components", Model.SelectedComponents.Value},
+		{ "data-query-parameter", Model.QueryParameter.Value }
+	};
+}
+
+<partial name="Shared/_AppletLoader" view-data="@viewData" />

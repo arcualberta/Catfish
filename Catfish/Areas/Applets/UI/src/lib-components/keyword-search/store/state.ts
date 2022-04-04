@@ -10,6 +10,7 @@ export interface State {
   max: number;
   pageId: Guid | null;
   blockId: Guid | null;
+  freeSearchText: string | null;
 }
 
 export const state: State = {
@@ -18,5 +19,6 @@ export const state: State = {
   offset: 0,
   max: 25,
   pageId: null,
-  blockId: null
+  blockId: null,
+  freeSearchText: null
 }

@@ -6,6 +6,7 @@ using Catfish.Core.Exceptions;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
@@ -317,6 +318,77 @@ namespace Catfish.Areas.Applets.Controllers
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+        }
+
+        [HttpPost("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
+        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] String datamodel)
+        {
+            try
+            {
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
+                var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, settings);
+
+                List<ReportRow> rows = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields);
+                return Content(JsonConvert.SerializeObject(rows, settings), "application/json");
+            }
+            catch (Exception ex)
+            {
+
+                return Content("{}", "application/json");
+            }
+
+        }
+
+        /// <summary>
+        /// Get Item instances for the given item/form ids
+        /// </summary>
+        /// <param name="itemIds">form instance ids</param>
+        /// <returns></returns>
+        //[HttpGet("getItems/{templateId}/{itemIds}")]
+        [HttpGet("getItems/{templateId}")]
+        public List<Item> GetItemsAsync(Guid templateId/*,string itemIds*/)
+        {
+            //string[] itmIds = itemIds.Split(",");
+            //List<DataItem> result = new List<DataItem>();
+           
+            //EntityTemplate template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == templateId);
+            List<Item> items = _appDb.Items.Where(it => it.TemplateId == templateId).ToList();
+            //foreach (Item item in items)
+            //{
+            //    foreach (string itemId in itmIds)
+            //    {
+            //        //retrive item data according to the item id
+
+            //        //check item, if it is not null, then it can process. Otherwise need to return Status404NotFound
+            //        if (item != null)
+            //        {
+            //            var query = item.DataContainer.Where(c => c.TemplateId == Guid.Parse(itemId));
+            //            //if (parentId.HasValue)
+            //            //    query = query.Where(c => c.ParentId == parentId);
+
+            //            var dataItem = query.FirstOrDefault();
+
+
+
+            //            result.Add(dataItem);
+
+            //        }
+            //    }
+            //}
+            //var settings = new JsonSerializerSettings()
+            //{
+            //    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            //    TypeNameHandling = TypeNameHandling.All,
+            //    ContractResolver = new CamelCasePropertyNamesContractResolver()
+            //};
+            // return Content(JsonConvert.SerializeObject(items, settings), "application/json");
+            return items;//result;
         }
     }
 }

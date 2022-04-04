@@ -126,7 +126,7 @@
             if (this.selectedStatuses?.includes(id)) {
                 //console.log("deselect selected a state: " + id)
                 this.selectedStatuses = this.selectedStatuses?.filter(e => e !== id);
-                console.log(JSON.stringify(this.selectedStatuses));
+               // console.log(JSON.stringify(this.selectedStatuses));
                
             } else {
                // console.log("push selected a state: " + id)
@@ -179,7 +179,7 @@
                       for (let j = 0; j < this.selectedStatuses.length; j++) {
                           var _temp = this.statuses.filter(e => e.value === this.selectedStatuses[j]);
                           if (_temp !== null) {
-                              console.log("selected status is still remain in the template");
+                              //console.log("selected status is still remain in the template");
                               tempSelected.push(this.selectedStatuses[j]);
                           }
                           else
@@ -215,10 +215,20 @@
     template:
         `<div  class= 'block-body'>
             <h2>Keyword Search</h2>
-           <div>Please list your keywords separated by a comma.</div>
-         <textarea rows='2' cols='100' class='lead ' 
+
+               <div>Please list your keywords separated by a comma.</div>
+         <textarea rows='2' cols='100' class='lead form-control '
             v-html='model.keywordList.value' contenteditable='true' v-on:blur='onBlur' name='keywordList'>
         </textarea>
+        <br/>
+		  <div class='lead row'><label class='form-label col-md-3'>Title: </label>
+               <input type="text"  v-model="model.blockTitle.value" class="form-control col-md-9" >
+            </div>
+            <div class='lead row'><label class='form-label col-md-3'>Description: </label>
+               <textarea  v-model="model.description.value" cols="30" rows="2" contenteditable='true' class="form-control col-md-9" ></textarea>
+            </div>
+        
+         
            <div class='lead row'><label class='form-label col-md-3 required'>Collection: </label>
            <select v-model="model.selectedCollection.value" class="form-control" style="width:auto;">
                 <option disabled value="">Please select one</option>
@@ -302,7 +312,24 @@
             <input type="checkbox" :id="item.value" v-model="item.checked" @click="selectStatus(item.value)" >
             <label :for="item.value">{{ item.text }}</label>
           </div>
-          <div>{{this.model.selectedStates.value}}</div>
+       
+
+         <div class="alert alert-info">Other Settings:</div>
+         <div class='lead'><label >Enabled Free Text Search: </label>
+            <input type="checkbox" id="enabled-free-text-search-checkbox" v-model="model.enabledFreeTextSearch.value" ><label style="padding-left:5px;">{{model.enabledFreeTextSearch.value}}</label>
+            </div>
+
+           <div class='lead row'><label class='form-label col-md-3'>Display Layout Format: </label>
+           <select v-model="model.selectedDisplayFormat.value" class="form-control" style="width:auto;">
+                  <option disabled value="">Please select one</option>
+                <option value="List" selected>List</option>
+                <option value="Dictionary">Dictionary</option>
+
+         </select></div>
+        <div  class='lead'>
+               <label >List of hex color codes for 'Dictionary' layout, separated by a comma,including the # key at the beginning, (i.e: #00b19d, #5175a5, ...): </label>
+               <input type="text"  v-model="model.hexColorList.value" class="form-control">
+         </div>
        </div>`
 });
 
