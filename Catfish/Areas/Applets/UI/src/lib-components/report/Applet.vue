@@ -106,6 +106,7 @@
 			<label class="form-label">Status:</label>
 			<select v-model="selectedStatus" class="form-control" style="width:auto;">
 				<option disabled value="">Please select one</option>
+				<option  value=""></option>
 				<option v-for="status in templateStatus" :value="status.id">{{status.status}}</option>
 			</select>
 		</div>
