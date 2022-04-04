@@ -166,7 +166,7 @@ namespace Catfish.Core.Services
         /// <returns></returns>
         public List<SystemStatus> GetTemplateStatus(Guid templateId)
         {
-            return _db.SystemStatuses.Where(ss => ss.EntityTemplateId == templateId).OrderBy(ss=>ss.Status).ToList();
+            return _db.SystemStatuses.Where(ss => ss.EntityTemplateId == templateId && ss.Status != "").OrderBy(ss=>ss.Status).ToList();
         }
 
 
