@@ -21,13 +21,20 @@
                         int max = 10000;
                     }
                     @foreach (var user in UserGroupService.GetGroupRoleUser(Model.RoleGroupId))
-                    {
+					{
+						var userName = user.User?.UserName;
+						var styles = "";
+						if(userName == null)
+						{
+							userName = " -- ACCOUNT DELETED --";
+							styles = "style=color:#FF0000;font-weight:bold;";
+						}
                         <tr>
-                            <td>
-                                <span class="title">@user.User.UserName</span>
+                            <td @styles>
+                                <span class="title">@userName</span>
                             </td>
                             <td>
-                                <span class="title">@user.User.Email</span>
+                                <span class="title">@user.User?.Email</span>
                             </td>
                             <td class="actions one">
                                 @if (!(UserGroupService.CheckLoggedUser(user.UserId, Model.RoleGroupId.Value)))
