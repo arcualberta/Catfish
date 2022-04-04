@@ -66,6 +66,7 @@
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\keyword-search\router.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\report\store\actions.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\report\store\mutations.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\report\store\state.ts" />
@@ -183,6 +184,7 @@
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\itemTemplate.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\keyword-search\router.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\actions.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\mutations.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\state.ts" />
