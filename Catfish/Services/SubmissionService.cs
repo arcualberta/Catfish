@@ -143,12 +143,20 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields)
+        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, DateTime? startDate, DateTime? endDate, Guid? status)
         {
             List<ReportRow> reportRows = new List<ReportRow>();
 
-            var items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).Include(i => i.Status).ToList();
-            foreach(var item in items)
+            DateTime from = startDate == null ? DateTime.MinValue : startDate.Value;
+            DateTime to = endDate == null ? DateTime.Now : endDate.Value.AddDays(1);
+            Guid state = status == null ? Guid.Empty : status.Value;
+            List<Item> items=new List<Item>();
+            if (state == Guid.Empty)
+                items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to)).Include(i => i.Status).ToList();
+            else
+                items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to) && i.StatusId == state).Include(i => i.Status).ToList();
+
+            foreach (var item in items)
             {
                 ReportRow row = new ReportRow();
                 row.ItemId = item.Id;

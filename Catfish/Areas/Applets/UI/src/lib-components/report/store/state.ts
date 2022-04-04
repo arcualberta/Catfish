@@ -65,3 +65,8 @@ export interface SystemStatus {
     status: string;
     normalizedStatus: string;
 }
+export interface SearchParams {
+    startDate: Date | null;
+    endDate: Date | null;
+    status: Guid | null;
+}

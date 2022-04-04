@@ -5,7 +5,7 @@
 	import { useStore } from 'vuex';
     import props, { DataAttribute, QueryParameter } from '../shared/props'
 
-	import { state, SystemStatus } from './store/state'
+	import { SearchParams, state, SystemStatus } from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
 	import { mutations, Mutations } from './store/mutations'
@@ -57,22 +57,22 @@
             //console.log("selected Fields: " + selectedFields)
 			
 
-			const from = ref("");
-			const to = ref("");
-            const selected = ref("");
+            const fromDate = ref(null);
+            const toDate = ref(null);
+            const selectedStatus = ref(null);
 
 
 			return {
 				store,
 				selectedFields,
                 reportRows: computed(() => store.state.reportData),
-                loadData: () => store.dispatch(Actions.LOAD_DATA),
+                loadData: () => store.dispatch(Actions.LOAD_DATA, { startDate: fromDate.value, endDate: toDate.value, status: selectedStatus.value } as SearchParams),
 				queryParams,
                 templateStatus,
 				detailedViewURL: (id: Guid) => { const url = detailedViewUrlPath + id; return url; },
-				from,
-				to,
-                selected
+				fromDate,
+				toDate,
+                selectedStatus
 			}
 		},
 		storeConfig: {
@@ -96,15 +96,15 @@
 		<div class="col-md-6 form-group">
 			<label>From:</label>
 			<!--<input type="date" name="startDate" id="startDate" v-model="startDate" class="form-control" />-->
-			<input type="date" name="startDate" id="startDate" v-model="from" class="form-control" />
+			<input type="date" name="startDate" id="startDate" v-model="fromDate" class="form-control" />
 		</div>
 		<div class="col-md-6 form-group">
 			<label class="form-label">To:</label>
-			<input type="date" name="endDate" id="endDate" v-model="to" class="form-control" />
+			<input type="date" name="endDate" id="endDate" v-model="toDate" class="form-control" />
 		</div>
 		<div class="col-md-6 form-group">
 			<label class="form-label">Status:</label>
-			<select v-model="selected" class="form-control" style="width:auto;">
+			<select v-model="selectedStatus" class="form-control" style="width:auto;">
 				<option disabled value="">Please select one</option>
 				<option v-for="status in templateStatus" :value="status.id">{{status.status}}</option>
 			</select>
