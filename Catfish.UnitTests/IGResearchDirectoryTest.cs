@@ -752,7 +752,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             //Set maxEntries to a positive value to limit the maximum number of data entries to be imported.
             int maxEntries = -1;
 
-           // string multiValueSeparator = ";";
+            // string multiValueSeparator = ";";
 
 
             if (clearCurrentData)
@@ -780,7 +780,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 // Assert.IsNotNull(ms);
 
                 DataItem _newDataItem = template.InstantiateDataItem(dataItem.Id); //new DataItem();
-              
+
                 _newDataItem.Created = DateTime.Now;
 
                 string[] colHeadings = GetColHeaders();
@@ -788,40 +788,42 @@ Any public disclosures of information from the directory will be in aggregate fo
                 int i = 0;
                 foreach (var col in row.Values)
                 {
-                   
-                   // FieldList fields = new FieldList();
-                    
+
+                    // FieldList fields = new FieldList();
+
 
                     string colHeading = colHeadings[i];
                     string colValue = col.FormattedValue;
                     //col headding with "*" represent interested heading
                     if (colHeading.Contains("*") && !string.IsNullOrEmpty(colValue))
                     {
-                        for(int k=0; k < _newDataItem.Fields.Count; k++)//foreach(var f in dataItem.Fields)
+                        for (int k = 0; k < _newDataItem.Fields.Count; k++)//foreach(var f in dataItem.Fields)
                         {
                             var f = _newDataItem.Fields[k];
                             string fieldLabel = _newDataItem.Fields[k].GetName();
                             string _colHeading = colHeading.Substring(0, colHeading.Length - 1);
                             //this will work if the header on the form field and the g sheet are the similiar
-                            if (!string.IsNullOrEmpty(fieldLabel) && (_colHeading.Contains(fieldLabel, StringComparison.OrdinalIgnoreCase) || fieldLabel.Contains(_colHeading, StringComparison.OrdinalIgnoreCase))) {
-             
-                                if (f.ModelType.Contains("TextField")) {
-                                 
+                            if (!string.IsNullOrEmpty(fieldLabel) && (_colHeading.Contains(fieldLabel, StringComparison.OrdinalIgnoreCase) || fieldLabel.Contains(_colHeading, StringComparison.OrdinalIgnoreCase)))
+                            {
+
+                                if (f.ModelType.Contains("TextField"))
+                                {
+
                                     _newDataItem.SetFieldValue<TextField>(fieldLabel, lang, colValue, lang, false);
                                     break;
                                 }
                                 else if (f.ModelType.Contains("EmailField"))
                                 {
-                                    
+
                                     (_newDataItem.Fields[k] as EmailField).SetValue(colValue);
-                                   
+
                                     break;
                                 }
                                 else if (f.ModelType.Contains("TextArea"))
                                 {
                                     _newDataItem.SetFieldValue<TextArea>(fieldLabel, lang, colValue, lang, false);
                                     break;
-                                 
+
                                 }
                                 else if (f.ModelType.Contains("RadioField"))
                                 {
@@ -842,24 +844,25 @@ Any public disclosures of information from the directory will be in aggregate fo
 
                                     break;
 
-                                    
+
                                 }
                                 else if (f.ModelType.Contains("CheckboxField"))
                                 {
                                     //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
                                     string[] vals = colValue.Split(","); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
-                                    foreach(string v in vals)
+                                    foreach (string v in vals)
                                     {
-                                        
-                                        for(int j=0; j< (f as CheckboxField).Options.Count; j++ )//foreach(Option op in (f as CheckboxField).Options)
+
+                                        for (int j = 0; j < (f as CheckboxField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
                                         {
-                                           if(v == (f as CheckboxField).Options[j].OptionText.GetContent("en")){
+                                            if (v == (f as CheckboxField).Options[j].OptionText.GetContent("en"))
+                                            {
                                                 (_newDataItem.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);
                                                 break;
-                                           }
+                                            }
                                         }
                                     }
-                                 
+
                                     break;
                                 }
                                 else if (f.ModelType.Contains("FieldContainerReference"))
@@ -882,32 +885,33 @@ Any public disclosures of information from the directory will be in aggregate fo
                                                     }
                                                 }
                                             }
-                                    }
-                                   
-                                   
-                                }
-                                
-                            }
+                                        }
 
-                            //_newDataItem.Fields.Add(f);
-                        }//end of each field
+
+                                    }
+
+                                }
+
+                                //_newDataItem.Fields.Add(f);
+                            }//end of each field
+                        }
+
+
+
+                        i++;
                     }
 
+                    item.DataContainer.Add(_newDataItem);
+                    // _db.Items.Add(item);
 
-                   
-                    i++;
+                    if (maxEntries > 0 && rowCount == maxEntries)
+                        break;
+
+                    rowCount++;
                 }
 
-                item.DataContainer.Add(_newDataItem);
-                // _db.Items.Add(item);
-
-                if (maxEntries > 0 && rowCount == maxEntries)
-                    break;
-
-                rowCount++;
+                //  _db.SaveChanges();
             }
-
-          //  _db.SaveChanges();
         }
 
         [Test]
