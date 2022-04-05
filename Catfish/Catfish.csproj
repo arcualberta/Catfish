@@ -53,6 +53,9 @@
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\actions.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\mutations.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\state.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-layout\components\fieldComponent.vue" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-layout\components\imageCarousel.vue" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-layout\components\imageGallery.vue" />
@@ -148,6 +151,7 @@
     <Folder Include="Areas\Applets\UI\src\lib-components\entity-manager\components\" />
     <Folder Include="Areas\Applets\UI\src\lib-components\entity-manager\models\" />
     <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\components\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\item-viewer\models\" />
     <Folder Include="Areas\Applets\UI\src\lib-components\item-viewer\store\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
     <Folder Include="Models\FormBuilder\" />
@@ -161,6 +165,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\actions.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\mutations.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\state.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\components\imageGallery.vue">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -182,7 +189,7 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\itemLayout.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\itemTemplate.ts" />
-    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\models\item.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\keyword-search\router.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\actions.ts" />

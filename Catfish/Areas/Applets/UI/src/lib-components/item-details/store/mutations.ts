@@ -6,8 +6,7 @@ import { Item } from '../../shared/models/item';
 //Declare MutationTypes
 export enum Mutations {
     SET_ID = 'SET_ID',
-    SET_ITEM = 'SET_ITEM',
-    CHANGE_STATE = 'CHANGE_STATE'
+    SET_ITEM = 'SET_ITEM'
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -19,10 +18,4 @@ export const mutations: MutationTree<State> = {
     [Mutations.SET_ITEM](state: State, payload: Item) {
         state.item = payload
     },
-    [Mutations.CHANGE_STATE](state: State, payload: { itemId: Guid, state: string }) {
-        //state.item
-        console.log(JSON.stringify(state));
-        console.log(JSON.stringify(payload));
-    }
-
 }
