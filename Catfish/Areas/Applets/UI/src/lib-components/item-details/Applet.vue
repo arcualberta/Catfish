@@ -49,6 +49,7 @@
 </script>
 
 <template>
+    {{JSON.stringify(dataItem)}}
     <div class="item">
         <FieldContainer :model="dataItem" v-if="dataItem" />
     </div>
