@@ -12,8 +12,8 @@
     import FreeTextSearch from './components/FreeTextSearch.vue'
 
   
-
     import props, { DataAttribute } from '../shared/props'
+
 
     export default defineComponent({
         name: "Applet",
@@ -34,10 +34,12 @@
             const blogDescription = dataAttributes["block-description"] as string;
             const enableFreeTextSearch = dataAttributes["enable-freetext-search"] as string;
             const hexColors = dataAttributes["hex-color-list"] as string;
-            
+
+
             //We need to use store in this setup method. so let's load it first.
             const store = useStore()
 
+            store.commit(Mutations.SET_INIT_PARAMS, { dataAttributes: dataAttributes, queryParams: p.queryParameters })
             //Storing the page and block IDs in the store
             store.commit(Mutations.SET_SOURCE, { pageId: p.pageId, blockId: p.blockId });
 
