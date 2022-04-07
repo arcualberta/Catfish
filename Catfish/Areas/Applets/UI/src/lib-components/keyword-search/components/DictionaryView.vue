@@ -1,7 +1,9 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed, PropType, onMounted } from "vue";
+    import { defineComponent, computed, PropType, onMounted, ref } from "vue";
     import { useStore } from 'vuex';
     import { Actions } from '../store/actions';
+
+    import  DictionaryListView  from "./DictionaryListView.vue";
 
     export default defineComponent({
         name: "DictionaryView",
@@ -10,6 +12,11 @@
                 type: null as PropType<string> | null,
                 required: false
             }
+           
+        },
+        components: {
+            DictionaryListView
+
         },
         setup(p) {
 
@@ -21,7 +28,11 @@
             let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
                 return c.trim();
             }) : null;
-            
+            // this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] 
+            const selectedKeywords = ref([]);
+            var  currComponent:string="";
+            console.log("setup: " + JSON.stringify(selectedKeywords));
+
             onMounted(() => {
                 const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
                 let i = 0;
@@ -43,12 +54,16 @@
             return {
                 runFreshSearch,
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
-                results: computed(() => store.state.searchResult) 
+                results: computed(() => store.state.searchResult),
+                currComponent: ref(currComponent)
+                
             }
         },
         methods: {
             addKeyword(cIdx: Number | any, fIdx: Number | any, vIdx: Number | any) {
                 this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] = !this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx];
+
+                this.currComponent = "DictionaryListView";
                 this.runFreshSearch;
             },
             generateRandomColor() {
@@ -69,11 +84,16 @@
             </span>
         </div>
     </div>
-
-    {{keywordQueryModel}}
+    
+    <div v-if="currComponent !== ''">
+        {{currComponent}}
+        <component :is="currComponent" :model="keywordQueryModel" ></component>
+        <!--<DictionaryListView />-->
+    </div>
+    <!--{{keywordQueryModel}}
 
     <div>RESULTS</div>
-    <div>{{results}}</div>
+    <div>{{results}}</div>-->
 
 </template>
 

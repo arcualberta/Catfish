@@ -1,14 +1,20 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed, ref } from "vue";
+    import { defineComponent, computed, ref, PropType } from "vue";
     import dayjs from "dayjs";
 
     import { useStore } from 'vuex';
     import { Actions } from '../store/actions'
+    import { KeywordQueryModel } from '../models/keywords'
 
     export default defineComponent({
         name: "DictionaryListView",
 
-        props: {},
+        props: {
+            model: {
+                type: null as PropType<KeywordQueryModel> | null,
+                required: false
+            },
+        },
         setup() {
             const store = useStore()
 
@@ -40,36 +46,9 @@
 </script>
 
 <template>
-    <div class="itemList">
-        <div v-if="items?.length > 0">
-            <span v-if="first > 1"><i class="fas fa-angle-double-left" @click="previousPage"></i></span>
-            {{first}}-{{last}} of {{count}}
-            <span v-if="count > last"><i class="fas fa-angle-double-right" @click="nextPage"></i></span>
-            <span>
-                <select v-model="selectedPageSize" class="pull-right" @change="freshSearch(Number(selectedPageSize))">
-                    <option>25</option>
-                    <option>50</option>
-                    <option>100</option>
-                </select>
-            </span>
-        </div>
-        <div v-else>No results found.</div>
-        <div v-for="item in items" :key="item.id">
-            <div class="item">
-                <h3 class="item-title">
-                    <a v-if='item.detailedViewUrl?.length > 0' v-bind:href="item.detailedViewUrl">{{item.title}}</a>
-                    <span v-else>{{item.title}}</span>
-                </h3>           
-                <div class="item-date">{{formatDate(item.date)}}</div>
-                <h5 class="item-subtitle">{{item.subtitle}}</h5>
-                <div class="categories">
-                    <span v-for="cat in item.categories" class="badge rounded-pill bg-dark text-white m-1">
-                        {{cat}}
-                    </span>
-                </div>
-                <div class="content">{{item.content}}</div>
-            </div>
-        </div>
+    <div class="dictionaryList">
+        <h3>Ditionary List View</h3>
+        {{model}}
     </div>
 </template>
 
