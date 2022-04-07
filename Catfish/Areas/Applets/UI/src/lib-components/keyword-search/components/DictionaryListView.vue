@@ -94,7 +94,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5 contentList grey-BG">
+            <div class="col-md-6 contentList grey-BG">
                 <div> {{model}}</div>
                <div>{{items}}</div>
                 <!--<div v-for="item in items" :key="item.id">
@@ -114,7 +114,7 @@
                     </div>
                 </div>-->
             </div>
-            <div class="col-md-4 searchNav">
+            <div class="col-md-3 searchNav">
                 <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
 
                     <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
@@ -202,6 +202,7 @@
         width: 12px;
         height: 5px;
         overflow-x: scroll;
+       
         background-color: transparent;
     }
 
@@ -220,8 +221,35 @@
         margin-right: 75px;
     }
 
-    .keywordContainer::-webkit-scrollbar-track-piece:start {
+    .keywordContainer::-webkit-scrollbar-track-piece:start{
         margin-left: 175px;
     }
+
+
+    .contentList::-webkit-scrollbar {
+        width: 7px;
+        height:5px;
+        overflow-y: scroll;
+        background-color: transparent;
+    }
+
+    .contentList::-webkit-scrollbar-track {
+        background-color: transparent;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.02);
+    }
+
+    .contentList::-webkit-scrollbar-thumb {
+        background-color: grey;
+        border-radius: 10px;
+        /* border: 1px solid Green;*/
+    }
+    .contentList::-webkit-scrollbar-track-piece:end {
+        margin-bottom: 75px;
+    }
+
+    .contentList::-webkit-scrollbar-track-piece:start {
+        margin-top: 175px;
+    }
+   
 </style>
 
