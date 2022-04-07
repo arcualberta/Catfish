@@ -53,7 +53,7 @@
             })
             return {
                 runFreshSearch,
-               // items: computed(() => store.state.searchResult?.items),
+                items: computed(() => store.state.searchResult?.items),
                 keywordQueryModel: computed(() => p.model)
                 //freshSearch,
                 //nextPage,
@@ -95,7 +95,8 @@
                 </div>
             </div>
             <div class="col-md-5 contentList grey-BG">
-                {{model}}
+                <div> {{model}}</div>
+               <div>{{items}}</div>
                 <!--<div v-for="item in items" :key="item.id">
                     <div class="item">
                         <h3 class="item-title">
@@ -174,6 +175,7 @@
     .dir-keyword {
         display: inline-block;
         margin-top: 15px;
+        vertical-align:bottom;
     }
 
     .dir-keyword-button {
