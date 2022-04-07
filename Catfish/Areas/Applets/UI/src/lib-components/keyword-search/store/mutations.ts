@@ -2,7 +2,6 @@
 import { State } from './state';
 import { SearchOutput } from '../models'
 import { KeywordQueryModel, KeywordSource } from '../models/keywords';
-import { DataAttribute, QueryParameter } from '../../shared/props'
 
 //Declare MutationTypes
 export enum Mutations {
@@ -12,7 +11,6 @@ export enum Mutations {
     SET_OFFSET = 'SET_OFFSET',
     SET_PAGE_SIZE = 'SET_PAGE_SIZE',
     SET_FREE_TEXT_SEARCH = 'SET_FREE_TEXT_SEARCH',
-    SET_INIT_PARAMS = 'SET_INIT_PARAMS',
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -45,11 +43,6 @@ export const mutations: MutationTree<State> = {
     [Mutations.SET_FREE_TEXT_SEARCH](state: State, payload: string) {
         // console.log('mutation set text: payload: ', payload)
         state.freeSearchText = payload;
-    },
-    [Mutations.SET_INIT_PARAMS](state: State, payload: { dataAttributes: DataAttribute | null, queryParams: QueryParameter | null}) {
-        // console.log('mutation set text: payload: ', payload)
-        state.dataAttributes = payload.dataAttributes;
-        state.keywordQueryModel = payload.queryParams;
     }
 
 }

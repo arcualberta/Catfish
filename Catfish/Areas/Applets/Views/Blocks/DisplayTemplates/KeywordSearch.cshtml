@@ -4,10 +4,9 @@
 @inject Catfish.Areas.Applets.Services.IAssetRegistry _assetRegistry;
 
 @{
-   
     var viewData = new ViewDataDictionary(this.ViewData)
-{
-      
+    {
+
         { "data-collection-id", Model.SelectedCollection?.Value },
         { "data-template-id", Model.SelectedItemTemplate?.Value },
         { "data-keyword-metadata-set-id", Model.ClassificationMetadataSetId?.Value },
@@ -16,12 +15,11 @@
         { "data-block-description", Model.Description?.Value },
         { "data-enable-freetext-search", Model.EnabledFreeTextSearch?.Value},
         { "data-display-format", Model.GetSelectedDisplayFormat()},
-         { "data-hex-color-list", Model.HexColorList?.Value}
+        { "data-hex-color-list", Model.HexColorList?.Value}
     };
 
     //Registering assets
     _assetRegistry.RegisterStylesheet("/assets/dist/applets/styles/KeywordSearch.css", "/assets/dist/applets/styles/KeywordSearch.css");
-
 }
 <partial name="Shared/_AppletLoader" view-data="@viewData" />
 

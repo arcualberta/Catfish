@@ -10,15 +10,16 @@
     import DictionaryView from './components/DictionaryView.vue'
     import ListView from './components/ListView.vue'
     import FreeTextSearch from './components/FreeTextSearch.vue'
+    import Directory from './components/directory/Index.vue'
 
-  
-    import props, { DataAttribute } from '../shared/props'
+
+    import props, { DataAttribute, QueryParameter } from '../shared/props'
 
 
     export default defineComponent({
         name: "Applet",
         components: {
-         
+            Directory,
             DictionaryView,
             ListView,
             FreeTextSearch
@@ -28,6 +29,7 @@
             console.log('Keyword Search setup ...', p)
 
             const dataAttributes = p.dataAttributes as DataAttribute;
+            const queryParameters = p.queryParameters as QueryParameter;
 
             const displayFormat = dataAttributes["display-format"] as string;
             const blogTitle = dataAttributes["block-title"] as string;
@@ -39,7 +41,6 @@
             //We need to use store in this setup method. so let's load it first.
             const store = useStore()
 
-            store.commit(Mutations.SET_INIT_PARAMS, { dataAttributes: dataAttributes, queryParams: p.queryParameters })
             //Storing the page and block IDs in the store
             store.commit(Mutations.SET_SOURCE, { pageId: p.pageId, blockId: p.blockId });
 
@@ -67,7 +68,8 @@
             const keywordQueryModel = ref(store.state.keywordQueryModel);
          
             return {
-            
+                dataAttributes,
+                queryParameters,
                 keywordQueryModel,
                 displayFormat,
                 blogTitle,
@@ -88,17 +90,18 @@
 </script>
 
 <template>
+    <Directory v-if="displayFormat === 'Directory'" data-attributes="dataAttributes" query-parameters="queryParameters" />
+
     <div v-if="displayFormat === 'Dictionary'">
         <h1 class="dir-title">{{blogTitle}}</h1>
         <div class="dir-description">{{blogDescription}}</div>
         <div v-if="enableFreeTextSearch === true">
-           <FreeTextSearch />
+            <FreeTextSearch />
         </div>
-        <DictionaryView :colorScheme="hexColors"/>
-       
+        <DictionaryView :colorScheme="hexColors" />
+
     </div>
     <div class="row" v-if="displayFormat === 'List'">
-       
         <ListView />
     </div>
 
