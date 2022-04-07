@@ -750,7 +750,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             bool clearCurrentData = false;
 
             //Set maxEntries to a positive value to limit the maximum number of data entries to be imported.
-            int maxEntries = 1;
+            int maxEntries = 3;
 
             // string multiValueSeparator = ";";
 
