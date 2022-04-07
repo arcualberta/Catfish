@@ -19,7 +19,6 @@ export const actions: ActionTree<State, any> = {
         fetch(api)
             .then(response => response.json())
             .then(data => {
-
                 store.commit(Mutations.SET_ITEM, data);
             });
     },

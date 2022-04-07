@@ -49,9 +49,28 @@
 </script>
 
 <template>
-    {{JSON.stringify(dataItem)}}
-    <div class="item">
-        <FieldContainer :model="dataItem" v-if="dataItem" />
+    
+    <div>
+
+        <div v-for="value in dataItem.template.metadataSets.$values">
+            <div v-for="metadataName in value.name.values.$values">
+                <h4>Metadata Set : {{metadataName.value}}</h4>
+                <div v-for="fieldValue in value.fields">
+                    <!--<FieldContainer :model="fieldValue" />-->
+                </div>
+            </div>
+
+
+        </div>
+        <!--{{dataItem.dataContainer}}-->
+        <div v-for="value in dataItem.dataContainer.$values">
+            <div v-for="dataContainer in value.name.values.$values">
+                <h4> Data Container : {{dataContainer.value}}</h4>
+            </div>
+    <!--<div v-for="fieldValue in value.fields">
+    <FieldContainer :model="fieldValue" />
+    </div>-->
+</div>
     </div>
 </template>
 
