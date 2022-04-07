@@ -63,21 +63,7 @@
 </script>
 
 <template>
-
-    <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
-
-        <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
-
-            <span v-for="(value, vIdx) in field.values" :key="value" class="dir-keyword">
-                <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
-            </span>
-        </div>
-    </div>
-
-    {{keywordQueryModel}}
-
-    <div>RESULTS</div>
-    <div>{{results}}</div>
+    <h2>List View</h2>
 
 </template>
 

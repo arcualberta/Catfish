@@ -44,7 +44,6 @@
             store.commit(Mutations.SET_SOURCE, { pageId: p.pageId, blockId: p.blockId });
 
             //See if we can load a SearchParams object from local storage
-            
             const searchParamsStr = localStorage.getItem(store.getters.searchParamStorageKey);
             let searchParams;
             if (searchParamsStr && searchParamsStr.length > 0
@@ -57,7 +56,7 @@
                 store.commit(Mutations.SET_PAGE_SIZE, searchParams.max);
             }
             else {
-                //Dispatch an action to loaf keywords
+                //Dispatch an action to load keywords
                 store.dispatch(Actions.INIT_FILTER);
             }
 

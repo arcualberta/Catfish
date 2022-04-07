@@ -1,7 +1,7 @@
 ﻿import { MutationTree } from 'vuex';
 import { State, ePage } from './state';
 import { SearchOutput } from '../models'
-import { KeywordQueryModel, KeywordSource } from '../models/keywords';
+import { KeywordQueryModel, KeywordSource, KeywordIndex } from '../models/keywords';
 
 //Declare MutationTypes
 export enum Mutations {
@@ -12,6 +12,7 @@ export enum Mutations {
     SET_PAGE_SIZE = 'SET_PAGE_SIZE',
     SET_FREE_TEXT_SEARCH = 'SET_FREE_TEXT_SEARCH',
     SET_ACTIVE_PAGE = 'SET_ACTIVE_PAGE',
+    TOGGLE_KEYWORD = 'TOGGLE_KEYWORD',
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -47,5 +48,9 @@ export const mutations: MutationTree<State> = {
     },
     [Mutations.SET_ACTIVE_PAGE](state: State, payload: ePage) {
         state.activePage = payload;
+    },
+    [Mutations.TOGGLE_KEYWORD](state: State, payload: KeywordIndex) {
+        if (state.keywordQueryModel?.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex])
+            state.keywordQueryModel.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex] = !state.keywordQueryModel.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex];
     },
 }

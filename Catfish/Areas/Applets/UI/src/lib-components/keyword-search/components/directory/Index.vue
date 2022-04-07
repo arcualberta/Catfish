@@ -38,9 +38,9 @@
 <template>
 
     <h1>Directory</h1>
-    <component :is="HomeView" v-if="page == ePage.Home" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
-    <component :is="ListView" v-if="page == ePage.List" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
-    <component :is="DetailsView" v-if="page == ePage.Details" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
+    <HomeView v-if="page == ePage.Home" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
+    <ListView v-if="page == ePage.List" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
+    <DetailsView v-if="page == ePage.Details" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
 </template>
 
 <style scoped>

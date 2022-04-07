@@ -35,8 +35,6 @@ export const actions: ActionTree<State, any> = {
   },
 
   [Actions.FILTER_BY_KEYWORDS](store) {
-    console.log("Dispatched Actions.FILTER_BY_KEYWORDS. Query model: ", JSON.stringify(store.state.keywordQueryModel))
-
     //Saving current search parameters in the local storage
     if (store.state.blockId) {
       const searchParams = {

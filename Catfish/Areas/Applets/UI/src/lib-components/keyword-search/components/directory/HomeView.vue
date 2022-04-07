@@ -7,6 +7,7 @@
     import { Actions } from '../../store/actions';
     import { Mutations } from '../../store/mutations';
     import { ePage } from '../../store/state';
+import { KeywordIndex } from "../../models/keywords";
 
     export default defineComponent({
         name: "HomeView",
@@ -20,15 +21,10 @@
         setup(p) {
             const store = useStore();
 
-            const runFreshSearch = () => {
-                store.dispatch(Actions.FRESH_SEARCH);
-                store.commit(Mutations.SET_ACTIVE_PAGE, ePage.List)
-            }
-         
             let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
                 return c.trim();
             }) : null;
-            
+
             onMounted(() => {
                 const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
                 let i = 0;
@@ -43,45 +39,29 @@
                         let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
                         b.setAttribute("style", "background-color: " + color);
                     }
-
                 });
-
             })
             return {
-                runFreshSearch,
+                filterByKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
+                    store.commit(Mutations.TOGGLE_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
+                    store.dispatch(Actions.FRESH_SEARCH);
+                    store.commit(Mutations.SET_ACTIVE_PAGE, ePage.List)
+                },
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
-                results: computed(() => store.state.searchResult) 
             }
         },
-        methods: {
-            addKeyword(cIdx: Number | any, fIdx: Number | any, vIdx: Number | any) {
-                this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] = !this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx];
-                this.runFreshSearch;
-            },
-            generateRandomColor() {
-                return "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
-            }
-        }
     });
 </script>
 
 <template>
-   
+   <h2>Home View</h2>
     <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container" >
-      
         <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
-            
             <span v-for="(value, vIdx) in field.values" :key="value" class="dir-keyword">
-                <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
+                <button @click="filterByKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
             </span>
         </div>
     </div>
-
-    {{keywordQueryModel}}
-
-    <div>RESULTS</div>
-    <div>{{results}}</div>
-
 </template>
 
 <style scoped>
