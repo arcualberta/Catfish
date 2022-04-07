@@ -29,9 +29,9 @@
                 return c.trim();
             }) : null;
             // this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] 
-            const selectedKeywords = ref([]);
+            //const selectedKeywords = ref([]);
             var  currComponent:string="";
-            console.log("setup: " + JSON.stringify(selectedKeywords));
+           // console.log("setup: " + JSON.stringify(selectedKeywords));
 
             onMounted(() => {
                 const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
@@ -55,7 +55,8 @@
                 runFreshSearch,
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
                 results: computed(() => store.state.searchResult),
-                currComponent: ref(currComponent)
+                currComponent: ref(currComponent),
+                hexColorList
                 
             }
         },
@@ -86,18 +87,16 @@
     </div>
     
     <div v-if="currComponent !== ''">
-        {{currComponent}}
-        <component :is="currComponent" :model="keywordQueryModel" ></component>
-        <!--<DictionaryListView />-->
+     
+        <component :is="currComponent" :model="keywordQueryModel" :hexColorList="hexColorList"></component>
+       
     </div>
-    <!--{{keywordQueryModel}}
-
-    <div>RESULTS</div>
-    <div>{{results}}</div>-->
-
+ 
 </template>
 
 <style scoped>
+    
+  
     .keywordContainer {
         overflow-x: scroll;
         overflow-y: visible;
