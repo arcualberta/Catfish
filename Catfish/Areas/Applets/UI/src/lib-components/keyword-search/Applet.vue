@@ -10,7 +10,7 @@
     import DictionaryView from './components/DictionaryView.vue'
     import ListView from './components/ListView.vue'
     import FreeTextSearch from './components/FreeTextSearch.vue'
-    import Directory from './components/directory/Index.vue'
+    import DirectoryView from './components/directory/Index.vue'
 
 
     import props, { DataAttribute, QueryParameter } from '../shared/props'
@@ -19,7 +19,7 @@
     export default defineComponent({
         name: "Applet",
         components: {
-            Directory,
+            DirectoryView,
             DictionaryView,
             ListView,
             FreeTextSearch
@@ -29,7 +29,6 @@
             console.log('Keyword Search setup ...', p)
 
             const dataAttributes = p.dataAttributes as DataAttribute;
-            const queryParameters = p.queryParameters as QueryParameter;
 
             const displayFormat = dataAttributes["display-format"] as string;
             const blogTitle = dataAttributes["block-title"] as string;
@@ -69,7 +68,7 @@
          
             return {
                 dataAttributes,
-                queryParameters,
+                queryParameters: p.queryParameters as QueryParameter,
                 keywordQueryModel,
                 displayFormat,
                 blogTitle,
@@ -90,7 +89,7 @@
 </script>
 
 <template>
-    <Directory v-if="displayFormat === 'Directory'" data-attributes="dataAttributes" query-parameters="queryParameters" />
+    <DirectoryView v-if="displayFormat === 'Directory'" data-attributes="dataAttributes" query-parameters="queryParameters" />
 
     <div v-if="displayFormat === 'Dictionary'">
         <h1 class="dir-title">{{blogTitle}}</h1>

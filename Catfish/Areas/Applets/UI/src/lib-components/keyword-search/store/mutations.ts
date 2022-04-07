@@ -1,5 +1,5 @@
 ﻿import { MutationTree } from 'vuex';
-import { State } from './state';
+import { State, ePage } from './state';
 import { SearchOutput } from '../models'
 import { KeywordQueryModel, KeywordSource } from '../models/keywords';
 
@@ -11,6 +11,7 @@ export enum Mutations {
     SET_OFFSET = 'SET_OFFSET',
     SET_PAGE_SIZE = 'SET_PAGE_SIZE',
     SET_FREE_TEXT_SEARCH = 'SET_FREE_TEXT_SEARCH',
+    SET_ACTIVE_PAGE = 'SET_ACTIVE_PAGE',
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -43,6 +44,8 @@ export const mutations: MutationTree<State> = {
     [Mutations.SET_FREE_TEXT_SEARCH](state: State, payload: string) {
         // console.log('mutation set text: payload: ', payload)
         state.freeSearchText = payload;
-    }
-
+    },
+    [Mutations.SET_ACTIVE_PAGE](state: State, payload: ePage) {
+        state.activePage = payload;
+    },
 }

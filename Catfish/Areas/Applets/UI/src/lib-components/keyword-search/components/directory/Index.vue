@@ -1,15 +1,22 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed, PropType, onMounted, ref } from "vue";
+    import { defineComponent, PropType, computed } from "vue";
     import { useStore } from 'vuex';
 
-    import props, { QueryParameter } from '../../../shared/props'
-    import { Guid } from "guid-typescript";
-    import { Actions } from '../../store/actions';
+    import props from '../../../shared/props';
+    import { State, ePage } from '../../store/state';
 
-    enum ePage { Home = "", List = "List", Details = "Details" }
+    import HomeView from './HomeView.vue';
+    import ListView from './ListView.vue';
+    import DetailsView from './DetailsView.vue';
+
 
     export default defineComponent({
-        name: "Directory",
+        name: "DirectoryView",
+        components: {
+            HomeView,
+            ListView,
+            DetailsView
+        },
         props: {
             colorScheme: {
                 type: null as PropType<string> | null,
@@ -17,56 +24,12 @@
             },
             ...props
         },
-        setup(p) {
-
+        setup() {
             const store = useStore();
 
-            const queryParams = p.queryParameters as QueryParameter;
-
-            const page = ref(queryParams["page"] as ePage);
-            const entryId = ref(queryParams["entryId"] as Guid | null)
-            const selectedKeywords = ref(queryParams["entryId"] as Guid | null)
-
-            const runFreshSearch = () => store.dispatch(Actions.FRESH_SEARCH);
-         
-            let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
-                return c.trim();
-            }) : null;
-            
-            onMounted(() => {
-                const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
-                let i = 0;
-                btns.forEach((b) => {
-                    if (hexColorList !== null && hexColorList[i] !== "") {
-                        b.setAttribute("style", "background-color: " + hexColorList[i]);
-                        i++
-                        i = i <= hexColorList.length - 1 ? i : 0;
-
-                    } else {
-                       
-                        let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
-                        b.setAttribute("style", "background-color: " + color);
-                    }
-
-                });
-
-            })
             return {
-                page,
-                entryId,
-                selectedKeywords,
-                runFreshSearch,
-                keywordQueryModel: computed(() => store.state.keywordQueryModel),
-                results: computed(() => store.state.searchResult) 
-            }
-        },
-        methods: {
-            addKeyword(cIdx: Number | any, fIdx: Number | any, vIdx: Number | any) {
-                this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] = !this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx];
-                this.runFreshSearch;
-            },
-            generateRandomColor() {
-                return "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
+                ePage,
+                page: computed(() => (store.state as State).activePage),
             }
         }
     });
@@ -75,7 +38,9 @@
 <template>
 
     <h1>Directory</h1>
- 
+    <component :is="HomeView" v-if="page == ePage.Home" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
+    <component :is="ListView" v-if="page == ePage.List" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
+    <component :is="DetailsView" v-if="page == ePage.Details" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
 </template>
 
 <style scoped>

@@ -1,33 +1,41 @@
 ﻿<script lang="ts">
+    import { Guid } from 'guid-typescript'
     import { defineComponent, computed, PropType, onMounted } from "vue";
-    import { useStore } from 'vuex';
-    import { Actions } from '../store/actions';
 
-    enum ePage { Home = "", Explore = "Explore", Profile = "Profile" }
+    import props from '../../../shared/props'
+
+    import { useStore } from 'vuex';
+    import { Actions } from '../../store/actions';
+    import { State } from '../../store/state';
 
     export default defineComponent({
-        name: "DictionaryView",
+        name: "DetailsView",
         props: {
             colorScheme: {
                 type: null as PropType<string> | null,
                 required: false
-            }
+            },
+            entryId: {
+                type: null as PropType<Guid> | null,
+                required: false
+            },
+            ...props
         },
         setup(p) {
-
             const store = useStore();
-            //console.log("Store: ", store)
 
-            const dataAttributes = p.dataAttributes as DataAttribute;
-            const navPage = dataAttributes["page"] ref(ePage.Home);
+            const runFreshSearch = () => {
+                store.dispatch(Actions.FRESH_SEARCH);
+            }
 
-            const runFreshSearch = () => store.dispatch(Actions.FRESH_SEARCH);
-         
             let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
                 return c.trim();
             }) : null;
-            
+
             onMounted(() => {
+
+                //TODO: dispatch an action to load the entry identified by the entryID.
+
                 const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
                 let i = 0;
                 btns.forEach((b) => {
@@ -37,7 +45,7 @@
                         i = i <= hexColorList.length - 1 ? i : 0;
 
                     } else {
-                       
+
                         let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
                         b.setAttribute("style", "background-color: " + color);
                     }
@@ -47,39 +55,16 @@
             })
             return {
                 runFreshSearch,
-                keywordQueryModel: computed(() => store.state.keywordQueryModel),
-                results: computed(() => store.state.searchResult) 
+                keywordQueryModel: computed(() => (store.state as State).keywordQueryModel),
+                results: computed(() => (store.state as State).searchResult),
+                activeDataItem: computed(() => (store.state as State).activeDataItem),
             }
         },
-        methods: {
-            addKeyword(cIdx: Number | any, fIdx: Number | any, vIdx: Number | any) {
-                this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] = !this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx];
-                this.runFreshSearch;
-            },
-            generateRandomColor() {
-                return "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
-            }
-        }
     });
 </script>
 
 <template>
-   
-    <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container" >
-      
-        <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
-            
-            <span v-for="(value, vIdx) in field.values" :key="value" class="dir-keyword">
-                <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
-            </span>
-        </div>
-    </div>
-
-    {{keywordQueryModel}}
-
-    <div>RESULTS</div>
-    <div>{{results}}</div>
-
+    {{JSON.stringify(activeDataItem)}}
 </template>
 
 <style scoped>
@@ -92,13 +77,15 @@
         height: 150px;
         width: 100%;
         scroll-behavior: smooth;
-        align-content:center;
+        align-content: center;
     }
+
     .dir-keyword {
         display: inline-block;
         margin-top: 15px;
         margin-right: 5px;
     }
+
     .dir-keyword-button {
         position: relative;
         color: Black;
@@ -113,18 +100,19 @@
         white-space: normal;
     }
 
-    .dir-keyword-button:focus {
-        background-color: yellow;
-    }
-    .dir-keyword-button:hover {
-       transform: scale(1.2);
-       z-index:100;
-       opacity:90%;
-       text-decoration:underline;
-    }
-   
-   
-        /* Works on Chrome, Edge, and Safari */
+        .dir-keyword-button:focus {
+            background-color: yellow;
+        }
+
+        .dir-keyword-button:hover {
+            transform: scale(1.2);
+            z-index: 100;
+            opacity: 90%;
+            text-decoration: underline;
+        }
+
+
+    /* Works on Chrome, Edge, and Safari */
     .keywordContainer::-webkit-scrollbar {
         width: 12px;
         height: 5px;
@@ -142,6 +130,7 @@
         border-radius: 10px;
         /* border: 1px solid Green;*/
     }
+
     .keywordContainer::-webkit-scrollbar-track-piece:end {
         margin-right: 75px;
     }

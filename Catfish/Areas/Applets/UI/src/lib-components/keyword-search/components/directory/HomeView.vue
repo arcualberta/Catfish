@@ -1,27 +1,29 @@
 ﻿<script lang="ts">
     import { defineComponent, computed, PropType, onMounted } from "vue";
-    import { useStore } from 'vuex';
-    import { Actions } from '../store/actions';
 
-    enum ePage { Home = "", Explore = "Explore", Profile = "Profile" }
+    import props from '../../../shared/props'
+
+    import { useStore } from 'vuex';
+    import { Actions } from '../../store/actions';
+    import { Mutations } from '../../store/mutations';
+    import { ePage } from '../../store/state';
 
     export default defineComponent({
-        name: "DictionaryView",
+        name: "HomeView",
         props: {
             colorScheme: {
                 type: null as PropType<string> | null,
                 required: false
-            }
+            },
+            ...props
         },
         setup(p) {
-
             const store = useStore();
-            //console.log("Store: ", store)
 
-            const dataAttributes = p.dataAttributes as DataAttribute;
-            const navPage = dataAttributes["page"] ref(ePage.Home);
-
-            const runFreshSearch = () => store.dispatch(Actions.FRESH_SEARCH);
+            const runFreshSearch = () => {
+                store.dispatch(Actions.FRESH_SEARCH);
+                store.commit(Mutations.SET_ACTIVE_PAGE, ePage.List)
+            }
          
             let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
                 return c.trim();
