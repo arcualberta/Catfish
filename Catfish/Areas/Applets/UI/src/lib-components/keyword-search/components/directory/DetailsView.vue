@@ -1,70 +1,44 @@
 ﻿<script lang="ts">
-    import { Guid } from 'guid-typescript'
-    import { defineComponent, computed, PropType, onMounted } from "vue";
-
-    import props from '../../../shared/props'
-
+    //import { Guid } from 'guid-typescript'
+    import { defineComponent, computed, onMounted } from "vue";
     import { useStore } from 'vuex';
-    import { Actions } from '../../store/actions';
+
+    import props/*, { QueryParameter }*/ from '../../../shared/props'
+
+    //import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
+    import { Actions as ItemViewerActions } from '../../../item-viewer/store/actions';
     import { State } from '../../store/state';
 
     export default defineComponent({
         name: "DetailsView",
-        props: {
-            colorScheme: {
-                type: null as PropType<string> | null,
-                required: false
-            },
-            entryId: {
-                type: null as PropType<Guid> | null,
-                required: false
-            },
-            ...props
-        },
-        setup(p) {
+        props,
+        setup() {
             const store = useStore();
 
-            const runFreshSearch = () => {
-                store.dispatch(Actions.FRESH_SEARCH);
-            }
+            //const queryParameters = p.queryParameters as QueryParameter;
+            //if (queryParameters["iid"])
+            //    store.commit(ItemViewerMutations.SET_ID, queryParameters["iid"] as unknown as Guid);
 
-            let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
-                return c.trim();
-            }) : null;
+
+            const itemId = computed(() => (store.state as State).id);
 
             onMounted(() => {
-
-                //TODO: dispatch an action to load the entry identified by the entryID.
-
-                const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
-                let i = 0;
-                btns.forEach((b) => {
-                    if (hexColorList !== null && hexColorList[i] !== "") {
-                        b.setAttribute("style", "background-color: " + hexColorList[i]);
-                        i++
-                        i = i <= hexColorList.length - 1 ? i : 0;
-
-                    } else {
-
-                        let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
-                        b.setAttribute("style", "background-color: " + color);
-                    }
-
-                });
-
+                if (itemId)
+                    store.dispatch(ItemViewerActions.LOAD_ITEM, itemId);
             })
+
             return {
-                runFreshSearch,
-                keywordQueryModel: computed(() => (store.state as State).keywordQueryModel),
-                results: computed(() => (store.state as State).searchResult),
-                activeDataItem: computed(() => (store.state as State).activeDataItem),
+                itemId,
+                item: computed(() => (store.state as State).item),
             }
         },
     });
 </script>
 
 <template>
-    {{JSON.stringify(activeDataItem)}}
+    <h2>Details View</h2>
+    Item ID: {{JSON.stringify(itemId)}} <br /> <br />
+    {{JSON.stringify(item)}}
 </template>
 
 <style scoped>

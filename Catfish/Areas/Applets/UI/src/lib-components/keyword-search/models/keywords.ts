@@ -31,3 +31,8 @@ export interface KeywordIndex {
     fieldIndex: number;
     valueIndex: number
 };
+
+export interface Keyword {
+    index: KeywordIndex;
+    value: string;
+}

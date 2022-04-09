@@ -1,7 +1,9 @@
 ﻿import { MutationTree } from 'vuex';
+
 import { State, ePage } from './state';
 import { SearchOutput } from '../models'
 import { KeywordQueryModel, KeywordSource, KeywordIndex } from '../models/keywords';
+import { mutations as itemViewerMutations } from '../../item-viewer/store/mutations';
 
 //Declare MutationTypes
 export enum Mutations {
@@ -17,6 +19,7 @@ export enum Mutations {
 
 //Create a mutation tree that implement all mutation interfaces
 export const mutations: MutationTree<State> = {
+    ...itemViewerMutations,
 
     [Mutations.SET_SOURCE](state: State, payload: KeywordSource) {
         state.pageId = payload.pageId;
@@ -50,7 +53,7 @@ export const mutations: MutationTree<State> = {
         state.activePage = payload;
     },
     [Mutations.TOGGLE_KEYWORD](state: State, payload: KeywordIndex) {
-        if (state.keywordQueryModel?.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex])
+        if (state.keywordQueryModel)
             state.keywordQueryModel.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex] = !state.keywordQueryModel.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex];
     },
 }

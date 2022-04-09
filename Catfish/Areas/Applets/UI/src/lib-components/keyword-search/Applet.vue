@@ -88,7 +88,7 @@
 </script>
 
 <template>
-    <DirectoryView v-if="displayFormat === 'Directory'" data-attributes="dataAttributes" query-parameters="queryParameters" />
+    <DirectoryView v-if="displayFormat === 'Directory'" :data-attributes="dataAttributes" :query-parameters="queryParameters" />
 
     <div v-if="displayFormat === 'Dictionary'">
         <h1 class="dir-title">{{blogTitle}}</h1>

@@ -4,6 +4,7 @@
 
     import props from '../../../shared/props';
     import { State, ePage } from '../../store/state';
+    import { Mutations } from '../../store/mutations';
 
     import HomeView from './HomeView.vue';
     import ListView from './ListView.vue';
@@ -24,11 +25,17 @@
             },
             ...props
         },
-        setup() {
+        setup(p) {
             const store = useStore();
-
+            const queryParameters = p.queryParameters;
+            console.log(JSON.stringify(queryParameters))
+            if (queryParameters?.page) {
+                const page = queryParameters?.page as unknown as ePage;
+                store.commit(Mutations.SET_ACTIVE_PAGE, page);
+            }
             return {
                 ePage,
+                visit: (page: ePage) => store.commit(Mutations.SET_ACTIVE_PAGE, page), 
                 page: computed(() => (store.state as State).activePage),
             }
         }
@@ -36,11 +43,16 @@
 </script>
 
 <template>
+    <nav >
+        <a href="#" @click="visit(ePage.Home)">Home</a> | 
+        <a href="#" @click="visit(ePage.List)">Explore</a>
+    </nav>
+    <HomeView v-if="page == ePage.Home" :data-attributes="dataAttributes" :query-parameters="queryParameters" />
+    <ListView v-if="page == ePage.List" />
+    <DetailsView v-if="page == ePage.Details" />
 
-    <h1>Directory</h1>
-    <HomeView v-if="page == ePage.Home" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
-    <ListView v-if="page == ePage.List" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
-    <DetailsView v-if="page == ePage.Details" data-attributes="dataAttributes" query-parameters ="queryParameters"/>
+    <!--<ListView v-if="page == ePage.List" :data-attributes="dataAttributes" :query-parameters ="queryParameters"/>
+    <DetailsView v-if="page == ePage.Details" :data-attributes="dataAttributes" :query-parameters ="queryParameters"/>-->
 </template>
 
 <style scoped>

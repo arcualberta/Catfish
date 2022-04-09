@@ -4,10 +4,9 @@
     import props from '../../../shared/props'
 
     import { useStore } from 'vuex';
-    import { Actions } from '../../store/actions';
     import { Mutations } from '../../store/mutations';
     import { ePage } from '../../store/state';
-import { KeywordIndex } from "../../models/keywords";
+    import { KeywordIndex } from "../../models/keywords";
 
     export default defineComponent({
         name: "HomeView",
@@ -41,10 +40,11 @@ import { KeywordIndex } from "../../models/keywords";
                     }
                 });
             })
+
             return {
                 filterByKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
                     store.commit(Mutations.TOGGLE_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
-                    store.dispatch(Actions.FRESH_SEARCH);
+                    //store.dispatch(Actions.FRESH_SEARCH);
                     store.commit(Mutations.SET_ACTIVE_PAGE, ePage.List)
                 },
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),

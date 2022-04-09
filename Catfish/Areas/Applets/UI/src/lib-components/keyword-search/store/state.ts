@@ -2,12 +2,12 @@
 import { SearchOutput } from '../models'
 import { KeywordQueryModel } from '../models/keywords'
 import { DataAttribute, QueryParameter } from '../../shared/props'
-import { FieldContainer } from '../../shared/models/fieldContainer'
+import { State as ItemViewerState, state as itemViewerState } from '../../item-viewer/store/state'
 
 export enum ePage { Home = "Home", List = "List", Details = "Details" }
 
 //Declare State interface
-export interface State {
+export interface State extends ItemViewerState {
     keywordQueryModel: KeywordQueryModel | null;
     searchResult: SearchOutput | null;
     offset: number;
@@ -18,7 +18,6 @@ export interface State {
     dataAttributes: DataAttribute | null;
     queryParameters: QueryParameter | null;
     activePage: ePage;
-    activeDataItem: FieldContainer | null;
 }
 
 export const state: State = {
@@ -32,5 +31,5 @@ export const state: State = {
     dataAttributes: null,
     queryParameters: null,
     activePage: ePage.Home,
-    activeDataItem: null,
+    ...itemViewerState
 }

@@ -1,10 +1,15 @@
 ﻿<script lang="ts">
     import { defineComponent, computed, PropType, onMounted } from "vue";
+    import { Guid } from 'guid-typescript'
 
     import props from '../../../shared/props'
 
     import { useStore } from 'vuex';
     import { Actions } from '../../store/actions';
+    import { Mutations } from '../../store/mutations';
+    import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
+    import { KeywordIndex, Keyword } from "../../models/keywords";
+    import { State, ePage } from '../../store/state';
 
     export default defineComponent({
         name: "ListView",
@@ -17,10 +22,6 @@
         },
         setup(p) {
             const store = useStore();
-
-            const runFreshSearch = () => {
-                store.dispatch(Actions.FRESH_SEARCH);
-            }
 
             let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
                 return c.trim();
@@ -40,23 +41,35 @@
                         let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
                         b.setAttribute("style", "background-color: " + color);
                     }
-
                 });
 
+                store.dispatch(Actions.FRESH_SEARCH);
             })
+
             return {
-                runFreshSearch,
+                filterByKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
+                    store.commit(Mutations.TOGGLE_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
+                    store.dispatch(Actions.FRESH_SEARCH);
+                },
+                viewDetails: (itemId: Guid) => {
+                    store.commit(ItemViewerMutations.SET_ID, itemId);
+                    store.commit(Mutations.SET_ACTIVE_PAGE, ePage.Details);
+                },
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
-                results: computed(() => store.state.searchResult)
-            }
-        },
-        methods: {
-            addKeyword(cIdx: Number | any, fIdx: Number | any, vIdx: Number | any) {
-                this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] = !this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx];
-                this.runFreshSearch;
-            },
-            generateRandomColor() {
-                return "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
+                items: computed(() => store.state.searchResult?.items),
+                results: computed(() => store.state.searchResult),
+                selectedKeywords: computed(() => {
+                    const ret = [] as Keyword[];
+                    (store.state as State).keywordQueryModel?.containers.forEach((cont, cIdx) =>
+                        cont.fields.forEach((field, fIdx) =>
+                            field.values.forEach((val, vIdx) => {
+                                if (store.state.keywordQueryModel?.containers[cIdx].fields[fIdx].selected[vIdx])
+                                    ret.push({ index: { containerIndex: cIdx, fieldIndex: fIdx, valueIndex: vIdx }, value: val } as Keyword);
+                            })
+                        )
+                    )
+                    return ret;
+                })
             }
         }
     });
@@ -64,7 +77,32 @@
 
 <template>
     <h2>List View</h2>
+    <div class="row">
+        <div class="col-md-6 row">
+            <div class="col-md-3">
+                <b>Selected Keywords</b>
+                <div v-for="keyword in selectedKeywords" :key="keyword.index.containerIndex + '_' + keyword.index.valueIndex">
+                    {{keyword.value}}
+                </div>
+            </div>
 
+            <div class="col-md-9">
+                <b>Entries</b>
+                <div v-for="item in items" :key="item.id">
+                    <a href="#" @click="viewDetails(item.id)">{{item.id}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container.id">
+                <div v-for="(field, fIdx) in container.fields" :key="field.id" class="row keywordContainer">
+                    <span v-for="(value, vIdx) in field.values" :key="value.id" class="dir-keyword">
+                        <button @click="filterByKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
