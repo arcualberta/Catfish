@@ -1,24 +1,23 @@
 ﻿<script lang="ts">
-    //import { Guid } from 'guid-typescript'
+    import { Guid } from 'guid-typescript'
     import { defineComponent, computed, onMounted } from "vue";
     import { useStore } from 'vuex';
 
-    import props/*, { QueryParameter }*/ from '../../../shared/props'
+    import props, { QueryParameter } from '../../../shared/props'
 
-    //import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
+    import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
     import { Actions as ItemViewerActions } from '../../../item-viewer/store/actions';
     import { State } from '../../store/state';
 
     export default defineComponent({
         name: "DetailsView",
         props,
-        setup() {
+        setup(p) {
             const store = useStore();
 
-            //const queryParameters = p.queryParameters as QueryParameter;
-            //if (queryParameters["iid"])
-            //    store.commit(ItemViewerMutations.SET_ID, queryParameters["iid"] as unknown as Guid);
-
+            const queryParameters = p.queryParameters as QueryParameter;
+            if (queryParameters && (queryParameters["iid"] as string)?.length > 0)
+                store.commit(ItemViewerMutations.SET_ID, queryParameters["iid"] as unknown as Guid);
 
             const itemId = computed(() => (store.state as State).id);
 

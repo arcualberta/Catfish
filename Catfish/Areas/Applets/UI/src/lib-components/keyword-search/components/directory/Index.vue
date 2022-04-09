@@ -48,8 +48,8 @@
         <a href="#" @click="visit(ePage.List)">Explore</a>
     </nav>
     <HomeView v-if="page == ePage.Home" :data-attributes="dataAttributes" :query-parameters="queryParameters" />
-    <ListView v-if="page == ePage.List" />
-    <DetailsView v-if="page == ePage.Details" />
+    <ListView v-if="page == ePage.List" :data-attributes="dataAttributes" :query-parameters="queryParameters" />
+    <DetailsView v-if="page == ePage.Details" :data-attributes="dataAttributes" :query-parameters="queryParameters" />
 
     <!--<ListView v-if="page == ePage.List" :data-attributes="dataAttributes" :query-parameters ="queryParameters"/>
     <DetailsView v-if="page == ePage.Details" :data-attributes="dataAttributes" :query-parameters ="queryParameters"/>-->
