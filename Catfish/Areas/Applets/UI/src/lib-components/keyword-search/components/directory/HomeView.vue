@@ -43,8 +43,8 @@
 
             return {
                 filterByKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
-                    store.commit(Mutations.TOGGLE_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
-                    //store.dispatch(Actions.FRESH_SEARCH);
+                    store.commit(Mutations.CLEAR_KEYWORD_SELECTIONS);
+                    store.commit(Mutations.SELECT_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
                     store.commit(Mutations.SET_ACTIVE_PAGE, ePage.List)
                 },
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),

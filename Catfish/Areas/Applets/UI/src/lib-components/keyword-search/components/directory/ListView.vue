@@ -47,8 +47,14 @@
             })
 
             return {
-                filterByKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
-                    store.commit(Mutations.TOGGLE_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
+                addKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
+                    if (!store.getters.isKeywordSelected(cIndex, fIndex, vIndex)) {
+                        store.commit(Mutations.SELECT_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
+                        store.dispatch(Actions.FRESH_SEARCH);
+                    }
+                },
+                removeKeyword: (index: KeywordIndex) => {
+                    store.commit(Mutations.CLEAR_KEYWORD, index);
                     store.dispatch(Actions.FRESH_SEARCH);
                 },
                 viewDetails: (itemId: Guid) => {
@@ -63,7 +69,7 @@
                     (store.state as State).keywordQueryModel?.containers.forEach((cont, cIdx) =>
                         cont.fields.forEach((field, fIdx) =>
                             field.values.forEach((val, vIdx) => {
-                                if (store.state.keywordQueryModel?.containers[cIdx].fields[fIdx].selected[vIdx])
+                                if (store.getters.isKeywordSelected(cIdx, fIdx, vIdx))
                                     ret.push({ index: { containerIndex: cIdx, fieldIndex: fIdx, valueIndex: vIdx }, value: val } as Keyword);
                             })
                         )
@@ -79,14 +85,15 @@
     <h2>List View</h2>
     <div class="row">
         <div class="col-md-6 row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <b>Selected Keywords</b>
                 <div v-for="keyword in selectedKeywords" :key="keyword.index.containerIndex + '_' + keyword.index.valueIndex">
                     {{keyword.value}}
+                    <i class="fa fa-remove" @click="removeKeyword(keyword.index)"></i>
                 </div>
             </div>
 
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <b>Entries</b>
                 <div v-for="item in items" :key="item.id">
                     <a href="#" @click="viewDetails(item.id)">{{item.id}}</a>
@@ -97,7 +104,7 @@
             <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container.id">
                 <div v-for="(field, fIdx) in container.fields" :key="field.id" class="row keywordContainer">
                     <span v-for="(value, vIdx) in field.values" :key="value.id" class="dir-keyword">
-                        <button @click="filterByKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
+                        <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
                     </span>
                 </div>
             </div>

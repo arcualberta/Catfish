@@ -15,6 +15,9 @@ export enum Mutations {
     SET_FREE_TEXT_SEARCH = 'SET_FREE_TEXT_SEARCH',
     SET_ACTIVE_PAGE = 'SET_ACTIVE_PAGE',
     TOGGLE_KEYWORD = 'TOGGLE_KEYWORD',
+    CLEAR_KEYWORD_SELECTIONS = 'CLEAR_KEYWORD_SELECTIONS',
+    SELECT_KEYWORD = 'SELECT_KEYWORD',
+    CLEAR_KEYWORD = 'CLEAR_KEYWORD',
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -55,5 +58,16 @@ export const mutations: MutationTree<State> = {
     [Mutations.TOGGLE_KEYWORD](state: State, payload: KeywordIndex) {
         if (state.keywordQueryModel)
             state.keywordQueryModel.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex] = !state.keywordQueryModel.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex];
+    },
+    [Mutations.SELECT_KEYWORD](state: State, payload: KeywordIndex) {
+        if (state.keywordQueryModel)
+            state.keywordQueryModel.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex] = true;
+    },
+    [Mutations.CLEAR_KEYWORD](state: State, payload: KeywordIndex) {
+        if (state.keywordQueryModel)
+            state.keywordQueryModel.containers[payload.containerIndex].fields[payload.fieldIndex].selected[payload.valueIndex] = false;
+    },
+    [Mutations.CLEAR_KEYWORD_SELECTIONS](state: State) {
+        state.keywordQueryModel?.containers.forEach(cont => cont.fields.forEach(field => field.selected = new Array(field.values.length).fill(false)))
     },
 }
