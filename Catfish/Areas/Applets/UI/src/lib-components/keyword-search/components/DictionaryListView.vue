@@ -94,27 +94,46 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5 contentList grey-BG">
-                <div> {{model}}</div>
-               <div>{{items}}</div>
-                <!--<div v-for="item in items" :key="item.id">
-                    <div class="item">
-                        <h3 class="item-title">
-                            <a v-if='item.detailedViewUrl?.length > 0' v-bind:href="item.detailedViewUrl">{{item.title}}</a>
-                            <span v-else>{{item.title}}</span>
-                        </h3>
-                        <div class="item-date">{{formatDate(item.date)}}</div>
-                        <h5 class="item-subtitle">{{item.subtitle}}</h5>
-                        <div class="categories">
-                            <span v-for="cat in item.categories" class="badge rounded-pill bg-dark text-white m-1">
-                                {{cat}}
-                            </span>
+            <div class="col-md-6 contentList grey-BG">
+                <!--<div> {{model}}</div>-->
+               <!--<div>{{items}}</div>-->
+                <div v-for="item in items" :key="item.id">
+                    
+                        <div class="item row">
+                            <div>
+                                <!--<img src="#" />-->
+                                <i class="fas fa-image profileImg"></i>
+                            </div>
+                            <div class="profileInfo">
+                                <h5 class="item-title">
+                                   
+                                    <span>{{item.subtitle}}</span>
+                                </h5>
+                               
+                              
+                                <!--<div class="categories">
+                                    <span v-for="cat in item.categories" class="badge rounded-pill bg-dark text-white m-1">
+                                        {{cat}}
+                                    </span>
+                                </div>-->
+                                <div class="content">{{item.content}}</div>
+                            </div>
                         </div>
-                        <div class="content">{{item.content}}</div>
-                    </div>
-                </div>-->
+                   
+                </div>
             </div>
-            <div class="col-md-4 searchNav">
+            <div class="col-md-3 searchNav">
+
+                <div class="input-group md-form form-sm form-2 pl-0">
+                    <input class="form-control my-0 py-1 amber-border" type="text" placeholder="Search" aria-label="Search">
+                    <div class="input-group-append">
+                        <span class="input-group-text amber lighten-3" id="basic-text1">
+                            <i class="fas fa-search text-grey"
+                               aria-hidden="true"></i>
+                        </span>
+                    </div>
+                </div>
+                <!-- -->
                 <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
 
                     <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
@@ -132,6 +151,27 @@
 
 <style scoped>
 
+    .searchbar {
+        background-color: #ececec;
+        cursor: pointer;
+        height: 40px;
+        position: relative;
+        width: 400px;
+        display: inline-block;
+        margin-top: 15px;
+        padding: 12.5px
+    }
+
+    .profileInfo {
+        margin-left: 10px;
+        display: inline-block;
+        margin-top: 22px;
+    }
+    
+    .profileImg{
+        font-size: 1000%;
+        margin-left:5px;
+    }
     .grey-BG {
         background-color: #ececec;
         border-radius: 30px;
@@ -170,6 +210,7 @@
         width: 400px;
         align-content: center;
         vertical-align:baseline;
+        margin-left: 5px;
     }
 
     .dir-keyword {
@@ -202,6 +243,7 @@
         width: 12px;
         height: 5px;
         overflow-x: scroll;
+       
         background-color: transparent;
     }
 
@@ -220,8 +262,35 @@
         margin-right: 75px;
     }
 
-    .keywordContainer::-webkit-scrollbar-track-piece:start {
+    .keywordContainer::-webkit-scrollbar-track-piece:start{
         margin-left: 175px;
     }
+
+
+    .contentList::-webkit-scrollbar {
+        width: 7px;
+        height:5px;
+        overflow-y: scroll;
+        background-color: transparent;
+    }
+
+    .contentList::-webkit-scrollbar-track {
+        background-color: transparent;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.02);
+    }
+
+    .contentList::-webkit-scrollbar-thumb {
+        background-color: grey;
+        border-radius: 10px;
+        /* border: 1px solid Green;*/
+    }
+    .contentList::-webkit-scrollbar-track-piece:end {
+        margin-bottom: 75px;
+    }
+
+    .contentList::-webkit-scrollbar-track-piece:start {
+        margin-top: 175px;
+    }
+   
 </style>
 
