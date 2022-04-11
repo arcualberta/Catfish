@@ -6,7 +6,7 @@
     import { ePage } from '../../store/state';
     import { KeywordIndex } from "../../models/keywords";
     import props from '../../../shared/props'
-
+    import { Actions } from '../../store/actions';
    // import props, { QueryParameter } from '../../../shared/props'
 
    // import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
@@ -17,6 +17,10 @@
         name: "KeywordPanel",
         props: {
             hexColorList: {
+                type: null as PropType<string[]> | null,
+                required: false
+            },
+            runAction: {
                 type: null as PropType<string[]> | null,
                 required: false
             },
@@ -56,6 +60,9 @@
 
                 });
 
+
+             
+
             })
 
             return {
@@ -65,8 +72,31 @@
                     store.commit(Mutations.SET_ACTIVE_PAGE, ePage.List)
                 },
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
+                addKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
+                    if (!store.getters.isKeywordSelected(cIndex, fIndex, vIndex)) {
+                        store.commit(Mutations.SELECT_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
+                        store.dispatch(Actions.FRESH_SEARCH);
+                    }
+                },
+                removeKeyword: (index: KeywordIndex) => {
+                    store.commit(Mutations.CLEAR_KEYWORD, index);
+                    store.dispatch(Actions.FRESH_SEARCH);
+                }
             }
         },
+
+        //methods: {
+        //    addKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
+        //        if (!this.store.getters.isKeywordSelected(cIndex, fIndex, vIndex)) {
+        //            this.store.commit(Mutations.SELECT_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
+        //            this.store.dispatch(Actions.FRESH_SEARCH);
+        //        }
+        //    },
+        //    removeKeyword: (index: KeywordIndex) => {
+        //        this.store.commit(Mutations.CLEAR_KEYWORD, index);
+        //        this.store.dispatch(Actions.FRESH_SEARCH);
+        //    },
+        //}
     });
 </script>
 
@@ -74,7 +104,8 @@
     <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
         <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
             <span v-for="(value, vIdx) in field.values" :key="value" class="dir-keyword">
-                <button @click="filterByKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
+                <button v-if="runAction === 'filterByKeyword'" @click="filterByKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
+                <button v-else @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
             </span>
         </div>
     </div>

@@ -88,7 +88,15 @@
 </script>
 
 <template>
-    <DirectoryView v-if="displayFormat === 'Directory'" :data-attributes="dataAttributes" :query-parameters="queryParameters" />
+
+    <div v-if="displayFormat === 'Directory'">
+        
+        <DirectoryView v-if="displayFormat === 'Directory'" :data-attributes="dataAttributes" :query-parameters="queryParameters" />
+
+    </div>
+   
+
+
 
     <div v-if="displayFormat === 'Dictionary'">
         <h1 class="dir-title">{{blogTitle}}</h1>
@@ -99,7 +107,7 @@
         <DictionaryView :colorScheme="hexColors" />
 
     </div>
-    <div class="row" v-if="displayFormat === 'List'">
+    <div class="row" v-if="displayFormat === 'List'" :colorScheme="hexColors">
         <ListView />
     </div>
 

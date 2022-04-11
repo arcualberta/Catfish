@@ -8,8 +8,9 @@
     import { Actions } from '../../store/actions';
     import { Mutations } from '../../store/mutations';
     import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
-    import { KeywordIndex, Keyword } from "../../models/keywords";
+    import { /*KeywordIndex,*/ Keyword } from "../../models/keywords";
     import { State, ePage } from '../../store/state';
+    import KeywordPanel from "./KeywordPanel.vue"
 
     export default defineComponent({
         name: "ListView",
@@ -20,43 +21,47 @@
             },
             ...props
         },
+        components: {
+            KeywordPanel
+        },
         setup(p) {
             const store = useStore();
 
             let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
                 return c.trim();
             }) : null;
-
+            console.log("listView: " + JSON.stringify(hexColorList));
             onMounted(() => {
-                const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
-                let i = 0;
-                btns.forEach((b) => {
-                    if (hexColorList !== null && hexColorList[i] !== "") {
-                        b.setAttribute("style", "background-color: " + hexColorList[i]);
-                        i++
-                        i = i <= hexColorList.length - 1 ? i : 0;
+                //const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
+                //let i = 0;
+                //btns.forEach((b) => {
+                //    if (hexColorList !== null && hexColorList[i] !== "") {
+                //        b.setAttribute("style", "background-color: " + hexColorList[i]);
+                //        i++
+                //        i = i <= hexColorList.length - 1 ? i : 0;
 
-                    } else {
+                //    } else {
 
-                        let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
-                        b.setAttribute("style", "background-color: " + color);
-                    }
-                });
+                //        let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
+                //        b.setAttribute("style", "background-color: " + color);
+                //    }
+                //});
 
                 store.dispatch(Actions.FRESH_SEARCH);
             })
 
             return {
-                addKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
-                    if (!store.getters.isKeywordSelected(cIndex, fIndex, vIndex)) {
-                        store.commit(Mutations.SELECT_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
-                        store.dispatch(Actions.FRESH_SEARCH);
-                    }
-                },
-                removeKeyword: (index: KeywordIndex) => {
-                    store.commit(Mutations.CLEAR_KEYWORD, index);
-                    store.dispatch(Actions.FRESH_SEARCH);
-                },
+                hexColorList,
+                //addKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
+                //    if (!store.getters.isKeywordSelected(cIndex, fIndex, vIndex)) {
+                //        store.commit(Mutations.SELECT_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
+                //        store.dispatch(Actions.FRESH_SEARCH);
+                //    }
+                //},
+                //removeKeyword: (index: KeywordIndex) => {
+                //    store.commit(Mutations.CLEAR_KEYWORD, index);
+                //    store.dispatch(Actions.FRESH_SEARCH);
+                //},
                 viewDetails: (itemId: Guid) => {
                     store.commit(ItemViewerMutations.SET_ID, itemId);
                     store.commit(Mutations.SET_ACTIVE_PAGE, ePage.Details);
@@ -101,13 +106,14 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container.id">
+            <!--<div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container.id">
                 <div v-for="(field, fIdx) in container.fields" :key="field.id" class="row keywordContainer">
                     <span v-for="(value, vIdx) in field.values" :key="value.id" class="dir-keyword">
                         <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
                     </span>
                 </div>
-            </div>
+            </div>-->
+            <KeywordPanel :hexColorList="hexColorList" />
         </div>
     </div>
 </template>
