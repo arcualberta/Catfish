@@ -7,7 +7,7 @@
     import { Mutations, mutations } from './store/mutations'
     import { getters } from './store/getters'
     import { SearchParams } from "./models"
-    import DictionaryView from './components/DictionaryView.vue'
+    /*import DictionaryView from './components/DictionaryView.vue'*/
     import ListView from './components/ListView.vue'
     import FreeTextSearch from './components/FreeTextSearch.vue'
     import DirectoryView from './components/directory/Index.vue'
@@ -20,7 +20,7 @@
         name: "Applet",
         components: {
             DirectoryView,
-            DictionaryView,
+           // DictionaryView,
             ListView,
             FreeTextSearch
         },
@@ -89,16 +89,16 @@
 
 <template>
 
-    <div v-if="displayFormat === 'Directory'">
+    <!--<div v-if="displayFormat === 'Directory'">-->
         
         <DirectoryView v-if="displayFormat === 'Directory'" :data-attributes="dataAttributes" :query-parameters="queryParameters" />
 
-    </div>
+    <!--</div>-->
    
 
 
 
-    <div v-if="displayFormat === 'Dictionary'">
+    <!--<div v-if="displayFormat === 'Dictionary'">
         <h1 class="dir-title">{{blogTitle}}</h1>
         <div class="dir-description">{{blogDescription}}</div>
         <div v-if="enableFreeTextSearch === true">
@@ -106,7 +106,7 @@
         </div>
         <DictionaryView :colorScheme="hexColors" />
 
-    </div>
+    </div>-->
     <div class="row" v-if="displayFormat === 'List'" :colorScheme="hexColors">
         <ListView />
     </div>

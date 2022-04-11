@@ -109,13 +109,6 @@
                                    
                                     <span>{{item.subtitle}}</span>
                                 </h5>
-                               
-                              
-                                <!--<div class="categories">
-                                    <span v-for="cat in item.categories" class="badge rounded-pill bg-dark text-white m-1">
-                                        {{cat}}
-                                    </span>
-                                </div>-->
                                 <div class="content">{{item.content}}</div>
                             </div>
                         </div>
@@ -149,7 +142,7 @@
 </template>
 
 
-<style scoped>
+<!--<style scoped>
 
     .searchbar {
         background-color: #ececec;
@@ -163,9 +156,11 @@
     }
 
     .profileInfo {
-        margin-left: 10px;
+        margin-left: 8px;
         display: inline-block;
         margin-top: 22px;
+        max-width:275px !important;
+        font-size:large !important;
     }
     
     .profileImg{
@@ -292,5 +287,5 @@
         margin-top: 175px;
     }
    
-</style>
+</style>-->
 
