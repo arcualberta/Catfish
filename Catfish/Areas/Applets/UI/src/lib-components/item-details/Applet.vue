@@ -28,6 +28,7 @@
             store.commit(Mutations.SET_ID, queryParams.iid);
 
             //load the data
+            store.dispatch(Actions.GET_USER_ACTIONS);
             store.dispatch(Actions.LOAD_ITEM);
 
             return {
@@ -52,25 +53,30 @@
     
     <div>
 
-        <div v-for="value in dataItem.template.metadataSets.$values">
-            <div v-for="metadataName in value.name.values.$values">
+        <div v-for="ms in dataItem.metadataSets.$values">
+            <FieldContainer :model="ms" />
+            <!--<div v-for="metadataName in value.name.values.$values">
                 <h4>Metadata Set : {{metadataName.value}}</h4>
                 <div v-for="fieldValue in value.fields">
-                    <!--<FieldContainer :model="fieldValue" />-->
+                    {{fieldValue}}
+                    <FieldContainer :model="fieldValue" />
                 </div>
-            </div>
+            </div>-->
 
 
         </div>
         <!--{{dataItem.dataContainer}}-->
-        <div v-for="value in dataItem.dataContainer.$values">
-            <div v-for="dataContainer in value.name.values.$values">
-                <h4> Data Container : {{dataContainer.value}}</h4>
-            </div>
-    <!--<div v-for="fieldValue in value.fields">
-    <FieldContainer :model="fieldValue" />
-    </div>-->
-</div>
+        <div v-for="di in dataItem.dataContainer.$values">
+            <FieldContainer :model="di" />
+            <!--<div v-for="dataContainer in value.name.values.$values">
+        <h4> Data Container : {{dataContainer.value}}</h4>
+        <div v-for="fieldValue in dataContainer.fields">
+            {{fieldValue}}-->
+            <!--<FieldContainer :model="fieldValue" />-->
+            <!--</div>
+        </div>-->
+
+        </div>
     </div>
 </template>
 

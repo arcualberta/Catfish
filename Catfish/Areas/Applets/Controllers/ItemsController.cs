@@ -398,5 +398,22 @@ namespace Catfish.Areas.Applets.Controllers
             // return Content(JsonConvert.SerializeObject(items, settings), "application/json");
             return items;//result;
         }
+        [HttpGet("getUserPermissions/{itemId}")]
+        public List<string> GetUserPermissions(Guid itemId)
+        {
+            try
+            {
+                List<string> userPermissions = _workflowService.GetUserPermissions(itemId);
+
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+
+            
+        }
     }
 }

@@ -765,6 +765,38 @@ namespace Catfish.Core.Services
             return Guid.Empty;
         }
 
+        public List<string> GetUserPermissions(Guid itemId)
+        {
+            try
+            {
+                List<string> userPermissions = new List<string>();
+                Item item = _db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+                EntityTemplate template = _db.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
+                List<GetAction> getActions = template.Workflow.Actions.ToList();
+                User loggedUser = GetLoggedUser();
+
+                foreach(var getAction in getActions)
+                {
+                    if(getAction.Access.Equals("Restricted"))
+                    {
+                        
+                    }
+                    else
+                    {
+                        userPermissions.Add(getAction.Function);
+                    }
+                }
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            throw new NotImplementedException();
+        }
+
         //public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid? templateId)
         //{
         //    throw new NotImplementedException();
