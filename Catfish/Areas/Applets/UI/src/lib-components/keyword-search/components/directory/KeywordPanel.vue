@@ -1,46 +1,83 @@
 ﻿<script lang="ts">
-    import { Guid } from 'guid-typescript'
-    import { defineComponent, computed, onMounted } from "vue";
+   // import { Guid } from 'guid-typescript'
+    import { defineComponent, onMounted, computed, PropType} from "vue";
     import { useStore } from 'vuex';
+    import { Mutations } from '../../store/mutations';
+    import { ePage } from '../../store/state';
+    import { KeywordIndex } from "../../models/keywords";
+    import props from '../../../shared/props'
 
-    import props, { QueryParameter } from '../../../shared/props'
+   // import props, { QueryParameter } from '../../../shared/props'
 
-    import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
-    import { Actions as ItemViewerActions } from '../../../item-viewer/store/actions';
-    import { State } from '../../store/state';
+   // import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
+   // import { Actions as ItemViewerActions } from '../../../item-viewer/store/actions';
+   // import { State } from '../../store/state';
 
     export default defineComponent({
         name: "KeywordPanel",
-        props,
+        props: {
+            hexColorList: {
+                type: null as PropType<string[]> | null,
+                required: false
+            },
+            ...props
+        },
         setup(p) {
             const store = useStore();
+            //let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
+            //    return c.trim();
+            //}) : null;
 
             //TODO: Update this view template to represent the keyword panel in a way that we can
             // embed it the Home, List, and Details views.
 
-            const queryParameters = p.queryParameters as QueryParameter;
-            if (queryParameters && (queryParameters["iid"] as string)?.length > 0)
-                store.commit(ItemViewerMutations.SET_ID, queryParameters["iid"] as unknown as Guid);
+            //const queryParameters = p.queryParameters as QueryParameter;
+            //if (queryParameters && (queryParameters["iid"] as string)?.length > 0)
+            //    store.commit(ItemViewerMutations.SET_ID, queryParameters["iid"] as unknown as Guid);
 
-            const itemId = computed(() => (store.state as State).id);
+            //const itemId = computed(() => (store.state as State).id);
 
             onMounted(() => {
-                if (itemId)
-                    store.dispatch(ItemViewerActions.LOAD_ITEM, itemId);
+                const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
+                let length = p.hexColorList ? p.hexColorList.length : 0;
+                let i = 0;
+                btns.forEach((b) => {
+                    if (p.hexColorList !== null) {
+                        let color = p.hexColorList ? p.hexColorList[i] : "";
+                        b.setAttribute("style", "background-color: " + color);
+                        i++
+                        i = i <= length - 1 ? i : 0;
+
+                    } else {
+
+                        let color = "hsla(" + ~~(360 * Math.random()) + "," + "70%," + "80%,1)";
+                        b.setAttribute("style", "background-color: " + color);
+                    }
+
+                });
+
             })
 
             return {
-                itemId,
-                item: computed(() => (store.state as State).item),
+                filterByKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
+                    store.commit(Mutations.CLEAR_KEYWORD_SELECTIONS);
+                    store.commit(Mutations.SELECT_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
+                    store.commit(Mutations.SET_ACTIVE_PAGE, ePage.List)
+                },
+                keywordQueryModel: computed(() => store.state.keywordQueryModel),
             }
         },
     });
 </script>
 
 <template>
-    <h2>Details View</h2>
-    Item ID: {{JSON.stringify(itemId)}} <br /> <br />
-    {{JSON.stringify(item)}}
+    <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
+        <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
+            <span v-for="(value, vIdx) in field.values" :key="value" class="dir-keyword">
+                <button @click="filterByKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
+            </span>
+        </div>
+    </div>
 </template>
 
 <style scoped>
