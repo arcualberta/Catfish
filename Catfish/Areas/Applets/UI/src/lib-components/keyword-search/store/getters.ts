@@ -1,6 +1,6 @@
 ﻿import { GetterTree } from 'vuex';
 import { State } from './state';
-
+import { Guid } from 'guid-typescript';
 
 export const getters: GetterTree<State, State> = {
     //  items: (state): Item[] | undefined => {
@@ -14,6 +14,10 @@ export const getters: GetterTree<State, State> = {
             containers[containerIndex]
             .fields[fieldIndex]
             .selected[valueIndex];
-    }
+    },
+    getItem: (state) => (itemId: Guid) => {
 
+        console.log("iside get item: " + itemId)
+       return  state.searchResult?.items.filter(it => it.id == itemId);
+    }
 }

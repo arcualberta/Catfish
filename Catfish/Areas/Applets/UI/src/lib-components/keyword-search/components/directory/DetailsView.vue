@@ -7,7 +7,7 @@
 
     import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
     import { Actions as ItemViewerActions } from '../../../item-viewer/store/actions';
-    import { State } from '../../store/state';
+    import { /*state,*/ State } from '../../store/state';
 
     export default defineComponent({
         name: "DetailsView",
@@ -20,7 +20,9 @@
                 store.commit(ItemViewerMutations.SET_ID, queryParameters["iid"] as unknown as Guid);
 
             const itemId = computed(() => (store.state as State).id);
-
+           // var items = [];
+            const items= computed(() => store.state.searchResult?.items);
+           
             onMounted(() => {
                 if (itemId)
                     store.dispatch(ItemViewerActions.LOAD_ITEM, itemId);
@@ -28,7 +30,9 @@
 
             return {
                 itemId,
-                item: computed(() => (store.state as State).item),
+                items,
+                item: computed(() => store.getters.getItem(itemId))
+                //item: computed(() => (store.state as State).item),
             }
         },
     });
@@ -36,79 +40,132 @@
 
 <template>
     <h2>Details View</h2>
-    Item ID: {{JSON.stringify(itemId)}} <br /> <br />
-    {{JSON.stringify(item)}}
+    <div class="row">
+        <div v-for="item in items" :key="item.id" >
+            <div v-if="item.id === itemId" class=" row ">
+                <div class="col-md-6 grey-BG">
+                    <div class="row ">
+
+                        <!--<img src="#" />-->
+                        <i class="fas fa-image profileHeadshot"></i>
+
+                        <div class="profileInfo">
+                            <h5 class="item-title">
+                                <a href="#" @click="viewDetails(item.id)">{{item.subtitle}}</a>
+                            </h5>
+                        </div>
+
+                    </div>
+                    <div class="content profileDetails">{{item.content}}</div>
+
+                    <button class="contactMeBtn btn btn-link">Contact Me!</button>
+                </div>
+                <!--  related Researchers tabs style -->
+                <div class="col-md-6">
+                    <div class="explore-related">
+                        <div class="related-title">Explore related researchers</div>
+
+                        <div class="related-scroll">
+
+                            <!--<div class="related">
+                                <i class="fas fa-image related-image"></i>     
+                                <div class="related-results">
+                                    name
+                                </div>
+                            </div>-->
+                            <div v-for="item in items" :key="item.id" class="related">
+                                <i class="fas fa-image related-image"></i>
+                                <div class="related-results">
+                                    {{item.subtitle}}
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+    <!--Item ID: {{JSON.stringify(itemId)}}
+    <br />
+    <br />
+    {{JSON.stringify(items)}}-->
 </template>
 
 <style scoped>
-    .keywordContainer {
-        overflow-x: scroll;
-        overflow-y: visible;
-        white-space: nowrap;
-        position: relative;
+    .explore-related {
         display: inline-block;
+        position: relative;
+        margin: 20px;
+        vertical-align: top;
+    }
+    .related-title {
+        background-color: #ececec;
+        font-weight: 700;
+        text-decoration: underline;
+        position: relative;
+        width: 230px;
+        padding: 15px;
+        margin-left: 30px;
+        border-radius: 20px 20px 0px 0px;
+    }
+    .related-scroll {
+        background-color: #ececec;
+        border-radius: 30px;
+        padding: 20px;
+        width: 450px;
         height: 150px;
-        width: 100%;
-        scroll-behavior: smooth;
-        align-content: center;
-    }
-
-    .dir-keyword {
-        display: inline-block;
-        margin-top: 15px;
-        margin-right: 5px;
-    }
-
-    .dir-keyword-button {
-        position: relative;
-        color: Black;
-        font-size: 0.80em;
-        text-align: center;
-        border-radius: 60px;
-        padding-top: 30px;
-        padding-bottom: 30px;
-        padding-left: 10px;
-        padding-right: 10px;
-        max-width: 150px;
-        white-space: normal;
-    }
-
-        .dir-keyword-button:focus {
-            background-color: yellow;
-        }
-
-        .dir-keyword-button:hover {
-            transform: scale(1.2);
-            z-index: 100;
-            opacity: 90%;
-            text-decoration: underline;
-        }
-
-
-    /* Works on Chrome, Edge, and Safari */
-    .keywordContainer::-webkit-scrollbar {
-        width: 12px;
-        height: 5px;
         overflow-x: scroll;
-        background-color: transparent;
+        overflow-y: hidden;
+        white-space: nowrap;
+        display: inline-block;
+    }
+    .related {
+        display: inline-block;
+    }
+    .related-image {
+        position: relative;
+        display: inline-block;
+        float: left;
+        width: 100px;
+    }
+    .related-results {
+        display: inline-block;
+        position: relative;
+        margin: 20px;
+        margin-top: 10px;
+    }
+    .contactMeBtn{
+        float: right;
+        background: White;
+        border-radius: 25px;
+    }
+    
+    .grey-BG {
+        background-color: #ececec;
+        border-radius: 30px;
+        height: 500px;
+        position: relative;
+        width: 600px;
+        width: 700px;
+        margin-left: 20px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        display: inline-block;
+        overflow-y: hidden;
     }
 
-    .keywordContainer::-webkit-scrollbar-track {
-        background-color: transparent;
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+    .profileInfo {
+        margin-left: 10px;
+        display: inline-block;
+        margin-top: 22px;
+        max-width: 275px;
+        font-size: large;
     }
 
-    .keywordContainer::-webkit-scrollbar-thumb {
-        background-color: grey;
-        border-radius: 10px;
-        /* border: 1px solid Green;*/
-    }
-
-    .keywordContainer::-webkit-scrollbar-track-piece:end {
-        margin-right: 75px;
-    }
-
-    .keywordContainer::-webkit-scrollbar-track-piece:start {
-        margin-left: 175px;
+    .profileHeadshot {
+        font-size: 500%;
+        margin: 10px;
     }
 </style>
