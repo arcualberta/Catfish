@@ -60,6 +60,6 @@ namespace Catfish.Core.Services
         EntityTemplate GetEntityTemplateByEntityTemplateId(Guid entityTemplateId);
         bool UpdateItemTemplateSchema(Guid id, string SchemaXml, out string successMessage);
         Guid GetSubmitStateMappingId(Guid templateId);
-        List<string> GetUserPermissions(Guid itemId);
+        Task<List<string>> GetUserPermissions(Guid itemId, ClaimsPrincipal User);
     }
 }

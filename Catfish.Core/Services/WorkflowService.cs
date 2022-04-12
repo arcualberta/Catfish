@@ -5,6 +5,7 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using ElmahCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Piranha;
@@ -34,8 +35,8 @@ namespace Catfish.Core.Services
         public readonly IHttpContextAccessor _httpContextAccessor;
         private Item mItem;
         private readonly IAuthorizationService _auth;
-
-        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, IAuthorizationService auth, ErrorLog errorLog)
+        private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, IAuthorizationService auth, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
         {
             _db = db;
             _piranhaDb = pdb;
@@ -43,6 +44,7 @@ namespace Catfish.Core.Services
             _httpContextAccessor = httpContextAccessor;
             _errorLog = errorLog;
             _auth = auth;
+            _authorizationService = authorizationService;
         }
 
         public EntityTemplate GetModel()
@@ -765,7 +767,7 @@ namespace Catfish.Core.Services
             return Guid.Empty;
         }
 
-        public List<string> GetUserPermissions(Guid itemId)
+        public async Task<List<string>> GetUserPermissions(Guid itemId, ClaimsPrincipal User)
         {
             try
             {
@@ -773,13 +775,16 @@ namespace Catfish.Core.Services
                 Item item = _db.Items.Where(i => i.Id == itemId).FirstOrDefault();
                 EntityTemplate template = _db.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
                 List<GetAction> getActions = template.Workflow.Actions.ToList();
-                User loggedUser = GetLoggedUser();
+                //User loggedUser = GetLoggedUser();
 
-                foreach(var getAction in getActions)
+                foreach(var getAction in getActions) 
                 {
                     if(getAction.Access.Equals("Restricted"))
                     {
-                        
+                        if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { new OperationAuthorizationRequirement() { Name = nameof(getAction.Function) } })).Succeeded)
+                        {
+                            userPermissions.Add(getAction.Function);
+                        }
                     }
                     else
                     {
