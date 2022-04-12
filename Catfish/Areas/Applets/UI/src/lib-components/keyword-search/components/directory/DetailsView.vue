@@ -61,18 +61,13 @@
                     <button class="contactMeBtn btn btn-link">Contact Me!</button>
                 </div>
                 <!--  related Researchers tabs style -->
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <div class="explore-related">
                         <div class="related-title">Explore related researchers</div>
 
                         <div class="related-scroll">
 
-                            <!--<div class="related">
-                                <i class="fas fa-image related-image"></i>     
-                                <div class="related-results">
-                                    name
-                                </div>
-                            </div>-->
+                         
                             <div v-for="item in items" :key="item.id" class="related">
                                 <i class="fas fa-image related-image"></i>
                                 <div class="related-results">
@@ -94,6 +89,9 @@
 </template>
 
 <style scoped>
+    .fa-image{
+        font-size:500%;
+    }
     .explore-related {
         display: inline-block;
         position: relative;
@@ -109,6 +107,7 @@
         padding: 15px;
         margin-left: 30px;
         border-radius: 20px 20px 0px 0px;
+        font-size: large;
     }
     .related-scroll {
         background-color: #ececec;
