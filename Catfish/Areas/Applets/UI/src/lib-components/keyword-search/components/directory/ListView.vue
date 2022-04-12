@@ -8,7 +8,7 @@
     import { Actions } from '../../store/actions';
     import { Mutations } from '../../store/mutations';
     import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
-    import { /*KeywordIndex,*/ Keyword } from "../../models/keywords";
+    import { KeywordIndex, Keyword } from "../../models/keywords";
     import { State, ePage } from '../../store/state';
     import KeywordPanel from "./KeywordPanel.vue"
     import FreeTextSearch from '../FreeTextSearch.vue'
@@ -48,16 +48,10 @@
             return {
                 hexColorList,
                 enableFreeTextSearch,
-                //addKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
-                //    if (!store.getters.isKeywordSelected(cIndex, fIndex, vIndex)) {
-                //        store.commit(Mutations.SELECT_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
-                //        store.dispatch(Actions.FRESH_SEARCH);
-                //    }
-                //},
-                //removeKeyword: (index: KeywordIndex) => {
-                //    store.commit(Mutations.CLEAR_KEYWORD, index);
-                //    store.dispatch(Actions.FRESH_SEARCH);
-                //},
+                removeKeyword: (index: KeywordIndex) => {
+                    store.commit(Mutations.CLEAR_KEYWORD, index);
+                    store.dispatch(Actions.FRESH_SEARCH);
+                },
                 viewDetails: (itemId: Guid) => {
                     store.commit(ItemViewerMutations.SET_ID, itemId);
                     store.commit(Mutations.SET_ACTIVE_PAGE, ePage.Details);

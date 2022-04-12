@@ -83,26 +83,9 @@
                         store.dispatch(Actions.FRESH_SEARCH);
                     }
                 },
-                removeKeyword: (index: KeywordIndex) => {
-                    store.commit(Mutations.CLEAR_KEYWORD, index);
-                    store.dispatch(Actions.FRESH_SEARCH);
-                },
                 className: p.className
             }
         },
-
-        //methods: {
-        //    addKeyword: (cIndex: number, fIndex: number, vIndex: number) => {
-        //        if (!this.store.getters.isKeywordSelected(cIndex, fIndex, vIndex)) {
-        //            this.store.commit(Mutations.SELECT_KEYWORD, { containerIndex: cIndex, fieldIndex: fIndex, valueIndex: vIndex } as KeywordIndex);
-        //            this.store.dispatch(Actions.FRESH_SEARCH);
-        //        }
-        //    },
-        //    removeKeyword: (index: KeywordIndex) => {
-        //        this.store.commit(Mutations.CLEAR_KEYWORD, index);
-        //        this.store.dispatch(Actions.FRESH_SEARCH);
-        //    },
-        //}
     });
 </script>
 
