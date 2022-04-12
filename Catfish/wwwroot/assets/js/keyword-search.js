@@ -323,7 +323,6 @@
            <select v-model="model.selectedDisplayFormat.value" class="form-control" style="width:auto;">
                   <option disabled value="">Please select one</option>
                 <option value="List" selected>List</option>
-                <option value="Dictionary">Dictionary</option>
                 <option value="Directory">Directory</option>
 
          </select></div>
