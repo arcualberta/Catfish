@@ -21,7 +21,11 @@
                 required: false
             },
             runAction: {
-                type: null as PropType<string[]> | null,
+                type: null as PropType<string> | null,
+                required: false
+            },
+            className: {
+                type: null as PropType<string> | null,
                 required: false
             },
             ...props
@@ -60,7 +64,8 @@
 
                 });
 
-
+                const className = p.className;
+                console.log("className: " + className);
              
 
             })
@@ -81,7 +86,8 @@
                 removeKeyword: (index: KeywordIndex) => {
                     store.commit(Mutations.CLEAR_KEYWORD, index);
                     store.dispatch(Actions.FRESH_SEARCH);
-                }
+                },
+                className: p.className
             }
         },
 
@@ -102,7 +108,7 @@
 
 <template>
     <div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container">
-        <div v-for="(field, fIdx) in container.fields" :key="field" class="row keywordContainer">
+        <div v-for="(field, fIdx) in container.fields" :key="field"   :class="className? 'row ' + className : 'row keywordContainer'">
             <span v-for="(value, vIdx) in field.values" :key="value" class="dir-keyword">
                 <button v-if="runAction === 'filterByKeyword'" @click="filterByKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
                 <button v-else @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
@@ -157,29 +163,62 @@
 
 
     /* Works on Chrome, Edge, and Safari */
-    .keywordContainer::-webkit-scrollbar {
+    .keywordContainer::-webkit-scrollbar, .keywordContainerSmall::-webkit-scrollbar {
         width: 12px;
         height: 5px;
         overflow-x: scroll;
         background-color: transparent;
     }
 
-    .keywordContainer::-webkit-scrollbar-track {
+    .keywordContainer::-webkit-scrollbar-track, .keywordContainerSmall::-webkit-scrollbar-track {
         background-color: transparent;
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
     }
 
-    .keywordContainer::-webkit-scrollbar-thumb {
+    .keywordContainer::-webkit-scrollbar-thumb, .keywordContainerSmall::-webkit-scrollbar-thumb {
         background-color: grey;
         border-radius: 10px;
         /* border: 1px solid Green;*/
     }
 
-    .keywordContainer::-webkit-scrollbar-track-piece:end {
+    .keywordContainer::-webkit-scrollbar-track-piece:end, .keywordContainerSmall::-webkit-scrollbar-track-piece:end {
         margin-right: 75px;
     }
 
-    .keywordContainer::-webkit-scrollbar-track-piece:start {
+    .keywordContainer::-webkit-scrollbar-track-piece:start, .keywordContainerSmall::-webkit-scrollbar-track-piece:start {
         margin-left: 175px;
     }
+
+    /* smaller version*/
+    .keywordContainerSmall {
+        overflow-x: scroll;
+        overflow-y: visible;
+        white-space: nowrap;
+        position: relative;
+        display: inline-block;
+        height: 90px;
+        width: 100%;
+        scroll-behavior: smooth;
+        align-content: center;
+    }
+    .keywordContainerSmall > .dir-keyword {
+            display: inline-block;
+            margin-top: 15px;
+            margin-right: 5px;
+            font-size: medium;
+        }
+
+   .keywordContainerSmall > .dir-keyword > .dir-keyword-button {
+                position: relative;
+                color: Black;
+                font-size: 0.80em;
+                text-align: center;
+                border-radius: 60px;
+                padding-top: 15px;
+                padding-bottom: 15px;
+                padding-left: 10px;
+                padding-right: 10px;
+                max-width: 150px;
+                white-space: normal;
+            }
 </style>

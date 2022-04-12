@@ -30,11 +30,10 @@
             const store = useStore();
 
             const dataAttributes = p.dataAttributes as DataAttribute;
-            //const blogTitle = dataAttributes["block-title"] as string;
-            //  const blogDescription = dataAttributes["block-description"] as string;
+           
             const enableFreeTextSearch = dataAttributes["enable-freetext-search"] as string;
 
-            console.log("list view " + enableFreeTextSearch);
+           
 
             const hexColors = dataAttributes["hex-color-list"] as string;
 
@@ -86,7 +85,7 @@
 <template>
     <!--<h2>List View</h2>-->
     <div class="row">
-        <div class="col-md-9 row">
+        <div class="col-md-8 row">
             <div class="col-md-3">
                 <!--<b>Selected Keywords</b>-->
                 <div v-for="keyword in selectedKeywords" :key="keyword.index.containerIndex + '_' + keyword.index.valueIndex" >
@@ -110,7 +109,6 @@
                         <div class="profileInfo">
                             <h5 class="item-title">
                                 <a href="#" @click="viewDetails(item.id)">{{item.subtitle}}</a>
-
                             </h5>
                            
                             <div class="content">{{item.content}}</div>
@@ -120,18 +118,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <!--<div v-for="(container, cIdx) in keywordQueryModel?.containers" :key="container.id">
-        <div v-for="(field, fIdx) in container.fields" :key="field.id" class="row keywordContainer">
-            <span v-for="(value, vIdx) in field.values" :key="value.id" class="dir-keyword">
-                <button @click="addKeyword(cIdx, fIdx, vIdx)" class="dir-keyword-button" ref="dirBtn">{{ value }}</button>
-            </span>
-        </div>
-    </div>-->
+        <div class="col-md-4">
+          
             <div v-if="enableFreeTextSearch === true">
                 <FreeTextSearch />
             </div>
-            <KeywordPanel :hexColorList="hexColorList" />
+            <KeywordPanel :hexColorList="hexColorList" :className="'keywordContainerSmall'" />
         </div>
     </div>
 </template>
@@ -191,64 +183,8 @@
         font-size: medium;
     }
 
-    .keywordContainer {
-        
-        height: 120px !important; 
-        margin-left: 5px;
-    }
-
-   /* .dir-keyword {
-        display: inline-block;
-        margin-top: 15px;
-        vertical-align: bottom;
-    }
-
-    .dir-keyword-button {
-        position: relative;
-        color: black;
-        text-align: center;
-        border-radius: 60px;
-        padding: 5px;
-        white-space: normal;
-        font-size: small;
-        width: 60px;
-    }
-
-        .dir-keyword-button:hover {
-            transform: scale(1.2);
-            z-index: 100;
-            opacity: 90%;
-            text-decoration: underline;
-        }
-
-
+   
     
-    .keywordContainer::-webkit-scrollbar {
-        width: 12px;
-        height: 5px;
-        overflow-x: scroll;
-        background-color: transparent;
-    }
-
-    .keywordContainer::-webkit-scrollbar-track {
-        background-color: transparent;
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
-    }
-
-    .keywordContainer::-webkit-scrollbar-thumb {
-        background-color: grey;
-        border-radius: 10px;
-    
-    }
-
-    .keywordContainer::-webkit-scrollbar-track-piece:end {
-        margin-right: 75px;
-    }
-
-    .keywordContainer::-webkit-scrollbar-track-piece:start {
-        margin-left: 175px;
-    }
-    */
 
     .contentList::-webkit-scrollbar {
         width: 7px;

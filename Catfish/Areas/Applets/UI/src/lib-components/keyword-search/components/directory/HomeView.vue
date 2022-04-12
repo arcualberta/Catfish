@@ -36,7 +36,7 @@
                 return c.trim();
             }) : null;
 
-            console.log("home: " + JSON.stringify(enableFreeTextSearch));
+         
 
             return {
                 filterByKeyword: (cIndex: number, fIndex: number, vIndex: number) => {

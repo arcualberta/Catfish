@@ -1,17 +1,22 @@
 ﻿<script lang="ts">
     import { Guid } from 'guid-typescript'
-    import { defineComponent, computed, onMounted } from "vue";
+    import { defineComponent, computed, onMounted} from "vue";
     import { useStore } from 'vuex';
 
-    import props, { QueryParameter } from '../../../shared/props'
-
+    import props, { QueryParameter, DataAttribute } from '../../../shared/props'
+    import { Mutations } from '../../store/mutations';
+    import { ePage } from '../../store/state';
     import { Mutations as ItemViewerMutations } from '../../../item-viewer/store/mutations';
     import { Actions as ItemViewerActions } from '../../../item-viewer/store/actions';
     import { /*state,*/ State } from '../../store/state';
+    import FreeTextSearch from '../FreeTextSearch.vue'
 
     export default defineComponent({
         name: "DetailsView",
         props,
+        components: {
+            FreeTextSearch
+        },
         setup(p) {
             const store = useStore();
 
@@ -22,7 +27,14 @@
             const itemId = computed(() => (store.state as State).id);
            // var items = [];
             const items= computed(() => store.state.searchResult?.items);
-           
+
+
+            const dataAttributes = p.dataAttributes as DataAttribute;
+
+            const enableFreeTextSearch = dataAttributes["enable-freetext-search"] as string;
+
+            console.log("details view " + enableFreeTextSearch);
+
             onMounted(() => {
                 if (itemId)
                     store.dispatch(ItemViewerActions.LOAD_ITEM, itemId);
@@ -31,10 +43,18 @@
             return {
                 itemId,
                 items,
-                item: computed(() => store.getters.getItem(itemId))
+                item: computed(() => store.getters.getItem(itemId)),
                 //item: computed(() => (store.state as State).item),
+                enableFreeTextSearch,
+                backToSearchResults: () => {
+                    store.commit(Mutations.SET_ACTIVE_PAGE, ePage.List);
+                }
             }
         },
+
+        methods: {
+
+        }
     });
 </script>
 
@@ -58,10 +78,15 @@
                     </div>
                     <div class="content profileDetails">{{item.content}}</div>
 
-                    <button class="contactMeBtn btn btn-link">Contact Me!</button>
+                    <button class="contactMeBtn btn btn-link marginTop">Contact Me!</button>
                 </div>
                 <!--  related Researchers tabs style -->
                 <div class="col-md-5">
+                    <button class="backToSearchResultsBtn" @click="backToSearchResults">Back to search results</button>
+
+                    <div v-if="enableFreeTextSearch === true" class="marginTop">
+                        <FreeTextSearch />
+                    </div>
                     <div class="explore-related">
                         <div class="related-title">Explore related researchers</div>
 
@@ -82,15 +107,15 @@
         </div>
        
     </div>
-    <!--Item ID: {{JSON.stringify(itemId)}}
-    <br />
-    <br />
-    {{JSON.stringify(items)}}-->
+   
 </template>
 
 <style scoped>
-    .fa-image{
-        font-size:500%;
+    .marginTop{
+        margin-top:30px;
+    }
+    .fa-image {
+        font-size: 500%;
     }
     .explore-related {
         display: inline-block;
@@ -135,12 +160,22 @@
         margin: 20px;
         margin-top: 10px;
     }
-    .contactMeBtn{
+    .contactMeBtn {
         float: right;
         background: White;
-        border-radius: 25px;
+        border-radius: 50px;
+        position: relative;
+        display: inline-block;
+        padding: 7.5px;
+        font-size: large;
     }
-    
+    .backToSearchResultsBtn {
+        background: #ececec;
+        border-radius: 50px;
+        position: relative;
+        display: inline-block;
+        padding: 12.5px
+    }
     .grey-BG {
         background-color: #ececec;
         border-radius: 30px;
@@ -166,5 +201,32 @@
     .profileHeadshot {
         font-size: 500%;
         margin: 10px;
+    }
+
+    /* Works on Chrome, Edge, and Safari */
+    .related-scroll::-webkit-scrollbar {
+        width: 12px;
+        height: 5px;
+        overflow-x: scroll;
+        background-color: transparent;
+    }
+
+    .related-scroll::-webkit-scrollbar-track {
+        background-color: transparent;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.02);
+    }
+
+    .related-scroll::-webkit-scrollbar-thumb {
+        background-color: grey;
+        border-radius: 10px;
+        /* border: 1px solid Green;*/
+    }
+
+    .related-scroll::-webkit-scrollbar-track-piece:end {
+        margin-right: 75px;
+    }
+
+    .keywordContainer::-webkit-scrollbar-track-piece:start {
+        margin-left: 175px;
     }
 </style>
