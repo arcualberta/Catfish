@@ -16,8 +16,8 @@ export const getters: GetterTree<State, State> = {
             .selected[valueIndex];
     },
     getItem: (state) => (itemId: Guid) => {
-
-        console.log("iside get item: " + itemId)
-       return  state.searchResult?.items.filter(it => it.id == itemId);
+        //NOT GET IN HERE!!!!!
+        console.log("inside getter getitem: " + itemId)
+       return  state.searchResult?.items.filter(it => it.id === itemId);
     }
 }

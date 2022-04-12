@@ -33,7 +33,8 @@
 
             const enableFreeTextSearch = dataAttributes["enable-freetext-search"] as string;
 
-            console.log("details view " + enableFreeTextSearch);
+            const selecteditem = computed(() => store.getters.getItem(itemId));
+            console.log("details view selected Item: " + JSON.stringify(selecteditem));
 
             onMounted(() => {
                 if (itemId)
