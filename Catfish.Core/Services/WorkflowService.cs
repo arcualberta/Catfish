@@ -35,8 +35,7 @@ namespace Catfish.Core.Services
         public readonly IHttpContextAccessor _httpContextAccessor;
         private Item mItem;
         private readonly IAuthorizationService _auth;
-        private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
-        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, IAuthorizationService auth, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
+        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, IAuthorizationService auth, ErrorLog errorLog)
         {
             _db = db;
             _piranhaDb = pdb;
@@ -44,7 +43,6 @@ namespace Catfish.Core.Services
             _httpContextAccessor = httpContextAccessor;
             _errorLog = errorLog;
             _auth = auth;
-            _authorizationService = authorizationService;
         }
 
         public EntityTemplate GetModel()
@@ -765,41 +763,6 @@ namespace Catfish.Core.Services
                     return postAction.StateMappings.Select(sm =>sm.Id).FirstOrDefault();
             }
             return Guid.Empty;
-        }
-
-        public async Task<List<string>> GetUserPermissions(Guid itemId, ClaimsPrincipal User)
-        {
-            try
-            {
-                List<string> userPermissions = new List<string>();
-                Item item = _db.Items.Where(i => i.Id == itemId).FirstOrDefault();
-                EntityTemplate template = _db.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
-                List<GetAction> getActions = template.Workflow.Actions.ToList();
-                //User loggedUser = GetLoggedUser();
-
-                foreach(var getAction in getActions) 
-                {
-                    if(getAction.Access.Equals("Restricted"))
-                    {
-                        if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { new OperationAuthorizationRequirement() { Name = nameof(getAction.Function) } })).Succeeded)
-                        {
-                            userPermissions.Add(getAction.Function);
-                        }
-                    }
-                    else
-                    {
-                        userPermissions.Add(getAction.Function);
-                    }
-                }
-
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            throw new NotImplementedException();
         }
 
         //public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid? templateId)

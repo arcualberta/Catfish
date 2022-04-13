@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Catfish.Core.Models.Contents.Workflow;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace Catfish.Areas.Applets.Services
 {
@@ -40,6 +42,43 @@ namespace Catfish.Areas.Applets.Services
                 authorizedItem =  item;
             
              return authorizedItem;
+        }
+
+        public List<string> GetUserPermissions(Guid itemId, ClaimsPrincipal user)
+        {
+            try
+            {
+                List<string> userPermissions = new List<string>();
+                Item item = _appDb.Items.Where(i => i.Id == itemId).FirstOrDefault();
+                EntityTemplate template = _appDb.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
+                List<GetAction> getActions = template.Workflow.Actions.ToList();
+                //User loggedUser = GetLoggedUser();
+
+                foreach (var getAction in getActions)
+                {
+                    if (getAction.Access == GetAction.eAccess.Restricted)
+                    {
+                        var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { new OperationAuthorizationRequirement() { Name = nameof(getAction.Function) } });
+                        task.Wait();
+                        if (task.Result.Succeeded)
+                        {
+                            userPermissions.Add(getAction.Function);
+                        }
+                    }
+                    else
+                    {
+                        userPermissions.Add(getAction.Function);
+                    }
+                }
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            throw new NotImplementedException();
         }
     }
 }

@@ -27,7 +27,7 @@ export const actions: ActionTree<State, any> = {
 
         const api = window.location.origin +
             `/applets/api/items/getUserPermissions/${store.state.id}`;
-        console.log('Item Load API: ', api)
+        console.log('Permission Load API: ', api)
 
         fetch(api)
             .then(response => response.json())

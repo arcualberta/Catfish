@@ -403,7 +403,7 @@ namespace Catfish.Areas.Applets.Controllers
         {
             try
             {
-                //List<string> userPermissions = _workflowService.GetUserPermissions(itemId,User);
+                List<string> userPermissions = _itemAppletService.GetUserPermissions(itemId, User);
 
                 return null;
             }
