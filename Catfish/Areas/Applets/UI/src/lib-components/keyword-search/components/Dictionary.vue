@@ -1,9 +1,9 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed, PropType, onMounted, ref } from "vue";
+    import { defineComponent, computed, PropType, onMounted } from "vue";
     import { useStore } from 'vuex';
     import { Actions } from '../store/actions';
 
-    import  DictionaryListView  from "./DictionaryListView.vue";
+    enum ePage { Home = "", Explore = "Explore", Profile = "Profile" }
 
     export default defineComponent({
         name: "DictionaryView",
@@ -12,27 +12,21 @@
                 type: null as PropType<string> | null,
                 required: false
             }
-           
-        },
-        components: {
-            DictionaryListView
-
         },
         setup(p) {
 
             const store = useStore();
             //console.log("Store: ", store)
 
+            const dataAttributes = p.dataAttributes as DataAttribute;
+            const navPage = dataAttributes["page"] ref(ePage.Home);
+
             const runFreshSearch = () => store.dispatch(Actions.FRESH_SEARCH);
          
             let hexColorList = p.colorScheme ? p.colorScheme?.split(',').map(function (c) {
                 return c.trim();
             }) : null;
-            // this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] 
-            //const selectedKeywords = ref([]);
-            var  currComponent:string="";
-           // console.log("setup: " + JSON.stringify(selectedKeywords));
-
+            
             onMounted(() => {
                 const btns = Array.from(document.getElementsByClassName(`dir-keyword-button`));
                 let i = 0;
@@ -54,17 +48,12 @@
             return {
                 runFreshSearch,
                 keywordQueryModel: computed(() => store.state.keywordQueryModel),
-                results: computed(() => store.state.searchResult),
-                currComponent: ref(currComponent),
-                hexColorList
-                
+                results: computed(() => store.state.searchResult) 
             }
         },
         methods: {
             addKeyword(cIdx: Number | any, fIdx: Number | any, vIdx: Number | any) {
                 this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx] = !this.keywordQueryModel.containers[cIdx].fields[fIdx].selected[vIdx];
-
-                this.currComponent = "DictionaryListView";
                 this.runFreshSearch;
             },
             generateRandomColor() {
@@ -85,18 +74,15 @@
             </span>
         </div>
     </div>
-    
-    <div v-if="currComponent !== ''">
-     
-        <component :is="currComponent" :model="keywordQueryModel" :hexColorList="hexColorList"></component>
-       
-    </div>
- 
+
+    {{keywordQueryModel}}
+
+    <div>RESULTS</div>
+    <div>{{results}}</div>
+
 </template>
 
 <style scoped>
-    
-  
     .keywordContainer {
         overflow-x: scroll;
         overflow-y: visible;

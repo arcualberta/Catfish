@@ -5,6 +5,7 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using ElmahCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Piranha;
@@ -34,7 +35,6 @@ namespace Catfish.Core.Services
         public readonly IHttpContextAccessor _httpContextAccessor;
         private Item mItem;
         private readonly IAuthorizationService _auth;
-
         public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, IAuthorizationService auth, ErrorLog errorLog)
         {
             _db = db;

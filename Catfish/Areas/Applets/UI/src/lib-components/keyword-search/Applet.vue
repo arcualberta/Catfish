@@ -7,19 +7,20 @@
     import { Mutations, mutations } from './store/mutations'
     import { getters } from './store/getters'
     import { SearchParams } from "./models"
-    import DictionaryView from './components/DictionaryView.vue'
+    /*import DictionaryView from './components/DictionaryView.vue'*/
     import ListView from './components/ListView.vue'
     import FreeTextSearch from './components/FreeTextSearch.vue'
+    import DirectoryView from './components/directory/Index.vue'
 
-  
 
-    import props, { DataAttribute } from '../shared/props'
+    import props, { DataAttribute, QueryParameter } from '../shared/props'
+
 
     export default defineComponent({
         name: "Applet",
         components: {
-         
-            DictionaryView,
+            DirectoryView,
+           // DictionaryView,
             ListView,
             FreeTextSearch
         },
@@ -34,7 +35,8 @@
             const blogDescription = dataAttributes["block-description"] as string;
             const enableFreeTextSearch = dataAttributes["enable-freetext-search"] as string;
             const hexColors = dataAttributes["hex-color-list"] as string;
-            
+
+
             //We need to use store in this setup method. so let's load it first.
             const store = useStore()
 
@@ -42,7 +44,6 @@
             store.commit(Mutations.SET_SOURCE, { pageId: p.pageId, blockId: p.blockId });
 
             //See if we can load a SearchParams object from local storage
-            
             const searchParamsStr = localStorage.getItem(store.getters.searchParamStorageKey);
             let searchParams;
             if (searchParamsStr && searchParamsStr.length > 0
@@ -55,7 +56,7 @@
                 store.commit(Mutations.SET_PAGE_SIZE, searchParams.max);
             }
             else {
-                //Dispatch an action to loaf keywords
+                //Dispatch an action to load keywords
                 store.dispatch(Actions.INIT_FILTER);
             }
 
@@ -65,7 +66,8 @@
             const keywordQueryModel = ref(store.state.keywordQueryModel);
          
             return {
-            
+                dataAttributes,
+                queryParameters: p.queryParameters as QueryParameter,
                 keywordQueryModel,
                 displayFormat,
                 blogTitle,
@@ -86,17 +88,26 @@
 </script>
 
 <template>
-    <div v-if="displayFormat === 'Dictionary'">
+
+    <!--<div v-if="displayFormat === 'Directory'">-->
+        
+        <DirectoryView v-if="displayFormat === 'Directory'" :data-attributes="dataAttributes" :query-parameters="queryParameters" />
+
+    <!--</div>-->
+   
+
+
+
+    <!--<div v-if="displayFormat === 'Dictionary'">
         <h1 class="dir-title">{{blogTitle}}</h1>
         <div class="dir-description">{{blogDescription}}</div>
         <div v-if="enableFreeTextSearch === true">
-           <FreeTextSearch />
+            <FreeTextSearch />
         </div>
-        <DictionaryView :colorScheme="hexColors"/>
-       
-    </div>
-    <div class="row" v-if="displayFormat === 'List'">
-       
+        <DictionaryView :colorScheme="hexColors" />
+
+    </div>-->
+    <div class="row" v-if="displayFormat === 'List'" :colorScheme="hexColors">
         <ListView />
     </div>
 

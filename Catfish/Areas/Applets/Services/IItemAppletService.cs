@@ -10,5 +10,6 @@ namespace Catfish.Areas.Applets.Services
     public interface IItemAppletService
     {
         public Item GetItem(Guid id, ClaimsPrincipal user);
+        List<string> GetUserPermissions(Guid itemId, ClaimsPrincipal user);
     }
 }

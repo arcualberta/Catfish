@@ -252,6 +252,9 @@ namespace Catfish
                 options.LogPath = "~/log";
                 options.CheckPermissionAction = context => context.User.IsInRole("SysAdmin");
             });
+
+            //MR - April 13 2022 -- initialize IConfiguration object in static ConfigHelper class
+            ConfigHelper.Initialize(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

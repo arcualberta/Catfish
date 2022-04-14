@@ -10,8 +10,11 @@ namespace Catfish.Core.Helpers
     public static class ConfigHelper
     {
 
-        public static IConfiguration Configuration { get; set; }
-
+        public static IConfiguration Configuration;
+        public static void Initialize(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
         public static string UploadRoot
         {
             get
