@@ -132,14 +132,6 @@ namespace Catfish.Areas.Applets.Controllers
                 itemInstance.Id = Guid.NewGuid();
                 Item newItem = _submissionService.SetSubmission(itemInstance, itemTemplateId, collectionId, groupId, stateMappingId, actionButton, files, fileKeys);
 
-                //Handling file uploads
-                for(int i=0; i< fileKeys.Count; ++i)
-				{
-                    Guid key = Guid.Parse(fileKeys[i]);
-                    IFormFile file = files[i];
-
-				}
-                var x = files.Count;
 
                 if ((await _authorizationService.AuthorizeAsync(User, newItem, new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate })).Succeeded)
                 {
@@ -320,21 +312,29 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpPost("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
-        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] String datamodel)
+        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] String datamodel, DateTime? startDate, DateTime? endDate, Guid? status)
         {
             try
             {
-                var settings = new JsonSerializerSettings()
+                var deserializationSettings = new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     TypeNameHandling = TypeNameHandling.All,
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
 
-                var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, settings);
+                var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, deserializationSettings);
 
-                List<ReportRow> rows = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields);
-                return Content(JsonConvert.SerializeObject(rows, settings), "application/json");
+                List<ReportRow> rows = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields, startDate, endDate, status);
+
+                var serializationSettings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.None,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
+                return Content(JsonConvert.SerializeObject(rows, serializationSettings), "application/json");
             }
             catch (Exception ex)
             {

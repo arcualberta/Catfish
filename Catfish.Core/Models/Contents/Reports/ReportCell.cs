@@ -15,5 +15,6 @@ namespace Catfish.Core.Models.Contents.Reports
 	{
         public Guid FormInstanceId { get; set; }
         public List<Text> Values { get; set; } = new List<Text>();
+        public string RenderType { get; set; }
     }
 }
