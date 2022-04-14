@@ -25,3 +25,14 @@ export interface KeywordQueryModel {
   aggregation: number;
   containers: KeywordFieldContainer[];
 }
+
+export interface KeywordIndex {
+    containerIndex: number;
+    fieldIndex: number;
+    valueIndex: number
+};
+
+export interface Keyword {
+    index: KeywordIndex;
+    value: string;
+}

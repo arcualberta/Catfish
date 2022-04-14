@@ -17,7 +17,9 @@ export const mutations: MutationTree<State> = {
         state.id = payload;
     },
     [Mutations.SET_ITEM](state: State, payload: Item) {
-        state.item = payload
+        state.item = payload;
+        if (payload)
+            state.id = payload.id;
     },
     [Mutations.CHANGE_STATE](state: State, payload: { itemId: Guid, state: string }) {
         //state.item

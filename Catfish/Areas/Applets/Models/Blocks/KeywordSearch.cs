@@ -42,6 +42,12 @@ namespace Catfish.Areas.Applets.Models.Blocks
 
         public TextField SelectedStates { get; set; }
         public TextField SelectedGroupId { get; set; }
+
+        public TextField BlockTitle { get; set; }
+        public TextField Description { get; set; }
+        public CheckBoxField EnabledFreeTextSearch { get; set; }
+        public TextField SelectedDisplayFormat { get; set; }
+        public TextField HexColorList { get; set; }
         public string GetKeywords()
         {
             if (KeywordList != null)
@@ -53,5 +59,14 @@ namespace Catfish.Areas.Applets.Models.Blocks
         }
 
         public Guid[] GetSelectedStates() => SelectedStates?.Value?.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(s => Guid.Parse(s)).ToArray();
+
+        public string GetSelectedDisplayFormat()
+        {
+            if(SelectedDisplayFormat != null)
+            {
+                return SelectedDisplayFormat.Value;
+            }
+            return "List";
+        }
     }
 }
