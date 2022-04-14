@@ -76,8 +76,8 @@ namespace Catfish.UnitTests
            var name = bcpForm.CreateField<TextField>("Title", lang,true);
             name.IsListEntryTitle = true;
             
-            var country = bcpForm.CreateField<AudioRecorderField>("Record",lang, true, "mp3");
-            
+            var country = bcpForm.CreateField<AudioRecorderField>("Record",lang, false, "mp3");
+            bcpForm.CreateField<AttachmentField>("Please attach a headshot of yourself", lang, false);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
@@ -85,7 +85,7 @@ namespace Catfish.UnitTests
             //
 
             Define_AR_RolesStatesWorkflow1(workflow, ref template, bcpForm);
-            db.SaveChanges();
+           // db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\AudioRecording_generared.xml");
 
@@ -93,10 +93,10 @@ namespace Catfish.UnitTests
             //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
         [Test]
-        public void AntiRacism_BlogSubmissionFormTest()
+        public void AttachmentFieldFormTest()
         {
             string lang = "en";
-            string templateName = "Anti-racism de·col·o·nize blog submission form template";
+            string templateName = "Testing Attachment Field Form Template";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -129,41 +129,18 @@ namespace Catfish.UnitTests
             //Defining email templates
 
             //Defininig the inspection form
-            DataItem bcpForm = template.GetDataItem(templateName, true, lang);
+            DataItem bcpForm = template.GetDataItem("Testing AttachmentField Form", true, lang);
             bcpForm.IsRoot = true;
-            bcpForm.SetDescription("This template is designed for collecting the de·col·o·nize blog submission form", lang);
+            bcpForm.SetDescription("This template is designed for collecting metadata for testing attachmentField ", lang);
 
             bcpForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("h1", "de·col·o·nize blog submission form", lang);
-            bcpForm.CreateField<InfoSection>(null, null)
-              .AppendContent("p", "To submit your entry for the Anti-racism Lab Blog, please fill out the form below", lang);
+                 .AppendContent("h3", "Testing AttachmentField", lang);
 
-            var name = bcpForm.CreateField<TextField>("Name", lang, true);
+            var name = bcpForm.CreateField<TextField>("Title", lang, false);
             name.IsListEntryTitle = true;
-            var email = bcpForm.CreateField<EmailField>("Email Address", lang, true);
-            email.IsListEntryTitle = true;
-            bcpForm.CreateField<TextField>("Faculty/Department", lang, true);
 
-            string[] degrees = {"Undergraduate", "Masters","Doctoral","Professional Degree (i.e., Law, Medicine)" };
-            bcpForm.CreateField<RadioField>("Degree Type", lang,degrees, true);
-            bcpForm.CreateField<TextField>("Institution", lang, true);
-            bcpForm.CreateField<TextField>("Country", lang, true);
-            bcpForm.CreateField<TextField>("Please provide the title of your entry ", lang, true);
-
-            var bio = bcpForm.CreateField<TextArea>("Please provide a short bio (max 150 words)", lang, true);
-            bio.Cols = 50;
-            bio.Rows = 5;
-            var blog = bcpForm.CreateField<TextArea>("Please write a short description of your blog (150 words max)", lang, true);
-            blog.Cols = 50;
-            blog.Rows = 5;
-
-           
-            bcpForm.CreateField<AttachmentField>("Please attach a headshot of yourself", lang, true);
-
-            bcpForm.CreateField<AttachmentField>("Please attach your blog submission below", lang, true);
-
-            bcpForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("div", "Personal information provided is collected in accordance with Section 33(c) of the Alberta Freedom of Information and Protection of Privacy Act (the FOIP Act) and will be protected under Part 2 of that Act.", lang, "alert alert-info");
+          
+            bcpForm.CreateField<AttachmentField>("Please attach a headshot of yourself", lang, false);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
@@ -171,13 +148,13 @@ namespace Catfish.UnitTests
             //
 
             Define_AR_RolesStatesWorkflow1(workflow, ref template, bcpForm);
-            db.SaveChanges();
+             db.SaveChanges();
 
-            template.Data.Save("..\\..\\..\\..\\Examples\\AntiRacism_blogSubmission.xml");
+            template.Data.Save("..\\..\\..\\..\\Examples\\testingAttachmentField_generared.xml");
 
-            //string json = JsonConvert.SerializeObject(template);
-            //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
+           
         }
+
 
         private EmailTemplate CreateApplicantEmailTemplate(ref ItemTemplate template, string formName=null)
         {
