@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
+    <ProjectReference Include="..\Catfish.GoogleApi\Catfish.GoogleApi.csproj" />
     <ProjectReference Include="..\Catfish.Test\Catfish.Test.csproj" />
     <ProjectReference Include="..\Catfish\Catfish.csproj" />
   </ItemGroup>
@@ -44,6 +45,9 @@
     </None>
     <None Update="client_secret_for_google_drive_apis.apps.googleusercontent.com.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_CatfishGoogleApiDesktopCredentials.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

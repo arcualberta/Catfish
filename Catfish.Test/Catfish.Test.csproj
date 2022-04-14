@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
+    <ProjectReference Include="..\Catfish.GoogleApi\Catfish.GoogleApi.csproj" />
     <ProjectReference Include="..\Catfish\Catfish.csproj" />
   </ItemGroup>
 
