@@ -93,8 +93,7 @@ namespace Catfish.Areas.Applets.Controllers
 
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == id);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
-            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
-.Succeeded)
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
             {
                 var settings = new JsonSerializerSettings()
                 {
@@ -133,14 +132,6 @@ namespace Catfish.Areas.Applets.Controllers
                 itemInstance.Id = Guid.NewGuid();
                 Item newItem = _submissionService.SetSubmission(itemInstance, itemTemplateId, collectionId, groupId, stateMappingId, actionButton, files, fileKeys);
 
-                //Handling file uploads
-                for(int i=0; i< fileKeys.Count; ++i)
-				{
-                    Guid key = Guid.Parse(fileKeys[i]);
-                    IFormFile file = files[i];
-
-				}
-                var x = files.Count;
 
                 if ((await _authorizationService.AuthorizeAsync(User, newItem, new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate })).Succeeded)
                 {

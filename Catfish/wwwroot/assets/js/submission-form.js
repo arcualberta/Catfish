@@ -72,13 +72,9 @@ Vue.component("submission-form", {
             });
     },
     template: `<div  class= 'block-body calendar-block'>
-        <div class='lead row'><label class='form-label col-md-3 required'>User Must Select Group:</label><label class='form-label'><input class='' type='checkbox' v-model='model.userMustSelectGroup.value' contenteditable='true' value='model.userMustSelectGroup.value' /></label></div>
+        <div class='lead row'><label class='form-label col-md-3'>User Must Select Group:</label><label class='form-label'><input class='' type='checkbox' v-model='model.userMustSelectGroup.value' contenteditable='true' value='model.userMustSelectGroup.value' /></label></div>
         <div v-if='model.userMustSelectGroup.value' class='lead row'><label class='form-label col-md-3'>Group Dropdown Label: </label><input class='form-control col-md-8' type='text' v-model='model.groupSelectorLabel.value' contenteditable='true' value='model.groupSelectorLabel.value' /></div>
-        <div v-else class='lead row'><label class='form-label col-md-3 required'>Group: </label>
-           <select v-model="model.selectedGroupId.value" class="form-control" style="width:auto;">
-                <option disabled value="">Please select one</option>
-                <option v-for="item in this.groups" :value="item.value">{{item.text}}</option>
-            </select></div>
+        
 
         <div class='lead row'><label class='form-label col-md-3 required'>Collection: </label>
            <select v-model="model.selectedCollection.value" class="form-control" style="width:auto;">
@@ -91,7 +87,11 @@ Vue.component("submission-form", {
                 <option disabled value="">Please select one</option>
                 <option v-for="item in model.itemTemplates.entries" :value="item.value">{{item.text}}</option>
             </select></div> 
-     
+     <div v-else class='lead row'><label class='form-label col-md-3'>Group: </label>
+           <select v-model="model.selectedGroupId.value" class="form-control" style="width:auto;">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in this.groups" :value="item.value">{{item.text}}</option>
+            </select></div>
       <div class='lead row'><label class='form-label col-md-3 required'>Workflow Function: </label>
            <select v-model="this.selectedFunctionTemplate" class="form-control" style="width:auto;"  v-on:change="selectWorkflowFunction(this.selectedFunctionTemplate)" >
               
