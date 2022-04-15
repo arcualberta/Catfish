@@ -88,6 +88,14 @@
             //console.log(expression)
 
             let result = eval(expression);
+
+            //If the "step" is specified for the input field, then round the numbers appropriately
+            let step = $(field).attr("step");
+            if (step) {
+                var tmp = step.split(".");
+                let numDecPlaces = tmp.length > 1 ? tmp[1].length : 0;
+                result = result.toFixed(numDecPlaces);
+            }
             $(field).val(result);
         }
     }
