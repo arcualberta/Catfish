@@ -16,6 +16,10 @@ namespace Catfish.Test.Helpers
     {
         public enum eDriverType { Chrome, Firefox, Edge };
 
+        public enum eRoundButton { None, Settings, Up, Down, Delete};
+
+        public enum eFieldButton  { None, Text, Paragraph,  Email,  Check,  Select,  Number, Radio };
+
         private readonly IConfiguration _configuration;
         private readonly string _siteUrl;
 
@@ -28,6 +32,8 @@ namespace Catfish.Test.Helpers
             _siteUrl = _configuration.GetSection("SiteUrl").Value.TrimEnd('/');
         }
 
+
+        #region general_helpers
         public IWebDriver SetDriver(eDriverType driverType)
         {
             switch (driverType)
@@ -91,12 +97,136 @@ namespace Catfish.Test.Helpers
             Driver.Navigate().GoToUrl(_siteUrl + path);
         }
 
+        #endregion general_helpers
 
+
+        #region testgroup_two
+
+
+
+        // set text for a text field box
+        public void SetFormTextFromPlaceHolderText(string selectorName, string value)
+        {
+            string selectorString = string.Format("input[placeholder^='{0}']", selectorName);
+            var elem = Driver.FindElement(By.CssSelector(selectorString));
+            // eg var elem = Driver.FindElement(By.CssSelector("input[placeholder='Enter form title']"));
+            elem.Clear();
+            elem.SendKeys(value);
+        }
+
+        // set text for a text area box
+        public void SetFormTextAreaFromPlaceHolderText(string selectorName, string value)
+        {
+            string selectorString = string.Format("textarea[placeholder^='{0}']", selectorName);
+            var elem = Driver.FindElement(By.CssSelector(selectorString));
+            // eg var elem = Driver.FindElement(By.CssSelector("input[placeholder='Enter form title']"));
+            elem.Clear();
+            elem.SendKeys(value);
+        }
+
+
+        //In the form list for a given ID, click on the view button for that form
+        public void ClickViewForm(string gid)  // view will be id and edit "edit/id"
+        {
+            string selectorString = string.Format("a[href='{0}']", gid);
+            var elem = Driver.FindElement(By.CssSelector(selectorString));
+            elem.Click();
+        }
+
+        //In the form list for some given ID, click on the edit button for that form
+        public void ClickEditForm(string gid)  // view will be id and edit "edit/id"
+        {
+            string selectorString = string.Format("a[href='edit/{0}']", gid);
+            var elem = Driver.FindElement(By.CssSelector(selectorString));
+            elem.Click();
+        }
+
+        // save form button -- for now between floating item menu and added elements
+        public void ClickFormSaveButton()
+        {
+            var elem = Driver.FindElement(By.XPath("//*[@id='v3app']/div[2]/button"));
+            elem.Click();
+        }
+
+
+        // when form is save ID is created and will occur in URL,
+        // extract form id from URL
+        public string GetIDfromUrl()
+        {
+            string fullUrl = Driver.Url;
+            int pos = fullUrl.LastIndexOf("/") + 1;
+            string gid=fullUrl.Substring(pos, fullUrl.Length - pos);
+
+           
+            return gid;
+            
+        }
+
+        // click form element button -- use emun FieldButton:
+        // for example: Email button use -  ClickFieldAddButton((int)eFieldButton.Email)
+        public void ClickFieldAddButton(int dex)
+        {
+            string selectorString = string.Format("/html/body/div[3]/div/div/div[1]/div[1]/div/div[{0}]/div", dex);
+            var elem = Driver.FindElement(By.XPath(selectorString));
+            elem.Click();
+        }
+
+        //Click settingds, up , down  delete buttons - for up or down order is field position and will go up  or down, except fo endpoints
+        // delete button should field Elements later the sequence
+        // NOTE order index is "2" for first field in list that inceremented by one
+        public void ClickSettingsButton(string orderIndex)
+        {
+            string selectorString = string.Format("/html/body/div[3]/div/div/div[1]/div[2]/div[{0}]/div/div[1]/div/div[2]/button[{1}]']", (int)eRoundButton.Settings, orderIndex);
+            var elem = Driver.FindElement(By.XPath(selectorString));
+            elem.Click();
+        }
+
+        public void ClickUpButton(string orderIndex)
+        {
+            string selectorString = string.Format("/html/body/div[3]/div/div/div[1]/div[2]/div[{0}]/div/div[1]/div/div[2]/button[{1}]']", (int)eRoundButton.Up, orderIndex);
+            var elem = Driver.FindElement(By.XPath(selectorString));
+            elem.Click();
+        }
+        public void ClickDownButton(string orderIndex)
+        {
+            string selectorString = string.Format("/html/body/div[3]/div/div/div[1]/div[2]/div[{0}]/div/div[1]/div/div[2]/button[{1}]']", (int)eRoundButton.Down, orderIndex);
+            var elem = Driver.FindElement(By.XPath(selectorString));
+            elem.Click();
+        }
+     
+        public void ClickDeleteButton(string orderIndex)
+        {
+            string selectorString = string.Format("/html/body/div[3]/div/div/div[1]/div[2]/div[{0}]/div/div[1]/div/div[2]/button[{1}]']", (int)eRoundButton.Delete, orderIndex);
+            var elem = Driver.FindElement(By.XPath(selectorString));
+            elem.Click();
+        }
+
+        public void SetTextfieldName(string orderIndex, string value)
+        {
+            string selectorString = string.Format("/html/body/div[3]/div/div/div[1]/div[2]/div[{0}]/div/div[2]/div[1]/input", orderIndex);
+            var elem = Driver.FindElement(By.XPath(selectorString));
+            
+            elem.Clear();
+            elem.SendKeys(value);
+        }
+
+
+        public void SetTextfieldDesc(string orderIndex, string value)
+        {
+            string selectorString = string.Format("/html/body/div[3]/div/div/div[1]/div[2]/div[{0}]/div/div[2]/div[2]/textarea", orderIndex);
+            var elem = Driver.FindElement(By.XPath(selectorString));
+
+            elem.Clear();
+            elem.SendKeys(value);
+        }
+
+        #endregion testgroup_two
+
+        #region group_a
+        //
+        // --
         // upload file when accessing button by Id.
         // 
-
-
-
         public void UpLoadFile(string fieldId, string fileName)
         {
             var attachmentPath = _configuration.GetSection("AttachmentPath").Value;
@@ -117,6 +247,7 @@ namespace Catfish.Test.Helpers
 
         }
 
+
         //ClickAddButton
         public void ClickAddButton(string selectorName)
         {
@@ -124,8 +255,13 @@ namespace Catfish.Test.Helpers
             ele.Click();
         }
 
+        #endregion group_a
 
 
+        #region testgroup_one
+
+
+        //
         /// <summary>
         /// Select the field identified by data-model-id=fieldId and then selects its option
         /// identified by value=optionId
@@ -391,6 +527,9 @@ namespace Catfish.Test.Helpers
             return ele.GetAttribute("value");
         }
 
+
+
+
         //public bool IsTextFieldNotRequired(string fieldId)
         //{
         //    string selectorString = string.Format("input[data-model-id='{0}']", fieldId);
@@ -400,5 +539,7 @@ namespace Catfish.Test.Helpers
         //    else
         //        return false;
         //}
+
+        #endregion testgroup_one
     }
 }
