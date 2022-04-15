@@ -239,3 +239,6 @@ Examples/*_generared.json
 /Catfish/wwwroot/Vue/tile-grid-xxtmp
 /Design Documents/Tile Grid/Tile Grid.drawio
 /Design Documents/Tile Grid/Tile Grid.png
+
+/Catfish.UnitTests/client_secret_googledriveapi_desktop.json
+/Catfish.UnitTests/_CatfishGoogleApiDesktopCredentials.json
