@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed } from 'vue'
+    import { defineComponent, computed, ref } from 'vue'
     import { useStore } from 'vuex';
 
     import { state } from './store/state'
@@ -8,14 +8,17 @@
     import { getters } from './store/getters'
     import props, { QueryParameter, DataAttribute } from '../shared/props'
 
-    import FieldContainer from '../shared/components/display/FieldContainer.vue'
+    import FieldContainerViewer from '../shared/components/display/FieldContainer.vue'
+    import FieldContainerEditor from '../shared/components/editor/FieldContainer.vue'
+
     import { FieldContainer as FieldContainerModel } from '../shared/models/fieldContainer'
 
 
     export default defineComponent({
         name: "ItemDetails",
         components: {
-            FieldContainer
+            FieldContainerViewer,
+            FieldContainerEditor
         },
         props,
         setup(p) {
@@ -37,12 +40,15 @@
                 return fc.name?.values.$values.map(txt => txt.value).join(" | ");
             }
 
+            const editMode = ref(false);
+
             return {
                 store,
                 queryParams,
                 dataItem: computed(() => store.state.item),
                 getContainerName,
-                isAdmin
+                isAdmin,
+                editMode
             }
         },
         storeConfig: {
@@ -57,17 +63,18 @@
 </script>
 
 <template>
-    
-    <div>
-
-        <div v-for="ms in dataItem?.metadataSets?.$values">
-            <h4>{{getContainerName(ms)}}</h4>
-            <FieldContainer :model="ms" />
-        </div>
-        <div v-for="di in dataItem.dataContainer.$values">
-            <h4>{{getContainerName(di)}}</h4>
-            <FieldContainer :model="di" />
-        </div>
+    <div class="controls">
+        <button @click="editMode = !editMode" class="btn btn-primary"><span v-if="editMode">View</span><span v-else>Edit</span></button>
+    </div>
+    <div v-for="ms in dataItem?.metadataSets?.$values">
+        <h4>{{getContainerName(ms)}}</h4>
+        <FieldContainerEditor v-if="editMode" :model="ms" />
+        <FieldContainerViewer v-else :model="ms" />
+    </div>
+    <div v-for="di in dataItem?.dataContainer?.$values">
+        <h4>{{getContainerName(di)}}</h4>
+        <FieldContainerEditor v-if="editMode" :model="di" />
+        <FieldContainerViewer v-else :model="di" />
     </div>
 </template>
 
@@ -79,6 +86,9 @@
     .fa-remove {
         color: red;
         margin-left: 30px;
+    }
+    .controls{
+        text-align:right;
     }
 </style>
 

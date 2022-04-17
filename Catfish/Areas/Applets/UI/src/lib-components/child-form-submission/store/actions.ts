@@ -3,7 +3,7 @@
 import { State } from './state';
 import { Mutations as ChildFormMutations } from './mutations'
 import { Mutations } from '../../form-submission/store/mutations'
-import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
+import { FlattenedFormFiledState } from '../../shared/store/form-submission-state'
 import { validateFields } from '../../shared/store/form-validators'
 import { Guid } from 'guid-typescript';
 import { FieldContainer } from '../../shared/models/fieldContainer';

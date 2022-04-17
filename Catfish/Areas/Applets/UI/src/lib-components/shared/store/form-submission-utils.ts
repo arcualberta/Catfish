@@ -1,5 +1,6 @@
 ﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option, AttachmentField } from '../models/fieldContainer'
 import { TextCollection, Text } from '../models/textModels';
+import { FlattenedFormFiledState } from './form-submission-state'
 
 export enum eSubmissionStatus {
     None = "None",
@@ -13,17 +14,13 @@ export interface TypedArray<T> {
     $values: T[];
 }
 
-export interface FlattenedFormFiledState {
-    flattenedTextModels: { [key: string]: Text };
-    flattenedOptionModels: { [key: string]: Option };
-    flattenedFileModels: { [key: string]: File[] };
-}
-
 export enum FlattenedFormFiledMutations {
     SET_TEXT_VALUE = 'SET_TEXT_VALUE',
     SET_OPTION_VALUE = 'SET_OPTION_VALUE',
     ADD_FILE = 'ADD_FILE',
-    REMOVE_FILE = 'REMOVE_FILE'
+    REMOVE_FILE = 'REMOVE_FILE',
+    CLEAR_FIELD_DATA = 'CLEAR_FIELD_DATA',
+    REMOVE_FIELD_CONTAINERS = 'REMOVE_FIELD_CONTAINERS',
 }
 
 export abstract class FieldContainerUtils {
@@ -125,23 +122,23 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
 
 }
 
-export function clearForm(state: FlattenedFormFiledState) {
-    //Iterate through all Text elements in state.flattenedTextModels 
-    Object.keys(state.flattenedTextModels).forEach(function (key) {
-        state.flattenedTextModels[key].value = '';
-    });
+//export function clearForm(state: FlattenedFormFiledState) {
+//    //Iterate through all Text elements in state.flattenedTextModels 
+//    Object.keys(state.flattenedTextModels).forEach(function (key) {
+//        state.flattenedTextModels[key].value = '';
+//    });
 
-    // Iterate through all Option elements in state.flattenedOptionModels
-    Object.keys(state.flattenedOptionModels).forEach(function (key) {
-        state.flattenedOptionModels[key].selected = false;
-    });
+//    // Iterate through all Option elements in state.flattenedOptionModels
+//    Object.keys(state.flattenedOptionModels).forEach(function (key) {
+//        state.flattenedOptionModels[key].selected = false;
+//    });
 
-    // Iterate through attachment in state.flattenedOptionModels
-    Object.keys(state.flattenedFileModels).forEach(function (key) {
-        state.flattenedFileModels[key] = [] as File[];
-    });
+//    // Iterate through attachment in state.flattenedOptionModels
+//    Object.keys(state.flattenedFileModels).forEach(function (key) {
+//        state.flattenedFileModels[key] = [] as File[];
+//    });
 
-}
+//}
 
 export function isRequiredMultilingualField(field: MultilingualTextField) {
     return field?.required ? field.required : false;

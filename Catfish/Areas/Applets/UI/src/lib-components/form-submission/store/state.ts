@@ -1,6 +1,7 @@
 ﻿import { Guid } from 'guid-typescript'
 import { FieldContainer } from '../../shared/models/fieldContainer'
-import { FlattenedFormFiledState, eSubmissionStatus } from '../../shared/store/form-submission-utils'
+import { eSubmissionStatus } from '../../shared/store/form-submission-utils'
+import { FlattenedFormFiledState } from '../../shared/store/form-submission-state'
 
 
 //Declare State interface
@@ -9,7 +10,6 @@ export interface State extends FlattenedFormFiledState {
     formId: Guid | null;
     collectionId: Guid | null;
     groupId: Guid | null;
-    form: FieldContainer | null;
     submissionStatus: eSubmissionStatus;
     formLoadAPI: string | null;
     formSubmissionAPI: string | null;
@@ -20,7 +20,7 @@ export const state: State = {
     formId: null,
     collectionId: null,
     groupId: null,
-    form: null,
+    fieldContainers: [] as FieldContainer[],
     flattenedTextModels: {},
     flattenedOptionModels: {},
     flattenedFileModels: {},

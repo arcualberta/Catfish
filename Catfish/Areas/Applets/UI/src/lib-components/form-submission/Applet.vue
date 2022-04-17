@@ -4,11 +4,10 @@
 	import { useStore } from 'vuex';
 	import props, { DataAttribute } from '../shared/props'
 	import { eValidationStatus } from '../shared/models/fieldContainer'
-	import { state } from './store/state'
+	import { state, State } from './store/state'
 	import { actions, Actions } from './store/actions'
-	import { getters } from './store/getters'
-	import { mutations, Mutations } from './store/mutations'
-	import { eSubmissionStatus } from '../shared/store/form-submission-utils'
+    import { mutations, Mutations } from './store/mutations'
+    import { eSubmissionStatus, FlattenedFormFiledMutations } from '../shared/store/form-submission-utils'
 	
 
 	import SubmissionForm from '../shared/components/editor/FieldContainer.vue'
@@ -31,7 +30,7 @@
 
             const store = useStore();
 
-			store.commit(Mutations.CLEAR_FLATTENED_FIELD_MODELS);
+			store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
 			store.commit(Mutations.SET_ITEM_TEMPLATE_ID, itemTemplateId);
 			store.commit(Mutations.SET_FORM_ID, formId);
 			store.commit(Mutations.SET_COLLECTION_ID, collectionId);
@@ -41,37 +40,31 @@
 
 			return {
 				store,
-				submissionForm: computed(() => store.state.form),
-				submissionStatus: computed(() => store.state.submissionStatus),
+				submissionForm: computed(() => (store.state as State).fieldContainers?.find(fc => fc.isRoot)),
+				submissionStatus: computed(() => (store.state as State).submissionStatus),
 				eSubmissionStatus,
-				eValidationStatus
+				eValidationStatus,
+                submitForm: () => store.dispatch(Actions.SUBMIT_FORM)
               
             }
 		},
 		storeConfig: {
 			state,
 			actions,
-			mutations,
-			getters
+			mutations
         },
-        methods: {
-			submitForm() {
-				this.store.dispatch(Actions.SUBMIT_FORM);
-            }
-        }
     });
 </script>
 
 <template>
 	<div v-if="submissionForm && Object.keys(submissionForm).length > 0">
 		<SubmissionForm :model="submissionForm" />
-
-		<div v-if="submissionForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Form validation failed.</div>
-		<div v-else>
-			<div v-if="submissionStatus === eSubmissionStatus.InProgress" class="alert alert-info">Submitting...</div>
-			<div v-if="submissionStatus === eSubmissionStatus.Success" class="alert alert-info">Submission successful</div>
-			<div v-if="submissionStatus === eSubmissionStatus.Fail" class="alert alert-danger">Submission failed</div>
-		</div>
 		<button class="btn btn-primary" @click="submitForm()">Submit</button>
+	</div>
+	<div v-if="submissionForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Form validation failed.</div>
+	<div v-else>
+		<div v-if="submissionStatus === eSubmissionStatus.InProgress" class="alert alert-info">Submitting...</div>
+		<div v-if="submissionStatus === eSubmissionStatus.Success" class="alert alert-info">Submission successful</div>
+		<div v-if="submissionStatus === eSubmissionStatus.Fail" class="alert alert-danger">Submission failed</div>
 	</div>
 </template>
