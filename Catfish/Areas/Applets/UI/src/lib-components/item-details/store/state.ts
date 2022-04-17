@@ -1,7 +1,10 @@
 ﻿import { Guid } from 'guid-typescript'
 import { Item } from '../../shared/models/item'
+import { FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
+
+
 //Declare State interface
-export interface State {
+export interface State extends FlattenedFormFiledState {
 
     id: Guid | null;
     item: Item | null;
@@ -12,8 +15,12 @@ export const state: State = {
 
     id: null,
     item: null,
-    permissionList: null
+    permissionList: null,
+    flattenedTextModels: {},
+    flattenedOptionModels: {},
+    flattenedFileModels: {},
 }
+
 export interface UserPermission{
     permission : string | null;
 }
