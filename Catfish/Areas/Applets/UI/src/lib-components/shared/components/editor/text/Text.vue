@@ -3,7 +3,7 @@
 	import { useStore } from 'vuex';
 	import Editor from '@tinymce/tinymce-vue'
 
-	import { FlattenedFormFiledMutations } from '../../../store/form-submission-utils'
+	import { FlattenedFormFiledMutations } from '../../../store/flattened-form-field-mutations'
 	import { eValidationStatus } from '../../../models/fieldContainer'
 	import { Text } from '../../../models/textModels'
 
