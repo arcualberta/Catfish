@@ -1,5 +1,6 @@
 ﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option, AttachmentField } from '../models/fieldContainer'
 import { TextCollection, Text } from '../models/textModels';
+import { FlattenedFormFiledState } from './flattened-form-field-state'
 
 export enum eSubmissionStatus {
     None = "None",
@@ -11,19 +12,6 @@ export enum eSubmissionStatus {
 export interface TypedArray<T> {
     $type: string;
     $values: T[];
-}
-
-export interface FlattenedFormFiledState {
-    flattenedTextModels: { [key: string]: Text };
-    flattenedOptionModels: { [key: string]: Option };
-    flattenedFileModels: { [key: string]: File[] };
-}
-
-export enum FlattenedFormFiledMutations {
-    SET_TEXT_VALUE = 'SET_TEXT_VALUE',
-    SET_OPTION_VALUE = 'SET_OPTION_VALUE',
-    ADD_FILE = 'ADD_FILE',
-    REMOVE_FILE = 'REMOVE_FILE'
 }
 
 export abstract class FieldContainerUtils {
@@ -122,24 +110,6 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
 
     //console.log("flattenedTextModels\n", JSON.stringify(state.flattenedTextModels))
     //console.log("flattenedOptionModels\n", JSON.stringify(state.flattenedOptionModels))
-
-}
-
-export function clearForm(state: FlattenedFormFiledState) {
-    //Iterate through all Text elements in state.flattenedTextModels 
-    Object.keys(state.flattenedTextModels).forEach(function (key) {
-        state.flattenedTextModels[key].value = '';
-    });
-
-    // Iterate through all Option elements in state.flattenedOptionModels
-    Object.keys(state.flattenedOptionModels).forEach(function (key) {
-        state.flattenedOptionModels[key].selected = false;
-    });
-
-    // Iterate through attachment in state.flattenedOptionModels
-    Object.keys(state.flattenedFileModels).forEach(function (key) {
-        state.flattenedFileModels[key] = [] as File[];
-    });
 
 }
 

@@ -3,10 +3,10 @@
 import { State } from './state';
 import { Mutations as ChildFormMutations } from './mutations'
 import { Mutations } from '../../form-submission/store/mutations'
-import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
 import { validateFields } from '../../shared/store/form-validators'
 import { Guid } from 'guid-typescript';
 import { FieldContainer } from '../../shared/models/fieldContainer';
+import { FlattenedFormFiledMutations } from '../../shared/store/flattened-form-field-mutations'
 
 //Declare ActionTypes
 export enum Actions {
@@ -30,7 +30,8 @@ export const actions: ActionTree<State, any> = {
             .then(response => response.json())
             .then(data => {
                 store.commit(Mutations.SET_FORM, data);
-            })
+                store.commit(FlattenedFormFiledMutations.APPEND_FIELD_DATA, data);
+             })
             .catch(error => {
                 console.error('Actions.LOAD_FORM Error: ', error);
             });
@@ -46,7 +47,7 @@ export const actions: ActionTree<State, any> = {
                 store.commit(ChildFormMutations.SET_RESPONSE_FORM, data);
             })
             .catch(error => {
-                console.error('Actions.LOAD_FORM Error: ', error);
+                console.error('Actions.LOAD_RESPONSE_FORM Error: ', error);
             });
     },
     [Actions.LOAD_SUBMISSIONS](store) {
@@ -66,9 +67,10 @@ export const actions: ActionTree<State, any> = {
     },
 
     [Actions.SUBMIT_CHILD_FORM](store) {
+        const form = store.state.form;
 
         //Validating the form
-        if (!store.state.form || !validateFields(store.state.form))
+        if (!form || !validateFields(form))
             return;
 
         store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
@@ -76,7 +78,7 @@ export const actions: ActionTree<State, any> = {
         const api = window.location.origin + `/applets/api/items/appendchildforminstance/${store.state.itemInstanceId}`;
 
         const formData = new FormData();
-        formData.append('datamodel', JSON.stringify(store.state.form));
+        formData.append('datamodel', JSON.stringify(form));
 
 
         fetch(api,
@@ -87,14 +89,7 @@ export const actions: ActionTree<State, any> = {
             .then(response =>
                 response.json())
             .then(data => {
-                const flattenModel: FlattenedFormFiledState = {
-                    flattenedOptionModels: store.state.flattenedOptionModels,
-                    flattenedTextModels: store.state.flattenedTextModels,
-                    flattenedFileModels: store.state.flattenedFileModels
-                };
-                //clear the form content
-                clearForm(flattenModel);
-
+                store.commit(FlattenedFormFiledMutations.CLEAR_FIELD_DATA);
                 store.commit(ChildFormMutations.APPEND_CHILD_INSTANCE, data);
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
 
@@ -129,13 +124,7 @@ export const actions: ActionTree<State, any> = {
             .then(data => {
                 //console.log("Response Data: \n", JSON.stringify(data))
                 store.commit(ChildFormMutations.APPEND_CHILD_RESPONSE_INSTANCE, data)
-                const flattenModel: FlattenedFormFiledState = {
-                    flattenedOptionModels: store.state.flattenedOptionModels,
-                    flattenedTextModels: store.state.flattenedTextModels,
-                    flattenedFileModels: store.state.flattenedFileModels
-                };
-                //clear the form content
-                clearForm(flattenModel);
+                store.commit(FlattenedFormFiledMutations.CLEAR_FIELD_DATA);
             })
             .catch(error => {
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Fail");
@@ -184,9 +173,6 @@ export const actions: ActionTree<State, any> = {
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Fail");
                 console.log(error)
             });
-
-        
-
     },
 }
 

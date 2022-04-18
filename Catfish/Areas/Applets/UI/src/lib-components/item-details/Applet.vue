@@ -1,19 +1,24 @@
 ﻿<script lang="ts">
-    import { defineComponent, computed } from 'vue'
+    import { defineComponent, computed, ref } from 'vue'
     import { useStore } from 'vuex';
 
     import { state } from './store/state'
     import { actions, Actions } from './store/actions'
     import { mutations, Mutations } from './store/mutations'
+    import { getters } from './store/getters'
     import props, { QueryParameter, DataAttribute } from '../shared/props'
 
-    import FieldContainer from '../shared/components/display/FieldContainer.vue'
+    import FieldContainerViewer from '../shared/components/display/FieldContainer.vue'
+    import FieldContainerEditor from '../shared/components/editor/FieldContainer.vue'
+
+    import { FieldContainer as FieldContainerModel } from '../shared/models/fieldContainer'
 
 
     export default defineComponent({
         name: "ItemDetails",
         components: {
-            FieldContainer
+            FieldContainerViewer,
+            FieldContainerEditor
         },
         props,
         setup(p) {
@@ -31,18 +36,26 @@
             store.dispatch(Actions.GET_USER_ACTIONS);
             store.dispatch(Actions.LOAD_ITEM);
 
+            const getContainerName = (fc: FieldContainerModel) => {
+                return fc.name?.values.$values.map(txt => txt.value).join(" | ");
+            }
+
+            const editMode = ref(false);
+
             return {
                 store,
                 queryParams,
                 dataItem: computed(() => store.state.item),
-                isAdmin
+                getContainerName,
+                isAdmin,
+                editMode
             }
         },
         storeConfig: {
             state,
             actions,
-            mutations
-
+            mutations,
+            getters
         },
         methods: {
         }
@@ -50,33 +63,18 @@
 </script>
 
 <template>
-    
-    <div>
-
-        <div v-for="ms in dataItem.metadataSets.$values">
-            <FieldContainer :model="ms" />
-            <!--<div v-for="metadataName in value.name.values.$values">
-                <h4>Metadata Set : {{metadataName.value}}</h4>
-                <div v-for="fieldValue in value.fields">
-                    {{fieldValue}}
-                    <FieldContainer :model="fieldValue" />
-                </div>
-            </div>-->
-
-
-        </div>
-        <!--{{dataItem.dataContainer}}-->
-        <div v-for="di in dataItem.dataContainer.$values">
-            <FieldContainer :model="di" />
-            <!--<div v-for="dataContainer in value.name.values.$values">
-        <h4> Data Container : {{dataContainer.value}}</h4>
-        <div v-for="fieldValue in dataContainer.fields">
-            {{fieldValue}}-->
-            <!--<FieldContainer :model="fieldValue" />-->
-            <!--</div>
-        </div>-->
-
-        </div>
+    <div class="controls">
+        <button @click="editMode = !editMode" class="btn btn-primary"><span v-if="editMode">View</span><span v-else>Edit</span></button>
+    </div>
+    <div v-for="ms in dataItem?.metadataSets?.$values">
+        <h4>{{getContainerName(ms)}}</h4>
+        <FieldContainerEditor v-if="editMode" :model="ms" />
+        <FieldContainerViewer v-else :model="ms" />
+    </div>
+    <div v-for="di in dataItem?.dataContainer?.$values">
+        <h4>{{getContainerName(di)}}</h4>
+        <FieldContainerEditor v-if="editMode" :model="di" />
+        <FieldContainerViewer v-else :model="di" />
     </div>
 </template>
 
@@ -88,6 +86,9 @@
     .fa-remove {
         color: red;
         margin-left: 30px;
+    }
+    .controls{
+        text-align:right;
     }
 </style>
 
