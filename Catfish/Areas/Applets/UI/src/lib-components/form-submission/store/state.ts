@@ -1,7 +1,7 @@
 ﻿import { Guid } from 'guid-typescript'
 import { FieldContainer } from '../../shared/models/fieldContainer'
 import { eSubmissionStatus } from '../../shared/store/form-submission-utils'
-import { FlattenedFormFiledState } from '../../shared/store/form-submission-state'
+import { FlattenedFormFiledState } from '../../shared/store/flattened-form-field-state'
 
 
 //Declare State interface

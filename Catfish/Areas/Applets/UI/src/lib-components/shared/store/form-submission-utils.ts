@@ -1,6 +1,6 @@
 ﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option, AttachmentField } from '../models/fieldContainer'
 import { TextCollection, Text } from '../models/textModels';
-import { FlattenedFormFiledState } from './form-submission-state'
+import { FlattenedFormFiledState } from './flattened-form-field-state'
 
 export enum eSubmissionStatus {
     None = "None",
@@ -122,24 +122,6 @@ export function flattenFieldInputs(container: FieldContainer, state: FlattenedFo
     //console.log("flattenedOptionModels\n", JSON.stringify(state.flattenedOptionModels))
 
 }
-
-//export function clearForm(state: FlattenedFormFiledState) {
-//    //Iterate through all Text elements in state.flattenedTextModels 
-//    Object.keys(state.flattenedTextModels).forEach(function (key) {
-//        state.flattenedTextModels[key].value = '';
-//    });
-
-//    // Iterate through all Option elements in state.flattenedOptionModels
-//    Object.keys(state.flattenedOptionModels).forEach(function (key) {
-//        state.flattenedOptionModels[key].selected = false;
-//    });
-
-//    // Iterate through attachment in state.flattenedOptionModels
-//    Object.keys(state.flattenedFileModels).forEach(function (key) {
-//        state.flattenedFileModels[key] = [] as File[];
-//    });
-
-//}
 
 export function isRequiredMultilingualField(field: MultilingualTextField) {
     return field?.required ? field.required : false;

@@ -1,6 +1,6 @@
 ﻿import { Guid } from 'guid-typescript'
 import { MutationTree } from 'vuex';
-import { FlattenedFormFiledState as State } from './form-submission-state';
+import { FlattenedFormFiledState as State } from './flattened-form-field-state';
 import { FlattenedFormFiledMutations, flattenFieldInputs } from './form-submission-utils'
 import { FieldContainer, eValidationStatus } from '../../shared/models/fieldContainer';
 import { validateFields } from '../../shared/store/form-validators';

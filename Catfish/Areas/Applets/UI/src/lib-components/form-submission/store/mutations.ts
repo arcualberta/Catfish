@@ -2,7 +2,7 @@
 import { State } from './state';
 import { Guid } from 'guid-typescript'
 import { eSubmissionStatus } from '../../shared/store/form-submission-utils'
-import { mutations as formSubmissionMutations } from '../../shared/store/form-submission-mutations'
+import { mutations as formSubmissionMutations } from '../../shared/store/flattened-form-field-mutations'
 import { FieldContainer } from '../../shared/models/fieldContainer';
 
 //Declare MutationTypes
