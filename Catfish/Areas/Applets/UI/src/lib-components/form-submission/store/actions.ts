@@ -1,7 +1,7 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
 import { Mutations } from './mutations';
-import { FlattenedFormFiledMutations } from '../../shared/store/form-submission-utils';
+import { FlattenedFormFiledMutations } from '../../shared/store/flattened-form-field-mutations'
 import { validateFields } from '../../shared/store/form-validators'
 
 //Declare ActionTypes
@@ -68,6 +68,7 @@ export const actions: ActionTree<State, any> = {
             .then(() => {
                 //console.log(JSON.stringify(data));
                 store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
+                store.commit(Mutations.SET_FORM, null);
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
 
             })

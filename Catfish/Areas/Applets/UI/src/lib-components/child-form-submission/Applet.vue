@@ -11,7 +11,8 @@
 	import { getters } from './store/getters'
 	import { Mutations } from '../form-submission/store/mutations'
 	import { mutations, Mutations as ChildMutations } from './store/mutations'
-	import { eSubmissionStatus, FlattenedFormFiledMutations } from '../shared/store/form-submission-utils'
+	import { eSubmissionStatus } from '../shared/store/form-submission-utils'
+	import { FlattenedFormFiledMutations } from '../shared/store/flattened-form-field-mutations'
 
 	import ChildForm from '../shared/components/editor/FieldContainer.vue'
 	import ChildView from '../shared/components/display/FieldContainer.vue'

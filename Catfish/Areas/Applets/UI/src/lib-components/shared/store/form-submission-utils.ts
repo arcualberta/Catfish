@@ -14,16 +14,6 @@ export interface TypedArray<T> {
     $values: T[];
 }
 
-export enum FlattenedFormFiledMutations {
-    SET_TEXT_VALUE = 'SET_TEXT_VALUE',
-    SET_OPTION_VALUE = 'SET_OPTION_VALUE',
-    ADD_FILE = 'ADD_FILE',
-    REMOVE_FILE = 'REMOVE_FILE',
-    CLEAR_FIELD_DATA = 'CLEAR_FIELD_DATA',
-    REMOVE_FIELD_CONTAINERS = 'REMOVE_FIELD_CONTAINERS',
-    APPEND_FIELD_DATA = 'APPEND_FIELD_DATA',
-}
-
 export abstract class FieldContainerUtils {
     public static cssClass(field: Field): string {
         return field.cssClass + " " + field.fieldCssClass;

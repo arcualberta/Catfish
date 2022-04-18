@@ -3,8 +3,8 @@
    import { Guid } from 'guid-typescript'
     import { useStore } from 'vuex';
     import { Option, OptionsField/*, OptionsFieldMethods*/ } from '../../models/fieldContainer'
-   // import { validateOptionsField } from '../../store/form-validators'
-   import { FlattenedFormFiledMutations } from '../../store/form-submission-utils'
+    // import { validateOptionsField } from '../../store/form-validators'
+    import { FlattenedFormFiledMutations } from '../../store/flattened-form-field-mutations'
 
     export default defineComponent({
         name: "CheckboxField",

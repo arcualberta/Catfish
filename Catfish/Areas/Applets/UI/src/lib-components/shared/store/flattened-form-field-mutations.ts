@@ -1,9 +1,19 @@
 ﻿import { Guid } from 'guid-typescript'
 import { MutationTree } from 'vuex';
 import { FlattenedFormFiledState as State } from './flattened-form-field-state';
-import { FlattenedFormFiledMutations, flattenFieldInputs } from './form-submission-utils'
+import { flattenFieldInputs } from './form-submission-utils'
 import { FieldContainer, eValidationStatus } from '../../shared/models/fieldContainer';
 import { validateFields } from '../../shared/store/form-validators';
+
+export enum FlattenedFormFiledMutations {
+    SET_TEXT_VALUE = 'SET_TEXT_VALUE',
+    SET_OPTION_VALUE = 'SET_OPTION_VALUE',
+    ADD_FILE = 'ADD_FILE',
+    REMOVE_FILE = 'REMOVE_FILE',
+    CLEAR_FIELD_DATA = 'CLEAR_FIELD_DATA',
+    REMOVE_FIELD_CONTAINERS = 'REMOVE_FIELD_CONTAINERS',
+    APPEND_FIELD_DATA = 'APPEND_FIELD_DATA',
+}
 
 //Create a mutation tree that implement all mutation interfaces
 export const mutations: MutationTree<State> = {

@@ -1,6 +1,6 @@
 ﻿import { Guid } from 'guid-typescript'
 import { Item } from '../../shared/models/item'
-import { FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
+import { FlattenedFormFiledState } from '../../shared/store/flattened-form-field-state'
 
 
 //Declare State interface

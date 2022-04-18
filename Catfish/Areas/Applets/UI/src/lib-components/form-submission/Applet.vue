@@ -7,8 +7,9 @@
 	import { state, State } from './store/state'
 	import { actions, Actions } from './store/actions'
     import { mutations, Mutations } from './store/mutations'
-    import { eSubmissionStatus, FlattenedFormFiledMutations } from '../shared/store/form-submission-utils'
-	
+    import { eSubmissionStatus } from '../shared/store/form-submission-utils'
+    import { FlattenedFormFiledMutations } from '../shared/store/flattened-form-field-mutations'
+
 
 	import SubmissionForm from '../shared/components/editor/FieldContainer.vue'
 

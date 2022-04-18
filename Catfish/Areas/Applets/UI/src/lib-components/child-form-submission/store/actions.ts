@@ -6,7 +6,7 @@ import { Mutations } from '../../form-submission/store/mutations'
 import { validateFields } from '../../shared/store/form-validators'
 import { Guid } from 'guid-typescript';
 import { FieldContainer } from '../../shared/models/fieldContainer';
-import { FlattenedFormFiledMutations } from '../../shared/store/form-submission-utils';
+import { FlattenedFormFiledMutations } from '../../shared/store/flattened-form-field-mutations'
 
 //Declare ActionTypes
 export enum Actions {
