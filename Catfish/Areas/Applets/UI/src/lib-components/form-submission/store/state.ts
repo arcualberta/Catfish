@@ -13,6 +13,7 @@ export interface State extends FlattenedFormFiledState {
     submissionStatus: eSubmissionStatus;
     formLoadAPI: string | null;
     formSubmissionAPI: string | null;
+    form: FieldContainer | null;
 }
 
 export const state: State = {
@@ -20,6 +21,7 @@ export const state: State = {
     formId: null,
     collectionId: null,
     groupId: null,
+    form: null,
     fieldContainers: [] as FieldContainer[],
     flattenedTextModels: {},
     flattenedOptionModels: {},

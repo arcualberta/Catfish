@@ -6,12 +6,12 @@
 	import { useStore } from 'vuex';
 	import props, { QueryParameter, DataAttribute } from '../shared/props'
 	import { eValidationStatus, FieldContainer } from '../shared/models/fieldContainer'
-	import { state } from './store/state'
+	import { state, State } from './store/state'
 	import { actions, Actions } from './store/actions'
 	import { getters } from './store/getters'
 	import { Mutations } from '../form-submission/store/mutations'
 	import { mutations, Mutations as ChildMutations } from './store/mutations'
-	import { eSubmissionStatus } from '../shared/store/form-submission-utils'
+	import { eSubmissionStatus, FlattenedFormFiledMutations } from '../shared/store/form-submission-utils'
 
 	import ChildForm from '../shared/components/editor/FieldContainer.vue'
 	import ChildView from '../shared/components/display/FieldContainer.vue'
@@ -37,8 +37,9 @@
 			const childResponseFormId = childResponseFormIdStr?.length > 0 ? Guid.parse(childResponseFormIdStr) : undefined;
 
 			const store = useStore();
+            const state = store.state as State;
 
-			store.commit(Mutations.CLEAR_FLATTENED_FIELD_MODELS);
+			store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
 			store.commit(Mutations.SET_ITEM_TEMPLATE_ID, itemTemplateId);
 			store.commit(Mutations.SET_FORM_ID, childFormId);
 			store.commit(ChildMutations.SET_PARENT_ITEM_ID, itemId);
@@ -80,15 +81,16 @@
 				toggleDisplayResponse(index);
 			}
 
+
 			return {
-				childForm: computed(() => store.state.form),
-				childSubmissions: computed(() => store.state.formInstances?.$values),
 				store,
-				submissionStatus: computed(() => store.state.submissionStatus),
+				childForm: computed(() => state.form),
+				childSubmissions: computed(() => state.formInstances?.$values),
+				submissionStatus: computed(() => state.submissionStatus),
 				eSubmissionStatus,
 				eValidationStatus,
 				childResponseFormId,
-				childResponseForm: computed(() => store.state.childResponseForm),
+				childResponseForm: computed(() => state.childResponseForm),
 				responseDisplayFlags,
 				toggleDisplayResponse,
 				submitChildResponse,
@@ -122,7 +124,7 @@
 	});
 </script>
 
-<template  class="childFormSubmissionApplet">
+<template class="childFormSubmissionApplet">
 	<div v-if="childForm && Object.keys(childForm).length > 0" class="submissionForm">
 		<ChildForm :model="childForm" />
 		<div v-if="childForm?.validationStatus === eValidationStatus.INVALID" class="alert alert-danger">Form validation failed.</div>
@@ -136,8 +138,8 @@
 	<div v-if="childSubmissions && childSubmissions.length > 0" class="mt-2 submissionInstanceList">
 		<h3>Responses</h3>
 		<div v-for="(child, index) in childSubmissions" class="submissionInstance">
-			
-			<ChildView :model="child" :hide-field-names="true"  />
+
+			<ChildView :model="child" :hide-field-names="true" />
 			<div class="text-right" v-if="!responseDisplayFlags[index]">
 				<a href="#" class="text-decoration-none" @click="toggleDisplayResponse(index)" onclick="return false;"><span class="fas fa-reply replyBtn"></span></a>
 				<span v-if="isAdmin" class="fas fa-remove" @click="removeChildForm(child);"></span>

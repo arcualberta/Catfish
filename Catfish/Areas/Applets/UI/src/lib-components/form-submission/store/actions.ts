@@ -1,7 +1,6 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
 import { Mutations } from './mutations';
-import { Mutations as BaseMutations } from '../../shared/store/form-submission-mutations';
 import { FlattenedFormFiledMutations } from '../../shared/store/form-submission-utils';
 import { validateFields } from '../../shared/store/form-validators'
 
@@ -23,17 +22,18 @@ export const actions: ActionTree<State, any> = {
             .then(response => response.json())
             .then(data => {
                 //console.log('Data:\n', JSON.stringify(data));
-                store.commit(BaseMutations.SET_FORM, data);
+                store.commit(Mutations.SET_FORM, data);
+                store.commit(FlattenedFormFiledMutations.APPEND_FIELD_DATA, data);
             })
             .catch(error => {
                 console.error('Actions.LOAD_FORM Error: ', error);
             });
     },
     [Actions.SUBMIT_FORM](store) {
-        const rootForm = store.state.fieldContainers.find(fc => fc.isRoot === true)
+        const form = store.state.form;
 
         //Validating the form
-        if (!rootForm || !validateFields(rootForm))
+        if (!form || !validateFields(form))
             return;
         store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
        
@@ -42,7 +42,7 @@ export const actions: ActionTree<State, any> = {
         const formData = new FormData();
 
         //Setting the serialized JSON form model to the datamodel variable in formData
-        formData.append('datamodel', JSON.stringify(rootForm));
+        formData.append('datamodel', JSON.stringify(form));
 
         //Adding all attachments uploaded to the files variable in formData
         for (const key in store.state.flattenedFileModels) {
@@ -65,8 +65,8 @@ export const actions: ActionTree<State, any> = {
                 }
             }).then(response =>
                 response.json())
-            .then(data => {
-                console.log(JSON.stringify(data));
+            .then(() => {
+                //console.log(JSON.stringify(data));
                 store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
 

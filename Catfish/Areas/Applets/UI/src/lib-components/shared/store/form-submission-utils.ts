@@ -21,6 +21,7 @@ export enum FlattenedFormFiledMutations {
     REMOVE_FILE = 'REMOVE_FILE',
     CLEAR_FIELD_DATA = 'CLEAR_FIELD_DATA',
     REMOVE_FIELD_CONTAINERS = 'REMOVE_FIELD_CONTAINERS',
+    APPEND_FIELD_DATA = 'APPEND_FIELD_DATA',
 }
 
 export abstract class FieldContainerUtils {

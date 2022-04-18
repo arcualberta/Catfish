@@ -3,6 +3,7 @@ import { State } from './state';
 import { Guid } from 'guid-typescript'
 import { eSubmissionStatus } from '../../shared/store/form-submission-utils'
 import { mutations as formSubmissionMutations } from '../../shared/store/form-submission-mutations'
+import { FieldContainer } from '../../shared/models/fieldContainer';
 
 //Declare MutationTypes
 export enum Mutations {
@@ -11,6 +12,7 @@ export enum Mutations {
     SET_SUBMISSION_STATUS = 'SET_SUBMISSION_STATUS',
     SET_COLLECTION_ID = 'SET_COLLECTION_ID',
     SET_GROUP_ID = 'SET_GROUP_ID',
+    SET_FORM = 'SET_FORM',
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -29,8 +31,10 @@ export const mutations: MutationTree<State> = {
         state.groupId = payload;
     },
     [Mutations.SET_SUBMISSION_STATUS](state: State, status: string) {
-
         //const fieldType: eFieldType = eFieldType[fieldTypeStr as keyof typeof eFieldType];
         state.submissionStatus = eSubmissionStatus[status as keyof typeof eSubmissionStatus];
+    },
+    [Mutations.SET_FORM](state: State, payload: FieldContainer) {
+        state.form = payload;
     },
 }

@@ -40,7 +40,7 @@
 
 			return {
 				store,
-				submissionForm: computed(() => (store.state as State).fieldContainers?.find(fc => fc.isRoot)),
+				submissionForm: computed(() => (store.state as State).form),
 				submissionStatus: computed(() => (store.state as State).submissionStatus),
 				eSubmissionStatus,
 				eValidationStatus,

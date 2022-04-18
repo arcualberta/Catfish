@@ -5,11 +5,6 @@ import { FlattenedFormFiledMutations, flattenFieldInputs } from './form-submissi
 import { FieldContainer, eValidationStatus } from '../../shared/models/fieldContainer';
 import { validateFields } from '../../shared/store/form-validators';
 
-//Declare MutationTypes
-export enum Mutations {
-    SET_FORM = 'SET_FORM',   
-}
-
 //Create a mutation tree that implement all mutation interfaces
 export const mutations: MutationTree<State> = {
     [FlattenedFormFiledMutations.SET_TEXT_VALUE](state: State, payload: { id: Guid; val: string }) {
@@ -55,18 +50,9 @@ export const mutations: MutationTree<State> = {
         state.flattenedOptionModels = {};
         state.flattenedFileModels = {}
         state.fieldContainers = [];
-    },    
-    [Mutations.SET_FORM](state: State, payload: FieldContainer) {
+    },
+    [FlattenedFormFiledMutations.APPEND_FIELD_DATA](state: State, payload: FieldContainer) {
         //console.log('SET_FORM payload:\n', JSON.stringify(payload));
-
-        const index = state.fieldContainers.findIndex(fc => fc.id === payload.id);
-        if (index >= 0)
-            state.fieldContainers[index] = payload;
-        else
-            state.fieldContainers.push(payload);
-
-        //console.log(JSON.stringify(state.fieldContainers));
-
         flattenFieldInputs(payload, state)
     },
 
