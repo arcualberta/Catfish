@@ -5,7 +5,5 @@ export interface FlattenedFormFiledState {
 	flattenedTextModels: { [key: string]: Text };
 	flattenedOptionModels: { [key: string]: Option };
 	flattenedFileModels: { [key: string]: File[] };
-
-	fieldContainers: FieldContainer[];
 }
 
