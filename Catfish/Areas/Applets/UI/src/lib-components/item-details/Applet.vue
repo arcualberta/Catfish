@@ -42,13 +42,24 @@
 
             const editMode = ref(false);
 
+            const isEditable = (fc: FieldContainerModel) => {
+                if (editMode.value) {
+                    console.log("TODO: Return true if Upate permission is available for the form with ID ", fc.id);
+
+                    return true;
+                }
+                else
+                    return false;               
+            }
+
             return {
                 store,
                 queryParams,
                 dataItem: computed(() => store.state.item),
                 getContainerName,
                 isAdmin,
-                editMode
+                editMode,
+                isEditable
             }
         },
         storeConfig: {
@@ -68,12 +79,12 @@
     </div>
     <div v-for="ms in dataItem?.metadataSets?.$values">
         <h4>{{getContainerName(ms)}}</h4>
-        <FieldContainerEditor v-if="editMode" :model="ms" />
+        <FieldContainerEditor v-if="isEditable(ms)" :model="ms" />
         <FieldContainerViewer v-else :model="ms" />
     </div>
     <div v-for="di in dataItem?.dataContainer?.$values">
         <h4>{{getContainerName(di)}}</h4>
-        <FieldContainerEditor v-if="editMode" :model="di" />
+        <FieldContainerEditor v-if="isEditable(di)" :model="di" />
         <FieldContainerViewer v-else :model="di" />
     </div>
 </template>
