@@ -14,6 +14,7 @@
 	import SelectField from './SelectField.vue'
 	import MultilingualTextField from './MultilingualTextField.vue'
 	import AudioRecorderField from './AudioRecorderField.vue'
+//    import FieldContainerReference from './FieldContainerReference.vue'
 
     export default defineComponent({
         name: "Field",
@@ -30,7 +31,7 @@
 			DateField,
 			DecimalField,
 			EmailField,
-			//FieldContainerReference,
+//			FieldContainerReference,
 			InfoField,
 			IntegerField,
 			RadioField,
@@ -56,6 +57,7 @@
 
 	<div v-if="fieldType === FieldTypes.FieldContainerReference">
 		TODO: Implement editor template for FieldContainerReference
+		<!--<FieldContainerReference :model="model" />-->
 	</div>
 	<InfoField v-else-if="fieldType === FieldTypes.InfoSection" :model="model" :class="cssClass" />
 	<div v-else :class="cssClass + ' row'">

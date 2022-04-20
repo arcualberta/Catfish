@@ -56,6 +56,34 @@ namespace Catfish.Areas.Applets.Services
                 UserPermissions userPermissions = new UserPermissions();
                 //User loggedUser = GetLoggedUser();
 
+                var myAggregatedActionList = typeof(TemplateOperations).GetFields();
+
+                foreach (var form in item.DataContainer)
+                {
+                    List<string> authorizedOperations = new List<string>();
+
+                    if (form.IsRoot)
+                    {
+                        //check for all permissions other than ChildFormView and ChildFormDelete and if the user has those permissions then add them to the authorizedOperations
+                    }
+                    else
+                    {
+                        //if the user has ChildFormView permission at the item level, add "Read" permission to authorizedOperations
+
+
+                        //if the user has ChildFormDelete permission at the item level, add "Delete" permission to authorizedOperations
+                    }
+
+                    UserPermissions permission = new UserPermissions()
+                    {
+                        FormId = form.Id,
+                        FormType = form.ModelType,
+                        Permissions = authorizedOperations.ToArray(),
+                    };
+
+                }
+
+
                 foreach (var getAction in getActions)
                 {
                     if (getAction.Access == GetAction.eAccess.Restricted)
