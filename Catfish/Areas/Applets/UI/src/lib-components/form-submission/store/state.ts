@@ -22,7 +22,6 @@ export const state: State = {
     collectionId: null,
     groupId: null,
     form: null,
-    fieldContainers: [] as FieldContainer[],
     flattenedTextModels: {},
     flattenedOptionModels: {},
     flattenedFileModels: {},

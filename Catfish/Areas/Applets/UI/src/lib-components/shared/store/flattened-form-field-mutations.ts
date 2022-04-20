@@ -22,11 +22,11 @@ export const mutations: MutationTree<State> = {
         state.flattenedTextModels[payload.id.toString()].value = payload.val;
         //console.log("state flattenedTextModels", JSON.stringify(state.flattenedTextModels))
 
-        //Re-validating the forms
-        state.fieldContainers?.forEach(fc => {
-            if (fc?.validationStatus === eValidationStatus.INVALID)
-            validateFields(fc);
-        })
+    ////    //Re-validating the forms
+    ////    state.fieldContainers?.forEach(fc => {
+    ////        if (fc?.validationStatus === eValidationStatus.INVALID)
+    ////        validateFields(fc);
+    ////    })
     },
     [FlattenedFormFiledMutations.SET_OPTION_VALUE](state: State, payload: { id: Guid; isSelected: boolean }) {
         state.flattenedOptionModels[payload.id.toString()].selected = payload.isSelected;
@@ -59,7 +59,7 @@ export const mutations: MutationTree<State> = {
         state.flattenedTextModels = {};
         state.flattenedOptionModels = {};
         state.flattenedFileModels = {}
-        state.fieldContainers = [];
+    ////    state.fieldContainers = [];
     },
     [FlattenedFormFiledMutations.APPEND_FIELD_DATA](state: State, payload: FieldContainer) {
         //console.log('SET_FORM payload:\n', JSON.stringify(payload));

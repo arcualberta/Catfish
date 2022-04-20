@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Catfish.Core.Models.Contents.Workflow;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Catfish.Core.Models.Permissions;
 
 namespace Catfish.Areas.Applets.Services
 {
@@ -48,26 +49,63 @@ namespace Catfish.Areas.Applets.Services
         {
             try
             {
-                List<string> userPermissions = new List<string>();
+                //List<string> userPermissions = new List<string>();
                 Item item = _appDb.Items.Where(i => i.Id == itemId).FirstOrDefault();
                 EntityTemplate template = _appDb.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
                 List<GetAction> getActions = template.Workflow.Actions.ToList();
+                UserPermissions userPermissions = new UserPermissions();
                 //User loggedUser = GetLoggedUser();
+
+                var myAggregatedActionList = typeof(TemplateOperations).GetFields();
+
+                foreach (var form in item.DataContainer)
+                {
+                    List<string> authorizedOperations = new List<string>();
+
+                    if (form.IsRoot)
+                    {
+                        //check for all permissions other than ChildFormView and ChildFormDelete and if the user has those permissions then add them to the authorizedOperations
+                    }
+                    else
+                    {
+                        //if the user has ChildFormView permission at the item level, add "Read" permission to authorizedOperations
+
+
+                        //if the user has ChildFormDelete permission at the item level, add "Delete" permission to authorizedOperations
+                    }
+
+                    UserPermissions permission = new UserPermissions()
+                    {
+                        FormId = form.Id,
+                        FormType = form.ModelType,
+                        Permissions = authorizedOperations.ToArray(),
+                    };
+
+                }
+
 
                 foreach (var getAction in getActions)
                 {
                     if (getAction.Access == GetAction.eAccess.Restricted)
                     {
-                        var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { new OperationAuthorizationRequirement() { Name = nameof(getAction.Function) } });
+                        var dataContainerId = getAction.Params.Select(dcid => dcid.TemplateId).FirstOrDefault();
+                        var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { new OperationAuthorizationRequirement() { Name = getAction.Function } });
                         task.Wait();
                         if (task.Result.Succeeded)
                         {
-                            userPermissions.Add(getAction.Function);
+                            var form = item.DataContainer.Where(dc => dc.Id == dataContainerId).FirstOrDefault();
+
+                            UserPermissions permission = new UserPermissions() { 
+                            FormId = form.Id,
+                            FormType=form.ModelType,
+
+                            };
+                            //userPermissions.Add(getAction.Function);
                         }
                     }
                     else
                     {
-                        userPermissions.Add(getAction.Function);
+                        //userPermissions.Add(getAction.Function);
                     }
                 }
 
