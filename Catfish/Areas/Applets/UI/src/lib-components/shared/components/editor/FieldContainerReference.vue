@@ -3,12 +3,12 @@
     import { useStore } from 'vuex';
 	import { FieldContainerReference } from '../../models/fieldContainer'
 
-    import ChildFieldContainer from './text/ChildFieldContainer.vue'
+    import FieldBase from './FieldBase.vue'
 
     export default defineComponent({
 		name: "FieldContainerReference",
         components: {
-           ChildFieldContainer
+            FieldBase
         },
         props: {
             model: {
@@ -30,6 +30,7 @@
 </script>
 
 <template>
-    <ChildFieldContainer :model="source" />
+    <!--TODO: Implement editor template for FieldContainerReference-->
+    <FieldBase v-for="field in source.fields?.$values" :model="field" />
 </template>
 

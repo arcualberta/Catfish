@@ -14,10 +14,9 @@
 	import SelectField from './SelectField.vue'
 	import MultilingualTextField from './MultilingualTextField.vue'
 	import AudioRecorderField from './AudioRecorderField.vue'
-    import FieldContainerReference from './FieldContainerReference.vue'
 
     export default defineComponent({
-        name: "Field",
+        name: "FieldBase",
         props: {
             model: {
                 type: null as PropType<Field> | null,
@@ -31,7 +30,6 @@
 			DateField,
 			DecimalField,
 			EmailField,
-			FieldContainerReference,
 			InfoField,
 			IntegerField,
 			RadioField,
@@ -55,11 +53,7 @@
 <template>
 	<!--<FieldContainerReference v-else-if="fieldType === eFieldType.FieldContainerReference" :model="model" :class="cssClass" />-->
 
-	<div v-if="fieldType === FieldTypes.FieldContainerReference">
-		<!--TODO: Implement editor template for FieldContainerReference-->
-		<FieldContainerReference :model="model" />
-	</div>
-	<InfoField v-else-if="fieldType === FieldTypes.InfoSection" :model="model" :class="cssClass" />
+	<InfoField v-if="fieldType === FieldTypes.InfoSection" :model="model" :class="cssClass" />
 	<div v-else :class="cssClass + ' row'">
 		<div class="col-md-3 field-name">
 			{{model.name.concatenatedContent}} <span v-if="this.model.required" style="color:red">*</span>
