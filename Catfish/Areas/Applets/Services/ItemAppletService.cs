@@ -45,7 +45,7 @@ namespace Catfish.Areas.Applets.Services
              return authorizedItem;
         }
 
-        public List<string> GetUserPermissions(Guid itemId, ClaimsPrincipal user)
+        public List<UserPermissions> GetUserPermissions(Guid itemId, ClaimsPrincipal user)
         {
             try
             {
@@ -53,70 +53,79 @@ namespace Catfish.Areas.Applets.Services
                 Item item = _appDb.Items.Where(i => i.Id == itemId).FirstOrDefault();
                 EntityTemplate template = _appDb.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
                 List<GetAction> getActions = template.Workflow.Actions.ToList();
-                UserPermissions userPermissions = new UserPermissions();
+                List<UserPermissions> userPermissions = new List<UserPermissions>();
                 //User loggedUser = GetLoggedUser();
 
                 var myAggregatedActionList = typeof(TemplateOperations).GetFields();
 
                 foreach (var form in item.DataContainer)
                 {
-                    List<string> authorizedOperations = new List<string>();
+                    List<Permission> authorizedOperations = new List<Permission>();
 
                     if (form.IsRoot)
                     {
                         //check for all permissions other than ChildFormView and ChildFormDelete and if the user has those permissions then add them to the authorizedOperations
+
+                        foreach (var actionItem in myAggregatedActionList)
+                        {
+                            var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { new OperationAuthorizationRequirement() { Name = actionItem.Name } });
+                            task.Wait();
+                            if (task.Result.Succeeded)
+                            {
+                                Permission actionPermission = new Permission()
+                                {
+                                    Action = actionItem.Name,
+                                    IsChild = false
+                                };
+                                authorizedOperations.Add(actionPermission);
+                            }
+                        }
                     }
                     else
                     {
                         //if the user has ChildFormView permission at the item level, add "Read" permission to authorizedOperations
-
+                        var taskRead = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormView });
+                        taskRead.Wait();
+                        if (taskRead.Result.Succeeded)
+                        {
+                            Permission actionPermission = new Permission()
+                            {
+                                Action = TemplateOperations.Read.Name,
+                                IsChild = true
+                            };
+                            authorizedOperations.Add(actionPermission);
+                        }
 
                         //if the user has ChildFormDelete permission at the item level, add "Delete" permission to authorizedOperations
+                        var taskDelete = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChildFormDelete });
+                        taskDelete.Wait();
+                        if (taskDelete.Result.Succeeded)
+                        {
+                            Permission actionPermission = new Permission()
+                            {
+                                Action = TemplateOperations.Delete.Name,
+                                IsChild = true
+                            };
+                            authorizedOperations.Add(actionPermission);
+                        }
                     }
 
                     UserPermissions permission = new UserPermissions()
                     {
                         FormId = form.Id,
                         FormType = form.ModelType,
-                        Permissions = authorizedOperations.ToArray(),
+                        Permissions = authorizedOperations
                     };
-
+                    userPermissions.Add(permission);
                 }
 
-
-                foreach (var getAction in getActions)
-                {
-                    if (getAction.Access == GetAction.eAccess.Restricted)
-                    {
-                        var dataContainerId = getAction.Params.Select(dcid => dcid.TemplateId).FirstOrDefault();
-                        var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { new OperationAuthorizationRequirement() { Name = getAction.Function } });
-                        task.Wait();
-                        if (task.Result.Succeeded)
-                        {
-                            var form = item.DataContainer.Where(dc => dc.Id == dataContainerId).FirstOrDefault();
-
-                            UserPermissions permission = new UserPermissions() { 
-                            FormId = form.Id,
-                            FormType=form.ModelType,
-
-                            };
-                            //userPermissions.Add(getAction.Function);
-                        }
-                    }
-                    else
-                    {
-                        //userPermissions.Add(getAction.Function);
-                    }
-                }
-
-
+                return userPermissions;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                _errorLog.Log(new Error(ex));
+                return null;
             }
-            throw new NotImplementedException();
         }
     }
 }
