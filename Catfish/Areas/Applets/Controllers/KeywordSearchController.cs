@@ -166,14 +166,14 @@ namespace Catfish.Areas.Applets.Controllers
 
                 var permittedStatusIds = GetPermittedStateIdsForCurrentUser(Guid.Parse(block.SelectedGroupId.Value), template, "ListInstances", permissibleStateGuids);
 
-				        if (permittedStatusIds.Count == 0)
-					          return result;
-                    
-				#endregion
+                if (permittedStatusIds.Count == 0)
+                    return result;
+
+                #endregion
 
 
 
-				KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
+                KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
 
                 string keywords = null;
                 string[] slectedKeywords = string.IsNullOrEmpty(keywords)
@@ -186,8 +186,8 @@ namespace Catfish.Areas.Applets.Controllers
                     ? scope
                     : string.Format("{0} AND {1}", scope, query);
 
-                if (groupId.HasValue)
-                    query = string.Format("{0} AND group_s:{1}", query, groupId.Value);
+                ////if (groupId.HasValue)
+                ////    query = string.Format("{0} AND group_s:{1}", query, groupId.Value);
 
                 List<string> stateLimits = new List<string>();
                 foreach (var stId in permittedStatusIds)

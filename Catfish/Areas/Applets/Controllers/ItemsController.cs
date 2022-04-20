@@ -110,8 +110,8 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         //[Route("{templateId:Guid}")]
-        public async Task<ContentResult> PostAsync( Guid itemTemplateId, Guid? groupId, Guid collectionId, [FromForm] String datamodel, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
-		{
+        public async Task<ContentResult> PostAsync(Guid itemTemplateId, Guid? groupId, Guid collectionId, [FromForm] String datamodel, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
+        {
             var settings = new JsonSerializerSettings()
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
@@ -140,12 +140,12 @@ namespace Catfish.Areas.Applets.Controllers
 
                     bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
                 }
-                }
-                catch (Exception ex)
-                {
+            }
+            catch (Exception ex)
+            {
 
-                    return Content("{}", "application/json");
-                }
+                return Content("{}", "application/json");
+            }
             return Content(JsonConvert.SerializeObject("Sucess", settings), "application/json");
         }
 

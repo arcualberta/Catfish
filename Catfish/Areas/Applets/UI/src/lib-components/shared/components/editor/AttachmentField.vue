@@ -7,7 +7,8 @@
     import { useStore } from 'vuex';
 
     import { AttachmentField } from '../../models/fieldContainer'
-    import { FlattenedFormFiledMutations, FlattenedFormFiledState } from '../../store/form-submission-utils'
+    import { FlattenedFormFiledState } from '../../store/flattened-form-field-state'
+    import { FlattenedFormFiledMutations } from '../../store/flattened-form-field-mutations'
 	import DropZone from './DropZone.vue'
 
     export default defineComponent({
