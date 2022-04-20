@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Catfish.Core.Models.Contents.Workflow;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Catfish.Core.Models.Permissions;
+using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Data;
 
 namespace Catfish.Areas.Applets.Services
 {
@@ -49,20 +51,48 @@ namespace Catfish.Areas.Applets.Services
         {
             try
             {
-                //List<string> userPermissions = new List<string>();
                 Item item = _appDb.Items.Where(i => i.Id == itemId).FirstOrDefault();
-                EntityTemplate template = _appDb.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
-                List<GetAction> getActions = template.Workflow.Actions.ToList();
                 List<UserPermissions> userPermissions = new List<UserPermissions>();
-                //User loggedUser = GetLoggedUser();
-
-                var myAggregatedActionList = typeof(TemplateOperations).GetFields();
 
                 foreach (var form in item.DataContainer)
-                {
-                    List<Permission> authorizedOperations = new List<Permission>();
+                    userPermissions.Add(GetUserPermissions(item, form, user));
 
-                    if (form.IsRoot)
+                foreach (var form in item.MetadataSets)
+                    userPermissions.Add(GetUserPermissions(item, form, user));
+
+                return userPermissions;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        public UserPermissions GetUserPermissions(Item item, FieldContainer form, ClaimsPrincipal user)
+        {
+            try
+            {
+                List<UserPermissions> userPermissions = new List<UserPermissions>();
+                var myAggregatedActionList = typeof(TemplateOperations).GetFields();
+
+                List<Permission> authorizedOperations = new List<Permission>();
+
+                //In the current implementation of our workflow-security model, we cannot control the permissions at
+                //form (or DataItem) level or metadata-set level. Therefore, if the currently logged in user is a sys admin
+                //we grant all permissions to all forms. If the current user is not a sys admin, we follow the permission process
+                //defined in the workflow, in which case the user may get either read or delete permissions for non-root fomrs and
+                //metadata sets provided the user has CHildFormView or ChildFormDelete permissions on the item.
+                if (user.IsInRole("SysAdmin"))
+                {
+                    authorizedOperations.Add(new Permission() { Action = TemplateOperations.Read.Name });
+                    authorizedOperations.Add(new Permission() { Action = TemplateOperations.Update.Name });
+                    authorizedOperations.Add(new Permission() { Action = TemplateOperations.Delete.Name });
+                    authorizedOperations.Add(new Permission() { Action = TemplateOperations.ListInstances.Name });
+                }
+                else
+                {
+                    if ((form is DataItem) && (form as DataItem).IsRoot)
                     {
                         //check for all permissions other than ChildFormView and ChildFormDelete and if the user has those permissions then add them to the authorizedOperations
 
@@ -75,7 +105,6 @@ namespace Catfish.Areas.Applets.Services
                                 Permission actionPermission = new Permission()
                                 {
                                     Action = actionItem.Name,
-                                    IsChild = false
                                 };
                                 authorizedOperations.Add(actionPermission);
                             }
@@ -91,7 +120,6 @@ namespace Catfish.Areas.Applets.Services
                             Permission actionPermission = new Permission()
                             {
                                 Action = TemplateOperations.Read.Name,
-                                IsChild = true
                             };
                             authorizedOperations.Add(actionPermission);
                         }
@@ -104,22 +132,20 @@ namespace Catfish.Areas.Applets.Services
                             Permission actionPermission = new Permission()
                             {
                                 Action = TemplateOperations.Delete.Name,
-                                IsChild = true
                             };
                             authorizedOperations.Add(actionPermission);
                         }
                     }
-
-                    UserPermissions permission = new UserPermissions()
-                    {
-                        FormId = form.Id,
-                        FormType = form.ModelType,
-                        Permissions = authorizedOperations
-                    };
-                    userPermissions.Add(permission);
                 }
 
-                return userPermissions;
+                UserPermissions permission = new UserPermissions()
+                {
+                    FormId = form.Id,
+                    FormType = form.ModelType,
+                    Permissions = authorizedOperations
+                };
+
+                return permission;
             }
             catch (Exception ex)
             {
