@@ -2,8 +2,7 @@
 import { MutationTree } from 'vuex';
 import { FlattenedFormFiledState as State } from './flattened-form-field-state';
 import { flattenFieldInputs } from './form-submission-utils'
-import { FieldContainer, eValidationStatus } from '../../shared/models/fieldContainer';
-import { validateFields } from '../../shared/store/form-validators';
+import { FieldContainer } from '../../shared/models/fieldContainer';
 
 export enum FlattenedFormFiledMutations {
     SET_TEXT_VALUE = 'SET_TEXT_VALUE',
