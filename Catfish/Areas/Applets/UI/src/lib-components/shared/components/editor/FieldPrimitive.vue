@@ -51,8 +51,6 @@
 </script>
 
 <template>
-	<!--<FieldContainerReference v-else-if="fieldType === eFieldType.FieldContainerReference" :model="model" :class="cssClass" />-->
-
 	<InfoField v-if="fieldType === FieldTypes.InfoSection" :model="model" :class="cssClass" />
 	<div v-else :class="cssClass + ' row'">
 		<div class="col-md-3 field-name">

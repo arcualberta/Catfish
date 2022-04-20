@@ -3,12 +3,12 @@
     import { useStore } from 'vuex';
 	import { FieldContainerReference } from '../../models/fieldContainer'
 
-    import FieldBase from './FieldBase.vue'
+    import FieldPrimitive from './FieldPrimitive.vue'
 
     export default defineComponent({
 		name: "FieldContainerReference",
         components: {
-            FieldBase
+            FieldPrimitive
         },
         props: {
             model: {
@@ -30,7 +30,6 @@
 </script>
 
 <template>
-    <!--TODO: Implement editor template for FieldContainerReference-->
-    <FieldBase v-for="field in source.fields?.$values" :model="field" />
+    <FieldPrimitive v-for="field in source.fields?.$values" :model="field" />
 </template>
 
