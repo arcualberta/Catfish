@@ -2,7 +2,7 @@
 import { MutationTree } from 'vuex';
 import { FlattenedFormFiledState as State } from './flattened-form-field-state';
 import { flattenFieldInputs } from './form-submission-utils'
-import { FieldContainer, eValidationStatus, MonolingualTextField } from '../../shared/models/fieldContainer';
+import { FieldContainer, /*eValidationStatus,*/ MonolingualTextField } from '../../shared/models/fieldContainer';
 //import { validateFields } from '../../shared/store/form-validators';
 
 export enum FlattenedFormFiledMutations {
@@ -68,7 +68,8 @@ export const mutations: MutationTree<State> = {
     },
     [FlattenedFormFiledMutations.APPEND_MONOLINGUAL_VALUE](state: State, target: MonolingualTextField) {
        // declare const newText: Text;
-        
+        //console.log("add monolingual text value")
+       // console.log(JSON.stringify(target));
         var newText= {
            
             id: Guid.create(),
