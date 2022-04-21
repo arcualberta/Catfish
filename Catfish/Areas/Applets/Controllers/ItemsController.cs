@@ -8,6 +8,7 @@ using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Core.Models.Permissions;
 using Catfish.Core.Services;
 using Catfish.Services;
 using ElmahCore;
@@ -390,18 +391,25 @@ namespace Catfish.Areas.Applets.Controllers
             return items;//result;
         }
         [HttpGet("getUserPermissions/{itemId}")]
-        public List<string> GetUserPermissions(Guid itemId)
+        public ContentResult GetUserPermissions(Guid itemId)
         {
             try
             {
-                List<string> userPermissions = _itemAppletService.GetUserPermissions(itemId, User);
+                List<UserPermissions> userPermissions = _itemAppletService.GetUserPermissions(itemId, User);
 
-                return null;
+                var serializationSettings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.None,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
+                return Content(JsonConvert.SerializeObject(userPermissions, serializationSettings), "application/json");
             }
             catch (Exception)
             {
 
-                return null;
+                return Content("{}", "application/json");
             }
 
             
