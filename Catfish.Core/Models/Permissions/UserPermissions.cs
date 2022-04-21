@@ -8,6 +8,6 @@ namespace Catfish.Core.Models.Permissions
     {
         public Guid FormId { get; set; }
         public string FormType { get; set; }
-        public string[] Permissions { get; set; } = new string[] { };
+        public List<Permission> Permissions { get; set; } 
     }
 }
