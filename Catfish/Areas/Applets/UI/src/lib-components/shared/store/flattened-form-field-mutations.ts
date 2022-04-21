@@ -2,7 +2,8 @@
 import { MutationTree } from 'vuex';
 import { FlattenedFormFiledState as State } from './flattened-form-field-state';
 import { flattenFieldInputs } from './form-submission-utils'
-import { FieldContainer, /*eValidationStatus,*/ MonolingualTextField } from '../../shared/models/fieldContainer';
+import { FieldContainer, /*eValidationStatus,*/ MonolingualTextField, MultilingualTextField } from '../../shared/models/fieldContainer';
+import { TextCollection, Text } from '../models/textModels';
 //import { validateFields } from '../../shared/store/form-validators';
 
 export enum FlattenedFormFiledMutations {
@@ -13,7 +14,8 @@ export enum FlattenedFormFiledMutations {
     CLEAR_FIELD_DATA = 'CLEAR_FIELD_DATA',
     REMOVE_FIELD_CONTAINERS = 'REMOVE_FIELD_CONTAINERS',
     APPEND_FIELD_DATA = 'APPEND_FIELD_DATA',
-    APPEND_MONOLINGUAL_VALUE ='APPEND_MONOLINGUAL_VALUE'
+    APPEND_MONOLINGUAL_VALUE = 'APPEND_MONOLINGUAL_VALUE',
+    APPEND_MULTILINGUAL_VALUE ='APPEND_MULTILINGUAL_VALUE'
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -67,25 +69,50 @@ export const mutations: MutationTree<State> = {
         flattenFieldInputs(payload, state)
     },
     [FlattenedFormFiledMutations.APPEND_MONOLINGUAL_VALUE](state: State, target: MonolingualTextField) {
-       // declare const newText: Text;
-        //console.log("add monolingual text value")
-       // console.log(JSON.stringify(target));
-        var newText= {
-           
-            id: Guid.create(),
-            $type: "",
-            modelType: "",
-            value: "",
-            format: "",
-            language:"",
-            rank: 0,
-            created: new Date(),
-            updated: new Date()
-        };
+       
+        var newText = {} as Text;
+        newText.id = Guid.create();
 
         target.values?.$values.push(newText);
 
         state.flattenedTextModels[newText.id.toString()] = newText;
+    },
+    [FlattenedFormFiledMutations.APPEND_MULTILINGUAL_VALUE](state: State, target: MultilingualTextField) {
+      
+        var newTextCollection = {} as TextCollection
+        newTextCollection.values = {
+            
+                $type: "",
+                $values: [] as Text[]
+          
+        }
+        newTextCollection.id = Guid.create();
+
+        if (target.values?.$values[0]) {
+          
+            target.values.$values.forEach((txt: Text | any) => {
+
+               
+                const newTxt: Text = {} as Text;
+
+                newTxt.id = Guid.create();
+                newTxt.language = txt.language;
+
+                newTextCollection.values.$values.push(newTxt);
+                state.flattenedTextModels[newTxt.id.toString()] = newTxt;
+
+            })
+        } else {
+            const newTxt: Text = {} as Text;
+
+            newTxt.id = Guid.create();
+            newTxt.language ="en"
+
+            newTextCollection.values.$values.push(newTxt);
+            state.flattenedTextModels[newTxt.id.toString()] = newTxt;
+        }
+
+        target.values?.$values.push(newTextCollection);
     },
 
 }
