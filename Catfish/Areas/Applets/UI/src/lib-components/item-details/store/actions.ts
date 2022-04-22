@@ -32,6 +32,7 @@ export const actions: ActionTree<State, any> = {
         fetch(api)
             .then(response => response.json())
             .then(data => {
+                console.log(JSON.stringify(data))
                 store.commit(Mutations.SET_USER_PERMISSIONS, data);
             });
     },

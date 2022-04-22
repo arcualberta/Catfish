@@ -43,6 +43,22 @@
             const editMode = ref(false);
 
             const isEditable = (fc: FieldContainerModel) => {
+                const permissionList = store.state.permissionList;
+                for (var i = 0; i < permissionList.length; i++) {
+                    const permissionData = permissionList[i];
+                    if (permissionData.formId === fc.id) {
+                        const permissionNames = permissionData.permissions;
+                        //console.log("permission Names " + JSON.stringify(permissionData.permissions))
+                        for (var x = 0; x < permissionNames.length; x++) {
+                            const permissionName = permissionNames[x];
+                            if (permissionName.action === "Update") {
+                                console.log("permission Found" + permissionName.action)
+                                editMode.value = true;
+                            }
+                        }
+                    }
+                    
+                }
                 if (editMode.value) {
                     console.log("TODO: Return true if Upate permission is available for the form with ID ", fc.id);
 
