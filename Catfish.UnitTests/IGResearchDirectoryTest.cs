@@ -114,28 +114,34 @@ Any public disclosures of information from the directory will be in aggregate fo
             string[] publicDisplay = new string[] { "Display this on my public profile?" };
             string[] pronounsList = new string[]{"they/them", "she/her", "he/him", "Would rather not say", "Another" };
 
-            var pronouns = rdForm.CreateField<RadioField>("Pronouns", lang,pronounsList, true);
+            var pronouns = rdForm.CreateField<CheckboxField>("Pronouns", lang,pronounsList, true);
             var pronounAnother = rdForm.CreateField<TextField>("If you select 'Another, please specify", lang);
+
             pronounAnother.VisibilityCondition
-                .AppendLogicalExpression(pronouns, ComputationExpression.eRelational.EQUAL, pronouns.GetOption("Another", lang));
-            pronounAnother.RequiredCondition.AppendLogicalExpression(pronouns, ComputationExpression.eRelational.EQUAL, pronouns.GetOption("Another", lang));
+                  .AppendLogicalExpression(pronouns, pronouns.GetOption("Another", lang), true);
+            pronounAnother.RequiredCondition.AppendLogicalExpression(pronouns, pronouns.GetOption("Another", lang), true);
+            //pronounAnother.VisibilityCondition
+            //    .AppendLogicalExpression(pronouns, ComputationExpression.eRelational.EQUAL, pronouns.GetOption("Another", lang));
+            //pronounAnother.RequiredCondition.AppendLogicalExpression(pronouns, ComputationExpression.eRelational.EQUAL, pronouns.GetOption("Another", lang));
 
             string[] positionList = new string[] { "Full Professor", "Assistant Professor", "Associate Professor", "Faculty Member", "Post-doc", "Graduate Student", "Research Assistant", "Another" };
+            rdForm.CreateField<TextField>("Position", lang, true);
+            //var position = rdForm.CreateField<CheckboxField>("Position", lang, positionList, true);
+            //position.CssClass = "positionMultiCheck"; 
+            //var posAnother = rdForm.CreateField<TextField>("If you select 'Another', please specify", lang);
 
-            var position = rdForm.CreateField<CheckboxField>("Position", lang, positionList, true);
-            position.CssClass = "positionMultiCheck"; 
-            var posAnother = rdForm.CreateField<TextField>("If you select 'Another', please specify", lang);
-          
-            posAnother.VisibilityCondition
-                  .AppendLogicalExpression(position, position.GetOption("Another", lang),true);
-            posAnother.RequiredCondition.AppendLogicalExpression(position, position.GetOption("Another", lang), true);
+            //posAnother.VisibilityCondition
+            //      .AppendLogicalExpression(position, position.GetOption("Another", lang),true);
+            //posAnother.RequiredCondition.AppendLogicalExpression(position, position.GetOption("Another", lang), true);
+
+
             string[] options = new string[] { "Yes", "No" };
            // var pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
            // pubDisplay.CssClass = "radio-inline";
 
-            rdForm.CreateField<TextField>("Faculty", lang, true);
-            rdForm.CreateField<TextField>("Department", lang, true);
-            rdForm.CreateField<TextField>("Organization", lang, true);
+            rdForm.CreateField<TextField>("Faculty/Department/Organization", lang, true);
+            //rdForm.CreateField<TextField>("Department", lang, true);
+            //rdForm.CreateField<TextField>("Organization", lang, true);
 
             //////////////////////////////////////                         SECTION 2    ////////////////////////////////////////////////////////////////////////////////
             ///
@@ -148,7 +154,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                  .AppendContent("div", @"This information will be used to identify equity-seeking groups in order for IG to highlight, support, and mobilize their intersectional research. This information will remain private unless “display this on my public profile” is checked for each identity category. Your completed profile is important as it helps all researchers see themselves in the fabric of the University of Alberta community. We realize self-identification is a complex matter and that multiple categories may be selected and/or that a more thorough self-identification may be provided in the “Another'' field - we welcome feedback on this process. 
 ", lang, "alert alert-info");
 
-            string[] disabilitiesList = new string[] { "Deaf", "Neurodivergent", "Experiencing Disability", "Not living with disability", "Another" };
+            string[] disabilitiesList = new string[] { "Deaf", "Neurodivergent", "Experiencing Disability", "Not living with a disability", "Another" };
 
             var disabilities = rdForm.CreateField<CheckboxField>("Living with disability", lang, disabilitiesList, true);
             disabilities.CssClass = "disabilitiesMultiCheck";
@@ -179,12 +185,14 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             string[] genderList = new string[] { "Two-Spirit", "Gender non-binary", "Genderfluid", "Transgender", "Woman", "Man", "Another" };
 
-            var gender = rdForm.CreateField<RadioField>("Gender identity", lang, genderList, true);
+            var gender = rdForm.CreateField<CheckboxField>("Gender identity", lang, genderList, true);
             var genAnother = rdForm.CreateField<TextField>("If you select 'Another', please specify", lang);
+            //genAnother.VisibilityCondition
+            //    .AppendLogicalExpression(gender, ComputationExpression.eRelational.EQUAL, gender.GetOption("Another", lang));
+            //genAnother.RequiredCondition.AppendLogicalExpression(gender, ComputationExpression.eRelational.EQUAL, gender.GetOption("Another", lang));
             genAnother.VisibilityCondition
-                .AppendLogicalExpression(gender, ComputationExpression.eRelational.EQUAL, gender.GetOption("Another", lang));
-            genAnother.RequiredCondition.AppendLogicalExpression(gender, ComputationExpression.eRelational.EQUAL, gender.GetOption("Another", lang));
-
+                 .AppendLogicalExpression(gender, gender.GetOption("Another", lang), true);
+            genAnother.RequiredCondition.AppendLogicalExpression(gender, gender.GetOption("Another", lang), true); 
             string[] pubDisplayList = GetQuestionsToPublicDisplay();
             
           
@@ -750,7 +758,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             bool clearCurrentData = false;
 
             //Set maxEntries to a positive value to limit the maximum number of data entries to be imported.
-            int maxEntries = 3;
+            int maxEntries = 1;
 
             // string multiValueSeparator = ";";
 
@@ -784,6 +792,9 @@ Any public disclosures of information from the directory will be in aggregate fo
                 _newDataItem.Created = DateTime.Now;
 
                 string[] colHeadings = GetColHeaders();
+                string displayOnProfile = "";
+                displayOnProfile = getDisplayOnProfile(row);
+          
 
                 int i = 0;
                 foreach (var col in row.Values)
@@ -802,6 +813,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                             var f = _newDataItem.Fields[k];
                             string fieldLabel = _newDataItem.Fields[k].GetName();
                             string _colHeading = colHeading.Substring(0, colHeading.Length - 1);
+                           
                             //this will work if the header on the form field and the g sheet are the similiar
                             if (!string.IsNullOrEmpty(fieldLabel) && (_colHeading.Contains(fieldLabel, StringComparison.OrdinalIgnoreCase) || fieldLabel.Contains(_colHeading, StringComparison.OrdinalIgnoreCase)))
                             {
@@ -839,6 +851,10 @@ Any public disclosures of information from the directory will be in aggregate fo
                                                 (_newDataItem.Fields[k] as RadioField).Options[j].SetAttribute("selected", true);
                                                 break;
                                             }
+                                            if (j == (((f as RadioField).Options.Count) - 1))
+                                            {
+                                                (_newDataItem.Fields[k] as RadioField).Options[j].SetAttribute("selected", true);//select "Another"
+                                            }
                                         }
                                     }
 
@@ -850,6 +866,9 @@ Any public disclosures of information from the directory will be in aggregate fo
                                 {
                                     //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
                                     string[] vals = colValue.Split(","); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
+                                    if (_colHeading.Contains("display"))
+                                        vals = displayOnProfile.Split(",");
+
                                     foreach (string v in vals)
                                     {
 
@@ -861,6 +880,11 @@ Any public disclosures of information from the directory will be in aggregate fo
 
                                                 (_newDataItem.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);
                                                 break;
+                                            }
+
+                                            if(j == (((f as CheckboxField).Options.Count) - 1))
+                                            {
+                                                (_newDataItem.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);//select "Another"
                                             }
                                         }
                                     }
@@ -913,9 +937,56 @@ Any public disclosures of information from the directory will be in aggregate fo
              rowCount++;
          }//end of each row
 
-                 _db.SaveChanges();
+         _db.SaveChanges();
      }
    
+
+        private string getDisplayOnProfile(RowData row)
+        {
+            string displayOnProfile = "";
+            string[] colHeadings = GetColHeaders();
+            int c = 0;
+            //{"Pronouns", "Position", "Living with disability", "Race", "Ethnicity", "Gender identity", "The links to my work", "None"};
+            foreach (var col in row.Values)
+            {
+                string colHeading = colHeadings[c];
+                string colValue = col.FormattedValue;
+                //col headding with "*" represent interested heading
+                if (colHeading.Contains("display") && !string.IsNullOrEmpty(colValue))
+                {
+                    if (colHeading.Contains("display*"))
+                    {
+                        if (colValue.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                            displayOnProfile += "Pronouns";
+                    }
+
+                    else if (colHeading.Contains("display race"))
+                    {
+                        if (colValue.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                            displayOnProfile += ", Race";
+                    }
+                    else if (colHeading.Contains("display ethnicity"))
+                    {
+                        if (colValue.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                            displayOnProfile += ", Ethnicity";
+                    }
+                    else if (colHeading.Contains("display gender"))
+                    {
+                        if (colValue.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                            displayOnProfile += ", Gender identity";
+                    }
+                    else if (colHeading.Contains("display disability"))
+                    {
+                        if (colValue.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                            displayOnProfile += ", Living with disability";
+                    }
+                }
+
+                c++;
+            }
+
+           return displayOnProfile;
+        }
 
         [Test]
         public void ReIndex()
@@ -929,7 +1000,7 @@ Any public disclosures of information from the directory will be in aggregate fo
         {
             //https://docs.google.com/spreadsheets/d/e/2PACX-1vSPTFgPPcCiCngUPXFE8PdsOgxg7Xybq91voXFxHMFd4JpjUIZGLj7U_piRJZV4WZx3YEW31Pln7XV4/pubhtml => this is my own copy
             String spreadsheetId = "1m-oYJH-15DbqhE31dznAldB-gz75BJu1XAV5p5WJwxo";//==>google sheet Id
-            String ranges = "A3:AI";// read from col A to AI, starting 3rd row
+            String ranges = "A4:AC";// read from col A to AI, starting 3rd row
 
             SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
             {
@@ -978,41 +1049,34 @@ Any public disclosures of information from the directory will be in aggregate fo
             //header on the sheet
             //* marked the column contain that we're interested
             return new string[] {
-                "sequence_id",
-                "status",
                 "name*",
-                "Code",
                 "email*",
-                "Sub Code",
+                "links*",//website
+                "pronouns*",
+                "display*",//display pronouns
+                "race*",
+                "display race",
+                "ethnicity*",
+                "display ethnicity",
+                "gender identity*",
+                "display gender",
+                "living with disability*",
+                "display disability",
+                "Code",    "Sub Code",
                 "position*",
-                "position - other keywords?",
+                "Identify keywords*", //category
+                "add keywords that are specific to your research area not already identified above*", //copy of category
                 "main_disciplines",
-                "faculty or department*",
+                "faculty*",//faculty_or_department
                 "primary_area_of_research",
-                "long_description",
-                "Length",
-                "Follow-up?",
-                "website",
+                "description in under 50 words*",//long description
                 "accepting_grad_students",
                 "rig_affiliate",
                 "open_to_contact_from_other_researchers_external_organizations_community_groups_and_nfps_and_other_rig-related_groups_",
-                "looking_for_assistance_with_or_collaboration_in",
-                "username",
-                "fee_id",
-                "expires_on",
-                "Layout",
-                "race*",
-                "ethnicity*",
-                "gender*",
-                "pronouns*",
-                "living with disability*",
-                "Identify keywords*",
-                "under 50 words*",
-                "Community based projects",
-                "Collaborations*",
-                "public profile*",
-                "consent*",
-                "Profile Link"
+                "looking_for_assistance_with_or_collaboration_in",  
+                "community-based projects*",
+                "collaborating with researchers*",//collaborators
+                "consent*"
             };
 
         }
