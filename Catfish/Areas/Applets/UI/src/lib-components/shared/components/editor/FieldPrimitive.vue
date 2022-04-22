@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
 	import { defineComponent, PropType } from 'vue'
-	import { Field, eFieldType, eValidationStatus } from '../../models/fieldContainer'
+    import { useStore } from 'vuex';
+    import { Field, eFieldType, eValidationStatus, MonolingualTextField  } from '../../models/fieldContainer'
     import { FieldContainerUtils } from '../../store/form-submission-utils'
 
 	import AttachmentField from './AttachmentField.vue'
@@ -14,6 +15,8 @@
 	import SelectField from './SelectField.vue'
 	import MultilingualTextField from './MultilingualTextField.vue'
 	import AudioRecorderField from './AudioRecorderField.vue'
+	import { FlattenedFormFiledMutations } from '../../store/flattened-form-field-mutations'
+    
 
     export default defineComponent({
         name: "FieldBase",
@@ -37,15 +40,27 @@
 			MultilingualTextField,
             AudioRecorderField
 		},
-        setup(p) {
+		setup(p) {
+            const store = useStore();
             const fieldType: eFieldType = FieldContainerUtils.getFieldType(p.model);
 			const cssClass: string = FieldContainerUtils.cssClass(p.model);
+
+			var isMonolingualField = false;
+			if (fieldType === eFieldType.EmailField || fieldType === eFieldType.DateField || fieldType === eFieldType.DecimalField || fieldType === eFieldType.IntegerField || fieldType === eFieldType.MonolingualTextField)
+				isMonolingualField = true;
 			return {
+				store,
 				FieldTypes: eFieldType,
 				ValidationStatus: eValidationStatus,
                 fieldType,
-				cssClass
+				cssClass,
+				isMonolingualField
             }
+		},
+        methods: {
+            addMonoLingualField(store: any, field: MonolingualTextField) {
+                store.commit(FlattenedFormFiledMutations.APPEND_MONOLINGUAL_VALUE, field);
+            },
         }
     });
 </script>
@@ -73,6 +88,7 @@
 			<AudioRecorderField v-else-if="fieldType === FieldTypes.AudioRecorderField" :model="model" />
 			<div v-else-if="fieldType === FieldTypes.CompositeField"> TODO: Implement editor template for the CompositeField</div>
 			<div v-else-if="fieldType === FieldTypes.TableField"> TODO: Implement editor template for the TableField</div>
+			<span v-if="isMonolingualField === true" class="fa fa-plus-circle" @click="addMonoLingualField(store, model)" ></span>
 		</div>
 	</div>
 </template>
