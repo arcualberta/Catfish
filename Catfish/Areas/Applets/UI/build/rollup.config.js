@@ -13,7 +13,7 @@ import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
 
-const exportOnlyIIFE = true;
+const skipSSR = true;
 
 // Get browserslist config and remove ie from es build targets
 const esbrowserslist = fs.readFileSync('./.browserslistrc')
@@ -105,7 +105,7 @@ const globals = {
 // Customize configs for individual targets
 const buildFormats = [];
 
-if (!exportOnlyIIFE && (!argv.format || argv.format === 'es')) {
+if (!argv.format || argv.format === 'es') {
     const esConfig = {
         ...baseConfig,
         input: 'src/entry.esm.ts',
@@ -144,7 +144,7 @@ if (!exportOnlyIIFE && (!argv.format || argv.format === 'es')) {
     buildFormats.push(esConfig);
 }
 
-if (!exportOnlyIIFE && (!argv.format || argv.format === 'cjs')) {
+if (!skipSSR && (!argv.format || argv.format === 'cjs')) {
     const umdConfig = {
         ...baseConfig,
         external,

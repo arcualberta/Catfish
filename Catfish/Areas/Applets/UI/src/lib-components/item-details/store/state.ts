@@ -1,6 +1,6 @@
 ﻿import { Guid } from 'guid-typescript'
 import { Item } from '../../shared/models/item'
-import { FlattenedFormFiledState } from '../../shared/store/flattened-form-field-state'
+import { FlattenedFormFiledState, flattenedFormFiledState } from '../../shared/store/flattened-form-field-state'
 
 
 //Declare State interface
@@ -12,13 +12,10 @@ export interface State extends FlattenedFormFiledState {
 }
 
 export const state: State = {
-
+    ...flattenedFormFiledState,
     id: null,
     item: null,
     permissionList: null,
-    flattenedTextModels: {},
-    flattenedOptionModels: {},
-    flattenedFileModels: {},
 }
 
 export interface UserPermission{

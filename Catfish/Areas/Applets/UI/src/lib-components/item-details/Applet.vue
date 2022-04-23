@@ -2,7 +2,7 @@
     import { defineComponent, computed, ref } from 'vue'
     import { useStore } from 'vuex';
 
-    import { state, UserPermission } from './store/state'
+    import { state, State, UserPermission } from './store/state'
     import { actions, Actions } from './store/actions'
     import { mutations, Mutations } from './store/mutations'
     import { getters } from './store/getters'
@@ -43,14 +43,23 @@
             const editMode = ref(false);
 
             const isEditable = (fc: FieldContainerModel): boolean => {
-
+                //Checks if the current user can update the given field container "fc".
+                //Returns true if the editMode = true and if the current user has "Update"
+                //permission on the field container "fc"
                 if (editMode.value) {
-                    const permissionsOfFieldContainer = (store.state.permissionList as UserPermission[]).find(p => p.formId == fc.id)?.permissions;
+                    const permissionsOfFieldContainer = ((store.state as State).permissionList as UserPermission[]).find(p => p.formId == fc.id)?.permissions;
                     return permissionsOfFieldContainer?.find(p => p.action == "Update") != null;
                 }
                 else
                     return false;               
             }
+
+            const hasEditPermission = (): boolean => {
+                //Checks if the current user has the Update permission on any of the field containers in the item
+                return ((store.state as State).permissionList as UserPermission[])
+                    ?.map(up => up.permissions?.find(p => p.action == "Update"))
+                    .find(p => p != null) != null;
+            };
 
             return {
                 store,
@@ -59,7 +68,10 @@
                 getContainerName,
                 isAdmin,
                 editMode,
-                isEditable
+                hasEditPermission,
+                isEditable,
+                isModified: computed(() => (store.state as State).modified),
+                save: () => store.dispatch(Actions.SAVE),
             }
         },
         storeConfig: {
@@ -75,7 +87,8 @@
 
 <template>
     <div class="controls">
-        <button @click="editMode = !editMode" class="btn btn-primary"><span v-if="editMode">View</span><span v-else>Edit</span></button>
+        <button v-if="isModified" @click="save()" class="btn btn-success">Save</button>
+        <button v-if="hasEditPermission()" @click="editMode = !editMode" class="btn btn-primary"><span v-if="editMode">View</span><span v-else>Edit</span></button>
     </div>
     <div v-for="ms in dataItem?.metadataSets?.$values">
         <h4>{{getContainerName(ms)}}</h4>
@@ -100,6 +113,9 @@
     }
     .controls{
         text-align:right;
+    }
+    .btn{
+        margin: 5px;
     }
 </style>
 
