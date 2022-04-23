@@ -24,7 +24,7 @@ export const state: State = {
 export interface UserPermission{
     formId: Guid | null;
     formType: string | null;
-    permission: Permission[] | null;
+    permissions: Permission[] | null;
 }
 export interface Permission {
     action: string | null;

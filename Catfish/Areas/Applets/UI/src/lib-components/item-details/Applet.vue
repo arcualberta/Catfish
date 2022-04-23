@@ -2,7 +2,7 @@
     import { defineComponent, computed, ref } from 'vue'
     import { useStore } from 'vuex';
 
-    import { state } from './store/state'
+    import { state, UserPermission } from './store/state'
     import { actions, Actions } from './store/actions'
     import { mutations, Mutations } from './store/mutations'
     import { getters } from './store/getters'
@@ -42,27 +42,11 @@
 
             const editMode = ref(false);
 
-            const isEditable = (fc: FieldContainerModel) => {
-                const permissionList = store.state.permissionList;
-                for (var i = 0; i < permissionList.length; i++) {
-                    const permissionData = permissionList[i];
-                    if (permissionData.formId === fc.id) {
-                        const permissionNames = permissionData.permissions;
-                        //console.log("permission Names " + JSON.stringify(permissionData.permissions))
-                        for (var x = 0; x < permissionNames.length; x++) {
-                            const permissionName = permissionNames[x];
-                            if (permissionName.action === "Update") {
-                                console.log("permission Found" + permissionName.action)
-                                editMode.value = true;
-                            }
-                        }
-                    }
-                    
-                }
-                if (editMode.value) {
-                    console.log("TODO: Return true if Upate permission is available for the form with ID ", fc.id);
+            const isEditable = (fc: FieldContainerModel): boolean => {
 
-                    return true;
+                if (editMode.value) {
+                    const permissionsOfFieldContainer = (store.state.permissionList as UserPermission[]).find(p => p.formId == fc.id)?.permissions;
+                    return permissionsOfFieldContainer?.find(p => p.action == "Update") != null;
                 }
                 else
                     return false;               
