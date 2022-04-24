@@ -40,12 +40,11 @@ export const actions: ActionTree<State, any> = {
     },
     [Actions.SAVE](store) {
 
-        const item = store.state.item;
-
         const api = window.location.origin +
-            `/applets/api/items/update/${item?.id}`;
+            `/applets/api/items/update/`;
         console.log('Item Update API: ', api)
 
+        const item = store.state.item;
 
         //Validating the forms
         if (!item)
@@ -80,7 +79,7 @@ export const actions: ActionTree<State, any> = {
             .then(data => {
                 console.log(JSON.stringify(data));
                 store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
-                store.commit(Mutations.SET_ITEM, null);
+                store.commit(Mutations.SET_ITEM, data);
 
             })
             .catch(error => {

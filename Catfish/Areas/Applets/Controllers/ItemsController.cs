@@ -150,9 +150,8 @@ namespace Catfish.Areas.Applets.Controllers
             return Content(JsonConvert.SerializeObject("Sucess", settings), "application/json");
         }
 
-        [HttpPost]
-        [HttpGet("update/{itemInstanceId}")]
-        public async Task<ContentResult> UpdateAsync(Guid itemInstanceId, [FromForm] String item, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
+        [HttpPost("update")]
+        public async Task<ContentResult> UpdateAsync([FromForm] String item, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
         {
             var settings = new JsonSerializerSettings()
             {
