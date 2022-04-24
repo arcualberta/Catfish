@@ -28,7 +28,7 @@ export const mutations: MutationTree<State> = {
 
         //Iterating through each entry in the data container and the metadata sets 
         //and adding them to the flattened field lists
-        payload.dataContainer?.$values.forEach(fieldContainer => { flattenFieldInputs(fieldContainer, state); });
-        payload.metadataSets?.$values.forEach(fieldContainer => { flattenFieldInputs(fieldContainer, state); });
+        payload?.dataContainer?.$values?.forEach(fieldContainer => { flattenFieldInputs(fieldContainer, state); });
+        payload?.metadataSets?.$values?.forEach(fieldContainer => { flattenFieldInputs(fieldContainer, state); });
     },
 }

@@ -150,6 +150,35 @@ namespace Catfish.Areas.Applets.Controllers
             return Content(JsonConvert.SerializeObject("Sucess", settings), "application/json");
         }
 
+        [HttpPost("update")]
+        public async Task<ContentResult> UpdateAsync([FromForm] String item, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
+        {
+            var settings = new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            Item itemInstance = JsonConvert.DeserializeObject<Item>(item, settings);
+            if ((await _authorizationService.AuthorizeAsync(User, itemInstance, new List<IAuthorizationRequirement>() { TemplateOperations.Update })).Succeeded)
+            {
+                try
+                {
+                    Guid stateMappingId = _workflowService.GetSubmitStateMappingId(itemInstance.TemplateId.Value);
+                    Item updatedInstance = _submissionService.UpdateItem(itemInstance, files, fileKeys);
+                    _appDb.SaveChanges();
+                    return Content(JsonConvert.SerializeObject(updatedInstance, settings), "application/json");
+                }
+                catch (Exception ex)
+                {
+                    return Content(JsonConvert.SerializeObject("Uppdate failed", settings), "application/json");
+                }
+            }
+            else
+                return Content(JsonConvert.SerializeObject("Authorization failed", settings), "text/plain");
+        }
+
         [HttpGet("getChildForm/{instanceId}/{childFormId}")]
         public async Task<ContentResult> GetChildFormAsync(Guid instanceId, Guid childFormId)
         {
@@ -160,8 +189,7 @@ namespace Catfish.Areas.Applets.Controllers
             //submitting child forms. For the time being, we limit it to the users who have permission to Read the
             //main submission. This is only a quick shortcut we created to help TBLT site.
             //bool authorizedToSubmitChildForm = _itemAuthorizationHelper.AuthorizebyRole(item, User, "Read");
-            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
-.Succeeded)
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
             {
                 DataItem childForm = item.Template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
 
