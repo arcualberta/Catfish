@@ -1,9 +1,8 @@
 ﻿import { Guid } from 'guid-typescript'
 import { MutationTree } from 'vuex';
 import { FlattenedFormFiledState as State } from './flattened-form-field-state';
-import { flattenFieldInputs } from './form-submission-utils'
+import { flattenFieldInputs, createTextElement, createMultilingualValueElment, getLanguages } from './form-submission-utils'
 import { FieldContainer, /*eValidationStatus,*/ MonolingualTextField, MultilingualTextField } from '../../shared/models/fieldContainer';
-import { TextCollection, Text } from '../models/textModels';
 //import { validateFields } from '../../shared/store/form-validators';
 
 export enum FlattenedFormFiledMutations {
@@ -77,46 +76,48 @@ export const mutations: MutationTree<State> = {
     },
     [FlattenedFormFiledMutations.APPEND_MONOLINGUAL_VALUE](state: State, target: MonolingualTextField) {
        
-        const newText = {
-            id: Guid.create().toString() as unknown as Guid,
-            $type: "Catfish.Core.Models.Contents.Text",
-        } as Text;
-
+        const newText = createTextElement();
         target.values?.$values.push(newText);
         state.flattenedTextModels[newText.id.toString()] = newText;
     },
     [FlattenedFormFiledMutations.APPEND_MULTILINGUAL_VALUE](state: State, target: MultilingualTextField) {
-      
-        var newTextCollection = {
-            id: Guid.create().toString() as unknown as Guid,
-            $type: "Catfish.Core.Models.Contents.MultilingualValue",
-            values: {
-                $type: "Catfish.Core.Models.Contents.XmlModelList`1[[Catfish.Core.Models.Contents.Text, Catfish.Core]], Catfish.Core",
-                $values: [] as Text[]
-            }
-        } as TextCollection
+        const languages = target.values?.$values[0] ? getLanguages(target.values?.$values[0]) : ["en"];
+        const newMultilingualValue = createMultilingualValueElment(languages);
+        newMultilingualValue.values.$values.forEach(text => state.flattenedTextModels[text.id.toString()] = text);
+        target.values?.$values.push(newMultilingualValue);
 
-        if (target.values?.$values[0]) {
-            target.values.$values.forEach((txt: Text | any) => {
-                const newTxt: Text = {
-                    id: Guid.create().toString() as unknown as Guid,
-                    language: txt.language
-                } as Text;
+        ////var newTextCollection = {
+        ////    id: Guid.create().toString() as unknown as Guid,
+        ////    $type: "Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core",
+        ////    values: {
+        ////        $type: "Catfish.Core.Models.Contents.XmlModelList`1[[Catfish.Core.Models.Contents.Text, Catfish.Core]], Catfish.Core",
+        ////        $values: [] as Text[]
+        ////    }
+        ////} as TextCollection
 
-                newTextCollection.values.$values.push(newTxt);
-                state.flattenedTextModels[newTxt.id.toString()] = newTxt;
-            })
-        }
-        else {
-            const newTxt: Text = {
-                id: Guid.create().toString() as unknown as Guid,
-                language: "en"
-            } as Text;
+        ////if (target.values?.$values[0]) {
+        ////    target.values.$values[0].values.$values.forEach((txt: Text | any) => {
+        ////        const newTxt: Text = {
+        ////            id: Guid.create().toString() as unknown as Guid,
+        ////            $type: "Catfish.Core.Models.Contents.Text, Catfish.Core",
+        ////            language: txt.language
+        ////        } as Text;
 
-            newTextCollection.values.$values.push(newTxt);
-            state.flattenedTextModels[newTxt.id.toString()] = newTxt;
-        }
+        ////        newTextCollection.values.$values.push(newTxt);
+        ////        state.flattenedTextModels[newTxt.id.toString()] = newTxt;
+        ////    })
+        ////}
+        ////else {
+        ////    const newTxt: Text = {
+        ////        id: Guid.create().toString() as unknown as Guid,
+        ////        $type: "Catfish.Core.Models.Contents.Text, Catfish.Core",
+        ////        language: "en"
+        ////    } as Text;
 
-        target.values?.$values.push(newTextCollection);
+        ////    newTextCollection.values.$values.push(newTxt);
+        ////    state.flattenedTextModels[newTxt.id.toString()] = newTxt;
+        ////}
+
+        ////target.values?.$values.push(newTextCollection);
     },
 }
