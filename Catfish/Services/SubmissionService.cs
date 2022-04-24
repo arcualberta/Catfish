@@ -695,6 +695,33 @@ namespace Catfish.Services
             return collections;
         }
 
+
+        public Item UpdateItem(Item src, List<IFormFile> files, List<string> fileKeys)
+        {
+            Item dbItem = _db.Items.FirstOrDefault(x => x.Id == src.Id);
+            if (dbItem == null)
+                throw new Exception("Item not found");
+
+            foreach(var dbFieldContainer in dbItem.DataContainer)
+            {
+                var srcFieldContainer = src.DataContainer.FirstOrDefault(dc => dc.Id == dbFieldContainer.Id);
+                dbFieldContainer.UpdateFieldValues(srcFieldContainer);
+                dbItem.UpdateReferencedFieldContainers(srcFieldContainer);
+
+                //TODO: Update File Attachments
+            }
+
+            foreach (var dbFieldContainer in dbItem.MetadataSets)
+            {
+                var srcFieldContainer = src.MetadataSets.FirstOrDefault(dc => dc.Id == dbFieldContainer.Id);
+                dbFieldContainer.UpdateFieldValues(srcFieldContainer);
+                dbItem.UpdateReferencedFieldContainers(srcFieldContainer);
+
+                //TODO: Update File Attachments
+            }
+
+            return dbItem;
+        }
         
     }
 }
