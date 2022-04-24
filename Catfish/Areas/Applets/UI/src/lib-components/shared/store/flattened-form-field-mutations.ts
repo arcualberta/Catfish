@@ -77,40 +77,41 @@ export const mutations: MutationTree<State> = {
     },
     [FlattenedFormFiledMutations.APPEND_MONOLINGUAL_VALUE](state: State, target: MonolingualTextField) {
        
-        var newText = {} as Text;
-        newText.id = Guid.create();
+        const newText = {
+            id: Guid.create().toString() as unknown as Guid,
+            $type: "Catfish.Core.Models.Contents.Text",
+        } as Text;
 
         target.values?.$values.push(newText);
         state.flattenedTextModels[newText.id.toString()] = newText;
     },
     [FlattenedFormFiledMutations.APPEND_MULTILINGUAL_VALUE](state: State, target: MultilingualTextField) {
       
-        var newTextCollection = {} as TextCollection
-        newTextCollection.values = {
-            
-                $type: "",
+        var newTextCollection = {
+            id: Guid.create().toString() as unknown as Guid,
+            $type: "Catfish.Core.Models.Contents.MultilingualValue",
+            values: {
+                $type: "Catfish.Core.Models.Contents.XmlModelList`1[[Catfish.Core.Models.Contents.Text, Catfish.Core]], Catfish.Core",
                 $values: [] as Text[]
-          
-        }
-        newTextCollection.id = Guid.create();
+            }
+        } as TextCollection
 
         if (target.values?.$values[0]) {
             target.values.$values.forEach((txt: Text | any) => {
-                const newTxt: Text = {} as Text;
-
-                newTxt.id = Guid.create();
-                newTxt.language = txt.language;
+                const newTxt: Text = {
+                    id: Guid.create().toString() as unknown as Guid,
+                    language: txt.language
+                } as Text;
 
                 newTextCollection.values.$values.push(newTxt);
                 state.flattenedTextModels[newTxt.id.toString()] = newTxt;
-
             })
         }
         else {
-            const newTxt: Text = {} as Text;
-
-            newTxt.id = Guid.create();
-            newTxt.language ="en"
+            const newTxt: Text = {
+                id: Guid.create().toString() as unknown as Guid,
+                language: "en"
+            } as Text;
 
             newTextCollection.values.$values.push(newTxt);
             state.flattenedTextModels[newTxt.id.toString()] = newTxt;
