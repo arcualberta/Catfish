@@ -1,4 +1,5 @@
-﻿import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option, AttachmentField } from '../models/fieldContainer'
+﻿import { Guid } from 'guid-typescript';
+import { eFieldType, Field, FieldContainer, MonolingualTextField, MultilingualTextField, OptionsField, Option, AttachmentField } from '../models/fieldContainer'
 import { TextCollection, Text } from '../models/textModels';
 import { FlattenedFormFiledState } from './flattened-form-field-state'
 
@@ -125,9 +126,35 @@ export function isRichTextField(field: MultilingualTextField) {
     return field?.richText ? field.richText : false;
 }
 
-export function allowFileExtension(field: AttachmentField) {
+export function allowFileExtension(field: AttachmentField):string {
     return field.allowedExtensions.toString();
 }
-export function isAllowMultiple(field: AttachmentField) {
+
+export function isAllowMultiple(field: AttachmentField): boolean {
     return field.allowMultipleValues;
+}
+
+export function createTextElement(lang: string = "en", value: string = ""): Text {
+    return {
+        id: Guid.create().toString() as unknown as Guid,
+        $type: "Catfish.Core.Models.Contents.Text, Catfish.Core",
+        language: lang,
+        created: new Date(),
+        value: value
+    } as Text;
+}
+
+export function createMultilingualValueElment(lang: string[] = ["en"]): TextCollection {
+    return {
+        id: Guid.create().toString() as unknown as Guid,
+        $type: "Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core",
+        values: {
+            $type: "Catfish.Core.Models.Contents.XmlModelList`1[[Catfish.Core.Models.Contents.Text, Catfish.Core]], Catfish.Core",
+            $values: lang.map(x => createTextElement(x))
+        }
+    } as TextCollection
+}
+
+export function getLanguages(multilingualValue: TextCollection): string[] {
+    return multilingualValue.values.$values.map(text => text.language);
 }
