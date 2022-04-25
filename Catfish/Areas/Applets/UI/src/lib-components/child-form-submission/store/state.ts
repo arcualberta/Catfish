@@ -1,7 +1,7 @@
 ﻿import { Guid } from 'guid-typescript'
 
 import { FieldContainer } from '../../shared/models/fieldContainer'
-import { State as FormSubmissionStateInterface, state as formSubmissionStateObject } from '../../form-submission/store/state'
+import { State as FormSubmissionStateInterface, state as formSubmissionState } from '../../form-submission/store/state'
 import { TypedArray } from '../../shared/store/form-submission-utils'
 
 //Declare State interface
@@ -17,5 +17,5 @@ export const state: State = {
     childResponseFormId: null,
     childResponseForm: null,
     formInstances: null,
-    ...formSubmissionStateObject
+    ...formSubmissionState
 }

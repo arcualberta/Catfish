@@ -26,7 +26,8 @@ namespace Catfish.Core.Models
                      ? MetadataSets.FirstOrDefault(fc => fc.TemplateId == field.RefId)
                      : DataContainer.FirstOrDefault(fc => fc.Id == field.RefId) as FieldContainer;
 
-                dst?.UpdateFieldValues(field.ChildForm);
+                if (field.ChildForm != null)
+                    dst?.UpdateFieldValues(field.ChildForm);
             }
         }
     }

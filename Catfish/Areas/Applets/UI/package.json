@@ -1,6 +1,6 @@
 {
   "name": "Applets",
-  "version": "1.0.0",
+  "version": "8.7.0",
   "description": "",
   "main": "../../../wwwroot/assets/dist/applets/applets.ssr.js",
   "browser": "../../../wwwroot/assets/dist/applets/applets.esm.js",
@@ -40,8 +40,8 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-replace": "^2.4.2",
     "@vue/cli-plugin-babel": "^4.5.13",
-    "@vue/cli-plugin-typescript": "^4.5.13",
-    "@vue/cli-service": "^4.5.13",
+    "@vue/cli-plugin-typescript": "^5.0.4",
+    "@vue/cli-service": "^5.0.4",
     "@vue/compiler-sfc": "^3.2.21",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "babel-plugin-transform-regenerator": "^6.26.0",
