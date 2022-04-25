@@ -758,7 +758,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             bool clearCurrentData = false;
 
             //Set maxEntries to a positive value to limit the maximum number of data entries to be imported.
-            int maxEntries = 1;
+            int maxEntries = -1;
 
             // string multiValueSeparator = ";";
 
@@ -769,6 +769,9 @@ Any public disclosures of information from the directory will be in aggregate fo
                 _db.Entities.RemoveRange(entities);
             }
 
+            Guid primaryCollectionId = Guid.Parse("79e652d7-bc9e-4a96-c76a-e8896825234a");
+            Collection primaryCollection = _db.Collections.Where(c => c.Id == primaryCollectionId).FirstOrDefault();
+            Assert.IsNotNull(primaryCollection);
 
             //Filling the form
             var template = _db.ItemTemplates.Where(it => it.TemplateName == _templateName).FirstOrDefault();
@@ -929,6 +932,7 @@ Any public disclosures of information from the directory will be in aggregate fo
              }//end of each col
 
               item.DataContainer.Add(_newDataItem);
+              item.PrimaryCollectionId = primaryCollection.Id;
                _db.Items.Add(item);
 
              if (maxEntries > 0 && rowCount == maxEntries)
@@ -1000,7 +1004,7 @@ Any public disclosures of information from the directory will be in aggregate fo
         {
             //https://docs.google.com/spreadsheets/d/e/2PACX-1vSPTFgPPcCiCngUPXFE8PdsOgxg7Xybq91voXFxHMFd4JpjUIZGLj7U_piRJZV4WZx3YEW31Pln7XV4/pubhtml => this is my own copy
             String spreadsheetId = "1m-oYJH-15DbqhE31dznAldB-gz75BJu1XAV5p5WJwxo";//==>google sheet Id
-            String ranges = "A4:AC";// read from col A to AI, starting 3rd row
+            String ranges = "A2:AC";// read from col A to AI, starting 2rd row
 
             SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
             {
