@@ -115,6 +115,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             string[] pronounsList = new string[]{"they/them", "she/her", "he/him", "Would rather not say", "Another" };
 
             var pronouns = rdForm.CreateField<CheckboxField>("Pronouns", lang,pronounsList, true);
+            pronouns.CssClass = "pronounsMultiCheck";
             var pronounAnother = rdForm.CreateField<TextField>("If you select 'Another, please specify", lang);
 
             pronounAnother.VisibilityCondition
@@ -186,6 +187,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             string[] genderList = new string[] { "Two-Spirit", "Gender non-binary", "Genderfluid", "Transgender", "Woman", "Man", "Another" };
 
             var gender = rdForm.CreateField<CheckboxField>("Gender identity", lang, genderList, true);
+            gender.CssClass = "genderMultiCheck";
             var genAnother = rdForm.CreateField<TextField>("If you select 'Another', please specify", lang);
             //genAnother.VisibilityCondition
             //    .AppendLogicalExpression(gender, ComputationExpression.eRelational.EQUAL, gender.GetOption("Another", lang));
@@ -209,7 +211,8 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             //var key =  rdForm.CreateField<TextField>("Identify keywords that are related to your research area.", lang, true);
             //key.CssClass = "autocompleteText";
-            rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, true);
+            var undefinedKeys=rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, true);
+            undefinedKeys.CssClass = "undefinedKeys";
 
 
 
@@ -337,7 +340,6 @@ Any public disclosures of information from the directory will be in aggregate fo
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
-            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
@@ -359,7 +361,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             EmailTemplate adminEmailTemplate = CreateEditorEmailTemplate(ref template, formName);
 
             EmailTrigger adminNotificationEmailTrigger = workflow.AddTrigger("ToAdmin", "SendEmail");
-            adminNotificationEmailTrigger.AddRecipientByEmail("mruaini@ualberta.ca"); //////////////////////////////NEED TO REPLACE!!!!
+            adminNotificationEmailTrigger.AddRecipientByEmail("arcrcg@ualberta.ca"); //////////////////////////////NEED TO REPLACE!!!!
             adminNotificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Submission to  IGRD Notification");
 
             // =======================================
@@ -375,17 +377,11 @@ Any public disclosures of information from the directory will be in aggregate fo
             startSubmissionAction.AddTemplate(tbltForm.Id, "IG Research Directory Submission Form");
 
             ////Defining post actions
-            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update),
-                                                                            @"<p>Thank you for saving your resource to the Task-based Language Teaching resource collection. 
-                                                                                    Your submission should be view/edit at the <a href='@SiteUrl/resources'>resources page.</a></p>");
-            savePostAction.ValidateInputs = false;
-            savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
-
+            
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
                                                                                  @"<p>Thank you for submitting your resource to the Task-based Language Teaching resource collection. 
                                                                                     We will review and add it to the  <a href='@SiteUrl/resources'> resources collection </a>.</p>");
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
-            submitPostAction.AddStateMapping(savedState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
             PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirm Submission", "Do you want to submit this resource to the resource collection? Once submitted, you cannot edit it.", "");
@@ -437,12 +433,6 @@ Any public disclosures of information from the directory will be in aggregate fo
             GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
             editSubmissionAction.Access = GetAction.eAccess.Restricted;
 
-            //Defining post actions
-            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save",
-                                                                                        nameof(TemplateOperations.Update),
-                                                                                        @"<p>Your submission saved successfully. 
-                                                                                            You can view/edit by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
-            editSubmissionPostActionSave.ValidateInputs = false;
             PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit",
                                                                                             nameof(TemplateOperations.Update),
                                                                                              @"<p>Thank you for submitting to IG Research Directory. 
@@ -755,7 +745,7 @@ Any public disclosures of information from the directory will be in aggregate fo
         [Test]
         public void ImportData()
         {
-            bool clearCurrentData = false;
+            bool clearCurrentData = true;
 
             //Set maxEntries to a positive value to limit the maximum number of data entries to be imported.
             int maxEntries = -1;
@@ -773,6 +763,8 @@ Any public disclosures of information from the directory will be in aggregate fo
             Collection primaryCollection = _db.Collections.Where(c => c.Id == primaryCollectionId).FirstOrDefault();
             Assert.IsNotNull(primaryCollection);
 
+            SystemStatus submittedStatus = _db.SystemStatuses.Where(s => s.NormalizedStatus == "SUBMITTED").FirstOrDefault();
+            Assert.IsNotNull(submittedStatus);
             //Filling the form
             var template = _db.ItemTemplates.Where(it => it.TemplateName == _templateName).FirstOrDefault();
             Assert.IsNotNull(template);
@@ -933,6 +925,8 @@ Any public disclosures of information from the directory will be in aggregate fo
 
               item.DataContainer.Add(_newDataItem);
               item.PrimaryCollectionId = primaryCollection.Id;
+              item.StatusId = submittedStatus.Id;
+
                _db.Items.Add(item);
 
              if (maxEntries > 0 && rowCount == maxEntries)
