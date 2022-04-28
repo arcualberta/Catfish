@@ -745,7 +745,7 @@ Any public disclosures of information from the directory will be in aggregate fo
         [Test]
         public void ImportData()
         {
-            bool clearCurrentData = false;
+            bool clearCurrentData = true;
 
             //Set maxEntries to a positive value to limit the maximum number of data entries to be imported.
             int maxEntries = -1;
@@ -763,6 +763,8 @@ Any public disclosures of information from the directory will be in aggregate fo
             Collection primaryCollection = _db.Collections.Where(c => c.Id == primaryCollectionId).FirstOrDefault();
             Assert.IsNotNull(primaryCollection);
 
+            SystemStatus submittedStatus = _db.SystemStatuses.Where(s => s.NormalizedStatus == "SUBMITTED").FirstOrDefault();
+            Assert.IsNotNull(submittedStatus);
             //Filling the form
             var template = _db.ItemTemplates.Where(it => it.TemplateName == _templateName).FirstOrDefault();
             Assert.IsNotNull(template);
@@ -923,6 +925,8 @@ Any public disclosures of information from the directory will be in aggregate fo
 
               item.DataContainer.Add(_newDataItem);
               item.PrimaryCollectionId = primaryCollection.Id;
+              item.StatusId = submittedStatus.Id;
+
                _db.Items.Add(item);
 
              if (maxEntries > 0 && rowCount == maxEntries)
