@@ -2,7 +2,7 @@
     import { defineComponent, PropType, computed, ref } from "vue";
     import { useStore } from 'vuex';
 
-    import props from '../../../shared/props';
+    import props, { DataAttribute} from '../../../shared/props';
     import { State, ePage } from '../../store/state';
     import { Mutations } from '../../store/mutations';
 
@@ -30,6 +30,10 @@
             const store = useStore();
             const queryParameters = p.queryParameters;
            // console.log(JSON.stringify(queryParameters))
+
+            const dataAttributes = p.dataAttributes as DataAttribute;
+            const infoContent = dataAttributes["info-pop-up-content"] as string;
+            console.log("pop-up info content " + infoContent)
             if (queryParameters?.page) {
                 const page = queryParameters?.page as unknown as ePage;
                 store.commit(Mutations.SET_ACTIVE_PAGE, page);
@@ -46,7 +50,7 @@
                 popupTrigger,
                 isPopupVisible: computed(() => (store.state as State).popupVisibility),
                 setPopupVisibility: (visibility: boolean) => store.commit(Mutations.SET_POPUP_VISIBILITY, visibility),
-               // TooglePopup
+                infoContent,
                 title
             }
         }
@@ -58,9 +62,7 @@
     <button @click="setPopupVisibility(!isPopupVisible)">info</button>
     <Popups v-if="isPopupVisible" :popup="popupTrigger" :data-attributes="dataAttributes" :query-parameters="queryParameters">
         <div>
-            <div v-html="title"></div>
-            Intersections of Gender is committed to using intersectional experience and excellence to build and sustain for the public good and to bring together wide-ranging initiatives to advance knowledge and inspire engaged citizenship around the world.
-            Learn more about IG
+            <span v-html="infoContent"></span>
         </div>
     </Popups>
     <nav >

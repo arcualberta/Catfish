@@ -1,6 +1,9 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType, ref } from 'vue'
-    import props, { DataAttribute} from '../../props'
+    import { defineComponent, computed, PropType, ref } from 'vue'
+    import { useStore } from 'vuex';
+    import props from '../../props'
+    import { State } from '../../../keyword-search/store/state';
+    import { Mutations } from '../../../keyword-search/store/mutations'
     export default defineComponent({
         name: "Popups",
         components: {
@@ -23,10 +26,10 @@
         },
 
         setup(p) {
+            const store = useStore();
+
             const ispopup = ref(p.popup as boolean);
-            const dataAttributes = p.dataAttributes as DataAttribute;
-           const infoContent = dataAttributes["info-pop-up-content"] as string;
-            console.log("pop-up info content " + infoContent)
+           
             console.log("inside popup New: " + JSON.stringify(p.popup));
             return {
                 isPopupVisible: computed(() => (store.state as State).popupVisibility),
@@ -52,7 +55,7 @@
             </button>
             <slot />
 
-        </div>
+</div>
 
     </div>
 </template>
