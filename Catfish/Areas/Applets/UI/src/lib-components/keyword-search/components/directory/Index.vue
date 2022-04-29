@@ -41,28 +41,22 @@
             const title = "<h1>Title</h1><hr/>";
             return {
                 ePage,
-                visit: (page: ePage) => store.commit(Mutations.SET_ACTIVE_PAGE, page), 
+                visit: (page: ePage) => store.commit(Mutations.SET_ACTIVE_PAGE, page),
                 page: computed(() => (store.state as State).activePage),
                 popupTrigger,
+                isPopupVisible: computed(() => (store.state as State).popupVisibility),
+                setPopupVisibility: (visibility: boolean) => store.commit(Mutations.SET_POPUP_VISIBILITY, visibility),
                // TooglePopup
                 title
             }
-        },
-        methods: {
-            TooglePopup: function () {
-                this.popupTrigger = !this.popupTrigger;
-
-                console.log(this.popupTrigger)
-            }
-             
         }
     });
 </script>
 
 <template>
     
-    <button @click="TooglePopup()">info</button>
-    <Popups v-if="popupTrigger" :popup="popupTrigger" :data-attributes="dataAttributes" :query-parameters="queryParameters">
+    <button @click="setPopupVisibility(!isPopupVisible)">info</button>
+    <Popups v-if="isPopupVisible" :popup="popupTrigger" :data-attributes="dataAttributes" :query-parameters="queryParameters">
         <div>
             <div v-html="title"></div>
             Intersections of Gender is committed to using intersectional experience and excellence to build and sustain for the public good and to bring together wide-ranging initiatives to advance knowledge and inspire engaged citizenship around the world.

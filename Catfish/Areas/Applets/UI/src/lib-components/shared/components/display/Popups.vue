@@ -29,6 +29,9 @@
             console.log("pop-up info content " + infoContent)
             console.log("inside popup New: " + JSON.stringify(p.popup));
             return {
+                isPopupVisible: computed(() => (store.state as State).popupVisibility),
+                setPopupVisibility: (visibility: boolean) => store.commit(Mutations.SET_POPUP_VISIBILITY, visibility),
+
                 ispopup
             }
         },
@@ -42,9 +45,9 @@
 </script>
 
 <template>
-    <div class="popup" v-if="ispopup">
+    <div class="popup" >
         <div class="popup-inner">
-            <button class="popup-close" @click="closePopup()">
+            <button class="popup-close" @click="setPopupVisibility(!isPopupVisible)">
                 Close Popup
             </button>
             <slot />
