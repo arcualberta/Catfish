@@ -62,7 +62,7 @@
 <template>
     
     <button @click="TooglePopup()">info</button>
-    <Popups v-if="popupTrigger" :popup="popupTrigger" >
+    <Popups v-if="popupTrigger" :popup="popupTrigger" :data-attributes="dataAttributes" :query-parameters="queryParameters">
         <div>
             <div v-html="title"></div>
             Intersections of Gender is committed to using intersectional experience and excellence to build and sustain for the public good and to bring together wide-ranging initiatives to advance knowledge and inspire engaged citizenship around the world.

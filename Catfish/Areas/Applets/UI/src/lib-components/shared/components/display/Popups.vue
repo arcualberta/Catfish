@@ -1,28 +1,33 @@
 ﻿<script lang="ts">
     import { defineComponent, PropType, ref } from 'vue'
+    import props, { DataAttribute} from '../../props'
     export default defineComponent({
         name: "Popups",
         components: {
 
         },
+
         props: {
             title: {
                 type: null as PropType<string> | null,
                 required: false,
                 default: "Click me"
             },
-           
+
             popup: {
                 type: null as PropType<boolean> | null,
                 required: false,
-               
-            }
 
+            },
+            ...props
         },
 
         setup(p) {
             const ispopup = ref(p.popup as boolean);
-            console.log("inside popup: " + JSON.stringify(p.popup));
+            const dataAttributes = p.dataAttributes as DataAttribute;
+           const infoContent = dataAttributes["info-pop-up-content"] as string;
+            console.log("pop-up info content " + infoContent)
+            console.log("inside popup New: " + JSON.stringify(p.popup));
             return {
                 ispopup
             }

@@ -35,8 +35,8 @@
             const blogDescription = dataAttributes["block-description"] as string;
             const enableFreeTextSearch = dataAttributes["enable-freetext-search"] as string;
             const hexColors = dataAttributes["hex-color-list"] as string;
-
-
+            //const infoContent = dataAttributes["info-pop-up-content"] as string;
+            //console.log("pop-up info content " + infoContent)
             //We need to use store in this setup method. so let's load it first.
             const store = useStore()
 
