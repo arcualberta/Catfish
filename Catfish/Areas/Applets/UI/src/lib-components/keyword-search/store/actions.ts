@@ -63,6 +63,11 @@ export const actions: ActionTree<State, any> = {
         formData.append("max", store.state.max.toString());
         formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
 
+
+        //April 27 2022
+        let freeText = store.state.freeSearchText ? store.state.freeSearchText : "";
+        formData.append("searchText", freeText);
+
         //console.log("Form Data: ", formData)
 
         fetch(api, {
@@ -107,16 +112,37 @@ export const actions: ActionTree<State, any> = {
     },
     [Actions.SEARCH_FREE_TEXT](store) {
         console.log("executing search for: " + store.state.freeSearchText?.toString());
-        const api = window.location.origin +
-            `/api/solr/executefreetext/${store.state.freeSearchText?.toString()}`
+        const api = window.location.origin + `/applets/api/keywordsearch/items/`;
+        // console.log("Item Load API: ", api)
 
-        fetch(api)
-            .then(response => response.json())
-            .then(data => {
-                console.log("results:")
-                console.log(data)
+        const formData = new FormData();
+        if (store.state.pageId)
+            formData.append("pageId", store.state.pageId.toString());
+        if (store.state.blockId)
+            formData.append("blockId", store.state.blockId.toString());
 
-            });
+        formData.append("offset", store.state.offset.toString());
+        formData.append("max", store.state.max.toString());
+        formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
+
+        //MR April 27 2022, add freetextsearch
+        let freeText = store.state.freeSearchText ? store.state.freeSearchText : "";
+        formData.append("searchText", freeText);
+
+
+        fetch(api, {
+            method: 'POST', // or 'PUT'
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+              //  store.commit(Mutations.SET_RESULTS, data);
+            console.log("free search result");
+            console.log(JSON.stringify(data));
+        })
+        .catch((error) => {
+                console.error('Item Load API Error:', error);
+        });
     },
 }
 
