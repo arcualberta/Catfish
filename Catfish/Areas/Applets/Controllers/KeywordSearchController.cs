@@ -133,7 +133,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("items")]
-        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0)
+        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0, [FromForm]string searchText=null)
         {
             //////Using mockup data
             ////KeywordQueryModel qModel = await Keywords(pageId, blockId).ConfigureAwait(false);
