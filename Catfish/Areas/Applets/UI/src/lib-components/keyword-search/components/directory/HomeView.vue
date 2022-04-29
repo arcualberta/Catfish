@@ -55,7 +55,7 @@
 </script>
 
 <template>
-    <h2>Home View</h2>
+   
     <h1 class="dir-title">{{blogTitle}}</h1>
     <div class="dir-description">{{blogDescription}}</div>
     <div v-if="enableFreeTextSearch === true">

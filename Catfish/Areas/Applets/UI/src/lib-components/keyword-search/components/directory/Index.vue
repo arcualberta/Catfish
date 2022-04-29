@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType, computed } from "vue";
+    import { defineComponent, PropType, computed, ref } from "vue";
     import { useStore } from 'vuex';
 
     import props from '../../../shared/props';
@@ -9,14 +9,15 @@
     import HomeView from './HomeView.vue';
     import ListView from './ListView.vue';
     import DetailsView from './DetailsView.vue';
-
+    import Popups from "../../../shared/components/display/Popups.vue"
 
     export default defineComponent({
         name: "DirectoryView",
         components: {
             HomeView,
             ListView,
-            DetailsView
+            DetailsView,
+            Popups
         },
         props: {
             colorScheme: {
@@ -28,22 +29,48 @@
         setup(p) {
             const store = useStore();
             const queryParameters = p.queryParameters;
-            console.log(JSON.stringify(queryParameters))
+           // console.log(JSON.stringify(queryParameters))
             if (queryParameters?.page) {
                 const page = queryParameters?.page as unknown as ePage;
                 store.commit(Mutations.SET_ACTIVE_PAGE, page);
             }
+
+            //popup
+            const popupTrigger = ref(false);
+
+            const title = "<h1>Title</h1><hr/>";
             return {
                 ePage,
                 visit: (page: ePage) => store.commit(Mutations.SET_ACTIVE_PAGE, page), 
                 page: computed(() => (store.state as State).activePage),
+                popupTrigger,
+               // TooglePopup
+                title
             }
+        },
+        methods: {
+            TooglePopup: function () {
+                this.popupTrigger = !this.popupTrigger;
+
+                console.log(this.popupTrigger)
+            }
+             
         }
     });
 </script>
 
 <template>
+    
+    <button @click="TooglePopup()">info</button>
+    <Popups v-if="popupTrigger" :popup="popupTrigger" >
+        <div>
+            <div v-html="title"></div>
+            Intersections of Gender is committed to using intersectional experience and excellence to build and sustain for the public good and to bring together wide-ranging initiatives to advance knowledge and inspire engaged citizenship around the world.
+            Learn more about IG
+        </div>
+    </Popups>
     <nav >
+      
         <a href="#" @click="visit(ePage.Home)">Home</a> | 
         <a href="#" @click="visit(ePage.List)">Explore</a>
     </nav>

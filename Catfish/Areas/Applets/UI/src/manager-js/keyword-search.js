@@ -6,7 +6,7 @@
             metadatasets: [],
             statuses: [],
             selectedStatuses: [],
-            groups:[]
+            groups: []
         }
     },
     methods: {
@@ -42,22 +42,22 @@
                         tileCss: content
                     });
                 }
-            }   
+            }
             else if (elName == "detailedViewUrl") {
-              this.model.detailedViewUrl.value = e.target.value;
-              var content = this.model.detailedViewUrl.value;
-              if (content.length > 0) {
-                this.$emit('update-content', {
-                  uid: this.uid,
-                  detailedViewUrl: content
-                });
-              }
+                this.model.detailedViewUrl.value = e.target.value;
+                var content = this.model.detailedViewUrl.value;
+                if (content.length > 0) {
+                    this.$emit('update-content', {
+                        uid: this.uid,
+                        detailedViewUrl: content
+                    });
+                }
             }
 
         },
         selectItemTemplate: function (selected) {
 
-            fetch('/api/Items/GetItemtemplateFields/' + selected )
+            fetch('/api/Items/GetItemtemplateFields/' + selected)
                 .then(response => response.json())
                 .then((data) => {
                     this.itemFields = data;
@@ -121,91 +121,91 @@
                 });
         },
         selectStatus(id) {
-            
+
 
             if (this.selectedStatuses?.includes(id)) {
                 //console.log("deselect selected a state: " + id)
                 this.selectedStatuses = this.selectedStatuses?.filter(e => e !== id);
-               // console.log(JSON.stringify(this.selectedStatuses));
-               
+                // console.log(JSON.stringify(this.selectedStatuses));
+
             } else {
-               // console.log("push selected a state: " + id)
+                // console.log("push selected a state: " + id)
                 this.selectedStatuses.push(id)
             }
             this.selectedStatuses = this.selectedStatuses?.filter(e => e !== "");
-            
+
             this.model.selectedStates.value = "";
             this.model.selectedStates.value = this.selectedStatuses?.toString();
-          
+
         }
     },
-  mounted() {
-      if (this.model.selectedItemTemplate?.value) {
-        fetch('/api/Items/GetItemtemplateFields/' + this.model.selectedItemTemplate.value)
-          .then(response => response.json())
-          .then((data) => {
-            this.itemFields = data;
+    mounted() {
+        if (this.model.selectedItemTemplate?.value) {
+            fetch('/api/Items/GetItemtemplateFields/' + this.model.selectedItemTemplate.value)
+                .then(response => response.json())
+                .then((data) => {
+                    this.itemFields = data;
 
-          });
+                });
 
-        fetch('/api/Items/GetItemtemplateMetadataSets/' + this.model.selectedItemTemplate.value)
-          .then(response => response.json())
-          .then((data) => {
-            this.metadatasets = data;
+            fetch('/api/Items/GetItemtemplateMetadataSets/' + this.model.selectedItemTemplate.value)
+                .then(response => response.json())
+                .then((data) => {
+                    this.metadatasets = data;
 
-          });
+                });
 
-          fetch('/api/Items/GetItemtemplateStatuses/' + this.model.selectedItemTemplate.value)
-              .then(response => response.json())
-              .then((data) => {
-                  this.statuses = data; //statuses from template
+            fetch('/api/Items/GetItemtemplateStatuses/' + this.model.selectedItemTemplate.value)
+                .then(response => response.json())
+                .then((data) => {
+                    this.statuses = data; //statuses from template
 
-                  if (this.model.selectedStates.value !== null) {
-                      //select the checkbox if it's been selected
-                      for (let i = 0; i < this.statuses.length; i++) {
-                          if (this.model.selectedStates.value.includes(this.statuses[i].value)) {
-                              this.statuses[i].checked = true;
-                          }
-                      }
-
-                      
-                      this.selectedStatuses = (this.model.selectedStates.value.split(',')).filter(e => e !== ""); //temporary array contain selected state/status in model
-                      
+                    if (this.model.selectedStates.value !== null) {
+                        //select the checkbox if it's been selected
+                        for (let i = 0; i < this.statuses.length; i++) {
+                            if (this.model.selectedStates.value.includes(this.statuses[i].value)) {
+                                this.statuses[i].checked = true;
+                            }
+                        }
 
 
-                      //check if selected status/state still exist in the template
-                      //1. get the guid that's no longer in the template
-                      var tempSelected=[];
-                      for (let j = 0; j < this.selectedStatuses.length; j++) {
-                          var _temp = this.statuses.filter(e => e.value === this.selectedStatuses[j]);
-                          if (_temp !== null) {
-                              //console.log("selected status is still remain in the template");
-                              tempSelected.push(this.selectedStatuses[j]);
-                          }
-                          else
-                              console.log("selected status has been remove from the template");
-                      }
+                        this.selectedStatuses = (this.model.selectedStates.value.split(',')).filter(e => e !== ""); //temporary array contain selected state/status in model
 
-                      //console.log("tempSeelected length: " + tempSelected.length);
-                      if (tempSelected.length > 0  && tempSelected.length !== this.selectedStatuses.length) {
-                          //one or more selected status has been removed from the template
-                          this.selectedStatuses = tempSelected;
-                      }
-                      
-                     // console.log("mount local selectedstatuses: " + JSON.stringify(this.selectedStatuses));
-                      this.model.selectedStates.value = this.selectedStatuses.toString(); //value saved in the model
-                  }
 
-                  //this.selectedStatuses = this.model.selectedStates;
-                 // console.log("mount model: " + this.model.selectedStates.value);
-              });
 
-          fetch('/applets/api/itemtemplates/groups/' + this.model.selectedItemTemplate.value)
-              .then(response => response.json())
-              .then((data) => {
-                  this.groups = data;
-              });
-      }
+                        //check if selected status/state still exist in the template
+                        //1. get the guid that's no longer in the template
+                        var tempSelected = [];
+                        for (let j = 0; j < this.selectedStatuses.length; j++) {
+                            var _temp = this.statuses.filter(e => e.value === this.selectedStatuses[j]);
+                            if (_temp !== null) {
+                                //console.log("selected status is still remain in the template");
+                                tempSelected.push(this.selectedStatuses[j]);
+                            }
+                            else
+                                console.log("selected status has been remove from the template");
+                        }
+
+                        //console.log("tempSeelected length: " + tempSelected.length);
+                        if (tempSelected.length > 0 && tempSelected.length !== this.selectedStatuses.length) {
+                            //one or more selected status has been removed from the template
+                            this.selectedStatuses = tempSelected;
+                        }
+
+                        // console.log("mount local selectedstatuses: " + JSON.stringify(this.selectedStatuses));
+                        this.model.selectedStates.value = this.selectedStatuses.toString(); //value saved in the model
+                    }
+
+                    //this.selectedStatuses = this.model.selectedStates;
+                    // console.log("mount model: " + this.model.selectedStates.value);
+                });
+
+            fetch('/applets/api/itemtemplates/groups/' + this.model.selectedItemTemplate.value)
+                .then(response => response.json())
+                .then((data) => {
+                    this.groups = data;
+                });
+        }
     },
     computed: {
         getSelectedState() {

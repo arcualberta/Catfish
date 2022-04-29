@@ -16,6 +16,7 @@ using Catfish.Core.Services;
 using ElmahCore;
 using Catfish.Core.Models.Solr;
 using Piranha.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Cors;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,6 +26,7 @@ namespace Catfish.Areas.Applets.Controllers
 
     [Route("applets/api/[controller]")]
     [ApiController]
+    [EnableCors("CatfishApiPolicy")]
     public class KeywordSearchController : ControllerBase
     {
         private readonly IModelLoader _loader;

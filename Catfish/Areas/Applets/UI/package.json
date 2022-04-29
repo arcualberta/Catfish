@@ -1,7 +1,7 @@
 {
-  "name": "Applets",
-  "version": "8.7.0",
-  "description": "",
+  "name": "@arcualberta/applets",
+  "version": "1.0.0",
+  "description": "Catfish Applet Library",
   "main": "../../../wwwroot/assets/dist/applets/applets.ssr.js",
   "browser": "../../../wwwroot/assets/dist/applets/applets.esm.js",
   "module": "../../../wwwroot/assets/dist/applets/applets.esm.js",
@@ -64,5 +64,19 @@
   },
   "engines": {
     "node": ">=12"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arcualberta/Catfish.git"
+  },
+  "keywords": [
+    "Vue",
+    "Catfish"
+  ],
+  "author": "Arts Resource Centre, University of Alberta",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/arcualberta/Catfish/issues"
+  },
+  "homepage": "https://github.com/arcualberta/Catfish#readme"
 }
