@@ -1,29 +1,40 @@
 ﻿<script lang="ts">
-    import { defineComponent, PropType, ref } from 'vue'
+    import { defineComponent, computed, PropType, ref } from 'vue'
+    import { useStore } from 'vuex';
+    import props from '../../props'
+    import { State } from '../../../keyword-search/store/state';
+    import { Mutations } from '../../../keyword-search/store/mutations'
     export default defineComponent({
         name: "Popups",
         components: {
 
         },
+
         props: {
             title: {
                 type: null as PropType<string> | null,
                 required: false,
                 default: "Click me"
             },
-           
+
             popup: {
                 type: null as PropType<boolean> | null,
                 required: false,
-               
-            }
 
+            },
+            ...props
         },
 
         setup(p) {
+            const store = useStore();
+
             const ispopup = ref(p.popup as boolean);
-            console.log("inside popup: " + JSON.stringify(p.popup));
+           
+            console.log("inside popup New: " + JSON.stringify(p.popup));
             return {
+                isPopupVisible: computed(() => (store.state as State).popupVisibility),
+                setPopupVisibility: (visibility: boolean) => store.commit(Mutations.SET_POPUP_VISIBILITY, visibility),
+
                 ispopup
             }
         },
@@ -37,14 +48,14 @@
 </script>
 
 <template>
-    <div class="popup" v-if="ispopup">
+    <div class="popup" >
         <div class="popup-inner">
-            <button class="popup-close" @click="closePopup()">
+            <button class="popup-close" @click="setPopupVisibility(!isPopupVisible)">
                 Close Popup
             </button>
             <slot />
 
-        </div>
+</div>
 
     </div>
 </template>

@@ -51,7 +51,7 @@ export const actions: ActionTree<State, any> = {
         }
 
         const api = window.location.origin + `/applets/api/keywordsearch/items/`;
-        console.log("Item Load API: ", api)
+       // console.log("Item Load API: ", api)
 
         const formData = new FormData();
         if (store.state.pageId)
@@ -63,7 +63,10 @@ export const actions: ActionTree<State, any> = {
         formData.append("max", store.state.max.toString());
         formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
 
-        //console.log("Form Data: ", formData)
+        //MR April 27 2022, add freetextsearch
+        let freeText = store.state.freeSearchText ? store.state.freeSearchText : "";
+        formData.append("searchText", freeText);
+       
 
         fetch(api, {
             method: 'POST', // or 'PUT'
