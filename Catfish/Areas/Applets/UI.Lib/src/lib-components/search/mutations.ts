@@ -1,15 +1,19 @@
 ﻿import { MutationTree } from 'vuex';
 
-import { Mutations as BaseMutations, mutations as baseMutations } from '../shared/store/mutations'
+import { mutations as baseMutations } from '../shared/store/mutations'
 import { State } from './state';
 import { KeywordQueryModel, KeywordIndex, SearchOutput } from './models';
 //import { mutations as itemViewerMutations } from '../../item-viewer/store/mutations';
 
 //Declare MutationTypes
-enum SearchMutations {
+export enum Mutations {
     SET_SOURCE = 'SET_SOURCE',
+    SET_DATA_SERVICE_API_ROOT = 'SET_DATA_SERVICE_API_ROOT',
+    SET_PAGE_SERVICE_API_ROOT = 'SET_PAGE_SERVICE_API_ROOT',
+    SET_SOLR_SERVICE_API_ROOT = 'SET_SOLR_SERVICE_API_ROOT',
+
     SET_KEYWORDS = 'SET_KEYWORDS',
-    SET_FREE_TEXT_SEARCH = 'SET_FREE_TEXT_SEARCH',
+    SET_FREE_TEXT = 'SET_FREE_TEXT',
     SET_RESULTS = 'SET_RESULTS',
     SET_OFFSET = 'SET_OFFSET',
     SET_PAGE_SIZE = 'SET_PAGE_SIZE',
@@ -19,7 +23,8 @@ enum SearchMutations {
     CLEAR_KEYWORD = 'CLEAR_KEYWORD',
 }
 
-export const Mutations = { ...SearchMutations, ...BaseMutations };
+////const Mutations = { ...BaseMutations, ...ExtendedMutations }
+////export type Mutations = BaseMutations | ExtendedMutations;
 
 //Create a mutation tree that implement all mutation interfaces
 export const mutations: MutationTree<State> = {
@@ -31,7 +36,7 @@ export const mutations: MutationTree<State> = {
         state.keywordQueryModel = payload;
     },
 
-    [Mutations.SET_FREE_TEXT_SEARCH](state: State, payload: string) {
+    [Mutations.SET_FREE_TEXT](state: State, payload: string) {
         // console.log('mutation set text: payload: ', payload)
         state.freeSearchText = payload;
     },

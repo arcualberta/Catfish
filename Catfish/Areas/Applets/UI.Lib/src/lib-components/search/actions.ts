@@ -49,8 +49,9 @@ export const actions: ActionTree<State, any> = {
             localStorage.setItem(store.getters.searchParamStorageKey, JSON.stringify(searchParams));
         }
 
-        const api = window.location.origin + `/applets/api/keywordsearch/items/`;
-        // console.log("Item Load API: ", api)
+        const apiRoot = store.state.dataServiceApiRoot ? store.state.dataServiceApiRoot : window.location.origin + '/applets/api';
+        const api = apiRoot + `/keywordsearch/items/`;
+         console.log("Item Load API: ", api)
 
         const formData = new FormData();
         if (store.state.pageId)
@@ -105,12 +106,12 @@ export const actions: ActionTree<State, any> = {
     [Actions.SET_SEARCH_TEXT](store, text: string) {
 
         // console.log("set serch text: " + text);
-        store.commit(Mutations.SET_FREE_TEXT_SEARCH, text);
+        store.commit(Mutations.SET_FREE_TEXT, text);
     },
     [Actions.SEARCH_FREE_TEXT](store) {
         console.log("executing search for: " + store.state.freeSearchText?.toString());
-        const api = window.location.origin +
-            `/api/solr/executefreetext/${store.state.freeSearchText?.toString()}`
+        const apiRoot = store.state.solrApiRoot ? store.state.solrApiRoot : window.location.origin + '/api';
+        const api = apiRoot + `/solr/executefreetext/${store.state.freeSearchText?.toString()}`
 
         fetch(api)
             .then(response => response.json())

@@ -3,8 +3,6 @@
 import { SearchOutput, KeywordQueryModel } from './models'
 import { State as BaseState, state as baseState } from '../shared/store/state'
 
-export enum ePage { Home = "Home", List = "List", Details = "Details" }
-
 //Declare State interface
 export interface State extends BaseState {
     keywordQueryModel: KeywordQueryModel | null;
