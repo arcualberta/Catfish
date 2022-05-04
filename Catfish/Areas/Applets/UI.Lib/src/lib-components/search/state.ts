@@ -22,3 +22,5 @@ export const state: State = {
     max: 25,
     searchResult: null,
 }
+
+
