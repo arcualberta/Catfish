@@ -1,5 +1,4 @@
 /* eslint-disable import/prefer-default-export */
-export { default as props } from './shared/props';
 
 /* common module */
 export * as common from './common/';
