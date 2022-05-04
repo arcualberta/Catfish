@@ -1,5 +1,5 @@
 ﻿import { ActionTree } from 'vuex';
-import { State } from './state';
+//import { State } from './state';
 import { Mutations } from './mutations';
 import { SearchParams, KeywordSource } from './models';
 //import { actions as itemViewerActions} from '../../item-viewer/store/actions';
@@ -18,14 +18,15 @@ export enum Actions {
 }
 
 
-export const actions: ActionTree<State, any> = {
+export const actions: ActionTree<any, any> = {
     //...itemViewerActions,
 
     [Actions.INIT_FILTER](store) {
 
+        const common = store.rootState.common;
         //console.log('Store: ', JSON.stringify(store.state))
-        const apiRoot = store.state.dataServiceApiRoot ? store.state.dataServiceApiRoot : window.location.origin + '/applets/api';
-        const api = apiRoot + `/keywordsearch/keywords/page/${store.state.pageId}/block/${store.state.blockId}`;
+        const apiRoot = common?.dataServiceApiRoot ? common.dataServiceApiRoot : window.location.origin + '/applets/api';
+        const api = apiRoot + `/keywordsearch/keywords/page/${common.pageId}/block/${common.blockId}`;
         console.log('Keyword Load API: ', api)
 
         fetch(api)
@@ -49,15 +50,17 @@ export const actions: ActionTree<State, any> = {
             localStorage.setItem(store.getters.searchParamStorageKey, JSON.stringify(searchParams));
         }
 
-        const apiRoot = store.state.dataServiceApiRoot ? store.state.dataServiceApiRoot : window.location.origin + '/applets/api';
+        const common = store.rootState.common;
+
+        const apiRoot = common.dataServiceApiRoot ? common.dataServiceApiRoot : window.location.origin + '/applets/api';
         const api = apiRoot + `/keywordsearch/items/`;
          console.log("Item Load API: ", api)
 
         const formData = new FormData();
-        if (store.state.pageId)
-            formData.append("pageId", store.state.pageId.toString());
-        if (store.state.blockId)
-            formData.append("blockId", store.state.blockId.toString());
+        if (common.pageId)
+            formData.append("pageId", common.pageId.toString());
+        if (common.blockId)
+            formData.append("blockId", common.blockId.toString());
 
         formData.append("offset", store.state.offset.toString());
         formData.append("max", store.state.max.toString());

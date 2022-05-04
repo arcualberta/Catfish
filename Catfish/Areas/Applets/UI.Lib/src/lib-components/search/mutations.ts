@@ -1,17 +1,10 @@
 ﻿import { MutationTree } from 'vuex';
 
-import { mutations as baseMutations } from '../shared/store/mutations'
 import { State } from './state';
 import { KeywordQueryModel, KeywordIndex, SearchOutput } from './models';
-//import { mutations as itemViewerMutations } from '../../item-viewer/store/mutations';
 
 //Declare MutationTypes
 export enum Mutations {
-    SET_SOURCE = 'SET_SOURCE',
-    SET_DATA_SERVICE_API_ROOT = 'SET_DATA_SERVICE_API_ROOT',
-    SET_PAGE_SERVICE_API_ROOT = 'SET_PAGE_SERVICE_API_ROOT',
-    SET_SOLR_SERVICE_API_ROOT = 'SET_SOLR_SERVICE_API_ROOT',
-
     SET_KEYWORDS = 'SET_KEYWORDS',
     SET_FREE_TEXT = 'SET_FREE_TEXT',
     SET_RESULTS = 'SET_RESULTS',
@@ -23,13 +16,9 @@ export enum Mutations {
     CLEAR_KEYWORD = 'CLEAR_KEYWORD',
 }
 
-////const Mutations = { ...BaseMutations, ...ExtendedMutations }
-////export type Mutations = BaseMutations | ExtendedMutations;
 
 //Create a mutation tree that implement all mutation interfaces
 export const mutations: MutationTree<State> = {
-    //...itemViewerMutations,
-    ...baseMutations,
 
     [Mutations.SET_KEYWORDS](state: State, payload: KeywordQueryModel) {
         console.log('SET_KEYWORDS Payload: ', payload)
@@ -44,6 +33,7 @@ export const mutations: MutationTree<State> = {
     [Mutations.SET_RESULTS](state: State, payload: SearchOutput) {
         state.searchResult = payload;
         state.offset = payload.first - 1;
+        console.log(JSON.stringify(payload))
     },
 
     [Mutations.SET_OFFSET](state: State, payload: number) {
