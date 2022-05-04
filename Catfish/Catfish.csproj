@@ -53,7 +53,6 @@
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Areas\Applets\UI.Lib\src\lib-components\keyword-search\router.ts" />
     <None Remove="Areas\Applets\UI.Lib\src\lib-components\shared\components\display\cms\ImgDiv.vue" />
     <None Remove="Areas\Applets\UI.Lib\src\lib-components\shared\functions\useDebouncedRef.ts" />
     <None Remove="Areas\Applets\UI.Lib\src\lib-components\shared\models\cmsModels.ts" />
@@ -150,7 +149,6 @@
     <Folder Include="Areas\Applets\Models\Blocks\CarouselModels\" />
     <Folder Include="Areas\Applets\Models\Blocks\ItemEditorModels\" />
     <Folder Include="Areas\Applets\Models\PageComponents\" />
-    <Folder Include="Areas\Applets\UI.Lib\src\lib-components\keyword-search\models\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\components\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\models\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\store\" />
@@ -171,7 +169,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="Areas\Applets\UI.Lib\src\lib-components\keyword-search\router.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI.Lib\src\lib-components\shared\components\display\cms\ImgDiv.vue" />
     <TypeScriptCompile Include="Areas\Applets\UI.Lib\src\lib-components\shared\functions\useDebouncedRef.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI.Lib\src\lib-components\shared\models\cmsModels.ts" />
