@@ -1,19 +1,17 @@
 // rollup.config.js
 import fs from 'fs';
 import path from 'path';
+import ttypescript from 'ttypescript';
+import typescript from 'rollup-plugin-typescript2';
+import babel from '@rollup/plugin-babel';
 import vue from 'rollup-plugin-vue';
 import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import babel from '@rollup/plugin-babel';
 import PostCSS from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
-import ttypescript from 'ttypescript';
-import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
-
-const skipSSR = false;
 
 // Get browserslist config and remove ie from es build targets
 const esbrowserslist = fs.readFileSync('./.browserslistrc')
@@ -25,7 +23,7 @@ const esbrowserslist = fs.readFileSync('./.browserslistrc')
 const babelPresetEnvConfig = require('../babel.config')
     .presets.filter((entry) => entry[0] === '@babel/preset-env')[0][1];
 
-const argv = [minimist(process.argv.slice(2))];
+const argv = minimist(process.argv.slice(2));
 
 const projectRoot = path.resolve(__dirname, '..');
 
@@ -44,7 +42,7 @@ const baseConfig = {
         ],
         replace: {
             'process.env.NODE_ENV': JSON.stringify('production'),
-            'preventAssignment': true,
+            preventAssignment: true,
         },
         vue: {
         },
@@ -69,21 +67,6 @@ const baseConfig = {
             babelHelpers: 'bundled',
         },
     },
-    moduleContext: (id) => {
-        // In order to match native module behaviour, Rollup sets `this`
-        // as `undefined` at the top level of modules. Rollup also outputs
-        // a warning if a module tries to access `this` at the top level.
-        // The following modules use `this` at the top level and expect it
-        // to be the global `window` object, so we tell Rollup to set
-        // `this = window` for these modules.
-        const thisAsWindowForModules = [
-            'node_modules\\@tinymce\\tinymce-vue\\lib\\es2015\\main\\ts\\components\\Editor.js'
-        ];
-
-        if (thisAsWindowForModules.some(id_ => id.trimRight().endsWith(id_))) {
-            return 'window';
-        }
-    },
 };
 
 // ESM/UMD/IIFE shared settings: externals
@@ -104,14 +87,13 @@ const globals = {
 
 // Customize configs for individual targets
 const buildFormats = [];
-
 if (!argv.format || argv.format === 'es') {
     const esConfig = {
         ...baseConfig,
         input: 'src/entry.esm.ts',
         external,
         output: {
-            file: '../../../wwwroot/assets/dist/applets/applets.esm.js',
+            file: 'dist/arcualberta-catfish-ui.esm.js',
             format: 'esm',
             exports: 'named',
         },
@@ -144,15 +126,15 @@ if (!argv.format || argv.format === 'es') {
     buildFormats.push(esConfig);
 }
 
-if (!skipSSR && (!argv.format || argv.format === 'cjs')) {
+if (!argv.format || argv.format === 'cjs') {
     const umdConfig = {
         ...baseConfig,
         external,
         output: {
             compact: true,
-            file: '../../../wwwroot/assets/dist/applets/applets.ssr.js',
+            file: 'dist/arcualberta-catfish-ui.ssr.js',
             format: 'cjs',
-            name: 'Applets',
+            name: 'ArcualbertaCatfishUi',
             exports: 'auto',
             globals,
         },
@@ -173,9 +155,9 @@ if (!argv.format || argv.format === 'iife') {
         external,
         output: {
             compact: true,
-            file: '../../../wwwroot/assets/dist/applets/applets.min.js',
+            file: 'dist/arcualberta-catfish-ui.min.js',
             format: 'iife',
-            name: 'Applets',
+            name: 'ArcualbertaCatfishUi',
             exports: 'auto',
             globals,
         },

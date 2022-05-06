@@ -1,25 +1,25 @@
 {
-  "name": "@arcualberta/applets",
+  "name": "@arcualberta/catfish-ui",
   "version": "1.0.0",
-  "description": "Catfish Applet Library",
-  "main": "../../../wwwroot/assets/dist/applets/applets.ssr.js",
-  "browser": "../../../wwwroot/assets/dist/applets/applets.esm.js",
-  "module": "../../../wwwroot/assets/dist/applets/applets.esm.js",
-  "unpkg": "../../../wwwroot/assets/dist/applets/applets.min.js",
-  "types": "../../../wwwroot/assets/dist/applets/types/src/entry.esm.d.ts",
+  "description": "",
+  "main": "dist/arcualberta-catfish-ui.ssr.js",
+  "browser": "dist/arcualberta-catfish-ui.esm.js",
+  "module": "dist/arcualberta-catfish-ui.esm.js",
+  "unpkg": "dist/arcualberta-catfish-ui.min.js",
+  "types": "dist/types/src/entry.esm.d.ts",
   "files": [
-    "../../../wwwroot/assets/dist/applets/*",
+    "dist/*",
     "src/**/*.vue"
   ],
   "sideEffects": false,
   "scripts": {
     "serve": "vue-cli-service serve dev/serve.ts",
-    "prebuild": "rimraf ../../../wwwroot/assets/dist/applets",
+    "prebuild": "rimraf ./dist",
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
-    "postbuild": "rimraf ../../../wwwroot/assets/dist/applets/types/dev ../../../wwwroot/assets/dist/applets/types/src/entry.d.ts && copyfiles -f src/styles/*.css ../../../wwwroot/assets/dist/applets/styles/ && copyfiles -f src/manager-js/*.js ../../../wwwroot/assets/dist/applets/manager-js/"
+    "postbuild": "rimraf ./dist/types/dev ./dist/types/src/entry.d.ts"
   },
   "dependencies": {
     "@tinymce/tinymce-vue": "^4.0.5",
@@ -40,8 +40,8 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-replace": "^2.4.2",
     "@vue/cli-plugin-babel": "^4.5.13",
-    "@vue/cli-plugin-typescript": "^5.0.4",
-    "@vue/cli-service": "^5.0.4",
+    "@vue/cli-plugin-typescript": "^4.5.13",
+    "@vue/cli-service": "^4.5.13",
     "@vue/compiler-sfc": "^3.2.21",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "babel-plugin-transform-regenerator": "^6.26.0",
@@ -64,19 +64,5 @@
   },
   "engines": {
     "node": ">=12"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/arcualberta/Catfish.git"
-  },
-  "keywords": [
-    "Vue",
-    "Catfish"
-  ],
-  "author": "Arts Resource Centre, University of Alberta",
-  "license": "LGPL-3.0",
-  "bugs": {
-    "url": "https://github.com/arcualberta/Catfish/issues"
-  },
-  "homepage": "https://github.com/arcualberta/Catfish#readme"
+  }
 }

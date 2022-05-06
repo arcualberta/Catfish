@@ -1,9 +1,8 @@
 ﻿import { ActionTree } from 'vuex';
-import { State } from './state';
+//import { State } from './state';
 import { Mutations } from './mutations';
-import { KeywordSource } from '../models/keywords'
-import { SearchParams } from '../models';
-import { actions as itemViewerActions} from '../../item-viewer/store/actions';
+import { SearchParams, KeywordSource } from './models';
+//import { actions as itemViewerActions} from '../../item-viewer/store/actions';
 
 //Declare ActionTypes
 export enum Actions {
@@ -18,15 +17,16 @@ export enum Actions {
     LOAD_ITEM = 'LOAD_ITEM',
 }
 
-export const actions: ActionTree<State, any> = {
-    ...itemViewerActions,
+
+export const actions: ActionTree<any, any> = {
+    //...itemViewerActions,
 
     [Actions.INIT_FILTER](store) {
 
+        const common = store.rootState.common;
         //console.log('Store: ', JSON.stringify(store.state))
-
-        const api = window.location.origin +
-            `/applets/api/keywordsearch/keywords/page/${store.state.pageId}/block/${store.state.blockId}`;
+        const apiRoot = common?.dataServiceApiRoot ? common.dataServiceApiRoot : window.location.origin + '/applets/api';
+        const api = apiRoot + `/keywordsearch/keywords/page/${common.pageId}/block/${common.blockId}`;
         console.log('Keyword Load API: ', api)
 
         fetch(api)
@@ -50,14 +50,17 @@ export const actions: ActionTree<State, any> = {
             localStorage.setItem(store.getters.searchParamStorageKey, JSON.stringify(searchParams));
         }
 
-        const api = window.location.origin + `/applets/api/keywordsearch/items/`;
-       // console.log("Item Load API: ", api)
+        const common = store.rootState.common;
+
+        const apiRoot = common.dataServiceApiRoot ? common.dataServiceApiRoot : window.location.origin + '/applets/api';
+        const api = apiRoot + `/keywordsearch/items/`;
+         console.log("Item Load API: ", api)
 
         const formData = new FormData();
-        if (store.state.pageId)
-            formData.append("pageId", store.state.pageId.toString());
-        if (store.state.blockId)
-            formData.append("blockId", store.state.blockId.toString());
+        if (common.pageId)
+            formData.append("pageId", common.pageId.toString());
+        if (common.blockId)
+            formData.append("blockId", common.blockId.toString());
 
         formData.append("offset", store.state.offset.toString());
         formData.append("max", store.state.max.toString());
@@ -66,7 +69,8 @@ export const actions: ActionTree<State, any> = {
         //MR April 27 2022, add freetextsearch
         let freeText = store.state.freeSearchText ? store.state.freeSearchText : "";
         formData.append("searchText", freeText);
-       
+
+
         fetch(api, {
             method: 'POST', // or 'PUT'
             body: formData
@@ -105,41 +109,19 @@ export const actions: ActionTree<State, any> = {
     [Actions.SET_SEARCH_TEXT](store, text: string) {
 
         // console.log("set serch text: " + text);
-        store.commit(Mutations.SET_FREE_TEXT_SEARCH, text);
+        store.commit(Mutations.SET_FREE_TEXT, text);
     },
     [Actions.SEARCH_FREE_TEXT](store) {
         console.log("executing search for: " + store.state.freeSearchText?.toString());
-        const api = window.location.origin + `/applets/api/keywordsearch/items/`;
-        // console.log("Item Load API: ", api)
+        const apiRoot = store.state.solrApiRoot ? store.state.solrApiRoot : window.location.origin + '/api';
+        const api = apiRoot + `/solr/executefreetext/${store.state.freeSearchText?.toString()}`
 
-        const formData = new FormData();
-        if (store.state.pageId)
-            formData.append("pageId", store.state.pageId.toString());
-        if (store.state.blockId)
-            formData.append("blockId", store.state.blockId.toString());
+        fetch(api)
+            .then(response => response.json())
+            .then(data => {
+                console.log("results:")
+                console.log(data)
 
-        formData.append("offset", store.state.offset.toString());
-        formData.append("max", store.state.max.toString());
-        formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
-
-        //MR April 27 2022, add freetextsearch
-        let freeText = store.state.freeSearchText ? store.state.freeSearchText : "";
-        formData.append("searchText", freeText);
-
-
-        fetch(api, {
-            method: 'POST', // or 'PUT'
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-              //  store.commit(Mutations.SET_RESULTS, data);
-            console.log("free search result");
-            console.log(JSON.stringify(data));
-        })
-        .catch((error) => {
-                console.error('Item Load API Error:', error);
-        });
+            });
     },
 }
-
