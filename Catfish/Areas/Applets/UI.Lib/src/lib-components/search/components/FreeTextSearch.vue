@@ -2,8 +2,8 @@
     import { defineComponent, ref} from 'vue'
     import { useStore } from 'vuex'
 
-    //import { Actions } from '../actions'
-    //import { Mutations } from '../mutations'
+    import { Actions } from '../actions'
+    import { Mutations } from '../mutations'
 
     export default defineComponent({
         name: "FreeTextSearch",
@@ -14,8 +14,11 @@
             return {
                 store,
                 textValue,
-                setText: (text: string) => store.commit('SET_FREE_TEXT', text),
-                runSearch: () => store.dispatch('FRESH_SEARCH'),
+                setText: (text: string) => store.commit(Mutations.SET_FREE_TEXT, text),
+                runSearch: () => {
+                    store.commit(Mutations.SET_FREE_TEXT, textValue.value)
+                    store.dispatch(Actions.FRESH_SEARCH)
+                },
             };
         },
     });
@@ -26,8 +29,8 @@
         <input type="text" class="form-control rounded" placeholder="searchText" aria-label="Search" aria-describedby="search-addon" v-model="textValue" @blur="runSearch()" />
         <!--<button type="button" class="btn btn-outline-primary" @click="executeSearch">search</button>-->
 
-        <h3>Store</h3>
-        {{JSON.stringify(store.state.rootState)}}
+        <h3>Search Module State</h3>
+        {{JSON.stringify(state)}}
 
     </div>
 </template>
