@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, ref} from 'vue'
+    import { defineComponent, ref, computed} from 'vue'
     import { useStore } from 'vuex'
 
     import { Actions } from '../actions'
@@ -13,6 +13,7 @@
 
             return {
                 store,
+                state: computed(() => store.state),
                 textValue,
                 setText: (text: string) => store.commit(Mutations.SET_FREE_TEXT, text),
                 runSearch: () => {
