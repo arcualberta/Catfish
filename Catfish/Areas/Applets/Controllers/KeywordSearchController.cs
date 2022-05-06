@@ -133,7 +133,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("items")]
-        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0, [FromForm]string searchText=null)
+        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] string searchText = null, [FromForm] int offset = 0, [FromForm] int max = 0)
         {
             //////Using mockup data
             ////KeywordQueryModel qModel = await Keywords(pageId, blockId).ConfigureAwait(false);
@@ -185,8 +185,9 @@ namespace Catfish.Areas.Applets.Controllers
                 var query = keywordQueryModel?.BuildSolrQuery();
                 string scope = string.Format("doc_type_ss:item AND collection_s:{0} AND template_s:{1}", collectionId, itemTemplateId);
                 query = string.IsNullOrEmpty(query)
-                    ? scope
-                    : string.Format("{0} AND {1}", scope, query);
+                        ? scope
+                        : string.Format("{0} AND {1}", scope, query);
+            
 
                 ////if (groupId.HasValue)
                 ////    query = string.Format("{0} AND group_s:{1}", query, groupId.Value);
@@ -198,7 +199,8 @@ namespace Catfish.Areas.Applets.Controllers
 
                 //System.IO.File.WriteAllText("c:\\solr_query.txt", query);
 
-                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
+                //April 27 2022 -- add seachText parameter 
+                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10, searchText);
 
                 //Wrapping the results in the SearchOutput object
                 Guid titleFieldId = string.IsNullOrEmpty(block.SelectedMapTitleId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapTitleId.Value);
