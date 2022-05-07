@@ -44,7 +44,7 @@ namespace Catfish.UnitTests
         [Test]
         public void IGRD_SubmissionFormTest()
         {
-            bool saveChangesToDatabase = true;
+            bool saveChangesToDatabase = false;
 
             //string lang = "en";
             string templateName = "IG Research Directory Submission Form Template";
@@ -405,11 +405,10 @@ Any public disclosures of information from the directory will be in aggregate fo
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
 
-            // Added state referances
+            // Added state referances. The public should be able to list
+            // the submissions in the submitted state.
             listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id)
-                .AddAuthorizedRole(memberRole.Id)
-                .AddOwnerAuthorization();
+                .IsPublic = true;
 
             // ================================================
             // Read submission-instances related workflow items
@@ -420,11 +419,10 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
 
-            // Added state referances
+            // Added state referances. The public should be able to list
+            // the submissions in the submitted state.
             viewDetailsSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id)
-                .AddAuthorizedRole(memberRole.Id)
-                .AddOwnerAuthorization();
+                .IsPublic = true;
 
 
             // ================================================
