@@ -164,7 +164,7 @@ namespace Catfish.Services
         {
 
             _result = null;
-            var task = ExecuteSearchQuery(query, start, max, maxHiglightSnippets);
+            var task = ExecuteSearchQuery(query, start, max, maxHiglightSnippets, freeText);
             task.Wait(60000);//Wait for a maximum of 1 minute
             return _result;
         }

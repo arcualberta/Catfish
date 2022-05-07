@@ -110,18 +110,5 @@ export const actions: ActionTree<any, any> = {
 
         // console.log("set serch text: " + text);
         store.commit(Mutations.SET_FREE_TEXT, text);
-    },
-    [Actions.SEARCH_FREE_TEXT](store) {
-        console.log("executing search for: " + store.state.freeSearchText?.toString());
-        const apiRoot = store.state.solrApiRoot ? store.state.solrApiRoot : window.location.origin + '/api';
-        const api = apiRoot + `/solr/executefreetext/${store.state.freeSearchText?.toString()}`
-
-        fetch(api)
-            .then(response => response.json())
-            .then(data => {
-                console.log("results:")
-                console.log(data)
-
-            });
-    },
+    }
 }

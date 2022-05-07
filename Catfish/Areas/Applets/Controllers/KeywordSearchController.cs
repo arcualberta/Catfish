@@ -284,7 +284,7 @@ namespace Catfish.Areas.Applets.Controllers
             //Get the states of the selected action, excluding the states that were requested to be excluded
             var actionStateRefs = action.States.Where(st => permissibleStateIds.Contains(st.RefId));
 
-            //Grant access to SysAdmin users
+            
             if (User == null || string.IsNullOrEmpty(User?.Identity?.Name))
             {
                 //Return the states of the item where the public can perform the specified acton.
@@ -292,6 +292,7 @@ namespace Catfish.Areas.Applets.Controllers
             }
             else if (User.IsInRole("SysAdmin"))
 			{
+                //Grant access to SysAdmin users
                 //Return all the non-excluded states
                 return actionStateRefs.Select(st => st.RefId).ToList();
             }
