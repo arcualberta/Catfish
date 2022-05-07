@@ -33,7 +33,6 @@ export const mutations: MutationTree<State> = {
     [Mutations.SET_RESULTS](state: State, payload: SearchOutput) {
         state.searchResult = payload;
         state.offset = payload.first - 1;
-        console.log(JSON.stringify(payload))
     },
 
     [Mutations.SET_OFFSET](state: State, payload: number) {
