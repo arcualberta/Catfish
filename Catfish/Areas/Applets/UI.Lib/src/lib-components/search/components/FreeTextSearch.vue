@@ -29,10 +29,6 @@
     <div class="input-group dir-text-search">
         <input type="text" class="form-control rounded" placeholder="searchText" aria-label="Search" aria-describedby="search-addon" v-model="textValue" @blur="runSearch()" />
         <!--<button type="button" class="btn btn-outline-primary" @click="executeSearch">search</button>-->
-
-        <h3>Search Module State</h3>
-        {{JSON.stringify(state)}}
-
     </div>
 </template>
 
