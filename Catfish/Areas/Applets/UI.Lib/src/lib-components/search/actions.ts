@@ -53,14 +53,25 @@ export const actions: ActionTree<any, any> = {
         const common = store.rootState.common;
 
         const apiRoot = common.dataServiceApiRoot ? common.dataServiceApiRoot : window.location.origin + '/applets/api';
-        const api = apiRoot + `/keywordsearch/items/`;
+        const api = apiRoot + '/keywordsearch';//`/keywordsearch/items/`;
          console.log("Item Load API: ", api)
 
         const formData = new FormData();
-        if (common.pageId)
-            formData.append("pageId", common.pageId.toString());
-        if (common.blockId)
-            formData.append("blockId", common.blockId.toString());
+
+        //MR: Mey 10 2022 -- commented out pageId and block Id, added template, collection and group Ids
+
+        //if (common.pageId)
+        //    formData.append("pageId", common.pageId.toString());
+        //if (common.blockId)
+        //    formData.append("blockId", common.blockId.toString());
+
+        if (common.templateId)
+            formData.append("templateId", common.templateId.toString())
+
+        if (common.collectionId)
+            formData.append("collectionId", common.collectionId.toString())
+        if (common.groupId)
+            formData.append("groupId", common.collectionId.toString())
 
         formData.append("offset", store.state.offset.toString());
         formData.append("max", store.state.max.toString());

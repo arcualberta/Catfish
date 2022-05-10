@@ -59,8 +59,94 @@ namespace Catfish.Areas.Applets.Controllers
 
         // POST api/<KeywordSearchController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public SearchOutput Post([FromForm] Guid templateId, [FromForm] Guid collectionId, [FromForm] Guid groupId, [FromForm] string queryParams, [FromForm] string searchText = null, [FromForm] int offset = 0, [FromForm] int max = 0)
         {
+           // Dictionary<string, object> result = new Dictionary<string, object>();
+            SearchOutput result = new SearchOutput();
+            try
+            {
+                //string keywordFieldId = block.KeywordSourceId.Value;
+                //string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/');
+                //Guid? groupId = string.IsNullOrEmpty(block.SelectedGroupId.Value) ? null as Guid? : Guid.Parse(block.SelectedGroupId.Value);
+
+
+                #region Validating access-permission for the currently logged in user
+
+                ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
+
+                //Take the permissible state GUIDs from the Piranha bloclk (i.e. GUIDs of selected states)
+                ////var permissibleStateGuids = block.GetSelectedStates();
+
+                ////var permittedStatusIds = GetPermittedStateIdsForCurrentUser(Guid.Parse(block.SelectedGroupId.Value), template, "ListInstances", permissibleStateGuids);
+
+                ////if (permittedStatusIds.Count == 0)
+                ////    return result;
+
+                #endregion
+
+
+
+                KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
+
+                string keywords = null;
+                string[] slectedKeywords = string.IsNullOrEmpty(keywords)
+                   ? Array.Empty<string>()
+                   : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
+
+                var query = keywordQueryModel?.BuildSolrQuery();
+                string scope = string.Format("doc_type_ss:item AND collection_s:{0} AND template_s:{1}", collectionId, templateId);
+                query = string.IsNullOrEmpty(query)
+                        ? scope
+                        : string.Format("{0} AND {1}", scope, query);
+
+
+                //MR May 10 -2022 -- no group Id in solr index
+                //if (groupId != null && groupId != Guid.Empty)
+                //    query = string.Format("{0} AND group_s:{1}", query, groupId.ToString());
+
+                ////List<string> stateLimits = new List<string>();
+                ////foreach (var stId in permittedStatusIds)
+                ////    stateLimits.Add(string.Format("status_s:{0}", stId));
+                ////query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
+
+
+
+                //April 27 2022 -- add seachText parameter 
+                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10, searchText);
+
+                foreach (var resultEntry in solrSearchResult.ResultEntries)
+                {
+                    ResultItem resultItem = new ResultItem();
+                    resultItem.Id = resultEntry.Id;
+                    resultItem.Date = resultEntry.Created;
+                    string solrFieldId = "";
+                    foreach(var field in resultEntry.Fields)
+                    {
+                        if (!string.IsNullOrEmpty(field.Scope.ToString())) {
+                            solrFieldId = field.Scope.ToString() == "Data" ? "data_" : "metadata_";
+                            solrFieldId += field.ContainerId + "_" + field.FieldId + "_ts";
+                            Dictionary<string, string> solrF = new Dictionary<string, string>();
+
+                            //resultItem.SolrFieldId = solrFieldId;
+                            string content = Combine(field.FieldContent);
+                            solrF[solrFieldId] = content;
+                            resultItem.SolrFields.Add(solrF);
+                           
+                        }
+                    }
+
+                    result.Items.Add(resultItem);
+                }
+                result.First = solrSearchResult.Offset + 1;
+                result.Count = solrSearchResult.TotalMatches;
+                result.Last = result.First + result.Items.Count - 1;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+
+           return result;
         }
 
         // PUT api/<KeywordSearchController>/5
