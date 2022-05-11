@@ -11,7 +11,7 @@ export interface ResultItem {
     detailedViewUrl: URL;
 
     //MR May 10 2022
-    itemFields: ItemField[] | null;
+    solrFields: SolrField[] | null;
 }
 
 export interface SearchOutput {
@@ -65,7 +65,7 @@ export interface Keyword {
     index: KeywordIndex;
     value: string;
 }
-export interface ItemField {
+export interface SolrField {
     
     //MR May 10 2022
     solrFieldId: string | null;
