@@ -123,9 +123,9 @@ namespace Catfish.Areas.Applets.Controllers
                     foreach(var field in resultEntry.Fields)
                     {
                         if (!string.IsNullOrEmpty(field.Scope.ToString())) {
-                            solrFieldId = field.Scope.ToString() == "Data" ? "data_" : "metadata_";
-                            solrFieldId += field.ContainerId + "_" + field.FieldId + "_";
-                            Dictionary<string, string> solrF = new Dictionary<string, string>();
+                            solrFieldId = field.FieldKey; 
+                            
+                            Dictionary<string, string> solrF = new Dictionary<string, string>();  
 
                             //resultItem.SolrFieldId = solrFieldId;
                             string content = Combine(field.FieldContent);

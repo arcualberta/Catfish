@@ -15,6 +15,7 @@ namespace Catfish.Core.Models.Solr
         public List<string> FieldContent { get; set; } = new List<string>();
 
         public List<string> Highlights = new List<string>();
+        public string FieldKey { get; set; }
 
         public ResultEntryField(XElement arr, Dictionary<string, string> fieldNameDictionary)
         {
@@ -29,6 +30,7 @@ namespace Catfish.Core.Models.Solr
             FieldId = filedId;
             FieldName = fieldNameDictionary?.FirstOrDefault(ele => ele.Key == fieldKey).Value;
             FieldContent = arr.Elements("str").Select(str => str.Value).ToList();
+            FieldKey = fieldKey;
         }
 
         public void SetHighlights(XElement highlights)
