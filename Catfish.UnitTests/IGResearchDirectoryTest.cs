@@ -38,8 +38,8 @@ namespace Catfish.UnitTests
             _apiKey = _testHelper.Configuration.GetSection("GoogleApiKey").Value;
         }
 
-       
-       
+
+
 
         [Test]
         public void IGRD_SubmissionFormTest()
@@ -48,7 +48,7 @@ namespace Catfish.UnitTests
 
             //string lang = "en";
             string templateName = "IG Research Directory Submission Form Template";
-           // string _metadatsetName = "IG Research Directory Submission Metadata";
+            // string _metadatsetName = "IG Research Directory Submission Metadata";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -81,10 +81,10 @@ namespace Catfish.UnitTests
 
             //TO DO !!!!!!
             string[] keywords = GetKeywords();
-           keywordMeta.CreateField<CheckboxField>("Keywords", lang,keywords, true);
-          
-        //    string[] modes = GetDeliveryModes();
-        //    keywordMeta.CreateField<CheckboxField>("Mode", lang, modes, true);
+            keywordMeta.CreateField<CheckboxField>("Keywords", lang, keywords, true);
+
+            //    string[] modes = GetDeliveryModes();
+            //    keywordMeta.CreateField<CheckboxField>("Mode", lang, modes, true);
 
 
             //Defininig the submission form
@@ -103,18 +103,18 @@ Any public disclosures of information from the directory will be in aggregate fo
 ", lang, "alert alert-info");
             //Fields identified by * are mandatory
             rdForm.CreateField<InfoSection>(null, null)
-                .AppendContent("div", @"Fields identified by <span style='color: Red;'>*</span> are mandatory",lang, "alert alert-warning");
+                .AppendContent("div", @"Fields identified by <span style='color: Red;'>*</span> are mandatory", lang, "alert alert-warning");
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", @"Section 1: Contact Information", lang, "alert alert-info");
             var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true);
             applicantEmail.IsListEntryTitle = true;
             var name = rdForm.CreateField<TextField>("Name (First and Last)", lang, true);
-           
+
             name.IsListEntryTitle = true;
             string[] publicDisplay = new string[] { "Display this on my public profile?" };
-            string[] pronounsList = new string[]{"they/them", "she/her", "he/him", "Would rather not say", "Another" };
+            string[] pronounsList = new string[] { "they/them", "she/her", "he/him", "Would rather not say", "Another" };
 
-            var pronouns = rdForm.CreateField<CheckboxField>("Pronouns", lang,pronounsList, true);
+            var pronouns = rdForm.CreateField<CheckboxField>("Pronouns", lang, pronounsList, true);
             pronouns.CssClass = "pronounsMultiCheck";
             var pronounAnother = rdForm.CreateField<TextField>("If you select 'Another, please specify", lang);
 
@@ -137,8 +137,8 @@ Any public disclosures of information from the directory will be in aggregate fo
 
 
             string[] options = new string[] { "Yes", "No" };
-           // var pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
-           // pubDisplay.CssClass = "radio-inline";
+            // var pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
+            // pubDisplay.CssClass = "radio-inline";
 
             rdForm.CreateField<TextField>("Faculty/Department/Organization", lang, true);
             //rdForm.CreateField<TextField>("Department", lang, true);
@@ -160,13 +160,13 @@ Any public disclosures of information from the directory will be in aggregate fo
             var disabilities = rdForm.CreateField<CheckboxField>("Living with disability", lang, disabilitiesList, true);
             disabilities.CssClass = "disabilitiesMultiCheck";
             var disAnother = rdForm.CreateField<TextField>("If you select 'Another', please specify", lang);
-           
+
             disAnother.VisibilityCondition
                 .AppendLogicalExpression(disabilities, disabilities.GetOption("Another", lang), true);
             disAnother.RequiredCondition.AppendLogicalExpression(disabilities, disabilities.GetOption("Another", lang), true);
 
             //pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
-           // pubDisplay.CssClass = "radio-inline";
+            // pubDisplay.CssClass = "radio-inline";
             string[] raceList = new string[] { "Indigenous", "Black", "Person of Colour", "White", "Another" };
 
             var race = rdForm.CreateField<CheckboxField>("Race", lang, raceList, true);
@@ -176,12 +176,12 @@ Any public disclosures of information from the directory will be in aggregate fo
             .AppendLogicalExpression(race, race.GetOption("Another", lang), true);
             raceAnother.RequiredCondition.AppendLogicalExpression(race, race.GetOption("Another", lang), true);
 
-           // pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
-          //  pubDisplay.CssClass = "radio-inline";
+            // pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options, true);
+            //  pubDisplay.CssClass = "radio-inline";
 
             rdForm.CreateField<TextField>("Ethnicity", lang);
             //pubDisplay = rdForm.CreateField<RadioField>("Display this on my public profile?", lang, options);
-           // pubDisplay.CssClass = "radio-inline";
+            // pubDisplay.CssClass = "radio-inline";
 
 
             string[] genderList = new string[] { "Two-Spirit", "Gender non-binary", "Genderfluid", "Transgender", "Woman", "Man", "Another" };
@@ -194,10 +194,10 @@ Any public disclosures of information from the directory will be in aggregate fo
             //genAnother.RequiredCondition.AppendLogicalExpression(gender, ComputationExpression.eRelational.EQUAL, gender.GetOption("Another", lang));
             genAnother.VisibilityCondition
                  .AppendLogicalExpression(gender, gender.GetOption("Another", lang), true);
-            genAnother.RequiredCondition.AppendLogicalExpression(gender, gender.GetOption("Another", lang), true); 
+            genAnother.RequiredCondition.AppendLogicalExpression(gender, gender.GetOption("Another", lang), true);
             string[] pubDisplayList = GetQuestionsToPublicDisplay();
-            
-          
+
+
 
             //////////////////////////////////////                         SECTION 3    ////////////////////////////////////////////////////////////////////////////////
             ///
@@ -205,13 +205,13 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", "Section 3: Keywords", lang, "alert alert-info");
-           var definedkeys =  rdForm.CreateField<FieldContainerReference>("Identify keywords that are related to your research area", lang,
-                FieldContainerReference.eRefType.metadata, keywordMeta.Id);
+            var definedkeys = rdForm.CreateField<FieldContainerReference>("Identify keywords that are related to your research area", lang,
+                 FieldContainerReference.eRefType.metadata, keywordMeta.Id);
             definedkeys.CssClass = "multiSelectKeywords";
 
             //var key =  rdForm.CreateField<TextField>("Identify keywords that are related to your research area.", lang, true);
             //key.CssClass = "autocompleteText";
-            var undefinedKeys=rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, true);
+            var undefinedKeys = rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, true);
             undefinedKeys.CssClass = "undefinedKeys";
 
 
@@ -223,7 +223,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", "Section 4: Research Area and Community Involvement ", lang, "alert alert-info");
 
-            var researchDes=rdForm.CreateField<TextArea>("Provide your research question or description in under 50 words. Please indicate how your work relates to IG.", lang, true);
+            var researchDes = rdForm.CreateField<TextArea>("Provide your research question or description in under 50 words. Please indicate how your work relates to IG.", lang, true);
             researchDes.Cols = 50;
             researchDes.Rows = 2;
 
@@ -251,7 +251,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                  .AppendContent("h3", "Section 5: Collaboration", lang, "alert alert-info");
             var colaborator = rdForm.CreateField<TextField>("Are you currently collaborating with researchers at the U of A? If so, please use the search button to see if they’re already in our database. ", lang)
               .SetDescription(@"If you cannot find their names, please fill in their name(s) in the form field.", lang);
-            
+
 
 
             //////////////////////////////////////                         SECTION 6    ////////////////////////////////////////////////////////////////////////////////
@@ -276,7 +276,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
-          
+
             Define_IGRD_ResourcesForumWorkflow(workflow, ref template, rdForm, applicantEmail, null);
 
             if (saveChangesToDatabase)
@@ -289,7 +289,7 @@ Any public disclosures of information from the directory will be in aggregate fo
         }
 
 
-        private EmailTemplate CreateApplicantEmailTemplate(ref ItemTemplate template, string formName=null)
+        private EmailTemplate CreateApplicantEmailTemplate(ref ItemTemplate template, string formName = null)
         {
             string lang = "en";
             EmailTemplate applicantNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
@@ -306,7 +306,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             //    subject = "Submit Resource(s)";
             //}
 
-           
+
             applicantNotification.SetSubject(subject);
             applicantNotification.SetBody(body);
 
@@ -314,12 +314,12 @@ Any public disclosures of information from the directory will be in aggregate fo
 
         }
 
-        private EmailTemplate CreateEditorEmailTemplate(ref ItemTemplate template, string formName=null)
+        private EmailTemplate CreateEditorEmailTemplate(ref ItemTemplate template, string formName = null)
         {
             string lang = "en";
             EmailTemplate applicantNotification = template.GetEmailTemplate("Admin Notification", lang, true);
             applicantNotification.SetDescription("This metadata set defines the email template to be sent to the portal admin.", lang);
-           
+
             string body = "<p>A user has submit to th eIG Research Directoty.</p>";
             string subject = "IGRD submission";
             //if (!string.IsNullOrEmpty(formName) && formName.Equals("SubmitResource"))
@@ -327,14 +327,14 @@ Any public disclosures of information from the directory will be in aggregate fo
             //    body = "<p>Resources have been suggested and are awaiting your approval.</p>";
             //    subject = "Submit Resource(s)";
             //}
-      
+
             applicantNotification.SetSubject(subject);
             applicantNotification.SetBody(body);
 
             return applicantNotification;
 
         }
-        private void Define_IGRD_ResourcesForumWorkflow(Workflow workflow, ref ItemTemplate template,DataItem tbltForm,EmailField applicantEmail=null, string formName=null)
+        private void Define_IGRD_ResourcesForumWorkflow(Workflow workflow, ref ItemTemplate template, DataItem tbltForm, EmailField applicantEmail = null, string formName = null)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -354,7 +354,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
             if (applicantEmail != null)
             {
-               
+
                 applicantNotificationEmailTrigger.AddRecipientByDataField(tbltForm.Id, applicantEmail.Id);
                 applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Submission to  IGRD Notification");
             }
@@ -377,7 +377,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             startSubmissionAction.AddTemplate(tbltForm.Id, "IG Research Directory Submission Form");
 
             ////Defining post actions
-            
+
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update),
                                                                                  @"<p>Thank you for submitting your resource to the Task-based Language Teaching resource collection. 
                                                                                     We will review and add it to the  <a href='@SiteUrl/resources'> resources collection </a>.</p>");
@@ -450,15 +450,15 @@ Any public disclosures of information from the directory will be in aggregate fo
             editSubmissionPostActionSubmit.AddTriggerRefs("0", adminNotificationEmailTrigger.Id, "Admin's Notification Email Trigger");
             if (applicantEmail != null)
             {
-                 editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+                editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
             }
 
-                //Defining state referances
-                editSubmissionAction.GetStateReference(submittedState.Id, true)
-                .AddAuthorizedRole(adminRole.Id);
+            //Defining state referances
+            editSubmissionAction.GetStateReference(submittedState.Id, true)
+            .AddAuthorizedRole(adminRole.Id);
 
-            
-            
+
+
             // ================================================
             // Delete submission-instances related workflow items
             // ================================================
@@ -489,24 +489,24 @@ Any public disclosures of information from the directory will be in aggregate fo
             // Change State submission-instances related workflow items
             // ================================================
 
-           // GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
-           // changeStateAction.Access = GetAction.eAccess.Restricted;
+            // GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
+            // changeStateAction.Access = GetAction.eAccess.Restricted;
 
-           // //Define Revision Template
-           //changeStateAction.AddTemplate(commentsForm.Id, "Comments");
-           // //Defining post actions
-           // PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
-           //                                                                     You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+            // //Define Revision Template
+            //changeStateAction.AddTemplate(commentsForm.Id, "Comments");
+            // //Defining post actions
+            // PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
+            //                                                                     You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
 
-            
-           // //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-           // PopUp adjudicationDecisionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to continue? ", "Once changed, you cannot revise this document.");
-           // adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
-           // adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
 
-           // //Defining states and their authorizatios
-           // changeStateAction.GetStateReference(submittedState.Id, true)
-           //     .AddAuthorizedRole(adminRole.Id);
+            // //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            // PopUp adjudicationDecisionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to continue? ", "Once changed, you cannot revise this document.");
+            // adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
+            // adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
+
+            // //Defining states and their authorizatios
+            // changeStateAction.GetStateReference(submittedState.Id, true)
+            //     .AddAuthorizedRole(adminRole.Id);
 
             // ================================================
             // Delete Comment related workflow items
@@ -515,7 +515,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             //GetAction deleteCommentAction = workflow.AddAction("Delete Comment", nameof(TemplateOperations.ChildFormDelete), "Details");
             //deleteCommentAction.Access = GetAction.eAccess.Restricted;
 
-            
+
             //PostAction deleteCommentPostAction = deleteCommentAction.AddPostAction("Delete Comment", @"<p>Your Comment deleted successfully. 
             //                                                                    You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
 
@@ -530,7 +530,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             //    .AddOwnerAuthorization();
 
         }
-       
+
         private void Define_TBLT_DiscussionWorkflow(Workflow workflow, ref ItemTemplate template, DataItem tbltForm, DataItem commentsForm, string formName = null)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
@@ -722,7 +722,7 @@ Any public disclosures of information from the directory will be in aggregate fo
 
         }
 
-       private string[] GetKeywords()
+        private string[] GetKeywords()
         {
             return new string[]
             {
@@ -737,7 +737,7 @@ Any public disclosures of information from the directory will be in aggregate fo
 
         private string[] GetQuestionsToPublicDisplay()
         {
-            return new string[] {"Pronouns", "Position", "Living with disability", "Race", "Ethnicity", "Gender identity", "The links to my work", "None"};
+            return new string[] { "Pronouns", "Position", "Living with disability", "Race", "Ethnicity", "Gender identity", "The links to my work", "None" };
         }
 
         [Test]
@@ -787,7 +787,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 string[] colHeadings = GetColHeaders();
                 string displayOnProfile = "";
                 displayOnProfile = getDisplayOnProfile(row);
-          
+
 
                 int i = 0;
                 foreach (var col in row.Values)
@@ -806,7 +806,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                             var f = _newDataItem.Fields[k];
                             string fieldLabel = _newDataItem.Fields[k].GetName();
                             string _colHeading = colHeading.Substring(0, colHeading.Length - 1);
-                           
+
                             //this will work if the header on the form field and the g sheet are the similiar
                             if (!string.IsNullOrEmpty(fieldLabel) && (_colHeading.Contains(fieldLabel, StringComparison.OrdinalIgnoreCase) || fieldLabel.Contains(_colHeading, StringComparison.OrdinalIgnoreCase)))
                             {
@@ -875,7 +875,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                                                 break;
                                             }
 
-                                            if(j == (((f as CheckboxField).Options.Count) - 1))
+                                            if (j == (((f as CheckboxField).Options.Count) - 1))
                                             {
                                                 (_newDataItem.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);//select "Another"
                                             }
@@ -887,8 +887,8 @@ Any public disclosures of information from the directory will be in aggregate fo
                                 else if (f.ModelType.Contains("FieldContainerReference"))
                                 {
                                     string[] vals = colValue.Split("-"); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
-                                    //check the checkbox in the metadataset
-                                   for(int l=0; l< ms.Fields.Count; l++)// foreach (var fld in ms.Fields)
+                                                                         //check the checkbox in the metadataset
+                                    for (int l = 0; l < ms.Fields.Count; l++)// foreach (var fld in ms.Fields)
                                     {
                                         var fld = ms.Fields[l];
                                         if (fld.ModelType.Contains("CheckboxField"))
@@ -912,30 +912,35 @@ Any public disclosures of information from the directory will be in aggregate fo
 
                                 }
                             }// end if matched field
-                                //_newDataItem.Fields.Add(f);
+                             //_newDataItem.Fields.Add(f);
                         }//end of each field
-                     }// if spread sheet col content wanted
+                    }// if spread sheet col content wanted
 
-                    
 
-                        i++;
-             }//end of each col
 
-              item.DataContainer.Add(_newDataItem);
-              item.PrimaryCollectionId = primaryCollection.Id;
-              item.StatusId = submittedStatus.Id;
+                    i++;
+                }//end of each col
 
-               _db.Items.Add(item);
+                item.DataContainer.Add(_newDataItem);
+                item.PrimaryCollectionId = primaryCollection.Id;
+                item.StatusId = submittedStatus.Id;
+                var group = _db.Groups.FirstOrDefault(gr => gr.Name == "IGRD");
+                if (group != null)
+                    group = _db.Groups.FirstOrDefault();
+                if (group != null)
+                    item.GroupId = group.Id;
 
-             if (maxEntries > 0 && rowCount == maxEntries)
-                   break;
+                _db.Items.Add(item);
 
-             rowCount++;
-         }//end of each row
+                if (maxEntries > 0 && rowCount == maxEntries)
+                    break;
 
-         _db.SaveChanges();
-     }
-   
+                rowCount++;
+            }//end of each row
+
+            _db.SaveChanges();
+        }
+
 
         private string getDisplayOnProfile(RowData row)
         {
@@ -981,7 +986,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 c++;
             }
 
-           return displayOnProfile;
+            return displayOnProfile;
         }
 
         [Test]
@@ -1069,7 +1074,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 "accepting_grad_students",
                 "rig_affiliate",
                 "open_to_contact_from_other_researchers_external_organizations_community_groups_and_nfps_and_other_rig-related_groups_",
-                "looking_for_assistance_with_or_collaboration_in",  
+                "looking_for_assistance_with_or_collaboration_in",
                 "community-based projects*",
                 "collaborating with researchers*",//collaborators
                 "consent*"

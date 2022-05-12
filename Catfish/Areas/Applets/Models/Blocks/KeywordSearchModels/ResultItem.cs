@@ -14,7 +14,6 @@ namespace Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels
         public string DetailedViewUrl { get; set; }
         public List<string> Categories { get; set; } = new List<string>();
 
-        //MR Mei 2022
-        public List<Dictionary<string, string>> SolrFields { get; set; } = new List<Dictionary<string, string>>();
+        public List<Dictionary<string, object>> SolrFields { get; set; } = new List<Dictionary<string, object>>();
     }
 }

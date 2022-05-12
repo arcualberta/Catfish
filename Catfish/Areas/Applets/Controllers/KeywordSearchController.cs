@@ -58,33 +58,40 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         // POST api/<KeywordSearchController>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <param name="collectionId"></param>
+        /// <param name="groupId"></param>
+        /// <param name="permissibleStateGuids">These are the IDs of the status values to be considerd for the result set irrespective of the current user's permissions.</param>
+        /// <param name="queryParams"></param>
+        /// <param name="searchText"></param>
+        /// <param name="offset"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
         [HttpPost]
-        public SearchOutput Post([FromForm] Guid templateId, [FromForm] Guid collectionId, [FromForm] Guid groupId, [FromForm] string queryParams, [FromForm] string searchText = null, [FromForm] int offset = 0, [FromForm] int max = 0)
+        public SearchOutput Post([FromForm] Guid templateId, [FromForm] Guid collectionId, [FromForm] Guid groupId, [FromForm] Guid[] stateIdRestrictions, [FromForm] string queryParams, [FromForm] string searchText = null, [FromForm] int offset = 0, [FromForm] int max = 0)
         {
            // Dictionary<string, object> result = new Dictionary<string, object>();
             SearchOutput result = new SearchOutput();
             try
             {
-                //string keywordFieldId = block.KeywordSourceId.Value;
-                //string detailedViewUrl = block.DetailedViewUrl.Value?.TrimEnd('/');
-                //Guid? groupId = string.IsNullOrEmpty(block.SelectedGroupId.Value) ? null as Guid? : Guid.Parse(block.SelectedGroupId.Value);
-
-
                 #region Validating access-permission for the currently logged in user
 
                 ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
 
-                //Take the permissible state GUIDs from the Piranha bloclk (i.e. GUIDs of selected states)
-                ////var permissibleStateGuids = block.GetSelectedStates();
+                //Taking the subset of state IDs from the list of permissible state IDs such that the selected subset would be the 
+                //list of permitted states for the user who is currently logged in(if any) based on the user's role withing the specified group.
+                List<Guid> permittedStatusIds = null;
+                if (stateIdRestrictions.Length > 0)
+                {
+                    permittedStatusIds = GetPermittedStateIdsForCurrentUser(groupId, template, "ListInstances", stateIdRestrictions);
 
-                ////var permittedStatusIds = GetPermittedStateIdsForCurrentUser(Guid.Parse(block.SelectedGroupId.Value), template, "ListInstances", permissibleStateGuids);
-
-                ////if (permittedStatusIds.Count == 0)
-                ////    return result;
-
+                    if (permittedStatusIds.Count == 0)
+                        return result;
+                }
                 #endregion
-
-
 
                 KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
 
@@ -101,14 +108,16 @@ namespace Catfish.Areas.Applets.Controllers
 
 
                 //MR May 10 -2022 -- no group Id in solr index
-                //if (groupId != null && groupId != Guid.Empty)
-                //    query = string.Format("{0} AND group_s:{1}", query, groupId.ToString());
+                if (groupId != null && groupId != Guid.Empty)
+                    query = string.Format("{0} AND group_s:{1}", query, groupId.ToString());
 
-                ////List<string> stateLimits = new List<string>();
-                ////foreach (var stId in permittedStatusIds)
-                ////    stateLimits.Add(string.Format("status_s:{0}", stId));
-                ////query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
-
+                if (stateIdRestrictions.Length > 0)
+                {
+                    List<string> stateLimits = new List<string>();
+                    foreach (var stId in permittedStatusIds)
+                        stateLimits.Add(string.Format("status_s:{0}", stId));
+                    query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
+                }
 
 
                 //April 27 2022 -- add seachText parameter 
@@ -125,13 +134,10 @@ namespace Catfish.Areas.Applets.Controllers
                         if (!string.IsNullOrEmpty(field.Scope.ToString())) {
                             solrFieldId = field.FieldKey; 
                             
-                            Dictionary<string, string> solrF = new Dictionary<string, string>();  
+                            Dictionary<string, object> solrF = new Dictionary<string, object>();  
 
-                            //resultItem.SolrFieldId = solrFieldId;
-                            string content = Combine(field.FieldContent);
-                            solrF[solrFieldId] = content;
+                            solrF[solrFieldId] = field.FieldContent;
                             resultItem.SolrFields.Add(solrF);
-                           
                         }
                     }
 

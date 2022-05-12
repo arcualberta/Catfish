@@ -67,11 +67,10 @@ export const actions: ActionTree<any, any> = {
 
         if (common.templateId)
             formData.append("templateId", common.templateId.toString())
-
         if (common.collectionId)
             formData.append("collectionId", common.collectionId.toString())
         if (common.groupId)
-            formData.append("groupId", common.collectionId.toString())
+            formData.append("groupId", common.groupId.toString())
 
         formData.append("offset", store.state.offset.toString());
         formData.append("max", store.state.max.toString());
