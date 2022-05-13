@@ -107,7 +107,6 @@ namespace Catfish.Areas.Applets.Controllers
                         : string.Format("{0} AND {1}", scope, query);
 
 
-                //MR May 10 -2022 -- no group Id in solr index
                 if (groupId != null && groupId != Guid.Empty)
                     query = string.Format("{0} AND group_s:{1}", query, groupId.ToString());
 
@@ -120,10 +119,9 @@ namespace Catfish.Areas.Applets.Controllers
                 }
 
 
-                //April 27 2022 -- add seachText parameter 
                 SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10, searchText);
 
-                foreach (var resultEntry in solrSearchResult.ResultEntries)
+                foreach (ResultEntry resultEntry in solrSearchResult.ResultEntries)
                 {
                     ResultItem resultItem = new ResultItem();
                     resultItem.Id = resultEntry.Id;
@@ -134,10 +132,7 @@ namespace Catfish.Areas.Applets.Controllers
                         if (!string.IsNullOrEmpty(field.Scope.ToString())) {
                             solrFieldId = field.FieldKey; 
                             
-                            Dictionary<string, object> solrF = new Dictionary<string, object>();  
-
-                            solrF[solrFieldId] = field.FieldContent;
-                            resultItem.SolrFields.Add(solrF);
+                            resultItem.SolrFields.Add(field.FieldKey, field.FieldContent.ToArray());
                         }
                     }
 
