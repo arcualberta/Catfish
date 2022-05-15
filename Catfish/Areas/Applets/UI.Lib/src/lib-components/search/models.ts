@@ -9,6 +9,9 @@ export interface ResultItem {
     thumbnail: URL;
     date: Date;
     detailedViewUrl: URL;
+
+    //MR May 10 2022
+    solrFields: SolrField[] | null;
 }
 
 export interface SearchOutput {
@@ -61,4 +64,10 @@ export interface KeywordIndex {
 export interface Keyword {
     index: KeywordIndex;
     value: string;
+}
+export interface SolrField {
+    
+    //MR May 10 2022
+    solrFieldId: string | null;
+    fieldContent: string | null;
 }

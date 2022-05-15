@@ -40,13 +40,12 @@
                
                 if (e.target.value.length > 0) {
                     this.store.dispatch(Actions.SET_SEARCH_TEXT, e.target.value);
-                   
                 }
             },
 
             executeSearch: function () {
-                console.log("executing search ....");
-                //this.store.dispatch(Actions.SEARCH_FREE_TEXT);
+                //console.log("executing search ....");
+               
                 this.store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
         }
