@@ -13,5 +13,7 @@ namespace Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels
         public DateTime Date { get; set; }
         public string DetailedViewUrl { get; set; }
         public List<string> Categories { get; set; } = new List<string>();
+
+        public Dictionary<string, string[]> SolrFields { get; set; } = new Dictionary<string, string[]>();
     }
 }
