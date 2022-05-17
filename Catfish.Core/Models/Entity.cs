@@ -126,10 +126,20 @@ namespace Catfish.Core.Models
 
 
         public Entity()
+            :this(null)
+        {
+            ////SubjectRelationships = new List<Relationship>();
+            ////ObjectRelationships = new List<Relationship>();
+
+            ////Initialize(false);
+        }
+
+        public Entity(XElement data)
         {
             SubjectRelationships = new List<Relationship>();
             ObjectRelationships = new List<Relationship>();
 
+            Data = data;
             Initialize(false);
         }
 

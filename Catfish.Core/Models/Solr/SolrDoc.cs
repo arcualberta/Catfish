@@ -34,6 +34,8 @@ namespace Catfish.Core.Models.Solr
 
             foreach (var child in src.DataContainer)
                 AddContainerFields("data", child, indexFieldNames);
+
+            IndexAggregatedDataFields(src);
         }
 
         protected void AddContainerFields(string containerPrefix, FieldContainer container, bool indexFieldNames)
@@ -102,6 +104,62 @@ namespace Catfish.Core.Models.Solr
                 }
 
             }
+        }
+
+        protected void IndexAggregatedDataFields(Entity src)
+        {
+            MetadataSet aggregator = src.Template.GetFieldAggregatorMetadataSet();
+            if (aggregator != null)
+            {
+                foreach (AggregateField field in aggregator.Fields)
+                {
+                    string solrFieldName = field.GetName() + "_ts";
+                    List<string> values = new List<string>();
+                    foreach (var fieldReference in field.Sources)
+                    {
+                        FieldContainer container;
+                        switch (fieldReference.SourceType)
+                        {
+                            case Contents.Workflow.FieldReference.eSourceType.Data:
+                                container = src.DataContainer.FirstOrDefault(dc => dc.TemplateId == fieldReference.FieldContainerId);
+                                break;
+                            case Contents.Workflow.FieldReference.eSourceType.Metadata:
+                                container = src.MetadataSets.FirstOrDefault(dc => dc.TemplateId == fieldReference.FieldContainerId);
+                                break;
+                            default:
+                                throw new Exception(String.Format("SolrDoc.IndexAggregatedDataFields: Unknown Source Type '{0}'", fieldReference.SourceType.ToString()));
+                        }
+
+                        if(container != null)
+                        {
+                            var vals = GetFieldValueStrings(container.Fields.FirstOrDefault(f => f.Id == fieldReference.FieldId));
+                            values.AddRange(vals.Where(v => !string.IsNullOrEmpty(v)));
+                        }
+                    }
+
+                    foreach(var val in values)
+                        AddField(solrFieldName, val);
+                }
+            }
+        }
+
+        protected List<string> GetFieldValueStrings(BaseField field)
+        {
+            if(field is TextField)
+            {
+                return (field as TextField).Values.SelectMany(val => val.Values).Select(txt => txt.Value).ToList();
+            }
+            else if(field is MonolingualTextField)
+            {
+                return (field as MonolingualTextField).Values.Select(txt => txt.Value).ToList();
+            }
+            else if (field is OptionsField)
+            {
+                return (field as OptionsField).Options.Where(opt => opt.Selected).SelectMany(opt => opt.OptionText.Values).Select(txt => txt.Value).ToList();
+
+            }
+
+            return new List<string>();
         }
 
         public override string ToString()
