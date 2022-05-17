@@ -1181,16 +1181,16 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             //Adding the "all" field that aggregates all fields in an item instance
             AggregateField allField = new AggregateField();
-            allField.SetName("All", "en");
+            allField.SetName("_all_", "en");
             aggregator.Fields.Add(allField);
 
             //Aggregating all fields in all data container forms
             foreach (var form in template.DataContainer)
-                allField.AppendSources(form);
+                allField.AppendSources(form, FieldReference.eSourceType.Data);
 
             //Aggregating all fields in all instance-specific (i.e. non-template) metadata sets
             foreach (var form in template.MetadataSets.Where(ms => ms.IsTemplate == false))
-                allField.AppendSources(form);
+                allField.AppendSources(form, FieldReference.eSourceType.Metadata);
 
             #endregion The "all" aggregator field
 

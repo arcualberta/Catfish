@@ -8,6 +8,7 @@ namespace Catfish.Core.Models.Contents.Workflow
     public class FieldReference : XmlModel
     {
         public static readonly string TagName = "field-ref";
+        public enum eSourceType { Data, Metadata }
 
         public Guid? FieldContainerId
         {
@@ -27,6 +28,13 @@ namespace Catfish.Core.Models.Contents.Workflow
         {
             get => GetAttribute("field-id", null as Guid?);
             set => SetAttribute("field-id", value);
+        }
+
+        public eSourceType SourceType
+        {
+            get => GetAttribute<eSourceType>("source-type", eSourceType.Data);
+            set => SetAttribute("source-type", value);
+
         }
 
         public FieldReference(XElement data)

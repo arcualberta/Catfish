@@ -38,15 +38,20 @@ namespace Catfish.Core.Models.Contents.Fields
             throw new NotImplementedException();
         }
 
-        public void AppendSource(Guid fieldContainerId,Guid fieldId)
+        public void AppendSource(Guid fieldContainerId,Guid fieldId, FieldReference.eSourceType sourceType)
         {
-            Sources.Add(new FieldReference() { FieldContainerId = fieldContainerId, FieldId = fieldId });
+            Sources.Add(new FieldReference() 
+            { 
+                FieldContainerId = fieldContainerId, 
+                FieldId = fieldId,
+                SourceType = sourceType
+            });
         }
 
-        public void AppendSources (FieldContainer fieldContainer)
+        public void AppendSources (FieldContainer fieldContainer, FieldReference.eSourceType sourceType)
         {
             foreach (var field in fieldContainer.Fields)
-                AppendSource(fieldContainer.Id, field.Id);
+                AppendSource(fieldContainer.Id, field.Id, sourceType);
         }
     }
 
