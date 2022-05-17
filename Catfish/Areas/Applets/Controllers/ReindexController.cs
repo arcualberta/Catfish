@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catfish.Areas.Applets.Controllers
 {
@@ -35,7 +35,7 @@ namespace Catfish.Areas.Applets.Controllers
 			List<Entity> items = null;
 			do
 			{
-				items = _db.Items.Skip(offset).Take(maxBatchSize).Select(item => item as Entity).ToList();
+				items = _db.Items.Include(item => item.Template).Skip(offset).Take(maxBatchSize).Select(item => item as Entity).ToList();
 				_solrService.Index(items);
 			}
 			while (items.Count == maxBatchSize);

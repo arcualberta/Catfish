@@ -170,7 +170,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             foreach(var fieldRef in stateRef.AuthorizedEmailFields)
             {
-                var dataItem = entity.DataContainer.FirstOrDefault(di => di.TemplateId == fieldRef.DataItemId);
+                var dataItem = entity.DataContainer.FirstOrDefault(di => di.TemplateId == fieldRef.FieldContainerId);
                 if (dataItem != null)
                 {
                     var emailFieldVals = dataItem.Fields

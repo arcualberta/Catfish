@@ -160,11 +160,11 @@ namespace Catfish.Services
         ////    httpResponse.EnsureSuccessStatusCode();
         ////}
 
-        public SearchResult ExecuteSearch(string query, int start, int max, int maxHiglightSnippets, string freeText=null)
+        public SearchResult ExecuteSearch(string query, int start, int max, int maxHiglightSnippets)
         {
 
             _result = null;
-            var task = ExecuteSearchQuery(query, start, max, maxHiglightSnippets, freeText);
+            var task = ExecuteSearchQuery(query, start, max, maxHiglightSnippets);
             task.Wait(60000);//Wait for a maximum of 1 minute
             return _result;
         }
@@ -174,25 +174,12 @@ namespace Catfish.Services
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        public async Task ExecuteSearchQuery(string query, int start, int max, int maxHiglightSnippets, string freeSearch=null)
+        public async Task ExecuteSearchQuery(string query, int start, int max, int maxHiglightSnippets)
         {
             try
             {
-                //string queryUri = _solrCoreUrl + "/select?hl=on&q=" + query +
-                //  string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
-                string queryUri = "";
-                if (string.IsNullOrEmpty(freeSearch))
-                {
-                    queryUri = _solrCoreUrl + "/select?hl=on&q=" + query +
-                    string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
-
-                }
-                else
-                {
-                    queryUri = _solrCoreUrl + "/select?hl=on&*=" + freeSearch + "&q=" + query +
-                    string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
-                }
-            
+                string queryUri = _solrCoreUrl + "/select?hl=on&q=" + query +
+                  string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
 
                 //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
                 using var client = new HttpClient();

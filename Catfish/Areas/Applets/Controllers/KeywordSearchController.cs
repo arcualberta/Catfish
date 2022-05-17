@@ -118,8 +118,10 @@ namespace Catfish.Areas.Applets.Controllers
                     query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
                 }
 
+                if(!string.IsNullOrEmpty(searchText))
+                    query = string.Format("{0} AND _all__ts:{1}", query, searchText);
 
-                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10, searchText);
+                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
 
                 foreach (ResultEntry resultEntry in solrSearchResult.ResultEntries)
                 {
@@ -284,10 +286,13 @@ namespace Catfish.Areas.Applets.Controllers
                     stateLimits.Add(string.Format("status_s:{0}", stId));
                 query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
 
+                if (!string.IsNullOrEmpty(searchText))
+                    query = string.Format("{0} AND _all__ts:{1}", query, searchText);
+
                 //System.IO.File.WriteAllText("c:\\solr_query.txt", query);
 
                 //April 27 2022 -- add seachText parameter 
-                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10, searchText);
+                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
 
                 //Wrapping the results in the SearchOutput object
                 Guid titleFieldId = string.IsNullOrEmpty(block.SelectedMapTitleId.Value) ? Guid.Empty : Guid.Parse(block.SelectedMapTitleId.Value);

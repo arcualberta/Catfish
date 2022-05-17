@@ -17,6 +17,7 @@ using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
+using System.Xml.Linq;
 
 namespace Catfish.UnitTests
 {
@@ -1162,6 +1163,49 @@ Any public disclosures of information from the directory will be in aggregate fo
         //    }
 
         //}
+
+        /// <summary>
+        /// This test case reinitializes the field-aggregator metadata set
+        /// </summary>
+        [Test]
+        public void InitFieldAggregations()
+        {
+            string templateFileName = "..\\..\\..\\..\\Examples\\IGRD_Form_production.xml";
+            XElement xElement = XElement.Load(templateFileName);
+            ItemTemplate template = new ItemTemplate(xElement);
+
+            MetadataSet aggregator = template.GetFieldAggregatorMetadataSet(true);
+            aggregator.Fields.Clear(); //Clear any existing field-aggregation defintons
+
+            #region The "all" aggregator field
+
+            //Adding the "all" field that aggregates all fields in an item instance
+            AggregateField allField = new AggregateField();
+            allField.SetName("_all_", "en");
+            aggregator.Fields.Add(allField);
+
+            //Aggregating all fields in all data container forms
+            foreach (var form in template.DataContainer)
+                allField.AppendSources(form, FieldReference.eSourceType.Data);
+
+            //Aggregating all fields in all instance-specific (i.e. non-template) metadata sets
+            foreach (var form in template.MetadataSets.Where(ms => ms.IsTemplate == false))
+                allField.AppendSources(form, FieldReference.eSourceType.Metadata);
+
+            #endregion The "all" aggregator field
+
+            #region The Keyword agregator field
+            //Adding all Keyword fields that needs to be aggregated together for keyword-based search
+            AggregateField aggregatedKeywordField = new AggregateField();
+            aggregatedKeywordField.SetName("Keywords", "en");
+            aggregator.Fields.Add(aggregatedKeywordField);
+
+            //TODO: Aggregate all keyword fields into the aggregatedKeywordField
+
+            #endregion The Keyword agregator field
+
+            template.Data.Save(templateFileName);
+        }
 
     }
 }
