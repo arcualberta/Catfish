@@ -1197,7 +1197,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             #region The Keyword agregator field
             //Adding all Keyword fields that needs to be aggregated together for keyword-based search
             AggregateField aggregatedKeywordField = new AggregateField() { ContentType = AggregateField.eContetType.str };
-            aggregatedKeywordField.SetName("Keywords", "en");
+            aggregatedKeywordField.SetName("_keywords_", "en");
             aggregator.Fields.Add(aggregatedKeywordField);
             aggregatedKeywordField.AppendSource(Guid.Parse("3f79e805-eeba-4f4d-b96a-3488a307cc88"), Guid.Parse("87bd0681-e9f0-4235-abc3-1b267a9b833f"), FieldReference.eSourceType.Metadata);
             aggregatedKeywordField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("d860b5ef-93c2-4c88-a213-7746873fe104"), FieldReference.eSourceType.Data, ";");
