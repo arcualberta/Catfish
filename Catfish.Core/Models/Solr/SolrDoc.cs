@@ -113,7 +113,12 @@ namespace Catfish.Core.Models.Solr
             {
                 foreach (AggregateField field in aggregator.Fields)
                 {
-                    string solrFieldName = field.GetName() + "_ts";
+                    string solrFieldName = field.GetName();
+                    if(field.ContentType == AggregateField.eContetType.text)
+                        solrFieldName = solrFieldName  + "_ts";
+                    else if (field.ContentType == AggregateField.eContetType.str)
+                        solrFieldName = solrFieldName + "_ss";
+
                     List<string> values = new List<string>();
                     foreach (var fieldReference in field.Sources)
                     {
@@ -133,6 +138,13 @@ namespace Catfish.Core.Models.Solr
                         if(container != null)
                         {
                             var vals = GetFieldValueStrings(container.Fields.FirstOrDefault(f => f.Id == fieldReference.FieldId));
+
+                            if (!string.IsNullOrEmpty(fieldReference.ValueDelimiter))
+                                vals = vals.SelectMany(val => val.Split(fieldReference.ValueDelimiter, StringSplitOptions.RemoveEmptyEntries))
+                                    .Select(str => str.Trim())
+                                    .Where(str => !string.IsNullOrEmpty(str))
+                                    .ToList();
+
                             values.AddRange(vals.Where(v => !string.IsNullOrEmpty(v)));
                         }
                     }
