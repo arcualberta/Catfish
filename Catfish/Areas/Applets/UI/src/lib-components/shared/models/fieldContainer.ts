@@ -147,10 +147,13 @@ export interface AttachmentField extends Field {
     maxFileSize: number;
 }
 export interface AudioRecorderField extends Field {
-    files: FileReference[];
-   
-    format: string;
-}
+    files: {
+        $type: string,
+        $values: FileReference[];
+        }
+    allowedExtensions: string[];
+    maxFileSize: number;
+} //same as AttachmentField
 
 
 export interface InfoSection extends Field {
