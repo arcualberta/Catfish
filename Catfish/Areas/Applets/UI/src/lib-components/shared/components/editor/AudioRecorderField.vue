@@ -51,6 +51,10 @@
                 if (state.recordedAudio) {
                     state.successMessage = SUCCESS_MESSAGE;
                     state.instructionMessage = "";
+		    //saving audio file
+		    var timestamp = Number(new Date());
+                    var file = new File([recordList[recordList.length - 1].blob], "rec_" + timestamp);
+                    store.commit(FlattenedFormFiledMutations.ADD_FILE, { id: p.model.id, val: file });
                 }
             }
 
