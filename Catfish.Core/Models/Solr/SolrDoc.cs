@@ -149,6 +149,12 @@ namespace Catfish.Core.Models.Solr
                         }
                     }
 
+                    //Converting each entry in values so that the entry will starts with an upper-case letter and will
+                    //contain all other letters in lower case and then selecting the unique set of values
+                    values = values.Select(v => v[0].ToString().ToUpper() + v.Substring(1).ToLower())
+                        .Distinct()
+                        .ToList();
+
                     foreach(var val in values)
                         AddField(solrFieldName, val);
                 }
