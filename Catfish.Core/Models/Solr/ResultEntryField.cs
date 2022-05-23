@@ -19,18 +19,21 @@ namespace Catfish.Core.Models.Solr
 
         public ResultEntryField(XElement arr, Dictionary<string, string> fieldNameDictionary)
         {
-            var fieldKey = arr.Attribute("name").Value;
-            string[] fieldKeyParts = fieldKey.Split("_");
-            var filedContainerType = SearchFieldConstraint.Str2Scope(fieldKeyParts[0]);
-            var filedContainerId = Guid.Parse(fieldKeyParts[1]);
-            var filedId = Guid.Parse(fieldKeyParts[2]);
+            FieldKey = arr.Attribute("name").Value;
+            if (!FieldKey.StartsWith("_"))
+            {
+                string[] fieldKeyParts = FieldKey.Split("_");
+                var filedContainerType = SearchFieldConstraint.Str2Scope(fieldKeyParts[0]);
+                var filedContainerId = Guid.Parse(fieldKeyParts[1]);
+                var filedId = Guid.Parse(fieldKeyParts[2]);
 
-            Scope = filedContainerType;
-            ContainerId = filedContainerId;
-            FieldId = filedId;
-            FieldName = fieldNameDictionary?.FirstOrDefault(ele => ele.Key == fieldKey).Value;
+                Scope = filedContainerType;
+                ContainerId = filedContainerId;
+                FieldId = filedId;
+            }
+
+            FieldName = fieldNameDictionary?.FirstOrDefault(ele => ele.Key == FieldKey).Value;
             FieldContent = arr.Elements("str").Select(str => str.Value).ToList();
-            FieldKey = fieldKey;
         }
 
         public void SetHighlights(XElement highlights)

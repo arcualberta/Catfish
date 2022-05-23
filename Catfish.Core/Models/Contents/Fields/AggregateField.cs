@@ -9,8 +9,14 @@ namespace Catfish.Core.Models.Contents.Fields
     public class AggregateField : BaseField
     {
         public static readonly string SourcesTag = "sources";
+        public enum eContetType { text, str }
         public XmlModelList<FieldReference> Sources { get; set; }
 
+        public eContetType ContentType
+        {
+            get => GetAttribute("content-type", eContetType.text);
+            set => SetAttribute("content-type", value);
+        }
         public AggregateField() { }
         public AggregateField(XElement data) : base(data) { }
 
@@ -38,14 +44,19 @@ namespace Catfish.Core.Models.Contents.Fields
             throw new NotImplementedException();
         }
 
-        public void AppendSource(Guid fieldContainerId,Guid fieldId, FieldReference.eSourceType sourceType)
+        public void AppendSource(Guid fieldContainerId,Guid fieldId, FieldReference.eSourceType sourceType, string valueDelimiter = null)
         {
-            Sources.Add(new FieldReference() 
-            { 
-                FieldContainerId = fieldContainerId, 
+            var fieldReference = new FieldReference()
+            {
+                FieldContainerId = fieldContainerId,
                 FieldId = fieldId,
                 SourceType = sourceType
-            });
+            };
+
+            if(!string.IsNullOrEmpty(valueDelimiter))
+                fieldReference.ValueDelimiter = valueDelimiter; 
+
+            Sources.Add(fieldReference);
         }
 
         public void AppendSources (FieldContainer fieldContainer, FieldReference.eSourceType sourceType)

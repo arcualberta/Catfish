@@ -34,9 +34,14 @@ namespace Catfish.Core.Models.Contents.Workflow
         {
             get => GetAttribute<eSourceType>("source-type", eSourceType.Data);
             set => SetAttribute("source-type", value);
-
         }
 
+        public string ValueDelimiter
+        {
+            get => GetAttribute("value-delimiter", null as string);
+            set => SetAttribute("value-delimiter", value);
+
+        }
         public FieldReference(XElement data)
             : base(data)
         {
