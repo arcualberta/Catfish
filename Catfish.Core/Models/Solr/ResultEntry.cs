@@ -54,7 +54,7 @@ namespace Catfish.Core.Models.Solr
 
             //Populating result fields
             Fields = doc.Elements("arr")
-                .Where(arr => arr.Attribute("name").Value.StartsWith("data_") || arr.Attribute("name").Value.StartsWith("metadata_"))
+                .Where(arr => arr.Attribute("name").Value.StartsWith("data_") || arr.Attribute("name").Value.StartsWith("metadata_") || arr.Attribute("name").Value.StartsWith("_"))
                 .Select(arr => new ResultEntryField(arr, fieldNameDictionary))
                 .ToList();
 
