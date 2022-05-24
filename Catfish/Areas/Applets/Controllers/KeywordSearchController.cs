@@ -52,9 +52,13 @@ namespace Catfish.Areas.Applets.Controllers
 
         // GET api/<KeywordSearchController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ResultItem Get(Guid id)
         {
-            return "value";
+            
+            return new ResultItem() 
+            { 
+                Id = id,
+            };
         }
 
         // POST api/<KeywordSearchController>
