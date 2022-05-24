@@ -54,11 +54,35 @@ namespace Catfish.Areas.Applets.Controllers
         [HttpGet("{id}")]
         public ResultItem Get(Guid id)
         {
-            
-            return new ResultItem() 
-            { 
-                Id = id,
-            };
+
+            ResultItem resultItem = new ResultItem();
+
+            string query = string.Format("doc_type_ss:item AND id: {0}", id);
+
+            SearchResult solrSearchResult = _solr.ExecuteSearch(query, 0, 1, 1);
+
+            foreach (ResultEntry resultEntry in solrSearchResult.ResultEntries)
+            {
+
+                resultItem.Id = resultEntry.Id;
+                resultItem.Date = resultEntry.Created;
+                string solrFieldId = "";
+                foreach (var field in resultEntry.Fields)
+                {
+                    if (!string.IsNullOrEmpty(field.Scope.ToString()))
+                    {
+                        solrFieldId = field.FieldKey;
+
+                        resultItem.SolrFields.Add(field.FieldKey, field.FieldContent.ToArray());
+                    }
+                }
+
+
+            }
+
+
+            return resultItem;
+           
         }
 
         // POST api/<KeywordSearchController>
