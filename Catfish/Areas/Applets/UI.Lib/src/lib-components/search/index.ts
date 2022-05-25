@@ -36,3 +36,6 @@ export { KeywordQueryModel };
 
 import type { SolrField } from './models';
 export { SolrField };
+
+import { SolrQuery } from './solrQuery';
+export { SolrQuery };

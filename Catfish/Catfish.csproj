@@ -53,6 +53,7 @@
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Areas\Applets\UI.Lib\src\lib-components\search\solrQuery.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\actions.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\mutations.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\state.ts" />
@@ -165,6 +166,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="Areas\Applets\UI.Lib\src\lib-components\search\solrQuery.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\actions.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\mutations.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\state.ts" />
