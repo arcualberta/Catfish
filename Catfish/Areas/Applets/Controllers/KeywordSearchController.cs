@@ -92,16 +92,15 @@ namespace Catfish.Areas.Applets.Controllers
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <param name="groupId"></param>
-        /// <param name="permissibleStateGuids">These are the IDs of the status values to be considerd for the result set irrespective of the current user's permissions.</param>
-        /// <param name="queryParams"></param>
+        /// <param name="stateIdRestrictions">These are the IDs of the status values to be considerd for the result set irrespective of the current user's permissions.</param>
+        /// <param name="query"></param>
         /// <param name="searchText"></param>
         /// <param name="offset"></param>
         /// <param name="max"></param>
         /// <returns></returns>
         [HttpPost]
-        public SearchOutput Post([FromForm] Guid templateId, [FromForm] Guid collectionId, [FromForm] Guid groupId, [FromForm] Guid[] stateIdRestrictions, [FromForm] string queryParams, [FromForm] string searchText = null, [FromForm] int offset = 0, [FromForm] int max = 0)
-        {
-           // Dictionary<string, object> result = new Dictionary<string, object>();
+        public SearchOutput Post([FromForm] Guid templateId, [FromForm] Guid collectionId, [FromForm] Guid groupId, [FromForm] Guid[] stateIdRestrictions, [FromForm] string query, [FromForm] string searchText = null, [FromForm] int offset = 0, [FromForm] int max = 0)
+        {           // Dictionary<string, object> result = new Dictionary<string, object>();
             SearchOutput result = new SearchOutput();
             try
             {
@@ -121,14 +120,11 @@ namespace Catfish.Areas.Applets.Controllers
                 }
                 #endregion
 
-                KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
-
                 string keywords = null;
                 string[] slectedKeywords = string.IsNullOrEmpty(keywords)
                    ? Array.Empty<string>()
                    : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
-                var query = keywordQueryModel?.BuildSolrQuery();
                 string scope = string.Format("doc_type_ss:item AND collection_s:{0} AND template_s:{1}", collectionId, templateId);
                 query = string.IsNullOrEmpty(query)
                         ? scope

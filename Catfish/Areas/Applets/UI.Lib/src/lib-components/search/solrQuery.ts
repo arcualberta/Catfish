@@ -25,14 +25,19 @@ export namespace SolrQuery {
             this.internalId = internalId ? internalId : null;
         }
 
-        buildQueryString(): string {
+        buildQueryString(): string | null {
             const segments = [] as string[];
             this.valueConstraints.forEach(valConst => {
                 if (valConst.selected)
                     segments.push(`${this.solrFieldName}:${valConst.value}`);
             });
-            const joinResult = segments.join(` ${this.aggregationOperator} `);
-            return this.aggregationOperator === AggregationOperator.AND ? joinResult : `(${joinResult})`;
+
+            if (segments.length === 0)
+                return null;
+            else {
+                const joinResult = segments.join(` ${this.aggregationOperator} `);
+                return this.aggregationOperator === AggregationOperator.AND ? joinResult : `(${joinResult})`;
+            }
         }
     }
 
@@ -69,9 +74,11 @@ export namespace SolrQuery {
         buildQueryString(): string {
             const segments = [] as string[];
 
-            this.queryConstraints.forEach(constraint =>
-                segments.push(constraint.buildQueryString())
-            );
+            this.queryConstraints.forEach(constraint => {
+                const segment = constraint.buildQueryString();
+                if (segment)
+                    segments.push(segment)
+            });
 
             const joinResult = segments.join(` ${this.aggregationOperator} `);
             return this.aggregationOperator === AggregationOperator.AND ? joinResult : `(${joinResult})`;
