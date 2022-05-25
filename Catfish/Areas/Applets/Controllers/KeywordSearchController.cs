@@ -99,7 +99,7 @@ namespace Catfish.Areas.Applets.Controllers
         /// <param name="max"></param>
         /// <returns></returns>
         [HttpPost]
-        public SearchOutput Post([FromForm] Guid templateId, [FromForm] Guid collectionId, [FromForm] Guid groupId, [FromForm] Guid[] stateIdRestrictions, [FromForm] string query, [FromForm] string searchText = null, [FromForm] int offset = 0, [FromForm] int max = 0)
+        public SearchOutput Post([FromForm] Guid templateId, [FromForm] Guid collectionId, [FromForm] Guid groupId, [FromForm] Guid[] stateIdRestrictions, [FromForm] string query, [FromForm] int offset = 0, [FromForm] int max = 0)
         {           // Dictionary<string, object> result = new Dictionary<string, object>();
             SearchOutput result = new SearchOutput();
             try
@@ -141,9 +141,6 @@ namespace Catfish.Areas.Applets.Controllers
                         stateLimits.Add(string.Format("status_s:{0}", stId));
                     query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
                 }
-
-                if(!string.IsNullOrEmpty(searchText))
-                    query = string.Format("{0} AND _all__ts:{1}", query, searchText);
 
                 SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
 

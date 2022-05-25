@@ -28,8 +28,13 @@ export namespace SolrQuery {
         buildQueryString(): string | null {
             const segments = [] as string[];
             this.valueConstraints.forEach(valConst => {
-                if (valConst.selected)
-                    segments.push(`${this.solrFieldName}:${valConst.value}`);
+                if (valConst.selected) {
+                    if (this.solrFieldName.endsWith("_s") || this.solrFieldName.endsWith("_ss") || this.solrFieldName.endsWith("_ts"))
+                        segments.push(`${this.solrFieldName}:"${valConst.value}"`);
+                    else
+                        segments.push(`${this.solrFieldName}:${valConst.value}`);
+
+                }
             });
 
             if (segments.length === 0)
