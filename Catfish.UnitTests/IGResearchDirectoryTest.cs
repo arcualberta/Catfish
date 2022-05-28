@@ -1024,7 +1024,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             foreach (var form in template.MetadataSets.Where(ms => ms.IsTemplate == false))
                 allField.AppendSources(form, FieldReference.eSourceType.Metadata);
 
-            #endregion The "all" aggregator field
+            #endregion
 
             #region The Keyword agregator field
             //Adding all Keyword fields that needs to be aggregated together for keyword-based search
@@ -1034,9 +1034,26 @@ Any public disclosures of information from the directory will be in aggregate fo
             aggregatedKeywordField.AppendSource(Guid.Parse("3f79e805-eeba-4f4d-b96a-3488a307cc88"), Guid.Parse("87bd0681-e9f0-4235-abc3-1b267a9b833f"), FieldReference.eSourceType.Metadata);
             aggregatedKeywordField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("d860b5ef-93c2-4c88-a213-7746873fe104"), FieldReference.eSourceType.Data, ";");
 
-            //TODO: Aggregate all keyword fields into the aggregatedKeywordField
+            #endregion
 
-            #endregion The Keyword agregator field
+            #region Similarity Source aggregator field
+            AggregateField similaritySourceField = new AggregateField() { ContentType = AggregateField.eContetType.text };
+            similaritySourceField.SetName("_similarity_source_", "en");
+            aggregator.Fields.Add(similaritySourceField);
+            //Keywords
+            similaritySourceField.AppendSource(Guid.Parse("3f79e805-eeba-4f4d-b96a-3488a307cc88"), Guid.Parse("87bd0681-e9f0-4235-abc3-1b267a9b833f"), FieldReference.eSourceType.Metadata);
+            //Additional keywords
+            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("d860b5ef-93c2-4c88-a213-7746873fe104"), FieldReference.eSourceType.Data, ";");
+            //Disability
+            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("b7f7b8f0-f2c9-422e-a91d-217fa4c5da8d"), FieldReference.eSourceType.Data, ";");
+            //Race
+            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("d13046af-fe79-49f8-9eda-77fc5525a611"), FieldReference.eSourceType.Data, ";");
+            //Ethnicity
+            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("b2b63066-a17e-45dd-a3ae-a6c1f815de7b"), FieldReference.eSourceType.Data, ";");
+            //Gender identity
+            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("deffa707-cd34-4f2b-9fcd-2e8c5161f5c9"), FieldReference.eSourceType.Data, ";");
+
+            #endregion
 
             template.Data.Save(templateFileName);
         }
