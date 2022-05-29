@@ -1,15 +1,13 @@
 <script lang="ts">
     import { defineComponent, PropType, computed } from "vue";
 
-
-    import { FieldContainer } from '../../shared/entity/formModels'
-    //import { useFormStore } from '@/lib-components/form/store/FormStore' //../store/FormStore"
+    import * as models from '../models'
    
     export default defineComponent({
         name: "FormSubmission",
         props: {
             model: {
-                type: null as PropType<FieldContainer> | null,
+                type: null as PropType<models.FieldContainer> | null,
                 required: false
             },
          },

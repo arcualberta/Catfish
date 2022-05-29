@@ -1,12 +1,6 @@
-import { Guid } from "guid-typescript";
+import { Guid } from "guid-typescript"
 
-export enum eRefType { undefined, data, metadata }
-
-export enum eValidationStatus {
-    VALID = 'VALID',
-    VALUE_REQUIRED = 'VALUE_REQUIRED',
-    INVALID = 'INVALID'
-}
+import { eValidationStatus, eRefType } from './enumerations'
 
 export interface Text {
     id: Guid;
@@ -150,8 +144,8 @@ export interface InfoSection extends Field {
 
 
 export interface FlattenedFiledSModel {
-	modified: boolean;
-	flattenedTextModels: { [key: string]: Text };
-	flattenedOptionModels: { [key: string]: Option };
-	flattenedFileModels: { [key: string]: File[] };
+    modified: boolean;
+    flattenedTextModels: { [key: string]: Text };
+    flattenedOptionModels: { [key: string]: Option };
+    flattenedFileModels: { [key: string]: File[] };
 }

@@ -4,5 +4,4 @@
 export * as search from './search/';
 
 /* Form module */
-export * as entity from './shared/entity';
-export { default as FormSubmission } from './form/components/FormSubmission.vue'
+export * as form from './form/'

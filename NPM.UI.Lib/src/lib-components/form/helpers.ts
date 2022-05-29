@@ -1,8 +1,8 @@
-import { Option } from './formModels'
+import * as models from './models'
 
 export class OptionsFieldMethods {
 
-    public static getSelectedFieldLabels(options: Option[]) {
+    public static getSelectedFieldLabels(options: models.Option[]) {
         return options?.filter(opt => opt.selected)
             .map(opt => opt.optionText?.values.$values
                 .map(txt => txt.value)
