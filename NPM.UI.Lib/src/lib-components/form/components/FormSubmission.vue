@@ -2,14 +2,14 @@
     import { defineComponent, PropType, computed } from "vue";
 
 
-    import { Form } from '@/lib-components/shared/entity/formModels' //"../../shared/entity/formModels"
+    import { FieldContainer } from '../../shared/entity/formModels'
     //import { useFormStore } from '@/lib-components/form/store/FormStore' //../store/FormStore"
    
     export default defineComponent({
         name: "FormSubmission",
         props: {
             model: {
-                type: null as PropType<Form.FieldContainer> | null,
+                type: null as PropType<FieldContainer> | null,
                 required: false
             },
          },
