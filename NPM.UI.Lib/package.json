@@ -23,12 +23,12 @@
   },
   "dependencies": {
     "@tinymce/tinymce-vue": "^4.0.5",
+    "@vue/composition-api": "^1.6.2",
     "copyfiles": "^2.4.1",
     "dayjs": "^1.10.7",
     "guid-typescript": "^1.0.9",
     "ts-node": "^10.4.0",
-    "vue-editor-js": "^2.0.2",
-    "vuex": "^4.0.2"
+    "vue-editor-js": "^2.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
