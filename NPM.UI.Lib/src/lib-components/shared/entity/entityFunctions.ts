@@ -1,4 +1,4 @@
-import { Option } from './entityModels'
+import { Option } from './formModels'
 
 export class OptionsFieldMethods {
 

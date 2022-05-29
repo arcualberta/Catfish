@@ -149,4 +149,9 @@ export interface InfoSection extends Field {
 }
 
 
-
+export interface FlattenedFiledSModel {
+	modified: boolean;
+	flattenedTextModels: { [key: string]: Text };
+	flattenedOptionModels: { [key: string]: Option };
+	flattenedFileModels: { [key: string]: File[] };
+}
