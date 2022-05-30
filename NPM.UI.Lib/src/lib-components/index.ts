@@ -5,4 +5,4 @@ export * as search from './search/';
 
 /* Form module */
 export * as form from './form/'
-export { default as FormSubmission } from './form/components/FormSubmission.vue';
+export { default as FormSubmission } from './form/components/editor/FormSubmission.vue';
