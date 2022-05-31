@@ -14,17 +14,23 @@
                 required: false
             },
         },
-         methods:{
-             getConcatenatedOptionLabels(option: any): string {
-                const concatenatedLabels = option.optionText?.values?.$values.map((txt: { value: any; }) => txt.value).join(" / ")
-                return concatenatedLabels ? concatenatedLabels : "";
-			}
-        },
+   //      methods:{
+   //          getConcatenatedOptionLabels(option: any): string {
+   //             const concatenatedLabels = option.optionText?.values?.$values.map((txt: { value: any; }) => txt.value).join(" / ")
+   //             return concatenatedLabels ? concatenatedLabels : "";
+			//}
+   //     },
         setup() {
             const formStore = useFormSubmissionStore();
 
+            const getConcatenatedOptionLabels = (option: any): string => {
+                const concatenatedLabels = option.optionText?.values?.$values.map((txt: { value: any; }) => txt.value).join(" / ")
+                return concatenatedLabels ? concatenatedLabels : "";
+            }
+
             return {
-                setOptionSelection: (id: Guid, selected: any) => formStore.setOptionSelection(id, selected)
+                setOptionSelection: (id: Guid, selected: any) => formStore.setOptionSelection(id, selected),
+                getConcatenatedOptionLabels
             }
         }
     });
