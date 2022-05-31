@@ -2,6 +2,8 @@ import { Guid } from "guid-typescript"
 
 import { eValidationStatus, eRefType } from './enumerations'
 
+export type DataElementType = Text | Option | FileReference;
+
 export interface Text {
     id: Guid;
     $type: string;

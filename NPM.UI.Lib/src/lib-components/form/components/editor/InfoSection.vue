@@ -23,5 +23,6 @@
 </script>
 
 <template>
-    <div v-for="(cont, index) in contents" :key="index" v-html="cont" />
+    <div v-for="(txt, index) in contents" :key="index" v-html="txt.value" />
+   <!-- {{JSON.stringify(model)}}-->
 </template>
