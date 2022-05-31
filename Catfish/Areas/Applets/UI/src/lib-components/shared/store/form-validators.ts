@@ -90,6 +90,8 @@ export function validateOptionsField(field: OptionsField): eValidationStatus {
 
 export function validateFields(form: FieldContainer): boolean {
     let valid = true;
+    console.log("form validator")
+   
     form.fields?.$values?.forEach(field => {
         switch (FieldContainerUtils.getFieldType(field)) {
             case eFieldType.AttachmentField:
@@ -129,18 +131,24 @@ export function validateFields(form: FieldContainer): boolean {
                 break;
             case eFieldType.TextArea:
                 field.validationStatus = validateMultilingualTextField(field as MultilingualTextField);
+                
                 break;
             case eFieldType.TextField:
                 field.validationStatus = validateMultilingualTextField(field as MultilingualTextField);
+                
                 break;
             case eFieldType.AudioRecorderField:
                 field.validationStatus = eValidationStatus.VALID;
+                
                 break;
         }
 
         valid = valid && (field.validationStatus === eValidationStatus.VALID);
+        //set the valid to true regardless for DEBUG ONLY!!! should be REMOVED!!!
+        valid = true;
     });
 
     form.validationStatus = valid ? null : eValidationStatus.INVALID
+    console.log("AR valid: " + form.validationStatus)
     return valid;
 }

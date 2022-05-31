@@ -31,7 +31,7 @@ export const actions: ActionTree<State, any> = {
     },
     [Actions.SUBMIT_FORM](store) {
         const form = store.state.form;
-
+        console.log("on submit:")
         //Validating the form
         if (!form || !validateFields(form))
             return;
@@ -45,6 +45,8 @@ export const actions: ActionTree<State, any> = {
         formData.append('datamodel', JSON.stringify(form));
 
         //Adding all attachments uploaded to the files variable in formData
+        console.log("on submit:")
+        console.log(store.state.flattenedFileModels)
         for (const key in store.state.flattenedFileModels) {
             if (store.state.flattenedFileModels[key].length > 0) {
                 store.state.flattenedFileModels[key].forEach(file => {

@@ -416,6 +416,7 @@ namespace Catfish.Services
             {
                 List<FileReference> fileReferences = _itemService.UploadFiles(groupdFileList[key], uploadRoot);
                 AttachmentField field = dst.Fields.First(f => f.Id == key) as AttachmentField;
+
                 foreach (FileReference fileReference in fileReferences)
                     field.Files.Add(fileReference);
             }                   

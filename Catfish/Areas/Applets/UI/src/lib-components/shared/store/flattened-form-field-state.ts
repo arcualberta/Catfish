@@ -1,4 +1,4 @@
-﻿import { FieldContainer, Option } from '../models/fieldContainer'
+﻿import {  Option } from '../models/fieldContainer'
 import { Text } from '../models/textModels';
 
 export interface FlattenedFormFiledState {

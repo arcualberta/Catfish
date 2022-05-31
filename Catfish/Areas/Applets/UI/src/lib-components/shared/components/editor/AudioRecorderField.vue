@@ -1,6 +1,8 @@
 <script lang="ts">
     import { defineComponent, PropType, reactive } from 'vue'
+    import { useStore } from 'vuex';
     import { AudioRecorderField } from '../../models/fieldContainer'
+    import { FlattenedFormFiledMutations } from '../../store/flattened-form-field-mutations'
     //@ts-ignore
     import Recorder from '../../libs/recorder'
 
@@ -16,7 +18,9 @@
         },
         methods: {
         },
-        setup() {
+        setup(p) {
+
+            const store = useStore();
             console.log("setup");
             const INSTRUCTION_MESSAGE = "Click on record to start recording.";
             const INSTRUCTION_MESSAGE_STOP = "Click stop to stop recording.";
@@ -54,6 +58,7 @@
 		    //saving audio file
 		    var timestamp = Number(new Date());
                     var file = new File([recordList[recordList.length - 1].blob], "rec_" + timestamp);
+                    console.log(file)
                     store.commit(FlattenedFormFiledMutations.ADD_FILE, { id: p.model.id, val: file });
                 }
             }

@@ -1,31 +1,16 @@
 ﻿using Catfish.Core.Helpers;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+
 using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+
 using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class AudioRecorderField : BaseField
+    public class AudioRecorderField :AttachmentField//, BaseField
     {
         public static string FileContainerTag = "files";
         public XmlModelList<FileReference> Files { get; set; }
-        //public string[] AllowedExtensions 
-        //{ 
-        //    get => GetAttribute("extensions", new string[0]); 
-        //    set => SetAttribute("extensions", value); 
-        //}
-        //public int MaxFileSize
-        //{
-        //    get => GetAttribute("maxFileSize", 0);
-        //    set => SetAttribute("maxFileSize", value);
-        //}
+       
 
         public AudioRecorderField() { DisplayLabel = "Audio Recorder Field"; }
         public AudioRecorderField(XElement data) : base(data) { DisplayLabel = "Audio Recorder Field"; }
