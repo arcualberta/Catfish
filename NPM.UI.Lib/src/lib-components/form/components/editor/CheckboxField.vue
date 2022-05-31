@@ -33,7 +33,7 @@
 
 <template>
     <div v-for="option in model.options.$values" :key="option.id">
-        <input type="checkbox" :id="option.id" :value="option.id" @change="setOptionSelection(option.id, $event)"/>
+        <input type="checkbox" :id="option.id" :value="option.id" @change="setOptionSelection(option.id, $event.target.checked)" />
         <label :for="option.id"> {{this.getConcatenatedOptionLabels(option)}}</label>
         Selected: {{option.selected}}
     </div>
