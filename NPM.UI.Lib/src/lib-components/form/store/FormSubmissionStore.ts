@@ -40,6 +40,22 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 .flatMap(optionsField => (optionsField as models.OptionsField).options?.$values)
 
             return array as models.Option[];
+        },
+        fileReferences: (state): models.FileReference[] => {
+            let array = [] as models.FileReference[];
+            console.log("inside getter file Refs")
+            state.form?.fields.$values
+                .filter(field => helpers.getFieldType(field as models.Field) === eFieldType.AttachmentField)
+                .flatMap(field => (field as models.AttachmentField).files?.$values)
+                .forEach(fileRef => {
+                    if (fileRef) {
+                       
+                        array?.push(fileRef)
+                        console.log("found fileRef" + JSON.stringify(array))
+                    }
+                })
+
+            return array;//as models.FileReference[];
         }
     },
     actions: {
@@ -52,6 +68,44 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             const field = this.optionModels.find(field => field.id === id);
             if (field)
                 field.selected = selected;
-        }
+        },
+        updateFileReference(fieldId: Guid, file: File) {
+           // console.log("update FileRef")
+          //  console.log(file)
+            const field = this.form?.fields.$values.find(fd => fd.id == fieldId);
+            if (field) {
+               // console.log("found the field")
+                const fileRef = this.fileReferences?.find(f => f.fileName == file.name);
+                if (fileRef) {
+                    fileRef.fileName = file.name,
+                        fileRef.originalFileName = file.name,
+                        fileRef.size = file.size
+                } else {
+
+                    let fileRef: models.FileReference = {
+                        id: Guid.create(), fileName: file.name, originalFileName: file.name,
+                        contentType: file.type,
+                        created: new Date(Date.now.toString()),
+                        updated: new Date(Date.now.toString()), size: file.size, modelType: "", $type: "", thumbnail: "", cssClass: ""
+                    };
+
+                    console.log("new file ref");
+                    console.log(fileRef);
+
+                    (field as models.AttachmentField).files.$values.push(fileRef)
+                   // this.fileReferences?.push(fileRef);
+                   // let fileRefs = (field as models.AttachmentField).files.$values;
+                    //console.log("file refs in the field")
+                    //console.log(JSON.stringify(fileRefs))
+                }
+            }
+
+        },
+        //deleteFileReference(id: Guid) {
+
+        //    this.fileReferences =  this.fileReferences.filter(function (value) {
+        //        return value.id !== id;
+        //    });
+        //}
     }
 });
