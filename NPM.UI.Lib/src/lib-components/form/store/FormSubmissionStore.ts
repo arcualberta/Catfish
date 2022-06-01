@@ -101,11 +101,23 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             }
 
         },
-        //deleteFileReference(id: Guid) {
+        deleteFileReference(fieldId: Guid, fileId: Guid) {
 
-        //    this.fileReferences =  this.fileReferences.filter(function (value) {
-        //        return value.id !== id;
-        //    });
-        //}
+            const field = this.form?.fields.$values.find(fd => fd.id == fieldId);
+            if (field) {
+
+                const indexOfObject = (field as models.AttachmentField).files.$values.findIndex((fileRef) => {
+                    return fileRef.id === fileId;
+                });
+
+                console.log("index object to be removed: "  + indexOfObject); 
+
+                if (indexOfObject !== -1) {
+                    (field as models.AttachmentField).files.$values.splice(indexOfObject, 1);
+                }
+
+                
+            }
+        }
     }
 });
