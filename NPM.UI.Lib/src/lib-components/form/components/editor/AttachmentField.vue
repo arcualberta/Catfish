@@ -3,6 +3,8 @@
     import * as models from '../../models'
     import DropZone from './DropZone.vue'
     import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
+    import { Guid } from 'guid-typescript';
+
     export default defineComponent({
         name: "AttachmentField",
         components: {
@@ -33,11 +35,14 @@
                  
                     formStore.updateFileReference(p.model?.id, file);
                 });
+
+                //file has been saved -- remove from input element value
+                
             };
 
             const selectedFiles = computed(() => {
                 //return (store.state as FlattenedFormFiledState).flattenedFileModels[p.model.id.toString()]
-                console.log("get selected file: " + formStore.fileReferences)
+              //  console.log("get selected file: " + formStore.fileReferences)
                 return formStore.fileReferences;
                 
                 
@@ -47,12 +52,17 @@
                
                 return selectedFiles?.value?.map(f=>f.fileName)
             });
+
+            const removeFile = (fieldId:Guid, fileId:Guid) => {
+                formStore.deleteFileReference(fieldId, fileId);
+
+            };
             return {
                 drop,
                 selectFiles,
                 selectedFiles,
                 selectedFileNames,
-                files
+                removeFile
             }
 
         }
@@ -67,7 +77,10 @@
     <input type="file" :id="model.id" @change="selectFiles" />
 
     <div>
-        Selected Files: {{selectedFiles}}
+        Selected Files:
+        <div v-for="fileRef in selectedFiles">
+            <span>{{fileRef.fileName}}</span><span style="margin-left:30px; color: red" @click="removeFile(model.id, fileRef.id)">x</span>
+        </div>
     </div>
    
 </template>
