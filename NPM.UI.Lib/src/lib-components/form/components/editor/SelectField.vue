@@ -23,11 +23,17 @@
                 return concatenatedLabels ? concatenatedLabels : "";
             }
         },
-        setup() {
+        setup(p) {
             const formStore = useFormSubmissionStore();
 
             return {
-                setOptionSelection: (id: Guid, selected: boolean) => formStore.setOptionSelection(id, selected)
+                setOptionSelection: (id: Guid, selected: boolean) => {
+                    //Clearing any previous selections of all other options
+                    p.model?.options.$values.filter(opt => opt.id !== id).forEach(opt => formStore.setOptionSelection(opt.id, false));
+
+                    //setting the selected option
+                    formStore.setOptionSelection(id, selected)
+                }
             }
         }
     });
