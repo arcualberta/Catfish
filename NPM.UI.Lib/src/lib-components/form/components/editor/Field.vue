@@ -36,7 +36,4 @@
         {{JSON.stringify(model)}}
     </div>
 
-
-    <hr />
-
 </template>

@@ -38,7 +38,7 @@
 
 
 <template>
-    <div v-for="option in model.options.$values" :key="option.id">
+    <div v-for="option in model.options.$values" :key="option.id" class="checkbox col-md-8">
         <input type="checkbox" :id="option.id" :value="option.id" @change="setOptionSelection(option.id, $event.target.checked)" />
         <label :for="option.id"> {{this.getConcatenatedOptionLabels(option)}}</label>
         Selected: {{option.selected}}
