@@ -32,8 +32,8 @@
         <InfoSection :model="model" />
     </div>
     <div v-if="!isInfoSection">
-        <h3>{{name}}</h3>
-        {{JSON.stringify(model)}}
+        <h2>{{name}}</h2>
+        <!--{{JSON.stringify(model)}}-->
     </div>
 
 </template>
