@@ -183,10 +183,12 @@ export const validateOptionsField = (field: models.OptionsField): boolean => {
 
 export const validateCompositeField = (field: models.Field): boolean => {
 
-    if (field) {
-
+    if (!field.required) 
         return true;
-    }
+
+    const selectedVals = (field as models.OptionsField).options?.$values.filter(val => val.selected == true);
+    if (selectedVals.length > 0)
+        return true
 
     return false;
 }
