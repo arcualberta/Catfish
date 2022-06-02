@@ -149,20 +149,26 @@ export const validateEmailField = (field: models.MonolingualTextField): boolean 
 
 export const validateNumberField = (field: models.MonolingualTextField): boolean => {
 
-    if (field) {
-
+    if (field.required) {
+        const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0);
+        if (txtVals && parseInt(txtVals[0].value) > 0)
+            return true;
+        else
+            return false;
     }
-
-    return false;
+    return true;
 }
 
 export const validateAttachmentField = (field: models.AttachmentField): boolean => {
 
-    if (field) {
-
+    if (field.required) {
+        if ((field as models.AttachmentField)?.files?.$values.length > 0)
+            return true;
+        else
+            return false;
     }
 
-    return false;
+    return true;
 }
 
 
