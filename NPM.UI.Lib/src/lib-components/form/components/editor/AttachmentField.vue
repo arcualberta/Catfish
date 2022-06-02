@@ -40,28 +40,17 @@
                 
             };
 
-            const selectedFiles = computed(() => {
-                //return (store.state as FlattenedFormFiledState).flattenedFileModels[p.model.id.toString()]
-              //  console.log("get selected file: " + formStore.fileReferences)
+            const selectedFiles = computed(() => { 
                 return formStore.fileReferences;
-                
-                
-            });
-
-            const selectedFileNames = computed(() => {
-               
-                return selectedFiles?.value?.map(f=>f.fileName)
             });
 
             const removeFile = (fieldId:Guid, fileId:Guid) => {
                 formStore.deleteFileReference(fieldId, fileId);
-
             };
             return {
                 drop,
                 selectFiles,
                 selectedFiles,
-                selectedFileNames,
                 removeFile
             }
 
