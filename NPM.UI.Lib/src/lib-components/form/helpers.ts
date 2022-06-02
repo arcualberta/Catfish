@@ -174,9 +174,12 @@ export const validateAttachmentField = (field: models.AttachmentField): boolean 
 
 export const validateOptionsField = (field: models.OptionsField): boolean => {
 
-    if (field) {
+    if (!field.required)
+        return true;
 
-    }
+    const selectedVals = (field as models.OptionsField).options?.$values.filter(val => val.selected == true);
+    if (selectedVals.length > 0)
+        return true
 
     return false;
 }
@@ -186,10 +189,7 @@ export const validateCompositeField = (field: models.Field): boolean => {
     if (!field.required) 
         return true;
 
-    const selectedVals = (field as models.OptionsField).options?.$values.filter(val => val.selected == true);
-    if (selectedVals.length > 0)
-        return true
-
+   
     return false;
 }
 
