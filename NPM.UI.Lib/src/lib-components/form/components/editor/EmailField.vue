@@ -24,7 +24,7 @@
 
 
 <template>
-        <div v-for="val in model?.values?.$values" :key="val" class="data">
+        <div v-for="val in model?.values?.$values" :key="val" >
             <SingleText :model="val" :isMultiline="false" fieldType="email" />
 
         </div>
