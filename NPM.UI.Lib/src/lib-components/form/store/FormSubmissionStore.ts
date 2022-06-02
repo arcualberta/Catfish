@@ -42,20 +42,11 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             return array as models.Option[];
         },
         fileReferences: (state): models.FileReference[] => {
-            let array = [] as models.FileReference[];
-            console.log("inside getter file Refs")
-            state.form?.fields.$values
+          
+            return state.form?.fields.$values
                 .filter(field => helpers.getFieldType(field as models.Field) === eFieldType.AttachmentField)
-                .flatMap(field => (field as models.AttachmentField).files?.$values)
-                .forEach(fileRef => {
-                    if (fileRef) {
-                       
-                        array?.push(fileRef)
-                        console.log("found fileRef" + JSON.stringify(array))
-                    }
-                })
+                .flatMap(field => (field as models.AttachmentField).files?.$values) as models.FileReference[];
 
-            return array;//as models.FileReference[];
         }
     },
     actions: {
@@ -70,33 +61,25 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 field.selected = selected;
         },
         updateFileReference(fieldId: Guid, file: File) {
-           // console.log("update FileRef")
-          //  console.log(file)
+         
             const field = this.form?.fields.$values.find(fd => fd.id == fieldId);
             if (field) {
-               // console.log("found the field")
-                const fileRef = this.fileReferences?.find(f => f.fileName == file.name);
+
+                const fileRef = this.fileReferences?.find(f => f.fileName == file.name && !f.id);
                 if (fileRef) {
                     fileRef.fileName = file.name,
                         fileRef.originalFileName = file.name,
                         fileRef.size = file.size
                 } else {
 
-                    let fileRef: models.FileReference = {
+                    const fileRef: models.FileReference = {
                         id: Guid.create(), fileName: file.name, originalFileName: file.name,
                         contentType: file.type,
                         created: new Date(Date.now.toString()),
                         updated: new Date(Date.now.toString()), size: file.size, modelType: "", $type: "", thumbnail: "", cssClass: ""
                     };
 
-                    console.log("new file ref");
-                    console.log(fileRef);
-
                     (field as models.AttachmentField).files.$values.push(fileRef)
-                   // this.fileReferences?.push(fileRef);
-                   // let fileRefs = (field as models.AttachmentField).files.$values;
-                    //console.log("file refs in the field")
-                    //console.log(JSON.stringify(fileRefs))
                 }
             }
 
@@ -110,7 +93,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                     return fileRef.id === fileId;
                 });
 
-                console.log("index object to be removed: "  + indexOfObject); 
+               // console.log("index object to be removed: "  + indexOfObject); 
 
                 if (indexOfObject !== -1) {
                     (field as models.AttachmentField).files.$values.splice(indexOfObject, 1);

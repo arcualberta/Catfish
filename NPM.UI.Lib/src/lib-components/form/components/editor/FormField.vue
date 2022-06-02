@@ -52,7 +52,9 @@
         <InfoSection :model="model" />
     </div>
     <div v-else class="container">
-        <div class="fieldName">{{name}}</div>
+        
+        <span v-if="model.required" class="fieldName required">{{name}}</span>
+        <span v-else class="fieldName">{{name}}</span>
         <AttachmentField v-if="helpers.testFieldType(model, eFieldType.AttachmentField)" :model="model" />
         <RadioField v-if="helpers.testFieldType(model, eFieldType.RadioField)" :model="model" />
         <CheckboxField v-if="helpers.testFieldType(model, eFieldType.CheckboxField)" :model="model" />
@@ -62,7 +64,7 @@
         <DecimalField v-if="helpers.testFieldType(model, eFieldType.DecimalField)" :model="model" />
         <EmailField v-if="helpers.testFieldType(model, eFieldType.EmailField)" :model="model" class="data"/>
         <IntegerField v-if="helpers.testFieldType(model, eFieldType.IntegerField)" :model="model" />
-        <!--{{JSON.stringify(model)}}-->
+        
     </div>
 
 </template>

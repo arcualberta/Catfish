@@ -46,8 +46,8 @@
         <textarea cols="30" rows="2" v-model="content"  />
      </div>
 	<div v-else>
-        <input v-if="fieldType == 'text'" type="text" v-model="content" />	
-        <input v-else :type="fieldType" v-model="content"  />
+        <input v-if="fieldType == 'text'" type="text" v-model="content" class="resized-textbox"/>	
+        <input v-else :type="fieldType" v-model="content"  class="resized-textbox"/>
     </div>
 </template>
 

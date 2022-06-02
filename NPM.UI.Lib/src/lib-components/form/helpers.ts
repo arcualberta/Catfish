@@ -103,16 +103,25 @@ export const validateForm = (form: models.FieldContainer): boolean => {
 export const validateMultilingualTextField = (field: models.MultilingualTextField): boolean => {
 
     if (field.required) {
-
+        const txtVals = (field as models.MultilingualTextField).values?.$values.filter(txtCol => txtCol.values.$values.filter(txt => txt.value?.length > 0));
+        if (txtVals && txtVals.length > 0)
+            return true;
+        else
+            return false;
     }
 
     return true;
 }
 
 export const validateMonolingualTextField = (field: models.MonolingualTextField): boolean => {
-
+     
     if (field.required) {
-        //field.values.filter(txt => (txt.value as string)?.length > 0).length > 0;
+        
+        const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0)
+        if (txtVals && txtVals?.length > 0)
+            return true;
+        else
+            return false
     }
 
     return true;
@@ -120,48 +129,67 @@ export const validateMonolingualTextField = (field: models.MonolingualTextField)
 
 export const validateEmailField = (field: models.MonolingualTextField): boolean => {
 
+    let valid = false as boolean;
+    const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0);
+    const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (field.required) {
-
+        if (txtVals && regularExpression.test(String(txtVals[0]).toLowerCase()))
+            valid = true;
+    } else {
+        if (txtVals && txtVals.length > 0) {
+            if (regularExpression.test(String(txtVals[0]).toLowerCase()))
+                valid = true;
+        } else {
+            valid = true;
+        }
     }
 
-    return false;
+    return valid;
 }
 
 export const validateNumberField = (field: models.MonolingualTextField): boolean => {
 
-    if (field) {
-
+    if (field.required) {
+        const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0);
+        if (txtVals && parseInt(txtVals[0].value) > 0)
+            return true;
+        else
+            return false;
     }
-
-    return false;
+    return true;
 }
 
 export const validateAttachmentField = (field: models.AttachmentField): boolean => {
 
-    if (field) {
-
+    if (field.required) {
+        if ((field as models.AttachmentField)?.files?.$values.length > 0)
+            return true;
+        else
+            return false;
     }
 
-    return false;
+    return true;
 }
 
 
 export const validateOptionsField = (field: models.OptionsField): boolean => {
 
-    if (field) {
+    if (!field.required)
+        return true;
 
-    }
+    const selectedVals = (field as models.OptionsField).options?.$values.filter(val => val.selected == true);
+    if (selectedVals.length > 0)
+        return true
 
     return false;
 }
 
 export const validateCompositeField = (field: models.Field): boolean => {
 
-    if (field) {
-
+    if (!field.required) 
         return true;
-    }
 
+   
     return false;
 }
 
