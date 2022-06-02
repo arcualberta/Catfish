@@ -103,7 +103,11 @@ export const validateForm = (form: models.FieldContainer): boolean => {
 export const validateMultilingualTextField = (field: models.MultilingualTextField): boolean => {
 
     if (field.required) {
-
+        const txtVals = (field as models.MultilingualTextField).values?.$values.filter(txtCol => txtCol.values.$values.filter(txt => txt.value?.length > 0));
+        if (txtVals && txtVals.length > 0)
+            return true;
+        else
+            return false;
     }
 
     return true;
