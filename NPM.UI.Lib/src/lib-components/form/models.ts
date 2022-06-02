@@ -1,6 +1,6 @@
 import { Guid } from "guid-typescript"
 
-import { eValidationStatus, eRefType } from './enumerations'
+import { eRefType } from './enumerations'
 
 export type DataElementType = Text | Option | FileReference;
 
@@ -40,7 +40,8 @@ export interface Field {
     updated: Date;
     cssClass: string;
     fieldCssClass: string;
-    validationStatus: eValidationStatus | null;
+    validationStatus: boolean;
+    validationError: string | null;
 }
 
 export interface FieldContainerReference extends Field {
@@ -68,7 +69,7 @@ export interface FieldContainer {
     isTemplate: boolean | false;
     model: FieldContainerReference | null;
     source: FieldContainer[] | null;
-    validationStatus: eValidationStatus | null;
+    validationStatus: boolean;
 }
 
 export interface TextField extends Field {
