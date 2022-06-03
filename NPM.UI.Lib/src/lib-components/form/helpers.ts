@@ -101,16 +101,17 @@ export const validateForm = (form: models.FieldContainer): boolean => {
 }
 
 export const validateMultilingualTextField = (field: models.MultilingualTextField): boolean => {
-
+    field.validationStatus = true;
     if (field.required) {
         const txtVals = (field as models.MultilingualTextField).values?.$values.filter(txtCol => txtCol.values.$values.filter(txt => txt.value?.length > 0));
-        if (txtVals && txtVals.length > 0)
-            return true;
-        else
-            return false;
-    }
+        console.log("length: " + txtVals?.length)
+        if (!(txtVals && txtVals.length > 0)) {
 
-    return true;
+            field.validationStatus = false;
+            field.validationError = "This field is required";
+        }
+    }
+    return field.validationStatus;
 }
 
 export const validateMonolingualTextField = (field: models.MonolingualTextField): boolean => {
@@ -119,7 +120,7 @@ export const validateMonolingualTextField = (field: models.MonolingualTextField)
         const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0)
         if (!(txtVals && txtVals?.length > 0)) {
             field.validationStatus = false;
-            field.validationError = "This field requires a value";
+            field.validationError = "This field is required";
         }
     }
 
@@ -132,10 +133,10 @@ export const validateEmailField = (field: models.MonolingualTextField): boolean 
 
     if (field.validationStatus) {
         const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0);
-        const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const regularExpression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         txtVals?.forEach(txtVal => {
-            if (!regularExpression.test(String(txtVal).toLowerCase())) {
+            if (!regularExpression.test(String(txtVal.value).toLowerCase())) {
                 field.validationStatus &&= false;
                 field.validationError = "Invalid email address"
             }
@@ -146,27 +147,31 @@ export const validateEmailField = (field: models.MonolingualTextField): boolean 
 }
 
 export const validateNumberField = (field: models.MonolingualTextField): boolean => {
-
-    if (field.required) {
+    field.validationStatus = validateMonolingualTextField(field);
+    if (field.validationStatus) {
         const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0);
-        if (txtVals && parseInt(txtVals[0].value) > 0)
-            return true;
-        else
-            return false;
+        txtVals?.forEach(txtVal => {
+            if (!parseInt(txtVal.value)) {
+                field.validationStatus &&= false;
+                field.validationError = "Require a number value"
+            }
+        });
+       
     }
-    return true;
+    return field.validationStatus;
 }
 
 export const validateAttachmentField = (field: models.AttachmentField): boolean => {
-
+    field.validationStatus = true;
     if (field.required) {
-        if ((field as models.AttachmentField)?.files?.$values.length > 0)
-            return true;
-        else
-            return false;
+        if (!((field as models.AttachmentField)?.files?.$values.length > 0)) {
+            field.validationStatus = false;
+            field.validationError = "This field is required"
+        }
+           
     }
 
-    return true;
+    return field.validationStatus;
 }
 
 
