@@ -102,11 +102,26 @@ export const validateForm = (form: models.FieldContainer): boolean => {
 
 export const validateMultilingualTextField = (field: models.MultilingualTextField): boolean => {
     field.validationStatus = true;
-    if (field.required) {
-        const txtVals = (field as models.MultilingualTextField).values?.$values.filter(txtCol => txtCol.values.$values.filter(txt => txt.value?.length > 0));
-        console.log("length: " + txtVals?.length)
-        if (!(txtVals && txtVals.length > 0)) {
+    let valueFound = false;
+    for (let i = 0; !valueFound && field?.values && (i < field.values?.$values?.length); ++i) {
+        const txtCollection = field?.values?.$values[i];
+        for (let k = 0; !valueFound && txtCollection.values && (k < txtCollection.values?.$values.length); ++k) {
+            valueFound = txtCollection.values?.$values[k]?.value?.trim().length > 0;
+        }
+    }
 
+
+    if (field.required) {
+       
+        let valueFound = false;
+        for (let i = 0; !valueFound && field?.values && (i < field.values?.$values?.length); ++i) {
+            const txtCollection = field?.values?.$values[i];
+            for (let k = 0; !valueFound && txtCollection.values && (k < txtCollection.values?.$values.length); ++k) {
+                valueFound = txtCollection.values?.$values[k]?.value?.trim().length > 0; 
+            }
+        }
+
+        if (!valueFound) {
             field.validationStatus = false;
             field.validationError = "This field is required";
         }
