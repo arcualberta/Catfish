@@ -114,37 +114,35 @@ export const validateMultilingualTextField = (field: models.MultilingualTextFiel
 }
 
 export const validateMonolingualTextField = (field: models.MonolingualTextField): boolean => {
-     
+    field.validationStatus = true;
     if (field.required) {
-        
         const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0)
-        if (txtVals && txtVals?.length > 0)
-            return true;
-        else
-            return false
+        if (!(txtVals && txtVals?.length > 0)) {
+            field.validationStatus = false;
+            field.validationError = "This field requires a value";
+        }
     }
 
-    return true;
+    return field.validationStatus;
 }
 
 export const validateEmailField = (field: models.MonolingualTextField): boolean => {
 
-    let valid = false as boolean;
-    const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0);
-    const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (field.required) {
-        if (txtVals && regularExpression.test(String(txtVals[0]).toLowerCase()))
-            valid = true;
-    } else {
-        if (txtVals && txtVals.length > 0) {
-            if (regularExpression.test(String(txtVals[0]).toLowerCase()))
-                valid = true;
-        } else {
-            valid = true;
-        }
+    field.validationStatus = validateMonolingualTextField(field); //false as boolean;
+
+    if (field.validationStatus) {
+        const txtVals = (field as models.MonolingualTextField)?.values?.$values.filter(txt => txt.value?.length > 0);
+        const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        txtVals?.forEach(txtVal => {
+            if (!regularExpression.test(String(txtVal).toLowerCase())) {
+                field.validationStatus &&= false;
+                field.validationError = "Invalid email address"
+            }
+        });
     }
 
-    return valid;
+    return field.validationStatus;
 }
 
 export const validateNumberField = (field: models.MonolingualTextField): boolean => {

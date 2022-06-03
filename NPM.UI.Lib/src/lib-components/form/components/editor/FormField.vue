@@ -65,6 +65,7 @@
         <EmailField v-if="helpers.testFieldType(model, eFieldType.EmailField)" :model="model" class="data"/>
         <IntegerField v-if="helpers.testFieldType(model, eFieldType.IntegerField)" :model="model" />
         
+        <span v-if="model?.validationStatus === false" class="validation-error">{{model.validationError}}</span>
     </div>
 
 </template>
