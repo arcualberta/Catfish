@@ -191,15 +191,17 @@ export const validateAttachmentField = (field: models.AttachmentField): boolean 
 
 
 export const validateOptionsField = (field: models.OptionsField): boolean => {
-
-    if (!field.required)
-        return true;
-
-    const selectedVals = (field as models.OptionsField).options?.$values.filter(val => val.selected == true);
-    if (selectedVals.length > 0)
-        return true
-
-    return false;
+    field.validationStatus = true;
+    if (field.required) {
+       
+        const selectedVals = (field as models.OptionsField).options?.$values.filter(val => val.selected == true);
+        if (! (selectedVals.length > 0)) {
+            field.validationStatus = false;
+            field.validationError="Please select at least one"
+        }
+           
+    }
+    return field.validationStatus;
 }
 
 export const validateCompositeField = (field: models.Field): boolean => {
