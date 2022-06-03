@@ -181,7 +181,7 @@ export const validateAttachmentField = (field: models.AttachmentField): boolean 
     if (field.required) {
         if (!((field as models.AttachmentField)?.files?.$values.length > 0)) {
             field.validationStatus = false;
-            field.validationError = "This field is required"
+            field.validationError = "This field is required, please attach a file"
         }
            
     }
@@ -206,37 +206,28 @@ export const validateOptionsField = (field: models.OptionsField): boolean => {
 
 export const validateCompositeField = (field: models.Field): boolean => {
 
-    if (!field.required) 
-        return true;
+    field.validationStatus = true;
 
-   
-    return false;
+    return field.validationStatus;
 }
 
 
 export const validateDateField = (field: models.MonolingualTextField): boolean => {
 
-    if (field) {
+    field.validationStatus = true;
 
-    }
-
-    return false;
+    return field.validationStatus;
 }
 
 export const validateFieldContainerReferenceField = (field: models.FieldContainerReference): boolean => {
-
-    if (field) {
-        true;
-    }
-
-    return false;
+    field.validationStatus = true;
+   
+    return field.validationStatus;
 }
 
 export const validateTableField = (field: models.Field): boolean => {
 
-    if (field) {
-        true;
-    }
+    field.validationStatus = true;
 
-    return false;
+    return field.validationStatus;
 }
