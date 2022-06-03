@@ -48,51 +48,62 @@ export const validateForm = (form: models.FieldContainer): boolean => {
     form.validationStatus = true;
     form.fields.$values.forEach(field => {
         switch (getFieldType(field)) {
-            case eFieldType.AttachmentField:
+            case eFieldType.AttachmentField: {
                 form.validationStatus &&= validateAttachmentField(field as models.AttachmentField);
                 break;
-            case eFieldType.AudioRecorderField:
+            }
+            case eFieldType.AudioRecorderField: {
                 form.validationStatus &&= validateAttachmentField(field as models.AttachmentField);
                 break;
+            }
             case eFieldType.CheckboxField:
             case eFieldType.RadioField:
-            case eFieldType.SelectField:
+            case eFieldType.SelectField: {
                 form.validationStatus &&= validateOptionsField(field as models.OptionsField);
                 break;
-            case eFieldType.CompositeField:
+            }
+            case eFieldType.CompositeField: {
                 form.validationStatus &&= validateCompositeField(field as models.Field);
                 break;
+            }
             case eFieldType.DateField:
                 form.validationStatus &&= validateDateField(field as models.MonolingualTextField);
                 break;
             case eFieldType.DecimalField:
-            case eFieldType.IntegerField:
+            case eFieldType.IntegerField: {
                 form.validationStatus &&= validateNumberField(field as models.MonolingualTextField);
                 break;
-            case eFieldType.EmailField:
+            }
+            case eFieldType.EmailField: {
                 form.validationStatus &&= validateEmailField(field as models.MonolingualTextField);
                 break;
-            case eFieldType.FieldContainerReference:
+            }
+            case eFieldType.FieldContainerReference: {
                 form.validationStatus &&= validateFieldContainerReferenceField(field as models.FieldContainerReference);
                 break;
+            }
             case eFieldType.InfoSection:
                 //NOTHING TO VALIDATE
                 break;
-            case eFieldType.MonolingualTextField:
+            case eFieldType.MonolingualTextField: {
                 form.validationStatus &&= validateMonolingualTextField(field as models.MonolingualTextField);
                 break;
-            case eFieldType.TableField:
+            }
+            case eFieldType.TableField: {
                 form.validationStatus &&= validateTableField(field as models.Field);
                 break;
+            }
             case eFieldType.TextArea:
-            case eFieldType.TextField:
+            case eFieldType.TextField: {
                 form.validationStatus &&= validateMultilingualTextField(field as models.MultilingualTextField);
                 break;
-            default:
+            }
+            default: {
                 field.validationError = "No validation method available."
                 field.validationStatus = false;
                 form.validationStatus &&= false;
                 break;
+            }
         }
     })
 
