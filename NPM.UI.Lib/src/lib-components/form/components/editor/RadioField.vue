@@ -10,7 +10,7 @@
         props: {
             model: {
                 type: null as PropType<models.OptionsField> | null,
-                required: false
+                required: true
             },
         },
 
@@ -22,7 +22,7 @@
         },
         setup(p) {
             const formStore = useFormSubmissionStore();
-
+            const name = "radio_" + p.model.id;
             return {
                 setOptionSelection: (id: Guid, selected: boolean) => {
                     //Clearing any previous selections of all other options
@@ -30,7 +30,8 @@
 
                     //setting the selected option
                     formStore.setOptionSelection(id, selected)
-                }
+                },
+                name
             }
         }
     });
@@ -39,7 +40,7 @@
 
 <template>
      <div v-for="option in model.options.$values" :key="option.id">
-        <input type="radio" :name="name" :id="option.id" :value="option.id" v-model="selected" @change="setOptionSelection(option.id, $event.target.checked)" /> <label :for="option.id">{{this.getConcatenatedOptionLabels(option)}}</label>
+        <input type="radio" :name="name" :id="option.id" :value="option.id" @change="setOptionSelection(option.id, $event.target.checked)" /> <label :for="option.id">{{this.getConcatenatedOptionLabels(option)}}</label>
          Selected: {{option.selected}}
     </div>
 </template>

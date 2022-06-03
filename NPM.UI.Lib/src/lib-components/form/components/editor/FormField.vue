@@ -62,7 +62,7 @@
         <TextField v-if="helpers.testFieldType(model, eFieldType.TextField)" :model="model" />
         <DateField v-if="helpers.testFieldType(model, eFieldType.DateField)" :model="model" />
         <DecimalField v-if="helpers.testFieldType(model, eFieldType.DecimalField)" :model="model" />
-        <EmailField v-if="helpers.testFieldType(model, eFieldType.EmailField)" :model="model" class="data"/>
+        <EmailField v-if="helpers.testFieldType(model, eFieldType.EmailField)" :model="model" />
         <IntegerField v-if="helpers.testFieldType(model, eFieldType.IntegerField)" :model="model" />
         
         <span v-if="model?.validationStatus === false" class="validation-error">{{model.validationError}}</span>

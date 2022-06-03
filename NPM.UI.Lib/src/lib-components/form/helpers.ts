@@ -49,7 +49,8 @@ export const validateForm = (form: models.FieldContainer): boolean => {
     form.fields.$values.forEach(field => {
         switch (getFieldType(field)) {
             case eFieldType.AttachmentField:
-                form.validationStatus &&= validateAttachmentField(field as models.AttachmentField);
+                field.validationStatus = validateAttachmentField(field as models.AttachmentField);
+                form.validationStatus = field.validationStatus;
                 break;
             case eFieldType.AudioRecorderField:
                 form.validationStatus &&= validateAttachmentField(field as models.AttachmentField);
@@ -57,7 +58,10 @@ export const validateForm = (form: models.FieldContainer): boolean => {
             case eFieldType.CheckboxField:
             case eFieldType.RadioField:
             case eFieldType.SelectField:
-                form.validationStatus &&= validateOptionsField(field as models.OptionsField);
+               
+                field.validationStatus = validateOptionsField(field as models.OptionsField);
+                form.validationStatus = field.validationStatus;
+
                 break;
             case eFieldType.CompositeField:
                 form.validationStatus &&= validateCompositeField(field as models.Field);
@@ -70,7 +74,8 @@ export const validateForm = (form: models.FieldContainer): boolean => {
                 form.validationStatus &&= validateNumberField(field as models.MonolingualTextField);
                 break;
             case eFieldType.EmailField:
-                form.validationStatus &&= validateEmailField(field as models.MonolingualTextField);
+                field.validationStatus = validateEmailField(field as models.MonolingualTextField);
+                form.validationStatus = field.validationStatus;
                 break;
             case eFieldType.FieldContainerReference:
                 form.validationStatus &&= validateFieldContainerReferenceField(field as models.FieldContainerReference);
@@ -79,14 +84,17 @@ export const validateForm = (form: models.FieldContainer): boolean => {
                 //NOTHING TO VALIDATE
                 break;
             case eFieldType.MonolingualTextField:
-                form.validationStatus &&= validateMonolingualTextField(field as models.MonolingualTextField);
+               
+                 field.validationStatus = validateMonolingualTextField(field as models.MonolingualTextField);
+                form.validationStatus = field.validationStatus
                 break;
             case eFieldType.TableField:
                 form.validationStatus &&= validateTableField(field as models.Field);
                 break;
             case eFieldType.TextArea:
             case eFieldType.TextField:
-                form.validationStatus &&= validateMultilingualTextField(field as models.MultilingualTextField);
+                field.validationStatus = validateMultilingualTextField(field as models.MultilingualTextField);
+                form.validationStatus = field.validationStatus;
                 break;
             default:
                 field.validationError = "No validation method available."

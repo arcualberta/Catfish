@@ -43,5 +43,5 @@
 <template>
     <h2>{{name}}</h2>
     <FormField v-for="field in model?.fields.$values" :key="field.id" :model="field" />
-    <!--{{JSON.stringify(model)}}-->
+    <!-- {{JSON.stringify(model)}}-->
 </template>

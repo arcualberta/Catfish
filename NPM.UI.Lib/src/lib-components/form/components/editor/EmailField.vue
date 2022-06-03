@@ -12,12 +12,12 @@
                 type: null as PropType<models.MonolingualTextField> | null,
                 required: true
             },
-            isMultivalued:
-            {
-                type: Boolean,
-                required: false,
-                default: false
-            }
+            //isMultivalued:
+            //{
+            //    type: Boolean,
+            //    required: false,
+            //    default: false
+            //}
         },
     });
 </script>

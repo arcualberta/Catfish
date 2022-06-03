@@ -34,7 +34,8 @@
             })
 
             return {
-                content
+                content,
+                isMultiLines: p.isMultiline
             }
         }
 	
@@ -42,7 +43,7 @@
 </script>
 
 <template>
-     <div v-if="isMultiline"  >
+     <div v-if=" isMultiLines === true"  >
         <textarea cols="30" rows="2" v-model="content"  />
      </div>
 	<div v-else>
