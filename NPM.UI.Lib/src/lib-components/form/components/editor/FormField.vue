@@ -69,3 +69,11 @@
     </div>
 
 </template>
+
+
+<style scoped>
+    .validation-error{
+        margin: 5px;
+        color: red;
+    }
+</style>
