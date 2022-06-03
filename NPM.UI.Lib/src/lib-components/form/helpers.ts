@@ -78,7 +78,8 @@ export const validateForm = (form: models.FieldContainer): boolean => {
                 form.validationStatus = field.validationStatus;
                 break;
             case eFieldType.FieldContainerReference:
-                form.validationStatus &&= validateFieldContainerReferenceField(field as models.FieldContainerReference);
+                field.validationStatus = validateFieldContainerReferenceField(field as models.FieldContainerReference);
+                form.validationStatus = field.validationStatus;
                 break;
             case eFieldType.InfoSection:
                 //NOTHING TO VALIDATE
