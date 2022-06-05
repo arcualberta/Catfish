@@ -1,10 +1,10 @@
 <script lang="ts">
     import { defineComponent, PropType } from "vue";
-    import { Guid } from 'guid-typescript';
+    //import { Guid } from 'guid-typescript';
 
     import * as models from '../../models'
-    import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
-
+    //import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
+    import { default as Checkbox } from './Checkbox.vue'
 
     export default defineComponent({
         name: "CheckboxField",
@@ -14,33 +14,21 @@
                 required: false
             },
         },
-   //      methods:{
-   //          getConcatenatedOptionLabels(option: any): string {
-   //             const concatenatedLabels = option.optionText?.values?.$values.map((txt: { value: any; }) => txt.value).join(" / ")
-   //             return concatenatedLabels ? concatenatedLabels : "";
-			//}
-   //     },
-        setup() {
-            const formStore = useFormSubmissionStore();
+        components: {
+            Checkbox
+        },
+    //    setup() {
+    //        const formStore = useFormSubmissionStore();
 
-            const getConcatenatedOptionLabels = (option: any): string => {
-                const concatenatedLabels = option.optionText?.values?.$values.map((txt: { value: any; }) => txt.value).join(" / ")
-                return concatenatedLabels ? concatenatedLabels : "";
-            }
-
-            return {
-                setOptionSelection: (id: Guid, selected: any) => formStore.setOptionSelection(id, selected),
-                getConcatenatedOptionLabels
-            }
-        }
+    //        return {
+    //        }
+    //    }
     });
 </script>
 
 
 <template>
     <div v-for="option in model.options.$values" :key="option.id" class="checkbox-container">
-        <input type="checkbox" :id="option.id" :value="option.id" @change="setOptionSelection(option.id, $event.target.checked)" />
-        <label :for="option.id"> {{this.getConcatenatedOptionLabels(option)}}</label>
-        <!--Selected: {{option.selected}}-->
+        <checkbox :model="option" />
     </div>
 </template>

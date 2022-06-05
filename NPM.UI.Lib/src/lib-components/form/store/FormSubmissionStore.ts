@@ -60,7 +60,12 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             if (field)
                 field.selected = selected;
         },
-        updateFileReference(fieldId: Guid, file: File) {
+        setExtendedOptionValue(id: Guid, value: string) {
+            const field = this.optionModels.find(field => field.id === id);
+            if (field)
+                field.extendedValue = value;
+        },
+       updateFileReference(fieldId: Guid, file: File) {
          
             const field = this.form?.fields.$values.find(fd => fd.id == fieldId);
             if (field) {

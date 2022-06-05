@@ -28,6 +28,12 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("extended", value);
         }
 
+        public string ExtendedValue
+        {
+            get => GetAttribute("extended-value", null as string);
+            set => SetAttribute("extended-value", value);
+        }
+
         private VisibilityCondition mVisibilityCondition;
         public VisibilityCondition VisibilityCondition { get { if (mVisibilityCondition == null) mVisibilityCondition = new VisibilityCondition(GetElement(VisibilityCondition.TagName, true)); return mVisibilityCondition; } }
 
