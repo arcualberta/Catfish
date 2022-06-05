@@ -13,6 +13,7 @@ using Catfish.Core.Services;
 using Catfish.Services;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -30,6 +31,7 @@ namespace Catfish.Areas.Applets.Controllers
 {
     [Route("applets/api/[controller]")]
     [ApiController]
+    [EnableCors("CatfishApiPolicy")]
     public class ItemsController : ControllerBase
     {
         private readonly IItemAppletService _itemAppletService;
