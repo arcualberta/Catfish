@@ -77,12 +77,12 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            MetadataSet keywordMeta = template.GetMetadataSet(_metadataSetName, true, lang);
-            keywordMeta.IsTemplate = false;
+            ////MetadataSet keywordMeta = template.GetMetadataSet(_metadataSetName, true, lang);
+            ////keywordMeta.IsTemplate = false;
 
-            //TO DO !!!!!!
-            string[] keywords = GetKeywords();
-            keywordMeta.CreateField<CheckboxField>("Keywords", lang, keywords, true);
+            //////TO DO !!!!!!
+            ////string[] keywords = GetKeywords();
+            ////keywordMeta.CreateField<CheckboxField>("Keywords", lang, keywords, true);
 
             //    string[] modes = GetDeliveryModes();
             //    keywordMeta.CreateField<CheckboxField>("Mode", lang, modes, true);
@@ -206,9 +206,16 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", "Section 3: Keywords", lang, "alert alert-info");
-            var definedkeys = rdForm.CreateField<FieldContainerReference>("Identify keywords that are related to your research area", lang,
-                 FieldContainerReference.eRefType.metadata, keywordMeta.Id);
+         
+            ////var definedkeys = rdForm.CreateField<FieldContainerReference>("Identify keywords that are related to your research area", lang,
+            ////     FieldContainerReference.eRefType.metadata, keywordMeta.Id);
+            ////definedkeys.CssClass = "multiSelectKeywords";
+
+            string[] keywords = GetKeywords();
+            var definedkeys = rdForm.CreateField<CheckboxField>("Identify keywords that are related to your research area", lang,
+                 keywords, true);
             definedkeys.CssClass = "multiSelectKeywords";
+
 
             //var key =  rdForm.CreateField<TextField>("Identify keywords that are related to your research area.", lang, true);
             //key.CssClass = "autocompleteText";
@@ -283,7 +290,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             if (saveChangesToDatabase)
                 db.SaveChanges();
 
-            template.Data.Save("..\\..\\..\\..\\Examples\\IGRD_Form_generared.xml");
+            template.Data.Save("..\\..\\..\\..\\Examples\\IGRD_Form_generared_new.xml");
 
             //string json = JsonConvert.SerializeObject(template);
             //File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
@@ -688,6 +695,40 @@ Any public disclosures of information from the directory will be in aggregate fo
 
 
                                 }
+                                //else if (f.ModelType.Contains("FieldContainerReference"))
+                                else if (fieldLabel == "Identify keywords that are related to your research area")
+                                {
+                                    //string[] vals = colValue.Split("-"); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
+                                                                         //check the checkbox in the metadataset
+                                    string[] vals = colValue.Split(new String[2]{ "-", ";" }, StringSplitOptions.RemoveEmptyEntries);
+                                    var options = (f as CheckboxField).Options;
+                                    foreach(var val in vals)
+                                    {
+                                        var opt = options.FirstOrDefault(op => op.OptionText.GetConcatenatedContent("").ToLower() == val.ToLower());
+                                        if (opt != null)
+                                            opt.Selected = true;
+                                    }
+                                    ////for (int l = 0; l < ms.Fields.Count; l++)// foreach (var fld in ms.Fields)
+                                    ////{
+                                    ////    var fld = ms.Fields[l];
+                                    ////    if (fld.ModelType.Contains("CheckboxField"))
+                                    ////    {
+                                    ////        foreach (string v in vals)
+                                    ////        {
+
+                                    ////            for (int j = 0; j < (fld as CheckboxField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
+                                    ////            {
+                                    ////                if (v.Contains((fld as CheckboxField).Options[j].OptionText.GetContent("en"), StringComparison.OrdinalIgnoreCase))
+                                    ////                {
+                                    ////                    (ms.Fields[l] as CheckboxField).Options[j].SetAttribute("selected", true);
+                                    ////                    break;
+                                    ////                }
+                                    ////            }
+                                    ////        }
+                                    ////    }
+                                    ////}
+
+                                }
                                 else if (f.ModelType.Contains("CheckboxField"))
                                 {
                                     //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
@@ -717,33 +758,7 @@ Any public disclosures of information from the directory will be in aggregate fo
 
                                     break;
                                 }
-                                else if (f.ModelType.Contains("FieldContainerReference"))
-                                {
-                                    string[] vals = colValue.Split("-"); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
-                                                                         //check the checkbox in the metadataset
-                                    for (int l = 0; l < ms.Fields.Count; l++)// foreach (var fld in ms.Fields)
-                                    {
-                                        var fld = ms.Fields[l];
-                                        if (fld.ModelType.Contains("CheckboxField"))
-                                        {
-                                            foreach (string v in vals)
-                                            {
 
-                                                for (int j = 0; j < (fld as CheckboxField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
-                                                {
-                                                    if (v.Contains((fld as CheckboxField).Options[j].OptionText.GetContent("en"), StringComparison.OrdinalIgnoreCase))
-                                                    {
-                                                        (ms.Fields[l] as CheckboxField).Options[j].SetAttribute("selected", true);
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-
-
-                                    }
-
-                                }
                             }// end if matched field
                              //_newDataItem.Fields.Add(f);
                         }//end of each field
@@ -1005,7 +1020,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             string templateFileName = "..\\..\\..\\..\\Examples\\IGRD_Form_production.xml";
             XElement xElement = XElement.Load(templateFileName);
             ItemTemplate template = new ItemTemplate(xElement);
-
+            
             MetadataSet aggregator = template.GetFieldAggregatorMetadataSet(true);
             aggregator.Fields.Clear(); //Clear any existing field-aggregation defintons
 
@@ -1020,9 +1035,9 @@ Any public disclosures of information from the directory will be in aggregate fo
             foreach (var form in template.DataContainer)
                 allField.AppendSources(form, FieldReference.eSourceType.Data);
 
-            //Aggregating all fields in all instance-specific (i.e. non-template) metadata sets
-            foreach (var form in template.MetadataSets.Where(ms => ms.IsTemplate == false))
-                allField.AppendSources(form, FieldReference.eSourceType.Metadata);
+            //////Aggregating all fields in all instance-specific (i.e. non-template) metadata sets
+            ////foreach (var form in template.MetadataSets.Where(ms => ms.IsTemplate == false))
+            ////    allField.AppendSources(form, FieldReference.eSourceType.Metadata);
 
             #endregion
 
@@ -1031,7 +1046,8 @@ Any public disclosures of information from the directory will be in aggregate fo
             AggregateField aggregatedKeywordField = new AggregateField() { ContentType = AggregateField.eContetType.str };
             aggregatedKeywordField.SetName("_keywords_", "en");
             aggregator.Fields.Add(aggregatedKeywordField);
-            aggregatedKeywordField.AppendSource(Guid.Parse("3f79e805-eeba-4f4d-b96a-3488a307cc88"), Guid.Parse("87bd0681-e9f0-4235-abc3-1b267a9b833f"), FieldReference.eSourceType.Metadata);
+            ////aggregatedKeywordField.AppendSource(Guid.Parse("3f79e805-eeba-4f4d-b96a-3488a307cc88"), Guid.Parse("87bd0681-e9f0-4235-abc3-1b267a9b833f"), FieldReference.eSourceType.Metadata);
+            aggregatedKeywordField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("31792634-04e4-45d4-a856-a0cb3a801281"), FieldReference.eSourceType.Data);
             aggregatedKeywordField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("d860b5ef-93c2-4c88-a213-7746873fe104"), FieldReference.eSourceType.Data, ";");
 
             #endregion
@@ -1041,7 +1057,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             similaritySourceField.SetName("_similarity_source_", "en");
             aggregator.Fields.Add(similaritySourceField);
             //Keywords
-            similaritySourceField.AppendSource(Guid.Parse("3f79e805-eeba-4f4d-b96a-3488a307cc88"), Guid.Parse("87bd0681-e9f0-4235-abc3-1b267a9b833f"), FieldReference.eSourceType.Metadata);
+            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("31792634-04e4-45d4-a856-a0cb3a801281"), FieldReference.eSourceType.Data);
             //Additional keywords
             similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("d860b5ef-93c2-4c88-a213-7746873fe104"), FieldReference.eSourceType.Data, ";");
             //Disability
