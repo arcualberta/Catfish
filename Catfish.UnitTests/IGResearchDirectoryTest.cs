@@ -2,21 +2,18 @@
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
-using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Test.Helpers;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Drive.v3;
-using Google.Apis.Services;
-using Google.Apis.Sheets.v4;
-using Google.Apis.Sheets.v4.Data;
 using System.Xml.Linq;
 
 namespace Catfish.UnitTests
@@ -31,6 +28,32 @@ namespace Catfish.UnitTests
         string lang = "en";
         string _apiKey = "";
 
+        public readonly Guid FORM_ID = Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa");
+        public readonly Guid NAME_ID = Guid.Parse("04e54156-f480-41e6-a76a-210456b66499");
+        public readonly Guid EMAIL_ID = Guid.Parse("4fa650bc-a20b-4a39-b7d6-40728f2461dd");
+        public readonly Guid PRONOUNES_ID = Guid.Parse("69d866ae-94bc-4701-ab72-998a4d8bc070");
+        public readonly Guid SHOW_PRONOUNES_ID = Guid.Parse("65409507-a783-4823-a442-9cbceb98ef14");
+        public readonly Guid POSITION_ID = Guid.Parse("016caaba-a0c7-4acc-b0c2-813376b2f32c");
+        public readonly Guid SHOW_POSITION_ID = Guid.Parse("039767df-0849-4557-a917-3b97e4b095dc");
+        public readonly Guid ORGANIZATION_ID = Guid.Parse("98b5b06d-b4e8-4a48-ad2c-7a36b9857064");
+        public readonly Guid DISABILITY_ID = Guid.Parse("b7f7b8f0-f2c9-422e-a91d-217fa4c5da8d");
+        public readonly Guid SHOW_DISABILITY_ID = Guid.Parse("76a5b848-4512-4ca4-9d2e-3affdf6efc6b");
+        public readonly Guid RACE_ID = Guid.Parse("6d4efd13-6b63-4659-ba6f-0e796d50fac0");
+        public readonly Guid SHOW_RACE_ID = Guid.Parse("4861c888-3d75-48c2-9de1-2388fd7dfb0e");
+        public readonly Guid ETHNICITY_ID = Guid.Parse("b2b63066-a17e-45dd-a3ae-a6c1f815de7b");
+        public readonly Guid SHOW_ETHNICITY_ID = Guid.Parse("b3034d56-319b-426e-9850-4536db9f503f");
+        public readonly Guid GENDER_IDENTITY_ID = Guid.Parse("deffa707-cd34-4f2b-9fcd-2e8c5161f5c9");
+        public readonly Guid SHOW_GENDER_IDENTITY_ID = Guid.Parse("69202d56-96ce-4db8-a8b3-a9b7f0b034fd");
+        public readonly Guid KEYWORDS_ID = Guid.Parse("b3efe807-0c6c-4b81-ae89-bdc6ef6f5d6e");
+        public readonly Guid ADDITIONAL_KEYWORDS_ID = Guid.Parse("fc0ca69f-21a6-406a-94ca-2b122d6d8d34");
+        public readonly Guid RESEARCH_QUESTION_ID = Guid.Parse("0774a8bf-bcf0-4733-8480-85a3b9e1451e");
+        public readonly Guid COMMUNITY_BASED_PROJECTS_ID = Guid.Parse("f3964ff7-9c8b-4286-a8ab-8020d9fc421a");
+        public readonly Guid EXTERNAL_LINKS_ID = Guid.Parse("44f39fe7-f3af-47da-a2b6-f610c2f0eda3");
+        public readonly Guid SHOW_EXTERNAL_LINKS_ID = Guid.Parse("7f1d3c61-0285-4aab-94e5-4a65aa5366bb");
+        public readonly Guid COLLABORATORS_ID = Guid.Parse("afb2a6b5-e6ba-406c-90b3-7c10bf4faa73");
+        public readonly Guid IMAGE_ID = Guid.Parse("962b6d6d-e397-4f24-8096-ed1655880af2");
+        public readonly Guid CONSENT_ID = Guid.Parse("84f22416-34ac-4451-bc59-e403bcd684fa");
+
         [SetUp]
         public void Setup()
         {
@@ -40,14 +63,10 @@ namespace Catfish.UnitTests
         }
 
 
-
-
         [Test]
         public void IGRD_SubmissionFormTest()
         {
             bool saveChangesToDatabase = true;
-
-            var formId = Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa");
 
             //string lang = "en";
             string templateName = "IG Research Directory Submission Form Template";
@@ -82,9 +101,8 @@ namespace Catfish.UnitTests
             //Defininig the submission form
             DataItem rdForm = template.GetDataItem(templateName, true, lang);
             rdForm.IsRoot = true;
-            rdForm.Id = formId;
+            rdForm.Id = FORM_ID;
             rdForm.SetDescription("This template is designed for IG Research Directory Submission Form", lang);
-
 
 
             rdForm.CreateField<InfoSection>(null, null)
@@ -101,25 +119,32 @@ Any public disclosures of information from the directory will be in aggregate fo
                  .AppendContent("h3", @"Section 1: Contact Information", lang, "alert alert-info");
             var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true);
             applicantEmail.IsListEntryTitle = true;
-            var name = rdForm.CreateField<TextField>("Name (First and Last)", lang, true);
+            applicantEmail.Id = EMAIL_ID;
 
+            var name = rdForm.CreateField<TextField>("Name (First and Last)", lang, true);
+            name.Id = NAME_ID;
             name.IsListEntryTitle = true;
+
             RadioField publicShow;
 
             string[] pronounsList = new string[] { "they/them", "she/her", "he/him", "Would rather not say", "Another" };
             var pronouns = rdForm.CreateField<CheckboxField>("Pronouns", lang, pronounsList, true);
+            pronouns.Id = PRONOUNES_ID;
             pronouns.CssClass = "pronounsMultiCheck";
             pronouns.Options.Last().ExtendedOption = true;
             (publicShow = rdForm.CreateField<RadioField>("Show pronounce on my public profile", lang, new String[] {"Yes", "No"}, true)).Required = true;
+            publicShow.Id = SHOW_PRONOUNES_ID;
 
             string[] positionList = new string[] { "Full Professor", "Assistant Professor", "Associate Professor", "Faculty Member", "Post-doc", "Graduate Student", "Research Assistant", "Another" };
             //rdForm.CreateField<TextField>("Position", lang, true);
             var position = rdForm.CreateField<CheckboxField>("Position", lang, positionList, true);
+            position.Id = POSITION_ID;
             position.CssClass = "positionMultiCheck";
             position.Options.Last().ExtendedOption = true;
             (publicShow = rdForm.CreateField<RadioField>("Show position on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
+            publicShow.Id = SHOW_POSITION_ID;
 
-            rdForm.CreateField<TextField>("Faculty/Department/Organization", lang, true);
+            rdForm.CreateField<TextField>("Faculty/Department/Organization", lang, true).Id = ORGANIZATION_ID;
 
 
             //////////////////////////////////////                         SECTION 2    ////////////////////////////////////////////////////////////////////////////////
@@ -135,24 +160,31 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             string[] disabilitiesList = new string[] { "Deaf", "Neurodivergent", "Experiencing Disability", "Not living with a disability", "Another" };
             var disabilities = rdForm.CreateField<CheckboxField>("Living with disability", lang, disabilitiesList, true);
+            disabilities.Id = DISABILITY_ID;
             disabilities.CssClass = "disabilitiesMultiCheck";
             disabilities.Options.Last().ExtendedOption = true;
             (publicShow = rdForm.CreateField<RadioField>("Show disability conditions on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
+            publicShow.Id = SHOW_DISABILITY_ID;
 
             string[] raceList = new string[] { "Indigenous", "Black", "Person of Colour", "White", "Another" };
             var race = rdForm.CreateField<CheckboxField>("Race", lang, raceList, true);
+            race.Id = RACE_ID;
             race.CssClass = "raceMultiCheck";
             race.Options.Last().ExtendedOption = true;
             (publicShow = rdForm.CreateField<RadioField>("Show race on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
+            publicShow.Id = SHOW_RACE_ID;
 
-            rdForm.CreateField<TextField>("Ethnicity", lang);
+            rdForm.CreateField<TextField>("Ethnicity", lang).Id = ETHNICITY_ID;
             (publicShow = rdForm.CreateField<RadioField>("Show ethnicity on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
+            publicShow.Id = SHOW_ETHNICITY_ID;
 
             string[] genderList = new string[] { "Two-Spirit", "Gender non-binary", "Genderfluid", "Transgender", "Woman", "Man", "Another" };
             var gender = rdForm.CreateField<CheckboxField>("Gender identity", lang, genderList, true);
+            gender.Id = GENDER_IDENTITY_ID;
             gender.CssClass = "genderMultiCheck";
             gender.Options.Last().ExtendedOption = true;
             (publicShow = rdForm.CreateField<RadioField>("Show gender identity on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
+            publicShow.Id = SHOW_GENDER_IDENTITY_ID;
 
 
 
@@ -166,11 +198,12 @@ Any public disclosures of information from the directory will be in aggregate fo
             string[] keywords = GetKeywords();
             var definedkeys = rdForm.CreateField<CheckboxField>("Identify keywords that are related to your research area", lang,
                  keywords, true);
+            definedkeys.Id = KEYWORDS_ID;
             definedkeys.CssClass = "multiSelectKeywords";
 
-            var undefinedKeys = rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, true);
+            var undefinedKeys = rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, false);
             undefinedKeys.CssClass = "undefinedKeys";
-
+            undefinedKeys.Id = ADDITIONAL_KEYWORDS_ID;
 
 
             //////////////////////////////////////                         SECTION 4    ////////////////////////////////////////////////////////////////////////////////
@@ -181,10 +214,12 @@ Any public disclosures of information from the directory will be in aggregate fo
                  .AppendContent("h3", "Section 4: Research Area and Community Involvement ", lang, "alert alert-info");
 
             var researchDes = rdForm.CreateField<TextArea>("Provide your research question or description in under 50 words. Please indicate how your work relates to IG.", lang, true);
+            researchDes.Id = RESEARCH_QUESTION_ID;
             researchDes.Cols = 50;
             researchDes.Rows = 2;
 
             var commProj = rdForm.CreateField<TextArea>("What, if any,  community-based projects are you involved in? This could include activist work, community-based research and engagement, and/or volunteerism related to your research.", lang);
+            commProj.Id = COMMUNITY_BASED_PROJECTS_ID;
             commProj.SetDescription("Max text length 100 words.", lang);
             commProj.Cols = 50;
             commProj.Rows = 2;
@@ -192,20 +227,21 @@ Any public disclosures of information from the directory will be in aggregate fo
             rdForm.CreateField<TextField>("Please provide links to your work. We hope directory users can learn more about your research and community work.", lang, true)
                 .SetDescription(@"Examples: Websites/blogs, social media pages/accounts (FB, IG, Twitter, tumblr, etc.) <br/>
                              Publications/reports or other digital content relevant to your work (google scholar, Academia.edu). 
-                             Digital media (radio, podcast)", lang);
+                             Digital media (radio, podcast)", lang)
+                .Id = EXTERNAL_LINKS_ID;
             (publicShow = rdForm.CreateField<RadioField>("Show links to my work on my public profile", lang, new String[] {"Yes", "No"}, true)).Required = true;
-
-
+            publicShow.Id = SHOW_EXTERNAL_LINKS_ID;
 
             //////////////////////////////////////                         SECTION 5    ////////////////////////////////////////////////////////////////////////////////
             ///
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             rdForm.CreateField<InfoSection>(null, null)
-                 .AppendContent("h3", "Section 5: Collaboration", lang, "alert alert-info");
-            var colaborator = rdForm.CreateField<TextField>("Are you currently collaborating with researchers at the U of A? If so, please use the search button to see if they’re already in our database. ", lang)
-              .SetDescription(@"If you cannot find their names, please fill in their name(s) in the form field.", lang);
+                 .AppendContent("h3", "Section 5: Collaboration", lang, "alert alert-info")
+                 .AppendContent("p", "Are you currently collaborating with researchers at the U of A? If so, please use the search box on the homepage to see if they’re already in our database. If you cannot find their names, please fill in their name(s) in the form field", lang);
 
+            var colaborator = rdForm.CreateField<TextField>("Collaborators", lang);
+            colaborator.Id = COLLABORATORS_ID;
 
 
             //////////////////////////////////////                         SECTION 6    ////////////////////////////////////////////////////////////////////////////////
@@ -233,6 +269,8 @@ Any public disclosures of information from the directory will be in aggregate fo
             //
 
             Define_IGRD_ResourcesForumWorkflow(workflow, ref template, rdForm, applicantEmail, null);
+
+            InitFieldAggregations(template);
 
             if (saveChangesToDatabase)
                 db.SaveChanges();
@@ -494,15 +532,64 @@ Any public disclosures of information from the directory will be in aggregate fo
                 "Activism", "Age", "Black Studies", "Body", "Canada",  "Class", "Colonialism", "Culture", " Decolonization", "Disability",
                 "Diversity","Environment", "Ethics", "Family", "Feminism", "Feminist Theory",  "Film", "Gender", "Genderqueer","Government",
                 "Health", "History", "Human Rights", "Identity", "Immigration",  "Indigenous", "Inequality", " International", "Intersectionality", "Language", "Law", "Literature", "Marginalized population", "Masculinities", "Media", "Mental health"," Mothering",
-                "Pedagogy", "Policy", "Politics", "Qualitative", "Research"," Queer", "Quare", "Race", "Relation", "Religion", "Sex", "Sexuality",
+                "Pedagogy", "Policy", "Politics", "Qualitative", "Research","Queer", "Quare", "Race", "Relation", "Religion", "Sex", "Sexuality",
                 "Science", "Sport", "Social justice", "Transgender", " Two-spirit", "Violence", "Work"
 
-            };
+            }
+            .Select(kw => kw.Trim())
+            .ToArray();
         }
 
         private string[] GetQuestionsToPublicDisplay()
         {
             return new string[] { "Pronouns", "Position", "Living with disability", "Race", "Ethnicity", "Gender identity", "The links to my work", "None" };
+        }
+
+        private void setOptionValues(OptionsField field, string optionsValues, string separator)
+        {
+            if (string.IsNullOrEmpty(optionsValues))
+                return;
+
+            string[] valuess = optionsValues.Split(separator, StringSplitOptions.RemoveEmptyEntries)
+                .Select(str => str.Trim())
+                .Where(str => !string.IsNullOrEmpty(str))
+                .ToArray();
+            foreach (var val in valuess)
+            {
+                var option = field.Options.FirstOrDefault(opt => opt.OptionText.GetConcatenatedContent("").ToLower() == val.ToLower());
+                if (option != null)
+                    option.Selected = true;
+                else
+                {
+                    option = field.Options.FirstOrDefault(opt => opt.OptionText.GetConcatenatedContent("").ToLower() == "another");
+                    if (option != null)
+                    {
+
+
+                        option.Selected = true;
+                        if (string.IsNullOrEmpty(option.ExtendedValue))
+                            option.ExtendedValue = val;
+                        else
+                            option.ExtendedValue = option.ExtendedValue + ";" + val;
+                    }
+                    else
+                        throw new Exception(string.Format("Unknown option value {0} found for the option-field {1}", val, field.Name.GetConcatenatedContent("/")));
+                }
+            }
+        }
+
+        private void SetTextValues(TextField field, string values, string separator)
+        {
+            if (string.IsNullOrEmpty(values))
+                return;
+
+            string[] inputVals = values.Split(";", StringSplitOptions.RemoveEmptyEntries)
+                .Select(str => str.Trim())
+                .Where(str => !string.IsNullOrEmpty(str))
+                .ToArray();
+
+            for (int i = 0; i < inputVals.Length; ++i)
+                field.SetValue(inputVals[i], lang, i);
         }
 
         [Test]
@@ -535,8 +622,20 @@ Any public disclosures of information from the directory will be in aggregate fo
             DataItem dataItem = template.GetRootDataItem(false); //root data item in the template
 
             int rowCount = 1;
+            bool headerRow = true;
+            string[] colHeadings = null;
             foreach (RowData row in ReadGoogleSheet())
             {
+                if (row.Values.Count == 0 || string.IsNullOrEmpty(row.Values[0].FormattedValue))
+                    continue;
+
+                if (headerRow)
+                {
+                    colHeadings = row.Values.Select(x => x.FormattedValue).ToArray();
+                    headerRow = false;
+                    continue;
+                }
+
                 string lang = "en";
                 //Create a new item
                 var item = template.Instantiate<Item>();
@@ -549,171 +648,281 @@ Any public disclosures of information from the directory will be in aggregate fo
 
                 _newDataItem.Created = DateTime.Now;
 
-                string[] colHeadings = GetColHeaders();
+               
                 string displayOnProfile = "";
                 displayOnProfile = getDisplayOnProfile(row);
 
 
-                int i = 0;
-                foreach (var col in row.Values)
+                for(int i=0; i<row.Values.Count; ++i)
                 {
-
-                    // FieldList fields = new FieldList();
-
-
                     string colHeading = colHeadings[i];
-                    string colValue = col.FormattedValue;
-                    //col headding with "*" represent interested heading
-                    if (colHeading.Contains("*") && !string.IsNullOrEmpty(colValue))
+                    string colValue = row.Values.ElementAt(i).FormattedValue;
+
+                    if (string.IsNullOrEmpty(colValue))
+                        continue;
+
+                    if (colHeading == "name")
                     {
-                        for (int k = 0; k < _newDataItem.Fields.Count; k++)//foreach(var f in dataItem.Fields)
-                        {
-                            var f = _newDataItem.Fields[k];
-                            string fieldLabel = _newDataItem.Fields[k].GetName();
-                            string _colHeading = colHeading.Substring(0, colHeading.Length - 1);
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == NAME_ID) as TextField;
+                        field.SetValue(colValue, lang);
+                    }
+                    else if (colHeading == "contact_email")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == EMAIL_ID) as EmailField;
+                        field.SetValue(colValue, lang);
+                    }
+                    else if (colHeading == "website")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == EXTERNAL_LINKS_ID) as TextField;
+                        field.SetValue(colValue, lang);
+                    }
+                    else if (colHeading == "pronouns")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == PRONOUNES_ID) as CheckboxField;
+                        setOptionValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "display_1")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_PRONOUNES_ID) as RadioField;
+                        setOptionValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "race")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == RACE_ID) as CheckboxField;
+                        setOptionValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "display_2")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_RACE_ID) as RadioField;
+                        setOptionValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "ethnicity")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == ETHNICITY_ID) as TextField;
+                        field.SetValue(colValue, lang);
+                    }
+                    else if (colHeading == "display_3")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_ETHNICITY_ID) as RadioField;
+                        setOptionValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "gender_identity")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == GENDER_IDENTITY_ID) as CheckboxField;
+                        setOptionValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "display_4")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_GENDER_IDENTITY_ID) as RadioField;
+                        setOptionValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "living-with-disability")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == DISABILITY_ID) as CheckboxField;
+                        setOptionValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "display_5")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_DISABILITY_ID) as RadioField;
+                        setOptionValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "position")
+                    {
+                        var x = _newDataItem.Fields.FirstOrDefault(f => f.Id == POSITION_ID);
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == POSITION_ID) as CheckboxField;
+                        setOptionValues(field, colValue, ";");
+                        setOptionValues(
+                            _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_POSITION_ID) as RadioField,
+                            "yes", ";"
+                            );
+                    }
+                    else if (colHeading == "category")
+                    {
+                        var keywordsField = _newDataItem.Fields.FirstOrDefault(f => f.Id == KEYWORDS_ID) as CheckboxField;
+                        string[] controlledKeywords = keywordsField.Options.Select(opt => opt.OptionText.GetConcatenatedContent("").ToLower()).ToArray();
+                        string[] inputKeywords = colValue.Split(";", StringSplitOptions.RemoveEmptyEntries)
+                            .Select(str => str.Trim().ToLower())
+                            .Where(str => !string.IsNullOrEmpty(str))
+                            .ToArray();
 
-                            //this will work if the header on the form field and the g sheet are the similiar
-                            if (!string.IsNullOrEmpty(fieldLabel) && (_colHeading.Contains(fieldLabel, StringComparison.OrdinalIgnoreCase) || fieldLabel.Contains(_colHeading, StringComparison.OrdinalIgnoreCase)))
-                            {
+                        string[] controlledInputKeywords = inputKeywords.Intersect(controlledKeywords).ToArray();
+                        setOptionValues(keywordsField, string.Join(";", controlledInputKeywords), ";");
 
-                                if (f.ModelType.Contains("TextField"))
-                                {
-                                    //position,faculty, add keywords that are specific to your research area not already identified above, collaborating with researchers
-                                    if (_colHeading.Contains("position", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        //split on a comma
-                                        if (!string.IsNullOrEmpty(colValue))
-                                        {
-                                            string[] vals = colValue.Split(",");
-                                            _newDataItem.SetFieldValue<TextField>(fieldLabel, lang, vals, lang, false);
-                                        }
+                        var additionalKeywords = inputKeywords.Where(kw => !controlledKeywords.Contains(kw)).ToArray();
+                        var addionalKeywordsField = _newDataItem.Fields.FirstOrDefault(f => f.Id == ADDITIONAL_KEYWORDS_ID) as TextField;
+                        for (int valIndex = 0; valIndex < additionalKeywords.Length; ++valIndex)
+                            addionalKeywordsField.SetValue(additionalKeywords[valIndex], lang, valIndex);
+                    }
+                    else if (colHeading == "faculty_or_department")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == ORGANIZATION_ID) as TextField;
+                        SetTextValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "primary_area_of_research")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == RESEARCH_QUESTION_ID) as TextArea;
+                        field.SetValue(colValue, lang);
+                    }
+                    else if (colHeading == "community-based_projects")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == COMMUNITY_BASED_PROJECTS_ID) as TextArea;
+                        field.SetValue(colValue, lang);
+                    }
+                    else if (colHeading == "collaborators")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == COLLABORATORS_ID) as TextField;
+                        SetTextValues(field, colValue, ";");
+                    }
 
+                    //////////col headding with "*" represent interested heading
+                    ////////if (colHeading.Contains("*") && !string.IsNullOrEmpty(colValue))
+                    ////////{
+                    ////////    for (int k = 0; k < _newDataItem.Fields.Count; k++)//foreach(var f in dataItem.Fields)
+                    ////////    {
+                    ////////        var f = _newDataItem.Fields[k];
+                    ////////        string fieldLabel = _newDataItem.Fields[k].GetName();
+                    ////////        string _colHeading = colHeading.Substring(0, colHeading.Length - 1);
 
-                                    } else if (_colHeading.Contains("add keywords", StringComparison.OrdinalIgnoreCase) || _colHeading.Contains("faculty", StringComparison.OrdinalIgnoreCase) || _colHeading.Contains("collaborating with researchers", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        //split on a semicolons
-                                        if (!string.IsNullOrEmpty(colValue))
-                                        {
-                                            string[] vals = colValue.Split(";");
-                                            _newDataItem.SetFieldValue<TextField>(fieldLabel, lang, vals, lang, false);
-                                        }
+                    ////////        //this will work if the header on the form field and the g sheet are the similiar
+                    ////////        if (!string.IsNullOrEmpty(fieldLabel) && (_colHeading.Contains(fieldLabel, StringComparison.OrdinalIgnoreCase) || fieldLabel.Contains(_colHeading, StringComparison.OrdinalIgnoreCase)))
+                    ////////        {
 
-                                    }
-                                    else {
-                                        _newDataItem.SetFieldValue<TextField>(fieldLabel, lang, colValue, lang, false);
-                                    }
-                                    break;
-                                }
-                                else if (f.ModelType.Contains("EmailField"))
-                                {
-
-                                    (_newDataItem.Fields[k] as EmailField).SetValue(colValue);
-
-                                    break;
-                                }
-                                else if (f.ModelType.Contains("TextArea"))
-                                {
-                                    _newDataItem.SetFieldValue<TextArea>(fieldLabel, lang, colValue, lang, false);
-                                    break;
-
-                                }
-                                else if (f.ModelType.Contains("RadioField"))
-                                {
-                                    //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
-                                    string[] vals = colValue.Split(","); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
-                                    foreach (string v in vals)
-                                    {
-
-                                        for (int j = 0; j < (f as RadioField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
-                                        {
-                                            if (v.Contains((f as RadioField).Options[j].OptionText.GetContent("en"), StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                (_newDataItem.Fields[k] as RadioField).Options[j].SetAttribute("selected", true);
-                                                break;
-                                            }
-                                            if (j == (((f as RadioField).Options.Count) - 1))
-                                            {
-                                                (_newDataItem.Fields[k] as RadioField).Options[j].SetAttribute("selected", true);//select "Another"
-                                            }
-                                        }
-                                    }
-
-                                    break;
-
-
-                                }
-                                //else if (f.ModelType.Contains("FieldContainerReference"))
-                                else if (fieldLabel == "Identify keywords that are related to your research area")
-                                {
-                                    //string[] vals = colValue.Split("-"); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
-                                                                         //check the checkbox in the metadataset
-                                    string[] vals = colValue.Split(new String[2]{ "-", ";" }, StringSplitOptions.RemoveEmptyEntries);
-                                    var options = (f as CheckboxField).Options;
-                                    foreach(var val in vals)
-                                    {
-                                        var opt = options.FirstOrDefault(op => op.OptionText.GetConcatenatedContent("").ToLower() == val.ToLower());
-                                        if (opt != null)
-                                            opt.Selected = true;
-                                    }
-                                    ////for (int l = 0; l < ms.Fields.Count; l++)// foreach (var fld in ms.Fields)
-                                    ////{
-                                    ////    var fld = ms.Fields[l];
-                                    ////    if (fld.ModelType.Contains("CheckboxField"))
-                                    ////    {
-                                    ////        foreach (string v in vals)
-                                    ////        {
-
-                                    ////            for (int j = 0; j < (fld as CheckboxField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
-                                    ////            {
-                                    ////                if (v.Contains((fld as CheckboxField).Options[j].OptionText.GetContent("en"), StringComparison.OrdinalIgnoreCase))
-                                    ////                {
-                                    ////                    (ms.Fields[l] as CheckboxField).Options[j].SetAttribute("selected", true);
-                                    ////                    break;
-                                    ////                }
-                                    ////            }
-                                    ////        }
-                                    ////    }
-                                    ////}
-
-                                }
-                                else if (f.ModelType.Contains("CheckboxField"))
-                                {
-                                    //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
-                                    string[] vals = colValue.Split(","); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
-                                    if (_colHeading.Contains("display"))
-                                        vals = displayOnProfile.Split(",");
-
-                                    foreach (string v in vals)
-                                    {
-
-                                        for (int j = 0; j < (f as CheckboxField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
-                                        {
-
-                                            if (v.Contains((f as CheckboxField).Options[j].OptionText.GetContent("en"), StringComparison.OrdinalIgnoreCase))
-                                            {
-
-                                                (_newDataItem.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);
-                                                break;
-                                            }
-
-                                            if (j == (((f as CheckboxField).Options.Count) - 1))
-                                            {
-                                                (_newDataItem.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);//select "Another"
-                                            }
-                                        }
-                                    }
-
-                                    break;
-                                }
-
-                            }// end if matched field
-                             //_newDataItem.Fields.Add(f);
-                        }//end of each field
-                    }// if spread sheet col content wanted
+                    ////////            if (f.ModelType.Contains("TextField"))
+                    ////////            {
+                    ////////                //position,faculty, add keywords that are specific to your research area not already identified above, collaborating with researchers
+                    ////////                if (_colHeading.Contains("position", StringComparison.OrdinalIgnoreCase))
+                    ////////                {
+                    ////////                    //split on a comma
+                    ////////                    if (!string.IsNullOrEmpty(colValue))
+                    ////////                    {
+                    ////////                        string[] vals = colValue.Split(",");
+                    ////////                        _newDataItem.SetFieldValue<TextField>(fieldLabel, lang, vals, lang, false);
+                    ////////                    }
 
 
+                    ////////                } else if (_colHeading.Contains("add keywords", StringComparison.OrdinalIgnoreCase) || _colHeading.Contains("faculty", StringComparison.OrdinalIgnoreCase) || _colHeading.Contains("collaborating with researchers", StringComparison.OrdinalIgnoreCase))
+                    ////////                {
+                    ////////                    //split on a semicolons
+                    ////////                    if (!string.IsNullOrEmpty(colValue))
+                    ////////                    {
+                    ////////                        string[] vals = colValue.Split(";");
+                    ////////                        _newDataItem.SetFieldValue<TextField>(fieldLabel, lang, vals, lang, false);
+                    ////////                    }
 
-                    i++;
+                    ////////                }
+                    ////////                else {
+                    ////////                    _newDataItem.SetFieldValue<TextField>(fieldLabel, lang, colValue, lang, false);
+                    ////////                }
+                    ////////                break;
+                    ////////            }
+                    ////////            else if (f.ModelType.Contains("EmailField"))
+                    ////////            {
+
+                    ////////                (_newDataItem.Fields[k] as EmailField).SetValue(colValue);
+
+                    ////////                break;
+                    ////////            }
+                    ////////            else if (f.ModelType.Contains("TextArea"))
+                    ////////            {
+                    ////////                _newDataItem.SetFieldValue<TextArea>(fieldLabel, lang, colValue, lang, false);
+                    ////////                break;
+
+                    ////////            }
+                    ////////            else if (f.ModelType.Contains("RadioField"))
+                    ////////            {
+                    ////////                //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
+                    ////////                string[] vals = colValue.Split(","); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
+                    ////////                foreach (string v in vals)
+                    ////////                {
+
+                    ////////                    for (int j = 0; j < (f as RadioField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
+                    ////////                    {
+                    ////////                        if (v.Contains((f as RadioField).Options[j].OptionText.GetContent("en"), StringComparison.OrdinalIgnoreCase))
+                    ////////                        {
+                    ////////                            (_newDataItem.Fields[k] as RadioField).Options[j].SetAttribute("selected", true);
+                    ////////                            break;
+                    ////////                        }
+                    ////////                        if (j == (((f as RadioField).Options.Count) - 1))
+                    ////////                        {
+                    ////////                            (_newDataItem.Fields[k] as RadioField).Options[j].SetAttribute("selected", true);//select "Another"
+                    ////////                        }
+                    ////////                    }
+                    ////////                }
+
+                    ////////                break;
+
+
+                    ////////            }
+                    ////////            //else if (f.ModelType.Contains("FieldContainerReference"))
+                    ////////            else if (fieldLabel == "Identify keywords that are related to your research area")
+                    ////////            {
+                    ////////                //string[] vals = colValue.Split("-"); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
+                    ////////                                                     //check the checkbox in the metadataset
+                    ////////                string[] vals = colValue.Split(new String[2]{ "-", ";" }, StringSplitOptions.RemoveEmptyEntries);
+                    ////////                var options = (f as CheckboxField).Options;
+                    ////////                foreach(var val in vals)
+                    ////////                {
+                    ////////                    var opt = options.FirstOrDefault(op => op.OptionText.GetConcatenatedContent("").ToLower() == val.ToLower());
+                    ////////                    if (opt != null)
+                    ////////                        opt.Selected = true;
+                    ////////                }
+                    ////////                ////for (int l = 0; l < ms.Fields.Count; l++)// foreach (var fld in ms.Fields)
+                    ////////                ////{
+                    ////////                ////    var fld = ms.Fields[l];
+                    ////////                ////    if (fld.ModelType.Contains("CheckboxField"))
+                    ////////                ////    {
+                    ////////                ////        foreach (string v in vals)
+                    ////////                ////        {
+
+                    ////////                ////            for (int j = 0; j < (fld as CheckboxField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
+                    ////////                ////            {
+                    ////////                ////                if (v.Contains((fld as CheckboxField).Options[j].OptionText.GetContent("en"), StringComparison.OrdinalIgnoreCase))
+                    ////////                ////                {
+                    ////////                ////                    (ms.Fields[l] as CheckboxField).Options[j].SetAttribute("selected", true);
+                    ////////                ////                    break;
+                    ////////                ////                }
+                    ////////                ////            }
+                    ////////                ////        }
+                    ////////                ////    }
+                    ////////                ////}
+
+                    ////////            }
+                    ////////            else if (f.ModelType.Contains("CheckboxField"))
+                    ////////            {
+                    ////////                //dataItem.SetFieldValue<EmailField>(fieldLabel, "en", colValue, "en", false, 0);
+                    ////////                string[] vals = colValue.Split(","); //THIS NEED TO BE REDO -- CONSIDERING ALSO SPLIT BY A ";"
+                    ////////                if (_colHeading.Contains("display"))
+                    ////////                    vals = displayOnProfile.Split(",");
+
+                    ////////                foreach (string v in vals)
+                    ////////                {
+
+                    ////////                    for (int j = 0; j < (f as CheckboxField).Options.Count; j++)//foreach(Option op in (f as CheckboxField).Options)
+                    ////////                    {
+
+                    ////////                        if (v.Contains((f as CheckboxField).Options[j].OptionText.GetContent("en"), StringComparison.OrdinalIgnoreCase))
+                    ////////                        {
+
+                    ////////                            (_newDataItem.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);
+                    ////////                            break;
+                    ////////                        }
+
+                    ////////                        if (j == (((f as CheckboxField).Options.Count) - 1))
+                    ////////                        {
+                    ////////                            (_newDataItem.Fields[k] as CheckboxField).Options[j].SetAttribute("selected", true);//select "Another"
+                    ////////                        }
+                    ////////                    }
+                    ////////                }
+
+                    ////////                break;
+                    ////////            }
+
+                    ////////        }// end if matched field
+                    ////////         //_newDataItem.Fields.Add(f);
+                    ////////    }//end of each field
+                    ////////}// if spread sheet col content wanted
+
+
                 }//end of each col
 
                 item.DataContainer.Add(_newDataItem);
@@ -795,8 +1004,8 @@ Any public disclosures of information from the directory will be in aggregate fo
         public List<RowData> ReadGoogleSheet()
         {
             //https://docs.google.com/spreadsheets/d/e/2PACX-1vSPTFgPPcCiCngUPXFE8PdsOgxg7Xybq91voXFxHMFd4JpjUIZGLj7U_piRJZV4WZx3YEW31Pln7XV4/pubhtml => this is my own copy
-            String spreadsheetId = "1m-oYJH-15DbqhE31dznAldB-gz75BJu1XAV5p5WJwxo";//==>google sheet Id
-            String ranges = "A2:AC";// read from col A to AI, starting 2rd row
+            String spreadsheetId = "1x6CeEfZiZcGxtnmkoluaZ6GjUhSmutf5GjwjI6dMOyw"; // "1m -oYJH-15DbqhE31dznAldB-gz75BJu1XAV5p5WJwxo";//==>google sheet Id
+            String ranges = "A1:AA"; // "A2:AC";// read from col A to AI, starting 2rd row
 
             SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
             {
@@ -958,16 +1167,8 @@ Any public disclosures of information from the directory will be in aggregate fo
 
         //}
 
-        /// <summary>
-        /// This test case reinitializes the field-aggregator metadata set
-        /// </summary>
-        [Test]
-        public void InitFieldAggregations()
+        private void InitFieldAggregations(ItemTemplate template)
         {
-            string templateFileName = "..\\..\\..\\..\\Examples\\IGRD_Form_production.xml";
-            XElement xElement = XElement.Load(templateFileName);
-            ItemTemplate template = new ItemTemplate(xElement);
-            
             MetadataSet aggregator = template.GetFieldAggregatorMetadataSet(true);
             aggregator.Fields.Clear(); //Clear any existing field-aggregation defintons
 
@@ -994,8 +1195,8 @@ Any public disclosures of information from the directory will be in aggregate fo
             aggregatedKeywordField.SetName("_keywords_", "en");
             aggregator.Fields.Add(aggregatedKeywordField);
             ////aggregatedKeywordField.AppendSource(Guid.Parse("3f79e805-eeba-4f4d-b96a-3488a307cc88"), Guid.Parse("87bd0681-e9f0-4235-abc3-1b267a9b833f"), FieldReference.eSourceType.Metadata);
-            aggregatedKeywordField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("31792634-04e4-45d4-a856-a0cb3a801281"), FieldReference.eSourceType.Data);
-            aggregatedKeywordField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("d860b5ef-93c2-4c88-a213-7746873fe104"), FieldReference.eSourceType.Data, ";");
+            aggregatedKeywordField.AppendSource(FORM_ID, KEYWORDS_ID, FieldReference.eSourceType.Data);
+            aggregatedKeywordField.AppendSource(FORM_ID, ADDITIONAL_KEYWORDS_ID, FieldReference.eSourceType.Data, ";");
 
             #endregion
 
@@ -1004,19 +1205,32 @@ Any public disclosures of information from the directory will be in aggregate fo
             similaritySourceField.SetName("_similarity_source_", "en");
             aggregator.Fields.Add(similaritySourceField);
             //Keywords
-            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("31792634-04e4-45d4-a856-a0cb3a801281"), FieldReference.eSourceType.Data);
+            similaritySourceField.AppendSource(FORM_ID, KEYWORDS_ID, FieldReference.eSourceType.Data);
             //Additional keywords
-            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("d860b5ef-93c2-4c88-a213-7746873fe104"), FieldReference.eSourceType.Data, ";");
+            similaritySourceField.AppendSource(FORM_ID, ADDITIONAL_KEYWORDS_ID, FieldReference.eSourceType.Data, ";");
             //Disability
-            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("b7f7b8f0-f2c9-422e-a91d-217fa4c5da8d"), FieldReference.eSourceType.Data, ";");
+            similaritySourceField.AppendSource(FORM_ID, DISABILITY_ID, FieldReference.eSourceType.Data, ";");
             //Race
-            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("d13046af-fe79-49f8-9eda-77fc5525a611"), FieldReference.eSourceType.Data, ";");
+            similaritySourceField.AppendSource(FORM_ID, RACE_ID, FieldReference.eSourceType.Data, ";");
             //Ethnicity
-            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("b2b63066-a17e-45dd-a3ae-a6c1f815de7b"), FieldReference.eSourceType.Data, ";");
+            similaritySourceField.AppendSource(FORM_ID, ETHNICITY_ID, FieldReference.eSourceType.Data, ";");
             //Gender identity
-            similaritySourceField.AppendSource(Guid.Parse("49a7a1d3-0194-4703-b3d8-747acbf3bbfa"), Guid.Parse("deffa707-cd34-4f2b-9fcd-2e8c5161f5c9"), FieldReference.eSourceType.Data, ";");
+            similaritySourceField.AppendSource(FORM_ID, GENDER_IDENTITY_ID, FieldReference.eSourceType.Data, ";");
 
             #endregion
+        }
+
+        /// <summary>
+        /// This test case reinitializes the field-aggregator metadata set
+        /// </summary>
+        [Test]
+        public void InitFieldAggregations()
+        {
+            string templateFileName = "..\\..\\..\\..\\Examples\\IGRD_Form_production.xml";
+            XElement xElement = XElement.Load(templateFileName);
+            ItemTemplate template = new ItemTemplate(xElement);
+
+            InitFieldAggregations(template);
 
             template.Data.Save(templateFileName);
         }
