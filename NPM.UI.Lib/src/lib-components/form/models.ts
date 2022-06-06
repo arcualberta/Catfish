@@ -1,12 +1,8 @@
-import { Guid } from "guid-typescript";
+import { Guid } from "guid-typescript"
 
-export enum eRefType { undefined, data, metadata }
+import { eRefType } from './enumerations'
 
-export enum eValidationStatus {
-    VALID = 'VALID',
-    VALUE_REQUIRED = 'VALUE_REQUIRED',
-    INVALID = 'INVALID'
-}
+export type DataElementType = Text | Option | FileReference;
 
 export interface Text {
     id: Guid;
@@ -44,7 +40,8 @@ export interface Field {
     updated: Date;
     cssClass: string;
     fieldCssClass: string;
-    validationStatus: eValidationStatus | null;
+    validationStatus: boolean;
+    validationError: string | null;
 }
 
 export interface FieldContainerReference extends Field {
@@ -72,7 +69,7 @@ export interface FieldContainer {
     isTemplate: boolean | false;
     model: FieldContainerReference | null;
     source: FieldContainer[] | null;
-    validationStatus: eValidationStatus | null;
+    validationStatus: boolean;
 }
 
 export interface TextField extends Field {
@@ -105,7 +102,9 @@ export interface Option {
     optionText: TextCollection | null;
     selected: boolean;
     extendedOption: boolean;
+    extendedValue: string;
 }
+
 export interface OptionsField extends Field {
     options: {
         $type: string;
@@ -149,4 +148,9 @@ export interface InfoSection extends Field {
 }
 
 
-
+export interface FlattenedFiledSModel {
+    modified: boolean;
+    flattenedTextModels: { [key: string]: Text };
+    flattenedOptionModels: { [key: string]: Option };
+    flattenedFileModels: { [key: string]: File[] };
+}

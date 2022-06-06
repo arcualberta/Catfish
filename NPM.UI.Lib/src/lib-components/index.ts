@@ -3,6 +3,6 @@
 /* search module */
 export * as search from './search/';
 
-/* Entity module */
-export * as entity from './shared/entity'
-
+/* Form module */
+export * as form from './form/'
+export { default as FormSubmission } from './form/components/editor/FormSubmission.vue';
