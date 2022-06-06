@@ -674,7 +674,12 @@ Any public disclosures of information from the directory will be in aggregate fo
                     else if (colHeading == "website")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == EXTERNAL_LINKS_ID) as TextField;
-                        field.SetValue(colValue, lang);
+                        string[] vals = colValue.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(s => s.Trim())
+                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                            .ToArray();
+                        for(int valIndex=0; valIndex < vals.Length; ++valIndex)
+                            field.SetValue(vals[valIndex], lang, valIndex);
                     }
                     else if (colHeading == "pronouns")
                     {
