@@ -41,6 +41,5 @@
 <template>
      <div v-for="option in model.options.$values" :key="option.id">
         <input type="radio" :name="name" :id="option.id" :value="option.id" @change="setOptionSelection(option.id, $event.target.checked)" /> <label :for="option.id">{{this.getConcatenatedOptionLabels(option)}}</label>
-         Selected: {{option.selected}}
     </div>
 </template>
