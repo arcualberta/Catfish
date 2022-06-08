@@ -124,6 +124,7 @@ export interface FileReference {
     cssClass: string;
     modelType: string;
     $type: string;
+    file: File;
 }
 
 export interface AttachmentField extends Field {
