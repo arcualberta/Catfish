@@ -334,6 +334,7 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State approvedState = workflow.AddState(ws.GetStatus(template.Id, "Approved", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
@@ -466,6 +467,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             //Defining state mappings
             ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
             deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(approvedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postAction action
             PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
@@ -477,29 +479,34 @@ Any public disclosures of information from the directory will be in aggregate fo
             ////////    .AddOwnerAuthorization();
             deleteSubmissionAction.GetStateReference(submittedState.Id, true)
                 .AddAuthorizedRole(adminRole.Id);
+            deleteSubmissionAction.GetStateReference(approvedState.Id, true)
+                .AddAuthorizedRole(adminRole.Id);
 
             // ================================================
             // Change State submission-instances related workflow items
             // ================================================
 
-            // GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
-            // changeStateAction.Access = GetAction.eAccess.Restricted;
+            GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
+            changeStateAction.Access = GetAction.eAccess.Restricted;
 
-            // //Define Revision Template
+            //Define Revision Template
             //changeStateAction.AddTemplate(commentsForm.Id, "Comments");
-            // //Defining post actions
-            // PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. 
-            //                                                                     You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>");
+            //Defining post actions
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully.");
 
+            changeStatePostAction.AddStateMapping(submittedState.Id, approvedState.Id, "Approve");
+            changeStatePostAction.AddStateMapping(deleteState.Id, approvedState.Id, "Approve");
 
-            // //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            // PopUp adjudicationDecisionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to continue? ", "Once changed, you cannot revise this document.");
-            // adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
-            // adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp changeStateDecisionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to Approve? ", "Once approved, you cannot revise this decision.");
+            changeStateDecisionPopUpopUp.AddButtons("Yes", "true");
+            changeStateDecisionPopUpopUp.AddButtons("Cancel", "false");
 
-            // //Defining states and their authorizatios
-            // changeStateAction.GetStateReference(submittedState.Id, true)
-            //     .AddAuthorizedRole(adminRole.Id);
+            //Defining states and their authorizatios
+            changeStateAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(adminRole.Id);
+            changeStateAction.GetStateReference(deleteState.Id, true)
+                .AddAuthorizedRole(adminRole.Id);
 
             // ================================================
             // Delete Comment related workflow items
