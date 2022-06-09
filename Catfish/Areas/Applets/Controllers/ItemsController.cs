@@ -140,7 +140,7 @@ namespace Catfish.Areas.Applets.Controllers
                 if ((await _authorizationService.AuthorizeAsync(User, newItem, new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate })).Succeeded)
                 {
                     _appDb.Items.Add(newItem);
-//                    _appDb.SaveChanges();
+                    _appDb.SaveChanges();
 
                     bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
                 }

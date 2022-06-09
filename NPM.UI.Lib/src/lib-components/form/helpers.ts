@@ -35,6 +35,14 @@ export const getDataElementType = (obj: models.DataElementType): eDataElementTyp
     return (<any>eDataElementType)[typeName];
 }
 
+export const getFileReferences = (form: models.FieldContainer | null): models.FileReference[] => {
+
+    return form?.fields.$values
+        .filter(field => getFieldType(field as models.Field) === eFieldType.AttachmentField)
+        .flatMap(field => (field as models.AttachmentField).files?.$values) as models.FileReference[];
+
+}
+
 export const validateEmail = (email: string): boolean => {
     if (email) {
 

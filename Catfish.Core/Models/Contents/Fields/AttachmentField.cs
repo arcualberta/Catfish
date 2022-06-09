@@ -61,17 +61,17 @@ namespace Catfish.Core.Models.Contents.Fields
                 }
                 else
                 {
-                    string newGuid = Guid.NewGuid().ToString();
+                    ////string newGuid = Guid.NewGuid().ToString();
 
-                    string fileN = newGuid + "_" + file.FileName;
+                    ////string fileN = newGuid + "_" + file.FileName;
 
-                    string path = Path.Combine(ConfigHelper.GetAttachmentsFolder(true), fileN);
+                    ////string path = Path.Combine(ConfigHelper.GetAttachmentsFolder(true), fileN);
 
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        (file as IFormFile).CopyTo(stream);
+                    ////using (var stream = new FileStream(path, FileMode.Create))
+                    ////{
+                    ////    (file.File as IFormFile).CopyTo(stream);
 
-                    }
+                    ////}
                 }
             }
         }
