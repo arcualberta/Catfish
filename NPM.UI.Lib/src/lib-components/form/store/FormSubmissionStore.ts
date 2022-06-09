@@ -42,11 +42,12 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             return array as models.Option[];
         },
         fileReferences: (state): models.FileReference[] => {
-          
-            return state.form?.fields.$values
-                .filter(field => helpers.getFieldType(field as models.Field) === eFieldType.AttachmentField)
-                .flatMap(field => (field as models.AttachmentField).files?.$values) as models.FileReference[];
 
+            return helpers.getFileReferences(state.form as models.FieldContainer);
+          
+            //return state.form?.fields.$values
+            //    .filter(field => helpers.getFieldType(field as models.Field) === eFieldType.AttachmentField)
+            //    .flatMap(field => (field as models.AttachmentField).files?.$values) as models.FileReference[];
         }
     },
     actions: {
@@ -72,16 +73,28 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
 
                 const fileRef = this.fileReferences?.find(f => f.fileName == file.name && !f.id);
                 if (fileRef) {
-                    fileRef.fileName = file.name,
-                        fileRef.originalFileName = file.name,
-                        fileRef.size = file.size
-                } else {
+                    fileRef.fileName = file.name;
+                    fileRef.originalFileName = file.name;
+                    fileRef.size = file.size;
+                    fileRef.file = file;
+                    fileRef.fieldId = field.id as Guid;
+                }
+                else {
 
                     const fileRef: models.FileReference = {
-                        id: Guid.create(), fileName: file.name, originalFileName: file.name,
+                        id: Guid.create().toString() as unknown as Guid,
+                        fileName: file.name,
+                        fieldId: field.id as Guid,
+                        originalFileName: file.name,
                         contentType: file.type,
-                        created: new Date(Date.now.toString()),
-                        updated: new Date(Date.now.toString()), size: file.size, modelType: "", $type: "", thumbnail: "", cssClass: ""
+                        created: new Date(),
+                        updated: new Date(Date.now.toString()),
+                        size: file.size,
+                        modelType: "Catfish.Core.Models.Contents.FileReference",
+                        $type: "Catfish.Core.Models.Contents.FileReference",
+                        file: file,
+                        thumbnail: "",
+                        cssClass: ""
                     };
 
                     (field as models.AttachmentField).files.$values.push(fileRef)

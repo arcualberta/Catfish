@@ -122,12 +122,13 @@ namespace Catfish.Areas.Applets.Controllers
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
 
             try
             {
                 //Guid collectionId = Guid.Parse("9ed65277-6a9e-4a96-c86a-e6825889234a"); ;
                 //Guid groupId = Guid.Parse("2BD48E47-3DD7-4DA0-9F07-BEB72EE3542D");
+         
+                DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
 
                 Guid stateMappingId = _workflowService.GetSubmitStateMappingId(itemTemplateId);//Guid.Parse("57a5509e-6aa2-463c-9cb6-b18178450aca");
                 string actionButton = "Submit";
@@ -149,7 +150,7 @@ namespace Catfish.Areas.Applets.Controllers
 
                 return Content("{}", "application/json");
             }
-            return Content(JsonConvert.SerializeObject("Sucess", settings), "application/json");
+            return Content(JsonConvert.SerializeObject("Success", settings), "application/json");
         }
 
         [HttpPost("update")]

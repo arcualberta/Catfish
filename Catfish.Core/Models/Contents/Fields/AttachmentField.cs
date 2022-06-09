@@ -54,10 +54,24 @@ namespace Catfish.Core.Models.Contents.Fields
 
                 //If the file is in the temporary folder, move it to the attachment-files folder
                 string tmpFile = Path.Combine(ConfigHelper.GetUploadTempFolder(false), file.FileName);
-                if(File.Exists(tmpFile))
+                if (File.Exists(tmpFile))
                 {
                     string finalFile = Path.Combine(ConfigHelper.GetAttachmentsFolder(true), file.FileName);
                     File.Move(tmpFile, finalFile);
+                }
+                else
+                {
+                    ////string newGuid = Guid.NewGuid().ToString();
+
+                    ////string fileN = newGuid + "_" + file.FileName;
+
+                    ////string path = Path.Combine(ConfigHelper.GetAttachmentsFolder(true), fileN);
+
+                    ////using (var stream = new FileStream(path, FileMode.Create))
+                    ////{
+                    ////    (file.File as IFormFile).CopyTo(stream);
+
+                    ////}
                 }
             }
         }

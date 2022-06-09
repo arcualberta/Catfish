@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
@@ -38,6 +39,8 @@ namespace Catfish.Core.Models.Contents
             get => GetAttribute("size", 0);
             set => SetAttribute("size", value);
         }
+
+        public FormFile File { get; set; }
 
         public FileReference() : base(TagName) { SetNewGuid(); }
         public FileReference(XElement data) : base(data) { }
