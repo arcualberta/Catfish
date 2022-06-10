@@ -136,7 +136,8 @@ Any public disclosures of information from the directory will be in aggregate fo
             (publicShow = rdForm.CreateField<RadioField>("Show pronounce on my public profile", lang, new String[] {"Yes", "No"}, true)).Required = true;
             publicShow.Id = SHOW_PRONOUNES_ID;
 
-            string[] positionList = new string[] { "Full Professor", "Assistant Professor", "Associate Professor", "Faculty Member", "Post-doc", "Graduate Student", "Research Assistant", "Another" };
+            string[] positionList = new string[] { "Assistant Professor", "Assistant Clinical Professor", "Associate Professor", "Professor", "Academic Teaching Staff", "Professor Emerit/a/us", "Retired",
+                "Faculty Member", "Postdoctoral Fellow", "Graduate Student", "Research Assistant", "Another" };
             //rdForm.CreateField<TextField>("Position", lang, true);
             var position = rdForm.CreateField<CheckboxField>("Position", lang, positionList, true);
             position.Id = POSITION_ID;
@@ -796,7 +797,18 @@ Any public disclosures of information from the directory will be in aggregate fo
                     else if (colHeading == "faculty_or_department")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == ORGANIZATION_ID) as TextField;
-                        SetTextValues(field, colValue, ";");
+                        string[] vals = colValue.Split(new char[] { ';', ',' }).Select(str => str.Trim()).Where(str => !string.IsNullOrEmpty(str)).ToArray();
+                        for(int idx=0; idx< vals.Length; ++idx)
+                        {
+                            string val = vals[idx];
+                            if (val.ToLower() == "faculty of arts") val = "Arts";
+                            else if (val.ToLower() == "faculty of education") val = "Education";
+                            else if (val.ToLower() == "ales") val = "Agricultural, Life and Environmental Sciences";
+                            else if (val.ToLower() == "faculty of nursing") val = "Nursing";
+
+                            vals[idx] = val;
+                        }
+                        SetTextValues(field, string.Join(";", vals), ";");
                     }
                     else if (colHeading == "primary_area_of_research")
                     {
