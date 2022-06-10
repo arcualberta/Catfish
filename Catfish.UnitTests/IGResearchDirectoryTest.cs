@@ -132,6 +132,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             pronouns.Id = PRONOUNES_ID;
             pronouns.CssClass = "pronounsMultiCheck";
             pronouns.Options.Last().ExtendedOption = true;
+            pronouns.SolrFieldType = eSolrFieldType._ss;
             (publicShow = rdForm.CreateField<RadioField>("Show pronounce on my public profile", lang, new String[] {"Yes", "No"}, true)).Required = true;
             publicShow.Id = SHOW_PRONOUNES_ID;
 
@@ -141,6 +142,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             position.Id = POSITION_ID;
             position.CssClass = "positionMultiCheck";
             position.Options.Last().ExtendedOption = true;
+            position.SolrFieldType = eSolrFieldType._ss;
             (publicShow = rdForm.CreateField<RadioField>("Show position on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
             publicShow.Id = SHOW_POSITION_ID;
 
@@ -158,19 +160,21 @@ Any public disclosures of information from the directory will be in aggregate fo
                  .AppendContent("div", @"This information will be used to identify equity-seeking groups in order for IG to highlight, support, and mobilize their intersectional research. This information will remain private unless “display this on my public profile” is checked for each identity category. Your completed profile is important as it helps all researchers see themselves in the fabric of the University of Alberta community. We realize self-identification is a complex matter and that multiple categories may be selected and/or that a more thorough self-identification may be provided in the “Another'' field - we welcome feedback on this process. 
 ", lang, "alert alert-info");
 
-            string[] disabilitiesList = new string[] { "Deaf", "Neurodivergent", "Experiencing Disability", "Not living with a disability", "Another" };
+            string[] disabilitiesList = new string[] { "Deaf", "Neurodivergent", "Experiencing disability", "Not living with a disability", "Another" };
             var disabilities = rdForm.CreateField<CheckboxField>("Living with disability", lang, disabilitiesList, true);
             disabilities.Id = DISABILITY_ID;
             disabilities.CssClass = "disabilitiesMultiCheck";
             disabilities.Options.Last().ExtendedOption = true;
+            disabilities.SolrFieldType = eSolrFieldType._ss;
             (publicShow = rdForm.CreateField<RadioField>("Show disability conditions on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
             publicShow.Id = SHOW_DISABILITY_ID;
 
-            string[] raceList = new string[] { "Indigenous", "Black", "Person of Colour", "White", "Another" };
+            string[] raceList = new string[] { "Indigenous", "Black", "Person of colour", "White", "Another" };
             var race = rdForm.CreateField<CheckboxField>("Race", lang, raceList, true);
             race.Id = RACE_ID;
             race.CssClass = "raceMultiCheck";
             race.Options.Last().ExtendedOption = true;
+            race.SolrFieldType = eSolrFieldType._ss;
             (publicShow = rdForm.CreateField<RadioField>("Show race on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
             publicShow.Id = SHOW_RACE_ID;
 
@@ -183,6 +187,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             gender.Id = GENDER_IDENTITY_ID;
             gender.CssClass = "genderMultiCheck";
             gender.Options.Last().ExtendedOption = true;
+            gender.SolrFieldType = eSolrFieldType._ss;
             (publicShow = rdForm.CreateField<RadioField>("Show gender identity on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
             publicShow.Id = SHOW_GENDER_IDENTITY_ID;
 
@@ -200,6 +205,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                  keywords, true);
             definedkeys.Id = KEYWORDS_ID;
             definedkeys.CssClass = "multiSelectKeywords";
+            definedkeys.SolrFieldType = eSolrFieldType._ss;
 
             var undefinedKeys = rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, false);
             undefinedKeys.CssClass = "undefinedKeys";

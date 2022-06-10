@@ -58,7 +58,7 @@ namespace Catfish.Core.Models.Solr
                 }
                 else if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
                 {
-                    solrFieldName += "_ts";
+                    solrFieldName += field.SolrFieldType.ToString();
                     foreach (var option in (field as OptionsField).Options.Where(op => op.Selected))
                         foreach (var txt in option.OptionText.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
                             AddField(solrFieldName, txt.Value);
