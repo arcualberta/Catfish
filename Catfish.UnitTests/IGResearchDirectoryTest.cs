@@ -250,8 +250,9 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", "Section 6: Image upload", lang, "alert alert-info");
-            rdForm.CreateField<AttachmentField>("Please upload an image - it can be a headshot, avatar, or an image that is representative of your work.", lang)
-              .SetDescription(@"(JPEG or PNG only, 300X300 dpi). If no image is uploaded, we will use an IG Silhouette", lang);
+            var imgField = rdForm.CreateField<AttachmentField>("Please upload an image - it can be a headshot, avatar, or an image that is representative of your work.", lang)
+              .SetDescription(@"(JPEG or PNG only, 300X300 dpi). If no image is uploaded, we will use an IG Silhouette", lang) as AttachmentField;
+            imgField.Id = IMAGE_ID;
 
 
             //////////////////////////////////////                         SECTION 7    ////////////////////////////////////////////////////////////////////////////////
@@ -263,6 +264,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             var consent = rdForm.CreateField<RadioField>("Do we have your consent for your researcher profile to be shared on this public directory? (This excludes self-identification information provided above.)", lang, new String[] { "Yes", "No" }, true);
             consent.CssClass = "radio-inline";
             consent.Required = true;
+            consent.Id = CONSENT_ID;
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -545,10 +547,13 @@ Any public disclosures of information from the directory will be in aggregate fo
             return new string[] { "Pronouns", "Position", "Living with disability", "Race", "Ethnicity", "Gender identity", "The links to my work", "None" };
         }
 
-        private void setOptionValues(OptionsField field, string optionsValues, string separator)
+        private void setOptionValues(OptionsField field, string optionsValues, string separator, string defaultOption)
         {
             if (string.IsNullOrEmpty(optionsValues))
-                return;
+                if (string.IsNullOrEmpty(defaultOption))
+                    return;
+                else
+                    optionsValues = defaultOption;
 
             string[] valuess = optionsValues.Split(separator, StringSplitOptions.RemoveEmptyEntries)
                 .Select(str => str.Trim())
@@ -684,22 +689,23 @@ Any public disclosures of information from the directory will be in aggregate fo
                     else if (colHeading == "pronouns")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == PRONOUNES_ID) as CheckboxField;
-                        setOptionValues(field, colValue, ";");
+                        setOptionValues(field, colValue, ";", null);
                     }
                     else if (colHeading == "display_1")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_PRONOUNES_ID) as RadioField;
-                        setOptionValues(field, colValue, ";");
+                        foreach (var val in colValue.Split(" ").Select(str => str.Trim()).Where(str => str.Length > 0))
+                            setOptionValues(field, val, ";", "yes");
                     }
                     else if (colHeading == "race")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == RACE_ID) as CheckboxField;
-                        setOptionValues(field, colValue, ";");
+                        setOptionValues(field, colValue, ";", null);
                     }
                     else if (colHeading == "display_2")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_RACE_ID) as RadioField;
-                        setOptionValues(field, colValue, ";");
+                        setOptionValues(field, colValue, ";", "yes");
                     }
                     else if (colHeading == "ethnicity")
                     {
@@ -709,36 +715,36 @@ Any public disclosures of information from the directory will be in aggregate fo
                     else if (colHeading == "display_3")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_ETHNICITY_ID) as RadioField;
-                        setOptionValues(field, colValue, ";");
+                        setOptionValues(field, colValue, ";", "yes");
                     }
                     else if (colHeading == "gender_identity")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == GENDER_IDENTITY_ID) as CheckboxField;
-                        setOptionValues(field, colValue, ";");
+                        setOptionValues(field, colValue, ";", null);
                     }
                     else if (colHeading == "display_4")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_GENDER_IDENTITY_ID) as RadioField;
-                        setOptionValues(field, colValue, ";");
+                        setOptionValues(field, colValue, ";", "yes");
                     }
                     else if (colHeading == "living-with-disability")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == DISABILITY_ID) as CheckboxField;
-                        setOptionValues(field, colValue, ";");
+                        setOptionValues(field, colValue, ";", null);
                     }
                     else if (colHeading == "display_5")
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_DISABILITY_ID) as RadioField;
-                        setOptionValues(field, colValue, ";");
+                        setOptionValues(field, colValue, ";", "yes");
                     }
                     else if (colHeading == "position")
                     {
                         var x = _newDataItem.Fields.FirstOrDefault(f => f.Id == POSITION_ID);
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == POSITION_ID) as CheckboxField;
-                        setOptionValues(field, colValue, ";");
+                        setOptionValues(field, colValue, ";", null);
                         setOptionValues(
                             _newDataItem.Fields.FirstOrDefault(f => f.Id == SHOW_POSITION_ID) as RadioField,
-                            "yes", ";"
+                            "yes", ";", null
                             );
                     }
                     else if (colHeading == "category")
@@ -751,7 +757,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                             .ToArray();
 
                         string[] controlledInputKeywords = inputKeywords.Intersect(controlledKeywords).ToArray();
-                        setOptionValues(keywordsField, string.Join(";", controlledInputKeywords), ";");
+                        setOptionValues(keywordsField, string.Join(";", controlledInputKeywords), ";", null);
 
                         var additionalKeywords = inputKeywords.Where(kw => !controlledKeywords.Contains(kw)).ToArray();
                         var addionalKeywordsField = _newDataItem.Fields.FirstOrDefault(f => f.Id == ADDITIONAL_KEYWORDS_ID) as TextField;
@@ -777,6 +783,11 @@ Any public disclosures of information from the directory will be in aggregate fo
                     {
                         var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == COLLABORATORS_ID) as TextField;
                         SetTextValues(field, colValue, ";");
+                    }
+                    else if (colHeading == "profile_visibility_consent")
+                    {
+                        var field = _newDataItem.Fields.FirstOrDefault(f => f.Id == CONSENT_ID) as RadioField;
+                        setOptionValues(field, colValue, ";", "yes");
                     }
 
                     //////////col headding with "*" represent interested heading
@@ -1010,7 +1021,7 @@ Any public disclosures of information from the directory will be in aggregate fo
         {
             //https://docs.google.com/spreadsheets/d/e/2PACX-1vSPTFgPPcCiCngUPXFE8PdsOgxg7Xybq91voXFxHMFd4JpjUIZGLj7U_piRJZV4WZx3YEW31Pln7XV4/pubhtml => this is my own copy
             String spreadsheetId = "1x6CeEfZiZcGxtnmkoluaZ6GjUhSmutf5GjwjI6dMOyw"; // "1m -oYJH-15DbqhE31dznAldB-gz75BJu1XAV5p5WJwxo";//==>google sheet Id
-            String ranges = "A1:AA"; // "A2:AC";// read from col A to AI, starting 2rd row
+            String ranges = "A1:AC"; // "A2:AC";// read from col A to AI, starting 2rd row
 
             SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
             {
