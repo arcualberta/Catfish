@@ -409,8 +409,15 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             // Added state referances. The public should be able to list
             // the submissions in the submitted state.
+            // Added state referances
             listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .IsPublic = true;
+                .AddAuthorizedRole(adminRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(approvedState.Id)
+                .AddAuthorizedRole(adminRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(deleteState.Id)
+                .AddAuthorizedRole(adminRole.Id);
 
             // ================================================
             // Read submission-instances related workflow items
@@ -421,10 +428,14 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
 
-            // Added state referances. The public should be able to list
-            // the submissions in the submitted state.
-            viewDetailsSubmissionAction.AddStateReferances(submittedState.Id)
-                .IsPublic = true;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(approvedState.Id)
+                .AddAuthorizedRole(adminRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(deleteState.Id)
+                .AddAuthorizedRole(adminRole.Id);
 
 
             // ================================================
@@ -456,8 +467,13 @@ Any public disclosures of information from the directory will be in aggregate fo
             }
 
             //Defining state referances
-            editSubmissionAction.GetStateReference(submittedState.Id, true)
-            .AddAuthorizedRole(adminRole.Id);
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(approvedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+            listSubmissionsAction.AddStateReferances(deleteState.Id)
+                .AddAuthorizedRole(adminRole.Id);
 
 
 
