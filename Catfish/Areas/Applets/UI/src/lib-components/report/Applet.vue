@@ -59,19 +59,21 @@
 
             const fromDate = ref(null);
             const toDate = ref(null);
-            const selectedStatus = ref(null);
+			const selectedStatus = ref(null);
+			const freeText = ref(null);
 
 
 			return {
 				store,
 				selectedFields,
-                reportRows: computed(() => store.state.reportData),
-                loadData: () => store.dispatch(Actions.LOAD_DATA, { startDate: fromDate.value, endDate: toDate.value, status: selectedStatus.value } as SearchParams),
+				reportRows: computed(() => store.state.reportData),
+				loadData: () => store.dispatch(Actions.LOAD_DATA, { startDate: fromDate.value, endDate: toDate.value, freeText: freeText.value, status: selectedStatus.value } as SearchParams),
 				queryParams,
                 templateStatus,
 				detailedViewURL: (id: Guid) => { const url = detailedViewUrlPath + id; return url; },
 				fromDate,
 				toDate,
+                freeText,
                 selectedStatus
 			}
 		},
@@ -106,15 +108,19 @@
 			<label class="form-label">Status:</label>
 			<select v-model="selectedStatus" class="form-control" style="width:auto;">
 				<option disabled value="">Please select one</option>
-				<option  value=""></option>
+				<option value=""></option>
 				<option v-for="status in templateStatus" :value="status.id">{{status.status}}</option>
 			</select>
 		</div>
 		<div class="col-md-6 form-group">
+			<label class="form-label">Search text:</label>
+			<input type="text" name="freeText" id="freeText" v-model="freeText" class="form-control" />
+		</div>		
+		<div class="col-md-6 form-group">
 			<button class="btn btn-primary" @click="loadData()">Execute</button>
 		</div>
-			<!--<button onclick="filterItems('@entityTemplateId', '@collectionId', $('#startDate').val(), $('#endDate').val(), 'itemListBlockTable',@reportTemplateId);" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Execute">Go<i class="fa fa-arrow-right" style="padding-left:5px;"></i></button>-->
-		</div>
+		<!--<button onclick="filterItems('@entityTemplateId', '@collectionId', $('#startDate').val(), $('#endDate').val(), 'itemListBlockTable',@reportTemplateId);" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Execute">Go<i class="fa fa-arrow-right" style="padding-left:5px;"></i></button>-->
+	</div>
 		<table class="table">
 			<thead>
 				<tr>

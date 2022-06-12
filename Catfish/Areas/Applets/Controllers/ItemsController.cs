@@ -344,7 +344,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpPost("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
-        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] String datamodel, DateTime? startDate, DateTime? endDate, Guid? status)
+        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] string datamodel, [FromForm] string freeText, DateTime? startDate, DateTime? endDate, Guid? status)
         {
             try
             {
@@ -357,7 +357,7 @@ namespace Catfish.Areas.Applets.Controllers
 
                 var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, deserializationSettings);
 
-                List<ReportRow> rows = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields, startDate, endDate, status);
+                List<ReportRow> rows = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields, freeText, startDate, endDate, status);
 
                 var serializationSettings = new JsonSerializerSettings()
                 {

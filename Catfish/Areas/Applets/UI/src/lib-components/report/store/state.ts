@@ -68,5 +68,6 @@ export interface SystemStatus {
 export interface SearchParams {
     startDate: Date | null;
     endDate: Date | null;
+    freeText: string | null;
     status: Guid | null;
 }

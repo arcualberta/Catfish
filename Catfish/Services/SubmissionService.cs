@@ -145,7 +145,7 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, DateTime? startDate, DateTime? endDate, Guid? status)
+        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, string freeText, DateTime? startDate, DateTime? endDate, Guid? status)
         {
             List<ReportRow> reportRows = new List<ReportRow>();
 
@@ -160,6 +160,13 @@ namespace Catfish.Services
                 itemIds = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to) && i.StatusId == state).Select(i => i.Id).ToList();
 
             string query = string.Join(" OR ", itemIds.Select(id => string.Format("id:{0}", id)));
+
+            if (!string.IsNullOrEmpty(freeText))
+            {
+                var textConstraints = reportFields.Select(rf => string.Format("data_{0}_{1}_ts:\"{2}\"", rf.FormTemplateId, rf.FieldId, freeText));
+                if (textConstraints.Any())
+                    query = string.Format("({0}) AND ({1})", query, string.Join(" OR ", textConstraints));
+            }
             var solrSearchResult = _solr.ExecuteSearch(query, 0, itemIds.Count, 0);
 
             List<ItemTemplate> templates = new List<ItemTemplate>();

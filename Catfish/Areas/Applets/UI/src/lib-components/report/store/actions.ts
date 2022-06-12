@@ -17,6 +17,9 @@ export const actions: ActionTree<State, any> = {
 
         //Setting the serialized JSON form model to the datamodel variable in formData
         formData.append('datamodel', JSON.stringify(store.state.reportFields));
+        if (searchParams.freeText)
+            formData.append('freeText', searchParams.freeText as string);
+
         fetch(api, {
             body: formData,
             method: "post",
