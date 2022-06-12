@@ -20,7 +20,7 @@ namespace Catfish.Core.Models.Solr
         public ResultEntryField(XElement arr, Dictionary<string, string> fieldNameDictionary)
         {
             FieldKey = arr.Attribute("name").Value;
-            if (!FieldKey.StartsWith("_"))
+            if (FieldKey.StartsWith("data_") || FieldKey.StartsWith("metadata_"))
             {
                 string[] fieldKeyParts = FieldKey.Split("_");
                 var filedContainerType = SearchFieldConstraint.Str2Scope(fieldKeyParts[0]);

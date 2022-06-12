@@ -36,7 +36,8 @@ namespace Catfish.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
         private readonly ItemService _itemService;
-        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService, ItemService itemService)
+        private readonly ISolrService _solr;
+        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService, ItemService itemService, ISolrService solr)
         {
             _authorizationService = auth;
             _emailService = email;
@@ -48,6 +49,7 @@ namespace Catfish.Services
             _serviceProvider = serviceProvider;
             _dotnetAuthorizationService = dotnetAuthorizationService;
             _itemService = itemService;
+            _solr = solr;
         }
 
         ///// <summary>
@@ -150,6 +152,76 @@ namespace Catfish.Services
             DateTime from = startDate == null ? DateTime.MinValue : startDate.Value;
             DateTime to = endDate == null ? DateTime.Now : endDate.Value.AddDays(1);
             Guid state = status == null ? Guid.Empty : status.Value;
+
+            List<Guid> itemIds = new List<Guid>();
+            if (state == Guid.Empty)
+                itemIds = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to)).Select(i => i.Id).ToList();
+            else
+                itemIds = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to) && i.StatusId == state).Select(i => i.Id).ToList();
+
+            string query = string.Join(" OR ", itemIds.Select(id => string.Format("id:{0}", id)));
+            var solrSearchResult = _solr.ExecuteSearch(query, 0, itemIds.Count, 0);
+
+            List<ItemTemplate> templates = new List<ItemTemplate>();
+
+            foreach (var item in solrSearchResult.ResultEntries)
+            {
+                ReportRow row = new ReportRow();
+                row.ItemId = item.Id;
+                row.Created = item.Created.ToString("dd/MM/yyyy");
+                row.Status = GetStatus(item.StatusId).Status;
+                reportRows.Add(row);
+
+                ItemTemplate template = templates.FirstOrDefault(t => t.Id == item.TemplateId);
+                if(template == null)
+                {
+                    template = _db.ItemTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+                    if (template == null)
+                        throw new Exception(string.Format("Template with ID {0} not found", item.TemplateId));
+                    templates.Add(template);
+                }
+
+                foreach (var reportField in reportFields)
+                {
+                    ReportCell reportCell = new ReportCell()
+                    {
+                        FormTemplateId = reportField.FormTemplateId,
+                        FieldId = reportField.FieldId
+                    };
+
+                    row.Cells.Add(reportCell);
+
+                    var field = item.Fields.FirstOrDefault(f => f.ContainerId == reportField.FormTemplateId && f.FieldId == reportField.FieldId);
+                    if (field != null)
+                    {
+                        ReportCellValue cellValue = new ReportCellValue() 
+                        {
+                            //We don't know the ID of the form instance since we don't index it in Solr.
+                            FormInstanceId = Guid.Empty
+                        };
+                       
+                        cellValue.Values.AddRange(field.FieldContent);
+                        reportCell.Values.Add(cellValue);
+
+                        var srcField = template.DataContainer
+                            .FirstOrDefault(form => form.Id == reportField.FormTemplateId)
+                            .Fields.FirstOrDefault(field => field.Id == reportField.FieldId);
+
+                        if (srcField is OptionsField)
+                            cellValue.RenderType = "Options";
+                        else if (srcField is AttachmentField)
+                            cellValue.RenderType = "Attachment";
+                        else if (srcField is AudioRecorderField)
+                            cellValue.RenderType = "Audio";
+                        else
+                            cellValue.RenderType = "Text";
+                    }
+
+                }
+            }
+            return reportRows;
+
+            /*
             List<Item> items=new List<Item>();
             if (state == Guid.Empty)
                 items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to)).Include(i => i.Status).ToList();
@@ -200,6 +272,7 @@ namespace Catfish.Services
 				}
             }
             return reportRows;
+            */
         }
 
         /// <summary>

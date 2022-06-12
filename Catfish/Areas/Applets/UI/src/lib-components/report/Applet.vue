@@ -131,30 +131,24 @@
 					</td>
 					<td v-for="cell in reportRow.cells">
 						<div v-for="cellValue in cell.values">
-							<div v-if="cellValue.renderType === 'MultilingualText'">
+							<div v-if="cellValue.renderType === 'Text'">
 								<div v-for="txt in cellValue.values">
-									{{txt.value}}
+									{{txt}}
 								</div>
 							</div>
 							<ul v-if="cellValue.renderType === 'Options'">
 								<li v-for="txt in cellValue.values">
-									{{txt.value}}
+									{{txt}}
 								</li>
 							</ul>
-							<div v-if="cellValue.renderType === 'MonolingualText'">
-								<div v-for="txt in cellValue.values">
-									<!--<div v-if="txt"></div>-->
-									{{txt.value}}
-								</div>
-							</div>
 							<div v-if="cellValue.renderType === 'Attachment'">
 								<div v-for="txt in cellValue.values">
-									{{txt.value}}
+									File: {{txt}}
 								</div>
 							</div>
 							<div v-if="cellValue.renderType === 'Audio'">
 								<div v-for="txt in cellValue.values">
-									{{txt.value}}
+									Audio: {{txt}}
 								</div>
 							</div>
 						</div>
