@@ -145,19 +145,17 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, string freeText, DateTime? startDate, DateTime? endDate, Guid? status)
+        public Report GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, string freeText, DateTime? startDate, DateTime? endDate, Guid? status, int? offset, int? pagesize)
         {
-            List<ReportRow> reportRows = new List<ReportRow>();
-
+            Report report = new Report();
             DateTime from = startDate == null ? DateTime.MinValue : startDate.Value;
             DateTime to = endDate == null ? DateTime.Now : endDate.Value.AddDays(1);
             Guid state = status == null ? Guid.Empty : status.Value;
+            IQueryable<Item> dbQuery = state == Guid.Empty
+                ? _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to))
+                : _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to) && i.StatusId == state);
 
-            List<Guid> itemIds = new List<Guid>();
-            if (state == Guid.Empty)
-                itemIds = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to)).Select(i => i.Id).ToList();
-            else
-                itemIds = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to) && i.StatusId == state).Select(i => i.Id).ToList();
+            List<Guid> itemIds = dbQuery.Select(i => i.Id).ToList();
 
             string query = string.Join(" OR ", itemIds.Select(id => string.Format("id:{0}", id)));
 
@@ -167,7 +165,11 @@ namespace Catfish.Services
                 if (textConstraints.Any())
                     query = string.Format("({0}) AND ({1})", query, string.Join(" OR ", textConstraints));
             }
-            var solrSearchResult = _solr.ExecuteSearch(query, 0, itemIds.Count, 0);
+
+            int start = offset.HasValue ? offset.Value : 0;
+            int max = pagesize.HasValue ? pagesize.Value : int.MaxValue;
+            var solrSearchResult = _solr.ExecuteSearch(query, start, max, 0);
+            report.Total = solrSearchResult.TotalMatches;
 
             List<ItemTemplate> templates = new List<ItemTemplate>();
 
@@ -177,7 +179,7 @@ namespace Catfish.Services
                 row.ItemId = item.Id;
                 row.Created = item.Created.ToString("dd/MM/yyyy");
                 row.Status = GetStatus(item.StatusId).Status;
-                reportRows.Add(row);
+                report.Rows.Add(row);
 
                 ItemTemplate template = templates.FirstOrDefault(t => t.Id == item.TemplateId);
                 if(template == null)
@@ -226,7 +228,7 @@ namespace Catfish.Services
 
                 }
             }
-            return reportRows;
+            return report;
 
             /*
             List<Item> items=new List<Item>();

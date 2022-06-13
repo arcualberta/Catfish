@@ -8,7 +8,7 @@ export enum Actions {
 export const actions: ActionTree<State, any> = {
     [Actions.LOAD_DATA](store, searchParams: SearchParams) {
 
-        console.log('Store: ', JSON.stringify(store.state))
+        //console.log('Store: ', JSON.stringify(store.state))
 
         const api = window.location.origin +
             `/applets/api/items/GetReportData/${store.state.groupId}/template/${store.state.itemTemplateID}/collection/${store.state.collectionID}?startDate=${searchParams.startDate ? searchParams.startDate : ""}&endDate=${searchParams.endDate ? searchParams.endDate : ""}&status=${searchParams.status ? searchParams.status : ""}`;
@@ -19,6 +19,8 @@ export const actions: ActionTree<State, any> = {
         formData.append('datamodel', JSON.stringify(store.state.reportFields));
         if (searchParams.freeText)
             formData.append('freeText', searchParams.freeText as string);
+        formData.append('offset', store.state.offset.toString());
+        formData.append('pageSize', store.state.pageSize.toString());
 
         fetch(api, {
             body: formData,

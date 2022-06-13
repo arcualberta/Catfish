@@ -7,10 +7,12 @@ export interface State{
     collectionID: Guid | null;
     groupId: Guid | null;
     reportFields: ReportField[] | null;
-    reportData: ReportRow[] | null;
+    reportData: Report | null;
     detailedViewUrl: string | null;
     templateStatus: SystemStatus[] | null;
     id: Guid | null;
+    offset: number;
+    pageSize: number;
 }
 
 export const state: State = {
@@ -22,7 +24,9 @@ export const state: State = {
     reportData: null,
     detailedViewUrl: null,
     templateStatus: null,
-    id: null
+    id: null,
+    offset: 0,
+    pageSize: 25
 }
 
 export interface ReportField {
@@ -45,6 +49,12 @@ export interface ReportRow {
         status: string | null;
         values: ReportCell[];
     };
+}
+
+export interface Report {
+    offset: number;
+    total: number;
+    rows: ReportRow[] | null;
 }
 
 export interface ReportCell {

@@ -62,19 +62,41 @@
 			const selectedStatus = ref(null);
 			const freeText = ref(null);
 
+			const offset = computed({
+				get: () => store.state.offset, 
+				set: val => store.commit(Mutations.SET_OFFSET, val)
+			});
+
+            const pageSize = computed({
+				get: () => store.state.pageSize,
+				set: val => store.commit(Mutations.SET_PAGE_SISE, val)
+            });
+
+			const loadData = () => store.dispatch(Actions.LOAD_DATA, { startDate: fromDate.value, endDate: toDate.value, freeText: freeText.value, status: selectedStatus.value } as SearchParams);
+			 
 
 			return {
 				store,
 				selectedFields,
-				reportRows: computed(() => store.state.reportData),
-				loadData: () => store.dispatch(Actions.LOAD_DATA, { startDate: fromDate.value, endDate: toDate.value, freeText: freeText.value, status: selectedStatus.value } as SearchParams),
+				report: computed(() => store.state.reportData),
+				loadData, 
 				queryParams,
                 templateStatus,
 				detailedViewURL: (id: Guid) => { const url = detailedViewUrlPath + id; return url; },
 				fromDate,
 				toDate,
                 freeText,
-                selectedStatus
+				selectedStatus,
+				offset,
+				pageSize,
+				previousPage: () => {
+                    offset.value = offset.value < pageSize.value ? 0 : offset.value - pageSize.value;
+					loadData();
+				},
+				nextPage: () => {
+                    offset.value = offset.value + pageSize.value;
+					loadData();
+				}
 			}
 		},
 		storeConfig: {
@@ -117,9 +139,14 @@
 			<input type="text" name="freeText" id="freeText" v-model="freeText" class="form-control" />
 		</div>		
 		<div class="col-md-6 form-group">
-			<button class="btn btn-primary" @click="loadData()">Execute</button>
+			<button class="btn btn-primary" @click="offset = 0; loadData()">Execute</button>
 		</div>
 		<!--<button onclick="filterItems('@entityTemplateId', '@collectionId', $('#startDate').val(), $('#endDate').val(), 'itemListBlockTable',@reportTemplateId);" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Execute">Go<i class="fa fa-arrow-right" style="padding-left:5px;"></i></button>-->
+	</div>
+	<div v-if="report?.rows" style="text-align:center;">
+		<button v-if="offset > 0" @click="previousPage" class="m-2">Previous</button>
+		{{offset+1}} to {{offset + report?.rows?.length}} of {{report?.total}}
+		<button v-if="offset + report.rows.length < report.total" @click="nextPage" class="m-2">Next</button>
 	</div>
 		<table class="table">
 			<thead>
@@ -131,7 +158,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="reportRow in reportRows">
+				<tr v-for="reportRow in report?.rows">
 					<td>
 						<a :href="detailedViewURL(reportRow.itemId)" class="fa fa-eye" target="_blank"></a>
 					</td>

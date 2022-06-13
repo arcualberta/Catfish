@@ -344,7 +344,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpPost("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
-        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] string datamodel, [FromForm] string freeText, DateTime? startDate, DateTime? endDate, Guid? status)
+        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] string datamodel, [FromForm] string freeText, DateTime? startDate, DateTime? endDate, Guid? status, [FromForm] int? offset, [FromForm] int? pagesize)
         {
             try
             {
@@ -357,7 +357,7 @@ namespace Catfish.Areas.Applets.Controllers
 
                 var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, deserializationSettings);
 
-                List<ReportRow> rows = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields, freeText, startDate, endDate, status);
+                Report report = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields, freeText, startDate, endDate, status, offset, pagesize);
 
                 var serializationSettings = new JsonSerializerSettings()
                 {
@@ -366,7 +366,7 @@ namespace Catfish.Areas.Applets.Controllers
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
 
-                return Content(JsonConvert.SerializeObject(rows, serializationSettings), "application/json");
+                return Content(JsonConvert.SerializeObject(report, serializationSettings), "application/json");
             }
             catch (Exception ex)
             {
