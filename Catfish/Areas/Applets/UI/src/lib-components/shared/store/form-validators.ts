@@ -144,8 +144,6 @@ export function validateFields(form: FieldContainer): boolean {
         }
 
         valid = valid && (field.validationStatus === eValidationStatus.VALID);
-        //set the valid to true regardless for DEBUG ONLY!!! should be REMOVED!!!
-        valid = true;
     });
 
     form.validationStatus = valid ? null : eValidationStatus.INVALID
