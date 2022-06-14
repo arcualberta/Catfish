@@ -15,7 +15,8 @@ export enum Mutations {
     SET_STATUS = 'SET_STATUS',
     SET_ID = 'SET_ID',
     SET_OFFSET = 'SET_OFFSET',
-    SET_PAGE_SISE = 'SET_PAGE_SISE'
+    SET_PAGE_SISE = 'SET_PAGE_SISE',
+    SET_SITE_URL = 'SET_SITE_URL'
 }
 
 
@@ -50,5 +51,8 @@ export const mutations: MutationTree<State> = {
     },
     [Mutations.SET_PAGE_SISE](state: State, payload: number) {
         state.pageSize = payload;
+    },
+    [Mutations.SET_SITE_URL](state: State, payload: string) {
+        state.siteUrl = payload;
     },
 }

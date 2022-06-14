@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc.ViewEngines
+﻿@using Catfish.Core.Helpers
+@using Microsoft.AspNetCore.Mvc.ViewEngines
 @using Catfish.Models.SiteTypes
 @using Catfish.Helper
 @using Catfish.Models.Blocks;
@@ -138,7 +139,7 @@
         }
     </script>
 
-    <title>@ViewBag.Title</title>
+    <title><a href="@ConfigHelper.SiteUrl">@ViewBag.Title</a></title>
 
     @if (Model is Piranha.Models.IMeta)
     {
@@ -147,7 +148,7 @@
 
     @RenderSection("head", required: false)
 
-    <script src="/assets/js/vue/vue-dev.js"></script>
+    <script src="~/assets/js/vue/vue-dev.js"></script>
     <script src="~/assets/js/_public-facing/vue-header.js"></script>
 
     @*@if (vueComponentNames.Count > 0)

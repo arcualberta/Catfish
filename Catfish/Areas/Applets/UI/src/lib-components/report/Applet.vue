@@ -24,26 +24,28 @@
 			//const queryParameters = p.queryParameters as QueryParameter;
 			const dataAttributes = p.dataAttributes as DataAttribute;
 
+			const siteUrl = dataAttributes["site-url"] as string;
+			store.commit(Mutations.SET_SITE_URL, siteUrl)
 
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
 			store.commit(Mutations.SET_TEMPLATE_ID, itemTemplateId)
-			store.state.itemTemplateId = itemTemplateId;
+			//store.state.itemTemplateId = itemTemplateId;
 
 			const collectionId = Guid.parse(dataAttributes["collection-id"] as string);
             store.commit(Mutations.SET_COLLECTION_ID, collectionId)
-			store.state.collectionId = collectionId;
+			//store.state.collectionId = collectionId;
 
             const groupId = Guid.parse(dataAttributes["group-id"] as string);
             store.commit(Mutations.SET_GROUP_ID, groupId)
-            store.state.groupId = groupId;
+            //store.state.groupId = groupId;
 
 			const selectedFields = JSON.parse(dataAttributes["selected-fields"] as string);
             store.commit(Mutations.SET_REPORT_FIELDS, selectedFields)
-			store.state.reportFields = selectedFields;
+			//store.state.reportFields = selectedFields;
 
 			const templateStatus = JSON.parse(dataAttributes["status"] as string) as SystemStatus[];
             store.commit(Mutations.SET_STATUS, templateStatus)
-            store.state.templateStatus = templateStatus;
+            //store.state.templateStatus = templateStatus;
 			
             const queryParams = p.queryParameters as QueryParameter;
             store.commit(Mutations.SET_ID, queryParams.iid);
