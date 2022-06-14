@@ -7,14 +7,20 @@ using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Test.Helpers;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Google.Apis.Drive.v3.Data;
+using System.Threading.Tasks;
+using System.Threading;
+using Google.Apis.Util.Store;
 
 namespace Catfish.UnitTests
 {
@@ -1002,6 +1008,62 @@ Any public disclosures of information from the directory will be in aggregate fo
             _db.SaveChanges();
         }
 
+        [Test]
+        public void CopyFiles()
+        {
+
+            //PLEASE CHANGE THE PATH
+            string sourcePath = "C:\\Users\\mruaini\\Downloads\\DATA_Directory_Images_Resized-20220613T212538Z-001\\DATA_Directory_Images_Resized";
+
+            //PLEASE CHANGE THE PATH
+            string destinationPath = "C:\\ARCProjects\\Catfish\\Catfish2\\Catfish2-dev\\Catfish\\App_Data\\uploads\\attachments";
+
+            IList<Item> Items = _db.Items.ToList();
+
+            foreach (string f in Directory.GetFiles(sourcePath, "*.jpg"))
+            {
+                string fName = (f.Substring(sourcePath.Length + 1)).Split(".")[0];
+                string originalFName = f.Substring(sourcePath.Length + 1);
+                
+                foreach (Item item in Items)
+                {
+
+                    string itemName = ((item.DataContainer[0].GetInputFields())[1].GetValues()).First().Value;
+                    if (!string.IsNullOrEmpty(itemName) && (itemName.Contains(fName) || fName.Contains(itemName)))
+                    {
+                        
+                        var fileLength = new FileInfo(f).Length;
+                        //copy file to 
+                        
+                        string imgFile = Guid.NewGuid() + "_" + originalFName;
+                       
+
+                      
+                        FileReference fileRef = new FileReference();
+                        fileRef.OriginalFileName = originalFName;
+                        fileRef.FileName = imgFile;
+                        
+                        fileRef.ContentType = "image/jpeg";
+                        fileRef.Thumbnail = "/assets/images/icons/jpg.png";
+                        fileRef.Size = fileLength;
+                        fileRef.Created = DateTime.Now;
+                       
+                       var attachField = item.DataContainer[0].Fields.Where(f => f.ModelType.Contains("Catfish.Core.Models.Contents.Fields.AttachmentField")).FirstOrDefault() as AttachmentField;
+                        (attachField as AttachmentField).Files.Add(fileRef);
+
+                        _db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+                        System.IO.File.Copy(Path.Combine(sourcePath, originalFName), Path.Combine(destinationPath, imgFile), true);
+                        break;
+
+                    }
+
+                }
+            }
+            _db.SaveChanges();
+            Assert.NotNull(true);
+        }
+
 
         private string getDisplayOnProfile(RowData row)
         {
@@ -1104,6 +1166,47 @@ Any public disclosures of information from the directory will be in aggregate fo
             return null;
         }
 
+        /// <summary>
+        /// Copy an existing file.
+        /// </summary>
+        /// <param name="service">Drive API service instance.</param>
+        /// <param name="originFileId">ID of the origin file to copy.</param>
+        /// <param name="copyTitle">Title of the copy.</param>
+        /// <returns>The copied file, null is returned if an API error occurred</returns>
+        //private Google.Apis.Drive.v3.Data.File CopyFile(DriveService service, String originFileId, String copyTitle)
+        //{
+            
+        //    Google.Apis.Drive.v3.Data.File copiedFile = new Google.Apis.Drive.v3.Data.File();
+        //    copiedFile.Name = copyTitle;
+        //    try
+        //    {
+        //        return service.Files.Copy(copiedFile, originFileId).Execute();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine("An error occurred: " + e.Message);
+        //    }
+        //    return copiedFile;
+        //}
+
+        // private static async Task<Google.Apis.Drive.v3.Data.FileList> GetAllFilesInsideFolder(DriveService service, string folderId)
+        //{
+        //    string FolderId = folderId;
+        //    // Define parameters of request.
+        //    FilesResource.ListRequest listRequest = service.Files.List();
+        //    listRequest.Corpora = "drive";
+        //    listRequest.DriveId = folderId;
+        //    listRequest.SupportsAllDrives = true;
+        //    listRequest.PageSize = 200;
+        //    listRequest.IncludeItemsFromAllDrives = true;
+        //   // listRequest.Q = "'" + FolderId + "' in parents and trashed=false";
+        //    listRequest.Fields = "nextPageToken, files(*)";
+
+        //    // List files.
+        //    Google.Apis.Drive.v3.Data.FileList files = await listRequest.ExecuteAsync();
+
+        //    return files;
+        //}
 
         private string[] GetColHeaders()
         {
