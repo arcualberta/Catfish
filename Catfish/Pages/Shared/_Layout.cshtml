@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Hosting
+﻿@using Catfish.Core.Helpers
+@using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Mvc.ViewEngines
 @using Catfish.Helper
 @using Catfish.Models.SiteTypes
@@ -141,13 +142,13 @@
                                 @if (!User.Identity.IsAuthenticated)
                                 {
                                     var path = Context.Request.Path.ToString();
-                                    <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login?ret=@path'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
+                                    <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@ConfigHelper.SiteUrl/login?ret=@path'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
                                 }
                                 else
                                 {
                                     if (User.IsInRole("SysAdmin"))
                                     {
-                                        <button class="btn btn-link" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                        <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
                                     }
                                     <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
                                 }

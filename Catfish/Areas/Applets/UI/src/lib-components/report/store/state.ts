@@ -13,6 +13,7 @@ export interface State{
     id: Guid | null;
     offset: number;
     pageSize: number;
+    siteUrl: string | null;
 }
 
 export const state: State = {
@@ -26,7 +27,8 @@ export const state: State = {
     templateStatus: null,
     id: null,
     offset: 0,
-    pageSize: 25
+    pageSize: 25,
+    siteUrl: null
 }
 
 export interface ReportField {

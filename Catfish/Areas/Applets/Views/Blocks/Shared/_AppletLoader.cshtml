@@ -1,4 +1,5 @@
 ﻿@model Piranha.Extend.Block
+@using Catfish.Core.Helpers
 @using Newtonsoft.Json;
 
 @inject Piranha.AspNetCore.Services.IApplicationService _webApp
@@ -20,11 +21,13 @@
         if (pair.Key.StartsWith("data-"))
             dataAttributes.Add(pair.Key.Substring(5), pair.Value);
     }
+    dataAttributes.Add("site-url", ConfigHelper.SiteUrl);
 
+    
     //Registering assets
-    _assetRegistry.RegisterScript("/assets/js/vue3/vue.global.js", "/assets/js/vue3/vue.global.prod.js");
-    _assetRegistry.RegisterScript("/assets/js/vue3/vuex.global.js", "/assets/js/vue3/vuex.global.prod.js");
-    _assetRegistry.RegisterScript("/assets/dist/applets/applets.min.js", "/assets/dist/applets/applets.min.js");
+    _assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/js/vue3/vue.global.js", @ConfigHelper.SiteUrl+"/assets/js/vue3/vue.global.prod.js");
+    _assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/js/vue3/vuex.global.js", @ConfigHelper.SiteUrl+"/assets/js/vue3/vuex.global.prod.js");
+    _assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/dist/applets/applets.min.js", @ConfigHelper.SiteUrl+"/assets/dist/applets/applets.min.js");
 
 }
 

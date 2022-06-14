@@ -10,7 +10,7 @@ export const actions: ActionTree<State, any> = {
 
         //console.log('Store: ', JSON.stringify(store.state))
 
-        const api = window.location.origin +
+        const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
             `/applets/api/items/GetReportData/${store.state.groupId}/template/${store.state.itemTemplateID}/collection/${store.state.collectionID}?startDate=${searchParams.startDate ? searchParams.startDate : ""}&endDate=${searchParams.endDate ? searchParams.endDate : ""}&status=${searchParams.status ? searchParams.status : ""}`;
         console.log('reports Load API: ', api)
         const formData = new FormData();
