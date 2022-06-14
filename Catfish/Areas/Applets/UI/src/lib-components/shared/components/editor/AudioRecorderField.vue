@@ -57,7 +57,7 @@
                     state.instructionMessage = "";
 		    //saving audio file
 		    var timestamp = Number(new Date());
-                    var file = new File([recordList[recordList.length - 1].blob], "rec_" + timestamp);
+                    var file = new File([recordList[recordList.length - 1].blob], "rec_" + timestamp + ".mp3");
                     console.log(file)
                     store.commit(FlattenedFormFiledMutations.ADD_FILE, { id: p.model.id, val: file });
                 }
