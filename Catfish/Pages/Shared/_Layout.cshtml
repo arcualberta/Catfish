@@ -222,11 +222,11 @@
                 gapi.auth2.init();
             });
         }
-        function signOut() {
+        function signOut(siteUrl) {
             //signout local login
             $.ajax({
                 type: 'GET',
-                url: "/CatfishUser",
+                url: siteUrl + "/CatfishUser",
                 headers: {
                     RequestVerificationToken:
                         $('input:hidden[name="__RequestVerificationToken"]').val()
@@ -238,7 +238,7 @@
                     auth2.signOut().then(function () {
                         //console.log('User signed out.');
                         auth2.disconnect();
-                        window.location.href = "/";
+                        window.location.href = siteUrl;
                     });
                     auth2.disconnect();
                 } catch (ex) {

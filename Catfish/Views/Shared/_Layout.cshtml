@@ -289,17 +289,17 @@
         });
     }*/
 
-    function signOut() {
+    function signOut(siteUrl) {
         //signout local login
         $.ajax({
             type: 'GET',
-            url: "/CatfishUser",
+            url: siteUrl + "/CatfishUser",
             headers: {
                 RequestVerificationToken:
                     $('input:hidden[name="__RequestVerificationToken"]').val()
             }
         }).done(function (result) {
-            window.location.href = "/";
+            window.location.href = siteUrl;
             /*try {
                 //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
                 //var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
