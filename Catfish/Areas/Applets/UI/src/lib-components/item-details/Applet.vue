@@ -27,12 +27,15 @@
             console.log('Item Details setup ...');
             console.log('props: ', JSON.stringify(p));
             const isAdmin = dataAttributes["is-admin"] as string;
-            console.log('isAdmin: ', isAdmin);
+            console.log('isAdmin123: ', isAdmin);
             const queryParams = p.queryParameters as QueryParameter;
 
             store.commit(Mutations.SET_ID, queryParams.iid);
 
+            const siteUrl = dataAttributes["site-url"] as string;
+            store.commit(Mutations.SET_SITE_URL, siteUrl);
             //load the data
+            console.log("before GET_USER_ACTIONS")
             store.dispatch(Actions.GET_USER_ACTIONS);
             store.dispatch(Actions.LOAD_ITEM);
 
@@ -46,6 +49,8 @@
                 //Checks if the current user can update the given field container "fc".
                 //Returns true if the editMode = true and if the current user has "Update"
                 //permission on the field container "fc"
+                console.log("Check edit permission started.");
+
                 if (editMode.value) {
                     const permissionsOfFieldContainer = ((store.state as State).permissionList as UserPermission[]).find(p => p.formId == fc.id)?.permissions;
                     return permissionsOfFieldContainer?.find(p => p.action == "Update") != null;
