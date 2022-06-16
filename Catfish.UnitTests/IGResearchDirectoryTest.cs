@@ -1016,7 +1016,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             string sourcePath = @"C:\tmp\ig-profile-images";
 
             //PLEASE CHANGE THE PATH
-            string destinationPath = @"C:\Projects\Catfish-2.0\Catfish\App_Data\uploads\attachments";
+            string destinationPath = @"C:\tmp\ig-profile-images-uploaded";
 
             IList<Item> Items = _db.Items.ToList();
 
