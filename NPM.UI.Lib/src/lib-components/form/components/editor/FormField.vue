@@ -47,7 +47,6 @@
                 isMonolingualField = true;
 
             const addMonoLingualField = (field: models.MonolingualTextField) => {
-                // store.commit(FlattenedFormFiledMutations.APPEND_MONOLINGUAL_VALUE, field);
                
                 formStore.appendMonolingualValue(field);
             }
