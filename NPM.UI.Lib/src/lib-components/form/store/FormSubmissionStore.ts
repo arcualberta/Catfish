@@ -129,10 +129,20 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         },
 
         removeMonolingualValue(target: models.MonolingualTextField, index: number) {
-
-
             target.values?.$values.splice(index, 1);
-
         },
+
+        appendMutilingualValue(target: models.MultilingualTextField) {
+            const languages = target.values?.$values[0] ? helpers.getLanguages(target.values?.$values[0]) : ["en"];
+            const newMultilingualValue = helpers.createMultilingualValueElment(languages);
+          
+            target.values?.$values.push(newMultilingualValue);
+        },
+
+        removeMutilingualValue(target: models.MultilingualTextField, index: number) {
+            
+            target.values?.$values.splice(index, 1);
+        },
+
     }
 });

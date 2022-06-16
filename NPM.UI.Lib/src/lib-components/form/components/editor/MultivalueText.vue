@@ -1,6 +1,6 @@
   <script lang="ts">
     import { defineComponent, PropType } from 'vue'
-   
+      
     import * as models from '../../models'
 	
     import SingleText from './SingleText.vue'
@@ -24,15 +24,17 @@
         },
         components: {
             SingleText
-        }
+        },
+       
+        
     });
 </script>
 
-<template>
-    <div v-for="val in model?.values?.$values" :key="val.id">
-      
-        <SingleText :model="val"  :isMultiline="isMultiline" />
-    </div>
+  <template>
+      <div v-for="val in model?.values?.$values" :key="val.id">
 
-</template>
+          <SingleText :model="val" :isMultiline="isMultiline" />
+      </div>
+     
+  </template>
 

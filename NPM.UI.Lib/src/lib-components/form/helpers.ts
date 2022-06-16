@@ -256,11 +256,13 @@ export function isAllowMultiple(field: models.AttachmentField): boolean {
 
 export function createTextElement(lang: string = "en", value: string = ""): models.Text {
     return {
-        id: Guid.create(),
-        $type: "Catfish.Core.Models.Contents.Text, Catfish.Core",
+        id: Guid.create().toString() as unknown as Guid,
+        $type: "Catfish.Core.Models.Contents.Text, Catfish.Core", //$type": "Catfish.Core.Models.Contents.Text, Catfish.Core",
         language: lang,
         created: new Date(),
-        value: value
+        value: value,
+        modelType: "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+
     } as models.Text;
 }
 
@@ -273,4 +275,8 @@ export function createMultilingualValueElment(lang: string[] = ["en"]): models.T
             $values: lang.map(x => createTextElement(x))
         }
     } as models.TextCollection
+}
+
+export function getLanguages(multilingualValue: models.TextCollection): string[] {
+    return multilingualValue.values.$values.map(text => text.language);
 }

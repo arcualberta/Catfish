@@ -46,21 +46,23 @@
             if (fieldType === eFieldType.EmailField || fieldType === eFieldType.DateField || fieldType === eFieldType.DecimalField || fieldType === eFieldType.IntegerField || fieldType === eFieldType.MonolingualTextField)
                 isMonolingualField = true;
 
-            const addMonoLingualField = (field: models.MonolingualTextField) => {
-               
-                formStore.appendMonolingualValue(field);
-            }
+            var isMultilingualTextField = false;
+            if (fieldType === eFieldType.TextArea || fieldType === eFieldType.TextField )
+                isMultilingualTextField = true;
+
+         
 
             const allowMultipleValues = p.model.allowMultipleValues;
-            //console.log(fieldType + " isMonolingualField: " + isMonolingualField);
-
+          
             return {
                 eFieldType,
                 helpers,
                 name: computed(() => helpers.getFieldName(p.model as models.Field)),
                 isMonolingualField,
                 allowMultipleValues,
-                addMonoLingualField
+              
+                formStore,
+                isMultilingualTextField
             }
         },
     });
@@ -71,7 +73,7 @@
         <InfoSection :model="model" />
     </div>
     <div v-else class="container">
-        
+
         <span v-if="model.required" class="fieldName required">{{name}}</span>
         <span v-else class="fieldName">{{name}}</span>
         <AttachmentField v-if="helpers.testFieldType(model, eFieldType.AttachmentField)" :model="model" />
@@ -83,11 +85,15 @@
         <DecimalField v-if="helpers.testFieldType(model, eFieldType.DecimalField)" :model="model" />
         <EmailField v-if="helpers.testFieldType(model, eFieldType.EmailField)" :model="model" />
         <IntegerField v-if="helpers.testFieldType(model, eFieldType.IntegerField)" :model="model" />
-        <span v-if="isMonolingualField === true && allowMultipleValues === true" class="fa fa-plus-circle" @click="addMonoLingualField(model)"> + </span>
+        
+        <span v-if="isMonolingualField === true && allowMultipleValues === true"  class="fa plus-circle" @click="formStore.appendMonolingualValue(model)"> + </span>
+
+
+        <span v-if="isMultilingualTextField" class="fa plus-circle" @click="formStore.appendMutilingualValue(model)"> + </span>
 
         <span v-if="model?.validationStatus === false" class="validation-error">{{model.validationError}}</span>
     </div>
-
+   
 </template>
 
 
