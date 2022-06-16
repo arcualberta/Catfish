@@ -1013,10 +1013,10 @@ Any public disclosures of information from the directory will be in aggregate fo
         {
 
             //PLEASE CHANGE THE PATH
-            string sourcePath = "C:\\Users\\mruaini\\Downloads\\DATA_Directory_Images_Resized-20220613T212538Z-001\\DATA_Directory_Images_Resized";
+            string sourcePath = @"C:\tmp\ig-profile-images";
 
             //PLEASE CHANGE THE PATH
-            string destinationPath = "C:\\ARCProjects\\Catfish\\Catfish2\\Catfish2-dev\\Catfish\\App_Data\\uploads\\attachments";
+            string destinationPath = @"C:\Projects\Catfish-2.0\Catfish\App_Data\uploads\attachments";
 
             IList<Item> Items = _db.Items.ToList();
 
@@ -1034,12 +1034,11 @@ Any public disclosures of information from the directory will be in aggregate fo
                         
                         var fileLength = new FileInfo(f).Length;
                         //copy file to 
-                        
-                        string imgFile = Guid.NewGuid() + "_" + originalFName;
-                       
 
-                      
                         FileReference fileRef = new FileReference();
+                        
+                        string imgFile = fileRef.Id + "_" + originalFName;
+                      
                         fileRef.OriginalFileName = originalFName;
                         fileRef.FileName = imgFile;
                         
@@ -1054,14 +1053,10 @@ Any public disclosures of information from the directory will be in aggregate fo
                         _db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 
                         System.IO.File.Copy(Path.Combine(sourcePath, originalFName), Path.Combine(destinationPath, imgFile), true);
-                        break;
-
                     }
-
                 }
             }
             _db.SaveChanges();
-            Assert.NotNull(true);
         }
 
 
