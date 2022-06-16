@@ -30,7 +30,7 @@
 
 <template>
     <div v-for="val in model?.values?.$values" :key="val">
-        <SingleText :model="val" :is-multiline="false"  field="date" />
+        <SingleText :model="val" :is-multiline="false"  field="date" :fieldModel="model" />
     </div>
 
 

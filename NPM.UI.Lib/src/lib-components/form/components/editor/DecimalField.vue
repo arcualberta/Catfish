@@ -34,6 +34,6 @@
 
 <template>
     <div v-for="val in model?.values?.$values" :key="val">
-        <SingleText :model="val" :is-multiline="false"  field="decimal" />
+        <SingleText :model="val" :is-multiline="false"  field="decimal" :fieldModel="model" />
     </div>
 </template>

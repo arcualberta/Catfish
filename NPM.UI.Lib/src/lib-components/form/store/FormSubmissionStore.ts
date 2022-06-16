@@ -119,6 +119,20 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
 
                 
             }
-        }
+        },
+
+        appendMonolingualValue(target: models.MonolingualTextField) {
+
+            const newText = helpers.createTextElement();
+            target.values?.$values.push(newText);
+            
+        },
+
+        removeMonolingualValue(target: models.MonolingualTextField, index: number) {
+
+
+            target.values?.$values.splice(index, 1);
+
+        },
     }
 });

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { defineComponent, PropType, computed } from "vue";
+    import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
 
     import * as models from '../../models'
     import * as helpers from '../../helpers'
@@ -38,10 +39,28 @@
         },
         setup(p) {
 
+            const formStore = useFormSubmissionStore();
+
+            const fieldType: eFieldType = helpers.getFieldType(p.model);
+            var isMonolingualField = false;
+            if (fieldType === eFieldType.EmailField || fieldType === eFieldType.DateField || fieldType === eFieldType.DecimalField || fieldType === eFieldType.IntegerField || fieldType === eFieldType.MonolingualTextField)
+                isMonolingualField = true;
+
+            const addMonoLingualField = (field: models.MonolingualTextField) => {
+               
+                formStore.appendMonolingualValue(field);
+            }
+
+            const allowMultipleValues = p.model.allowMultipleValues;
+            //console.log(fieldType + " isMonolingualField: " + isMonolingualField);
+
             return {
                 eFieldType,
                 helpers,
                 name: computed(() => helpers.getFieldName(p.model as models.Field)),
+                isMonolingualField,
+                allowMultipleValues,
+                addMonoLingualField
             }
         },
     });
@@ -64,7 +83,8 @@
         <DecimalField v-if="helpers.testFieldType(model, eFieldType.DecimalField)" :model="model" />
         <EmailField v-if="helpers.testFieldType(model, eFieldType.EmailField)" :model="model" />
         <IntegerField v-if="helpers.testFieldType(model, eFieldType.IntegerField)" :model="model" />
-        
+        <span v-if="isMonolingualField === true && allowMultipleValues === true" class="fa fa-plus-circle" @click="addMonoLingualField(model)"> + </span>
+
         <span v-if="model?.validationStatus === false" class="validation-error">{{model.validationError}}</span>
     </div>
 

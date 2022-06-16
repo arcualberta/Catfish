@@ -123,7 +123,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 .AppendContent("div", @"Fields identified by <span style='color: Red;'>*</span> are mandatory", lang, "alert alert-warning");
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", @"Section 1: Contact Information", lang, "alert alert-info");
-            var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true);
+            var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true,true);
             applicantEmail.IsListEntryTitle = true;
             applicantEmail.Id = EMAIL_ID;
 

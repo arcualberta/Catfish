@@ -32,7 +32,7 @@
 <template>
     <template>
         <div v-for="val in model?.values?.$values" :key="val.id">
-            <SingleText :model="val" :is-multiline="false"  field="number" />
+            <SingleText :model="val" :is-multiline="false"  field="number" :fieldModel="model" />
         </div>
     </template>
 </template>

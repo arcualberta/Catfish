@@ -9,6 +9,7 @@ export interface State extends FlattenedFormFiledState {
     id: Guid | null;
     item: Item | null;
     permissionList: UserPermission[] | null;
+    siteUrl: string | null;
 }
 
 export const state: State = {
@@ -16,6 +17,7 @@ export const state: State = {
     id: null,
     item: null,
     permissionList: null,
+    siteUrl: null
 }
 
 export interface UserPermission{

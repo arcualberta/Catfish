@@ -15,7 +15,7 @@ export const actions: ActionTree<State, any> = {
 
     [Actions.LOAD_ITEM](store) {
 
-        const api = window.location.origin +
+        const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
             `/applets/api/items/${store.state.id}`;
         console.log('Item Load API: ', api)
 
@@ -26,8 +26,8 @@ export const actions: ActionTree<State, any> = {
             });
     },
     [Actions.GET_USER_ACTIONS](store) {
-
-        const api = window.location.origin +
+        console.log("insude GET_USER_ACTIONS");
+        const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
             `/applets/api/items/getUserPermissions/${store.state.id}`;
         console.log('Permission Load API: ', api)
 
@@ -40,7 +40,7 @@ export const actions: ActionTree<State, any> = {
     },
     [Actions.SAVE](store) {
 
-        const api = window.location.origin +
+        const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
             `/applets/api/items/update/`;
         console.log('Item Update API: ', api)
 
