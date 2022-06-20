@@ -77,6 +77,7 @@
                 isEditable,
                 isModified: computed(() => (store.state as State).modified),
                 save: () => store.dispatch(Actions.SAVE),
+                //delete: () => store.dispatch(Actions.DELETE),
             }
         },
         storeConfig: {
@@ -93,6 +94,7 @@
 <template>
     <div class="controls">
         <button v-if="isModified" @click="save()" class="btn btn-success">Save</button>
+        <!--<button v-if="hasEditPermission()" @click="delete()" class="btn btn-danger">Delete</button>-->
         <button v-if="hasEditPermission()" @click="editMode = !editMode" class="btn btn-primary"><span v-if="editMode">View</span><span v-else>Edit</span></button>
     </div>
     <div v-for="ms in dataItem?.metadataSets?.$values">
