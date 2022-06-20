@@ -2,11 +2,12 @@
     import { defineComponent, PropType } from "vue";
     import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
     import * as models from '../../models'
-    import SingleText from './SingleText.vue'
+    import TextInput from './TextInput.vue'
+
     export default defineComponent({
         name: "EmailField",
         components:{
-            SingleText
+            TextInput
         },
         props: {
             model: {
@@ -28,7 +29,7 @@
 
 <template>
     <div v-for="val in model?.values?.$values" :key="val.id" class="monoLingualField">
-        <SingleText :model="val" field-type="email" :field-model="model" />
+        <TextInput :model="val" field-type="email" :field-model="model" />
         <span v-if="model?.values?.$values?.length > 1" class="fa remove-circle" @click="formStore.removeMonolingualValue(model, val.id)"> x </span>
     </div>
 </template>
