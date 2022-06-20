@@ -326,6 +326,9 @@
                 <option value="Directory">Directory</option>
 
          </select></div>
+<div class='lead row'><label class='form-label col-md-3'>Info Pop-up Content: </label>
+               <textarea  v-model="model.infoContent.value" cols="30" rows="5" contenteditable='true' class="form-control col-md-9" ></textarea>
+            </div>
         <div  class='lead'>
                <label >List of hex color codes for 'Dictionary' layout, separated by a comma,including the # key at the beginning, (i.e: #00b19d, #5175a5, ...): </label>
                <input type="text"  v-model="model.hexColorList.value" class="form-control">

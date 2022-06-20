@@ -15,6 +15,7 @@ export interface State extends ItemViewerState {
     blockId: Guid | null;
     freeSearchText: string | null;
     activePage: ePage;
+    popupVisibility: boolean;
 }
 
 export const state: State = {
@@ -26,5 +27,6 @@ export const state: State = {
     blockId: null,
     freeSearchText: null,
     activePage: ePage.Home,
+    popupVisibility: false,
     ...itemViewerState
 }

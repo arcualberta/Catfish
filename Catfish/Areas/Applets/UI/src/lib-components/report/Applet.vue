@@ -24,26 +24,28 @@
 			//const queryParameters = p.queryParameters as QueryParameter;
 			const dataAttributes = p.dataAttributes as DataAttribute;
 
+			const siteUrl = dataAttributes["site-url"] as string;
+			store.commit(Mutations.SET_SITE_URL, siteUrl)
 
 			const itemTemplateId = Guid.parse(dataAttributes["template-id"] as string);
 			store.commit(Mutations.SET_TEMPLATE_ID, itemTemplateId)
-			store.state.itemTemplateId = itemTemplateId;
+			//store.state.itemTemplateId = itemTemplateId;
 
 			const collectionId = Guid.parse(dataAttributes["collection-id"] as string);
             store.commit(Mutations.SET_COLLECTION_ID, collectionId)
-			store.state.collectionId = collectionId;
+			//store.state.collectionId = collectionId;
 
             const groupId = Guid.parse(dataAttributes["group-id"] as string);
             store.commit(Mutations.SET_GROUP_ID, groupId)
-            store.state.groupId = groupId;
+            //store.state.groupId = groupId;
 
 			const selectedFields = JSON.parse(dataAttributes["selected-fields"] as string);
             store.commit(Mutations.SET_REPORT_FIELDS, selectedFields)
-			store.state.reportFields = selectedFields;
+			//store.state.reportFields = selectedFields;
 
 			const templateStatus = JSON.parse(dataAttributes["status"] as string) as SystemStatus[];
             store.commit(Mutations.SET_STATUS, templateStatus)
-            store.state.templateStatus = templateStatus;
+            //store.state.templateStatus = templateStatus;
 			
             const queryParams = p.queryParameters as QueryParameter;
             store.commit(Mutations.SET_ID, queryParams.iid);
@@ -59,20 +61,44 @@
 
             const fromDate = ref(null);
             const toDate = ref(null);
-            const selectedStatus = ref(null);
+			const selectedStatus = ref(null);
+			const freeText = ref(null);
 
+			const offset = computed({
+				get: () => store.state.offset, 
+				set: val => store.commit(Mutations.SET_OFFSET, val)
+			});
+
+            const pageSize = computed({
+				get: () => store.state.pageSize,
+				set: val => store.commit(Mutations.SET_PAGE_SISE, val)
+            });
+
+			const loadData = () => store.dispatch(Actions.LOAD_DATA, { startDate: fromDate.value, endDate: toDate.value, freeText: freeText.value, status: selectedStatus.value } as SearchParams);
+			 
 
 			return {
 				store,
 				selectedFields,
-                reportRows: computed(() => store.state.reportData),
-                loadData: () => store.dispatch(Actions.LOAD_DATA, { startDate: fromDate.value, endDate: toDate.value, status: selectedStatus.value } as SearchParams),
+				report: computed(() => store.state.reportData),
+				loadData, 
 				queryParams,
                 templateStatus,
 				detailedViewURL: (id: Guid) => { const url = detailedViewUrlPath + id; return url; },
 				fromDate,
 				toDate,
-                selectedStatus
+                freeText,
+				selectedStatus,
+				offset,
+				pageSize,
+				previousPage: () => {
+                    offset.value = offset.value < pageSize.value ? 0 : offset.value - pageSize.value;
+					loadData();
+				},
+				nextPage: () => {
+                    offset.value = offset.value + pageSize.value;
+					loadData();
+				}
 			}
 		},
 		storeConfig: {
@@ -106,15 +132,24 @@
 			<label class="form-label">Status:</label>
 			<select v-model="selectedStatus" class="form-control" style="width:auto;">
 				<option disabled value="">Please select one</option>
-				<option  value=""></option>
+				<option value=""></option>
 				<option v-for="status in templateStatus" :value="status.id">{{status.status}}</option>
 			</select>
 		</div>
 		<div class="col-md-6 form-group">
-			<button class="btn btn-primary" @click="loadData()">Execute</button>
+			<label class="form-label">Search text:</label>
+			<input type="text" name="freeText" id="freeText" v-model="freeText" class="form-control" />
+		</div>		
+		<div class="col-md-6 form-group">
+			<button class="btn btn-primary" @click="offset = 0; loadData()">Execute</button>
 		</div>
-			<!--<button onclick="filterItems('@entityTemplateId', '@collectionId', $('#startDate').val(), $('#endDate').val(), 'itemListBlockTable',@reportTemplateId);" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Execute">Go<i class="fa fa-arrow-right" style="padding-left:5px;"></i></button>-->
-		</div>
+		<!--<button onclick="filterItems('@entityTemplateId', '@collectionId', $('#startDate').val(), $('#endDate').val(), 'itemListBlockTable',@reportTemplateId);" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Execute">Go<i class="fa fa-arrow-right" style="padding-left:5px;"></i></button>-->
+	</div>
+	<div v-if="report?.rows" style="text-align:center;">
+		<button v-if="offset > 0" @click="previousPage" class="m-2">Previous</button>
+		{{offset+1}} to {{offset + report?.rows?.length}} of {{report?.total}}
+		<button v-if="offset + report.rows.length < report.total" @click="nextPage" class="m-2">Next</button>
+	</div>
 		<table class="table">
 			<thead>
 				<tr>
@@ -125,36 +160,30 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="reportRow in reportRows">
+				<tr v-for="reportRow in report?.rows">
 					<td>
 						<a :href="detailedViewURL(reportRow.itemId)" class="fa fa-eye" target="_blank"></a>
 					</td>
 					<td v-for="cell in reportRow.cells">
 						<div v-for="cellValue in cell.values">
-							<div v-if="cellValue.renderType === 'MultilingualText'">
+							<div v-if="cellValue.renderType === 'Text'">
 								<div v-for="txt in cellValue.values">
-									{{txt.value}}
+									{{txt}}
 								</div>
 							</div>
 							<ul v-if="cellValue.renderType === 'Options'">
 								<li v-for="txt in cellValue.values">
-									{{txt.value}}
+									{{txt}}
 								</li>
 							</ul>
-							<div v-if="cellValue.renderType === 'MonolingualText'">
-								<div v-for="txt in cellValue.values">
-									<!--<div v-if="txt"></div>-->
-									{{txt.value}}
-								</div>
-							</div>
 							<div v-if="cellValue.renderType === 'Attachment'">
 								<div v-for="txt in cellValue.values">
-									{{txt.value}}
+									File: {{txt}}
 								</div>
 							</div>
 							<div v-if="cellValue.renderType === 'Audio'">
 								<div v-for="txt in cellValue.values">
-									{{txt.value}}
+									Audio: {{txt}}
 								</div>
 							</div>
 						</div>

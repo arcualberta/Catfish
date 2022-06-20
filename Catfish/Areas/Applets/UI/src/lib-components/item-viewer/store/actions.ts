@@ -13,7 +13,7 @@ export const actions: ActionTree<State, any> = {
 
   [Actions.LOAD_ITEM](store) {
  
-        const api = window.location.origin +
+        const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
             `/applets/api/items/${store.state.id}`;
         console.log('Item Load API: ', api)
 
@@ -28,7 +28,7 @@ export const actions: ActionTree<State, any> = {
 
         console.log(JSON.stringify(store.state));
 
-        const api = window.location.origin +
+        const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
             `/applets/api/items/deleteItem/${payload}`;
         console.log('Item Load API: ', api)
 

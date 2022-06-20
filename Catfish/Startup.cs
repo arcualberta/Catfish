@@ -91,6 +91,7 @@ namespace Catfish
             {
                 options.ValueCountLimit = int.MaxValue; //MR July 14 2021 -- to increase the form count limit -- default=1024
             });
+
             //-- add MVC service
             services.AddMvc()
                 .AddRazorOptions(options => options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml"));
@@ -253,6 +254,18 @@ namespace Catfish
                 options.CheckPermissionAction = context => context.User.IsInRole("SysAdmin");
             });
 
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CatfishApiPolicy",
+                                builder =>
+                                {
+                                    builder.AllowAnyOrigin()
+                                           .AllowAnyHeader()
+                                           .AllowAnyMethod();
+                                });
+            });
+
             //MR - April 13 2022 -- initialize IConfiguration object in static ConfigHelper class
             ConfigHelper.Initialize(Configuration);
         }
@@ -328,6 +341,8 @@ namespace Catfish
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseCors();
 
             // app.UseIntegratedPiranha();
             app.UseAuthentication();

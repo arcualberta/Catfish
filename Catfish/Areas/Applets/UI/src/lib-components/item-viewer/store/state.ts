@@ -5,11 +5,12 @@ export interface State {
   
     id: Guid | null;
     item: Item | null;
-  
+    siteUrl: string | null;
 }
 
 export const state: State = {
   
     id: null,
-    item: null
+    item: null,
+    siteUrl: null
 }

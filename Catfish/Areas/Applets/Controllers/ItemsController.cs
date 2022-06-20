@@ -8,10 +8,12 @@ using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Core.Models.Permissions;
 using Catfish.Core.Services;
 using Catfish.Services;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -29,6 +31,7 @@ namespace Catfish.Areas.Applets.Controllers
 {
     [Route("applets/api/[controller]")]
     [ApiController]
+    [EnableCors("CatfishApiPolicy")]
     public class ItemsController : ControllerBase
     {
         private readonly IItemAppletService _itemAppletService;
@@ -119,12 +122,13 @@ namespace Catfish.Areas.Applets.Controllers
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
 
             try
             {
                 //Guid collectionId = Guid.Parse("9ed65277-6a9e-4a96-c86a-e6825889234a"); ;
                 //Guid groupId = Guid.Parse("2BD48E47-3DD7-4DA0-9F07-BEB72EE3542D");
+         
+                DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
 
                 Guid stateMappingId = _workflowService.GetSubmitStateMappingId(itemTemplateId);//Guid.Parse("57a5509e-6aa2-463c-9cb6-b18178450aca");
                 string actionButton = "Submit";
@@ -146,7 +150,36 @@ namespace Catfish.Areas.Applets.Controllers
 
                 return Content("{}", "application/json");
             }
-            return Content(JsonConvert.SerializeObject("Sucess", settings), "application/json");
+            return Content(JsonConvert.SerializeObject("Success", settings), "application/json");
+        }
+
+        [HttpPost("update")]
+        public async Task<ContentResult> UpdateAsync([FromForm] String item, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
+        {
+            var settings = new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            Item itemInstance = JsonConvert.DeserializeObject<Item>(item, settings);
+            if ((await _authorizationService.AuthorizeAsync(User, itemInstance, new List<IAuthorizationRequirement>() { TemplateOperations.Update })).Succeeded)
+            {
+                try
+                {
+                    Guid stateMappingId = _workflowService.GetSubmitStateMappingId(itemInstance.TemplateId.Value);
+                    Item updatedInstance = _submissionService.UpdateItem(itemInstance, files, fileKeys);
+                    _appDb.SaveChanges();
+                    return Content(JsonConvert.SerializeObject(updatedInstance, settings), "application/json");
+                }
+                catch (Exception ex)
+                {
+                    return Content(JsonConvert.SerializeObject("Uppdate failed", settings), "application/json");
+                }
+            }
+            else
+                return Content(JsonConvert.SerializeObject("Authorization failed", settings), "text/plain");
         }
 
         [HttpGet("getChildForm/{instanceId}/{childFormId}")]
@@ -159,8 +192,7 @@ namespace Catfish.Areas.Applets.Controllers
             //submitting child forms. For the time being, we limit it to the users who have permission to Read the
             //main submission. This is only a quick shortcut we created to help TBLT site.
             //bool authorizedToSubmitChildForm = _itemAuthorizationHelper.AuthorizebyRole(item, User, "Read");
-            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
-.Succeeded)
+            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
             {
                 DataItem childForm = item.Template.DataContainer.FirstOrDefault(cf => cf.Id == childFormId);
 
@@ -312,7 +344,7 @@ namespace Catfish.Areas.Applets.Controllers
         }
 
         [HttpPost("GetReportData/{groupId}/template/{templateId}/collection/{collectionID}")]
-        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] String datamodel, DateTime? startDate, DateTime? endDate, Guid? status)
+        public ContentResult GetReportData(Guid groupId, Guid templateId, Guid collectionID, [FromForm] string datamodel, [FromForm] string freeText, DateTime? startDate, DateTime? endDate, Guid? status, [FromForm] int? offset, [FromForm] int? pagesize)
         {
             try
             {
@@ -325,7 +357,7 @@ namespace Catfish.Areas.Applets.Controllers
 
                 var fields = JsonConvert.DeserializeObject<ReportDataFields[]>(datamodel, deserializationSettings);
 
-                List<ReportRow> rows = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields, startDate, endDate, status);
+                Report report = _submissionService.GetSubmissionList(groupId, templateId, collectionID, fields, freeText, startDate, endDate, status, offset, pagesize);
 
                 var serializationSettings = new JsonSerializerSettings()
                 {
@@ -334,7 +366,7 @@ namespace Catfish.Areas.Applets.Controllers
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
 
-                return Content(JsonConvert.SerializeObject(rows, serializationSettings), "application/json");
+                return Content(JsonConvert.SerializeObject(report, serializationSettings), "application/json");
             }
             catch (Exception ex)
             {
@@ -390,18 +422,25 @@ namespace Catfish.Areas.Applets.Controllers
             return items;//result;
         }
         [HttpGet("getUserPermissions/{itemId}")]
-        public List<string> GetUserPermissions(Guid itemId)
+        public ContentResult GetUserPermissions(Guid itemId)
         {
             try
             {
-                List<string> userPermissions = _itemAppletService.GetUserPermissions(itemId, User);
+                List<UserPermissions> userPermissions = _itemAppletService.GetUserPermissions(itemId, User);
 
-                return null;
+                var serializationSettings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.None,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
+                return Content(JsonConvert.SerializeObject(userPermissions, serializationSettings), "application/json");
             }
             catch (Exception)
             {
 
-                return null;
+                return Content("{}", "application/json");
             }
 
             

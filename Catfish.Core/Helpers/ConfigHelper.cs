@@ -33,7 +33,7 @@ namespace Catfish.Core.Helpers
             get
             {
                 string val = Configuration.GetSection("SiteConfig:SiteUrl").Value;
-                return string.IsNullOrEmpty(val) ? null : val.TrimEnd('/');
+                return string.IsNullOrEmpty(val) ? "" : val.TrimEnd('/');
             }
         }
 

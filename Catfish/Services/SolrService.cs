@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -178,8 +179,26 @@ namespace Catfish.Services
         {
             try
             {
+                string qUrl = _solrCoreUrl + "/select?hl=on";
+                var parameters = new Dictionary<string, string>();
+                parameters["q"] = query;
+                parameters["start"] = start.ToString();
+                parameters["rows"] = max.ToString();
+                parameters["hl.fl"] = "*";
+                parameters["hl.snippets"] = maxHiglightSnippets.ToString();
+                parameters["wt"] = "xml";
+
+                var httpClient = new HttpClient();
+                var postResponse = await httpClient.PostAsync(new Uri(qUrl), new FormUrlEncodedContent(parameters));
+                postResponse.EnsureSuccessStatusCode();
+                var postContents = await postResponse.Content.ReadAsStringAsync();
+
+                _result = new SearchResult(postContents, _errorLog);
+                _result.ItemsPerPage = max;
+
+                /*
                 string queryUri = _solrCoreUrl + "/select?hl=on&q=" + query +
-                    string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
+                  string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
 
                 //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
                 using var client = new HttpClient();
@@ -190,6 +209,7 @@ namespace Catfish.Services
                 string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 _result = new SearchResult(response, _errorLog);
                 _result.ItemsPerPage = max;
+                */
             }
             catch(Exception ex)
             {

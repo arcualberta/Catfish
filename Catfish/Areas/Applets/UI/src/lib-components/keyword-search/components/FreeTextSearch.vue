@@ -26,7 +26,7 @@
             return {
                store,  
                 freeTextSearch: computed(() => store.state.freeSearchText),
-              
+                results: computed(() => store.state.searchResult),
             };
         },
         storeConfig: {
@@ -44,8 +44,9 @@
             },
 
             executeSearch: function () {
-                console.log("executing search ....");
-                this.store.dispatch(Actions.SEARCH_FREE_TEXT);
+                //console.log("executing search ....");
+               
+                this.store.dispatch(Actions.FILTER_BY_KEYWORDS);
             }
         }
        
@@ -60,6 +61,6 @@
             <button type="button" class="btn btn-outline-primary" @click="executeSearch">search</button> 
           
     </div>
-       
+       <!--<div>{{results}}</div>-->
 </template>
 

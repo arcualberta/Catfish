@@ -9,7 +9,8 @@ import { mutations as formSubmissionMutations } from '../../shared/store/flatten
 export enum Mutations {
     SET_ID = 'SET_ID',
     SET_USER_PERMISSIONS ='SET_USER_PERMISSIONS',
-    SET_ITEM = 'SET_ITEM'
+    SET_ITEM = 'SET_ITEM',
+    SET_SITE_URL = 'SET_SITE_URL'
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -28,7 +29,10 @@ export const mutations: MutationTree<State> = {
 
         //Iterating through each entry in the data container and the metadata sets 
         //and adding them to the flattened field lists
-        payload.dataContainer?.$values.forEach(fieldContainer => { flattenFieldInputs(fieldContainer, state); });
-        payload.metadataSets?.$values.forEach(fieldContainer => { flattenFieldInputs(fieldContainer, state); });
+        payload?.dataContainer?.$values?.forEach(fieldContainer => { flattenFieldInputs(fieldContainer, state); });
+        payload?.metadataSets?.$values?.forEach(fieldContainer => { flattenFieldInputs(fieldContainer, state); });
     },
+    [Mutations.SET_SITE_URL](state: State, payload: string) {
+        state.siteUrl = payload;
+    }
 }

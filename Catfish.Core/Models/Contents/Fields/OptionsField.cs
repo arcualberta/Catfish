@@ -11,7 +11,7 @@ namespace Catfish.Core.Models.Contents.Fields
         public static readonly string OptionContainerTag = "options";
         public static readonly string OptionTag = "option";
 
-        public Guid[] SelectedOptionGuids { get; set; }
+        public Guid[] SelectedOptionGuids => Options.Where(opt => opt.Selected).Select(opt => opt.Id).ToArray();
         public OptionsField() { }
         public OptionsField(XElement data) : base(data) { }
         public OptionsField(string name, string desc, string lang = null) : base(name, desc, lang) { }

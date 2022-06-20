@@ -36,7 +36,8 @@ namespace Catfish.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
         private readonly ItemService _itemService;
-        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService, ItemService itemService)
+        private readonly ISolrService _solr;
+        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService, ItemService itemService, ISolrService solr)
         {
             _authorizationService = auth;
             _emailService = email;
@@ -48,6 +49,7 @@ namespace Catfish.Services
             _serviceProvider = serviceProvider;
             _dotnetAuthorizationService = dotnetAuthorizationService;
             _itemService = itemService;
+            _solr = solr;
         }
 
         ///// <summary>
@@ -143,13 +145,92 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public List<ReportRow> GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, DateTime? startDate, DateTime? endDate, Guid? status)
+        public Report GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, string freeText, DateTime? startDate, DateTime? endDate, Guid? status, int? offset, int? pagesize)
         {
-            List<ReportRow> reportRows = new List<ReportRow>();
-
+            Report report = new Report();
             DateTime from = startDate == null ? DateTime.MinValue : startDate.Value;
             DateTime to = endDate == null ? DateTime.Now : endDate.Value.AddDays(1);
             Guid state = status == null ? Guid.Empty : status.Value;
+            IQueryable<Item> dbQuery = state == Guid.Empty
+                ? _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to))
+                : _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to) && i.StatusId == state);
+
+            List<Guid> itemIds = dbQuery.Select(i => i.Id).ToList();
+
+            string query = string.Join(" OR ", itemIds.Select(id => string.Format("id:{0}", id)));
+
+            if (!string.IsNullOrEmpty(freeText))
+            {
+                var textConstraints = reportFields.Select(rf => string.Format("data_{0}_{1}_ts:\"{2}\"", rf.FormTemplateId, rf.FieldId, freeText));
+                if (textConstraints.Any())
+                    query = string.Format("({0}) AND ({1})", query, string.Join(" OR ", textConstraints));
+            }
+
+            int start = offset.HasValue ? offset.Value : 0;
+            int max = pagesize.HasValue ? pagesize.Value : int.MaxValue;
+            var solrSearchResult = _solr.ExecuteSearch(query, start, max, 0);
+            report.Total = solrSearchResult.TotalMatches;
+
+            List<ItemTemplate> templates = new List<ItemTemplate>();
+
+            foreach (var item in solrSearchResult.ResultEntries)
+            {
+                ReportRow row = new ReportRow();
+                row.ItemId = item.Id;
+                row.Created = item.Created.ToString("dd/MM/yyyy");
+                row.Status = GetStatus(item.StatusId).Status;
+                report.Rows.Add(row);
+
+                ItemTemplate template = templates.FirstOrDefault(t => t.Id == item.TemplateId);
+                if(template == null)
+                {
+                    template = _db.ItemTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+                    if (template == null)
+                        throw new Exception(string.Format("Template with ID {0} not found", item.TemplateId));
+                    templates.Add(template);
+                }
+
+                foreach (var reportField in reportFields)
+                {
+                    ReportCell reportCell = new ReportCell()
+                    {
+                        FormTemplateId = reportField.FormTemplateId,
+                        FieldId = reportField.FieldId
+                    };
+
+                    row.Cells.Add(reportCell);
+
+                    var field = item.Fields.FirstOrDefault(f => f.ContainerId == reportField.FormTemplateId && f.FieldId == reportField.FieldId);
+                    if (field != null)
+                    {
+                        ReportCellValue cellValue = new ReportCellValue() 
+                        {
+                            //We don't know the ID of the form instance since we don't index it in Solr.
+                            FormInstanceId = Guid.Empty
+                        };
+                       
+                        cellValue.Values.AddRange(field.FieldContent);
+                        reportCell.Values.Add(cellValue);
+
+                        var srcField = template.DataContainer
+                            .FirstOrDefault(form => form.Id == reportField.FormTemplateId)
+                            .Fields.FirstOrDefault(field => field.Id == reportField.FieldId);
+
+                        if (srcField is OptionsField)
+                            cellValue.RenderType = "Options";
+                        else if (srcField is AttachmentField)
+                            cellValue.RenderType = "Attachment";
+                        else if (srcField is AudioRecorderField)
+                            cellValue.RenderType = "Audio";
+                        else
+                            cellValue.RenderType = "Text";
+                    }
+
+                }
+            }
+            return report;
+
+            /*
             List<Item> items=new List<Item>();
             if (state == Guid.Empty)
                 items = _db.Items.Where(i => i.GroupId == groupId && i.TemplateId == templateId && i.PrimaryCollectionId == collectionId && (i.Created >= from && i.Created < to)).Include(i => i.Status).ToList();
@@ -200,6 +281,7 @@ namespace Catfish.Services
 				}
             }
             return reportRows;
+            */
         }
 
         /// <summary>
@@ -696,6 +778,33 @@ namespace Catfish.Services
             return collections;
         }
 
+
+        public Item UpdateItem(Item src, List<IFormFile> files, List<string> fileKeys)
+        {
+            Item dbItem = _db.Items.FirstOrDefault(x => x.Id == src.Id);
+            if (dbItem == null)
+                throw new Exception("Item not found");
+
+            foreach(var dbFieldContainer in dbItem.DataContainer)
+            {
+                var srcFieldContainer = src.DataContainer.FirstOrDefault(dc => dc.Id == dbFieldContainer.Id);
+                dbFieldContainer.UpdateFieldValues(srcFieldContainer);
+                dbItem.UpdateReferencedFieldContainers(srcFieldContainer);
+
+                //TODO: Update File Attachments
+            }
+
+            foreach (var dbFieldContainer in dbItem.MetadataSets)
+            {
+                var srcFieldContainer = src.MetadataSets.FirstOrDefault(dc => dc.Id == dbFieldContainer.Id);
+                dbFieldContainer.UpdateFieldValues(srcFieldContainer);
+                dbItem.UpdateReferencedFieldContainers(srcFieldContainer);
+
+                //TODO: Update File Attachments
+            }
+
+            return dbItem;
+        }
         
     }
 }

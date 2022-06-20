@@ -18,6 +18,7 @@ export enum Mutations {
     CLEAR_KEYWORD_SELECTIONS = 'CLEAR_KEYWORD_SELECTIONS',
     SELECT_KEYWORD = 'SELECT_KEYWORD',
     CLEAR_KEYWORD = 'CLEAR_KEYWORD',
+    SET_POPUP_VISIBILITY = 'SET_POPUP_VISIBILITY',
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -69,5 +70,8 @@ export const mutations: MutationTree<State> = {
     },
     [Mutations.CLEAR_KEYWORD_SELECTIONS](state: State) {
         state.keywordQueryModel?.containers.forEach(cont => cont.fields.forEach(field => field.selected = new Array(field.values.length).fill(false)))
+    },
+    [Mutations.SET_POPUP_VISIBILITY](state: State, visibility: boolean) {
+        state.popupVisibility = visibility;
     },
 }

@@ -51,7 +51,7 @@ export const actions: ActionTree<State, any> = {
         }
 
         const api = window.location.origin + `/applets/api/keywordsearch/items/`;
-        console.log("Item Load API: ", api)
+       // console.log("Item Load API: ", api)
 
         const formData = new FormData();
         if (store.state.pageId)
@@ -63,8 +63,10 @@ export const actions: ActionTree<State, any> = {
         formData.append("max", store.state.max.toString());
         formData.append("queryParams", JSON.stringify(store.state.keywordQueryModel));
 
-        //console.log("Form Data: ", formData)
-
+        //MR April 27 2022, add freetextsearch
+        let freeText = store.state.freeSearchText ? store.state.freeSearchText : "";
+        formData.append("searchText", freeText);
+       
         fetch(api, {
             method: 'POST', // or 'PUT'
             body: formData
@@ -105,18 +107,6 @@ export const actions: ActionTree<State, any> = {
         // console.log("set serch text: " + text);
         store.commit(Mutations.SET_FREE_TEXT_SEARCH, text);
     },
-    [Actions.SEARCH_FREE_TEXT](store) {
-        console.log("executing search for: " + store.state.freeSearchText?.toString());
-        const api = window.location.origin +
-            `/api/solr/executefreetext/${store.state.freeSearchText?.toString()}`
-
-        fetch(api)
-            .then(response => response.json())
-            .then(data => {
-                console.log("results:")
-                console.log(data)
-
-            });
-    },
+  
 }
 

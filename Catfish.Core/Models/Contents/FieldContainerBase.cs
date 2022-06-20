@@ -150,7 +150,10 @@ namespace Catfish.Core.Models.Contents
             T field = GetField<T>(fieldName, fieldNameLang, createIfNotExists);
             int valueIndex = startValueIndex;
             foreach (string val in fieldValues)
+            {
                 field.SetValue(val, fieldValueLang, valueIndex);
+                valueIndex++;
+            }
         }
 
         public string GetValue<T>(string fieldName, string fieldNameLanguage, string fieldValueLanguage)
