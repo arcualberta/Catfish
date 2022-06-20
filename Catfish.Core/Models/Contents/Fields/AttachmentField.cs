@@ -44,36 +44,16 @@ namespace Catfish.Core.Models.Contents.Fields
         {
             AttachmentField src = srcField as AttachmentField;
 
-            //Removing existing file references
-            Files.Clear();
-
-            //Inserting the new file references
-            foreach (var file in src.Files)
+            //Removing file references in the destination that are not in the source
+            List<FileReference> toBeRemoved = new List<FileReference>();
+            foreach (var fileRef in Files)
             {
-                Files.Add(new FileReference(new XElement(file.Data)));
-
-                //If the file is in the temporary folder, move it to the attachment-files folder
-                string tmpFile = Path.Combine(ConfigHelper.GetUploadTempFolder(false), file.FileName);
-                if (File.Exists(tmpFile))
-                {
-                    string finalFile = Path.Combine(ConfigHelper.GetAttachmentsFolder(true), file.FileName);
-                    File.Move(tmpFile, finalFile);
-                }
-                else
-                {
-                    ////string newGuid = Guid.NewGuid().ToString();
-
-                    ////string fileN = newGuid + "_" + file.FileName;
-
-                    ////string path = Path.Combine(ConfigHelper.GetAttachmentsFolder(true), fileN);
-
-                    ////using (var stream = new FileStream(path, FileMode.Create))
-                    ////{
-                    ////    (file.File as IFormFile).CopyTo(stream);
-
-                    ////}
-                }
+                var match = src.Files.Find(fileRef.Id);
+                if (match == null)
+                    toBeRemoved.Add(match);
             }
+            foreach (var fileRef in toBeRemoved)
+                Files.Remove(fileRef);
         }
 
         /// <summary>
