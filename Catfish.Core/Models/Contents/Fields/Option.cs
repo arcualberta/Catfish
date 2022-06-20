@@ -9,6 +9,7 @@ namespace Catfish.Core.Models.Contents.Fields
     public class Option : XmlModel
     {
         public const string FieldTagName = "option";
+        public const string ExtendedOptionListTagName = "extended-options";
 
         public MultilingualName OptionText { get; set; }
         public Guid Id
@@ -28,10 +29,18 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("extended", value);
         }
 
-        public string ExtendedValue
+        public List<string> ExtendedValues 
         {
-            get => GetAttribute("extended-value", null as string);
-            set => SetAttribute("extended-value", value);
+            get => new List<string>(GetAttribute("extended-values", new string[0]));
+            //{
+            //    var x = new List<string>();
+            //    x.AddRange(GetAttribute("extended-values", new string[0]));
+
+            //    x.Add("Hello");x.Add("World");
+
+            //    return x;
+            //}
+            set => SetAttribute("extended-values", value.ToArray());
         }
 
         private VisibilityCondition mVisibilityCondition;
@@ -52,5 +61,6 @@ namespace Catfish.Core.Models.Contents.Fields
         {
             OptionText.SetContent(text, lang);
         }
+
     }
 }

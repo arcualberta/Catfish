@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, PropType, computed } from "vue";
+    import { defineComponent, PropType, computed, ref } from "vue";
     import { Guid } from 'guid-typescript';
 
     import * as models from '../../models'
@@ -17,16 +17,18 @@
         setup(p) {
             const formStore = useFormSubmissionStore();
 
-
-            const extendedValue = computed({
-                get: () => p.model?.extendedValue,
-                set: (value) => formStore.setExtendedOptionValue(p.model?.id as Guid, value as string),
-            })
+            const extendedValueInput = ref("");
 
             return {
                 concatenatedOptionLabel: computed(() => p.model?.optionText?.values?.$values.map((txt: { value: any; }) => txt.value).join(" / ")),
                 setOptionSelection: (id: Guid, selected: any) => formStore.setOptionSelection(id, selected),
-                extendedValue
+                extendedValues: computed(() => p.model?.extendedValues?.$values),
+                extendedValueInput,
+                addExtendedValue: () => {
+                    if (p.model)
+                        formStore.addExtendedOptionValue(p.model.id, extendedValueInput.value);
+                    extendedValueInput.value = "";
+                }
             }
         }
     });
@@ -36,5 +38,12 @@
 <template>
     <input type="checkbox" :id="model.id" :value="model.id" @change="setOptionSelection(model.id, $event.target.checked)" />
     <label :for="model.id"> {{concatenatedOptionLabel}}</label>
-    <input v-if="model.extendedOption && model.selected" type="text" :id="model.id + '_extended'" :value="extendedValue" />
+    <div v-if="model.extendedOption && model.selected">
+        <ul>
+            <li v-for="(val, index) in extendedValues" :key="index">{{val}}</li>
+        </ul>
+        <br />
+        <input type="text" :id="model.id + '_extended'" v-model="extendedValueInput" />
+        <button @click="addExtendedValue">Add</button>
+    </div>
 </template>

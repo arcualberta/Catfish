@@ -605,13 +605,10 @@ Any public disclosures of information from the directory will be in aggregate fo
                     option = field.Options.FirstOrDefault(opt => opt.OptionText.GetConcatenatedContent("").ToLower() == "another");
                     if (option != null)
                     {
-
-
                         option.Selected = true;
-                        if (string.IsNullOrEmpty(option.ExtendedValue))
-                            option.ExtendedValue = val;
-                        else
-                            option.ExtendedValue = option.ExtendedValue + ";" + val;
+                        if (option.ExtendedValues == null)
+                            option.ExtendedValues = new List<string>();
+                        option.ExtendedValues.Add(val);
                     }
                     else
                         throw new Exception(string.Format("Unknown option value {0} found for the option-field {1}", val, field.Name.GetConcatenatedContent("/")));

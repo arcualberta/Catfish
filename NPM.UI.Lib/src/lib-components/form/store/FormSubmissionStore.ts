@@ -52,19 +52,29 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
     },
     actions: {
         setTextValue(id: Guid, value: string) {
-            const field = this.textModels.find(field => field.id === id);
-            if (field)
-                field.value = value;
+            const txt = this.textModels.find(field => field.id === id);
+            if (txt)
+                txt.value = value;
         },
         setOptionSelection(id: Guid, selected: boolean) {
-            const field = this.optionModels.find(field => field.id === id);
-            if (field)
-                field.selected = selected;
+            const option = this.optionModels.find(field => field.id === id);
+            if (option)
+                option.selected = selected;
         },
-        setExtendedOptionValue(id: Guid, value: string) {
-            const field = this.optionModels.find(field => field.id === id);
-            if (field)
-                field.extendedValue = value;
+        addExtendedOptionValue(id: Guid, value: string) {
+            const option = this.optionModels.find(field => field.id === id);
+            if (option) {
+                if (!option.extendedValues.$values)
+                    option.extendedValues.$values = [];
+                option.extendedValues.$values.push(value);
+                console.log(JSON.stringify(option.extendedValues.$values))
+            }
+        },
+        removeExtendedOptionValue(id: Guid, idx: number) {
+            const option = this.optionModels.find(field => field.id === id);
+            if (option) {
+                option.extendedValues.$values.splice(idx, 1);
+            }
         },
        updateFileReference(fieldId: Guid, file: File) {
          
