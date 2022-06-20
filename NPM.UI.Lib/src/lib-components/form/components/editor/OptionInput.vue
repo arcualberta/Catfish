@@ -7,11 +7,16 @@
 
 
     export default defineComponent({
-        name: "Checkbox",
+        name: "OptionInput",
         props: {
             model: {
                 type: null as PropType<models.Option> | null,
                 required: false
+            },
+            fieldType: {
+                type: null as PropType<string> | null,
+                require: false,
+                default: "checkbox"
             },
         },
         setup(p) {
@@ -36,7 +41,7 @@
 
 
 <template>
-    <input type="checkbox" :id="model.id" :value="model.id" @change="setOptionSelection(model.id, $event.target.checked)" />
+    <input :type="fieldType" :id="model.id" :value="model.id" @change="setOptionSelection(model.id, $event.target.checked)" />
     <label :for="model.id"> {{concatenatedOptionLabel}}</label>
     <div v-if="model.extendedOption && model.selected">
         <ul>

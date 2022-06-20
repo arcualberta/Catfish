@@ -1,10 +1,8 @@
 <script lang="ts">
     import { defineComponent, PropType } from "vue";
-    //import { Guid } from 'guid-typescript';
 
     import * as models from '../../models'
-    //import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
-    import { default as Checkbox } from './Checkbox.vue'
+    import { default as OptionInput } from './OptionInput.vue'
 
     export default defineComponent({
         name: "CheckboxField",
@@ -15,20 +13,14 @@
             },
         },
         components: {
-            Checkbox
+            OptionInput
         },
-    //    setup() {
-    //        const formStore = useFormSubmissionStore();
-
-    //        return {
-    //        }
-    //    }
     });
 </script>
 
 
 <template>
     <div v-for="option in model.options.$values" :key="option.id" class="checkbox-container">
-        <checkbox :model="option" />
+        <OptionInput :field-type="checkbox" :model="option" />
     </div>
 </template>
