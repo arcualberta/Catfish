@@ -60,8 +60,15 @@ namespace Catfish.Core.Models.Solr
                 {
                     solrFieldName += field.SolrFieldType.ToString();
                     foreach (var option in (field as OptionsField).Options.Where(op => op.Selected))
+                    {
                         foreach (var txt in option.OptionText.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
                             AddField(solrFieldName, txt.Value);
+
+                        if (option.ExtendedOption && option.ExtendedValues?.Length > 0)
+                            foreach (string val in option.ExtendedValues)
+                                if (!string.IsNullOrEmpty(val))
+                                    AddField(solrFieldName, val);
+                    }
                 }
                 else if (typeof(IntegerField).IsAssignableFrom(field.GetType()))
                 {
@@ -207,8 +214,12 @@ namespace Catfish.Core.Models.Solr
             }
             else if (field is OptionsField)
             {
-                return (field as OptionsField).Options.Where(opt => opt.Selected).SelectMany(opt => opt.OptionText.Values).Select(txt => txt.Value).ToList();
+                OptionsField optionField = field as OptionsField;
+                List<string> selectedOptionValues = optionField.Options.Where(opt => opt.Selected).SelectMany(opt => opt.OptionText.Values).Select(txt => txt.Value).ToList();
+                var extendedOptionValues = optionField.Options.Where(opt => opt.Selected && opt.ExtendedOption).SelectMany(opt => opt.ExtendedValues);
+                selectedOptionValues.AddRange(extendedOptionValues);
 
+                return selectedOptionValues;
             }
 
             return new List<string>();
