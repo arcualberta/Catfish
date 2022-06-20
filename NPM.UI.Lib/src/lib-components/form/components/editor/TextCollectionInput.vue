@@ -6,8 +6,11 @@
     import SingleText from './SingleText.vue'
 
     export default defineComponent({
-        name: "MultivalueText",
-        props: {
+        name: "TextCollectionInput",
+        components: {
+            SingleText
+        },
+       props: {
             model: {
                 type: null as PropType<models.TextCollection> | null,
                 required: true
@@ -17,13 +20,6 @@
                 require: false,
                 default: false
             }
-			//validationStatus: {
-			//	type: null as PropType<eValidationStatus> | null,
-			//	required: true
-           // }
-        },
-        components: {
-            SingleText
         },
        
         
@@ -32,8 +28,7 @@
 
   <template>
       <div v-for="val in model?.values?.$values" :key="val.id">
-          <SingleText :model="val" :isMultiline="isMultiline" :allow-delete="model?.values?.$values?.length > 1" />
+          <SingleText :model="val" :is-multiline="isMultiline" />
       </div>
-     
   </template>
 

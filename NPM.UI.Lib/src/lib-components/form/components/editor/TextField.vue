@@ -2,12 +2,12 @@
     import { defineComponent, PropType } from "vue"
     import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
     import * as models from '../../models'
-    import MultivalueText from "./MultivalueText.vue"
+    import TextCollectionInput from "./TextCollectionInput.vue"
 
     export default defineComponent({
         name: "TextField",
         components:{
-           MultivalueText
+            TextCollectionInput
         },
         props: {
             model: {
@@ -28,10 +28,8 @@
 
 
 <template>
-   
-    <div  v-for="(val in model.values.$values" :key="val.id" class="multilingualField">
-        <MultivalueText :model="val" :isMultiline="false" />
-        <span v-if="model.values.$values?.length > 1" class="fa remove-circle" @click="formStore.removeMutilingualValue(model, val.id)"> x </span>
+    <div v-for="(val in model.values.$values" :key="val.id" class="multilingualField">
+        <TextCollectionInput :model="val" :is-multiline="false" />
+        <span v-if="model?.values?.$values?.length > 1" class="fa remove-circle" @click="formStore.removeMutilingualValue(model, val.id)"> x </span>
     </div>
-  
 </template>

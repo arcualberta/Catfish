@@ -146,8 +146,8 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             target.values?.$values.push(newMultilingualValue);
         },
         removeMutilingualValue(target: models.MultilingualTextField, id: Guid) {
-            const index = target.values?.$values.findIndex(txt => txt.id === id);
-            if (index)
+            const index = target.values?.$values.findIndex(txtCollection => txtCollection.id === id) as number;
+            if (index >= 0)
                 target.values?.$values.splice(index, 1);
         },
 

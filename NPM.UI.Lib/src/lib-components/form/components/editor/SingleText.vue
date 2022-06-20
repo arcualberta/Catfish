@@ -46,7 +46,7 @@
 </script>
 
 <template>
-     <div v-if="isMultiLines === true"  >
+     <div v-if="isMultiline === true"  >
         <textarea cols="30" rows="2" v-model="content"  />
      </div>
      <div v-else>
