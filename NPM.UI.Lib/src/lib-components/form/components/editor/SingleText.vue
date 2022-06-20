@@ -1,7 +1,6 @@
 <script lang="ts">
     import { defineComponent, PropType, computed } from 'vue'
     
-
     import * as models from '../../models'
     import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
 
@@ -23,14 +22,6 @@
                 require: false,
                 default: "text"
             },
-            allowDelete: {
-                type: null as PropType<boolean> | null,
-                require: false
-            },
-            fieldModel: {
-                type: null as PropType<models.MonolingualTextField> | null,
-                required: false
-            }
 			
         },
         setup(p) {
@@ -43,10 +34,7 @@
             })
 
             return {
-                content,
-                isMultiLines: p.isMultiline,
-                fieldModel: p.fieldModel,
-                formStore
+                content
             }
         }
 	

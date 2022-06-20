@@ -130,27 +130,21 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 
             }
         },
-
         appendMonolingualValue(target: models.MonolingualTextField) {
-
             const newText = helpers.createTextElement();
             target.values?.$values.push(newText);
-            
         },
-
         removeMonolingualValue(target: models.MonolingualTextField, id: Guid) {
             const index = target.values?.$values.findIndex(txt => txt.id === id) as number;
             if (index >= 0 )
                 target.values?.$values.splice(index, 1);
         },
-
         appendMutilingualValue(target: models.MultilingualTextField) {
             const languages = target.values?.$values[0] ? helpers.getLanguages(target.values?.$values[0]) : ["en"];
             const newMultilingualValue = helpers.createMultilingualValueElment(languages);
           
             target.values?.$values.push(newMultilingualValue);
         },
-
         removeMutilingualValue(target: models.MultilingualTextField, id: Guid) {
             const index = target.values?.$values.findIndex(txt => txt.id === id);
             if (index)
