@@ -419,11 +419,14 @@ Any public disclosures of information from the directory will be in aggregate fo
             // Added state referances
             listSubmissionsAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(deleteState.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
             // ================================================
@@ -435,13 +438,16 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
 
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
+            viewDetailsSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(approvedState.Id)
+            viewDetailsSubmissionAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(deleteState.Id)
+            viewDetailsSubmissionAction.AddStateReferances(deleteState.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
 
@@ -474,12 +480,13 @@ Any public disclosures of information from the directory will be in aggregate fo
             }
 
             //Defining state referances
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
+            editSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(approvedState.Id)
+            editSubmissionAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(adminRole.Id);
-            listSubmissionsAction.AddStateReferances(deleteState.Id)
+            editSubmissionAction.AddStateReferances(deleteState.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
 
@@ -509,13 +516,14 @@ Any public disclosures of information from the directory will be in aggregate fo
             ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
             ////////    .AddOwnerAuthorization();
             deleteSubmissionAction.GetStateReference(submittedState.Id, true)
-                .AddAuthorizedRole(adminRole.Id);
+                .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id); ;
             deleteSubmissionAction.GetStateReference(approvedState.Id, true)
                 .AddAuthorizedRole(adminRole.Id);
 
-            // ================================================
+            // =========================================================
             // Change State submission-instances related workflow items
-            // ================================================
+            // =========================================================
 
             GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
             changeStateAction.Access = GetAction.eAccess.Restricted;

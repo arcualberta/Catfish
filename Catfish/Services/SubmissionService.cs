@@ -145,7 +145,7 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public Report GetSubmissionList(Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, string freeText, DateTime? startDate, DateTime? endDate, Guid? status, int? offset, int? pagesize)
+        public Report GetSubmissionList(ClaimsPrincipal user, Guid groupId, Guid templateId, Guid collectionId, ReportDataFields[] reportFields, string freeText, DateTime? startDate, DateTime? endDate, Guid? status, int? offset, int? pagesize)
         {
             Report report = new Report();
             DateTime from = startDate == null ? DateTime.MinValue : startDate.Value;
@@ -175,58 +175,66 @@ namespace Catfish.Services
 
             foreach (var item in solrSearchResult.ResultEntries)
             {
-                ReportRow row = new ReportRow();
-                row.ItemId = item.Id;
-                row.Created = item.Created.ToString("dd/MM/yyyy");
-                row.Status = GetStatus(item.StatusId).Status;
-                report.Rows.Add(row);
+                Item itemDetails = GetSubmissionDetails(item.Id);
+                var task = _dotnetAuthorizationService.AuthorizeAsync(user, itemDetails, new List<IAuthorizationRequirement>() { TemplateOperations.ListInstances });
+                task.Wait();
 
-                ItemTemplate template = templates.FirstOrDefault(t => t.Id == item.TemplateId);
-                if(template == null)
+                if (task.Result.Succeeded)
                 {
-                    template = _db.ItemTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+                    ReportRow row = new ReportRow();
+                    row.ItemId = item.Id;
+                    row.Created = item.Created.ToString("dd/MM/yyyy");
+                    row.Status = GetStatus(item.StatusId).Status;
+                    report.Rows.Add(row);
+
+                    ItemTemplate template = templates.FirstOrDefault(t => t.Id == item.TemplateId);
                     if (template == null)
-                        throw new Exception(string.Format("Template with ID {0} not found", item.TemplateId));
-                    templates.Add(template);
-                }
-
-                foreach (var reportField in reportFields)
-                {
-                    ReportCell reportCell = new ReportCell()
                     {
-                        FormTemplateId = reportField.FormTemplateId,
-                        FieldId = reportField.FieldId
-                    };
-
-                    row.Cells.Add(reportCell);
-
-                    var field = item.Fields.FirstOrDefault(f => f.ContainerId == reportField.FormTemplateId && f.FieldId == reportField.FieldId);
-                    if (field != null)
-                    {
-                        ReportCellValue cellValue = new ReportCellValue() 
-                        {
-                            //We don't know the ID of the form instance since we don't index it in Solr.
-                            FormInstanceId = Guid.Empty
-                        };
-                       
-                        cellValue.Values.AddRange(field.FieldContent);
-                        reportCell.Values.Add(cellValue);
-
-                        var srcField = template.DataContainer
-                            .FirstOrDefault(form => form.Id == reportField.FormTemplateId)
-                            .Fields.FirstOrDefault(field => field.Id == reportField.FieldId);
-
-                        if (srcField is OptionsField)
-                            cellValue.RenderType = "Options";
-                        else if (srcField is AttachmentField)
-                            cellValue.RenderType = "Attachment";
-                        else if (srcField is AudioRecorderField)
-                            cellValue.RenderType = "Audio";
-                        else
-                            cellValue.RenderType = "Text";
+                        template = _db.ItemTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
+                        if (template == null)
+                            throw new Exception(string.Format("Template with ID {0} not found", item.TemplateId));
+                        templates.Add(template);
                     }
 
+                    foreach (var reportField in reportFields)
+                    {
+                        ReportCell reportCell = new ReportCell()
+                        {
+                            FormTemplateId = reportField.FormTemplateId,
+                            FieldId = reportField.FieldId
+                        };
+
+                        row.Cells.Add(reportCell);
+
+                        var field = item.Fields.FirstOrDefault(f => f.ContainerId == reportField.FormTemplateId && f.FieldId == reportField.FieldId);
+                        if (field != null)
+                        {
+                            ReportCellValue cellValue = new ReportCellValue()
+                            {
+                                //We don't know the ID of the form instance since we don't index it in Solr.
+                                FormInstanceId = Guid.Empty
+                            };
+
+                            cellValue.Values.AddRange(field.FieldContent);
+                            reportCell.Values.Add(cellValue);
+
+                            var srcField = template.DataContainer
+                                .FirstOrDefault(form => form.Id == reportField.FormTemplateId)
+                                .Fields.FirstOrDefault(field => field.Id == reportField.FieldId);
+
+                            if (srcField is OptionsField)
+                                cellValue.RenderType = "Options";
+                            else if (srcField is AttachmentField)
+                                cellValue.RenderType = "Attachment";
+                            else if (srcField is AudioRecorderField)
+                                cellValue.RenderType = "Audio";
+                            else
+                                cellValue.RenderType = "Text";
+                        }
+
+                    }
                 }
+                    
             }
             return report;
 

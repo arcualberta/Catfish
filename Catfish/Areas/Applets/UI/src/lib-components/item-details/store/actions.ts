@@ -9,6 +9,7 @@ export enum Actions {
     GET_USER_ACTIONS = "GET_USER_ACTIONS",
     CHANGE_STATE = "CHANGE_STATE",
     SAVE = "SAVE",
+    DELETE = "DELETE",
 }
 
 export const actions: ActionTree<State, any> = {
@@ -38,6 +39,37 @@ export const actions: ActionTree<State, any> = {
                 store.commit(Mutations.SET_USER_PERMISSIONS, data);
             });
     },
+
+    [Actions.DELETE](store) {
+        const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
+            `/applets/api/items/deleteItem/${store.state.id}`;
+        console.log('Item Delete API: ', api)
+
+        const item = store.state.item;
+        //Validating the forms
+        if (!item)
+            return;
+
+        fetch(api,
+            {
+                method: "post",
+                headers: {
+                    //"Content-Type": "multipart/form-data"
+                    "encType": "multipart/form-data"
+                }
+            }).then(response =>
+                response.json())
+            .then(data => {
+                console.log(JSON.stringify(data));
+                store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
+                //store.commit(Mutations.SET_ITEM, data);
+
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    },
+
     [Actions.SAVE](store) {
 
         const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
