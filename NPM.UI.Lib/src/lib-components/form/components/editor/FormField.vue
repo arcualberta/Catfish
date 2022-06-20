@@ -88,8 +88,7 @@
         
         <span v-if="isMonolingualField === true && allowMultipleValues === true"  class="fa plus-circle" @click="formStore.appendMonolingualValue(model)"> + </span>
 
-
-        <span v-if="isMultilingualTextField" class="fa plus-circle" @click="formStore.appendMutilingualValue(model)"> + </span>
+        <span v-if="isMultilingualTextField && allowMultipleValues === true" class="fa plus-circle" @click="formStore.appendMutilingualValue(model)"> + </span>
 
         <span v-if="model?.validationStatus === false" class="validation-error">{{model.validationError}}</span>
     </div>

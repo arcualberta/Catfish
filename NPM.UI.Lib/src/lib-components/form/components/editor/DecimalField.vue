@@ -33,7 +33,7 @@
 
 
 <template>
-    <div v-for="val in model?.values?.$values" :key="val">
-        <SingleText :model="val" :is-multiline="false"  field="decimal" :fieldModel="model" />
+    <div v-for="val in model?.values?.$values" :key="val.id">
+        <SingleText :model="val" :is-multiline="false" :allow-delete="model?.values?.$values?.length > 1"  field="decimal" :fieldModel="model" />
     </div>
 </template>

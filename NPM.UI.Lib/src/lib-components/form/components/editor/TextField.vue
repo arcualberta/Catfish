@@ -29,11 +29,9 @@
 
 <template>
    
-    <div  v-for="(val,index) in model.values.$values" :key="val.id" class="multilingualField">
-
+    <div  v-for="(val in model.values.$values" :key="val.id" class="multilingualField">
         <MultivalueText :model="val" :isMultiline="false" />
-        <span v-if="index > 0" class="fa remove-circle" @click="formStore.removeMutilingualValue(model, index)"> x </span>
-        
+        <span v-if="model.values.$values?.length > 1" class="fa remove-circle" @click="formStore.removeMutilingualValue(model, val.id)"> x </span>
     </div>
   
 </template>

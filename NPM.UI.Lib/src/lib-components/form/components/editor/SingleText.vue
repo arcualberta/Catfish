@@ -23,8 +23,8 @@
                 require: false,
                 default: "text"
             },
-            index: {
-                type: null as PropType<number> | null,
+            allowDelete: {
+                type: null as PropType<boolean> | null,
                 require: false
             },
             fieldModel: {
@@ -45,7 +45,6 @@
             return {
                 content,
                 isMultiLines: p.isMultiline,
-                index: p.index,
                 fieldModel: p.fieldModel,
                 formStore
             }
@@ -55,13 +54,12 @@
 </script>
 
 <template>
-     <div v-if=" isMultiLines === true"  >
+     <div v-if="isMultiLines === true"  >
         <textarea cols="30" rows="2" v-model="content"  />
      </div>
      <div v-else>
          <input v-if="fieldType == 'text'" type="text" v-model="content" class="resized-textbox" />
          <input v-else :type="fieldType" v-model="content" class="resized-textbox" />
-         <span v-if="index > 0" class="fa remove-circle" @click="formStore.removeMonolingualValue(fieldModel, index)"> x </span>
      </div>
 </template>
 

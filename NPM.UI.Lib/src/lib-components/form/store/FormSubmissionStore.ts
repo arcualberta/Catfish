@@ -138,8 +138,10 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             
         },
 
-        removeMonolingualValue(target: models.MonolingualTextField, index: number) {
-            target.values?.$values.splice(index, 1);
+        removeMonolingualValue(target: models.MonolingualTextField, id: Guid) {
+            const index = target.values?.$values.findIndex(txt => txt.id === id) as number;
+            if (index >= 0 )
+                target.values?.$values.splice(index, 1);
         },
 
         appendMutilingualValue(target: models.MultilingualTextField) {
@@ -149,9 +151,10 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             target.values?.$values.push(newMultilingualValue);
         },
 
-        removeMutilingualValue(target: models.MultilingualTextField, index: number) {
-            
-            target.values?.$values.splice(index, 1);
+        removeMutilingualValue(target: models.MultilingualTextField, id: Guid) {
+            const index = target.values?.$values.findIndex(txt => txt.id === id);
+            if (index)
+                target.values?.$values.splice(index, 1);
         },
 
     }

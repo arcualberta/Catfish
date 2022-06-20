@@ -24,7 +24,7 @@
             const formStore = useFormSubmissionStore();
 
             return {
-                formStore
+                formStore,
             }
         }
         
@@ -33,9 +33,9 @@
 
 
 <template>
-    <div v-for="(val, index) in model?.values?.$values" :key="val" class="monoLingualField">
-        <SingleText :model="val" :isMultiline="false" fieldType="email" :index="index" :fieldModel="model" />
-
+    <div v-for="val in model?.values?.$values" :key="val.id" class="monoLingualField">
+        <SingleText :model="val" :isMultiline="false" fieldType="email" :fieldModel="model" />
+        <span v-if="model?.values?.$values?.length > 1" class="fa remove-circle" @click="formStore.removeMonolingualValue(model, val.id)"> x </span>
     </div>
     <!--<span class="fa plus-circle" @click="formStore.appendMonolingualValue(model)"> + </span>-->
 

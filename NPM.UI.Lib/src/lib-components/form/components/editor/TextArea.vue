@@ -28,8 +28,7 @@
 <template>
   
     <div  v-for="(val, index) in model.values.$values" :key="val.id" class="multilingualField">
-
         <MultivalueText :model="val" :isMultiline="true" />
-        <span v-if="index > 0" class="fa remove-circle" @click="formStore.removeMutilingualValue(model, index)"> x </span>
+        <span v-if="index > 0" class="fa remove-circle" @click="formStore.removeMutilingualValue(model, val.id)"> x </span>
     </div>
 </template>

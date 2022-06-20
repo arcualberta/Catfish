@@ -32,8 +32,7 @@
 
   <template>
       <div v-for="val in model?.values?.$values" :key="val.id">
-
-          <SingleText :model="val" :isMultiline="isMultiline" />
+          <SingleText :model="val" :isMultiline="isMultiline" :allow-delete="model?.values?.$values?.length > 1" />
       </div>
      
   </template>
