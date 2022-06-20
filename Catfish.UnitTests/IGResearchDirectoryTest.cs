@@ -21,6 +21,8 @@ using Google.Apis.Drive.v3.Data;
 using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Util.Store;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Catfish.UnitTests
 {
@@ -607,8 +609,9 @@ Any public disclosures of information from the directory will be in aggregate fo
                     {
                         option.Selected = true;
                         if (option.ExtendedValues == null)
-                            option.ExtendedValues = new List<string>();
-                        option.ExtendedValues.Add(val);
+                            option.ExtendedValues = val.Split(";");
+                        else
+                            option.ExtendedValues = option.ExtendedValues.Union(val.Split(";")).ToArray();
                     }
                     else
                         throw new Exception(string.Format("Unknown option value {0} found for the option-field {1}", val, field.Name.GetConcatenatedContent("/")));
@@ -1385,6 +1388,33 @@ Any public disclosures of information from the directory will be in aggregate fo
             InitFieldAggregations(template);
 
             template.Data.Save(templateFileName);
+        }
+
+        [Test]
+        public void ExtendedOptionDeserializationTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\extended-option-sample2.json";
+            var settings = new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            //Option src = new Option();
+            //src.SetOptionText("Another", "en");
+            //src.ExtendedOption = true;
+            //src.ExtendedValues = new string[] { "Test 1", "Test 2", "Test 3", "Test 4" };
+            //System.IO.File.WriteAllText(file, JsonConvert.SerializeObject(src, settings));
+
+            string data = System.IO.File.ReadAllText(file);
+
+            Option option = JsonConvert.DeserializeObject<Option>(data, settings);
+
+            option.Data.Save(file.Substring(0, file.LastIndexOf('.') + 1) + "xml");
+            var extendedOptions = option.ExtendedValues;
+            Assert.IsTrue(option.ExtendedOption);
+            Assert.AreEqual(4, extendedOptions.Length);
         }
 
     }

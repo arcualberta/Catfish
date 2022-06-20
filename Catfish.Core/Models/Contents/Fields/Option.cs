@@ -29,21 +29,13 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("extended", value);
         }
 
-        public List<string> ExtendedValues 
+        public string[] ExtendedValues //{ get; set; } = new string[0];
         {
-            get => new List<string>(GetAttribute("extended-values", new string[0]));
-            //{
-            //    var x = new List<string>();
-            //    x.AddRange(GetAttribute("extended-values", new string[0]));
+            get => GetAttribute("extended-values", new string[0]);
+            set => SetAttribute("extended-values", value);
+    }
 
-            //    x.Add("Hello");x.Add("World");
-
-            //    return x;
-            //}
-            set => SetAttribute("extended-values", value.ToArray());
-        }
-
-        private VisibilityCondition mVisibilityCondition;
+    private VisibilityCondition mVisibilityCondition;
         public VisibilityCondition VisibilityCondition { get { if (mVisibilityCondition == null) mVisibilityCondition = new VisibilityCondition(GetElement(VisibilityCondition.TagName, true)); return mVisibilityCondition; } }
 
         public Option() : base(FieldTagName) { }

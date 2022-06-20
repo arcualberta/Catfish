@@ -102,7 +102,7 @@ namespace Catfish.Core.Models.Contents.Fields
             if (src == null)
                 throw new Exception("The source field is null or is not an OptionsField");
 
-            var selections = src.SelectedOptionGuids == null ? new Guid[0] : src.SelectedOptionGuids;
+            //var selections = src.SelectedOptionGuids == null ? new Guid[0] : src.SelectedOptionGuids;
             //int i = 0;
             foreach (var dstOption in Options)
             {
