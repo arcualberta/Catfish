@@ -22,6 +22,10 @@
                 require: false,
                 default: "text"
             },
+            numericStep: {
+                type: null as PropType<number> | null,
+                default: null
+            }
 			
         },
         setup(p) {
@@ -46,7 +50,8 @@
         <textarea cols="30" rows="2" v-model="content"  />
      </div>
      <div v-else>
-         <input :type="fieldType" v-model="content" class="resized-textbox" />
+         <input v-if="numericStep" :step="numericStep" :type="fieldType" v-model="content" class="resized-textbox" />
+         <input v-else :type="fieldType" v-model="content" class="resized-textbox" />
      </div>
 </template>
 

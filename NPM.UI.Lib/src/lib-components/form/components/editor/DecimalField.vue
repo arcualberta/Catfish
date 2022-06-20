@@ -28,12 +28,19 @@
                 default: 2
             }
         },
+        setup(p) {
+
+            return {
+                numericStep: Math.pow(10, -p.numDecimalPlaces)
+            }
+        }
     });
 </script>
 
 
 <template>
     <div v-for="val in model?.values?.$values" :key="val.id">
-        <SingleText :model="val" :is-multiline="false" :allow-delete="model?.values?.$values?.length > 1"  field="decimal" :fieldModel="model" />
+        <SingleText :model="val" field-type="number" :field-model="model" numeric-step="numericStep" />
+        <span v-if="model?.values?.$values?.length > 1" class="fa remove-circle" @click="formStore.removeMonolingualValue(model, val.id)"> x </span>
     </div>
 </template>
