@@ -21,6 +21,8 @@ using Google.Apis.Drive.v3.Data;
 using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Util.Store;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Catfish.UnitTests
 {
@@ -123,7 +125,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 .AppendContent("div", @"Fields identified by <span style='color: Red;'>*</span> are mandatory", lang, "alert alert-warning");
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", @"Section 1: Contact Information", lang, "alert alert-info");
-            var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true);
+            var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true,true);
             applicantEmail.IsListEntryTitle = true;
             applicantEmail.Id = EMAIL_ID;
 
@@ -613,13 +615,11 @@ Any public disclosures of information from the directory will be in aggregate fo
                     option = field.Options.FirstOrDefault(opt => opt.OptionText.GetConcatenatedContent("").ToLower() == "another");
                     if (option != null)
                     {
-
-
                         option.Selected = true;
-                        if (string.IsNullOrEmpty(option.ExtendedValue))
-                            option.ExtendedValue = val;
+                        if (option.ExtendedValues == null)
+                            option.ExtendedValues = val.Split(";");
                         else
-                            option.ExtendedValue = option.ExtendedValue + ";" + val;
+                            option.ExtendedValues = option.ExtendedValues.Union(val.Split(";")).ToArray();
                     }
                     else
                         throw new Exception(string.Format("Unknown option value {0} found for the option-field {1}", val, field.Name.GetConcatenatedContent("/")));
@@ -1021,10 +1021,10 @@ Any public disclosures of information from the directory will be in aggregate fo
         {
 
             //PLEASE CHANGE THE PATH
-            string sourcePath = "C:\\Users\\mruaini\\Downloads\\DATA_Directory_Images_Resized-20220613T212538Z-001\\DATA_Directory_Images_Resized";
+            string sourcePath = @"C:\tmp\ig-profile-images";
 
             //PLEASE CHANGE THE PATH
-            string destinationPath = "C:\\ARCProjects\\Catfish\\Catfish2\\Catfish2-dev\\Catfish\\App_Data\\uploads\\attachments";
+            string destinationPath = @"C:\tmp\ig-profile-images-uploaded";
 
             IList<Item> Items = _db.Items.ToList();
 
@@ -1042,12 +1042,11 @@ Any public disclosures of information from the directory will be in aggregate fo
                         
                         var fileLength = new FileInfo(f).Length;
                         //copy file to 
-                        
-                        string imgFile = Guid.NewGuid() + "_" + originalFName;
-                       
 
-                      
                         FileReference fileRef = new FileReference();
+                        
+                        string imgFile = fileRef.Id + "_" + originalFName;
+                      
                         fileRef.OriginalFileName = originalFName;
                         fileRef.FileName = imgFile;
                         
@@ -1062,14 +1061,10 @@ Any public disclosures of information from the directory will be in aggregate fo
                         _db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 
                         System.IO.File.Copy(Path.Combine(sourcePath, originalFName), Path.Combine(destinationPath, imgFile), true);
-                        break;
-
                     }
-
                 }
             }
             _db.SaveChanges();
-            Assert.NotNull(true);
         }
 
 
@@ -1401,6 +1396,33 @@ Any public disclosures of information from the directory will be in aggregate fo
             InitFieldAggregations(template);
 
             template.Data.Save(templateFileName);
+        }
+
+        [Test]
+        public void ExtendedOptionDeserializationTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\extended-option-sample2.json";
+            var settings = new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            //Option src = new Option();
+            //src.SetOptionText("Another", "en");
+            //src.ExtendedOption = true;
+            //src.ExtendedValues = new string[] { "Test 1", "Test 2", "Test 3", "Test 4" };
+            //System.IO.File.WriteAllText(file, JsonConvert.SerializeObject(src, settings));
+
+            string data = System.IO.File.ReadAllText(file);
+
+            Option option = JsonConvert.DeserializeObject<Option>(data, settings);
+
+            option.Data.Save(file.Substring(0, file.LastIndexOf('.') + 1) + "xml");
+            var extendedOptions = option.ExtendedValues;
+            Assert.IsTrue(option.ExtendedOption);
+            Assert.AreEqual(4, extendedOptions.Length);
         }
 
     }

@@ -604,6 +604,9 @@ input[readonly] {
     -webkit-text-fill-color: transparent;
     font-size:xx-large;
 }
+.signinout{
+    z-index:100;
+}
 
 /* to target safari 10.1+ only */
 

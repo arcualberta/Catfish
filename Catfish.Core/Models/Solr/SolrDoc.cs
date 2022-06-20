@@ -60,8 +60,15 @@ namespace Catfish.Core.Models.Solr
                 {
                     solrFieldName += field.SolrFieldType.ToString();
                     foreach (var option in (field as OptionsField).Options.Where(op => op.Selected))
+                    {
                         foreach (var txt in option.OptionText.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
                             AddField(solrFieldName, txt.Value);
+
+                        if (option.ExtendedOption && option.ExtendedValues?.Length > 0)
+                            foreach (string val in option.ExtendedValues)
+                                if (!string.IsNullOrEmpty(val))
+                                    AddField(solrFieldName, val);
+                    }
                 }
                 else if (typeof(IntegerField).IsAssignableFrom(field.GetType()))
                 {
@@ -94,6 +101,40 @@ namespace Catfish.Core.Models.Solr
                     var refType = refField.RefType == FieldContainerReference.eRefType.metadata ? "metadata" : "data";
                     var val = string.Format("ref://{0}_{1}_", refType, refField.RefId);
                     AddField(solrFieldName, val);
+                }
+                else if (typeof(AttachmentField).IsAssignableFrom(field.GetType()))
+                {
+                    var attachmentField = field as AttachmentField;
+                    if (attachmentField.Files.Count == 0)
+                        continue;
+
+                    var fileIds = attachmentField.Files.Select(file => file.Id).ToArray();
+                    foreach (var val in fileIds)
+                        AddField(string.Format("{0}_id_ss", solrFieldName), val);
+
+                    var originalFileNames = attachmentField.Files.Select(file => file.OriginalFileName).ToArray();
+                    foreach (var val in originalFileNames)
+                        AddField(string.Format("{0}_original_ss", solrFieldName), val);
+
+                    var fileNames = attachmentField.Files.Select(file => file.FileName).ToArray();
+                    foreach (var val in fileNames)
+                        AddField(string.Format("{0}_filename_ss", solrFieldName), val);
+
+                    var thumbnails = attachmentField.Files.Select(file => file.Thumbnail).ToArray();
+                    foreach (var val in thumbnails)
+                        AddField(string.Format("{0}_thumbnail_ss", solrFieldName), val);
+
+                    var sizes = attachmentField.Files.Select(file => file.Size).ToArray();
+                    foreach (var val in sizes)
+                        AddField(string.Format("{0}_size_is", solrFieldName), val);
+
+                    var createdTimestamps = attachmentField.Files.Select(file => file.Created).ToArray();
+                    foreach (var val in createdTimestamps)
+                        AddField(string.Format("{0}_created_dts", solrFieldName), val);
+
+                    var contentTypes = attachmentField.Files.Select(file => file.ContentType).ToArray();
+                    foreach (var val in contentTypes)
+                        AddField(string.Format("{0}_content-type_ss", solrFieldName), val);
                 }
 
                 //Adding the name of the field to the index.
@@ -173,8 +214,12 @@ namespace Catfish.Core.Models.Solr
             }
             else if (field is OptionsField)
             {
-                return (field as OptionsField).Options.Where(opt => opt.Selected).SelectMany(opt => opt.OptionText.Values).Select(txt => txt.Value).ToList();
+                OptionsField optionField = field as OptionsField;
+                List<string> selectedOptionValues = optionField.Options.Where(opt => opt.Selected).SelectMany(opt => opt.OptionText.Values).Select(txt => txt.Value).ToList();
+                var extendedOptionValues = optionField.Options.Where(opt => opt.Selected && opt.ExtendedOption).SelectMany(opt => opt.ExtendedValues);
+                selectedOptionValues.AddRange(extendedOptionValues);
 
+                return selectedOptionValues;
             }
 
             return new List<string>();

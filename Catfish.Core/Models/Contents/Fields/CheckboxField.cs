@@ -11,18 +11,18 @@ namespace Catfish.Core.Models.Contents.Fields
         public CheckboxField() : base() { DisplayLabel = "Checkboxes"; }
         public CheckboxField(XElement data) : base(data) { DisplayLabel = "Checkboxes"; }
 
-        public override void UpdateValues(BaseField srcField)
-        {
-            OptionsField src = srcField as OptionsField;
-            if (src == null)
-                throw new Exception("The source field is null or is not an OptionsField");
+        ////public override void UpdateValues(BaseField srcField)
+        ////{
+        ////    OptionsField src = srcField as OptionsField;
+        ////    if (src == null)
+        ////        throw new Exception("The source field is null or is not an OptionsField");
 
-            foreach (var dstOption in Options)
-            {
-                var isSrsOptionSelected = src.Options.Where(op => op.Id == dstOption.Id).Select(op => op.Selected).FirstOrDefault();
-                dstOption.Selected = isSrsOptionSelected;
+        ////    foreach (var dstOption in Options)
+        ////    {
+        ////        var isSrsOptionSelected = src.Options.Where(op => op.Id == dstOption.Id).Select(op => op.Selected).FirstOrDefault();
+        ////        dstOption.Selected = isSrsOptionSelected;
 
-            }
-        }
+        ////    }
+        ////}
     }
 }

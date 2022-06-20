@@ -102,7 +102,10 @@ export interface Option {
     optionText: TextCollection | null;
     selected: boolean;
     extendedOption: boolean;
-    extendedValue: string;
+    extendedValues: {
+        $type: string;
+        $values: string[];
+    }
 }
 
 export interface OptionsField extends Field {

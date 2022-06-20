@@ -1,5 +1,6 @@
 <script lang="ts">
     import { defineComponent, PropType } from "vue";
+    import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
     import * as models from '../../models'
     import SingleText from './SingleText.vue'
     export default defineComponent({
@@ -19,13 +20,24 @@
             //    default: false
             //}
         },
+        setup() {
+            const formStore = useFormSubmissionStore();
+
+            return {
+                formStore
+            }
+        }
+        
     });
 </script>
 
 
 <template>
-        <div v-for="val in model?.values?.$values" :key="val" >
-            <SingleText :model="val" :isMultiline="false" fieldType="email" />
+    <div v-for="(val, index) in model?.values?.$values" :key="val" class="monoLingualField">
+        <SingleText :model="val" :isMultiline="false" fieldType="email" :index="index" :fieldModel="model" />
 
-        </div>
+    </div>
+    <!--<span class="fa plus-circle" @click="formStore.appendMonolingualValue(model)"> + </span>-->
+
+   
 </template>

@@ -1,5 +1,6 @@
 import * as models from './models'
 import { eFieldType, eDataElementType } from './enumerations'
+import { Guid } from 'guid-typescript';
 
 export const getFieldName = (obj: models.Field | models.FieldContainer): string => {
     return obj?.name?.values?.$values
@@ -247,4 +248,35 @@ export const validateTableField = (field: models.Field): boolean => {
     field.validationStatus = true;
 
     return field.validationStatus;
+}
+
+export function isAllowMultiple(field: models.AttachmentField): boolean {
+    return field.allowMultipleValues;
+}
+
+export function createTextElement(lang: string = "en", value: string = ""): models.Text {
+    return {
+        id: Guid.create().toString() as unknown as Guid,
+        $type: "Catfish.Core.Models.Contents.Text, Catfish.Core", //$type": "Catfish.Core.Models.Contents.Text, Catfish.Core",
+        language: lang,
+        created: new Date(),
+        value: value,
+        modelType: "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+
+    } as models.Text;
+}
+
+export function createMultilingualValueElment(lang: string[] = ["en"]): models.TextCollection {
+    return {
+        id: Guid.create().toString() as unknown as Guid,
+        $type: "Catfish.Core.Models.Contents.MultilingualValue, Catfish.Core",
+        values: {
+            $type: "Catfish.Core.Models.Contents.XmlModelList`1[[Catfish.Core.Models.Contents.Text, Catfish.Core]], Catfish.Core",
+            $values: lang.map(x => createTextElement(x))
+        }
+    } as models.TextCollection
+}
+
+export function getLanguages(multilingualValue: models.TextCollection): string[] {
+    return multilingualValue.values.$values.map(text => text.language);
 }
