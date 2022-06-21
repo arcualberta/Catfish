@@ -125,7 +125,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 .AppendContent("div", @"Fields identified by <span style='color: Red;'>*</span> are mandatory", lang, "alert alert-warning");
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", @"Section 1: Contact Information", lang, "alert alert-info");
-            var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true,true);
+            var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true);
             applicantEmail.IsListEntryTitle = true;
             applicantEmail.Id = EMAIL_ID;
 
@@ -215,10 +215,11 @@ Any public disclosures of information from the directory will be in aggregate fo
             definedkeys.Id = KEYWORDS_ID;
             definedkeys.CssClass = "multiSelectKeywords";
             definedkeys.SolrFieldType = eSolrFieldType._ss;
+            definedkeys.Options.Last().ExtendedOption = true;
 
-            var undefinedKeys = rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, false);
-            undefinedKeys.CssClass = "undefinedKeys";
-            undefinedKeys.Id = ADDITIONAL_KEYWORDS_ID;
+            ////var undefinedKeys = rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, false);
+            ////undefinedKeys.CssClass = "undefinedKeys";
+            ////undefinedKeys.Id = ADDITIONAL_KEYWORDS_ID;
 
 
             //////////////////////////////////////                         SECTION 4    ////////////////////////////////////////////////////////////////////////////////
@@ -239,11 +240,13 @@ Any public disclosures of information from the directory will be in aggregate fo
             commProj.Cols = 50;
             commProj.Rows = 2;
 
-            rdForm.CreateField<TextField>("Please provide links to your work. We hope directory users can learn more about your research and community work.", lang, true)
+            var webLink = rdForm.CreateField<TextField>("Please provide links to your work. We hope directory users can learn more about your research and community work.", lang, true)
                 .SetDescription(@"Examples: Websites/blogs, social media pages/accounts (FB, IG, Twitter, tumblr, etc.) <br/>
                              Publications/reports or other digital content relevant to your work (google scholar, Academia.edu). 
-                             Digital media (radio, podcast)", lang)
-                .Id = EXTERNAL_LINKS_ID;
+                             Digital media (radio, podcast)", lang) as TextField;
+            webLink.Id = EXTERNAL_LINKS_ID;
+            webLink.AllowMultipleValues = true;
+
             (publicShow = rdForm.CreateField<RadioField>("Show links to my work on my public profile", lang, new String[] {"Yes", "No"}, true)).Required = true;
             publicShow.Id = SHOW_EXTERNAL_LINKS_ID;
 
@@ -581,8 +584,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 "Diversity","Environment", "Ethics", "Family", "Feminism", "Feminist Theory",  "Film", "Gender", "Genderqueer","Government",
                 "Health", "History", "Human Rights", "Identity", "Immigration",  "Indigenous", "Inequality", " International", "Intersectionality", "Language", "Law", "Literature", "Marginalized population", "Masculinities", "Media", "Mental health"," Mothering",
                 "Pedagogy", "Policy", "Politics", "Qualitative", "Research","Queer", "Quare", "Race", "Relation", "Religion", "Sex", "Sexuality",
-                "Science", "Sport", "Social justice", "Transgender", " Two-spirit", "Violence", "Work"
-
+                "Science", "Sport", "Social justice", "Transgender", " Two-spirit", "Violence", "Work", "Another (specify)"
             }
             .Select(kw => kw.Trim())
             .ToArray();
@@ -803,10 +805,15 @@ Any public disclosures of information from the directory will be in aggregate fo
                         string[] controlledInputKeywords = inputKeywords.Intersect(controlledKeywords).ToArray();
                         setOptionValues(keywordsField, string.Join(";", controlledInputKeywords), ";", null);
 
+                        //Take any additional keywords athta are not defined in the controlled-input-keyword list and then add them as addtional keywords to the last entry in
+                        ////the controlled keyword list with "extended" property set to true
                         var additionalKeywords = inputKeywords.Where(kw => !controlledKeywords.Contains(kw)).ToArray();
-                        var addionalKeywordsField = _newDataItem.Fields.FirstOrDefault(f => f.Id == ADDITIONAL_KEYWORDS_ID) as TextField;
-                        for (int valIndex = 0; valIndex < additionalKeywords.Length; ++valIndex)
-                            addionalKeywordsField.SetValue(additionalKeywords[valIndex], lang, valIndex);
+                        if(additionalKeywords.Length > 0)
+                        {
+                            var extendedOption = keywordsField.Options.Last(opt => opt.ExtendedOption);
+                            extendedOption.Selected = true;
+                            extendedOption.ExtendedValues = additionalKeywords;
+                        }
                     }
                     else if (colHeading == "faculty_or_department")
                     {
