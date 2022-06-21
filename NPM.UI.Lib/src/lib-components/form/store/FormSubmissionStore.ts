@@ -70,10 +70,10 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 console.log(JSON.stringify(option.extendedValues.$values))
             }
         },
-        removeExtendedOptionValue(id: Guid, idx: number) {
+        removeExtendedOptionValue(id: Guid, index: number) {
             const option = this.optionModels.find(field => field.id === id);
             if (option) {
-                option.extendedValues.$values.splice(idx, 1);
+                option.extendedValues.$values.splice(index, 1);
             }
         },
        updateFileReference(fieldId: Guid, file: File) {

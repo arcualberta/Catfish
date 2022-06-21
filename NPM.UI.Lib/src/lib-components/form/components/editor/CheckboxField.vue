@@ -6,14 +6,14 @@
 
     export default defineComponent({
         name: "CheckboxField",
+        components: {
+            OptionInput
+        },
         props: {
             model: {
                 type: null as PropType<models.OptionsField> | null,
                 required: false
             },
-        },
-        components: {
-            OptionInput
         },
     });
 </script>
@@ -21,6 +21,6 @@
 
 <template>
     <div v-for="option in model.options.$values" :key="option.id" class="checkbox-container">
-        <OptionInput :field-type="checkbox" :model="option" />
+        <OptionInput field-type="checkbox" :model="option" />
     </div>
 </template>

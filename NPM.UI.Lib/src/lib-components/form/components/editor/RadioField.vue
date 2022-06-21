@@ -4,9 +4,13 @@
 
     import * as models from '../../models'
     import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
+    import { default as OptionInput } from './OptionInput.vue'
 
     export default defineComponent({
         name: "RadioField",
+        components: {
+            OptionInput
+        },
         props: {
             model: {
                 type: null as PropType<models.OptionsField> | null,
@@ -39,7 +43,9 @@
 
 
 <template>
-     <div v-for="option in model.options.$values" :key="option.id">
-        <input type="radio" :name="name" :id="option.id" :value="option.id" @change="setOptionSelection(option.id, $event.target.checked)" /> <label :for="option.id">{{this.getConcatenatedOptionLabels(option)}}</label>
+    <div v-for="option in model.options.$values" :key="option.id">
+        <!--<input type="radio" :name="name" :id="option.id" :value="option.id" @change="setOptionSelection(option.id, $event.target.checked)" /> 
+        <label :for="option.id">{{this.getConcatenatedOptionLabels(option)}}</label>-->
+        <OptionInput :name="name" field-type="radio" :model="option" />
     </div>
 </template>
