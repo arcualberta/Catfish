@@ -1,7 +1,6 @@
 <script lang="ts">
     import { defineComponent, PropType, computed } from 'vue'
     
-
     import * as models from '../../models'
     import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
 
@@ -23,13 +22,9 @@
                 require: false,
                 default: "text"
             },
-            index: {
+            numericStep: {
                 type: null as PropType<number> | null,
-                require: false
-            },
-            fieldModel: {
-                type: null as PropType<models.MonolingualTextField> | null,
-                required: false
+                default: null
             }
 			
         },
@@ -43,11 +38,7 @@
             })
 
             return {
-                content,
-                isMultiLines: p.isMultiline,
-                index: p.index,
-                fieldModel: p.fieldModel,
-                formStore
+                content
             }
         }
 	
@@ -55,13 +46,12 @@
 </script>
 
 <template>
-     <div v-if=" isMultiLines === true"  >
+     <div v-if="isMultiline === true"  >
         <textarea cols="30" rows="2" v-model="content"  />
      </div>
      <div v-else>
-         <input v-if="fieldType == 'text'" type="text" v-model="content" class="resized-textbox" />
+         <input v-if="numericStep" :step="numericStep" :type="fieldType" v-model="content" class="resized-textbox" />
          <input v-else :type="fieldType" v-model="content" class="resized-textbox" />
-         <span v-if="index > 0" class="fa remove-circle" @click="formStore.removeMonolingualValue(fieldModel, index)"> x </span>
      </div>
 </template>
 

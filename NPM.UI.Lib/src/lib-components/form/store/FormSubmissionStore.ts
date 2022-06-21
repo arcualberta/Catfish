@@ -70,10 +70,10 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 console.log(JSON.stringify(option.extendedValues.$values))
             }
         },
-        removeExtendedOptionValue(id: Guid, idx: number) {
+        removeExtendedOptionValue(id: Guid, index: number) {
             const option = this.optionModels.find(field => field.id === id);
             if (option) {
-                option.extendedValues.$values.splice(idx, 1);
+                option.extendedValues.$values.splice(index, 1);
             }
         },
        updateFileReference(fieldId: Guid, file: File) {
@@ -130,28 +130,25 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 
             }
         },
-
         appendMonolingualValue(target: models.MonolingualTextField) {
-
             const newText = helpers.createTextElement();
             target.values?.$values.push(newText);
-            
         },
-
-        removeMonolingualValue(target: models.MonolingualTextField, index: number) {
-            target.values?.$values.splice(index, 1);
+        removeMonolingualValue(target: models.MonolingualTextField, id: Guid) {
+            const index = target.values?.$values.findIndex(txt => txt.id === id) as number;
+            if (index >= 0 )
+                target.values?.$values.splice(index, 1);
         },
-
         appendMutilingualValue(target: models.MultilingualTextField) {
             const languages = target.values?.$values[0] ? helpers.getLanguages(target.values?.$values[0]) : ["en"];
             const newMultilingualValue = helpers.createMultilingualValueElment(languages);
           
             target.values?.$values.push(newMultilingualValue);
         },
-
-        removeMutilingualValue(target: models.MultilingualTextField, index: number) {
-            
-            target.values?.$values.splice(index, 1);
+        removeMutilingualValue(target: models.MultilingualTextField, id: Guid) {
+            const index = target.values?.$values.findIndex(txtCollection => txtCollection.id === id) as number;
+            if (index >= 0)
+                target.values?.$values.splice(index, 1);
         },
 
     }

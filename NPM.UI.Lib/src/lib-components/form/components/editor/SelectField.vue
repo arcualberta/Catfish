@@ -45,7 +45,5 @@
             <option disabled value="">Please select one</option>
             <option v-for="option in model.options.$values" :id="option.id" :value="option.id" :key="option.id" @change="setOptionSelection(option.id, option.seledcted)">{{this.getConcatenatedOptionLabels(option)}}</option>
         </select>
-        Selected: {{JSON.stringify(model.options.$values)}}
-
     </div>
 </template>
