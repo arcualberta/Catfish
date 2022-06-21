@@ -28,6 +28,6 @@
 <template>
     <div v-for="val in model.values.$values" :key="val.id" class="multilingualField">
         <TextCollectionInput :model="val" :is-multiline="true" />
-        <span v-if="model?.values?.$values?.length > 1" class="fa remove-circle" @click="formStore.removeMutilingualValue(model, val.id)"> x </span>
+        <span v-if="model?.values?.$values?.length > 1" class="fa remove-circle" style="margin-left: 30%; padding-right: 3px; padding-left: 2px; padding-bottom: 6px;"  @click="formStore.removeMutilingualValue(model, val.id)"> x </span>
     </div>
 </template>
