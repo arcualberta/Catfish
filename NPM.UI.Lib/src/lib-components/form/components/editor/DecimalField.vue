@@ -41,6 +41,6 @@
 <template>
     <div v-for="val in model?.values?.$values" :key="val.id">
         <TextInput :model="val" field-type="number" :field-model="model" numeric-step="numericStep" />
-        <span v-if="model?.values?.$values?.length > 1" class="fa remove-circle" @click="formStore.removeMonolingualValue(model, val.id)"> x </span>
+        <span v-if="model?.values?.$values?.length > 1" class="fa remove-circle" style="margin-left: 30%; padding-right: 3px; padding-left: 2px; padding-bottom: 6px;" @click="formStore.removeMonolingualValue(model, val.id)"> x </span>
     </div>
 </template>
