@@ -41,6 +41,7 @@ export const actions: ActionTree<State, any> = {
     },
 
     [Actions.DELETE](store) {
+        console.log("Delete Action Started");
         const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
             `/applets/api/items/deleteItem/${store.state.id}`;
         console.log('Item Delete API: ', api)
@@ -57,16 +58,36 @@ export const actions: ActionTree<State, any> = {
                     //"Content-Type": "multipart/form-data"
                     "encType": "multipart/form-data"
                 }
-            }).then(response =>
-                response.json())
-            .then(data => {
-                console.log(JSON.stringify(data));
-                store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
-                //store.commit(Mutations.SET_ITEM, data);
-
+            }).then(response => {
+                //response.json()
+                console.log(response.status)
+                switch (response.status) {
+                    case 200:
+                        window.location.href = "/";
+                        //alert("TODO: change me to redirect to home page.");
+                        break;
+                    case 401:
+                        alert("Authorization failed.")
+                        break;
+                    case 404:
+                        alert("Item not found.")
+                        break;
+                    case 500:
+                        alert("Internal server error occurred.")
+                        break;
+                    default:
+                        alert("Unknown error occurred.")
+                        break;
+                }
             })
+            //.then(data => {
+            //    console.log(JSON.stringify(data));
+            //    store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
+            //    //store.commit(Mutations.SET_ITEM, data);
+
+            //})
             .catch(error => {
-                console.log(error)
+                console.log("error",error)
             });
     },
 
