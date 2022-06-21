@@ -78,7 +78,11 @@
                 isEditable,
                 isModified: computed(() => (store.state as State).modified),
                 save: () => store.dispatch(Actions.SAVE),
-                deleteItem: () => store.dispatch(Actions.DELETE),
+                deleteItem: () => {
+                    if (confirm("Do you really want to delete this item?"))
+                        store.dispatch(Actions.DELETE)
+                },
+                    
             }
         },
         storeConfig: {
