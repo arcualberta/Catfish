@@ -51,15 +51,14 @@
 <template>
     <input :type="fieldType" :name="name" :id="model.id" :value="model.id" @change="setOptionSelection(model.id, $event.target.checked)" />
     <label :for="model.id"> {{concatenatedOptionLabel}}</label>
-    <div v-if="model.extendedOption && model.selected">
+    <div v-if="model.extendedOption && model.selected" class="extended-list">
         <ul>
             <li v-for="(val, index) in extendedValues" :key="index">
                 {{val}}
-                <span class="fa remove-circle" style="margin-left: 30%; padding-right: 3px; padding-left: 2px; padding-bottom: 6px;" @click="removeExtendedValue(index)"> x </span>
+                <span class="remove-field"  @click="removeExtendedValue(index)"> x </span>
             </li>
         </ul>
-        <br />
-        <input type="text" :id="model.id + '_extended'" v-model="extendedValueInput" />
-        <button @click="addExtendedValue">Add</button>
+        <input type="text" :id="model.id + '_extended'" v-model="extendedValueInput" class="resized-textbox"/>
+        <button @click="addExtendedValue" class="extended-text-btn">+</button>
     </div>
 </template>
