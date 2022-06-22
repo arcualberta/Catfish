@@ -155,7 +155,9 @@ Any public disclosures of information from the directory will be in aggregate fo
             (publicShow = rdForm.CreateField<RadioField>("Show position on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
             publicShow.Id = SHOW_POSITION_ID;
 
-            rdForm.CreateField<TextField>("Faculty/Department/Organization", lang, true).Id = ORGANIZATION_ID;
+            var orgUnit = rdForm.CreateField<TextField>("Faculty/Department/Organization", lang, true);
+            orgUnit.AllowMultipleValues = true;
+            orgUnit.Id = ORGANIZATION_ID;
 
 
             //////////////////////////////////////                         SECTION 2    ////////////////////////////////////////////////////////////////////////////////
