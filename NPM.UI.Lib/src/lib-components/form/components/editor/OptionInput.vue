@@ -55,10 +55,10 @@
         <ul>
             <li v-for="(val, index) in extendedValues" :key="index">
                 {{val}}
-                <span class="fa remove-circle" style="padding-right: 3px; padding-left: 2px; padding-bottom: 6px;" @click="removeExtendedValue(index)"> x </span>
+                <span class="remove-field"  @click="removeExtendedValue(index)"> x </span>
             </li>
         </ul>
         <input type="text" :id="model.id + '_extended'" v-model="extendedValueInput" class="resized-textbox"/>
-        <button @click="addExtendedValue" class="extended-text-btn">Add</button>
+        <button @click="addExtendedValue" class="extended-text-btn">+</button>
     </div>
 </template>
