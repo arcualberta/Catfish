@@ -2,16 +2,14 @@
     import { defineComponent, PropType } from "vue";
     import * as models from '../../models'
 
-    import SingleText from './SingleText.vue'
+    import TextInput from './TextInput.vue'
 
     export default defineComponent({
         name: "DateField",
 
         components: {
-            SingleText
+            TextInput
         },
-
-        
         props: {
             model: {
                 type: null as PropType<models.MonolingualTextField> | null,
@@ -29,9 +27,8 @@
 
 
 <template>
-    <div v-for="val in model?.values?.$values" :key="val">
-        <SingleText :model="val" :is-multiline="false"  field="date" :fieldModel="model" />
+    <div v-for="val in model?.values?.$values" :key="val.id">
+        <TextInput :model="val" field-type="date" :field-model="model" />
+        <span v-if="model?.values?.$values?.length > 1" class="remove-field" @click="formStore.removeMonolingualValue(model, val.id)"> x </span>
     </div>
-
-
 </template>

@@ -2,29 +2,24 @@
     import { defineComponent, PropType } from "vue";
     import { useFormSubmissionStore } from '../../store/FormSubmissionStore'
     import * as models from '../../models'
-    import SingleText from './SingleText.vue'
+    import TextInput from './TextInput.vue'
+
     export default defineComponent({
         name: "EmailField",
         components:{
-            SingleText
+            TextInput
         },
         props: {
             model: {
                 type: null as PropType<models.MonolingualTextField> | null,
                 required: true
             },
-            //isMultivalued:
-            //{
-            //    type: Boolean,
-            //    required: false,
-            //    default: false
-            //}
         },
         setup() {
             const formStore = useFormSubmissionStore();
 
             return {
-                formStore
+                formStore,
             }
         }
         
@@ -33,11 +28,8 @@
 
 
 <template>
-    <div v-for="(val, index) in model?.values?.$values" :key="val" class="monoLingualField">
-        <SingleText :model="val" :isMultiline="false" fieldType="email" :index="index" :fieldModel="model" />
-
+    <div v-for="val in model?.values?.$values" :key="val.id" class="monoLingualField">
+        <TextInput :model="val" field-type="email" :field-model="model" />
+        <span v-if="model?.values?.$values?.length > 1" class="remove-field"  @click="formStore.removeMonolingualValue(model, val.id)"> x </span>
     </div>
-    <!--<span class="fa plus-circle" @click="formStore.appendMonolingualValue(model)"> + </span>-->
-
-   
 </template>

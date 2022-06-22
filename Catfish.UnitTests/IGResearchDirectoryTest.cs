@@ -21,6 +21,8 @@ using Google.Apis.Drive.v3.Data;
 using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Util.Store;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Catfish.UnitTests
 {
@@ -123,7 +125,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 .AppendContent("div", @"Fields identified by <span style='color: Red;'>*</span> are mandatory", lang, "alert alert-warning");
             rdForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h3", @"Section 1: Contact Information", lang, "alert alert-info");
-            var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true,true);
+            var applicantEmail = rdForm.CreateField<EmailField>("Email address", lang, true);
             applicantEmail.IsListEntryTitle = true;
             applicantEmail.Id = EMAIL_ID;
 
@@ -153,7 +155,9 @@ Any public disclosures of information from the directory will be in aggregate fo
             (publicShow = rdForm.CreateField<RadioField>("Show position on my public profile", lang, new String[] { "Yes", "No" }, true)).Required = true;
             publicShow.Id = SHOW_POSITION_ID;
 
-            rdForm.CreateField<TextField>("Faculty/Department/Organization", lang, true).Id = ORGANIZATION_ID;
+            var orgUnit = rdForm.CreateField<TextField>("Faculty/Department/Organization", lang, true);
+            orgUnit.AllowMultipleValues = true;
+            orgUnit.Id = ORGANIZATION_ID;
 
 
             //////////////////////////////////////                         SECTION 2    ////////////////////////////////////////////////////////////////////////////////
@@ -213,10 +217,11 @@ Any public disclosures of information from the directory will be in aggregate fo
             definedkeys.Id = KEYWORDS_ID;
             definedkeys.CssClass = "multiSelectKeywords";
             definedkeys.SolrFieldType = eSolrFieldType._ss;
+            definedkeys.Options.Last().ExtendedOption = true;
 
-            var undefinedKeys = rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, false);
-            undefinedKeys.CssClass = "undefinedKeys";
-            undefinedKeys.Id = ADDITIONAL_KEYWORDS_ID;
+            ////var undefinedKeys = rdForm.CreateField<TextField>("Please add keywords that are specific to your research area not already identified above.", lang, false);
+            ////undefinedKeys.CssClass = "undefinedKeys";
+            ////undefinedKeys.Id = ADDITIONAL_KEYWORDS_ID;
 
 
             //////////////////////////////////////                         SECTION 4    ////////////////////////////////////////////////////////////////////////////////
@@ -237,11 +242,13 @@ Any public disclosures of information from the directory will be in aggregate fo
             commProj.Cols = 50;
             commProj.Rows = 2;
 
-            rdForm.CreateField<TextField>("Please provide links to your work. We hope directory users can learn more about your research and community work.", lang, true)
+            var webLink = rdForm.CreateField<TextField>("Please provide links to your work. We hope directory users can learn more about your research and community work.", lang, true)
                 .SetDescription(@"Examples: Websites/blogs, social media pages/accounts (FB, IG, Twitter, tumblr, etc.) <br/>
                              Publications/reports or other digital content relevant to your work (google scholar, Academia.edu). 
-                             Digital media (radio, podcast)", lang)
-                .Id = EXTERNAL_LINKS_ID;
+                             Digital media (radio, podcast)", lang) as TextField;
+            webLink.Id = EXTERNAL_LINKS_ID;
+            webLink.AllowMultipleValues = true;
+
             (publicShow = rdForm.CreateField<RadioField>("Show links to my work on my public profile", lang, new String[] {"Yes", "No"}, true)).Required = true;
             publicShow.Id = SHOW_EXTERNAL_LINKS_ID;
 
@@ -419,11 +426,14 @@ Any public disclosures of information from the directory will be in aggregate fo
             // Added state referances
             listSubmissionsAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(deleteState.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
             // ================================================
@@ -435,13 +445,16 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
 
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
+            viewDetailsSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(approvedState.Id)
+            viewDetailsSubmissionAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(deleteState.Id)
+            viewDetailsSubmissionAction.AddStateReferances(deleteState.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
 
@@ -474,12 +487,13 @@ Any public disclosures of information from the directory will be in aggregate fo
             }
 
             //Defining state referances
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
+            editSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
                 .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(approvedState.Id)
+            editSubmissionAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(adminRole.Id);
-            listSubmissionsAction.AddStateReferances(deleteState.Id)
+            editSubmissionAction.AddStateReferances(deleteState.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
 
@@ -509,13 +523,14 @@ Any public disclosures of information from the directory will be in aggregate fo
             ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
             ////////    .AddOwnerAuthorization();
             deleteSubmissionAction.GetStateReference(submittedState.Id, true)
-                .AddAuthorizedRole(adminRole.Id);
+                .AddAuthorizedRole(adminRole.Id)
+                .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id); ;
             deleteSubmissionAction.GetStateReference(approvedState.Id, true)
                 .AddAuthorizedRole(adminRole.Id);
 
-            // ================================================
+            // =========================================================
             // Change State submission-instances related workflow items
-            // ================================================
+            // =========================================================
 
             GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
             changeStateAction.Access = GetAction.eAccess.Restricted;
@@ -571,8 +586,7 @@ Any public disclosures of information from the directory will be in aggregate fo
                 "Diversity","Environment", "Ethics", "Family", "Feminism", "Feminist Theory",  "Film", "Gender", "Genderqueer","Government",
                 "Health", "History", "Human Rights", "Identity", "Immigration",  "Indigenous", "Inequality", " International", "Intersectionality", "Language", "Law", "Literature", "Marginalized population", "Masculinities", "Media", "Mental health"," Mothering",
                 "Pedagogy", "Policy", "Politics", "Qualitative", "Research","Queer", "Quare", "Race", "Relation", "Religion", "Sex", "Sexuality",
-                "Science", "Sport", "Social justice", "Transgender", " Two-spirit", "Violence", "Work"
-
+                "Science", "Sport", "Social justice", "Transgender", " Two-spirit", "Violence", "Work", "Another (specify)"
             }
             .Select(kw => kw.Trim())
             .ToArray();
@@ -605,13 +619,11 @@ Any public disclosures of information from the directory will be in aggregate fo
                     option = field.Options.FirstOrDefault(opt => opt.OptionText.GetConcatenatedContent("").ToLower() == "another");
                     if (option != null)
                     {
-
-
                         option.Selected = true;
-                        if (string.IsNullOrEmpty(option.ExtendedValue))
-                            option.ExtendedValue = val;
+                        if (option.ExtendedValues == null)
+                            option.ExtendedValues = val.Split(";");
                         else
-                            option.ExtendedValue = option.ExtendedValue + ";" + val;
+                            option.ExtendedValues = option.ExtendedValues.Union(val.Split(";")).ToArray();
                     }
                     else
                         throw new Exception(string.Format("Unknown option value {0} found for the option-field {1}", val, field.Name.GetConcatenatedContent("/")));
@@ -795,10 +807,15 @@ Any public disclosures of information from the directory will be in aggregate fo
                         string[] controlledInputKeywords = inputKeywords.Intersect(controlledKeywords).ToArray();
                         setOptionValues(keywordsField, string.Join(";", controlledInputKeywords), ";", null);
 
+                        //Take any additional keywords athta are not defined in the controlled-input-keyword list and then add them as addtional keywords to the last entry in
+                        ////the controlled keyword list with "extended" property set to true
                         var additionalKeywords = inputKeywords.Where(kw => !controlledKeywords.Contains(kw)).ToArray();
-                        var addionalKeywordsField = _newDataItem.Fields.FirstOrDefault(f => f.Id == ADDITIONAL_KEYWORDS_ID) as TextField;
-                        for (int valIndex = 0; valIndex < additionalKeywords.Length; ++valIndex)
-                            addionalKeywordsField.SetValue(additionalKeywords[valIndex], lang, valIndex);
+                        if(additionalKeywords.Length > 0)
+                        {
+                            var extendedOption = keywordsField.Options.Last(opt => opt.ExtendedOption);
+                            extendedOption.Selected = true;
+                            extendedOption.ExtendedValues = additionalKeywords;
+                        }
                     }
                     else if (colHeading == "faculty_or_department")
                     {
@@ -1388,6 +1405,33 @@ Any public disclosures of information from the directory will be in aggregate fo
             InitFieldAggregations(template);
 
             template.Data.Save(templateFileName);
+        }
+
+        [Test]
+        public void ExtendedOptionDeserializationTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\extended-option-sample2.json";
+            var settings = new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            //Option src = new Option();
+            //src.SetOptionText("Another", "en");
+            //src.ExtendedOption = true;
+            //src.ExtendedValues = new string[] { "Test 1", "Test 2", "Test 3", "Test 4" };
+            //System.IO.File.WriteAllText(file, JsonConvert.SerializeObject(src, settings));
+
+            string data = System.IO.File.ReadAllText(file);
+
+            Option option = JsonConvert.DeserializeObject<Option>(data, settings);
+
+            option.Data.Save(file.Substring(0, file.LastIndexOf('.') + 1) + "xml");
+            var extendedOptions = option.ExtendedValues;
+            Assert.IsTrue(option.ExtendedOption);
+            Assert.AreEqual(4, extendedOptions.Length);
         }
 
     }

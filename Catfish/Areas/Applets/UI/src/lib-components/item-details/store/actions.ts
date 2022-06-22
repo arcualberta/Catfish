@@ -9,6 +9,7 @@ export enum Actions {
     GET_USER_ACTIONS = "GET_USER_ACTIONS",
     CHANGE_STATE = "CHANGE_STATE",
     SAVE = "SAVE",
+    DELETE = "DELETE",
 }
 
 export const actions: ActionTree<State, any> = {
@@ -38,6 +39,58 @@ export const actions: ActionTree<State, any> = {
                 store.commit(Mutations.SET_USER_PERMISSIONS, data);
             });
     },
+
+    [Actions.DELETE](store) {
+        console.log("Delete Action Started");
+        const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
+            `/applets/api/items/deleteItem/${store.state.id}`;
+        console.log('Item Delete API: ', api)
+
+        const item = store.state.item;
+        //Validating the forms
+        if (!item)
+            return;
+
+        fetch(api,
+            {
+                method: "post",
+                headers: {
+                    //"Content-Type": "multipart/form-data"
+                    "encType": "multipart/form-data"
+                }
+            }).then(response => {
+                //response.json()
+                console.log(response.status)
+                switch (response.status) {
+                    case 200:
+                        window.location.href = "/";
+                        //alert("TODO: change me to redirect to home page.");
+                        break;
+                    case 401:
+                        alert("Authorization failed.")
+                        break;
+                    case 404:
+                        alert("Item not found.")
+                        break;
+                    case 500:
+                        alert("Internal server error occurred.")
+                        break;
+                    default:
+                        alert("Unknown error occurred.")
+                        break;
+                }
+            })
+            //.then(data => {
+            //    console.log(JSON.stringify(data));
+            //    store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
+            //    //store.commit(Mutations.SET_ITEM, data);
+
+            //})
+            .catch(error => {
+                console.log("error",error)
+            });
+    },
+
     [Actions.SAVE](store) {
 
         const api = (store.state.siteUrl ? store.state.siteUrl : window.location.origin) +
