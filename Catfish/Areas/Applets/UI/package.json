@@ -22,11 +22,14 @@
     "postbuild": "rimraf ../../../wwwroot/assets/dist/applets/types/dev ../../../wwwroot/assets/dist/applets/types/src/entry.d.ts && copyfiles -f src/styles/*.css ../../../wwwroot/assets/dist/applets/styles/ && copyfiles -f src/manager-js/*.js ../../../wwwroot/assets/dist/applets/manager-js/"
   },
   "dependencies": {
+    "@arcualberta/catfish-ui": "file:../../../../NPM.UI.Lib/arcualberta-catfish-ui-1.0.0.tgz",
     "@tinymce/tinymce-vue": "^4.0.5",
     "copyfiles": "^2.4.1",
     "dayjs": "^1.10.7",
     "guid-typescript": "^1.0.9",
+    "pinia": "^2.0.14",
     "ts-node": "^10.4.0",
+    "vue-demi": "^0.13.1",
     "vue-editor-js": "^2.0.2",
     "vuex": "^4.0.2"
   },
