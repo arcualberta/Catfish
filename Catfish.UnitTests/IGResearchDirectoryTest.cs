@@ -427,7 +427,8 @@ Any public disclosures of information from the directory will be in aggregate fo
             listSubmissionsAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
                 .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
-                .AddOwnerAuthorization();
+                .AddOwnerAuthorization()
+                .AddAuthorizedDomain("ualberta.ca");
             listSubmissionsAction.AddStateReferances(approvedState.Id)
                 .AddAuthorizedRole(adminRole.Id)
                 .AddAuthorizedUserByEmailField(FORM_ID, applicantEmail.Id)
