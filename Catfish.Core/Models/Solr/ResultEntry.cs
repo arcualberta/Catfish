@@ -10,6 +10,7 @@ namespace Catfish.Core.Models.Solr
     {
         public Guid Id { get; set; }
         public Guid TemplateId { get; set; }
+        public Guid RootFormInstaceId { get; set; }
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
         public Guid StatusId { get; set; }
@@ -31,6 +32,13 @@ namespace Catfish.Core.Models.Solr
                 .Select(ele => ele.Value)
                 .FirstOrDefault();
             TemplateId = string.IsNullOrEmpty(valStr) ? Guid.Empty : Guid.Parse(valStr);
+
+            //set the root form instance ID
+            valStr = doc.Elements("str")
+                .Where(ele => ele.Attribute("name").Value == "root_form_instance_id_s")
+                .Select(ele => ele.Value)
+                .FirstOrDefault();
+            RootFormInstaceId = string.IsNullOrEmpty(valStr) ? Guid.Empty : Guid.Parse(valStr);
 
             //set the created date
             valStr = doc.Elements("date")

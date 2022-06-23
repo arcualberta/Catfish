@@ -6,6 +6,7 @@ namespace Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels
     public class ResultItem
     {
         public Guid Id { get; set; }
+        public Guid RootFormInstaceId { get; set; }
         public string Title { get; set; }
         public string Subtitle { get; set; }
         public string Content { get; set; }

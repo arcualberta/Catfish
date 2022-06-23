@@ -29,6 +29,11 @@ namespace Catfish.Core.Models.Solr
             AddField("created_dt", src.Created);
             AddField("updated_dt", src.Updated);
 
+            //Root form instance ID
+            Guid? rootFormInstanceId = src.DataContainer?.FirstOrDefault(dc => dc.IsRoot)?.Id;
+            if(rootFormInstanceId.HasValue)
+                AddField("root_form_instance_id_s", rootFormInstanceId.Value);
+
             foreach (var child in src.MetadataSets)
                 AddContainerFields("metadata", child, indexFieldNames);
 
@@ -46,8 +51,6 @@ namespace Catfish.Core.Models.Solr
             //is not defined. 
             Guid? containerId = container.TemplateId != null ? container.TemplateId : container.Id;
             string solrContainerNamePrefix = string.Format("{0}_{1}", containerPrefix, containerId);
-            string solrContainerIdFieldName = string.Format("{0}_{1}_container_instance_id_s", containerPrefix, containerId);
-            AddField(solrContainerIdFieldName, container.Id);
 
             foreach (var field in container.Fields)
             {

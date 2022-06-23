@@ -65,6 +65,7 @@ namespace Catfish.Areas.Applets.Controllers
             {
 
                 resultItem.Id = resultEntry.Id;
+                resultItem.RootFormInstaceId = resultEntry.RootFormInstaceId;
                 resultItem.Date = resultEntry.Created;
                 string solrFieldId = "";
                 foreach (var field in resultEntry.Fields)
@@ -148,6 +149,7 @@ namespace Catfish.Areas.Applets.Controllers
                 {
                     ResultItem resultItem = new ResultItem();
                     resultItem.Id = resultEntry.Id;
+                    resultItem.RootFormInstaceId = resultEntry.RootFormInstaceId;
                     resultItem.Date = resultEntry.Created;
                     string solrFieldId = "";
                     foreach(var field in resultEntry.Fields)
