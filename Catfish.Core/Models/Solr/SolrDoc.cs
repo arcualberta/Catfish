@@ -40,15 +40,18 @@ namespace Catfish.Core.Models.Solr
 
         protected void AddContainerFields(string containerPrefix, FieldContainer container, bool indexFieldNames)
         {
-            foreach(var field in container.Fields)
-            {
-                //Backword compatibility fix: new items use MedataSet.TemplateId as the container ID part of the field name. However, this TemplateId
-                //was introduced recently and the items created prior to introducing this TemplateId uses MetadataSet.Id as the container ID. Therefore,
-                //in the statement below, we take the TemplateId as the container ID if it's defined but use the actual container's ID if the TemplateId
-                //is not defined. 
-                Guid? containerId = container.TemplateId != null ? container.TemplateId : container.Id;
+            //Backword compatibility fix: new items use MedataSet.TemplateId as the container ID part of the field name. However, this TemplateId
+            //was introduced recently and the items created prior to introducing this TemplateId uses MetadataSet.Id as the container ID. Therefore,
+            //in the statement below, we take the TemplateId as the container ID if it's defined but use the actual container's ID if the TemplateId
+            //is not defined. 
+            Guid? containerId = container.TemplateId != null ? container.TemplateId : container.Id;
+            string solrContainerNamePrefix = string.Format("{0}_{1}", containerPrefix, containerId);
+            string solrContainerIdFieldName = string.Format("{0}_{1}_container_instance_id_s", containerPrefix, containerId);
+            AddField(solrContainerIdFieldName, container.Id);
 
-                string solrFieldName = string.Format("{0}_{1}_{2}", containerPrefix, containerId, field.Id);
+            foreach (var field in container.Fields)
+            {
+                string solrFieldName = string.Format("{0}_{1}", solrContainerNamePrefix, field.Id);
                 if (typeof(TextField).IsAssignableFrom(field.GetType()))
                 {
                     solrFieldName += "_ts";
