@@ -33,7 +33,7 @@ namespace Catfish.UnitTests
         public void AudioRecordingFormTest()
         {
             string lang = "en";
-            string templateName = "Audio Recorder Form Template";
+            string templateName = "Audio Recorder Form Template 2";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -156,51 +156,51 @@ namespace Catfish.UnitTests
         }
 
 
-        private EmailTemplate CreateApplicantEmailTemplate(ref ItemTemplate template, string formName=null)
-        {
-            string lang = "en";
-            EmailTemplate applicantNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
-            applicantNotification.SetDescription("This metadata set defines the email template to be sent to the applicant.", lang);
-            string body = @"<p>Thank you very much for your interest in the TBLT community of practice. We will review your request and we will get back to you in the next few days.</p>   
-                             <br/><p> Kind regards,</p>
-                             <p>The leadership team</p> ";
-            string subject = "Join Task-based Language Teaching";
-            if (!string.IsNullOrEmpty(formName) && formName.Equals("SubmitResource"))
-            {
-                body = @"<p>Thank you very much for your resource(s) suggestion. We will review it and add to our collection.</p>   
-                             <br/><p> Kind regards,</p>
-                             <p>The leadership team</p>";
-                subject = "Submit Resource(s)";
-            }
+        //private EmailTemplate CreateApplicantEmailTemplate(ref ItemTemplate template, string formName=null)
+        //{
+        //    string lang = "en";
+        //    EmailTemplate applicantNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
+        //    applicantNotification.SetDescription("This metadata set defines the email template to be sent to the applicant.", lang);
+        //    string body = @"<p>Thank you very much for your interest in the TBLT community of practice. We will review your request and we will get back to you in the next few days.</p>   
+        //                     <br/><p> Kind regards,</p>
+        //                     <p>The leadership team</p> ";
+        //    string subject = "Join Task-based Language Teaching";
+        //    if (!string.IsNullOrEmpty(formName) && formName.Equals("SubmitResource"))
+        //    {
+        //        body = @"<p>Thank you very much for your resource(s) suggestion. We will review it and add to our collection.</p>   
+        //                     <br/><p> Kind regards,</p>
+        //                     <p>The leadership team</p>";
+        //        subject = "Submit Resource(s)";
+        //    }
 
            
-            applicantNotification.SetSubject(subject);
-            applicantNotification.SetBody(body);
+        //    applicantNotification.SetSubject(subject);
+        //    applicantNotification.SetBody(body);
 
-            return applicantNotification;
+        //    return applicantNotification;
 
-        }
+        //}
 
-        private EmailTemplate CreateEditorEmailTemplate(ref ItemTemplate template, string formName=null)
-        {
-            string lang = "en";
-            EmailTemplate applicantNotification = template.GetEmailTemplate("Admin Notification", lang, true);
-            applicantNotification.SetDescription("This metadata set defines the email template to be sent to the portal admin.", lang);
+        //private EmailTemplate CreateEditorEmailTemplate(ref ItemTemplate template, string formName=null)
+        //{
+        //    string lang = "en";
+        //    EmailTemplate applicantNotification = template.GetEmailTemplate("Admin Notification", lang, true);
+        //    applicantNotification.SetDescription("This metadata set defines the email template to be sent to the portal admin.", lang);
            
-            string body = "<p>An application to join the TBLT CoP has been received and is awaiting your approval.</p>";
-            string subject = "Join TBLT CoP Request";
-            if (!string.IsNullOrEmpty(formName) && formName.Equals("SubmitResource"))
-            {
-                body = "<p>Resources have been suggested and are awaiting your approval.</p>";
-                subject = "Submit Resource(s)";
-            }
+        //    string body = "<p>An application to join the TBLT CoP has been received and is awaiting your approval.</p>";
+        //    string subject = "Join TBLT CoP Request";
+        //    if (!string.IsNullOrEmpty(formName) && formName.Equals("SubmitResource"))
+        //    {
+        //        body = "<p>Resources have been suggested and are awaiting your approval.</p>";
+        //        subject = "Submit Resource(s)";
+        //    }
       
-            applicantNotification.SetSubject(subject);
-            applicantNotification.SetBody(body);
+        //    applicantNotification.SetSubject(subject);
+        //    applicantNotification.SetBody(body);
 
-            return applicantNotification;
+        //    return applicantNotification;
 
-        }
+        //}
         private void Define_AR_RolesStatesWorkflow1(Workflow workflow, ref ItemTemplate template, DataItem wrForm)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
@@ -208,12 +208,12 @@ namespace Catfish.UnitTests
 
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
-
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
-
+            State approvedState = workflow.AddState(ws.GetStatus(template.Id, "Approved", true));
+            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
 
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Portal_Admin", true));
-           
+
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                     Submitting an form
@@ -244,10 +244,10 @@ namespace Catfish.UnitTests
             //applicantNotificationEmailTrigger.AddRecipientByDataField(wrForm.Id, applicantEmail.Id);
             //applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Writer-in-Resident Application Notification");
 
-            
+
             ////Defining trigger refs
             //submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant's Notification Email Trigger", submittedState.Id, true);
-           
+
 
 
 
@@ -263,10 +263,12 @@ namespace Catfish.UnitTests
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
             // Added state referances
             listSubmissionsAction.AddStateReferances(submittedState.Id)
-                   //.AddOwnerAuthorization()
+                  //.AddOwnerAuthorization()
                   .AddAuthorizedRole(adminRole.Id);
-
-
+            listSubmissionsAction.AddStateReferances(approvedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+            listSubmissionsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
 
             //Detailed submission bcp forms.
             //Inspectors can view their own submissions.
@@ -274,9 +276,12 @@ namespace Catfish.UnitTests
             GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
             viewSubmissionAction.Access = GetAction.eAccess.Restricted;
             viewSubmissionAction.AddStateReferances(submittedState.Id)
-             //  .AddOwnerAuthorization()
               .AddAuthorizedRole(adminRole.Id);
-           
+            viewSubmissionAction.AddStateReferances(approvedState.Id)
+             .AddAuthorizedRole(adminRole.Id);
+            viewSubmissionAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
             // Edit submission related workflow items
             //Defining actions
             GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
@@ -284,11 +289,14 @@ namespace Catfish.UnitTests
             //Submissions can only be edited by admins
             editSubmissionAction.AddStateReferances(submittedState.Id)
                 .AddAuthorizedRole(adminRole.Id);
-
-            
+          
 
             PostAction editPostActionSubmit = editSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));//(Button Label, ActionName)
-            editPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");//current state, nectStae, buttonLabel
+
+            //ASK Isuru-- if the button label need to be "SUBMIT"
+            editPostActionSubmit.AddStateMapping(submittedState.Id, approvedState.Id, "Approved");//current state, nectStae, buttonLabel
+                                                                                                  //ASK Isuru-- if the button label need to be "SUBMIT"
+            editPostActionSubmit.AddStateMapping(submittedState.Id, rejectedState.Id, "Rejected");//current state, nectStae, buttonLabel
             //editPostActionSubmit.ValidateInputs = false;
 
             //Defining the pop-up for the above postActionSubmit action
@@ -296,6 +304,33 @@ namespace Catfish.UnitTests
             EditActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditActionPopUpopUp.AddButtons("Cancel", "false");
 
+            // ================================================
+            // Delete submission-instances related workflow items
+            // ================================================
+
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", nameof(CrudOperations.Delete), "Details");
+            deleteSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.ValidateInputs = false;
+
+            //Defining state mappings
+            ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(rejectedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postAction action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining state referances
+            ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
+            ////////    .AddOwnerAuthorization();
+            deleteSubmissionAction.GetStateReference(rejectedState.Id, true)
+                .AddAuthorizedRole(adminRole.Id);
+
+         
 
         }
 
