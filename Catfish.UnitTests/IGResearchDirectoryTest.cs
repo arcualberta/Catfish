@@ -1035,6 +1035,8 @@ Any public disclosures of information from the directory will be in aggregate fo
 
             //PLEASE CHANGE THE PATH
             string destinationPath = @"C:\tmp\ig-profile-images-uploaded";
+            if(!Directory.Exists(destinationPath))
+                Directory.CreateDirectory(destinationPath);
 
             IList<Item> Items = _db.Items.ToList();
 
