@@ -3,13 +3,16 @@ using Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels;
 using Catfish.Areas.Applets.Services;
 using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Exceptions;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Reports;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Models.Permissions;
 using Catfish.Core.Services;
+using Catfish.Helper;
 using Catfish.Services;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +25,7 @@ using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -43,7 +47,8 @@ namespace Catfish.Areas.Applets.Controllers
         private readonly ErrorLog _errorLog;
         private readonly IItemAuthorizationHelper _itemAuthorizationHelper;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
-        public ItemsController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, IJobService jobService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
+        private readonly ICatfishAppConfiguration _catfishAppConfig;
+        public ItemsController(IItemAppletService itemAppletService, ISubmissionService submissionService, IEntityTemplateService entityTemplateService, IWorkflowService workflowService, IJobService jobService, AppDbContext appDb, IItemAuthorizationHelper itemAuthorizationHelper, ErrorLog errorLog, Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService, ICatfishAppConfiguration configuration)
 
         {
             _itemAppletService = itemAppletService;
@@ -54,6 +59,7 @@ namespace Catfish.Areas.Applets.Controllers
             _jobService = jobService;
             _authorizationService = authorizationService;
             _appDb = appDb;
+            _catfishAppConfig = configuration;
             _errorLog = errorLog;
         }
 
@@ -444,6 +450,48 @@ namespace Catfish.Areas.Applets.Controllers
             }
 
             
+        }
+
+        [Route("{itemId}/{dataItemId}/{fieldId}/{fileName}")]
+        public IActionResult GetFile(Guid itemId, Guid dataItemId, Guid fieldId, string fileName)
+        {
+            try
+            {
+                var item = _appDb.Items.Where(it => it.Id == itemId).FirstOrDefault();
+                var dataItem = item.DataContainer.Where(di => di.Id == dataItemId).FirstOrDefault();
+                var attField = dataItem.Fields.Where(field => field.Id == fieldId).FirstOrDefault() as AttachmentField;
+                var fileRef = attField.Files.Where(fr => fr.FileName == fileName).FirstOrDefault();
+                if (!_catfishAppConfig.GetPublicAttachmentFieldIds().Contains(fieldId))
+                {
+                    var task = _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read });
+                    task.Wait();
+
+                    if (task.Result.Succeeded)
+                    {
+                        string pathName = Path.Combine(ConfigHelper.GetAttachmentsFolder(false), fileRef.FileName);
+                        if (System.IO.File.Exists(pathName))
+                        {
+                            var data = System.IO.File.ReadAllBytes(pathName);
+                            return File(data, fileRef.ContentType, fileRef.OriginalFileName);
+                        }
+                    }
+                }
+                else
+                {
+                    string pathName = Path.Combine(ConfigHelper.GetAttachmentsFolder(false), fileRef.FileName);
+                    if (System.IO.File.Exists(pathName))
+                    {
+                        var data = System.IO.File.ReadAllBytes(pathName);
+                        return File(data, fileRef.ContentType, fileRef.OriginalFileName);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return NotFound();
         }
     }
 }
