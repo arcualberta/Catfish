@@ -9,8 +9,7 @@ export interface ResultItem {
     thumbnail: URL;
     date: Date;
     detailedViewUrl: URL;
-
-    //MR May 10 2022
+    rootFormInstaceId: Guid;
     solrFields: SolrField[] | null;
 }
 
