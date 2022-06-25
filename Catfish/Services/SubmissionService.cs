@@ -559,6 +559,42 @@ namespace Catfish.Services
             }
 
         }
+
+        public Item EditSubmission(DataItem value, Guid itemId, string action, List<IFormFile> files = null, List<string> fileKeys = null)
+        {
+            try
+            {
+                Item item = _db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+
+                EntityTemplate template = _db.ItemTemplates.FirstOrDefault(temp => temp.Id == item.TemplateId);
+                if (template == null)
+                    throw new Exception("Entity template not found.");
+
+                item.Updated = DateTime.Now;
+
+                DataItem dataItem = item.DataContainer.FirstOrDefault(di => di.Id == value.Id);
+                dataItem.UpdateFieldValues(value);
+                if (files != null && fileKeys != null)
+                    AttachFiles(files, fileKeys, dataItem);
+                item.UpdateReferencedFieldContainers(value);
+
+                User user = _workflowService.GetLoggedUser();
+                item.AddAuditEntry(user != null ? user.Id : Guid.Empty,
+                    dataItem,
+                    item.StatusId.Value,
+                    item.StatusId.Value,
+                    action
+                    );
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
         /// <summary>
         /// this method used to delete an item. in here basically we do a state change to item delete state.
         /// </summary>

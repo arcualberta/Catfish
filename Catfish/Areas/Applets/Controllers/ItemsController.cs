@@ -102,7 +102,7 @@ namespace Catfish.Areas.Applets.Controllers
 
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == id);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
-            bool bypassItemSecurity = ConfigHelper.GetConfigVal("SiteConfig:SiteUrl", false);
+            bool bypassItemSecurity = ConfigHelper.GetConfigVal("SiteConfig:BypassItemSecurity", false);
             if (bypassItemSecurity || (await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
             {
                 var settings = new JsonSerializerSettings()
@@ -120,7 +120,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         //[Route("{templateId:Guid}")]
-        public async Task<ContentResult> PostAsync(Guid itemTemplateId, Guid? groupId, Guid collectionId, [FromForm] String datamodel, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
+        public async Task<ContentResult> PostAsync(Guid itemTemplateId, Guid? groupId, Guid collectionId, [FromForm] string datamodel, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
         {
             var settings = new JsonSerializerSettings()
             {
@@ -155,6 +155,37 @@ namespace Catfish.Areas.Applets.Controllers
             catch (Exception ex)
             {
 
+                return Content("{}", "application/json");
+            }
+            return Content(JsonConvert.SerializeObject("Success", settings), "application/json");
+        }
+
+        [HttpPut]
+        [Route("update-form")]
+        public async Task<ContentResult> UpateFormAsync(Guid itemInstanceId, [FromForm] string datamodel, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
+        {
+            var settings = new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            try
+            {
+                DataItem postedItemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
+                Item updatedInstance = _submissionService.EditSubmission(postedItemInstance, itemInstanceId, "Update");
+
+                bool bypassItemSecurity = ConfigHelper.GetConfigVal("SiteConfig:BypassItemSecurity", false);
+                if (bypassItemSecurity || (await _authorizationService.AuthorizeAsync(User, updatedInstance, new List<IAuthorizationRequirement>() { TemplateOperations.Update })).Succeeded)
+                {
+                    _appDb.SaveChanges();
+                }
+                else
+                    throw new Exception("Permission Denited");
+            }
+            catch (Exception ex)
+            {
                 return Content("{}", "application/json");
             }
             return Content(JsonConvert.SerializeObject("Success", settings), "application/json");

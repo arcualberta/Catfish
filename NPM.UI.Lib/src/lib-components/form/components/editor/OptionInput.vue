@@ -49,7 +49,7 @@
 
 
 <template>
-    <input :type="fieldType" :name="name" :id="model.id" :value="model.id" @change="setOptionSelection(model.id, $event.target.checked)" />
+    <input :type="fieldType" :name="name" :id="model.id" :value="model.id" :checked="model.selected" @change="setOptionSelection(model.id, $event.target.checked)" />
     <label :for="model.id"> {{concatenatedOptionLabel}}</label>
     <div v-if="model.extendedOption && model.selected" class="extended-list">
         <ul>

@@ -24,6 +24,7 @@ namespace Catfish.Services
         List<ItemField> GetAllField(string xml);
         SystemStatus GetStatus(Guid? statusId);
         Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, List<IFormFile> files = null, List<string> fileKeys = null);
+        Item EditSubmission(DataItem value, Guid itemId, string action, List<IFormFile> files = null, List<string> fileKeys = null);
         Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid status, string action, string fileNames = null);
         Item DeleteSubmission(Item item);
         Item AddChild(DataItem value, Guid entityTemplateId, Guid itemId, Guid stateId, Guid buttonId, string fileNames = null);
