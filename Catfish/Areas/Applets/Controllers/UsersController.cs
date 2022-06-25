@@ -17,11 +17,13 @@ namespace Catfish.Areas.Applets.Controllers
 	[EnableCors("CatfishApiPolicy")]
 	public class UsersController : ControllerBase
 	{
-		public UsersController()
+        private readonly SignInManager<User> _signInManager;
+		public UsersController(SignInManager<User> signInManager)
         {
-		}
+            _signInManager = signInManager;
+        }
 
-		[HttpGet]
+        [HttpGet]
 		[Route("current")]
 		public UserInfo CurrentUser()
 		{
@@ -35,5 +37,14 @@ namespace Catfish.Areas.Applets.Controllers
 
 			return info;
 		}
-    }
+
+		[HttpPost]
+		[Route("logout")]
+		public async Task<UserInfo> Logout()
+		{
+			await _signInManager.SignOutAsync();
+			return new UserInfo();
+		}
+
+	}
 }
