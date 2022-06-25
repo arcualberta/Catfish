@@ -37,6 +37,14 @@ namespace Catfish.Core.Helpers
             }
         }
 
+        public static bool GetConfigVal(string name, bool defaultValue)
+        {
+            string val = Configuration.GetSection(name).Value;
+            return string.IsNullOrEmpty(val) ? defaultValue : bool.Parse(val);
+        }
+
+
+
         public static string GetUploadTempFolder(bool createIfNotExist = false)
         {
             string path = Path.Combine(UploadRoot, "temp");

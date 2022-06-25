@@ -102,7 +102,8 @@ namespace Catfish.Areas.Applets.Controllers
 
             Item item = _appDb.Items.FirstOrDefault(it => it.Id == id);
             item.Template = _appDb.EntityTemplates.FirstOrDefault(t => t.Id == item.TemplateId);
-            if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
+            bool bypassItemSecurity = ConfigHelper.GetConfigVal("SiteConfig:SiteUrl", false);
+            if (bypassItemSecurity || (await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
             {
                 var settings = new JsonSerializerSettings()
                 {
