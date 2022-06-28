@@ -87,8 +87,16 @@ export namespace SolrQuery {
                     segments.push(segment)
             });
 
-            const joinResult = segments.join(` ${this.aggregationOperator} `);
-            return this.aggregationOperator === AggregationOperator.AND ? joinResult : `(${joinResult})`;
+            let joinResult = segments.join(` ${this.aggregationOperator} `);
+            joinResult = this.aggregationOperator === AggregationOperator.AND ? joinResult : `(${joinResult})`;
+
+            if (this.excludeIds?.length > 0) {
+                //console.log("Exclude IDs: ", JSON.stringify(this.excludeIds))
+                const excludeIdConstraints = this.excludeIds.map(id => `!(id:${id})`).join(" AND ");
+
+                joinResult = `${joinResult} AND ${excludeIdConstraints}`;
+            }
+            return joinResult;
         }
     }
 
