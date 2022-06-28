@@ -294,15 +294,16 @@ namespace Catfish.UnitTests
             PostAction editPostActionSubmit = editSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));//(Button Label, ActionName)
 
             //ASK Isuru-- if the button label need to be "SUBMIT"
-            editPostActionSubmit.AddStateMapping(submittedState.Id, approvedState.Id, "Approved");//current state, nectStae, buttonLabel
-                                                                                                  //ASK Isuru-- if the button label need to be "SUBMIT"
-            editPostActionSubmit.AddStateMapping(submittedState.Id, rejectedState.Id, "Rejected");//current state, nectStae, buttonLabel
+            editPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");
             //editPostActionSubmit.ValidateInputs = false;
 
             //Defining the pop-up for the above postActionSubmit action
             PopUp EditActionPopUpopUp = editPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
             EditActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditActionPopUpopUp.AddButtons("Cancel", "false");
+
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+              .AddAuthorizedRole(adminRole.Id);
 
             // ================================================
             // Delete submission-instances related workflow items
@@ -330,7 +331,29 @@ namespace Catfish.UnitTests
             deleteSubmissionAction.GetStateReference(rejectedState.Id, true)
                 .AddAuthorizedRole(adminRole.Id);
 
-         
+            // ================================================
+            // Change State submission-instances related workflow items
+            // ================================================
+
+            GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
+            changeStateAction.Access = GetAction.eAccess.Restricted;
+
+            
+            //Defining post actions
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully. </p>");
+
+            //Defining state mappings
+            changeStatePostAction.AddStateMapping(submittedState.Id, approvedState.Id, "Approve");
+            changeStatePostAction.AddStateMapping(submittedState.Id, rejectedState.Id, "Reject");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
+            changeStateActionPopUpopUp.AddButtons("Yes", "true");
+            changeStateActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining states and their authorizatios
+            changeStateAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(adminRole.Id);
 
         }
 
