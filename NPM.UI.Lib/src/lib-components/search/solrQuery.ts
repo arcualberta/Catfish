@@ -1,6 +1,6 @@
-﻿
-export namespace SolrQuery {
+﻿import { Guid } from "guid-typescript";
 
+export namespace SolrQuery {
 
     export enum AggregationOperator {
         AND = "AND",
@@ -52,11 +52,13 @@ export namespace SolrQuery {
         internalId: string | null;
         queryConstraints: QueryConstraintType[];
         aggregationOperator: AggregationOperator;
+        excludeIds: Guid[];
 
         constructor(aggregationOperator: AggregationOperator, internalId?: string) {
             this.internalId = internalId ? internalId : null;
             this.queryConstraints = [];
             this.aggregationOperator = aggregationOperator;
+            this.excludeIds = [];
         }
 
         appendNewFieldConstraint(solrFieldName: string, filedValueOptions: string[], aggregationOperator: AggregationOperator, internalId: string): FieldConstraint {
