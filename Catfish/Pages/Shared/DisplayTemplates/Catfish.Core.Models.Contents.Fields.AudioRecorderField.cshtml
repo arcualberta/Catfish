@@ -1,0 +1,14 @@
+﻿@model Catfish.Core.Models.Contents.Fields.AudioRecorderField;
+
+@{
+    var itemId = ViewData["item-id"];
+    var dataItemId = ViewData["data-item-id"];
+}
+<div class="control field-label col-md-4">@Model.Name.ConcatenatedContent</div>
+<div class="multilingual-input-block field-value col-md-8">
+    @foreach (var f in Model.Files)
+    {
+        string link = string.Format("<a href='/api/items/{0}/{1}/{2}/{3}'>{4}</a>", itemId, dataItemId, Model.Id, f.FileName, f.OriginalFileName);
+        <div data-model-id="@Model.Id">@Html.Raw(link)</div>
+    }
+</div>

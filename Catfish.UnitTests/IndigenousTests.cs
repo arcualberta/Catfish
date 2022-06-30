@@ -73,11 +73,32 @@ namespace Catfish.UnitTests
             bcpForm.CreateField<InfoSection>(null, null)
                  .AppendContent("h1", "Audio Recorder", lang);
                 
-           var name = bcpForm.CreateField<TextField>("Title", lang,true);
+           var name = bcpForm.CreateField<TextField>("Your Name", lang,true);
             name.IsListEntryTitle = true;
-            
-            var country = bcpForm.CreateField<AudioRecorderField>("Record",lang, false, "mp3");
-            bcpForm.CreateField<AttachmentField>("Please attach a headshot of yourself", lang, false);
+            bcpForm.CreateField<TextField>("Your Email or Phone Number", lang, true);
+            bcpForm.CreateField<TextField>("Your Story Title", lang, true);
+            var description = bcpForm.CreateField<TextArea>("Please tell usa little bit about your story", lang, true);
+            description.Cols = 50;
+            description.Rows = 2;
+
+            bcpForm.CreateField<AudioRecorderField>("Record",lang, false, "mp3");
+
+            bcpForm.CreateField<InfoSection>("<div>The fields below are optional</div>", lang, "alert alert-info");
+
+            string[] languages = new string[] { "Inuvialuktun", "English" };
+            bcpForm.CreateField<CheckboxField>("Language", lang, languages,false);
+
+            string[] dialect = new string[] { "Kangiryuarmiutun", "Uummarmiutun", "Sallirmiutun" };
+            bcpForm.CreateField<CheckboxField>("Language", lang, dialect, false);
+
+            bcpForm.CreateField<TextField>("Subject", lang, false);
+            bcpForm.CreateField<TextField>("People", lang, false);
+            bcpForm.CreateField<TextField>("Places", lang, false);
+
+            string[] types = new string[] { "Audio", "Video", "Image", "Text" };
+            bcpForm.CreateField<RadioField>("Type", lang, types, false);
+
+            //  bcpForm.CreateField<AttachmentField>("Please attach a headshot of yourself", lang, false);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
@@ -85,7 +106,7 @@ namespace Catfish.UnitTests
             //
 
             Define_AR_RolesStatesWorkflow1(workflow, ref template, bcpForm);
-           // db.SaveChanges();
+            db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\AudioRecording_generared.xml");
 
