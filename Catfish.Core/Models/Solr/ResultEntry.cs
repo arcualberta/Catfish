@@ -10,8 +10,11 @@ namespace Catfish.Core.Models.Solr
     {
         public Guid Id { get; set; }
         public Guid TemplateId { get; set; }
+        public Guid RootFormInstaceId { get; set; }
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
+        public Guid StatusId { get; set; }
+
         public List<ResultEntryField> Fields { get; set; } = new List<ResultEntryField>();
 
         public ResultEntry(XElement doc)
@@ -30,6 +33,14 @@ namespace Catfish.Core.Models.Solr
                 .FirstOrDefault();
             TemplateId = string.IsNullOrEmpty(valStr) ? Guid.Empty : Guid.Parse(valStr);
 
+            //set the root form instance ID
+            valStr = doc.Elements("str")
+                .Where(ele => ele.Attribute("name").Value == "root_form_instance_id_s")
+                .Select(ele => ele.Value)
+                .FirstOrDefault();
+            RootFormInstaceId = string.IsNullOrEmpty(valStr) ? Guid.Empty : Guid.Parse(valStr);
+
+            //set the created date
             valStr = doc.Elements("date")
                 .Where(ele => ele.Attribute("name").Value == "created_dt")
                 .Select(ele => ele.Value)
@@ -37,12 +48,20 @@ namespace Catfish.Core.Models.Solr
             if (!string.IsNullOrEmpty(valStr))
                 Created = DateTime.Parse(valStr);
 
+            //set the updated date
             valStr = doc.Elements("date")
                 .Where(ele => ele.Attribute("name").Value == "updated_dt")
                 .Select(ele => ele.Value)
                 .FirstOrDefault();
             if (!string.IsNullOrEmpty(valStr))
                 Updated = DateTime.Parse(valStr);
+
+            //set the status
+            valStr = doc.Elements("str")
+                .First(f => f.Attribute("name").Value == "status_s")
+                .Value;
+            if (!string.IsNullOrEmpty(valStr))
+                StatusId = Guid.Parse(valStr);
 
             //Creating a dictionary of field names
             Dictionary<string, string> fieldNameDictionary = new Dictionary<string, string>();
@@ -54,10 +73,12 @@ namespace Catfish.Core.Models.Solr
 
             //Populating result fields
             Fields = doc.Elements("arr")
-                .Where(arr => arr.Attribute("name").Value != "doc_type_ss")
+                .Where(arr =>
+                    arr.Attribute("name").Value.StartsWith("data_") || 
+                    arr.Attribute("name").Value.StartsWith("metadata_") ||
+                    arr.Attribute("name").Value.StartsWith("_"))
                 .Select(arr => new ResultEntryField(arr, fieldNameDictionary))
                 .ToList();
-
         }
 
         public void SetFieldHighlights(XElement highlights)

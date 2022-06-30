@@ -15,6 +15,16 @@ namespace Catfish.Test.Helpers
             string val = ele.Text;
             return val;
         }
+
+        // temp method if element is missing the multilingual class tag
+        public string GetTextFieldDisplayValueAlt(string fieldId)
+        {
+            string selectorString = string.Format("div[data-model-id='{0}']", fieldId);
+            var ele = Driver.FindElement(By.CssSelector(selectorString));
+            string val = ele.Text;
+            return val;
+        }
+
         /// <summary>
         /// This method can use to get text display fields in a table. Need to pass the row number and column number as parameters.
         /// </summary>

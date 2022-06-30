@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using Catfish.Core.Helpers;
 
 namespace Catfish.Pages
 {
@@ -57,8 +58,10 @@ namespace Catfish.Pages
                 if (!string.IsNullOrEmpty(ret) && (ret.StartsWith("/changepassword") || ret.StartsWith("/forgotPassword")))
                     ret = ""; 
 
+                
+
                 if (ModelState.IsValid && await _security.SignIn(HttpContext, Username, Password))
-                    return new RedirectResult(string.IsNullOrEmpty(ret) ? "/" : ret);
+                    return new RedirectResult(ConfigHelper.SiteUrl /*string.IsNullOrEmpty(ret) ? ConfigHelper.SiteUrl : ret == "/" ? ConfigHelper.SiteUrl  : ret*/);
                 else
                     ErrorMessage = "Login Failed!";
 
@@ -73,6 +76,9 @@ namespace Catfish.Pages
         public async Task<IActionResult> OnGetAsync(string returnUrl)
         {
             ErrorMessage = "";
+
+
+            returnUrl = ConfigHelper.SiteUrl; // string.IsNullOrEmpty(returnUrl) ? ConfigHelper.SiteUrl : returnUrl;
             this.SetReturnUrl(returnUrl);
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -89,6 +95,7 @@ namespace Catfish.Pages
             if (string.IsNullOrEmpty(provider))
                 provider = "Google";
 
+            returnUrl = ConfigHelper.SiteUrl; // string.IsNullOrEmpty(returnUrl) ? ConfigHelper.SiteUrl : returnUrl == "/" ? ConfigHelper.SiteUrl : returnUrl;
             var redirectUrl = Url.Action("ExternalLoginCallback", "Account", returnUrl);
 
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl.ToString());

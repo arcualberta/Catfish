@@ -239,3 +239,11 @@ Examples/*_generared.json
 /Catfish/wwwroot/Vue/tile-grid-xxtmp
 /Design Documents/Tile Grid/Tile Grid.drawio
 /Design Documents/Tile Grid/Tile Grid.png
+
+/Catfish.UnitTests/client_secret_googledriveapi_desktop.json
+/Catfish.UnitTests/_CatfishGoogleApiDesktopCredentials.json
+/Catfish/Areas/Applets/UI.Lib/arcualberta-catfish-ui-*.tgz
+NPM.UI.Lib/arcualberta-catfish-ui-1.0.0.tgz
+/Catfish/Areas/Applets/UI.Lib/dist
+/Catfish/Areas/Applets/UI.Lib/node_modules
+/NPM.UI.Lib/build.bat

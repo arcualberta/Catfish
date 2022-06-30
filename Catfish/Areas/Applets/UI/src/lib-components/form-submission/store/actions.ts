@@ -1,9 +1,8 @@
 ﻿import { ActionTree } from 'vuex';
 import { State } from './state';
 import { Mutations } from './mutations';
-import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils';
-//import { clearForm, FlattenedFormFiledState } from '../../shared/store/form-submission-utils'
-//import { validateFields } from '../../shared/store/form-validators'
+import { FlattenedFormFiledMutations } from '../../shared/store/flattened-form-field-mutations'
+import { validateFields } from '../../shared/store/form-validators'
 
 //Declare ActionTypes
 export enum Actions {
@@ -17,33 +16,33 @@ export const actions: ActionTree<State, any> = {
        
         const api = window.location.origin +
             `/applets/api/itemtemplates/${store.state.itemTemplateId}/data-form/${store.state.formId}`;
-       // console.log('Form Load API: ', api)
+        console.log('Form Load API: ', api)
 
         fetch(api)
             .then(response => response.json())
             .then(data => {
                 //console.log('Data:\n', JSON.stringify(data));
                 store.commit(Mutations.SET_FORM, data);
+                store.commit(FlattenedFormFiledMutations.APPEND_FIELD_DATA, data);
             })
             .catch(error => {
                 console.error('Actions.LOAD_FORM Error: ', error);
             });
     },
     [Actions.SUBMIT_FORM](store) {
+        const form = store.state.form;
 
         //Validating the form
-        if (!store.state.form /*|| !validateFields(store.state.form)*/)
+        if (!form || !validateFields(form))
             return;
-
         store.commit(Mutations.SET_SUBMISSION_STATUS, "InProgress");
-
        
         const api = window.location.origin + `/applets/api/items/?itemTemplateId=${store.state.itemTemplateId}&groupId=${store.state.groupId ? store.state.groupId : ""}&collectionId=${store.state.collectionId}`;
 
         const formData = new FormData();
 
         //Setting the serialized JSON form model to the datamodel variable in formData
-        formData.append('datamodel', JSON.stringify(store.state.form));
+        formData.append('datamodel', JSON.stringify(form));
 
         //Adding all attachments uploaded to the files variable in formData
         for (const key in store.state.flattenedFileModels) {
@@ -66,16 +65,10 @@ export const actions: ActionTree<State, any> = {
                 }
             }).then(response =>
                 response.json())
-            .then(data => {
-                console.log(JSON.stringify(data));
-                const flattenModel: FlattenedFormFiledState = {
-                    flattenedOptionModels: store.state.flattenedOptionModels,
-                    flattenedTextModels: store.state.flattenedTextModels,
-                    flattenedFileModels: store.state.flattenedFileModels
-                };
-
-                //clear the form content
-                clearForm(flattenModel);
+            .then(() => {
+                //console.log(JSON.stringify(data));
+                store.commit(FlattenedFormFiledMutations.REMOVE_FIELD_CONTAINERS);
+                store.commit(Mutations.SET_FORM, null);
                 store.commit(Mutations.SET_SUBMISSION_STATUS, "Success");
 
             })

@@ -75,7 +75,7 @@ namespace Catfish.Test
             ////_db.SaveChanges();
         }
 
-        [Test]    
+        [Test]
         public void Login()
         {
             _seleniumHelper.LoginLocal();
@@ -106,7 +106,7 @@ namespace Catfish.Test
             //Selecting Option 3 and Option 4 for the CB1
             var chkId = "cd53c8c7-3893-42e1-b8d6-4a7ce7899a84";
             var chkOptIds = new string[] { "0720136e-d8a4-4995-af87-575487310555", "dd2a3bb9-1dd9-4253-bf4d-19f53d1a18ed" };
-            var chkOptVals = new string[] { "Option 3", "Option 4"};
+            var chkOptVals = new string[] { "Option 3", "Option 4" };
             _seleniumHelper.SelectCheckOptions(chkId, chkOptIds);
 
             //Setting value of TF1 to Hello World
@@ -205,12 +205,12 @@ namespace Catfish.Test
 
             //Setting value of DEC1 to 12.50
             var decId1 = "b958ef1f-229f-4a60-a4b0-140e482938b1";
-            var decVal1 = "200";
+            var decVal1 = "2.2";
             _seleniumHelper.SetNumberValue(decId1, decVal1);
 
             //Setting value of DEC1 to 12.50
             var decId2 = "1e7ba58f-32b0-44b7-ae32-3f2365cceeb2";
-            var decVal2 = "100";
+            var decVal2 = "2.36";
             _seleniumHelper.SetNumberValue(decId2, decVal2);
 
             //Validating column sum
@@ -218,7 +218,7 @@ namespace Catfish.Test
             var totalId = "1fbff568-d9b3-4e1f-a51c-6b65800ec290";
             var totalDisplayValue = _seleniumHelper.GetTableSummaryColumnSum(totalId);
             Assert.AreEqual(totalActualValue.ToString(), totalDisplayValue, "Table feild column summation is wrong");
-            
+
             //Clicking on sumbit button
             var dataItemTemplateId = "8cc8bb7f-9c50-41d6-b87f-cbf53889d44e";
             _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "Submit");
@@ -229,7 +229,7 @@ namespace Catfish.Test
             //Clicking on the link to view detail view
             _seleniumHelper.ClickOnALink("click on here");
 
-           //Valicating column 1 enterd value and saved value.
+            //Valicating column 1 enterd value and saved value.
             var colVal1 = _seleniumHelper.GetTableColumnDisplayValue(decId1, "table");
             Assert.AreEqual(colVal1, decVal1, "table column 1 value is not correctly saved");
 
@@ -244,7 +244,68 @@ namespace Catfish.Test
             _seleniumHelper.Driver.Close();
         }
 
+        [Test]
+        public void TableFieldFormTestMultipleValues()
+        {
+            RefreshDatabase();
+            _seleniumHelper.LoginLocal();
 
+            //Navigating to the test page
+            _seleniumHelper.GoToUrl("table-field-form");
+
+            //Setting value of DEC1 to 12.50
+            var decId1 = "b958ef1f-229f-4a60-a4b0-140e482938b1";
+            var decVal1 = "2.17";
+            _seleniumHelper.SetNumberValue(decId1, decVal1);
+
+            string decVal2 = "";
+            decimal totalActualValue = 0.0M;
+            string totalDisplayValue = "";
+
+            string decId2 = "1e7ba58f-32b0-44b7-ae32-3f2365cceeb2";
+            string totalId = "1fbff568-d9b3-4e1f-a51c-6b65800ec290";
+
+            //Setting value of DEC1 to 12.50
+            for ( int iCent = 1; iCent <= 100; iCent += 1) {
+
+                 decVal2 = (iCent/100.0).ToString();
+
+                _seleniumHelper.SetNumberValue(decId2, decVal2);
+
+                //Validating column sum
+                 totalActualValue = Decimal.Parse(decVal1) + Decimal.Parse(decVal2);
+
+                 totalDisplayValue = _seleniumHelper.GetTableSummaryColumnSum(totalId);
+
+                
+                Assert.AreEqual(totalActualValue.ToString(), totalDisplayValue, "Table feild column summation is wrong");
+            }
+
+                //Clicking on sumbit button
+                var dataItemTemplateId = "8cc8bb7f-9c50-41d6-b87f-cbf53889d44e";
+                _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "Submit");
+
+                //Clicking on the modal confirmation button
+                _seleniumHelper.CkickModalSubmit(dataItemTemplateId, "btn btn-success");
+
+                //Clicking on the link to view detail view
+                _seleniumHelper.ClickOnALink("click on here");
+
+                //Valicating column 1 enterd value and saved value.
+                var colVal1 = _seleniumHelper.GetTableColumnDisplayValue(decId1, "table");
+                Assert.AreEqual(colVal1, decVal1, "table column 1 value is not correctly saved");
+
+                //Valicating column 1 enterd value and saved value.
+                var colVal2 = _seleniumHelper.GetTableColumnDisplayValue(decId2, "table");
+                Assert.AreEqual(colVal2, decVal2, "table column 2 value is not correctly saved");
+
+                //Valicating total value and saved value.
+                var colTotal = _seleniumHelper.GetTableFooterColumnDisplayValue(totalId, "table");
+                Assert.AreEqual(colTotal, totalActualValue.ToString(), "table total value is not correctly saved");
+           
+
+            _seleniumHelper.Driver.Close();
+        }
         ////////[Test]
         ////////public void TableFieldFormOriginalTest()
         ////////{
@@ -358,7 +419,10 @@ namespace Catfish.Test
         public void TableFieldFormOriginalTest()
         {
             RefreshDatabase();
-            Login();
+            //Login();
+
+            RefreshDatabase();
+            _seleniumHelper.LoginLocal();
 
             //Navigating to the test page
             _seleniumHelper.GoToUrl("table-field-form-original");
@@ -550,7 +614,7 @@ namespace Catfish.Test
             var chairrbOptNoId = "fc6bf9a5-b0c7-44de-8cff-6f2eee8b3f91";
             _seleniumHelper.SelectRadioOption(chairrbId, chairrbOptNoId);
 
-            // opps - make that a yes
+            // opps - make that a yes -- leave back to no so  can select alt contact
             //var chairrbOptYesId = "799bb23c-7137-4b9a-a150-77359e8a3e90";
             //_seleniumHelper.SelectRadioOption(chairrbId, chairrbOptYesId);
 
@@ -570,14 +634,25 @@ namespace Catfish.Test
             var projDescVal = "Officials with Alberta parks and environment sampled, or went fishing in the pond where the catfish was discovered and caught thirty catfish, from three generations — or catfish that have lived in the lake for about three years.";
             _seleniumHelper.SetTextAreaValue(projDescId, projDescVal);
 
-
-           
-
-            //Option  for involving subjects RB
+            //Option  for involving subjects RB 575
             var involveSubjectsrbId = "bc5e74c6-3586-434e-aad4-e2bd92a2fabb";
-            var involveSubjectsnoOptId = "b26717d3-c8e2-49d1-bb27-e98542ce748b";
-            //var chairrbOptVal = "No";
-            _seleniumHelper.SelectRadioOption(involveSubjectsrbId, involveSubjectsnoOptId);
+            //var involveSubjectsnoOptId = "b26717d3-c8e2-49d1-bb27-e98542ce748b";
+            var involveSubjectsyesOptId = "bcb08bd5-5e35-4139-abc6-5bda5264e490";
+            //yes-option-id="bcb08bd5-5e35-4139-abc6-5bda5264e490"
+            //var chairrbOptVal = "Yes";
+            _seleniumHelper.SelectRadioOption(involveSubjectsrbId, involveSubjectsyesOptId);
+
+            //Option approval Obtained
+            var approvalObtainedrbId = "9a857bd0-369c-45e8-984e-ef1aefc9f368";
+            var approvalObtainedYesOptId = "376bbad9-670d-483b-afff-1e825d25f2a1";
+            _seleniumHelper.SelectRadioOption(approvalObtainedrbId, approvalObtainedYesOptId);
+
+            //approval expiry date
+            var approvalExpireDateId = "3b762808-b1b5-4d0a-9ed8-3c54e5510be3";
+            var approvalExpireDateVal = new DateTime(2024, 7, 27);
+            _seleniumHelper.SetDateValue(approvalExpireDateId, approvalExpireDateVal);
+
+
 
             #endregion applicant_part
 
@@ -660,7 +735,7 @@ namespace Catfish.Test
 
             // Ground transport
             var groundId = "1ebc5b43-fdef-44f4-bdfb-e533a5bb4f11";
-            var groundVal = "50.00";
+            var groundVal = "50.99";
             _seleniumHelper.SetNumberValue(groundId, groundVal);
 
             //Additional expenses
@@ -685,7 +760,7 @@ namespace Catfish.Test
             //Supporting Documentation - upload one pdf file
 
             var chooseButtonId_1 = "7c0578e5-948f-4eed-a2d3-ba1baf11edfa";
-            
+
             //var uploadPath = Path.Combine(_attachmentPath, "SAStestingdoc1.pdf");
             _seleniumHelper.UpLoadFile(chooseButtonId_1, "SAStestingdoc1.pdf");
 
@@ -768,9 +843,9 @@ namespace Catfish.Test
 
 
             //file upload - supporting documents - upload one pdf file
-            
 
-            var chooseButtonId_2 =  "641e57e0-e878-414c-ab48-fc4de14739cd";
+
+            var chooseButtonId_2 = "641e57e0-e878-414c-ab48-fc4de14739cd";
             _seleniumHelper.UpLoadFile(chooseButtonId_2, "SAStestingdoc2.pdf");
 
 
@@ -846,7 +921,7 @@ namespace Catfish.Test
 
 
             //file upload - supporting documents - upload one pdf file
-            var chooseButtonId_3 ="b768fde3-3565-41fb-b0e3-59e63ced439e";
+            var chooseButtonId_3 = "b768fde3-3565-41fb-b0e3-59e63ced439e";
             // for now reuse file 2
             _seleniumHelper.UpLoadFile(chooseButtonId_3, "SAStestingdoc3.pdf");
 
@@ -898,7 +973,8 @@ namespace Catfish.Test
             //7a5467df-7326-48ae-99ff-58bf1751f3eb
             var estCostId = "7a5467df-7326-48ae-99ff-58bf1751f3eb";
             //var estCostVal = "550.55";  // unless round number, item flagged at sumbit stage.
-            var estCostVal = "550";
+            //To see how to resolve above  issue look at adding step attribute in Catfish.Core.Models.Contents.Fields.DecimalField.cshtml
+            var estCostVal = "550.55";
             _seleniumHelper.SetNumberValue(estCostId, estCostVal);
 
 
@@ -929,21 +1005,49 @@ namespace Catfish.Test
 
             //Selecting "Yes" Option  for "Release Required?" RB
             // 46e8482f-f1d4-4d95-a8e8-907fac9e84f0 for set. 
-            
+
             var relasese_1_Id = "46e8482f-f1d4-4d95-a8e8-907fac9e84f0";
             var relasese_1_OptId = "e96bfb6e-2bda-4e35-b12a-7debdf17154e";
-         
+
             _seleniumHelper.SelectRadioOption(relasese_1_Id, relasese_1_OptId);
 
             // release amount.  f512e48c-6073-49ef-95b0-ec88576d01ef
             var releaseAmount_1_Id = "f512e48c-6073-49ef-95b0-ec88576d01ef";
-            var releaseAmount_1_Val = "7700.00";
+            var releaseAmount_1_Val = "7700.15";
             _seleniumHelper.SetNumberValue(releaseAmount_1_Id, releaseAmount_1_Val);
 
-            // release amount, first term, justification
+            // release amount, 2nd term, justification
 
-            // 2nd term release
-            //add button ...
+            // 2nd term release 940
+
+            // click  add button  for course release in second term - assume Second button
+            //#Blocks_0__Item_Fields_70__addChildButton > input:nth-child(1)
+
+
+            var addBtnSecondTerm = "#Blocks_0__Item_Fields_70__addChildButton > input:nth-child(1)";
+            _seleniumHelper.ClickAddButton(addBtnSecondTerm);
+
+
+            //cousre name
+            var course_2_Id = "dcda46dd-ef40-4aac-8d45-210ae2a14636";
+            var course_2_Val = "Squid 409";
+            _seleniumHelper.SetTextFieldValue(course_2_Id, course_2_Val);
+
+
+            //Selecting "No" Option  for "Release Required?" RB
+            // f3f58a5b-34ee-4a4c-82b7-9dbf5255de1f for set. 
+
+            var relasese_2_Id = "f3f58a5b-34ee-4a4c-82b7-9dbf5255de1f";
+            var relasese_2_OptId = "1cc57361-7fc8-4485-94c9-c0879f2bc33b";
+
+            _seleniumHelper.SelectRadioOption(relasese_2_Id, relasese_2_OptId);
+
+            // release amount.  9e97372e-76f8-45ba-bc2e-0cc2a69c13c1
+            var releaseAmount_2_Id = "9e97372e-76f8-45ba-bc2e-0cc2a69c13c1";
+            var releaseAmount_2_Val = "0.00";
+            _seleniumHelper.SetNumberValue(releaseAmount_2_Id, releaseAmount_2_Val);
+
+
 
             // release amount, both possible  terms, justification
             //24625214-3d47-45ae-a7fa-017d60f1e608
@@ -967,7 +1071,7 @@ namespace Catfish.Test
 
 
             var ctar_OnForm = _seleniumHelper.GetSummaryFieldValue(ctar_id);
-            var ctar_required = decimal.Parse(airfareVal) + decimal.Parse(accomadationVal) + decimal.Parse(perdiemVal) + 
+            var ctar_required = decimal.Parse(airfareVal) + decimal.Parse(accomadationVal) + decimal.Parse(perdiemVal) +
                 decimal.Parse(confRegVal) + decimal.Parse(groundVal) + decimal.Parse(addExpVal);
             Assert.AreEqual(decimal.Parse(ctar_OnForm), ctar_required, "Conference Travel Amount Requested value is not correctly indicated");
 
@@ -987,10 +1091,10 @@ namespace Catfish.Test
             Assert.AreEqual(decimal.Parse(rcaem_onForm), rcaem_required, "Support for Research and Creative Activity Equipment and Materials is not correctly indicated");
 
             //Teaching release time  5e71a356-cd02-4bd3-8ab1-629c2b81c45a
-            var releaseAmount_2_Val = "0.0";
+            //var releaseAmount_2_Val = "0.0";
             var ttr_id = "5e71a356-cd02-4bd3-8ab1-629c2b81c45a";
             var ttr_onForm = _seleniumHelper.GetSummaryFieldValue(ttr_id);
-            var ttr_required = decimal.Parse(releaseAmount_1_Val)+ decimal.Parse(releaseAmount_2_Val);
+            var ttr_required = decimal.Parse(releaseAmount_1_Val) + decimal.Parse(releaseAmount_2_Val);
             Assert.AreEqual(decimal.Parse(ttr_onForm), ttr_required, "Teaching release time  is not correctly indicated");
 
             //Personnel and Services
@@ -1010,32 +1114,97 @@ namespace Catfish.Test
 
             #endregion summary_part
 
-
+            //---------------------------------------------------------------------------------
             //Other and Previous Funding
+            //   
             //Selecting "No" Option  for "previous SAS funding 5 years" 
+            // no option var prevSAS5rbOptId = "46dc91e8-895a-41ef-be78-a1eff9fe6257";
             var prevSAS5Id = "471e3fbb-2034-447c-80ad-9d61f33829f9";
-            var prevSAS5rbOptId = "46dc91e8-895a-41ef-be78-a1eff9fe6257";
-            //
+            var prevSAS5rbOptId = "8fd8c6b1-73a7-4cd7-91a0-a336753215eb";
+
             _seleniumHelper.SelectRadioOption(prevSAS5Id, prevSAS5rbOptId);
 
-         
-             //Selecting "No" Option  for "previous SAS funding this project" 
-             var prevthisSASId = "8247d88d-01dc-42ea-b726-4f851dca888d";
-            var prevthisSASrbOptId = "c61d30fc-f850-4769-8c4c-5650f0d05801";
-            //
+            // if yes add button
+            var addprevSASBtnSelecton = "#Blocks_0__Item_Fields_81__addChildButton > input:nth-child(1)";
+            _seleniumHelper.ClickAddButton(addprevSASBtnSelecton);
+
+            // desc SAS previous 5 years
+
+            //name of type of funding
+            var pSASnameId = "a1cb9808-ab28-4d8f-aefe-a36df9ef40d6";
+            var pSASnameVal = "SAS TypeOne";
+            _seleniumHelper.SetTextFieldValue(pSASnameId, pSASnameVal);
+
+            // value of award
+            var awardValueId = "47c6f57e-e547-4e32-bc9a-7ff39a1e42bf";
+            var awardValueVal = "4000.00";
+            _seleniumHelper.SetNumberValue(awardValueId, awardValueVal);
+
+            //Year of application
+            var applYearId = "717e09ed-928d-4e28-9389-b90dad48da60";
+            var applYearVal = "2018";
+            _seleniumHelper.SetNumberValue(applYearId, applYearVal);
+
+            // for Competition Applied To -- choose Spring
+            var compSeasonId = "a08b7227-848c-4b16-b26d-c8cc94ffbbca";
+            var compSeasonSpringOptId = "8890dff5-3cb3-4b5f-964e-75c673ff0a32";
+            var compSeasonVal = "Spring";
+            _seleniumHelper.SelectRadioOption(compSeasonId, compSeasonSpringOptId);
+
+            //Setting Title of Project  
+            var PATitleId = "384e010a-c819-4639-9cd9-7305053b91cd";
+            var PATitleVal = "Fresh Water Catfish";
+            _seleniumHelper.SetTextFieldValue(PATitleId, PATitleVal);
+
+            //Setting description of previous Award
+            var PAdescId = "f9284ed5-9811-4532-b4be-03b2c799f75b";
+            var PAdescVal = "We looked at Fresh water Fish. " +
+                "In particular Catfish";
+            _seleniumHelper.SetTextAreaValue(PAdescId, PAdescVal);
+
+            //--
+            //Selecting "Yes" Option  for "previous SAS funding this project" 
+            //8247d88d-01dc-42ea-b726-4f851dca888d,e2e5a69e-8f54-47cd-af1e-f425e75be726
+            var prevthisSASId = "8247d88d-01dc-42ea-b726-4f851dca888d";
+            var prevthisSASrbOptId = "e2e5a69e-8f54-47cd-af1e-f425e75be726";
+            var prevthisSASVal = "Yes";
             _seleniumHelper.SelectRadioOption(prevthisSASId, prevthisSASrbOptId);
 
-            //Selecting "No" Option  for "previous SAS funding this project" 
-            var otherSASFundingId = "1f3631c4-14e3-4c45-b268-203c3bd2d65c";
-            var otherSASFundingOptId = "6488cfa7-8921-4e2d-b86e-e7b5df830642";
-            //
-            _seleniumHelper.SelectRadioOption(otherSASFundingId, otherSASFundingOptId);
+            //Setting how this relates
+            var howRelatesId = "9f1175ff-9761-4a8a-b604-98d6743f9e8d";
+            var howRelatesVal = "Study of similar aquatic life " +
+                "like Catfish etc.";
+            _seleniumHelper.SetTextAreaValue(howRelatesId, howRelatesVal);
+
+
+            //Selecting "Yes" Option  for "previous SAS funding this project" 
+            //1f3631c4-14e3-4c45-b268-203c3bd2d65c, 9327cd92-94d7-40df-a2ec-15b5fd693099
+            var otherFundingId = "1f3631c4-14e3-4c45-b268-203c3bd2d65c";
+            var otherFundingOptId = "9327cd92-94d7-40df-a2ec-15b5fd693099";
+            var otherFundingOptVal = "Yes";
+            _seleniumHelper.SelectRadioOption(otherFundingId, otherFundingOptId);
+
+            // reason fork
+            //Setting funding other sources 44b89364-87fa-4a3b-87af-cfb116d53214
+            var otherFundingdescId = "44b89364-87fa-4a3b-87af-cfb116d53214";
+            var otherFundingdescVal = "There is other Funding from: " +
+                "Alberta";
+            _seleniumHelper.SetTextAreaValue(otherFundingdescId, otherFundingdescVal);
+
+            //Setting funding why not 2e4b3a6a-9031-45d8-aae5-ec0eeff3f1ef
+            //           
+            //           var reasonFunding2Id = "2e4b3a6a-9031-45d8-aae5-ec0eeff3f1ef";
+            //          var reasonFunding2Val = "why not, Other Funding will be " +
+            //             "applied.";
+            //          _seleniumHelper.SetTextAreaValue(reasonFunding2Id, reasonFunding2Val);
 
             // other funding fab1e156-776c-4616-aaad-789419065ee6
-            var otherFundingId = "fab1e156-776c-4616-aaad-789419065ee6";
-            var otherFundingVal = "Funds from catfish sales to local groceries";
-            _seleniumHelper.SetTextAreaValue(otherFundingId, otherFundingVal);
+            var otherSupport2Id = "fab1e156-776c-4616-aaad-789419065ee6";
+            var otherSupport2Val = "Funds from catfish sales to local groceries";
+            _seleniumHelper.SetTextAreaValue(otherSupport2Id, otherSupport2Val);
 
+
+            //---------
             // Scholarly Publications b9cf535d-5445-4a94-8e35-c132afd26579
             var scholarlyPubId = "b9cf535d-5445-4a94-8e35-c132afd26579";
             var scholarlyPubVal = "Arcguy, Main. “Are Catfish good? Something about taste.” Catfish & Fresh Water Fish 21.4 (2016): 280-295\r\n" +
@@ -1043,6 +1212,20 @@ namespace Catfish.Test
             _seleniumHelper.SetTextAreaValue(scholarlyPubId, scholarlyPubVal);
 
 
+            // Collaborators if F of Arts
+            //add button
+            var addCollaboratorsBtnID = "#Blocks_0__Item_Fields_91__addChildButton > input:nth-child(1)";
+            _seleniumHelper.ClickAddButton(addCollaboratorsBtnID);
+
+            //Setting value of Collaborator name
+            var CollaboratorsName_Id = "30065150-d3c5-4894-8f3e-12b2cff943a6";
+            var CollaboratorsName_Val = "Anotherarc Guy";
+            _seleniumHelper.SetTextFieldValue(CollaboratorsName_Id, CollaboratorsName_Val);
+
+            //Setting value of Collaborator email
+            var CollaboratorsEmail_Id = "9dba4c6e-12c1-4d83-8953-5b96ebf642e6";
+            var CollaboratorsEmail_Val = "arcguyb@ualberta.ca";
+            _seleniumHelper.SetTextFieldValue(CollaboratorsEmail_Id, CollaboratorsEmail_Val);
 
             // ---------------------submit section
             // --------------------------
@@ -1057,6 +1240,8 @@ namespace Catfish.Test
             _seleniumHelper.ClickSimpleSubmitButton();
 
             //Clicking on the modal confirmation button
+            // modalTemplateId can be found as the "data-template-id" as an attribute of the form - look at 
+            // beginning of form after the id.
             var modalTemplateId = "f31602f0-1002-4e35-8c2c-90a03a8d3a93";
             _seleniumHelper.CkickModalSubmit(modalTemplateId, "btn btn-success");
 
@@ -1121,16 +1306,22 @@ namespace Catfish.Test
             var projectDescDispVal = _seleniumHelper.GetTextFieldDisplayValue(projDescId);
             Assert.AreEqual(projDescVal, projectDescDispVal, "Project description value is not correctly saved");
 
+            //subjects and ethics validation
+            //  --- human animal subjects   bc5e74c6-3586-434e-aad4-e2bd92a2fabb  val = "No"; 1130+
 
-            //  --- human animal subjects   bc5e74c6-3586-434e-aad4-e2bd92a2fabb  val = "No";
-
-            var involveSubjects = "No";
+            var involveSubjects = "Yes";
             var dispInvolveSubjects = _seleniumHelper.GetRadioDisplayValue(involveSubjectsrbId);
             Assert.AreEqual(involveSubjects, dispInvolveSubjects, "Radio BUtton for Involve Subjects  is not correctly saved");
 
-            //  --- ethics approval    not selected ??   9a857bd0-369c-45e8-984e-ef1aefc9f368
+            //  --- ethics approval     9a857bd0-369c-45e8-984e-ef1aefc9f368
+            var approvalObtained = "Yes";
+            var dispEthicsApprovalObtained = _seleniumHelper.GetRadioDisplayValue(approvalObtainedrbId);
+            Assert.AreEqual(approvalObtained, dispEthicsApprovalObtained, "Radio BUtton for ethics approval is not correctly saved");
 
-            //  --- ethics expriry date 3b762808-b1b5-4d0a-9ed8-3c54e5510be3
+            //  --- ethics expriry date 3b762808-b1b5-4d0a-9ed8-3c54e5510be3 validaation
+            var approvalExpiredateDispVal = _seleniumHelper.GetDateDisplayValue(approvalExpireDateId);
+            Assert.AreEqual(approvalExpireDateVal.ToString("yyyy-MM-dd"), approvalExpiredateDispVal, "approval expiry date value is not correctly saved");
+
 
             //  --- name of conf 0eea8ef1-16d2-4ef3-be9c-65b947b329a9   confNameVal = "Catfish Annual";
             var confNameDispVal = _seleniumHelper.GetTextFieldDisplayValue(confNameId);
@@ -1163,9 +1354,9 @@ namespace Catfish.Test
 
             var travDate2DispVal = _seleniumHelper.GetDateDisplayValue(travDate2Id);
             Assert.AreEqual(travDate2Val.ToString("yyyy-MM-dd"), travDate2DispVal, "traval end date is not correctly saved");
-            
+
             //  --- conf participation  64678688-16bd-41a9-8738-3ded02bc374f  participationVals = new string[] { "Invited Speaker", "Other" };
-            
+
             var participationDispVals = _seleniumHelper.GetCheckboxDisplayValue(participationgroupId);
             Assert.AreEqual(participationVals, participationDispVals, "Participation by check box is not correctly saved");
 
@@ -1355,6 +1546,20 @@ namespace Catfish.Test
             var releaseAmount_1_DispVal = _seleniumHelper.GetDecimalDisplayValue(releaseAmount_1_Id);
             Assert.AreEqual(releaseAmount_1_Val, releaseAmount_1_DispVal, "Release time cost  is not correctly saved");
 
+
+            // 2nd term release validation 1370
+            //cousre name    "dcda46dd-ef40-4aac-8d45-210ae2a14636";
+            var course_2Disp_Val = _seleniumHelper.GetTextFieldDisplayValue(course_2_Id);
+            Assert.AreEqual(course_2Disp_Val, course_2_Val, "second term course name is not correctly saved");
+
+            //"Yes" Option  for "Release Required?" RB    
+            var rbRelease2Val = "No";
+            var rbRelease2DispVal = _seleniumHelper.GetRadioDisplayValue(relasese_2_Id);
+            Assert.AreEqual(rbRelease2Val, rbRelease2DispVal, "Release yes or no radio button is not correctly saved");
+
+            // release amount.  
+            var releaseAmount_2_DispVal = _seleniumHelper.GetDecimalDisplayValue(releaseAmount_2_Id);
+            Assert.AreEqual(releaseAmount_2_Val, releaseAmount_2_DispVal, "Release time cost 2nd term is not correctly saved");
             // release   justification   24625214-3d47-45ae-a7fa-017d60f1e608
 
             var releasePleaDispVal = _seleniumHelper.GetTextFieldDisplayValue(releasePleaId);
@@ -1386,27 +1591,79 @@ namespace Catfish.Test
             var total_dispVal = _seleniumHelper.GetDecimalDisplayValue(total_id);
             Assert.AreEqual(total_onForm, total_dispVal, "Total amount requested value is not correctly saved");
 
-            // after overview form part
+            // after overview form part 
 
-            //Selecting "No" Option  for "previous SAS funding 5 years"  
-            var rbprevSAS5Val = "No";
+            //funding 1520
+
+            //Selecting "yes" Option  for "previous SAS funding 5 years"  
+            var rbprevSAS5Val = "Yes";
             var rbprevSAS5dispVal = _seleniumHelper.GetRadioDisplayValue(prevSAS5Id);
             Assert.AreEqual(rbprevSAS5Val, rbprevSAS5dispVal, "previous SAS funding, past 5 years, yes or no radio button is not correctly saved");
 
-            //Selecting "No" Option  for "previous SAS funding this project"  
-            var rbprevthisSASVal = "No";
-            var rbprevthisSASdispVal = _seleniumHelper.GetRadioDisplayValue(prevthisSASId);
-            Assert.AreEqual(rbprevthisSASVal, rbprevthisSASdispVal, "previous SAS funding, this project, yes or no radio button is not correctly saved");
+            //Validating - name of type of funding
+            var pSASname_displayed = _seleniumHelper.GetTextFieldDisplayValue(pSASnameId);
+            Assert.AreEqual(pSASnameVal, pSASname_displayed, "name of funding type   value is not correctly saved");
 
-            // other funding fab1e156-776c-4616-aaad-789419065ee6
-            var otherFundingDispVal = _seleniumHelper.GetTextFieldDisplayValue(otherFundingId);
-            Assert.AreEqual(otherFundingDispVal, otherFundingVal, "Other funding details are not correctly saved");
+            //Validating _value of award
+            var awardValueDispVal = _seleniumHelper.GetDecimalDisplayValue(awardValueId);
+            Assert.AreEqual(awardValueVal, awardValueDispVal, "award value is not correctly saved");
 
-            // Scholarly Publications b9cf535d-5445-4a94-8e35-c132afd26579
+            //Validating year of award
+            var applYearDispVal = _seleniumHelper.GetIntegerDisplayValue(applYearId);
+            Assert.AreEqual(applYearVal, applYearDispVal, "application year of award is not correctly saved");
+
+            //Selecting "Spring" for cometition applied to:
+            var compSeasonDispVal = _seleniumHelper.GetRadioDisplayValue(compSeasonId);
+            Assert.AreEqual(compSeasonVal, compSeasonDispVal, "Competition season value is not correctly saved");
+
+            //Validating Title of prevproject
+            var PATitleDispVal = _seleniumHelper.GetTextFieldDisplayValue(PATitleId);
+            Assert.AreEqual(PATitleVal, PATitleDispVal, "title of previous project award for: value is not correctly saved");
+
+            //Validating description for prev project
+            var PAdescDispVal = _seleniumHelper.GetTextFieldDisplayValue(PAdescId);
+            Assert.AreEqual(PAdescVal, PAdescDispVal, "Description of previous project award for: value is not correctly saved");
+
+            //validatin "yes" Option  for "previous SAS funding this project"  
+            //var rbprevthisSASVal = "Yes";
+            var prevthisSASdispVal = _seleniumHelper.GetRadioDisplayValue(prevthisSASId);
+            Assert.AreEqual(prevthisSASVal, prevthisSASdispVal, "option previous SAS funding, this project, yes or no radio button is not correctly saved");
+
+            //Validating how this relates
+            var howRelatesDispVal = _seleniumHelper.GetTextFieldDisplayValue(howRelatesId);
+            Assert.AreEqual(howRelatesVal, howRelatesDispVal, "How this relates value is not correctly saved");
+
+            //validating "yes" Option  for "previous SAS funding this project"  
+            var otherFundingOptDispVal = _seleniumHelper.GetRadioDisplayValue(otherFundingId);
+            Assert.AreEqual(otherFundingOptVal, otherFundingOptDispVal, "option previous SAS funding, this project, yes or no radio button is not correctly saved");
+
+            // if yes , other option funding
+            //Validating funding other sources 9f1175ff-9761-4a8a-b604-98d6743f9e8d
+            var otherFundingDispVal = _seleniumHelper.GetTextFieldDisplayValue(otherFundingdescId);
+            Assert.AreEqual(otherFundingdescVal, otherFundingDispVal, "other funding sources value is not correctly saved");
+
+            // Validating other funding fab1e156-776c-4616-aaad-789419065ee6
+            var otherSupport2DispVal = _seleniumHelper.GetTextFieldDisplayValue(otherSupport2Id);
+            Assert.AreEqual(otherSupport2DispVal, otherSupport2Val, "Other support details are not correctly saved");
+
+
+            // end funding asserts
+
+            // Validating Scholarly Publications b9cf535d-5445-4a94-8e35-c132afd26579
             var scholarlyPubDispVal = _seleniumHelper.GetTextFieldDisplayValue(scholarlyPubId);
             Assert.AreEqual(scholarlyPubVal, scholarlyPubDispVal, "Scholarly Publications area is not correctly saved");
 
+            // Validating  Collaborator name
+            var CollaboratorsNameDisp_Val = _seleniumHelper.GetTextFieldDisplayValue(CollaboratorsName_Id);
+            Assert.AreEqual(CollaboratorsNameDisp_Val, CollaboratorsName_Val, "Collaborator name is not correctly saved");
+
+            // Validating  Collaborator email
+            var CollaboratorsEmailDisp_Val = _seleniumHelper.GetTextFieldDisplayValueAlt(CollaboratorsEmail_Id);
+            Assert.AreEqual(CollaboratorsEmailDisp_Val, CollaboratorsEmail_Val, "Collaborator email is not correctly saved");
+
             //End of Validation tests
+
+            _seleniumHelper.Driver.Close();
         }
         [Test]
         public void RequiredIfTest()
@@ -1429,7 +1686,7 @@ namespace Catfish.Test
             //check opt1 has required fields
             bool ddOption1Required = _seleniumHelper.IsTextFieldRequired("ee794c7d-5ccd-4ff5-bf21-40cbd09519cd");
             Assert.AreEqual(false, ddOption1Required, "DD1 option 1, required if function not working properly");
-            
+
             //Selecting Option2 for DD1
             var ddOpt2Id = "48aa27ca-b8aa-47fc-a8c4-22addebd3e0f";
             var ddOpt2Val = "Option 2";
@@ -1498,7 +1755,7 @@ namespace Catfish.Test
 
             //Selecting Option 1 for the CB1
             var chkOptCombination1Ids = new string[] { "2da93223-7ca2-403c-855f-4ffa0fdaf6e3" };
-            var chkOptCombination1Vals = new string[] { "Option 1"};
+            var chkOptCombination1Vals = new string[] { "Option 1" };
             _seleniumHelper.SelectCheckOptions(chkId, chkOptCombination1Ids);
             bool cbCombination1Required = _seleniumHelper.IsTextFieldRequired(chkTextFieldId);
             Assert.AreEqual(false, cbCombination1Required, "CB1 option 1, required if function not working properly");
@@ -1627,7 +1884,7 @@ namespace Catfish.Test
             Assert.AreEqual(true, cbComb_15_Required, "CB1 option 1, option 2, option 3 & option 4, required if function not working properly");
             _seleniumHelper.SelectCheckOptions(chkId, cbComb_15_Ids);
 
-
+            _seleniumHelper.Driver.Close();
         }
 
         [Test]
@@ -1644,7 +1901,7 @@ namespace Catfish.Test
             _seleniumHelper.SetCompositeTextFieldValue(child1TextFieldValue, 0, 0);
 
             var dateVal = new DateTime(2021, 3, 25);
-            _seleniumHelper.SetCompositeDateValue(dateVal,0,1);
+            _seleniumHelper.SetCompositeDateValue(dateVal, 0, 1);
 
             var child1EmailFieldValue = "testuser1@example.com";
             _seleniumHelper.SetCompositeTextFieldValue(child1EmailFieldValue, 0, 2);
@@ -1659,12 +1916,12 @@ namespace Catfish.Test
 
             var rbOptId = "558ca21b-3062-4773-9966-2cdace171c21";
             var rbOptVal = "Citizen";
-            _seleniumHelper.SelectCompositeRadioOption(rbOptId,0, 4);
+            _seleniumHelper.SelectCompositeRadioOption(rbOptId, 0, 4);
 
             //Selecting English and Spanish for the CB1
             var chkOptIds = new string[] { "036afb53-f284-4671-9534-feeecdd52394", "915c10c2-4e54-49ec-9857-92a37e1e749e" };
             var chkOptVals = new string[] { "English", "Spanish" };
-            _seleniumHelper.SelectCompositeCheckOptions(chkOptIds,0,5);
+            _seleniumHelper.SelectCompositeCheckOptions(chkOptIds, 0, 5);
 
             //Clicking on the add button
             var dataItemTemplateId = "69abec30-69e0-4f60-891a-5df4d7ba1993";
@@ -1695,7 +1952,7 @@ namespace Catfish.Test
 
             //Selecting English and Spanish for the CB1
             var chkOpt2Id = "036afb53-f284-4671-9534-feeecdd52394";
-            var chkOpt2Val =  "French";
+            var chkOpt2Val = "French";
             _seleniumHelper.SelectCompositeCheckOption(chkOpt2Id, 0, 5);
 
             //Clicking on the add button
@@ -1712,7 +1969,371 @@ namespace Catfish.Test
             //Clicking on the link to view detail view
             _seleniumHelper.ClickOnALink("click on here");
         }
+        [Test]
+        public void safetyinspectionTest()
+        {
+            RefreshDatabase();
+            _seleniumHelper.LoginLocal();
 
+            //Navigating to the test page
+            _seleniumHelper.GoToUrl("safety-inspection");
+
+            var dataItemTemplateId = "5e376611-96b7-4595-a7fd-6648d52ca01b";
+
+
+            var inspectDate_ID = "426828e6-738e-49d7-93b1-acd6bae99129";
+
+
+            var building_ID = "d5332411-df2d-49c6-9be5-42768acde063";
+            var building_DD_HUBopt = "6e11cb16-f6da-423d-8c78-cb44285b58df";
+            var building_Val = "HUB";
+
+            var InspectorID = "3572b75a-0608-4f71-a5e4-89d4e9192c2e";
+            var InspectorVal = "Archie Guy";
+            var RoomID = "e1e73892-30e7-47b4-b5f9-5ffb40f4c5b8";
+            var RoomVal = "Mall Area";
+
+            var NumApprovedID = "c0b6b51f-fb50-4efe-8617-7c435b8a8a0e";
+            var NumApprovedVal = "20";
+
+            var NumActualID = "3956de37-7152-4c48-806c-708749d07519";
+            var NumActualVal = "17";
+
+            // Physical Distancing
+
+            var distanceRB_ID = "73bff1f3-dd10-43ff-a585-34d0933b0f7a";
+            var distanceRB_yes = "8705f7d8-595c-48bc-aa07-864159f2f708";
+            var distanceRB_Val = "Yes";
+
+            var masksRB_ID = "58ead174-151f-42f1-a272-83e9509a5e68";
+            var masksRB_no = "5b0d260e-fe53-434c-8e96-b152a597a361";
+            var masksRB_Val = "No";
+
+
+            var distanceNote_ID = "05f3e9e8-348e-423d-901b-74f24acce752";
+            var distanceNote_Val = "Check everything our, make sure its ok.";
+            var distanceAssign_ID = "7691974a-49b4-43d5-9973-27e4887cc3ac";
+            var distanceAssign_Val = "Jack Guy";
+
+            // Personal Hygiene
+
+            var sanitizeRB_ID = "7e7c3041-7272-430d-b837-e3d5da141497";
+            var sanitizeRB_no = "8b716973-4acf-4ebb-b67f-5c67d4b42bae";
+            var sanitizeRB_Val = "No";
+
+            var cleanSinkRB_ID = "3acdfb1d-6218-452b-af92-98e789fe5acd";
+            var cleanSinkRB_yes = "51ee6128-8459-4f9f-9cbc-0ba66be9a129";
+            var cleanSinkRB_Val = "Yes";
+
+            var soapRB_ID = "3ab368ac-ca68-4cf0-890b-acd3f92a01c5";
+            var soapRB_no = "a2010105-e522-4e10-84aa-e18ebc0ddb05";
+            var soapRB_Val = "No";
+
+            var HygieneNote_ID = "a4043ac8-a03d-4d68-a0bb-682a3fa3f0c9";
+            var HygieneNote_Val = "Need to buy more soap - strong stuff.";
+            var HygieneAssign_ID = "5a635985-e1b5-4aec-a9c0-e7660babb38b";
+            var HygieneAssign_Val = "Jane Gal";
+
+            // Housekeeping
+
+            var cleanRB_ID = "c9f48c7e-43b6-4e22-8546-8dba0470dcd2";
+            var cleanRB_yes = "1eb083c3-251f-4d2f-a704-9d7f8b6a6f21";
+            var cleanRB_Val = "Yes";
+
+            var regularRB_ID = "079dde30-9586-4936-aafc-67f7d74c8e8f";
+            var regularRB_yes = "f671c8b1-2604-458d-9692-6cdb78d1535d";
+            var regularRB_Val = "Yes";
+
+            var suppliesRB_ID = "b4bed4f9-fdac-4da4-a314-64e60815bb80";
+            var suppliesRB_no = "fe4734b6-ae2c-4cb8-9ae1-d76cad3a0e39";
+            var suppliesRB_Val = "No";
+
+            var walkwaysRB_ID = "d0dacbed-224d-403c-a8c4-aa5b178c8aed";
+            var walkwaysRB_yes = "a457c015-6035-45a5-bd81-f3a9f1e0f274";
+            var walkwaysRB_Val = "Yes";
+
+            var housekeepNote_ID = "3ce3dd6a-b44a-46af-8d46-1c34d06b473c";
+            var housekeepNote_Val = "Need to stock up on more cleaning supplies.";
+            var housekeepAssign_ID = "9ae193b3-0fb6-4122-a62e-2b0e67e95947";
+            var housekeepAssign_Val = "Jan guyguy";
+
+            // Training
+            var covidTrainingRB_ID = "5f311b09-11be-4774-b0ef-7795fa5f644d";
+            var covidTraining_yes = "0a50bd07-f451-4b30-8e8d-e5c16708f187";
+            var covidTrainingRB_Val = "Yes";
+
+            var emplTrainingRB_ID = "5e7ca9fb-c57e-4f02-b1c4-f47ec5dcc062";
+            var emplTrainingRB_yes = "5a77ca10-cf34-49b6-94a7-cdf7cdb4f064";
+            var emplTrainingRB_Val = "Yes";
+
+            var trainingNote_ID = "75300a7e-707d-4ed6-8d3e-e89091da7432";
+            var trainingNote_Val = "The cool guy needs more training.";
+            var trainingAssign_ID = "69f3e648-173f-4875-b08d-92e6ddb3d255";
+            var trainingAssign_Val = "Jacov guyguy";
+
+            //Eyewash Stations
+
+            var eyewashStationRB_ID = "baeb6cb3-1f53-40b6-a0aa-7905a5414b12";
+            var eyewashStationRB_yes = "44c57c67-a7a4-4599-b5bc-9d3b887cbef2";
+            var eyewashStationRB_Val = "Yes";
+
+            var eyewashInfo_ID = "c9158253-3a61-49b1-8f38-27c176efaa26";
+            var eyewashInfo_Val = "Hub 222, 2012, 2000.\r\nHub 444, 2014, 2008.";
+
+            // Other
+            var flush3minRB_ID = "0f86bfea-eb77-4115-ad17-69a3666cbb79";
+            var flush3minRB_yes = "499bed9a-d72e-40d9-870d-68b05fdbc4b2";
+            var flush3minRB_Val = "Yes";
+
+            var ppeOnRB_ID = "0d58a5a5-6bf4-4adb-becc-185f912669a4";
+            var ppeOnRB_yes = "ebceabf3-800d-4256-85a5-2535f16aba31";
+            var ppeOnRB_Val = "Yes";
+
+            var otherNote_ID = "50257822-17b0-4fa7-9ba5-c7ec19e72b67";
+            var otherNote_Val = "Need to make other notes.";
+            var otherAssign_ID = "41ee7227-c6a9-4afa-91d9-32029bc1d9ba";
+            var otherAssign_Val = "Jupiter galgal";
+
+            //---------------------------------------------------------------------------------
+
+            //set inspection date
+            var inspectDate_Val = new DateTime(2021, 3, 25);
+            _seleniumHelper.SetDateValue(inspectDate_ID, inspectDate_Val);
+
+            //set  building
+            _seleniumHelper.SelectDropdownOption(building_ID, building_DD_HUBopt);
+            //set inspector tf
+            _seleniumHelper.SetTextFieldValue(InspectorID, InspectorVal);
+            //set room tf
+            _seleniumHelper.SetTextFieldValue(RoomID, RoomVal);
+            // set number approved
+            _seleniumHelper.SetNumberValue(NumApprovedID, NumApprovedVal);
+            // actual number
+            _seleniumHelper.SetNumberValue(NumActualID, NumActualVal);
+
+
+            ////Physical Distancing
+            // set distancing RB
+            _seleniumHelper.SelectRadioOption(distanceRB_ID, distanceRB_yes);
+            // set masks RB
+            _seleniumHelper.SelectRadioOption(masksRB_ID, masksRB_no);
+            // set Physical Distancing note
+            _seleniumHelper.SetTextAreaValue(distanceNote_ID, distanceNote_Val);
+            // set Physical Distancing assignee
+            _seleniumHelper.SetTextFieldValue(distanceAssign_ID, distanceAssign_Val);
+
+            ////Personal Hygiene
+            // set sanatize RB
+            _seleniumHelper.SelectRadioOption(sanitizeRB_ID, sanitizeRB_no);
+            // set clesn sinks RB
+            _seleniumHelper.SelectRadioOption(cleanSinkRB_ID, cleanSinkRB_yes);
+            // set soap RB
+            _seleniumHelper.SelectRadioOption(soapRB_ID, soapRB_no);
+
+
+            // set Personal Hygiene note
+            _seleniumHelper.SetTextAreaValue(HygieneNote_ID, HygieneNote_Val);
+
+            // set Personal Hygiene assignee
+            _seleniumHelper.SetTextFieldValue(HygieneAssign_ID, HygieneAssign_Val);
+
+            ////House keeping
+            // set clean RB
+            _seleniumHelper.SelectRadioOption(cleanRB_ID, cleanRB_yes);
+            // set regular cleaning RB
+            _seleniumHelper.SelectRadioOption(regularRB_ID, regularRB_yes);
+            // set supplies RB
+            _seleniumHelper.SelectRadioOption(suppliesRB_ID, suppliesRB_no);
+            //set walkways RB
+            _seleniumHelper.SelectRadioOption(walkwaysRB_ID, walkwaysRB_yes);
+
+            // set Housekeeping note
+            _seleniumHelper.SetTextAreaValue(housekeepNote_ID, housekeepNote_Val);
+            // set Housekeeping assignee
+            _seleniumHelper.SetTextFieldValue(housekeepAssign_ID, housekeepAssign_Val);
+
+            ////Training
+            // set covid training RB
+            _seleniumHelper.SelectRadioOption(covidTrainingRB_ID, covidTraining_yes);
+            // set employee training RB
+            _seleniumHelper.SelectRadioOption(emplTrainingRB_ID, emplTrainingRB_yes);
+
+            // set Training note
+            _seleniumHelper.SetTextAreaValue(trainingNote_ID, trainingNote_Val);
+            // set Training assignee
+            _seleniumHelper.SetTextFieldValue(trainingAssign_ID, trainingAssign_Val);
+
+
+            ////Eye Stations
+
+            // set eye station RB
+            _seleniumHelper.SelectRadioOption(eyewashStationRB_ID, eyewashStationRB_yes);
+            // set eye station info
+            _seleniumHelper.SetTextAreaValue(eyewashInfo_ID, eyewashInfo_Val);
+            ////other
+
+            // set flush 3 min RB
+            _seleniumHelper.SelectRadioOption(flush3minRB_ID, flush3minRB_yes);
+            // set PPE RB
+            _seleniumHelper.SelectRadioOption(ppeOnRB_ID, ppeOnRB_yes);
+
+            // set other note
+            _seleniumHelper.SetTextAreaValue(otherNote_ID, otherNote_Val);
+
+            // set other assignee
+            _seleniumHelper.SetTextFieldValue(otherAssign_ID, otherAssign_Val);
+
+
+            //Clicking on sumbit button
+            _seleniumHelper.ClickOnButtonType(dataItemTemplateId, "Submit");
+
+            //Clicking on the modal confirmation button
+            _seleniumHelper.CkickModalSubmit(dataItemTemplateId, "btn btn-success");
+
+            //Clicking on the link to view detail view
+            _seleniumHelper.ClickOnALink("click on here");
+
+            //---------------------------------------------------------------------
+
+
+            //Validating inspection date
+            var inspectDate_disp = _seleniumHelper.GetDateDisplayValue(inspectDate_ID);
+            Assert.AreEqual(inspectDate_Val.ToString("yyyy-MM-dd"), inspectDate_disp, "inspection date value is not correctly saved");
+
+            //Validating building test field
+            var building_disp = _seleniumHelper.GetSelectDisplayValue(building_ID);
+            Assert.AreEqual(building_Val, building_disp, "building value is not correctly saved");
+
+            //validate inspector tf
+            var Inspector_disp = _seleniumHelper.GetTextFieldDisplayValue(InspectorID);
+            Assert.AreEqual(InspectorVal, Inspector_disp, "inspector value is not correctly saved");
+
+            //validate room tf
+            var Roomdisp = _seleniumHelper.GetTextFieldDisplayValue(RoomID);
+            Assert.AreEqual(RoomVal, Roomdisp, "room value is not correctly saved");
+
+            // validate number approved
+            var NumApproveddisp = _seleniumHelper.GetIntegerDisplayValue(NumApprovedID);
+            Assert.AreEqual(NumApprovedVal, NumApproveddisp, "number approved value is not correctly saved");
+
+            // actual number
+            var NumActualDisp = _seleniumHelper.GetIntegerDisplayValue(NumActualID);
+            Assert.AreEqual(NumActualVal, NumActualDisp, "actual number value is not correctly saved");
+
+
+            ////Physical Distancing
+            // validate distancing RB
+            var distanceRB_disp = _seleniumHelper.GetRadioDisplayValue(distanceRB_ID);
+            Assert.AreEqual(distanceRB_Val, distanceRB_disp, "distanced between occupants value is not correctly saved");
+
+            // validate masks RB
+            var masksRB_disp = _seleniumHelper.GetRadioDisplayValue(masksRB_ID);
+            Assert.AreEqual(masksRB_Val, masksRB_disp, "wearing masks value is not correctly saved");
+
+            // validate Physical Distancing note
+            var distanceNote_disp = _seleniumHelper.GetTextFieldDisplayValue(distanceNote_ID);
+            Assert.AreEqual(distanceNote_Val, distanceNote_disp, "Physical Distancing note  is not correctly saved");
+
+            // validate Physical Distancing assignee
+            var distanceAssign_disp = _seleniumHelper.GetTextFieldDisplayValue(distanceAssign_ID);
+            Assert.AreEqual(distanceAssign_Val, distanceAssign_disp, "Physical Distancing assignee is not correctly saved");
+
+
+            ////Personal Hygiene
+            // validate sanatize RB
+            var sanitizeRB_disp = _seleniumHelper.GetRadioDisplayValue(sanitizeRB_ID);
+            Assert.AreEqual(sanitizeRB_Val, sanitizeRB_disp, "hand sanitize value is not correctly saved");
+
+            // validate clean sinks RB
+            var cleanSinkRB_disp = _seleniumHelper.GetRadioDisplayValue(cleanSinkRB_ID);
+            Assert.AreEqual(cleanSinkRB_Val, cleanSinkRB_disp, "clean sink value is not correctly saved");
+
+            // validate soap RB
+            var soapRB_disp = _seleniumHelper.GetRadioDisplayValue(soapRB_ID);
+            Assert.AreEqual(soapRB_Val, soapRB_disp, "soap supply value is not correctly saved");
+
+
+            // validate Personal Hygiene note
+            var HygieneNote_disp = _seleniumHelper.GetTextFieldDisplayValue(HygieneNote_ID);
+            Assert.AreEqual(HygieneNote_Val, HygieneNote_disp, "Personal Hygiene note is not correctly saved");
+
+            // validate Personal Hygiene assignee
+            var HygieneAssign_disp = _seleniumHelper.GetTextFieldDisplayValue(HygieneAssign_ID);
+            Assert.AreEqual(HygieneAssign_Val, HygieneAssign_disp, "Personal Hygiene assigneeis not correctly saved");
+
+            ////House keeping
+            // validate clean RB
+            var cleanRB_disp = _seleniumHelper.GetRadioDisplayValue(cleanRB_ID);
+            Assert.AreEqual(cleanRB_Val, cleanRB_disp, "clean RB value is not correctly saved");
+
+            // validate regular cleaning RB
+            var regularRB_disp = _seleniumHelper.GetRadioDisplayValue(regularRB_ID);
+            Assert.AreEqual(regularRB_Val, regularRB_disp, "regular cleaning RB value is not correctly saved");
+
+            // validate supplies RB
+            var suppliesRB_disp = _seleniumHelper.GetRadioDisplayValue(suppliesRB_ID);
+            Assert.AreEqual(suppliesRB_Val, suppliesRB_disp, "supplies RB value is not correctly saved");
+
+            //validate walkways RB
+            var walkwaysRB_disp = _seleniumHelper.GetRadioDisplayValue(walkwaysRB_ID);
+            Assert.AreEqual(walkwaysRB_Val, walkwaysRB_disp, "walkways RB value is not correctly saved");
+
+            // validate Housekeeping note
+            var housekeepNote_disp = _seleniumHelper.GetTextFieldDisplayValue(housekeepNote_ID);
+            Assert.AreEqual(housekeepNote_Val, housekeepNote_disp, "Housekeeping note is not correctly saved");
+
+            // validate Housekeeping assignee
+            var housekeepAssign_disp = _seleniumHelper.GetTextFieldDisplayValue(housekeepAssign_ID);
+            Assert.AreEqual(housekeepAssign_Val, housekeepAssign_disp, "Housekeeping assignee is not correctly saved");
+
+            ////Training
+            // validate covid training RB
+            var covidTrainingRB_disp = _seleniumHelper.GetRadioDisplayValue(covidTrainingRB_ID);
+            Assert.AreEqual(covidTrainingRB_Val, covidTrainingRB_disp, "covid training RB is not correctly saved");
+
+            // validate employee training RB
+            var emplTrainingRB_disp = _seleniumHelper.GetRadioDisplayValue(emplTrainingRB_ID);
+            Assert.AreEqual(emplTrainingRB_Val, emplTrainingRB_disp, "employee training RB is not correctly saved");
+
+            // validate Training note
+            var trainingNote_disp = _seleniumHelper.GetTextFieldDisplayValue(trainingNote_ID);
+            Assert.AreEqual(trainingNote_Val, trainingNote_disp, "Training noteis not correctly saved");
+
+            // validate Training assignee
+            var trainingAssign_disp = _seleniumHelper.GetTextFieldDisplayValue(trainingAssign_ID);
+            Assert.AreEqual(trainingAssign_Val, trainingAssign_disp, "Training assignee is not correctly saved");
+
+            ////Eye Stations
+
+            // validate eye station RB
+            var eyewashStationRB_disp = _seleniumHelper.GetRadioDisplayValue(eyewashStationRB_ID);
+            Assert.AreEqual(eyewashStationRB_Val, eyewashStationRB_disp, "eye station RB is not correctly saved");
+
+            // validate eye station info
+            var eyewashInfo_disp = _seleniumHelper.GetTextFieldDisplayValue(eyewashInfo_ID);
+            Assert.AreEqual(eyewashInfo_Val, eyewashInfo_disp, "eye station info is not correctly saved");
+
+            ////other
+
+            // validate flush 3 min RB
+            var flush3minRB_disp = _seleniumHelper.GetRadioDisplayValue(flush3minRB_ID);
+            Assert.AreEqual(flush3minRB_Val, flush3minRB_disp, "flush 3 min RB value is not correctly saved");
+            // validate PPE RB
+            var ppeOnRB_val = _seleniumHelper.GetRadioDisplayValue(ppeOnRB_ID);
+            Assert.AreEqual(ppeOnRB_Val, ppeOnRB_val, "PPE RB value is not correctly saved");
+
+            // validate other note
+            var otherNote_disp = _seleniumHelper.GetTextFieldDisplayValue(otherNote_ID);
+            Assert.AreEqual(otherNote_Val, otherNote_disp, "other note is not correctly saved");
+
+            // validate other assignee
+            var otherAssign_disp = _seleniumHelper.GetTextFieldDisplayValue(otherAssign_ID);
+            Assert.AreEqual(otherAssign_Val, otherAssign_disp, "other assigneeis not correctly saved");
+
+            //close
+            _seleniumHelper.Driver.Close();
+        }
 
     }
+
 }

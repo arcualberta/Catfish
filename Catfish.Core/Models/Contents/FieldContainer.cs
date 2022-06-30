@@ -31,6 +31,13 @@ namespace Catfish.Core.Models.Contents
         }
 
         [NotMapped]
+        public string InternalName
+        {
+            get => GetAttribute("internal-name", null as string);
+            set => SetAttribute("internal-name", value);
+        }
+
+        [NotMapped]
         public FieldContainerList ChildFieldContainers { get; protected set; }
 
         public FieldContainer(string tagName) : base(tagName) 

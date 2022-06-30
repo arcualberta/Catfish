@@ -14,7 +14,8 @@ namespace Catfish.Core.Models.Contents.Reports
     public class ReportCellValue
 	{
         public Guid FormInstanceId { get; set; }
-        public List<Text> Values { get; set; } = new List<Text>();
+        //public List<Text> Values { get; set; } = new List<Text>();
+        public List<string> Values { get; set; } = new List<string>();
         public string RenderType { get; set; }
     }
 }

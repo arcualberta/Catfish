@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
 namespace Catfish.Helper
@@ -37,6 +38,7 @@ namespace Catfish.Helper
         string[] GetValue(string key, string[] defaultValue);
         int GetValue(string key, int defaultValue);
         string[] GetAccessRestrictionAllowedDomains();
+        Guid[] GetPublicAttachmentFieldIds();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -166,6 +168,13 @@ namespace Catfish.Helper
         public bool GetEnabledLocalLogin()
         {
             return GetValue("SiteConfig:EnabledLocalLogin", false);
+        }
+
+        public Guid[] GetPublicAttachmentFieldIds()
+        {
+            var alloweIDs = _configuration.GetSection("SiteConfig:PublicAttachmentFieldIds");
+            Guid[] _fieldIs = alloweIDs.Get<Guid[]>();
+            return _fieldIs;
         }
 
         public string GenericAuthorizationErrorMessage()

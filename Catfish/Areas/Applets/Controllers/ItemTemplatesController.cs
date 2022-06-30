@@ -5,6 +5,7 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Services;
 using ElmahCore;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -17,6 +18,7 @@ namespace Catfish.Areas.Applets.Controllers
 {
     [Route("applets/api/[controller]")]
     [ApiController]
+    [EnableCors("CatfishApiPolicy")]
     public class ItemTemplatesController : ControllerBase
     {
         private readonly IItemTemplateAppletService _itemTemplateAppletService;

@@ -33,9 +33,17 @@ namespace Catfish.Core.Helpers
             get
             {
                 string val = Configuration.GetSection("SiteConfig:SiteUrl").Value;
-                return string.IsNullOrEmpty(val) ? null : val.TrimEnd('/');
+                return string.IsNullOrEmpty(val) ? "" : val.TrimEnd('/');
             }
         }
+
+        public static bool GetConfigVal(string name, bool defaultValue)
+        {
+            string val = Configuration.GetSection(name).Value;
+            return string.IsNullOrEmpty(val) ? defaultValue : bool.Parse(val);
+        }
+
+
 
         public static string GetUploadTempFolder(bool createIfNotExist = false)
         {

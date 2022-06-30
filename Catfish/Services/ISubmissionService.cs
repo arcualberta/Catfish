@@ -19,11 +19,12 @@ namespace Catfish.Services
         //string SaveSubmission(Entity submission);
         List<Item> GetSubmissionList();
         List<Item> GetSubmissionList(ClaimsPrincipal user, Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null);
-        List<ReportRow> GetSubmissionList(Guid  groupId, Guid templateId, Guid collectionId, ReportDataFields[] fields, DateTime? startDate, DateTime? endDate, Guid? status);
+        Report GetSubmissionList(ClaimsPrincipal user, Guid  groupId, Guid templateId, Guid collectionId, ReportDataFields[] fields, string freeText, DateTime? startDate, DateTime? endDate, Guid? status, int? offset, int? pagesize);
         Item GetSubmissionDetails(Guid itemId);
         List<ItemField> GetAllField(string xml);
         SystemStatus GetStatus(Guid? statusId);
         Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, List<IFormFile> files = null, List<string> fileKeys = null);
+        Item EditSubmission(DataItem value, Guid itemId, string action, List<IFormFile> files = null, List<string> fileKeys = null);
         Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid status, string action, string fileNames = null);
         Item DeleteSubmission(Item item);
         Item AddChild(DataItem value, Guid entityTemplateId, Guid itemId, Guid stateId, Guid buttonId, string fileNames = null);
@@ -33,8 +34,8 @@ namespace Catfish.Services
         Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action);
         string SetSuccessMessage(Guid entityTemplateId, Guid postActionId, Guid itemId);
         List<Item> GetSubmissionList(Guid? collectionId);
-
         List<Collection> GetCollectionList();
+        public Item UpdateItem(Item src, List<IFormFile> files, List<string> fileKeys);
     }
     public class ItemField
     {

@@ -13,6 +13,8 @@ import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
 
+const skipSSR = false;
+
 // Get browserslist config and remove ie from es build targets
 const esbrowserslist = fs.readFileSync('./.browserslistrc')
     .toString()
@@ -23,7 +25,7 @@ const esbrowserslist = fs.readFileSync('./.browserslistrc')
 const babelPresetEnvConfig = require('../babel.config')
     .presets.filter((entry) => entry[0] === '@babel/preset-env')[0][1];
 
-const argv = minimist(process.argv.slice(2));
+const argv = [minimist(process.argv.slice(2))];
 
 const projectRoot = path.resolve(__dirname, '..');
 
@@ -102,6 +104,7 @@ const globals = {
 
 // Customize configs for individual targets
 const buildFormats = [];
+
 if (!argv.format || argv.format === 'es') {
     const esConfig = {
         ...baseConfig,
@@ -141,7 +144,7 @@ if (!argv.format || argv.format === 'es') {
     buildFormats.push(esConfig);
 }
 
-if (!argv.format || argv.format === 'cjs') {
+if (!skipSSR && (!argv.format || argv.format === 'cjs')) {
     const umdConfig = {
         ...baseConfig,
         external,

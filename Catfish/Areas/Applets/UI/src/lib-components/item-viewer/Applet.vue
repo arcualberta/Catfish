@@ -24,6 +24,10 @@
             console.log('Item Viewer setup ...');
             console.log('props: ', JSON.stringify(p));
             const isAdmin = dataAttributes["is-admin"] as string;
+
+            const siteUrl = dataAttributes["site-url"] as string;
+            store.commit(Mutations.SET_SITE_URL, siteUrl)
+
             console.log('isAdmin: ', isAdmin);
             const queryParams = p.queryParameters as QueryParameter;
 

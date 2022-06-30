@@ -16,6 +16,7 @@ using Catfish.Core.Services;
 using ElmahCore;
 using Catfish.Core.Models.Solr;
 using Piranha.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Cors;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,6 +26,7 @@ namespace Catfish.Areas.Applets.Controllers
 
     [Route("applets/api/[controller]")]
     [ApiController]
+    [EnableCors("CatfishApiPolicy")]
     public class KeywordSearchController : ControllerBase
     {
         private readonly IModelLoader _loader;
@@ -50,15 +52,127 @@ namespace Catfish.Areas.Applets.Controllers
 
         // GET api/<KeywordSearchController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ResultItem Get(Guid id)
         {
-            return "value";
+
+            ResultItem resultItem = new ResultItem();
+
+            string query = string.Format("doc_type_ss:item AND id: {0}", id);
+
+            SearchResult solrSearchResult = _solr.ExecuteSearch(query, 0, 1, 1);
+
+            foreach (ResultEntry resultEntry in solrSearchResult.ResultEntries)
+            {
+
+                resultItem.Id = resultEntry.Id;
+                resultItem.RootFormInstaceId = resultEntry.RootFormInstaceId;
+                resultItem.Date = resultEntry.Created;
+                string solrFieldId = "";
+                foreach (var field in resultEntry.Fields)
+                {
+                    if (!string.IsNullOrEmpty(field.Scope.ToString()))
+                    {
+                        solrFieldId = field.FieldKey;
+
+                        resultItem.SolrFields.Add(field.FieldKey, field.FieldContent.ToArray());
+                    }
+                }
+
+
+            }
+
+
+            return resultItem;
+           
         }
 
         // POST api/<KeywordSearchController>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <param name="collectionId"></param>
+        /// <param name="groupId"></param>
+        /// <param name="stateIdRestrictions">These are the IDs of the status values to be considerd for the result set irrespective of the current user's permissions.</param>
+        /// <param name="query"></param>
+        /// <param name="searchText"></param>
+        /// <param name="offset"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
         [HttpPost]
-        public void Post([FromBody] string value)
-        {
+        public SearchOutput Post([FromForm] Guid templateId, [FromForm] Guid collectionId, [FromForm] Guid groupId, [FromForm] Guid[] stateIdRestrictions, [FromForm] string query, [FromForm] int offset = 0, [FromForm] int max = 0)
+        {           // Dictionary<string, object> result = new Dictionary<string, object>();
+            SearchOutput result = new SearchOutput();
+            try
+            {
+                #region Validating access-permission for the currently logged in user
+
+                ItemTemplate template = _appDb.ItemTemplates.FirstOrDefault(t => t.Id == templateId);
+
+                //Taking the subset of state IDs from the list of permissible state IDs such that the selected subset would be the 
+                //list of permitted states for the user who is currently logged in(if any) based on the user's role withing the specified group.
+                List<Guid> permittedStatusIds = null;
+                if (stateIdRestrictions.Length > 0)
+                {
+                    permittedStatusIds = GetPermittedStateIdsForCurrentUser(groupId, template, "ListInstances", stateIdRestrictions);
+
+                    if (permittedStatusIds.Count == 0)
+                        return result;
+                }
+                #endregion
+
+                string keywords = null;
+                string[] slectedKeywords = string.IsNullOrEmpty(keywords)
+                   ? Array.Empty<string>()
+                   : keywords.Split('|', StringSplitOptions.RemoveEmptyEntries);
+
+                string scope = string.Format("doc_type_ss:item AND collection_s:{0} AND template_s:{1}", collectionId, templateId);
+                query = string.IsNullOrEmpty(query)
+                        ? scope
+                        : string.Format("{0} AND {1}", scope, query);
+
+
+                if (groupId != null && groupId != Guid.Empty)
+                    query = string.Format("{0} AND group_s:{1}", query, groupId.ToString());
+
+                if (stateIdRestrictions.Length > 0)
+                {
+                    List<string> stateLimits = new List<string>();
+                    foreach (var stId in permittedStatusIds)
+                        stateLimits.Add(string.Format("status_s:{0}", stId));
+                    query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
+                }
+
+                SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
+
+                foreach (ResultEntry resultEntry in solrSearchResult.ResultEntries)
+                {
+                    ResultItem resultItem = new ResultItem();
+                    resultItem.Id = resultEntry.Id;
+                    resultItem.RootFormInstaceId = resultEntry.RootFormInstaceId;
+                    resultItem.Date = resultEntry.Created;
+                    string solrFieldId = "";
+                    foreach(var field in resultEntry.Fields)
+                    {
+                        if (!string.IsNullOrEmpty(field.Scope.ToString())) {
+                            solrFieldId = field.FieldKey; 
+                            
+                            resultItem.SolrFields.Add(field.FieldKey, field.FieldContent.ToArray());
+                        }
+                    }
+
+                    result.Items.Add(resultItem);
+                }
+                result.First = solrSearchResult.Offset + 1;
+                result.Count = solrSearchResult.TotalMatches;
+                result.Last = result.First + result.Items.Count - 1;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+
+           return result;
         }
 
         // PUT api/<KeywordSearchController>/5
@@ -131,7 +245,7 @@ namespace Catfish.Areas.Applets.Controllers
 
         [HttpPost]
         [Route("items")]
-        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] int offset = 0, [FromForm] int max = 0)
+        public async Task<SearchOutput> GetItems([FromForm] Guid pageId, [FromForm] Guid blockId, [FromForm] string queryParams, [FromForm] string searchText = null, [FromForm] int offset = 0, [FromForm] int max = 0)
         {
             //////Using mockup data
             ////KeywordQueryModel qModel = await Keywords(pageId, blockId).ConfigureAwait(false);
@@ -166,14 +280,14 @@ namespace Catfish.Areas.Applets.Controllers
 
                 var permittedStatusIds = GetPermittedStateIdsForCurrentUser(Guid.Parse(block.SelectedGroupId.Value), template, "ListInstances", permissibleStateGuids);
 
-				        if (permittedStatusIds.Count == 0)
-					          return result;
-                    
-				#endregion
+                if (permittedStatusIds.Count == 0)
+                    return result;
+
+                #endregion
 
 
 
-				KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
+                KeywordQueryModel keywordQueryModel = JsonConvert.DeserializeObject<KeywordQueryModel>(queryParams);
 
                 string keywords = null;
                 string[] slectedKeywords = string.IsNullOrEmpty(keywords)
@@ -183,19 +297,24 @@ namespace Catfish.Areas.Applets.Controllers
                 var query = keywordQueryModel?.BuildSolrQuery();
                 string scope = string.Format("doc_type_ss:item AND collection_s:{0} AND template_s:{1}", collectionId, itemTemplateId);
                 query = string.IsNullOrEmpty(query)
-                    ? scope
-                    : string.Format("{0} AND {1}", scope, query);
+                        ? scope
+                        : string.Format("{0} AND {1}", scope, query);
+            
 
-                if (groupId.HasValue)
-                    query = string.Format("{0} AND group_s:{1}", query, groupId.Value);
+                ////if (groupId.HasValue)
+                ////    query = string.Format("{0} AND group_s:{1}", query, groupId.Value);
 
                 List<string> stateLimits = new List<string>();
                 foreach (var stId in permittedStatusIds)
                     stateLimits.Add(string.Format("status_s:{0}", stId));
                 query = string.Format("{0} AND ({1})", query, string.Join(" OR ", stateLimits));
 
+                if (!string.IsNullOrEmpty(searchText))
+                    query = string.Format("{0} AND _all__ts:{1}", query, searchText);
+
                 //System.IO.File.WriteAllText("c:\\solr_query.txt", query);
 
+                //April 27 2022 -- add seachText parameter 
                 SearchResult solrSearchResult = _solr.ExecuteSearch(query, offset, max, 10);
 
                 //Wrapping the results in the SearchOutput object
@@ -280,7 +399,7 @@ namespace Catfish.Areas.Applets.Controllers
             //Get the states of the selected action, excluding the states that were requested to be excluded
             var actionStateRefs = action.States.Where(st => permissibleStateIds.Contains(st.RefId));
 
-            //Grant access to SysAdmin users
+            
             if (User == null || string.IsNullOrEmpty(User?.Identity?.Name))
             {
                 //Return the states of the item where the public can perform the specified acton.
@@ -288,6 +407,7 @@ namespace Catfish.Areas.Applets.Controllers
             }
             else if (User.IsInRole("SysAdmin"))
 			{
+                //Grant access to SysAdmin users
                 //Return all the non-excluded states
                 return actionStateRefs.Select(st => st.RefId).ToList();
             }

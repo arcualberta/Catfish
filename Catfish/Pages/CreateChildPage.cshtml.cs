@@ -54,7 +54,7 @@ namespace Catfish.Pages
                 var sourceReference = field.GetSourceReference(false);
                 if(sourceReference != null)
                 {
-                    var srcDataItem = item.DataContainer.Where(di => di.Id == sourceReference.DataItemId).FirstOrDefault();
+                    var srcDataItem = item.DataContainer.Where(di => di.Id == sourceReference.FieldContainerId).FirstOrDefault();
                     if(srcDataItem != null)
                     {
                         var srcField = srcDataItem.Fields.Where(f => f.Id == sourceReference.FieldId).FirstOrDefault();

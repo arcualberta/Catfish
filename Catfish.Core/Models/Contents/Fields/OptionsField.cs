@@ -11,7 +11,7 @@ namespace Catfish.Core.Models.Contents.Fields
         public static readonly string OptionContainerTag = "options";
         public static readonly string OptionTag = "option";
 
-        public Guid[] SelectedOptionGuids { get; set; }
+        public Guid[] SelectedOptionGuids => Options.Where(opt => opt.Selected).Select(opt => opt.Id).ToArray();
         public OptionsField() { }
         public OptionsField(XElement data) : base(data) { }
         public OptionsField(string name, string desc, string lang = null) : base(name, desc, lang) { }
@@ -102,13 +102,18 @@ namespace Catfish.Core.Models.Contents.Fields
             if (src == null)
                 throw new Exception("The source field is null or is not an OptionsField");
 
-            var selections = src.SelectedOptionGuids == null ? new Guid[0] : src.SelectedOptionGuids;
-            int i = 0;
+            //var selections = src.SelectedOptionGuids == null ? new Guid[0] : src.SelectedOptionGuids;
+            //int i = 0;
             foreach (var dstOption in Options)
             {
-                dstOption.Selected = selections.Contains(dstOption.Id);
-                Options[i].Selected = selections.Contains(dstOption.Id);
-                i++;
+                //dstOption.Selected = selections.Contains(dstOption.Id);
+                //Options[i].Selected = selections.Contains(dstOption.Id);
+                //i++;
+
+                var srcOption = src.Options.FirstOrDefault(opt => opt.Id == dstOption.Id);
+                dstOption.Selected = srcOption.Selected;
+                dstOption.ExtendedOption = srcOption.ExtendedOption;
+                dstOption.ExtendedValues = srcOption.ExtendedValues;
             }
         }
 

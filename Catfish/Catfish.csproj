@@ -9,24 +9,28 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Areas\Applets\applets\**" />
+    <Compile Remove="Areas\Applets\Models\PageComponents\**" />
     <Compile Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
     <Compile Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
     <Compile Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <Compile Remove="Areas\Applets\Views\PagePartials\**" />
     <Compile Remove="wwwroot\applet-root\**" />
     <Content Remove="Areas\Applets\applets\**" />
+    <Content Remove="Areas\Applets\Models\PageComponents\**" />
     <Content Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
     <Content Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
     <Content Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <Content Remove="Areas\Applets\Views\PagePartials\**" />
     <Content Remove="wwwroot\applet-root\**" />
     <EmbeddedResource Remove="Areas\Applets\applets\**" />
+    <EmbeddedResource Remove="Areas\Applets\Models\PageComponents\**" />
     <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
     <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
     <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
     <EmbeddedResource Remove="Areas\Applets\Views\PagePartials\**" />
     <EmbeddedResource Remove="wwwroot\applet-root\**" />
     <None Remove="Areas\Applets\applets\**" />
+    <None Remove="Areas\Applets\Models\PageComponents\**" />
     <None Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
@@ -53,6 +57,7 @@
     <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Areas\Applets\UI.Lib\src\lib-components\search\solrQuery.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\actions.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\mutations.ts" />
     <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\state.ts" />
@@ -96,7 +101,7 @@
   <ItemGroup>
     <PackageReference Include="ElmahCore" Version="1.2.5" />
     <PackageReference Include="ElmahCore.Sql" Version="1.2.5" />
-    <PackageReference Include="Google.Apis" Version="1.46.0" />
+    <PackageReference Include="Google.Apis" Version="1.51.0" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.46.0.2001" />
     <PackageReference Include="jQuery" Version="3.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.17" />
@@ -126,6 +131,8 @@
     <PackageReference Include="Piranha.Manager" Version="8.3.1" />
     <PackageReference Include="Piranha.Manager.TinyMCE" Version="8.3.0" />
     <PackageReference Include="Piranha.WebApi" Version="8.3.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -144,7 +151,6 @@
   <ItemGroup>
     <Folder Include="Areas\Applets\Models\Blocks\CarouselModels\" />
     <Folder Include="Areas\Applets\Models\Blocks\ItemEditorModels\" />
-    <Folder Include="Areas\Applets\Models\PageComponents\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\components\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\models\" />
     <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\store\" />
@@ -165,6 +171,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="Areas\Applets\UI.Lib\src\lib-components\search\solrQuery.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\actions.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\mutations.ts" />
     <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\state.ts" />

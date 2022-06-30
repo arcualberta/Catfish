@@ -216,6 +216,9 @@
                     </div>
                </div>
            </div>
+         <div class='lead row'><label class='form-label col-md-3'>Detailed View Url:</label>
+            <input type='text' class='form-control col-md-4' name='detailedViewUrl' v-model='model.detailedViewUrl.value' value='detailedViewUrlValue'  />
+         </div>
 
         </div>`
 

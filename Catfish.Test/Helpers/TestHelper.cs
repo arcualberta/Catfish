@@ -21,6 +21,7 @@ using System.Xml.Linq;
 using System.IO;
 using System.Linq;
 using Catfish.Helper;
+using Catfish.GoogleApi.Services;
 
 namespace Catfish.Test.Helpers
 {
@@ -87,6 +88,10 @@ namespace Catfish.Test.Helpers
             services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
 
 
+            services.AddScoped<IGoogleApiService, GoogleApiService>();
+
+            services.AddTransient<IGoogleApiServiceBuilder, GoogleApiServiceBuilder>();
+
             //Adding an empty mock-up error logger instance to the service. This is to replace the actuall
             //Elmah error-log functionality used in the web application.
             services.AddScoped<ErrorLog, MockupErrorLog>();
@@ -105,7 +110,10 @@ namespace Catfish.Test.Helpers
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>();
         public ISolrService SolrService => Seviceprovider.GetService<ISolrService>();
         public ISolrBatchService SolrBatchService => Seviceprovider.GetService<ISolrBatchService>();
-       
+
+        public IGoogleApiService GoogleApiService => Seviceprovider.GetService<IGoogleApiService>();
+        public IGoogleApiServiceBuilder GoogleApiServiceBuilder => Seviceprovider.GetService<IGoogleApiServiceBuilder>();
+        //public IGoogleSpreadsheetService GoogleSpreadsheetService => Seviceprovider.GetService<IGoogleSpreadsheetService>();
         public XElement LoadXml(string fileName)
         {
             string dataRoot = Configuration.GetSection("SchemaPath").Value;
@@ -152,6 +160,7 @@ namespace Catfish.Test.Helpers
             RefreshSchema("table_field2.xml", ws);
             RefreshSchema("grid_table.xml", ws);
             RefreshSchema("SASform.xml", ws);
+            RefreshSchema("covidWeeklyInspection.xml", ws);
 
             ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("simple_form.xml")) as ItemTemplate);
             ////_db.ItemTemplates.Add(ItemTemplate.Parse(LoadXml("visibleIf_requiredIf.xml")) as ItemTemplate);

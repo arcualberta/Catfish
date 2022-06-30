@@ -11,6 +11,7 @@ using System.Security.Claims;
 using Piranha.AspNetCore.Identity.Models;
 using Catfish.Helper;
 using Piranha;
+using Catfish.Core.Helpers;
 
 namespace Catfish.Controllers
 {
@@ -53,7 +54,7 @@ namespace Catfish.Controllers
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
             var q = _httpContextAccessor.HttpContext.Request.Query;
-            string ret = q.Keys.Contains("ret") ? q["ret"].ToString() : "/";
+            string ret = q.Keys.Contains("ret") ? q["ret"].ToString() : ConfigHelper.SiteUrl; 
 
             returnUrl = returnUrl ?? Url.Content(ret);
 

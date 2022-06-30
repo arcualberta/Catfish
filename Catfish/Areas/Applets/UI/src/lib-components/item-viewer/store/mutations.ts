@@ -7,7 +7,8 @@ import { Item } from '../../shared/models/item';
 export enum Mutations {
     SET_ID = 'SET_ID',
     SET_ITEM = 'SET_ITEM',
-    CHANGE_STATE = 'CHANGE_STATE'
+    CHANGE_STATE = 'CHANGE_STATE',
+    SET_SITE_URL = 'SET_SITE_URL'
 }
 
 //Create a mutation tree that implement all mutation interfaces
@@ -25,6 +26,8 @@ export const mutations: MutationTree<State> = {
         //state.item
         console.log(JSON.stringify(state));
         console.log(JSON.stringify(payload));
+    },
+    [Mutations.SET_SITE_URL](state: State, payload: string ) {
+        state.siteUrl = payload;
     }
-
 }

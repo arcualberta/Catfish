@@ -12,12 +12,13 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="Piranha.AspNetCore.Identity.SQLServer" Version="8.3.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="89.0.4389.2300" />
-    <PackageReference Include="Selenium.WebDriver.MSEdgeDriver" Version="89.0.774.54" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="92.0.4515.10700" />
+    <PackageReference Include="Selenium.WebDriver.MSEdgeDriver" Version="94.0.986" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
+    <ProjectReference Include="..\Catfish.GoogleApi\Catfish.GoogleApi.csproj" />
     <ProjectReference Include="..\Catfish\Catfish.csproj" />
   </ItemGroup>
 
