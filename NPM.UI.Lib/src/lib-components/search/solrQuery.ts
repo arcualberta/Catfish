@@ -61,11 +61,11 @@ export namespace SolrQuery {
             this.excludeIds = [];
         }
 
-        appendNewFieldConstraint(solrFieldName: string, filedValueOptions: string[], aggregationOperator: AggregationOperator, internalId: string): FieldConstraint {
+        appendNewFieldConstraint(solrFieldName: string, filedValueOptions: string[], fieldValueSelectionStatus: boolean, aggregationOperator: AggregationOperator, internalId: string): FieldConstraint {
             const fieldConstraint = new FieldConstraint(solrFieldName, aggregationOperator, internalId);
 
             filedValueOptions.forEach(val =>
-                fieldConstraint.valueConstraints.push({ value: val, selected: false } as ValueConstraint)
+                fieldConstraint.valueConstraints.push({ value: val, selected: fieldValueSelectionStatus } as ValueConstraint)
             );
 
             this.queryConstraints.push(fieldConstraint);
