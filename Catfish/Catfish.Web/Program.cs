@@ -30,11 +30,7 @@ builder.AddPiranha(options =>
     options.UseIdentityWithSeed<IdentitySQLServerDb>(db => db.UseSqlServer(connectionString));
 
 
-  //  services.AddPiranhaEF<SQLServerDb>(options =>
-    //          options.UseSqlServer(sqlConnectionString));
-   // services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
-   //     options.UseSqlServer(sqlConnectionString));
-
+ 
     /**
      * Here you can configure the different permissions
      * that you want to use for securing content in the
