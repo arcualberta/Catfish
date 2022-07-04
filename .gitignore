@@ -157,6 +157,7 @@ $RECYCLE.BIN/
 appsettings.json
 appsettings.test.json
 .vs/
+Catfish/Catfish.Web/wwwroot/uploads/
 
 #Ignorre common Vue intermediate files
 dist/
