@@ -27,7 +27,7 @@ builder.AddPiranha(options =>
 
     var connectionString = builder.Configuration.GetConnectionString("catfish");
     options.UseEF<SQLServerDb>(db => db.UseSqlServer(connectionString));//.UseSqlite(connectionString));
-    options.UseIdentityWithSeed<IdentitySQLServerDb>(db => db.UseSqlite(connectionString));
+    options.UseIdentityWithSeed<IdentitySQLServerDb>(db => db.UseSqlServer(connectionString));
 
 
   //  services.AddPiranhaEF<SQLServerDb>(options =>
