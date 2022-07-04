@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Piranha;
 using Piranha.AttributeBuilder;
-using Piranha.AspNetCore.Identity.SQLite;
-using Piranha.Data.EF.SQLite;
+using Piranha.AspNetCore.Identity.SQLServer;
+using Piranha.Data.EF.SQLServer;
 using Piranha.Manager.Editor;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,9 +25,15 @@ builder.AddPiranha(options =>
     options.UseTinyMCE();
     options.UseMemoryCache();
 
-    var connectionString = builder.Configuration.GetConnectionString("piranha");
-    options.UseEF<SQLiteDb>(db => db.UseSqlite(connectionString));
-    options.UseIdentityWithSeed<IdentitySQLiteDb>(db => db.UseSqlite(connectionString));
+    var connectionString = builder.Configuration.GetConnectionString("catfish");
+    options.UseEF<SQLServerDb>(db => db.UseSqlServer(connectionString));//.UseSqlite(connectionString));
+    options.UseIdentityWithSeed<IdentitySQLServerDb>(db => db.UseSqlServer(connectionString));
+
+
+  //  services.AddPiranhaEF<SQLServerDb>(options =>
+    //          options.UseSqlServer(sqlConnectionString));
+   // services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
+   //     options.UseSqlServer(sqlConnectionString));
 
     /**
      * Here you can configure the different permissions
