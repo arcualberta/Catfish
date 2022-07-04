@@ -1,0 +1,96 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = catfish
+build_property.RootNamespace = catfish
+build_property.ProjectDir = C:\ARCProjects\Catfish\Catfish3\Catfish-3.0-dev\catfish\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = true
+build_property.MSBuildProjectDirectory = C:\ARCProjects\Catfish\Catfish3\Catfish-3.0-dev\catfish
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/Archive.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXJjaGl2ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/AudioBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xBdWRpb0Jsb2NrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/ColumnBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xDb2x1bW5CbG9jay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/Comment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xDb21tZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/HtmlBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xIdG1sQmxvY2suY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/ImageBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xJbWFnZUJsb2NrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/ImageGalleryBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xJbWFnZUdhbGxlcnlCbG9jay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/MarkdownBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xNYXJrZG93bkJsb2NrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/PageBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xQYWdlQmxvY2suY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/PostBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xQb3N0QmxvY2suY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/QuoteBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xRdW90ZUJsb2NrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/SeparatorBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xTZXBhcmF0b3JCbG9jay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/TextBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xUZXh0QmxvY2suY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/DisplayTemplates/VideoBlock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGlzcGxheVRlbXBsYXRlc1xWaWRlb0Jsb2NrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/Page.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFnZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/Post.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUG9zdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/ARCProjects/Catfish/Catfish3/Catfish-3.0-dev/catfish/Views/Setup/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dXBcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 

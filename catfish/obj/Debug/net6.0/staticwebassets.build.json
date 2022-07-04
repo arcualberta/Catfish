@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "Hash": "64GSedbdik3pkKyee77+bpPRwMiDvkU7BHL4uZsv7BM=",
+  "Source": "catfish",
+  "BasePath": "_content/catfish",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "catfish\\wwwroot",
+      "Source": "catfish",
+      "ContentRoot": "C:\\ARCProjects\\Catfish\\Catfish3\\Catfish-3.0-dev\\catfish\\wwwroot\\",
+      "BasePath": "_content/catfish",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\ARCProjects\\Catfish\\Catfish3\\Catfish-3.0-dev\\catfish\\wwwroot\\assets\\css\\style.min.css",
+      "SourceId": "catfish",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\ARCProjects\\Catfish\\Catfish3\\Catfish-3.0-dev\\catfish\\wwwroot\\",
+      "BasePath": "_content/catfish",
+      "RelativePath": "assets/css/style.min.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\css\\style.min.css"
+    }
+  ]
+}
