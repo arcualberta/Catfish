@@ -1,5 +1,5 @@
 # Catfish 3.0
-Documentation is to be developed.
+Please visit the project wiki for documentation: https://github.com/arcualberta/Catfish/wiki
 
 
    
