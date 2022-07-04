@@ -153,6 +153,15 @@ $RECYCLE.BIN/
 .DS_Store
 
 # ARC Related git-ignore entries
+# ==============================
 appsettings.json
 appsettings.test.json
 .vs/
+
+#Ignorre common Vue intermediate files
+dist/
+node_modules/
+package-lock.json
+
+#Ignore the NPM.Lib's compiled outputs and dependency sources
+NPM.UI.Lib/arcualberta-catfish-ui*.tgz
