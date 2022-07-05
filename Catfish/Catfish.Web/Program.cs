@@ -43,6 +43,8 @@ builder.AddPiranha(options =>
      */
 });
 
+builder.Services.AddCatfishWebExtensions();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -68,5 +70,7 @@ app.UsePiranha(options =>
     options.UseTinyMCE();
     options.UseIdentity();
 });
+
+app.UseCatfishWebExtensions();
 
 app.Run();

@@ -20,4 +20,8 @@
     <PackageReference Include="Piranha.Manager.TinyMCE" Version="10.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Catfish.Web.Extensions\Catfish.Web.Extensions.csproj" />
+  </ItemGroup>
+
 </Project>
