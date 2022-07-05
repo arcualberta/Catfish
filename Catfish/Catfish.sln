@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.API.Repository", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.API.Pages", "Catfish.API.Pages\Catfish.API.Pages.csproj", "{E9A93196-9205-4BC1-ADD7-B19EDB045758}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish.API.Authorization", "Catfish.API.Authorization\Catfish.API.Authorization.csproj", "{24AC3230-F13B-43FF-8E21-536B0B6EC1A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.API.Authorization", "Catfish.API.Authorization\Catfish.API.Authorization.csproj", "{24AC3230-F13B-43FF-8E21-536B0B6EC1A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish.Web.Extensions", "Catfish.Web.Extensions\Catfish.Web.Extensions.csproj", "{AA0F9FA0-DCB9-468A-8C91-A266794DB95C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{24AC3230-F13B-43FF-8E21-536B0B6EC1A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24AC3230-F13B-43FF-8E21-536B0B6EC1A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24AC3230-F13B-43FF-8E21-536B0B6EC1A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA0F9FA0-DCB9-468A-8C91-A266794DB95C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA0F9FA0-DCB9-468A-8C91-A266794DB95C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA0F9FA0-DCB9-468A-8C91-A266794DB95C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA0F9FA0-DCB9-468A-8C91-A266794DB95C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
