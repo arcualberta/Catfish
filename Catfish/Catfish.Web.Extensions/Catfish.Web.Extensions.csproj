@@ -1,23 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Company>Arts Resource Centre</Company>
-    <Authors>Arts Resource Centre</Authors>
-    <Description>Catfish extensions for the Piranha CMS</Description>
-    <Copyright>This software is available for the use "as-is", without any explicite or implied warranty, under GNU Public License </Copyright>
-    <PackageProjectUrl>https://github.com/arcualberta/Catfish/wiki</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/arcualberta/Catfish</RepositoryUrl>
-    <Version>$(VersionPrefix)</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion></FileVersion>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Piranha" Version="10.1.0" />
+    <PackageReference Include="Piranha.AspNetCore.Hosting" Version="10.1.0" />
+    <PackageReference Include="Piranha.Manager" Version="10.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="assets\dist\**\*" />
   </ItemGroup>
 
 </Project>
