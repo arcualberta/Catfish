@@ -72,6 +72,8 @@ public static class CatfishWebExtensionsExtensions
             });
         });
 
+        //App.Modules.Manager().Scripts.Add("~/test.js");
+
         // Return the service collection
         return services;
     }

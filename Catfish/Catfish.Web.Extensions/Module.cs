@@ -47,6 +47,7 @@ namespace CatfishWebExtensions
 
         public void Init()
         {
+
             // Register permissions
             foreach (var permission in _permissions)
             {
@@ -68,6 +69,45 @@ namespace CatfishWebExtensions
                 Policy = Permissions.CatfishWebExtensions,
                 Css = "fas fa-box"
             });
+
+            var itemGroup = Menu.Items.FirstOrDefault(ite => ite.Name == "Content");
+            if(itemGroup != null)
+                itemGroup.Name = "Web";
+
+            AddRepositoryExtensions();
+            AddBlockExtensions();
+        }
+
+        private void AddRepositoryExtensions()
+        {
+            Menu.Items.Add(new MenuItem
+            {
+                InternalId = "CatfishWebExtensionsData",
+                Name = "Data",
+                Css = "fas fa-box"
+            });
+            Menu.Items["CatfishWebExtensionsData"].Items.Add(new MenuItem
+            {
+                InternalId = "CatfishWebExtensionsDataItems",
+                Name = "Items",
+                Route = "~/manager/items",
+                //Policy = Permissions.CatfishWebExtensions,
+                Css = "fas fa-box"
+            });
+            Menu.Items["CatfishWebExtensionsData"].Items.Add(new MenuItem
+            {
+                InternalId = "CatfishWebExtensionsDataCollections",
+                Name = "Collections",
+                Route = "~/manager/collections",
+                //Policy = Permissions.CatfishWebExtensions,
+                Css = "fas fa-box"
+            });
+        }
+
+        private void AddBlockExtensions()
+        {
+            
+
         }
     }
 }
