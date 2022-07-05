@@ -79,12 +79,19 @@ namespace Catfish.UnitTests
             var country = bcpForm.CreateField<AudioRecorderField>("Record",lang, false, "mp3");
             bcpForm.CreateField<AttachmentField>("Please attach a headshot of yourself", lang, false);
 
+            //Defininig the Comments form
+            DataItem commentsForm = template.GetDataItem("Audio Recorder Comment Form", true, lang);
+            commentsForm.IsRoot = false;
+            commentsForm.SetDescription("This is the form to be filled by the admin when make a decision.", lang);
+            commentsForm.CreateField<TextArea>("Comments", lang, true);
+
+
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
 
-            Define_AR_RolesStatesWorkflow1(workflow, ref template, bcpForm);
+            Define_AR_RolesStatesWorkflow1(workflow, ref template, bcpForm, commentsForm);
            // db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\AudioRecording_generared.xml");
@@ -126,8 +133,6 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            //Defining email templates
-
             //Defininig the inspection form
             DataItem bcpForm = template.GetDataItem("Testing AttachmentField Form", true, lang);
             bcpForm.IsRoot = true;
@@ -142,12 +147,18 @@ namespace Catfish.UnitTests
           
             bcpForm.CreateField<AttachmentField>("Please attach a headshot of yourself", lang, false);
 
+            //Defininig the Comments form
+            DataItem commentsForm = template.GetDataItem("Audio Recorder Comment Form", true, lang);
+            commentsForm.IsRoot = false;
+            commentsForm.SetDescription("This is the form to be filled by the admin when make a decision.", lang);
+            commentsForm.CreateField<TextArea>("Comments", lang, true);
+
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                                         Defininig roles                                             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
 
-            Define_AR_RolesStatesWorkflow1(workflow, ref template, bcpForm);
+            Define_AR_RolesStatesWorkflow1(workflow, ref template, bcpForm, commentsForm);
              db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\testingAttachmentField_generared.xml");
@@ -201,7 +212,7 @@ namespace Catfish.UnitTests
             return applicantNotification;
 
         }
-        private void Define_AR_RolesStatesWorkflow1(Workflow workflow, ref ItemTemplate template, DataItem wrForm)
+        private void Define_AR_RolesStatesWorkflow1(Workflow workflow, ref ItemTemplate template, DataItem wrForm, DataItem commentForm)
         {
             IWorkflowService ws = _testHelper.WorkflowService;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -210,15 +221,15 @@ namespace Catfish.UnitTests
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
 
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
-
+            State approveState = workflow.AddState(ws.GetStatus(template.Id, "Approve", true));
+            State rejectState = workflow.AddState(ws.GetStatus(template.Id, "Reject", true));
 
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Portal_Admin", true));
-           
 
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //                                                     Submitting an form
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ///
+
+            // ================================================
+            // Submit a submission-instances related workflow items
+            // ================================================
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             startSubmissionAction.Access = GetAction.eAccess.Public;
             // Added state referances
@@ -237,45 +248,33 @@ namespace Catfish.UnitTests
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
-            //Defining trigger refs
-
-            //EmailTemplate applicantEmailTemplate = CreateApplicantApplicationEmailTemplate(ref template);
-            //EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
-            //applicantNotificationEmailTrigger.AddRecipientByDataField(wrForm.Id, applicantEmail.Id);
-            //applicantNotificationEmailTrigger.AddTemplate(applicantEmailTemplate.Id, "Writer-in-Resident Application Notification");
-
-            
-            ////Defining trigger refs
-            //submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant's Notification Email Trigger", submittedState.Id, true);
-           
+            // ================================================
+            // List submission-instances related workflow items
+            // ================================================
 
 
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //                                                        Listing forms.
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ///
-
-            //Admins and Inspectors can run the item-list report to list instances.
-            //Note that the visibility of individual list entries is depend on the
-            //Read permission on individual submissions.
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
             // Added state referances
             listSubmissionsAction.AddStateReferances(submittedState.Id)
-                   //.AddOwnerAuthorization()
                   .AddAuthorizedRole(adminRole.Id);
 
 
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
 
-            //Detailed submission bcp forms.
-            //Inspectors can view their own submissions.
-            //Admins can view all submissions.
-            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
-            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
-            viewSubmissionAction.AddStateReferances(submittedState.Id)
-             //  .AddOwnerAuthorization()
-              .AddAuthorizedRole(adminRole.Id);
+            //Defining actions
+            GetAction viewDetailsSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+
+            viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            // Added state referances
+            viewDetailsSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+
+            
            
             // Edit submission related workflow items
             //Defining actions
@@ -296,7 +295,57 @@ namespace Catfish.UnitTests
             EditActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditActionPopUpopUp.AddButtons("Cancel", "false");
 
+            // ================================================
+            // Delete submission-instances related workflow items
+            // ================================================
 
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", nameof(CrudOperations.Delete), "Details");
+            deleteSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.ValidateInputs = false;
+
+            //Defining state mappings
+            ////////deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postAction action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining state referances
+            ////////deleteSubmissionAction.GetStateReference(savedState.Id, true)
+            ////////    .AddOwnerAuthorization();
+            deleteSubmissionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(adminRole.Id);
+
+
+            // ================================================
+            // Change State submission-instances related workflow items
+            // ================================================
+
+            GetAction finalDecisionAction = workflow.AddAction("Final Decision", nameof(TemplateOperations.ChangeState), "Details");
+
+            //Define Revision Template
+            finalDecisionAction.AddTemplate(commentForm.Id, "Adjudication Decision");
+
+            PostAction finalDecisionPostAction = finalDecisionAction.AddPostAction("Final Decision", "Save", @"<p>Application final decision made successfully. 
+                                                                                You can view the document by <a href='@SiteUrl/items/@Item.Id'>click on here</a></p>"
+                                                                                );
+            finalDecisionPostAction.AddStateMapping(submittedState.Id, approveState.Id, "Approve");
+            finalDecisionPostAction.AddStateMapping(submittedState.Id, rejectState.Id, "Reject");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp adjudicationDecisionPopUpopUp = finalDecisionPostAction.AddPopUp("Confirmation", "Do you really want to make a decision ? ", "Once changed, you cannot revise this document.");
+            adjudicationDecisionPopUpopUp.AddButtons("Yes", "true");
+            adjudicationDecisionPopUpopUp.AddButtons("Cancel", "false");
+
+            //////adjudicationDecisionAction.GetStateReference(inAdjudicationState.Id, true)
+            //////    .AddAuthorizedRole(sasAdjudication.Id);
+            finalDecisionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(adminRole.Id);
         }
 
     }
