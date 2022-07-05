@@ -3,6 +3,8 @@ using Piranha.Extend;
 using Piranha.Manager;
 using Piranha.Security;
 
+using Catfish.Web.Extensions.Areas.Manager.Blocks;
+
 namespace CatfishWebExtensions
 {
     public class Module : IModule
@@ -106,8 +108,8 @@ namespace CatfishWebExtensions
 
         private void AddBlockExtensions()
         {
-            
 
+            App.Blocks.Register<Css>();
         }
     }
 }
