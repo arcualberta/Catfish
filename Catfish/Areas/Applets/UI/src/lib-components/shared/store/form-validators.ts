@@ -146,7 +146,7 @@ export function validateFields(form: FieldContainer): boolean {
         valid = valid && (field.validationStatus === eValidationStatus.VALID);
     });
 
-    form.validationStatus = valid ? null : eValidationStatus.INVALID
+    form.validationStatus = valid ? eValidationStatus.VALID : eValidationStatus.INVALID
     console.log("AR valid: " + form.validationStatus)
     return valid;
 }
