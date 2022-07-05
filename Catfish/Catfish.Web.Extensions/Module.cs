@@ -9,10 +9,10 @@ namespace CatfishWebExtensions
     {
         private readonly List<PermissionItem> _permissions = new List<PermissionItem>
         {
-            new PermissionItem { Name = Permissions.CatfishWebExtensions, Title = "List CatfishWebExtensions content", Category = "SysAdmin", IsInternal = true },
-            new PermissionItem { Name = Permissions.CatfishWebExtensionsAdd, Title = "Add CatfishWebExtensions content", Category = "SysAdmin", IsInternal = true },
-            new PermissionItem { Name = Permissions.CatfishWebExtensionsEdit, Title = "Edit CatfishWebExtensions content", Category = "SysAdmin", IsInternal = true },
-            new PermissionItem { Name = Permissions.CatfishWebExtensionsDelete, Title = "Delete CatfishWebExtensions content", Category = "SysAdmin", IsInternal = true }
+            new PermissionItem { Name = Permissions.CatfishWebExtensions, Title = "List CatfishWebExtensions content", Category = "CatfishWebExtensions", IsInternal = true },
+            new PermissionItem { Name = Permissions.CatfishWebExtensionsAdd, Title = "Add CatfishWebExtensions content", Category = "CatfishWebExtensions", IsInternal = true },
+            new PermissionItem { Name = Permissions.CatfishWebExtensionsEdit, Title = "Edit CatfishWebExtensions content", Category = "CatfishWebExtensions", IsInternal = true },
+            new PermissionItem { Name = Permissions.CatfishWebExtensionsDelete, Title = "Delete CatfishWebExtensions content", Category = "CatfishWebExtensions", IsInternal = true }
         };
 
         /// <summary>
