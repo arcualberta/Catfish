@@ -1,9 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Piranha;
-using Piranha.AttributeBuilder;
-using Piranha.AspNetCore.Identity.SQLServer;
-using Piranha.Data.EF.SQLServer;
-using Piranha.Manager.Editor;
 
 var builder = WebApplication.CreateBuilder(args);
 

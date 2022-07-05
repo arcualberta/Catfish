@@ -1,10 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using Piranha;
-using Piranha.Extend;
-using Piranha.Extend.Fields;
-using Piranha.Extend.Blocks;
-using Piranha.Models;
-using Catfish.Web.Models;
 
 namespace Catfish.Web.Controllers
 {
