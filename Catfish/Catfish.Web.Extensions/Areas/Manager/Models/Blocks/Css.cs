@@ -1,7 +1,7 @@
 ﻿
 namespace Catfish.Web.Extensions.Areas.Manager.Blocks
 {
-    [BlockType(Name = "Css Block", Category = "Content", Component = "css-block", Icon = "fas fa-file-code")]
+    [BlockType(Name = "Css Block", Category = "Content", Component = "css", Icon = "fas fa-file-code")]
     public class Css : Block
     {
         public void RegisterBlock() => App.Blocks.Register<Css>();

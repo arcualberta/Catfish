@@ -17,4 +17,20 @@
     <EmbeddedResource Include="assets\dist\**\*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\manager\js\css.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="js\css.js">
+      <SubType>Code</SubType>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\manager\js\css.js">
+      <SubType>Code</SubType>
+    </None>
+  </ItemGroup>
+
 </Project>

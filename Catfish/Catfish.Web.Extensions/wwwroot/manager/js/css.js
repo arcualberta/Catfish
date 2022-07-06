@@ -25,7 +25,7 @@ Vue.component("css", {
     },
     template: "<div  class= 'block-body'>" +
 
-        " <textarea rows='4' cols='100' class='lead ' " +
+        " <textarea :id='uid' rows='4' cols='100' class='lead ' " +
         "    v-html='model.cssVal.value' contenteditable='true' v-on:blur='onBlur' >" +
         "</textarea></div>"
 

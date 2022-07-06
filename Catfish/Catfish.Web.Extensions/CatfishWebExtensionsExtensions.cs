@@ -88,10 +88,11 @@ public static class CatfishWebExtensionsExtensions
         // Manager resources
         App.Modules.Manager().Scripts
            .Add("~/manager/js/css.js");
+      
         return builder.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.dist"),
-            RequestPath = "/manager/CatfishWebExtensions"
+            RequestPath = "/manager/js"   // /"/manager/CatfishWebExtensions"
         });
     }
 
