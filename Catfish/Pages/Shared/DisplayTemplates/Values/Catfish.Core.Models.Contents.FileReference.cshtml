@@ -1,9 +1,0 @@
-﻿@model Catfish.Core.Models.Contents.FileReference
-
-@{ 
-    var thumbnailUrl = string.Format("/api/files/thumbnail/{0}", Model.Thumbnail);
-}
-<div class="thumbnail">
-    <div style="background-image: url('@thumbnailUrl');"></div>
-    <div class="label">@Model.OriginalFileName</div>
-</div>

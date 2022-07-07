@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Piranha" Version="10.1.0" />
+    <PackageReference Include="Piranha.AspNetCore.Hosting" Version="10.1.0" />
+    <PackageReference Include="Piranha.Manager" Version="10.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="assets\dist\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="assets\manager\js\css.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="assets\manager\images\arc.png" />
+    <None Remove="assets\manager\images\favicon.ico" />
+    <None Remove="assets\manager\js\css.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="assets\manager\images\arc.png" />
+    <EmbeddedResource Include="assets\manager\images\favicon.ico" />
+    <EmbeddedResource Include="assets\manager\js\css.js">
+      <SubType>Code</SubType>
+      <CustomToolNamespace></CustomToolNamespace>
+      <Generator></Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="js\css.js">
+      <SubType>Code</SubType>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="assets\manager\js\css.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="assets\dist\" />
+  </ItemGroup>
+
+</Project>
