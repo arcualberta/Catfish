@@ -21,10 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Catfish.Web.Extensions\Catfish.Web.Extensions.csproj">
-      <Private>True</Private>
-      <IncludeAssets>Yes</IncludeAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\Catfish.Web.Extensions\CatfishWebExtensions.csproj" />
   </ItemGroup>
 
 </Project>

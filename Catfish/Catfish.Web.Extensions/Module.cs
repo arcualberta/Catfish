@@ -45,7 +45,7 @@ namespace CatfishWebExtensions
         /// <summary>
         /// Gets the module icon url
         /// </summary>
-        public string IconUrl => "/manager/PiranhaModule/piranha-logo.png";
+        public string IconUrl => "/manager/images/arc.png";
 
         public void Init()
         {

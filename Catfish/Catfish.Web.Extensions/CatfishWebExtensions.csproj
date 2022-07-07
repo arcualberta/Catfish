@@ -18,7 +18,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\manager\js\css.js" />
+    <Content Remove="assets\manager\js\css.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="assets\manager\images\arc.png" />
+    <None Remove="assets\manager\images\favicon.ico" />
+    <None Remove="assets\manager\js\css.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="assets\manager\images\arc.png" />
+    <EmbeddedResource Include="assets\manager\images\favicon.ico" />
+    <EmbeddedResource Include="assets\manager\js\css.js">
+      <SubType>Code</SubType>
+      <CustomToolNamespace></CustomToolNamespace>
+      <Generator></Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -28,9 +44,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\manager\js\css.js">
-      <SubType>Code</SubType>
-    </None>
+    <Resource Include="assets\manager\js\css.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="assets\dist\" />
   </ItemGroup>
 
 </Project>
