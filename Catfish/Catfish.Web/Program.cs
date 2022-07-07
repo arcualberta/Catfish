@@ -60,7 +60,6 @@ app.UsePiranha(options =>
     // Build content types
     new ContentTypeBuilder(options.Api)
         .AddAssembly(typeof(Program).Assembly)
-        .AddAssembly(typeof(CatfishWebsite).Assembly)
         .Build()
         .DeleteOrphans();
 
