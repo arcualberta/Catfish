@@ -1,5 +1,5 @@
 ﻿
-namespace Catfish.Web.Extensions.Areas.Manager.Blocks
+namespace CatfishWebExtensions.Models.Blocks
 {
     [BlockType(Name = "Css Block", Category = "Content", Component = "css", Icon = "fas fa-file-code")]
     public class Css : Block
