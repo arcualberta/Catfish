@@ -7,10 +7,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Adding Catfish extensions
-builder.AddCatfishSqlDbConnection("catfish");
-builder.Services.AddCatfishServices();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -26,5 +22,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCatfishExtensions();
 app.Run();
