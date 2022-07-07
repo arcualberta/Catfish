@@ -3,7 +3,7 @@ using Piranha.Extend;
 using Piranha.Manager;
 using Piranha.Security;
 
-using Catfish.Web.Extensions.Areas.Manager.Blocks;
+using CatfishWebExtensions.Models.Blocks;
 
 namespace CatfishWebExtensions
 {

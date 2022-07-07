@@ -99,7 +99,13 @@ public static class CatfishWebExtensionsExtensions
             {
                 FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.manager.images"),
                 RequestPath = "/manager/images"
-            });
+            })
+             .UseStaticFiles(new StaticFileOptions
+             {
+                 FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.Pages.DisplayTemplates"),
+                 RequestPath = "/Pages/DisplayTemplates"
+             });
+       
     }
 
     /// <summary>

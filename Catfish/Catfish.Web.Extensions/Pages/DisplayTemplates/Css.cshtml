@@ -1,0 +1,18 @@
+﻿
+@model CatfishWebExtensions.Models.Blocks.Css
+@*//@using Newtonsoft.Json;*@
+@{
+    var customCss = Model.GetCss();
+   // var jsonData = JsonConvert.SerializeObject(Model);
+}
+
+@*<css inline-template  v-bind:model='@Html.Raw(jsonData)'>
+    <style>
+        @Html.Raw(customCss)
+    </style>
+</css>
+*@
+
+<style>
+        @Html.Raw(customCss)
+</style>
