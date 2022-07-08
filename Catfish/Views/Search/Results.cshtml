@@ -1,0 +1,39 @@
+﻿@model IList<Catfish.Core.Models.Solr.SolrEntry>
+
+@{ViewBag.Title = "Search Results"; }
+
+<div class="container">
+    <div class="row search-panel">
+
+        @{
+            foreach (var entry in Model)
+            {
+                var linkStart = "";
+                var linkEnd = "";
+                if (!string.IsNullOrEmpty(entry.Permalink)) {
+                    linkStart = string.Format("<a href='{0}'>", entry.Permalink);
+                    linkEnd = "</a>";
+                }
+                <div class="search-result-entry">
+                    <div class="entry-title">
+                        <div>
+                            @foreach (var title in entry.Title)
+                            {
+                                <span><b>@Html.Raw(linkStart + title + linkEnd)</b></span>
+                            }
+                        </div>
+                    </div>
+                    <div class="entry-body">
+                        @*<div>Object ID: @entry.Id</div>
+                        <div>Object Type: @entry.ObjectType</div>*@
+
+                        @foreach (var snippet in entry.Highlights)
+                        {
+                            <div>@Html.Raw(snippet)</div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

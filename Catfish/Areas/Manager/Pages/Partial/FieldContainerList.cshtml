@@ -1,0 +1,51 @@
+﻿@model Catfish.Areas.Manager.Pages.ListPageModel
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+    <div id="list-page">
+        <div class="top">
+            <div class="container-fluid top">
+                <div class="left-nav-container">
+                    <div class="top-nav ce">
+                        @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.CollapseExpandList)
+                        {
+                            <partial name="@action.ActionView" />
+                        }
+                    </div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">@Localizer.Menu["Templates"]</li>
+                            <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu[Model.ModelLabel]</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="container-fluid collection-button-holder">
+                    <div class="top-nav">
+                        @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.FormList)
+                        {
+                            <partial name="@action.ActionView" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container float-left ml-3">
+            @foreach (var entry in Model.Entries)
+            {
+                var detailsUrl = Model.DetailsPage + entry.Id;
+                var editUrl = Model.EditPage + entry.Id;
+                <div class="row m-1 p-2 bg-white">
+                    <div class="col-10">@entry.Name</div>
+                    <div class="row col-2">
+                        <div class="col-6 text-center"><a href="@detailsUrl">View</a></div>
+                        <div class="col-6 text-center"><a href="@editUrl">Edit</a></div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
+

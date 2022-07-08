@@ -1,0 +1,43 @@
+﻿@model Catfish.Models.Blocks.NavigationBlock
+
+@{
+    var sitemap = WebApp.Site.Sitemap;
+}
+
+
+    <div class="sideMenu">
+        <nav id="sidebar">
+            
+            <ul class="list-unstyled components">
+                @foreach (var item in sitemap)
+                {
+                    if ((item.Title == Model.GetPageTitle()) && (item.Items.Count >= 1))
+                    {
+                        <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
+                            <a href="@item.Permalink">@item.MenuTitle</a>
+                        </li>
+                        foreach (var subItm in item.Items)
+                        {
+                            <li class="nav-item @(subItm.Id == WebApp.PageId ? "active" : "")">
+                                <a href="@subItm.Permalink">@subItm.MenuTitle</a>
+                            </li>
+                        }
+                    }
+                }
+
+            </ul>
+        </nav>
+    </div>
+
+@*  Please note that I didn't move this over to its own js file because it squashes the blocks into one tiny column.
+    I'm not sure what the parent target is supposed to be, but if it is the block holder, it ruins the layout.
+<script>
+    $(document).ready(function () {
+        var parentDiv = $(".sideMenu").parent();
+
+        if (parentDiv != null) {
+            $(parentDiv).removeClass("col-md").addClass("col-md-3");
+        }
+
+    });
+</script>*@

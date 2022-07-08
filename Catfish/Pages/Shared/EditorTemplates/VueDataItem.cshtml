@@ -1,0 +1,51 @@
+﻿@model Catfish.Core.Models.Contents.Data.DataItem
+@using Catfish.Core.Models.Contents.Fields;
+@using Newtonsoft.Json;
+@using ElmahCore;
+
+@inject ErrorLog _errorLog;
+
+@Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.EntityId)
+@Html.HiddenFor(model => model.TemplateId)
+
+@inject Catfish.Services.IAppService _appService;
+
+@{
+    _appService.RegisterScript("/assets/js/_public-facing/data-item.js");
+
+    try
+    {
+        var jsonData = JsonConvert.SerializeObject(Model);
+        var componentElementString = string.Format("<data-item v-bind:model='{0}'></data-item>", jsonData);
+
+        @Html.Raw(componentElementString)
+    }
+    catch (Exception ex)
+    {
+        _errorLog.Log(new Error(ex));
+    }
+}
+
+
+@*@for (int i = 0; i < Model.Fields.Count; ++i)
+{
+    <div class="row field-row">
+        @if (typeof(InfoSection).IsAssignableFrom(Model.Fields[i].GetType()))
+        {
+            <div class="col-md-12">
+                @Html.DisplayFor(model => model.Fields[i], Model.Fields[i].GetType().ToString())
+            </div>
+        }
+        else
+        {
+            string fieldId = Html.IdFor(model => Model.Fields[i]);
+            <div class="col-md-3 control field-label">
+                @Html.DisplayFor(model => Model.Fields[i].Name, Model.Fields[i].Name.GetType().ToString())
+            </div>
+            <div id="@fieldId" class="col-md-9 @Model.Fields[i].CssClass field-value">
+                @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString())
+            </div>
+        }
+    </div>
+}*@

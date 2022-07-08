@@ -1,0 +1,48 @@
+﻿.bdr-primary, .bdr-primary-h:hover {
+    border: solid 2px #b6d4fe;
+}
+.bdr-secondary, .bdr-secondary-h:hover {
+    border: solid 2px #41464b;
+}
+.bdr-success, .bdr-success-h:hover {
+    border: solid 2px #badbcc;
+}
+.bdr-danger, .bdr-danger-h:hover {
+    border: solid 2px #f5c2c7;
+}
+.bdr-warning, .bdr-warning-h:hover {
+    border: solid 2px #ffecb5;
+}
+.bdr-info, .bdr-info-h:hover {
+    border: solid 2px #b6effb;
+}
+.bdr-light, .bdr-light-h:hover {
+    border: solid 2px #fdfdfe;
+}
+.bdr-dark, .bdr-dark-h:hover {
+    border: solid 2px #bcbebf;
+}
+
+/* Remove spin arrows from price filed
+    Chrome, Safari, Edge, Opera */
+.price::-webkit-outer-spin-button,
+.price::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.price[type=number] {
+    -moz-appearance: textfield;
+}
+
+.navbar{
+    z-index:1060;
+}
+/* Toolbar */
+.v3app .toolbar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 50px;
+    background-color: yellow;
+    padding: 10px;
+    z-index: 10;
+}

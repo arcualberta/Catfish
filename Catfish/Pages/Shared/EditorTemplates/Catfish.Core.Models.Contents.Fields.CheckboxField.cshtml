@@ -1,0 +1,43 @@
+﻿@model Catfish.Core.Models.Contents.Fields.CheckboxField
+
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+@if (Model.Exclude)
+    return;
+
+@{
+    string visibleIfKey = "data-visible-if";
+    string dataFieldIdKey = "data-field-id";
+
+    var _viewData = new Dictionary<string, object>(); ;
+    foreach (var key in ViewData.Keys)
+    {
+        _viewData.Add(key, ViewData[key]);
+    }
+    _viewData.Add("data-option-id", null);
+
+    @for (int i = 0; i < Model.Options.Count; ++i)
+    {
+        @Html.HiddenFor(model => model.Options[i].Id)
+        @*@Html.RadioButtonFor(model => model.Options[i], Model.Options[i].Id.ToString());*@
+
+        if (_viewData.ContainsKey(visibleIfKey))
+        {
+            _viewData.Remove(visibleIfKey);
+            _viewData.Remove(dataFieldIdKey);
+        }
+
+        if (!string.IsNullOrWhiteSpace(Model.Options[i].VisibilityCondition.Value))
+        {
+            _viewData.Add(visibleIfKey, Model.Options[i].VisibilityCondition.Value);
+            _viewData.Add(dataFieldIdKey, Model.Options[i].Id);
+        }
+
+        _viewData["data-option-id"] = Model.Options[i].Id;
+        <div id="@Model.Options[i].Id" class="@Model.FieldValueCssClass">
+            @Html.CheckBoxFor(model => model.Options[i].Selected, _viewData)
+            @Html.Raw(string.Format("<span class='radio-option-label'>{0}</span>", Model.Options[i].OptionText.GetConcatenatedContent(" | ")))
+        </div>
+    }
+}

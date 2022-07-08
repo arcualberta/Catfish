@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Contexts\**" />
+    <EmbeddedResource Remove="Contexts\**" />
+    <None Remove="Contexts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200227072206_CreatedBasicCollectionAndItemModels.cs" />
+    <Compile Remove="Migrations\20200227072206_CreatedBasicCollectionAndItemModels.Designer.cs" />
+    <Compile Remove="Migrations\20200227072418_CreatedRelationshipModel.cs" />
+    <Compile Remove="Migrations\20200227072418_CreatedRelationshipModel.Designer.cs" />
+    <Compile Remove="Migrations\20200228060828_CreateBasicDataModels.cs" />
+    <Compile Remove="Migrations\20200228060828_CreateBasicDataModels.Designer.cs" />
+    <Compile Remove="Migrations\20200317174606_AddedPrimayCollectionToEntityModel.cs" />
+    <Compile Remove="Migrations\20200317174606_AddedPrimayCollectionToEntityModel.Designer.cs" />
+    <Compile Remove="Migrations\20200317191742_AddedPrimayCollectionToEntityModel.cs" />
+    <Compile Remove="Migrations\20200317191742_AddedPrimayCollectionToEntityModel.Designer.cs" />
+    <Compile Remove="Migrations\20200317194149_AddedPrimayCollectionToEntityModel.cs" />
+    <Compile Remove="Migrations\20200317194149_AddedPrimayCollectionToEntityModel.Designer.cs" />
+    <Compile Remove="Migrations\20200326211416_ChangedPrimaryCollectionIdToGuid.cs" />
+    <Compile Remove="Migrations\20200326211416_ChangedPrimaryCollectionIdToGuid.Designer.cs" />
+    <Compile Remove="Migrations\20200619222003_CreatedXmlModelInDatabase.cs" />
+    <Compile Remove="Migrations\20200619222003_CreatedXmlModelInDatabase.Designer.cs" />
+    <Compile Remove="Migrations\20200619223416_AddedXmlModelToDbSet.cs" />
+    <Compile Remove="Migrations\20200619223416_AddedXmlModelToDbSet.Designer.cs" />
+    <Compile Remove="Migrations\20210427143955_CreatedIndexingHitory.cs" />
+    <Compile Remove="Migrations\20210427143955_CreatedIndexingHitory.Designer.cs" />
+    <Compile Remove="Migrations\20210427144241_CreatedIndexingHitory.cs" />
+    <Compile Remove="Migrations\20210427144241_CreatedIndexingHitory.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ElmahCore" Version="1.2.5" />
+    <PackageReference Include="ElmahCore.Sql" Version="1.2.5" />
+    <PackageReference Include="EntityFramework" Version="6.4.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.51.0.2300" />
+    <PackageReference Include="Google.Apis.Sheets.v4" Version="1.51.0.2272" />
+    <PackageReference Include="Hangfire" Version="1.7.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+    
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="3.1.3" />
+    
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="3.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NRules" Version="0.9.1" />
+    <PackageReference Include="Piranha.AspNetCore.Identity.SQLServer" Version="8.3.0" />
+    <PackageReference Include="SolrNet.Core" Version="1.0.19" />
+    <PackageReference Include="SolrNet.Microsoft.DependencyInjection" Version="1.0.19" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Automation\Rules\" />
+  </ItemGroup>
+
+</Project>

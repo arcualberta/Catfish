@@ -1,0 +1,198 @@
+﻿.section-heading {
+    margin: 10px;
+}
+    .section-heading .label {
+        font-size: large;
+        font-weight: bold;
+    }
+
+.navbar-brand {
+    /* replace Piranha Logo on the top of the menu */
+    /*background: url(../img/logo-menu.png) 0 50% no-repeat;
+    background-size: contain;
+        */
+}
+
+.email-template .field-list{
+    border:solid 1px #ccc;
+    border-radius: 5px;
+}
+    .email-template .field-list .field {
+        margin: 15px 5px;
+    }
+
+    .email-template .field-list .fa-edit {
+        margin: 5px;
+    }
+
+
+.table.field-set-view td {
+    background-color: white;
+}
+
+.table-bordered tr {
+    border-color: #eee !important;
+}
+    .table-bordered tr .option-value {
+        margin: 0 -12px;
+        padding: 5px;
+        border-bottom: solid 1px #ccc;
+    }
+/*        .table-bordered tr .option-value:nth-child(odd) {
+           background-color: #ebe39e !important;
+        }
+
+        .table-bordered tr .option-value:nth-child(even) {
+            background-color: #c2f2ef !important;
+        }
+*/
+        .table-bordered tr .option-value:first-child {
+            margin-top: -12px !important;
+        }
+
+        .table-bordered tr .option-value:last-child {
+            margin-bottom: -12px !important;
+        }
+/*=======================================================================================================================================================*/
+/* ========================================  WORKFLOW EDITOR               ============================================================================= */
+.hide{
+    display: none;
+}
+.show{
+    display: block;
+}
+.editableText, .addOptionText {
+    position: relative;
+    display: inline-block;
+    margin: 1px;
+    border: 1px double blue;
+    width: 100%;
+}
+.inline-editor i, .new-option-value i, .option-value i{
+    margin-left: 10px;
+}
+
+.inline-editor .fa-window-close, .option-value .fa-trash-alt, .new-option-value > .fa-window-close {
+    color: red;
+}
+
+.inline-editor .fa-save, .new-option-value > .fa-plus-square, .new-option-value > .fa-save {
+    color: green;
+}
+.new-option-value > .fa-plus-square {
+    font-size: 18px;
+    margin-right: -5px;
+  
+   /* margin-top: 5px; */
+}
+.new-option-value {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+}
+.addOptionText {
+    border-color: #80808012;
+   
+}
+.addOptionText select{
+    border: 1px solid Grey;
+    width:25%;
+}
+.addOptionText input {
+    
+    width: 74%;
+}
+
+/* jquery confirm dialog */
+.jconfirm-title-c{
+    border-bottom: 2px solid Grey;
+}
+.jconfirm-title-c .danger.fa-exclamation-triangle {
+        color: #c70f0f;
+        padding-right: 5px;
+}
+
+.jconfirm-title-c .warning.fa-exclamation-triangle {
+        color: #fdb051;
+        padding-right: 5px;
+}
+.jconfirm-title .success.fa-check {
+        color: forestgreen;
+        padding-right: 5px;
+}
+
+.jconfirm-content {
+    padding: 5px;
+    color: #582322;
+    background-color: #eedad9;
+    border-color: #e7cbca;
+    border-bottom: 2px solid grey;
+
+}
+
+.jconfirm-buttons button:nth-child(1) {
+    color: #fff !important;
+    background-color: #a94441 !important;
+    border-color: #a94441 !important;
+}
+
+.jconfirm-buttons .btn:nth-child(2) {
+    color: #fff !important;
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+.jconfirm-content .warning{
+    padding: 5px;
+    color: #856404;
+    background-color: #fff3cd;
+    margin: -7px;
+}
+
+.jconfirm-content .success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    margin: -7px;
+    padding: 5px;
+}
+    /*=======================================================================================================================================================*/
+
+    /* ========================  REPORT             ================================================================================ */
+.field{
+    background: lightgray;
+    border-radius: 25px;
+    padding: 5px;
+    font-size: .7em;
+    margin-right: 5px;
+}
+
+.formGroup {
+    border: 1px solid lightgrey;
+    border-radius: 4px;
+    /*margin-left: 12px; */
+    padding: 5px;
+    margin-bottom:10px;
+}
+
+.formName {
+    background: lightgray;
+    font-size: .8em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+/* ============================= Item Layout Block   ================================================================================ */
+.itemLayout, .itemLayout > .lead > input, .itemLayout > .lead > textarea {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 5px;
+    height: fit-content;
+}
+.itemLayout{
+    margin-bottom: 10px;
+}
+
+.required:after {
+    content: " *";
+    color: red;
+}
+  

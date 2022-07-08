@@ -1,0 +1,36 @@
+﻿@model Catfish.Models.Blocks.SubmissionForm
+@using Catfish.Services;
+
+@inject IEntityTemplateService _entityTemplateService;
+
+@{
+    Guid templateId = Guid.Parse(Model.SelectedItemTemplate.Value);
+    string collectionId = Model.SelectedCollection.Value;
+    var template = _entityTemplateService.GetTemplate(templateId);
+    var url = "/entity/create/" + templateId + "?collectionId=" + collectionId;
+    var startupDataItem = template.GetRootDataItem(false);
+
+}
+
+@if (startupDataItem != null)
+{
+    <div class="row item-box">
+
+        <div class="form-title col-lg-12">@startupDataItem.Name.GetConcatenatedContent("<br />")</div>
+
+
+        <div class="form-description col-lg-10">@startupDataItem.Description.GetConcatenatedContent("<br />")</div>
+
+
+        <div class="form-link col-lg-2">
+            <a href="@url" class="btn btn-secondary" role="button">Start now</a>
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="row alert alert-danger">
+        ERROR: Startup Data Item is NULL for the Item Template: @template.Id
+    </div>
+}

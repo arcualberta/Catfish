@@ -1,0 +1,12 @@
+﻿@model Catfish.Core.Models.Contents.Fields.TextField
+
+
+
+@foreach (var val in Model.Values)
+{
+    foreach (var txt in val.Values)
+    {
+    <div>@txt.Language : @txt.Value</div>
+    }
+
+}

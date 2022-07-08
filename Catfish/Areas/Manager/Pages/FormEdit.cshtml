@@ -1,0 +1,46 @@
+﻿@page "~/manager/forms/edit/{id:Guid?}"
+@model Catfish.Areas.Manager.Pages.FormEditPageModel
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous" />
+<link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" , rel="stylesheet" />
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.js"></script>
+
+<link href="~/Vue/FormBuilder/styles.css" , rel="stylesheet" />
+<script src="~/Vue/_vendor/vue3.js"></script>
+<script src="~/Vue/_vendor/vuex4.js"></script>
+
+@*<partial name="partial/FieldContainerEdit" />*@
+
+<div id="edit-field-form-page">
+</div>
+<div class="top">
+    <div class="container-fluid top">
+        <div class="left-nav-container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">@Localizer.Menu["Templates"]</li>
+                    <li class="breadcrumb-item">@Localizer.Menu[Model.ModelLabel]</li>
+                    <li class="breadcrumb-item">@Localizer.Menu["Edit"]</li>
+                    @if (Model.FieldContainerId != null)
+                    {
+                        <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu[Model.FieldContainerId.ToString()]</li>
+                    }
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid ready">
+    <div class="row">
+        <div class="col">
+            <partial name="partial/VueApps/FormBuilderApp" view-data='@new ViewDataDictionary(ViewData) { { "id", @Model.FieldContainerId } }' />
+        </div>
+    </div>
+</div>
+
+
+

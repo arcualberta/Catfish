@@ -1,0 +1,36 @@
+﻿@model Catfish.Core.Models.Contents.Fields.DateField
+
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+@if (Model.Exclude)
+    return;
+
+@for (int i = 0; i < Model.Values.Count; ++i)
+{
+    @Html.HiddenFor(model => model.Values[i].Id)
+
+    var name = Html.NameFor(model => model.Values[i].DateValue);
+    var id = Html.IdFor(model => model.Values[i].DateValue);
+    var required = Model.Required ? "required" : "";
+    var fieldType = Model.IncludeTime ? "datetime-local" : "date";
+    string dateVal = Model.Values[i].DateValue.HasValue
+        ? Model.Values[i].DateValue.Value.ToString("yyyy-MM-dd")
+        : "";
+
+    <input type="@fieldType"
+           id="@id"
+           name="@name"
+           value="@dateVal"
+           data-model-id="@Model.Id"
+           onchange="@ViewData["onchange"]"
+           @required
+           data-value-expression="@ViewData["data-value-expression"]"
+           data-required-if="@ViewData["data-required-if"]"
+           data-visible-if="@ViewData["data-visible-if"]"
+           data-c="@ViewData["data-c"]"
+           data-r="@ViewData["data-r"]"
+           data-field-id="@ViewData["data-field-id"]"
+           data-field-index="@ViewData["data-field-index"]"
+           placeholder="yyyy-mm-dd">
+}

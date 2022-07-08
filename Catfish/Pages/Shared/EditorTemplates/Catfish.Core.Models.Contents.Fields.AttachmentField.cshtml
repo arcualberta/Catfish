@@ -1,0 +1,50 @@
+﻿@model Catfish.Core.Models.Contents.Fields.AttachmentField
+@using Catfish.Core.Models.Contents
+
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+@if (Model.Exclude)
+    return;
+
+@{
+    var fieldId = Html.IdFor(model => model);
+    var fieldName = Html.NameFor(model => model);
+
+    var containerId = fieldId + "_container";
+
+    var btnId = fieldId + "_btn";
+    var btnName = fieldName + "_btn";
+
+    var fileModelType = typeof(FileReference).AssemblyQualifiedName;
+
+}
+
+@Html.EditorFor(m => m.Files)
+
+<div class="file-container row">
+    @*@Html.DisplayFor(m => m.Files)*@
+  
+        @foreach (FileReference fr in Model.Files)
+        {
+            string fileEntryId = "file-entry-" + fr.Id;
+            var thumbnailUrl = string.Format("{0}", fr.Thumbnail);
+            
+            <div id="@fileEntryId" class="file-entry">
+                <div class="thumbnail">
+                    <button type="button" class="btn btn-danger btn-circle btn-xm delete-btn" onclick="deleteFile('@fileEntryId', '@fieldId', '@fieldName');">X</button>
+
+                    <div class="icon" style="background-image: url('@thumbnailUrl');"></div>
+                    <div class="label text-center">@fr.OriginalFileName</div>
+                   
+                </div>
+               
+            </div>
+           }
+                    
+    </div>
+
+   <input type="file" id="@btnId" data-model-id="@Model.Id" name="@btnName" onchange="uploadFiles(this, '@fieldId', '@fieldName', '@fileModelType');" multiple />
+
+   <div class="message-block"></div>
+                @*</div>*@

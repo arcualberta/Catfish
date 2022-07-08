@@ -1,0 +1,123 @@
+﻿@using Catfish.Core.Helpers
+@using Catfish.Helper
+@using Microsoft.AspNetCore.Authorization
+@using Catfish.Models.SiteTypes
+
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
+@inject Piranha.IApi _piranhaApi;
+@inject IAuthorizationService AuthorizationService;
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@*
+    /*
+    This is the header for all the websites.
+    The user customizes it in the manager console by clicking on the website's name.
+    This partial is displayed in the _Layout file.
+    */
+*@
+
+@{
+    var siteRoot = ConfigHelper.SiteUrl;
+
+    var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
+    var backgroundColor = currentSite == null ? "white" : currentSite.HeaderContents.BackgroundColor.Value;
+    //var textColor = currentSite.HeaderContents.TextColor.Value;
+    var removeWebsiteTitle = currentSite == null ? false : currentSite.HeaderContents.RemoveWebsiteTitle.Value;
+    var removeSubMenu = currentSite == null ? false : currentSite.HeaderContents.RemoveSubMenu.Value;
+
+    var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
+    var logoUrl = _catfishAppConfig.GetLogoUrl();
+    string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null as string);
+    ICatfishAppConfiguration.ePanelLocation searchPanelLocation = _catfishAppConfig.GetDefaultSearchPanelLocation();
+    var homepage = WebApp.Site.Sitemap.FirstOrDefault();
+    var pageUrl = WebApp.Url;
+    string homepageUrlStartTag = "";
+    string homepageUrlEndTag = "";
+
+    bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
+
+
+    if (homepage != null)
+    {
+        homepageUrlStartTag = string.Format("<a href='{0}'>", homepage.Permalink);
+        homepageUrlEndTag = "</a>";
+    }
+
+    <div id="entire-header">
+        <div class="container">
+            <div class="row" style="background-color: @backgroundColor; @*color: @textColor*@">
+                @if (!string.IsNullOrEmpty(logoUrl))
+                {
+                    <div id="site-logo">@Html.Raw(homepageUrlStartTag)<img src="@logoUrl" />@Html.Raw(homepageUrlEndTag) </div>
+                }
+                <div class="header-brand">
+                    @if (!removeWebsiteTitle)
+                    {
+                        <h1 @*style="color: @textColor"*@>@Html.Raw(homepageUrlStartTag)@site.Title@Html.Raw(homepageUrlEndTag) </h1>
+                    }
+                    @if (site.Description != null)
+                    {
+                        <h3 @*style="color: @textColor"*@>@site.Description</h3>
+                    }
+
+                    <div>
+                        @if (currentSite != null)
+                        {
+                            @Html.Raw(currentSite.HeaderContents.Text)
+                        }
+                    </div>
+                </div>
+                @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Header)
+                {
+                    <partial name="/Views/Shared/Partial/_Search.cshtml" />
+                }
+            </div>
+        </div>
+        <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
+            <div class="container" style="background-color: @backgroundColor; @*color: @textColor*@">
+                <div class="row">
+                    <div class="col-sm">
+                        <partial name="/Views/Shared/Partial/_Menu.cshtml" />
+                    </div>
+                    @if (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin)
+                    {
+                        <div class="signinout">
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@siteRoot/login?ret=@pageUrl'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
+                            }
+                            else
+                            {
+                                if (User.IsInRole("SysAdmin"))
+                                {
+                                    <button class="btn btn-link" onclick="window.location.href='@siteRoot/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                }
+                                if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.PageAccess)).Succeeded)
+                                {
+                                    <button class="btn btn-link" onclick="window.location.href='@siteRoot/manager/groups'"><span class="fas fa-users-cog"> Groups</span></button>
+                                }
+                                <button id="btnSignOut" onclick="signOut('@siteRoot'); return false;" class="btn btn-link"><span class="fa fa-sign-out-alt"> Sign Out</span></button>
+                            }
+
+
+                        </div>
+                    }
+                </div> @* row*@
+
+                @* Bread crumb - controlled in appsettings, but gave the user the ability to control it as well *@
+                @if (_catfishAppConfig.GetEnabledBreadcrumb())
+                {
+                    if (!removeSubMenu)
+                    {
+                        <div class="breadcrumb-container col-sm">
+                            <ul class="breadcrumb"></ul>
+                        </div>
+                    }
+                }
+            </div> @*container*@
+        </header>
+    </div>
+}
+@if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Body)
+{
+    <partial name="/Views/Shared/Partial/_Search.cshtml" />
+}

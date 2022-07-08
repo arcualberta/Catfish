@@ -1,0 +1,76 @@
+﻿@model Catfish.Models.Regions.GoogleCalendarRegion
+@using Catfish.Models.Regions
+
+
+@{
+    ViewBag.Title = "Google Calendar Events";
+
+    List<CalendarEvent> CalendarEvents = Model.GetCalendarEvents();
+    bool showSummary = true;
+    bool showDescription = true;
+    bool showLocation = true;
+    bool showStartTime = true;
+    bool showEndTime = false;
+
+}
+
+@if (CalendarEvents != null)
+{
+    <div class="calendar-events calendar-flat google-calendar-panel">
+        <h3>@Model.Title</h3>
+        @foreach (var calendarEvent in CalendarEvents)
+        {
+            <div class="calendar-event">
+                @if (showSummary && calendarEvent.Summary != null)
+                {
+                    <div class="summary">
+                        @calendarEvent.Summary
+                    </div>
+                }
+
+                @if (showDescription && calendarEvent.Description != null)
+                {
+                    <div class="description">@calendarEvent.Description</div>
+                }
+
+                @if (showLocation && calendarEvent.Location != null)
+                {
+                    <div class="location">@calendarEvent.Location</div>
+                }
+
+                @if (showStartTime && calendarEvent.StartDateTime != null)
+                {
+
+                    <div class="date-time date-time-start">
+                        <span class="date-month">@calendarEvent.StartMonth</span>
+                        <span class="date-day">@calendarEvent.StartDay</span>
+                        <span class="date-year">@calendarEvent.StartYear</span>
+
+                        @if (calendarEvent.StartTime != null)
+                        {
+                            <span class="date-time">@calendarEvent.StartTime</span>
+                        }
+
+                    </div>
+                }
+
+                @if (showEndTime && calendarEvent.EndDateTime != null)
+                {
+
+                    <div class="date-time date-time-end">
+                        <span class="date-month">@calendarEvent.EndMonth</span>
+                        <span class="date-day">@calendarEvent.EndDay</span>
+                        <span class="date-year">@calendarEvent.EndYear</span>
+
+                        @if (calendarEvent.EndTime != null)
+                        {
+                            <span class="date-time">@calendarEvent.EndTime</span>
+                        }
+
+                    </div>
+                }
+
+            </div>
+        }
+    </div>
+}

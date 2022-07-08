@@ -1,0 +1,27 @@
+﻿@model Catfish.Core.Models.ViewModels.GroupRoleAssignmentVM
+
+@Html.HiddenFor(model => model.RoleId)
+@Html.HiddenFor(model => model.RoleName)
+@Html.HiddenFor(model => model.RoleGroupId)
+
+
+@{
+    var id = Html.IdFor(model => model);
+    var name = Html.NameFor(model => model);
+}
+<div class="checkbox">
+    <label class="mb-0">
+        @{
+            if (Model.HasUsers)
+            {
+                @Html.CheckBoxFor(model => model.Assigned, new { onclick = "return false" }) @Model.RoleName
+            }
+            else
+            {
+                @Html.CheckBoxFor(model => model.Assigned) @Model.RoleName
+            }
+
+        }
+        @*<input id="@id" name="@name" type="checkbox" value="@Model.Assigned" checked="@Model.Assigned"> @Model.RoleName*@
+    </label>
+</div>

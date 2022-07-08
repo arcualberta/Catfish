@@ -1,0 +1,41 @@
+﻿@model Catfish.Core.Models.Contents.Fields.TextArea
+
+
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+@if (Model.Exclude)
+    return;
+
+@{
+    var viewData = new Dictionary<string, object>(); ;
+
+    foreach (var key in ViewData.Keys)
+    {
+        viewData.Add(key, ViewData[key]);
+    }
+    viewData.Add("multiline", true);
+    viewData.Add("rows", Model.Rows);
+    viewData.Add("cols", Model.Cols);
+    viewData.Add("data-max-words", Model.MaxWords);
+    if (Model.MaxWords > 0)
+    {
+        viewData.Add("onkeyup", "countWords('" + @Model.Id + "'); return false;");
+    }
+
+
+    if (Model.MaxChars > 0)
+    {
+        viewData.Add("maxlength", Model.MaxChars);
+    }
+}
+
+@for (int i = 0; i < Model.Values.Count; ++i)
+    @Html.EditorFor(model => Model.Values[i],
+                             Model.Values[i].GetType().ToString(),
+                             viewData)
+
+@if (Model.MaxWords > 0)
+{
+    @*<span class='exceedWords alert alert-danger' hidden>Maximum @Model.MaxWords words only! </span>*@
+}

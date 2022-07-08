@@ -1,0 +1,100 @@
+﻿@page "/items/edit/{id:Guid}"
+@model Catfish.Pages.ItemDetailsModel
+
+@using Catfish.Core.Authorization.Requirements;
+@using Microsoft.AspNetCore.Authorization;
+
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@inject Catfish.Services.ISubmissionService _submissionService;
+@inject Catfish.Core.Services.IWorkflowService _workflowService;
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+@inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+@inject Catfish.Helper.ICatfishAppConfiguration _appConfig;
+
+@{
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+}
+@{
+    var item = Model.Item;
+
+
+    var rootDataItem = item.GetRootDataItem(false);
+    string formPostUrl = "/api/items/EditSubmissionForm";
+    string suffix = Guid.NewGuid().ToString();
+    var currentStatus = _submissionService.GetStatus(item.StatusId).Status;
+    var template = _entityTemplateService.GetTemplate(item.TemplateId);
+
+
+    //This EditItem page takes post actions that are defined under "Update" function and "Details" grouping on the workflow.
+    //var postActions = _workflowService.GetPostActions(template, "Update", "Details");
+    var postActions = _workflowService.GetAllChangeStatePostActions(template, item.StatusId.Value);
+    string successMessage = "";// string.IsNullOrEmpty(Model.SubmissionConfirmation.Value) ? "" : Model.SubmissionConfirmation.Value.ToString();
+
+}
+
+@{
+    var associatedItems = item.DataContainer
+.Where(di => di.IsRoot == false)
+.OrderByDescending(di => di.Created)
+.ToList();
+}
+
+@if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Update }))
+.Succeeded)
+{
+    <div class="container">
+        <div id="submission-edit-result-message_@suffix"></div>
+    </div>
+
+    <form id="submissionEditForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data" class="data-item-form">
+        <input data-val="true" data-val-required="The TemplateId field is required."
+               id="templateId_@suffix" name="entityTemplateId" type="hidden"
+               value="@item.TemplateId">
+        <input data-val="true" data-val-required="The CollectionId field is required."
+               id="primaryCollectionId_@suffix" name="collectionId" type="hidden"
+               value="@item.PrimaryCollectionId">
+        <input data-val="true" data-val-required="The ItemId field is required."
+               id="itemId_@suffix" name="itemId" type="hidden"
+               value="@item.Id">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    @*<h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString()) @item.UserEmail</h2>*@
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="">
+                            <div class="form-group">
+                                @*<label>@Localizer.General["Status"]</label>*@
+                                <div class="alert alert-info">
+                                    <span>@currentStatus</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        @Html.EditorFor(model => rootDataItem, rootDataItem.GetType().ToString())
+
+                        <partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml"
+                                 model="postActions"
+                                 view-data='@new ViewDataDictionary(ViewData) {
+                                    { "suffix", suffix},
+                                    { "successMessage", successMessage},
+                                    { "currentStateId", item.StatusId },
+                                    { "submitCallFunction", "submitEditWorkflowForm"},
+                                    {"submissionFormNamePrefix", "submissionEditForm" }}' />
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+}
+else
+{
+    <div class="alert alert-danger">@Html.Raw(_appConfig.GenericAuthorizationErrorMessage())</div>
+}

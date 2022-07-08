@@ -1,0 +1,177 @@
+﻿@model Catfish.Models.Blocks.CalendarBlock
+@using Newtonsoft.Json;
+@*@inject Catfish.Services.IAppService _appService;*@
+
+@*
+    Please Note:
+    This block will not show up/run properly without the file
+    catfish2-0-GoogleCalendarServiceAccount.json
+    present in the project. This file is in the gitignore and is not tracked.
+    It helps to configure the Google Calendar access, so make sure you have it!
+*@
+
+@{
+    ViewData["Title"] = "Calendar Block";
+
+    //Register any additional javascript files that are needed for this components as follows
+    //_appService.RegisterScript("/assets/js/MY-JS-FILE.js");
+}
+
+@{
+
+    List<Catfish.Models.Blocks.CalendarEvent> CalendarEventList = Model.GetCalendarEvents();
+    bool showSummary = true;
+    bool showDescription = true;
+    bool showLocation = true;
+
+    var jsonData = JsonConvert.SerializeObject(Model);
+    var googleCalendarData = JsonConvert.SerializeObject(CalendarEventList);
+
+    Dictionary<DateTime, int> datesDict = new Dictionary<DateTime, int>();
+    //create list of dates to mark as events
+    foreach (var calendarEvent in CalendarEventList)
+    {
+        //need to be able to catch multiple dates and also watch out for different months/years
+        //multiple events can ocur on the same date in this case since this is just to show on the calendar that there is something happening at all
+        datesDict.Add(calendarEvent.StartDateTime,
+    Math.Abs((calendarEvent.StartDateTime.Date - calendarEvent.EndDateTime.Date).Days));
+    }
+
+
+    string calendarStyling;
+    switch (Model.CalendarStyle.Value)
+    {
+        case Catfish.Models.Blocks.CalendarStyles.Simple:
+            calendarStyling = "simple-style";
+            break;
+        case Catfish.Models.Blocks.CalendarStyles.Rounded:
+            calendarStyling = "rounded-style";
+            break;
+        default:
+            calendarStyling = "simple-style";
+            break;
+    }
+}
+
+
+<calendar-block-vue v-bind:model='@Html.Raw(jsonData)' :calendardisplay='@((int)Model.DisplayCalendarUI.Value)' :googlecalendardata='@googleCalendarData' inline-template class="container container-fluid google-calendar-panel calendar-events calendar-default">
+    <div>
+        @if (Model.DisplayCalendarUI.Value == Catfish.Models.Blocks.CalendarTypes.RegularCalendar)
+        {
+
+            <div class="calendar-container @calendarStyling">
+                <div class="month-header-container">
+                    <div class="clickable left-arrow monthly-arrow" v-on:click="goToPreviousMonth()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    <div class="month-title-container">
+                        <h3 class="clickable" v-on:click="goToPresentMonth()">{{selectedMonth.format("MMMM")}} {{selectedMonth.format("YYYY")}}</h3>
+                    </div>
+                    <div class="clickable right-arrow monthly-arrow" v-on:click="goToNextMonth()"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                </div>
+                <div class="calendar-month-container">
+                    <div class="calendar-weekday-container">
+                        <div v-for="weekday in WEEKDAYS" class="weekday-label-container">
+                            <div>{{weekday}}</div>
+                        </div>
+
+                    </div>
+                    <div class="days-container">
+                        <template v-for="(day, index) in days">
+                            <div class="calendar-day" :class="{'day-not-current-month': !day.isCurrentMonth, 'today-is-the-day': day.date == today, 'event-day-color': day.hasEvent }">
+                                <div class="day-number">{{day.dayOfMonth}}</div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+        }
+        else if (Model.DisplayCalendarUI.Value == Catfish.Models.Blocks.CalendarTypes.WeeklyStrip)
+        {
+            <div class="calendar-container @calendarStyling">
+                <div class="strip-month-header-container">
+                    <h3 class="clickable month-year-title" v-on:click="goToPresentWeekMonth()">{{selectedMonth.format("MMMM")}} {{selectedMonth.format("YYYY")}}</h3>
+                </div>
+                <div class="strip-week-and-arrow-container">
+                    <div class="clickable left-arrow weekly-arrow" v-on:click="goToPreviousWeek()"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    <div class="strip-week-container">
+                        <div class="calendar-weekday-container">
+                            <div v-for="weekday in WEEKDAYS" class="weekday-label-container">
+                                <div>{{weekday}}</div>
+                            </div>
+
+                        </div>
+                        <div class="days-container">
+                            <template v-for="(day, index) in daysSection">
+                                <div class="calendar-day-container">
+                                    <div class="calendar-day strip-calendar-day" :class="{'day-not-current-month': !day.isCurrentMonth, 'today-is-the-day': day.date == today, 'event-day-color': day.hasEvent }">
+                                        <div class="day-number">{{day.dayOfMonth}}</div>
+                                    </div>
+                                    <div class="calendar-day-title">
+                                        <div class="title-spacing" v-if="day.hasEvent">{{getEventDayTitle(day)}}</div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="clickable right-arrow weekly-arrow" v-on:click="goToNextWeek()"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                </div>
+            </div>
+        }
+
+        <h3 class="events-title">Events</h3>
+        <hr />
+
+        <div v-if="isEventsInMonth && calendardisplay == 1">
+            <div class="calendar-events-container-holder" v-for="calendarEvent of eventsForTheMonth">
+                <!-- v-if="calendarEvent.StartMonth == selectedMonth.format('MMM') && calendardisplay == 1" -->
+                <div class="row no-gutters well calendar-event">
+                    <div class="col-md-10">
+                        <div class="summary">
+                            <h4 v-html="calendarEvent.Summary"></h4>
+                        </div>
+                        <div v-if="calendarEvent.Description" class="description" v-html="calendarEvent.Description"></div>
+                        <div v-else class="description">No description provided.</div>
+                        <div class="location">{{calendarEvent.Location}}</div>
+                    </div>
+                    <div class="col-md-2 calendar-event-dates">
+                        <div class="date-time date-time-start">
+                            <div class="date-month">{{calendarEvent.StartMonth}}</div>
+                            <div class="date-day">{{calendarEvent.StartDay}}</div>
+                            <div class="date-year">{{calendarEvent.StartYear}}</div>
+                            <div class="date-hour">{{calendarEvent.StartTime}}</div>
+                        </div>
+                    </div>
+                    <div v-if="calendarEvent.Attachments.length > 0"><img :src="calendarEvent.Attachments[0].fileUrl" /></div>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="isEventsInWeek && calendardisplay == 2">
+            <div v-for="calendarEvent of eventsForTheWeek">
+                <div class="row well no-gutters calendar-event">
+                    <div class="col-md-10">
+                        <div class="summary">
+                            <h4 v-html="calendarEvent.Summary"></h4>
+                        </div>
+                        <div v-if="calendarEvent.Description" class="description" v-html="calendarEvent.Description"></div>
+                        <div v-else class="description">No description provided.</div>
+                        <div class="location">{{calendarEvent.Location}}</div>
+                    </div>
+                    <div class="col-md-2 calendar-event-dates">
+                        <div class="date-time date-time-start">
+                            <div class="date-month">{{calendarEvent.StartMonth}}</div>
+                            <div class="date-day">{{calendarEvent.StartDay}}</div>
+                            <div class="date-year">{{calendarEvent.StartYear}}</div>
+                            <div class="date-hour">{{calendarEvent.StartTime}}</div>
+                        </div>
+                    </div>
+                    <div v-if="calendarEvent.Attachments.length > 0"><img :src="calendarEvent.Attachments[0].fileUrl" /></div>
+                </div>
+            </div>
+        </div>
+        <div v-else>
+            <div>There are no events for the currently selected timeframe.</div>
+        </div>
+
+    </div>
+</calendar-block-vue>
+</div> @*This doesn't match to anything but it's required to run... there's a problem somewhere else*@

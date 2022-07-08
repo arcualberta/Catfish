@@ -1,0 +1,112 @@
+@model StandardPage
+@using Catfish.Models.Blocks;
+@using ElmahCore;
+
+@inject ErrorLog _errorLog;
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishConfig;
+@{
+    try
+    {
+
+        ViewBag.Title = Model == null ? "" : Model.Title;
+
+        //check if it's set the publishing start/end date to make  the page contain available
+        DateTime? startDateTime = Model?.PublishSettings.Start;
+        DateTime? endDateTime = Model.PublishSettings.End;
+        bool pageAvailable = (!startDateTime.HasValue || startDateTime.HasValue && startDateTime.Value <= DateTime.Now)
+            && (!endDateTime.HasValue || endDateTime.HasValue && endDateTime.Value > DateTime.Now);
+        bool showPageHeader = Model.PublishSettings.ShowTitleOfPage;
+
+        bool showPageTimeStamp = _catfishConfig.GetValue("SiteConfig:ShowPageTimeStamp", false);
+
+        if (!pageAvailable)
+        {
+            string message = string.IsNullOrWhiteSpace(Model.PublishSettings.Message.Value)
+                            ? "The page is unavailable."
+                            : Model.PublishSettings.Message.Value;
+
+            <div id="pagePublishMessage" class="container alert alert-danger">@Html.Raw(message)</div>
+        }
+        else
+        {
+            <div class="main">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 page-body">
+                            @if (showPageHeader)
+                            {
+                                <h1>@Model.Title</h1>
+                            }
+
+                            <div id="blocks">
+                                @try
+                                {
+                                    @Html.DisplayFor(m => m.Blocks)
+                                }
+                                catch (Exception ex)
+                                {
+                                    _errorLog.Log(new Error(ex));
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                    @if (showPageTimeStamp)
+                    {
+                        <div class="pageTimeStamp">
+                            Updated: @Model.Created
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (Model.EnableComments)
+            {
+                <div id="comments" class="container comments">
+                    @if (Model.IsCommentsOpen)
+                    {
+                        <div class="alert alert-comment mt-2 mb-5">
+                            <form action="@Model.Permalink/comment" method="post">
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("Id", Model.Id)
+
+                                <h3 class="mb-3">Leave a comment</h3>
+                                <p class="mb-4">
+                                    Please note that we won't show your email to others, or use it for sending
+                                    unwanted emails.
+                                </p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input name="CommentAuthor" type="text" class="form-control" placeholder="Your name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input name="CommentEmail" type="text" class="form-control" placeholder="Your email address">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input name="CommentUrl" type="text" class="form-control" placeholder="An (optional) URL to your website">
+                                </div>
+                                <div class="form-group">
+                                    <textarea name="CommentBody" rows="6" class="form-control" placeholder="Your awesome comment"></textarea>
+                                </div>
+                                <div class="form-group text-left">
+                                    <button class="btn btn-success">Post Comment</button>
+                                </div>
+                            </form>
+                        </div>
+                    }
+                    @Html.DisplayFor(m => m.Comments)
+                </div>
+            }
+
+        } @*if page available to view*@
+
+    }
+    catch (Exception ex)
+    {
+        _errorLog.Log(new Error(ex));
+    }
+
+}

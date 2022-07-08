@@ -1,0 +1,19 @@
+﻿@model Catfish.Models.Blocks.JavascriptBlock
+
+@*
+   NO NEED TO RENDER THIS BLOCK HERE SINCE WE RENDER IT AT THE HEAD SECTION IN THE LAYOUT.CSHTML FILE 
+    
+@{ 
+    bool containScriptTag = Model.GetJavascript() == "" ? false : Model.GetJavascript().Contains("<script>") ? true : false;
+}
+
+@if (containScriptTag)
+{
+    Html.Raw(Model.GetJavascript());
+}
+else {
+
+    <script>
+        @Html.Raw(Model.GetJavascript())
+    </script>
+}*@

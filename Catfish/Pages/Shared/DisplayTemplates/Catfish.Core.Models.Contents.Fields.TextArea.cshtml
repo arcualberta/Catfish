@@ -1,0 +1,11 @@
+﻿@model Catfish.Core.Models.Contents.Fields.TextArea
+
+<div class="control field-label @Model.FieldLabelCssClass">@Html.DisplayFor(model => model.Name, Model.Name.GetType().ToString())</div>
+<br />
+<div data-model-id="@Model.Id" class="multilingual-input-block field-value @Model.CssClass @Model.FieldValueCssClass">
+
+    @for (int i = 0; i < Model.Values.Count; ++i)
+        @Html.DisplayFor(model => Model.Values[i], Model.Values[i].GetType().ToString(), null, new { multiline = true })
+    @*<textarea class="form-control" placeholder=@Model.Values[i] id="floatingTextarea2" readonly></textarea>
+    *@
+</div>

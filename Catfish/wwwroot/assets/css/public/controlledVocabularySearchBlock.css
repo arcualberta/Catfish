@@ -1,0 +1,36 @@
+﻿#controlledVocabularySearchResults{
+	display:flex;
+	flex-direction:row;
+	flex-wrap:wrap;
+}
+
+.card{
+	max-width:33%;
+}
+
+.main-card-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: 8;
+	-webkit-box-orient: vertical;
+	display: -webkit-box;
+}
+
+.search-header-holder {
+	display: flex;
+	justify-content: space-between;
+	padding-top: 20px;
+	align-items: center;
+}
+
+.block-title {
+	padding-bottom: 10px;
+}
+
+hr{
+	margin-top:0;
+}
+
+.filler-image-space{
+	height: 100%;
+}

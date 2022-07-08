@@ -1,0 +1,48 @@
+﻿@page "~/manager/schema/edit/{id:Guid?}"
+@model Catfish.Areas.Manager.Pages.SchemaPageModel
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+<div>
+    <div class="top">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Schema"]</li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Edit"]</li>
+            </ol>
+        </nav>
+    </div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+    <div class="container-fluid">
+        <h2>@{@(string.IsNullOrWhiteSpace(Model.SchemaName) ? "Schema" : Model.SchemaName)}</h2>
+        <br />
+        <form method="post">
+            @Html.EditorFor(model => model.SchemaXml, new { htmlAttributes = new { @class = "col-md-12", style = "Width:100%,", rows = "20" } })
+            <br />
+            <input type="submit" value="Update" class="btn btn-primary" />
+        </form>
+        <br />
+
+        <div>
+            @if (Model.Backups != null)
+            {
+                <h3>Past Versions</h3>
+                List<string> links = new List<string>();
+                foreach (var backup in Model.Backups)
+                    links.Add(string.Format("<a style='margin:20px;' href='/manager/schema/{0}?backupId={1}'>{2}</a>", Model.Id, backup.Id, backup.Timestamp));
+
+                @Html.Raw(string.Join(" | ", links))
+            }
+        </div>
+    </div>
+</div>

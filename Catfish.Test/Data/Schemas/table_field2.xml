@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<entity id="2dcebe99-5066-4930-9c49-586f51432557" created="2021-03-17T00:00:21.5897093-06:00" model-type="Catfish.Core.Models.ItemTemplate, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="2e214fb4-6c05-4e91-adf2-d3f01483c84e">
+    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="f77b101e-1105-4bba-8642-9799e6407f3e" xml:lang="en">Table-field Form Template 2</text>
+  </name>
+  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c39d6c88-7d41-4d4f-ad81-84322d2f5b0f" />
+  <metadata-sets />
+  <reports />
+  <audit-trail />
+  <data-container>
+    <data-item model-type="Catfish.Core.Models.Contents.Data.DataItem, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8cc8bb7f-9c50-41d6-b87f-cbf53889d44e" created="2021-03-17T00:00:21.7004816-06:00" is-root="true">
+      <fields>
+        <field model-type="Catfish.Core.Models.Contents.Fields.TableField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="fb41be08-5b48-490d-a8e0-43c1066a2bc6" min-rows="2" max-rows="2" required="true" label-css="col-md-12" value-css="col-md-12" allow-add-rows="false">
+          <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="fa7893a0-fb13-4a77-9192-5ba07bc6d560">
+            <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e735f71c-ec9b-4cac-bf9c-f0647c7304c1" xml:lang="en"></text>
+          </name>
+          <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="53e7838e-a16a-47bd-8521-044ac202d962" />
+          <table-head model-type="Catfish.Core.Models.Contents.Fields.TableRow, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="93e8a2f7-c01f-45b0-91ea-241325ef1f71">
+            <fields>
+              <field model-type="Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ccf7a9e1-1853-4375-8e2c-4a1ef2a52de7">
+                <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0e546b01-64d8-4bf2-aba3-4383a7e537f4">
+                  <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="f0be9334-5a20-468d-9b25-f5e134a7ca82" xml:lang="en">Revenue</text>
+                </name>
+                <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8e4ef818-714f-4ffc-8c19-a205de4f847d" />
+                <content model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3ccfea11-6a46-46a6-bd6a-ade6f5fa0140" />
+              </field>
+              <field model-type="Catfish.Core.Models.Contents.Fields.DecimalField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9596d312-6932-4b01-8f1d-e0df36cfec57">
+                <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e1d7c2d8-5d13-4690-badd-882c477dcca0">
+                  <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c3c64da9-2cfd-4faf-b9ad-a000bd577726" xml:lang="en">Estimated ($)</text>
+                </name>
+                <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="833c8354-a121-4bdb-981c-7f194a04cf70" />
+                <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="985088fa-a581-46c5-8d9a-5b8b95133d90"></text>
+              </field>
+            </fields>
+          </table-head>
+          <table-data>
+            <table-row model-type="Catfish.Core.Models.Contents.Fields.TableRow, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="413e257c-988c-492a-85f7-847847584b89" created="2021-03-17T00:00:21.779817-06:00">
+              <fields>
+                <field model-type="Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="99974987-2bd2-4dff-b3f4-aa450b0be5de" ref-id="ccf7a9e1-1853-4375-8e2c-4a1ef2a52de7" readonly="false">
+                  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0e546b01-64d8-4bf2-aba3-4383a7e537f4">
+                    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="f0be9334-5a20-468d-9b25-f5e134a7ca82" xml:lang="en">Revenue</text>
+                  </name>
+                  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8e4ef818-714f-4ffc-8c19-a205de4f847d" />
+                  <content model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3ccfea11-6a46-46a6-bd6a-ade6f5fa0140">
+                    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0023f7aa-643c-49bd-bce1-3b1de20c03a0" xml:lang="en">Total Funding From Other Sources</text>
+                  </content>
+                </field>
+                <field model-type="Catfish.Core.Models.Contents.Fields.DecimalField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b958ef1f-229f-4a60-a4b0-140e482938b1" ref-id="9596d312-6932-4b01-8f1d-e0df36cfec57">
+                  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e1d7c2d8-5d13-4690-badd-882c477dcca0">
+                    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c3c64da9-2cfd-4faf-b9ad-a000bd577726" xml:lang="en">Estimated ($)</text>
+                  </name>
+                  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="833c8354-a121-4bdb-981c-7f194a04cf70" />
+                  <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="985088fa-a581-46c5-8d9a-5b8b95133d90"></text>
+                </field>
+              </fields>
+            </table-row>
+            <table-row model-type="Catfish.Core.Models.Contents.Fields.TableRow, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a1158404-db31-4d90-9cc4-d79d9d33ed28" created="2021-03-17T00:00:21.77992-06:00">
+              <fields>
+                <field model-type="Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="15098a88-bca5-49a2-923b-31ce2dd33751" ref-id="ccf7a9e1-1853-4375-8e2c-4a1ef2a52de7" readonly="false">
+                  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0e546b01-64d8-4bf2-aba3-4383a7e537f4">
+                    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="f0be9334-5a20-468d-9b25-f5e134a7ca82" xml:lang="en">Revenue</text>
+                  </name>
+                  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8e4ef818-714f-4ffc-8c19-a205de4f847d" />
+                  <content model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3ccfea11-6a46-46a6-bd6a-ade6f5fa0140">
+                    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e5b08dd3-671c-4ccd-a68e-22674f56750c" xml:lang="en">Registration Fees</text>
+                  </content>
+                </field>
+                <field model-type="Catfish.Core.Models.Contents.Fields.DecimalField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="1e7ba58f-32b0-44b7-ae32-3f2365cceeb2" ref-id="9596d312-6932-4b01-8f1d-e0df36cfec57">
+                  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e1d7c2d8-5d13-4690-badd-882c477dcca0">
+                    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c3c64da9-2cfd-4faf-b9ad-a000bd577726" xml:lang="en">Estimated ($)</text>
+                  </name>
+                  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="833c8354-a121-4bdb-981c-7f194a04cf70" />
+                  <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="985088fa-a581-46c5-8d9a-5b8b95133d90"></text>
+                </field>
+              </fields>
+            </table-row>
+          </table-data>
+          <table-footer>
+            <table-row model-type="Catfish.Core.Models.Contents.Fields.TableRow, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e5187a23-0285-4681-9d09-7db6a3fac658" created="2021-03-17T00:00:21.7773287-06:00">
+              <fields>
+                <field model-type="Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="433e12de-b588-4f42-9204-ee5072c5b982" ref-id="ccf7a9e1-1853-4375-8e2c-4a1ef2a52de7" readonly="true">
+                  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0e546b01-64d8-4bf2-aba3-4383a7e537f4">
+                    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="f0be9334-5a20-468d-9b25-f5e134a7ca82" xml:lang="en">Revenue</text>
+                  </name>
+                  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8e4ef818-714f-4ffc-8c19-a205de4f847d" />
+                  <content model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3ccfea11-6a46-46a6-bd6a-ade6f5fa0140">
+                    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="399445e3-9de3-4e30-bbf8-6b9aeb00dff2" xml:lang="en">Total Revenue</text>
+                  </content>
+                </field>
+                <field model-type="Catfish.Core.Models.Contents.Fields.DecimalField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="1fbff568-d9b3-4e1f-a51c-6b65800ec290" ref-id="9596d312-6932-4b01-8f1d-e0df36cfec57" readonly="true">
+                  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="e1d7c2d8-5d13-4690-badd-882c477dcca0">
+                    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c3c64da9-2cfd-4faf-b9ad-a000bd577726" xml:lang="en">Estimated ($)</text>
+                  </name>
+                  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="833c8354-a121-4bdb-981c-7f194a04cf70" />
+                  <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="985088fa-a581-46c5-8d9a-5b8b95133d90"></text>
+                  <value-expression model-type="Catfish.Core.Models.Contents.Expressions.ValueExpression, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ae9e0008-5d87-48bf-97f2-f2975cd2b53e">TableColumnSum('fb41be08-5b48-490d-a8e0-43c1066a2bc6', 1)</value-expression>
+                </field>
+              </fields>
+            </table-row>
+          </table-footer>
+        </field>
+      </fields>
+      <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="65947c2a-75ad-41ef-b541-42fa9b1ccf77">
+        <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="fc0545c5-e4f0-4306-b704-5d6c41ce6f79" xml:lang="en">Table-field Form 2</text>
+      </name>
+      <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b52e6299-e24e-49d0-878f-f37158034418" />
+    </data-item>
+  </data-container>
+  <workflow model-type="Catfish.Core.Models.Contents.Workflow.Workflow, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0fca4d98-34f5-4298-99aa-33e4d138fd54">
+    <states>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="cb545f15-6499-473e-bf45-2aaa300ae0e7"></state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ef1bb168-4e4b-4aaa-a8bf-5179fd014a65">Submitted</state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6e6b9589-b5fb-49c7-b596-542938713a7e">Deleted</state>
+    </states>
+    <groups />
+    <roles>
+      <role model-type="Catfish.Core.Models.Contents.Workflow.WorkflowRole, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d4f68db4-26f4-4782-8db3-f44d2fee83b6">Admin</role>
+      <role model-type="Catfish.Core.Models.Contents.Workflow.WorkflowRole, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="7497cdf3-9fe7-4c4c-af8d-274e19ec85e2">Creator</role>
+    </roles>
+    <triggers />
+    <actions>
+      <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="87055b00-8a13-40f4-89ec-dbd6687b7f8a" link-lable="Start Submission" function="Instantiate" group="Home" access="Restricted">
+        <params />
+        <post-actions>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="db47383a-1bed-479c-8683-3e0129869357" button-lable="Submit" function="Update" success-message="&lt;p&gt;Your Conference Fund application saved successfully. &#xD;&#xA; You can view/edit by &lt;a href='@SiteUrl/items/@Item.Id'&gt;click on here&lt;/a&gt;&lt;/p&gt;">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9a28cf14-40e3-4657-a363-de021c50bfb2" current="cb545f15-6499-473e-bf45-2aaa300ae0e7" next="ef1bb168-4e4b-4aaa-a8bf-5179fd014a65" button-label="Submit" />
+            </state-mappings>
+            <pop-ups>
+              <pop-up model-type="Catfish.Core.Models.Contents.Workflow.PopUp, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a1137557-d8f4-4b0c-86d3-eabec205c427" title="WARNING: Submitting the Form" body="Once submitted, you cannot update the form." message="">
+                <buttons>
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="df813fb6-ed88-4d86-9d9e-99511065188e" text="Yes, submit" return="true" />
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="17d1914e-d202-4801-87d6-20a39c4c4063" text="Cancel" return="false" />
+                </buttons>
+              </pop-up>
+            </pop-ups>
+            <trigger-refs />
+          </post-action>
+        </post-actions>
+        <states>
+          <state-ref model-type="Catfish.Core.Models.Contents.Workflow.StateRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b0d9b094-7ca5-4c4d-bb11-496fe9aad24a" ref-id="cb545f15-6499-473e-bf45-2aaa300ae0e7">
+            <authorizations>
+              <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="87156fb6-7d12-4e63-87d8-9965939f5b7a" ref-id="7497cdf3-9fe7-4c4c-af8d-274e19ec85e2" />
+            </authorizations>
+          </state-ref>
+        </states>
+      </get-action>
+      <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="7a5797c0-778b-420e-a365-1136b24b80fc" link-lable="List Submissions" function="ListInstances" group="Home" access="Restricted">
+        <params />
+        <post-actions />
+        <states>
+          <state-ref model-type="Catfish.Core.Models.Contents.Workflow.StateRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c663ed01-9b31-4435-a530-4d00f67e9541" ref-id="ef1bb168-4e4b-4aaa-a8bf-5179fd014a65">
+            <authorizations>
+              <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="06146878-fb98-41e2-b98e-76a4745b27fc" owner="true" ref-id="00000000-0000-0000-0000-000000000000" />
+              <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="917f4d82-c558-43b1-9f21-6d2fa7d51d15" ref-id="d4f68db4-26f4-4782-8db3-f44d2fee83b6" />
+            </authorizations>
+          </state-ref>
+        </states>
+      </get-action>
+      <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9c4b9d17-c61c-4df2-b92e-e5846158d0ea" link-lable="Details" function="Read" group="List" access="Restricted">
+        <params />
+        <post-actions />
+        <states>
+          <state-ref model-type="Catfish.Core.Models.Contents.Workflow.StateRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a2b7bba8-1cce-4c56-b670-a38dfeea7378" ref-id="ef1bb168-4e4b-4aaa-a8bf-5179fd014a65">
+            <authorizations>
+              <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0f48d099-7598-4f76-aa2c-737df19e957d" owner="true" ref-id="00000000-0000-0000-0000-000000000000" />
+              <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6f51a2be-5011-43bf-9247-2f4f3726a841" ref-id="d4f68db4-26f4-4782-8db3-f44d2fee83b6" />
+            </authorizations>
+          </state-ref>
+        </states>
+      </get-action>
+      <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="92ce2196-7d8f-460c-930f-eaa63b4427cf" link-lable="Edit Submission" function="Edit" group="Details">
+        <params />
+        <post-actions>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9f445626-2b9c-4752-94ad-d647cc8263e9" button-lable="Save" function="Save">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="66033648-c100-4f58-9f1c-a36356720918" current="ef1bb168-4e4b-4aaa-a8bf-5179fd014a65" next="ef1bb168-4e4b-4aaa-a8bf-5179fd014a65" button-label="Save" />
+            </state-mappings>
+            <pop-ups />
+            <trigger-refs />
+          </post-action>
+        </post-actions>
+        <states>
+          <state-ref model-type="Catfish.Core.Models.Contents.Workflow.StateRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="34f645cd-03a8-40c7-8990-c7777b176741" ref-id="ef1bb168-4e4b-4aaa-a8bf-5179fd014a65">
+            <authorizations>
+              <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="99206068-ed8a-43ff-b67f-7f9e8c7f6875" ref-id="d4f68db4-26f4-4782-8db3-f44d2fee83b6" />
+            </authorizations>
+          </state-ref>
+        </states>
+      </get-action>
+      <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="d51a5ce7-7611-4a8c-a043-bda067a7e73b" link-lable="Delete Submission" function="Delete" group="Details">
+        <params />
+        <post-actions>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="650222c9-39ea-464f-87b1-2557842708e4" button-lable="Delete" function="Save">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="46f76dee-fa15-4315-9498-2a57c5a11854" current="ef1bb168-4e4b-4aaa-a8bf-5179fd014a65" next="6e6b9589-b5fb-49c7-b596-542938713a7e" button-label="Delete" />
+            </state-mappings>
+            <pop-ups>
+              <pop-up model-type="Catfish.Core.Models.Contents.Workflow.PopUp, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="aaeb2c40-d2c0-482d-8f16-b770b6896e5c" title="WARNING: Delete" body="Deleting the submission. Please confirm." message="">
+                <buttons>
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="587884ac-699f-4583-9ec8-9ea5c81a5441" text="Yes, delete" return="true" />
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="01927adf-2456-4769-a32c-4c69494e543b" text="Cancel" return="false" />
+                </buttons>
+              </pop-up>
+            </pop-ups>
+            <trigger-refs />
+          </post-action>
+        </post-actions>
+        <states>
+          <state-ref model-type="Catfish.Core.Models.Contents.Workflow.StateRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4172f9f1-048b-466c-9413-04fe089efdc8" ref-id="ef1bb168-4e4b-4aaa-a8bf-5179fd014a65">
+            <authorizations>
+              <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="0af93ff7-7900-45eb-a02d-ab5e17242da6" ref-id="d4f68db4-26f4-4782-8db3-f44d2fee83b6" />
+            </authorizations>
+          </state-ref>
+        </states>
+      </get-action>
+    </actions>
+  </workflow>
+</entity>

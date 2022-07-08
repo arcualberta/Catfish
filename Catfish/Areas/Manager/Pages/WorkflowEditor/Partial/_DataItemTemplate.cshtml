@@ -1,0 +1,54 @@
+﻿@model Catfish.Core.Models.Contents.Data.DataItem
+
+@using Catfish.Core.Models.Contents.Fields;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+
+<div class="field-description">
+    @Html.Raw(Model.Description.ConcatenatedRichText)
+</div>
+<br />
+<div class="field-description">
+    <table class="table field-set-view table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th style="width:10%">Field Type</th>
+                <th style="width:20%">Field Name</th>
+                <th style="width:35%">Field Description</th>
+                <th style="width:35%">Parameters</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var field in Model.Fields)
+            {
+                ViewData["data-field-id"] = field.Id;
+
+                string template = "Partial/DataItemFields/_";
+                if (typeof(TextField).IsAssignableFrom(field.GetType()))
+                    template += typeof(TextField).ToString();
+                else if (typeof(MonolingualTextField).IsAssignableFrom(field.GetType()))
+                    template += typeof(MonolingualTextField).ToString();
+                else if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+                    template += typeof(OptionsField).ToString();
+                else if (typeof(TableField).IsAssignableFrom(field.GetType()))
+                {
+                    template += typeof(TableField).ToString();
+                    <tr>
+                        <partial name="@template" model="field" view-data="ViewData" />
+                    </tr>
+
+                    <partial name="Partial/DataItemFields/_Catfish.Core.Models.Contents.Fields.TableRow" model="(field as TableField).TableHead" view-data="ViewData" />
+                    break;
+                }
+                else
+                    template += field.GetType().ToString();
+
+                <tr>
+                    <partial name="@template" model="field" view-data="ViewData" />
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

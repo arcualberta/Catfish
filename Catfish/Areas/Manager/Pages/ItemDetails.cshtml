@@ -1,0 +1,55 @@
+﻿@page "~/manager/items/{id:Guid}"
+@model Catfish.Areas.Manager.Pages.ItemModel
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div id="entityTypelist">
+    <div class="top">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">@Localizer.Menu["Entities"]</li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Items"]</li>
+                <li class="breadcrumb-item">@Localizer.Menu["Item Details"]</li>
+            </ol>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="top-nav">
+                @*@foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.EntityTypeList)
+                    {
+                        <partial name="@action.ActionView" />
+                    }*@
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <h2>@Model.Item.Name.GetConcatenatedContent(" | ")</h2>
+        @*@{
+            List<string> languages = Model.Item.Description.Values.Select(v => v.Language).Distinct().ToList();
+            foreach (var lang in languages)
+            {
+                //List<string> values = Model.Item.Description
+            }
+
+        }*@
+    <div class="entity-desc">
+        @Model.Item.Description.GetConcatenatedContent(" | ")
+        <br />
+        <br />
+    </div>
+
+        @foreach (var ms in Model.Item.MetadataSets)
+        {
+            <partial name="partial/@ms.GetType().Name"  model="@ms"/>
+        }
+
+
+        @*<ol class="dd-list">
+                @foreach (var child in Model.Children)
+                {
+                    <partial name="partial/@child.GetType().Name" model="@child" />
+                }
+            </ol>*@
+    </div>
+</div>

@@ -1,0 +1,3 @@
+﻿@model Catfish.Core.Models.Contents.Fields.DecimalField
+
+@Html.Raw(string.Join(",", Model.Values.Select(txt => "<span>" + txt.DecimalValue + "</span>")))

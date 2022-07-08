@@ -1,0 +1,94 @@
+﻿@model Catfish.Models.Blocks.ItemListBlock
+
+@using Catfish.Core.Authorization.Requirements;
+@using Microsoft.AspNetCore.Authorization;
+@using Catfish.Core.Models;
+@using Catfish.Core.Models.Contents.Fields; 
+
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+@inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+
+@inject Catfish.Services.ISubmissionService _submissionService;
+@{
+    var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
+    var collectionId = string.IsNullOrEmpty(Model.SelectedCollection) ? null as Guid? : Guid.Parse(Model.SelectedCollection);
+
+    var template = _entityTemplateService.GetTemplate(entityTemplateId);
+}
+@if ((await _authorizationService.AuthorizeAsync(User, template
+           , new List<IAuthorizationRequirement>
+() { TemplateOperations.Read }))
+.Succeeded)
+{
+    <div class="row col-md-12">
+        <div class="col-md-5 form-group">
+            <label>From:</label> <input type="date" name="startDate" id="startDate" class="form-control" />
+        </div>
+        <div class="col-md-5 form-group"> <label class="form-label">To:</label><input type="date" name="endDate" id="endDate" class="form-control" /></div>
+        <button id="itemListBtnFilter" onclick="filterItems('@entityTemplateId', '@collectionId')" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Filter"><span class="fa fa-filter" style="padding-right:5px;"></span>Filter </button>
+    </div>
+
+    IList<Item> itemList = _submissionService.GetSubmissionList(User, entityTemplateId, collectionId);
+    if (itemList.Count > 0)
+    {
+        //Selecting sub set of fields that can hold user-input values
+        var userInputFields = itemList[0].GetRootDataItem(false)
+            .GetInputFields()
+            .ToList();
+        var fieldNames = userInputFields.Select(f => (f as BaseField).Name.GetConcatenatedContent(" | ")).ToList();
+        var fieldIds = userInputFields.Select(f => (f as BaseField).Id).ToList();
+
+        <button id="downloadCsvFile" class="btn btn-default btn-primary" onclick="generateCSV('Items_@DateTime.Now.ToShortDateString()','itemListBlockTable' )"><span class="fa fa-download" style="padding-right:5px;"></span>Download CSV</button>
+       
+        <table class="table table-stripe table-border" id="itemListBlockTable">
+            <thead class="thead-dark">
+                <tr class="tblHeader">
+                    <th>#</th>
+                    @foreach (var fieldName in fieldNames)
+                    {
+                        <th>@fieldName</th>
+                    }
+                    <th>Created</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int count = 0;
+                    foreach (Item item in itemList)
+                    {
+                        ++count;
+                        @:<tr>
+                            <td>@count</td>
+                            var rootSubmission = item.GetRootDataItem(false);
+                            foreach (var id in fieldIds)
+                            {
+                                <td>@rootSubmission.GetValues(id, " | ")</td>
+                            }
+                            
+                            <td>@item.Created</td>
+                            var status = item.Status == null ? null : item.Status.NormalizedStatus;
+                            <td>@status</td>
+
+                            string viewLink = string.Format("<a href='/items/{0}'>view</a>", item.Id);
+                            string editLink = string.Format("<a href='/items/edit/{0}'>edit</a>", item.Id);
+                            <td>@Html.Raw(viewLink) | @Html.Raw(editLink)</td>
+
+                        @:</tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">No data found.</div>
+    }
+}
+else
+{
+    <div class="alert alert-warning">Authorization failed.</div>
+}
+
+

@@ -1,0 +1,80 @@
+@model Catfish.Models.Blocks.ExtendedGalleryBlock
+@using Catfish.Models.Blocks
+
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishConfig;
+@{
+    var unique = "gallery-" + Guid.NewGuid().ToString();
+}
+
+    <div id="@unique" class="carousel slide extended-gallery-block" data-ride="carousel">
+
+        <div class="carousel-inner">
+            @foreach (ExtendedImageBlock item in Model.Items)
+            {
+                <div class="carousel-item @(item == Model.Items.First() ? "active" : "")">
+                    <div class="row">
+                        <div style="max-width:50%; height:100%;">
+                            <img src="@Url.Content(WebApp.Media.ResizeImage(((ExtendedImageBlock)item).Body.Media, 890, 482))" class="d-block w-100 col-md-6">
+                        </div>
+                        <div class="col-md-6" style="width:50%;">
+                            <div class="EGTitle EGTitle-font-size">@Html.Raw(item.GetImageTitle())</div>
+                            <div  class="EGDescription">@Html.Raw(item.GetDescription())</div>
+
+                            @if (!string.IsNullOrWhiteSpace(item.GetLinkText()))
+                            {
+                                <div  class="EGLink"><a href="@item.GetLinkUrl()" class="btn btn-primary EGLinkBtn">@item.GetLinkText()</a></div>
+                            }
+                        </div>
+                    </div>
+                    @*<img src="@Url.Content(((ImageBlock)item).Body.Media.PublicUrl)" class="d-block">*@
+                </div>
+            }
+        </div>
+        <div class="carousel-indicators indicatorDiv" style="width:100%;">
+            <ol class="carousel-indicators olOval">
+                @for (var n = 0; n < Model.Items.Count; n++)
+                {
+                    <li data-target="#@unique" data-slide-to="@n" class="@(n == 0 ? "active" : "")">@(n+1)</li>
+                }
+            </ol>
+            <span class="fa fa-pause carouselPauseBtn"></span> <span class="fa fa-play carouselPlayBtn" style="display:none;"></span>
+        </div>
+        @*<a class="carousel-control-prev" href="#@unique" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#@unique" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>*@
+    </div>
+
+
+    @*<style>
+    /*.img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+    .thumb-list-inline {
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+        #unique
+    */
+
+   
+    </style>
+<script>
+    $(function () {
+    $(".carouselPauseBtn").click(function () {
+        $(".carousel").carousel('pause');
+        $(".carouselPauseBtn").hide();
+        $(".carouselPlayBtn").show();
+    });
+    $(".carouselPlayBtn").click(function () {
+        $(".carousel").carousel('cycle');
+        $(".carouselPauseBtn").show();
+        $(".carouselPlayBtn").hide();
+    });
+    });
+</script>*@

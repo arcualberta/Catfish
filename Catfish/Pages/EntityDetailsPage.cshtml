@@ -1,0 +1,25 @@
+﻿@page "~/entity/{id:Guid}"
+@model Catfish.Pages.EntityDetailsPageModel
+
+@section head
+{
+    <script type="text/javascript" src="@Url.Content("~/assets/js/form.js")"></script>
+}
+
+@{
+    ViewData["Title"] = "DetailDataItem";
+}
+
+<div class="container">
+    @Html.DisplayFor(model => model.Item, Model.Item.GetType().ToString())
+</div>
+
+@if(Model.ChildTemplateId.HasValue)
+{
+    var objectId = Model.ItemId;
+    var childTemplateId = Model.ChildTemplateId;
+    <a href="~/entity/@objectId/addchild/@childTemplateId">Add Comment</a>
+}
+<div>
+</div>
+

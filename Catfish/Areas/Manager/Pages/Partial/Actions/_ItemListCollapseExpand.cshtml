@@ -1,0 +1,21 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService Auth
+@inject Piranha.Manager.ManagerLocalizer Localizer
+
+@* 
+    A Collapse/Expand All button with a dropdown option for choosing either when the collections are mixed of each.    
+*@
+
+@*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
+    {*@ 
+    <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
+        <div class="collapse-expand">
+            <button v-on:click="collapseAllCollections()" class="btn btn-primary btn-labeled" aria-haspopup="true" aria-expanded="false">
+                <img class="egg-icon" :class="{ 'show-egg': collapseAll==0, 'hide-egg': collapseAll!=0 }" src="~/assets/images/egg-svg-05.svg" />
+                <img class="egg-icon" :class="{ 'show-egg': collapseAll==1, 'hide-egg': collapseAll!=1 }" src="~/assets/images/egg-svg-06.svg" />
+                <img class="egg-icon" :class="{ 'show-egg': collapseAll==2, 'hide-egg': collapseAll!=2 }" src="~/assets/images/egg-svg-07.svg" />
+    <!--<i id="collapse-expand-button" 
+                   :class="{'fas fa-chevron-circle-up': collapseAll, 'fas fa-chevron-circle-down': !collapseAll}"></i>-->
+            </button>
+        </div>
+    @*}*@
+

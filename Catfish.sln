@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish", "Catfish\Catfish.csproj", "{EAA0D944-02C2-4F63-83B2-7AFCA564E46A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.Core", "Catfish.Core\Catfish.Core.csproj", "{E019A61A-5286-440A-B9F1-443A4065053C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.UnitTests", "Catfish.UnitTests\Catfish.UnitTests.csproj", "{C166EACD-49C8-4AC8-8E7F-7C84ADBBDD6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AB8C1F0-AFC6-4C1B-A2CA-51BD90B5AEAD}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		..\..\.nuget\packages\selenium.webdriver.chromedriver\89.0.4389.2300\driver\win32\chromedriver.exe = ..\..\.nuget\packages\selenium.webdriver.chromedriver\89.0.4389.2300\driver\win32\chromedriver.exe
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.Test", "Catfish.Test\Catfish.Test.csproj", "{71E33C85-B383-4BE6-8F35-6A915037C1F4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.GoogleApi", "Catfish.GoogleApi\Catfish.GoogleApi.csproj", "{87F829F6-5310-4735-9576-A74055F10FD2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAA0D944-02C2-4F63-83B2-7AFCA564E46A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAA0D944-02C2-4F63-83B2-7AFCA564E46A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAA0D944-02C2-4F63-83B2-7AFCA564E46A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAA0D944-02C2-4F63-83B2-7AFCA564E46A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E019A61A-5286-440A-B9F1-443A4065053C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E019A61A-5286-440A-B9F1-443A4065053C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E019A61A-5286-440A-B9F1-443A4065053C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E019A61A-5286-440A-B9F1-443A4065053C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C166EACD-49C8-4AC8-8E7F-7C84ADBBDD6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C166EACD-49C8-4AC8-8E7F-7C84ADBBDD6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C166EACD-49C8-4AC8-8E7F-7C84ADBBDD6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C166EACD-49C8-4AC8-8E7F-7C84ADBBDD6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71E33C85-B383-4BE6-8F35-6A915037C1F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71E33C85-B383-4BE6-8F35-6A915037C1F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71E33C85-B383-4BE6-8F35-6A915037C1F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71E33C85-B383-4BE6-8F35-6A915037C1F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87F829F6-5310-4735-9576-A74055F10FD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87F829F6-5310-4735-9576-A74055F10FD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87F829F6-5310-4735-9576-A74055F10FD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87F829F6-5310-4735-9576-A74055F10FD2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1DCF2D8D-1FCE-4947-9CBD-B1649362C533}
+	EndGlobalSection
+EndGlobal

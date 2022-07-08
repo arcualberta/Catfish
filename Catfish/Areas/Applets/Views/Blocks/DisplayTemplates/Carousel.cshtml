@@ -1,0 +1,12 @@
+﻿@model Catfish.Areas.Applets.Models.Blocks.Carousel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{ 
+    var viewData = new ViewDataDictionary(this.ViewData)
+    {
+        { "data-display-format", "Basic" },
+        { "data-interval", 10 }
+    };
+}
+<partial name="Shared/_AppletLoader" view-data="@viewData"/>
+

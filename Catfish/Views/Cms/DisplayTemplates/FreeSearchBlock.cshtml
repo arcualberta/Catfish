@@ -1,0 +1,18 @@
+﻿@model Catfish.Models.Blocks.FreeSearchBlock
+@using Catfish.Core.Models.Solr;
+
+
+
+@{
+    var Results = new List<SolrEntry>();
+}
+
+
+<!-- TODO: Make the following a search form -->
+<form id="freeSearchBlockForm" method="post" action="/api/solr/freetext">
+    <input type="text" name="searchTerm" id="freeSearchBlockTerm" />
+    <input id="freeSearchBlockButton" type="submit" value="Submit" onclick="executeSearch(event)" />
+</form>
+
+<div id="freeSearchBlockResults">
+</div>

@@ -1,0 +1,21 @@
+﻿@model Catfish.Core.Models.Contents.MetadataSet
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+
+<div class="container-fluid">
+    <h5>Metadata Set</h5>
+</div>
+@foreach (var field in Model.Fields)
+{
+    <div class="entity-desc">
+        <B> @field.Name.GetConcatenatedContent(" | ")</B>
+    </div>
+    <div class="entity-desc">
+        <partial name="partial/@field.GetType().Name" model="@field" />
+    </div>
+    <div class="entity-desc">
+        <br />
+    </div>
+}

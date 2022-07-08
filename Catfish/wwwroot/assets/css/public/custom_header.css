@@ -1,0 +1,45 @@
+﻿/********* Stuff for Header CSS Section *************/
+/********* Try not to put this stuff in individual page CSS blocks *************/
+
+/* ARC Logo in header */
+.header-brand {
+    padding-left: 25px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+header .row {
+    border-bottom: 5px solid #40C6DD; /* med blue */
+}
+
+header.site-header.site-header-dark .nav-site .active a {
+    color: white !important;
+}
+
+header.site-header.site-header-dark .nav-site a {
+    color: white !important;
+}
+
+.search-panel {
+    display: none;
+}
+
+.header-arc-logo {
+    max-width: 100%;
+    display: block;
+    align-self: center;
+}
+
+@media screen and (max-width: 767px) {
+    .header-brand .col-md-4 {
+        max-width: 65%;
+        padding-left: 0;
+        padding-bottom: 15px;
+    }
+
+    .header-brand {
+        padding-bottom: 0px;
+    }
+}
+
+/********* END of Stuff for Header CSS Section *************/

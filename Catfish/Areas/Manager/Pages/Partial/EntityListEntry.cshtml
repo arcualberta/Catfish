@@ -1,0 +1,40 @@
+﻿@model Catfish.Core.Models.Contents.ViewModels.ListEntries.EntityListEntry
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService Auth
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@using Catfish.Core.Models;
+@{
+    var id = Model.Id;
+    var modelType = Model.ModelType;
+    // string detailsPage = "/manager/schema/" + Model.Id;
+    string xmlEditorPage = "/manager/schema/edit/" + Model.Id;
+    string collectionContents = "/manager/collectioncontents/" + Model.Id;
+    string editorAppletPage = "/manager/items/edit/?id=" + Model.Id;
+
+    string name = string.IsNullOrEmpty(Model.ConcatenatedName) ? System.Text.RegularExpressions.Regex.Replace(Model.ItemLabel, "<.*?>", String.Empty)  : Model.Name.GetConcatenatedContent(" | ") ;
+
+    }
+<li class="dd-item expanded">
+    <div class="sitemap-item">
+        <div class="handle dd-handle">
+            <i class="fas fa-ellipsis-v"></i>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class=" col-md-10">
+                    @*<a href="@detailsPage">@Model.Name.GetConcatenatedContent(" | ")</a>*@
+                    <a href="@collectionContents">@name</a>
+                </div>
+                <div class=" col-md-2">
+                    @if (Model.IsItem)
+                    {
+                        <a href="@editorAppletPage">Edit Item</a> <span>|</span>
+                    }
+                    <a href="@xmlEditorPage">Edit XML</a>
+                </div>
+            </div>
+        </div>
+        @*<div class="link">
+            <a href="@detailsPage">@Model.Name.GetConcatenatedContent(" | ")</a>
+        </div>*@
+    </div>
+</li>

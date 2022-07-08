@@ -1,0 +1,29 @@
+﻿@model Catfish.Core.Models.Contents.Fields.EmailField
+
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+@if (Model.Exclude)
+    return;
+
+@{
+    var viewData = new Dictionary<string, object>();
+    foreach (var key in ViewData.Keys)
+        viewData.Add(key, ViewData[key]);
+
+    //viewData.Add("pattern", ".+@*.*");
+
+
+    viewData.Add("onblur", "return validateEmail(this); return false;");
+    //viewData.Add("type", "email");
+    //viewData.Add("pattern", @"/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/");
+
+    for (int i = 0; i < Model.Values.Count; ++i)
+    {
+        <div>
+            @Html.HiddenFor(model => model.Values[i].Id)
+            @Html.TextBoxFor(model => Model.Values[i].Value, viewData)
+            <span class="validation-message" style="display:none;color:red;">Email address format is invalid.</span>
+        </div>
+    }
+}

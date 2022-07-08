@@ -1,0 +1,67 @@
+{
+	"managerSideValues": {
+		"itemlistLabels": {},
+
+		"editItemLabels": {
+			"BUTTON_OPTION_LABELS": [
+				"Save",
+				"Edit",
+				"Preview"
+			],
+			"DROPDOWN_BUTTON_LABEL": "Actions",
+			"ACTIVE_OPTION_LABEL": "Edit",
+			"SECTION_LABEL_1": "Name",
+			"SECTION_LABEL_2": "Description",
+			"METADATASET_LABEL": "MetadataSets",
+			"SAVE_SUCCESSFUL_LABEL": "Saved!",
+			"SAVE_FAILED_LABEL": "Failed to Save",
+			"FIELD_REQUIRED_LABEL": "This field is required.",
+			"VALUE_LABEL": "Value",
+			"DELETE_LABEL": "Delete"
+		},
+
+		"editFieldFormLabels": {
+			"SAVE_SUCCESS_LABEL": "Save Successful",
+			"SAVE_FAILED_LABEL": "Failed to Save",
+			"SAVE_FIELD_FORM_BUTTON_LABEL": "Save",
+
+			"FORM_TITLE_LABEL": "Title",
+			"FORM_TITLE_PLACEHOLDER": "Title your form here",
+			"FORM_DESCRIPTION_LABEL": "Description",
+			"FORM_DESCRIPTION_PLACEHOLDER": "Add a description here",
+
+			"FORM_FIELD_LABEL": "Fields",
+			"DEFAULT_FIELD_TITLE": "Field Title",
+			"FIELD_TITLE_PLACEHOLDER": "Title your field here",
+			"FIELD_DESCRIPTION_LABEL": "Description",
+			"FIELD_DESCRIPTION_PLACEHOLDER": "Describe the purpose of this field...",
+			"SETTINGS_LABEL": "Settings",
+
+			"LONG_ANSWER_FORMAT_TEXT_LABEL": "Allow formatted text",
+			"CHOICE_OPTION_LABEL": "Option",
+			"CHOICE_DEFAULT_OPTION_LABEL": "Set as Default Option",
+			"CHOICE_ADDITIONAL_INPUT_LABEL": "Requires Additional Input",
+			"ANY_LABEL": "Any",
+			"ALLOW_MULTIPLE_FILES_LABEL": "Allow multiple files",
+			"WHOLE_NUMBERS_ONLY_LABEL": "Limit to whole numbers only",
+			"REQUIRED_LABEL": "Required",
+			"ADD_DESCRIPTION_LABEL": "Add Description",
+			"REMOVE_DESCRIPTION_LABEL": "Remove Description",
+			"LOADING_LABEL": "Loading..."
+		}
+	},
+
+	"publicSideValues": {
+		"keywordsSearchBlockPublicLabels": {
+			"SEARCH_RESULTS_LABEL": "Search Results",
+			"PREVIOUS_BUTTON_LABEL": "Previous",
+			"NEXT_BUTTON_LABEL": "Next",
+			"TOTAL_RESULTS_LABEL": "Total Results:",
+			"NO_RESULTS_LABEL": "Sorry, no results.",
+			"ERROR_MESSAGE_1_LABEL": "A problem has occurred completing your search.",
+			"ERROR_MESSAGE_2_LABEL": "Please contact ARC for further assistance.",
+			"LOADING_LABEL": "Loading...",
+			"DEFAULT_SEARCH_MESSAGE_LABEL": "Select from the options above to search."
+		}
+	}
+}

@@ -1,0 +1,13 @@
+﻿@model Catfish.Core.Models.Contents.Data.DataItem;
+
+<div class="container">
+    @foreach (var field in Model.Fields)
+    {
+        var viewData = new Dictionary<string, object>();
+        viewData.Add("item-id", ViewData["item-id"]);
+        viewData.Add("data-item-id", Model.Id);
+        <div class="row">
+            @Html.DisplayFor(model => field, field.GetType().ToString(), viewData)
+        </div>
+    }
+</div>

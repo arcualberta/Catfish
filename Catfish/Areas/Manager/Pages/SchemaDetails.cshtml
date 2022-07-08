@@ -1,0 +1,63 @@
+﻿@page "/manager/schema/{id:Guid?}"
+@model Catfish.Areas.Manager.Pages.SchemaPageModel
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@using System.IO;
+@using System.Xml.Linq;
+
+@{
+    XDocument doc = XDocument.Parse(Model.SchemaXml);
+    string formattedString = doc.ToString();
+    formattedString = formattedString.Replace("<", "&lt;").Replace(">", "&gt;").Replace("\n", "<br />").Replace("   ", "&emsp;&emsp;&emsp;").Replace("  ", "&emsp;&emsp;");
+}
+
+<script src="~/manager/assets/js/w3-code-color.js"></script>
+
+<style>
+    #schemaContent {
+        width: 100%;
+        background-color: white;
+        overflow-x: scroll;
+        white-space: nowrap;
+        padding: 10px;
+    }
+</style>
+<div>
+    <div class="top">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">@Localizer.Menu["Schema"]</li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Details"]</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="container-fluid row">
+        @{
+            var suffix = (Model.ActiveBackupId == Guid.Empty) ? "" : "(Backup)";
+        }
+        <h2>@{@(string.IsNullOrWhiteSpace(Model.SchemaName) ? "Schema" : Model.SchemaName)} @suffix</h2>
+        @if (Model.Backups != null && Model.Backups.Any())
+        {
+            <div class="col-md-12" style="margin-left:-15px;">
+            <strong>History: </strong>
+                @{ 
+                    List<string> links = new List<string>();
+                    foreach (var backup in Model.Backups)
+                        links.Add(string.Format("<a style='margin:20px;' href='/manager/schema/{0}?backupId={1}'>{2}</a>", Model.Id, backup.Id, backup.Timestamp));
+
+                    @Html.Raw(string.Join(" | ", links))
+                 }
+            </div>
+        }
+        <div id="schemaContent" class="col-md-12" style="margin-top:10px;">
+            @Html.Raw(formattedString)
+        </div>
+    </div>
+</div>
+
+
+<script>
+    w3CodeColor(document.getElementById("schemaContent"));
+</script>

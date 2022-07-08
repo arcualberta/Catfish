@@ -1,0 +1,7 @@
+﻿@model Catfish.Core.Models.Contents.Fields.DecimalField
+
+<div class="control field-label @Model.FieldLabelCssClass">@Html.DisplayFor(model => model.Name, Model.Name.GetType().ToString())</div>
+
+<div data-model-id="@Model.Id" class="multilingual-input-block field-value @Model.CssClass @Model.FieldValueCssClass">
+    @Html.Raw(string.Join(", ", Model.Values.Select(sd => sd.Value)))
+</div>
