@@ -10,4 +10,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Form\Fields\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CatfishExtensions\CatfishExtensions.csproj" />
+  </ItemGroup>
+
 </Project>
