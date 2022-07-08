@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -18,6 +18,10 @@
     <PackageReference Include="Piranha.Manager" Version="10.1.0" />
     <PackageReference Include="Piranha.Manager.LocalAuth" Version="10.1.0" />
     <PackageReference Include="Piranha.Manager.TinyMCE" Version="10.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Catfish.Web.Extensions\CatfishWebExtensions.csproj" />
   </ItemGroup>
 
 </Project>

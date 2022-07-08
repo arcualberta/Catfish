@@ -43,6 +43,8 @@ builder.AddPiranha(options =>
      */
 });
 
+builder.Services.AddCatfishWebExtensions();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -58,6 +60,7 @@ app.UsePiranha(options =>
     // Build content types
     new ContentTypeBuilder(options.Api)
         .AddAssembly(typeof(Program).Assembly)
+        .AddAssembly(typeof(CatfishWebsite).Assembly)
         .Build()
         .DeleteOrphans();
 
@@ -68,5 +71,7 @@ app.UsePiranha(options =>
     options.UseTinyMCE();
     options.UseIdentity();
 });
+
+app.UseCatfishWebExtensions();
 
 app.Run();
