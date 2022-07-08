@@ -159,7 +159,7 @@ appsettings.test.json
 .vs/
 Catfish/Catfish.Web/wwwroot/uploads/
 
-#Ignorre common Vue intermediate files
+#Ignore common Vue intermediate files
 dist/
 node_modules/
 package-lock.json
