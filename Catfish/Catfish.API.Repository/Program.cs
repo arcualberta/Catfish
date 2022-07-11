@@ -1,15 +1,24 @@
+using Catfish.API.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Adding Catfish extensions
-builder.AddCatfishSqlDbConnection("catfish");
+ConfigurationManager configuration = builder.Configuration;
+builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("catfish")));
+
+//Adding general Catfish extensions
 builder.Services.AddCatfishServices();
+
+//Adding services specific to this project
+builder.Services.AddScoped<IFormService, FormService>();
+
 
 var app = builder.Build();
 

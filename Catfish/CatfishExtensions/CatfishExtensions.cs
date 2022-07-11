@@ -3,15 +3,6 @@ namespace CatfishExtensions
 {
     public static class CatfishExtensions
     {
-        public static WebApplicationBuilder AddCatfishSqlDbConnection(this WebApplicationBuilder builder, string connectionStringName)
-        {
-            ConfigurationManager configuration = builder.Configuration;
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(connectionStringName)));
-
-            return builder;
-        }
-
-
         /// <summary>
         /// Adds catfish extensios to the service collection
         /// </summary>

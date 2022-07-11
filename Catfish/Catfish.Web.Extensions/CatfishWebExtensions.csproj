@@ -19,6 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\SiteTypes\**" />
+    <Content Remove="Models\SiteTypes\**" />
+    <EmbeddedResource Remove="Models\SiteTypes\**" />
+    <None Remove="Models\SiteTypes\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="assets\manager\js\css.js" />
   </ItemGroup>
 

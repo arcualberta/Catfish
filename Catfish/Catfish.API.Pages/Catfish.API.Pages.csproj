@@ -11,6 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Catfish.Web.Extensions\CatfishWebExtensions.csproj" />
+    <ProjectReference Include="..\CatfishExtensions\CatfishExtensions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="appsettings.example.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
