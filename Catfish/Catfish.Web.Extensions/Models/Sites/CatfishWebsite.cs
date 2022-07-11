@@ -2,19 +2,24 @@
 using Piranha.Extend;
 using Piranha.Models;
 using Piranha.Extend.Fields;
+using CatfishWebExtensions.Models.Regions;
 
 namespace CatfishWebExtensions.Models.Sites
 {
-    [SiteType(Title = "Workflow Site")]
-    public class WorkflowSite : SiteContent<WorkflowSite>
+    [SiteType(Title = "Catfish Site")]
+    public class CatfishWebsite : SiteContent<CatfishWebsite>
     {
-        [Region(Title = "Test Field", Display = RegionDisplayMode.Setting)]
-        public TextField TestField { get; set; }
+        [Region(Title = "WebExtensions", Display = RegionDisplayMode.Setting)]
+        public WebSettings WebSettings { get; set; }
 
 
-        public WorkflowSite()
+        [Region(Title = "Workflow", Display = RegionDisplayMode.Setting)]
+        public WorkflowSettings WorkflowSettings { get; set; }
+
+        public CatfishWebsite()
         {
-            TestField = new TextField();
+            WebSettings = new WebSettings();
+            WorkflowSettings = new WorkflowSettings();
         }
 
     }
