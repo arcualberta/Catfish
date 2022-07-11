@@ -1,6 +1,6 @@
 ﻿namespace Catfish.API.Repository.Models.Form.Fields
 {
-    public class TextField: IValueField
+    public class TextField: ValueField
     {
         /// <summary>
         /// Should this text field support multiple langauges?

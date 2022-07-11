@@ -1,6 +1,6 @@
 ﻿namespace Catfish.API.Repository.Models.Form.Fields
 {
-    public class EmailField : IValueField
+    public class EmailField : ValueField
     {
     }
 }

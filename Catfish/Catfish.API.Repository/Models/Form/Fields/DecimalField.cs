@@ -1,6 +1,6 @@
 ﻿namespace Catfish.API.Repository.Models.Form.Fields
 {
-    public class DecimalField : IValueField
+    public class DecimalField : ValueField
     {
     }
 }

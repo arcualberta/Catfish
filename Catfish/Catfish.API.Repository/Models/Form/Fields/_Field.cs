@@ -19,5 +19,12 @@
         /// Field description. Displayed in the rendered form.
         /// </summary>
         public string Description { get; set; } = "";
+
+        public string? ModelType { get; set; }
+
+        public Field()
+        {
+            ModelType = GetType().FullName;
+        }
     }
 }
