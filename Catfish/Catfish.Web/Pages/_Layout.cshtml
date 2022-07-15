@@ -1,6 +1,12 @@
+@using CatfishExtensions.Helpers
+@inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishAppConfig;
+@inject Piranha.IApi _piranhaApi;
+@inject Piranha.Manager.ManagerLocalizer Localizer
 @{
     var version = Piranha.Utils.GetAssemblyVersion(typeof(Piranha.App).Assembly);
     version = version.Substring(0, version.LastIndexOf("."));
+     bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
+     var siteRoot = ConfigHelper.SiteUrl;
 }
 <!doctype html>
 <html lang="en">
@@ -22,7 +28,18 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            @if (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin)
+                    {
+                        <div class="signinout">
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@siteRoot/login?ret=WebApp.Url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
+                            }
+                            
 
+
+                        </div>
+                    }
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav ml-auto">
                     @foreach (var item in (await WebApp.Site.Sitemap.ForUserAsync(User, Auth)).Where(i => !i.IsHidden))

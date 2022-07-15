@@ -4,6 +4,9 @@ using Microsoft.Extensions.FileProviders;
 using Piranha;
 using Piranha.AspNetCore;
 using CatfishWebExtensions;
+using CatfishExtensions.Helpers;
+using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
+using Microsoft.Extensions.Configuration;
 
 public static class CatfishWebExtensionsExtensions
 {
@@ -72,6 +75,9 @@ public static class CatfishWebExtensionsExtensions
             });
         });
 
+
+        //Catfish services
+        services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
         //App.Modules.Manager().Scripts.Add("~/test.js");
 
         // Return the service collection
