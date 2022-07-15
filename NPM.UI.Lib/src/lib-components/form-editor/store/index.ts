@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 import { Guid } from "guid-typescript";
 
-import { Form, Field } from '../../shared/form-models'
+import { Form, Field, FieldType } from '../../shared/form-models'
 
 export const useFormEditorStore = defineStore('FormEditorStore', {
     state: () => ({
@@ -56,7 +56,15 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
                 id: Guid.create().toString() as unknown as Guid,
                 fields: [] as Field[]
             } as Form;
-        }
+        },
+        newField(fieldType: FieldType) {
+            const field = {
+                id: Guid.create().toString() as unknown as Guid,
+                type: fieldType,
+            } as unknown as Field;
+            this.form?.fields.push(field); 
+        },
+
 /*
         setTextValue(id: Guid, value: string) {
             const txt = this.textModels.find(field => field.id === id);

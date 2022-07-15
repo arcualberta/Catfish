@@ -5,7 +5,7 @@
 
     import { useFormEditorStore } from './store';
 
-    //import { Form } from '../shared/form-models';
+    import { FieldType, FieldTypes } from '../shared/form-models';
 
     export default defineComponent({
         name: "FormEditor",
@@ -33,7 +33,12 @@
 
             return {
                 store,
-                newForm: () => store.newForm()
+                newForm: () => store.newForm(),
+                newTextField: () => store.newField(FieldTypes.SingleLine as unknown as FieldType),
+                newParagraph: () => store.newField(FieldTypes.Paragraph as unknown as FieldType),
+                newRitchTextField: () => store.newField(FieldTypes.RichText as unknown as FieldType),
+                newDateField: () => store.newField(FieldTypes.Date as unknown as FieldType),
+                newDateTimeField: () => store.newField(FieldTypes.DateTime as unknown as FieldType),
             }
         }
 
@@ -44,6 +49,11 @@
 <template>
     <h2>Form Editor Component</h2>
     <button @click="newForm">New Form</button>
+    <button @click="newTextField">+ TextField</button>
+    <button @click="newParagraph">+ Paragraph</button>
+    <button @click="newRitchTextField">+ Rich Text</button>
+    <button @click="newDateField">+ Date</button>
+    <button @click="newDateTimeField">+ Date/Time</button>
 
     <hr />
     {{store.form}}

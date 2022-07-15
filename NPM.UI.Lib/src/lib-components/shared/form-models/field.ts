@@ -11,7 +11,7 @@ export interface Field {
     /**
      * Type of the field.
      * */
-    type: FieldTypes;
+    type: typeof FieldTypes;
 
     /**
      * Unique field ID.
@@ -63,30 +63,30 @@ export interface Field {
  * Multi-lingual text field types.
  * */
 export enum MultilingualFieldType {
-    SingleLine,
-    Paragraph,
-    RichText
+    SingleLine = "SingleLine",
+    Paragraph = "Paragraph",
+    RichText = "RichText"
 }
 
 /**
  * Mono-lingual text field types.
  * */
 export enum MonolingualFieldType {
-    Date,
-    DateTime,
-    Decimal,
-    Integer,
-    Email
+    Date = "Date",
+    DateTime = "DateTime",
+    Decimal = "Decimal",
+    Integer = "Integer",
+    Email = "Email"
 }
 
 /**
  * Option field types.
  * */
 export enum OptionFieldType {
-    CheckBoxes,
-    DataList,
-    RadioButtons,
-    DropDown
+    CheckBoxes = "CheckBoxes",
+    DataList = "DataList",
+    RadioButtons = "RadioButtons",
+    DropDown = "DropDown"
 }
 
 /**
@@ -96,6 +96,6 @@ export enum InfoSectionType{
     InfoSection
 }
 
-export const FieldTypes = { MultilingualFieldType, MonolingualFieldType, OptionFieldType, InfoSectionType };
-export type FieldTypes = typeof FieldTypes;
+export const FieldTypes = { ...MultilingualFieldType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
+export type FieldType = typeof FieldTypes;
 
