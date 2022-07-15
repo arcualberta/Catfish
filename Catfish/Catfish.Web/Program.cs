@@ -1,4 +1,6 @@
 
+using CatfishExtensions.Helpers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddPiranha(options =>
@@ -54,6 +56,7 @@ builder.Services.AddAuthentication()
                 options.ClientSecret = googleAuthNSection["Catfish2Oauth-ClientSecret"];
 
             });
+ConfigHelper.Initialize(builder.Configuration);
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

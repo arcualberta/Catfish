@@ -78,6 +78,8 @@ public static class CatfishWebExtensionsExtensions
 
         //Catfish services
         services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
+
+
         //App.Modules.Manager().Scripts.Add("~/test.js");
 
         // Return the service collection
