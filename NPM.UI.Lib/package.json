@@ -1,6 +1,6 @@
 {
   "name": "@arcualberta/catfish-ui",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/arcualberta-catfish-ui.ssr.js",
   "browser": "dist/arcualberta-catfish-ui.esm.js",

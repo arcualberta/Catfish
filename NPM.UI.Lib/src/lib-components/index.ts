@@ -1,9 +1,12 @@
 /* eslint-disable import/prefer-default-export */
 
-/* Shared form models */
-export * as FormModels from './shared/form-models';
+/* Shared form models module */
+export * as FormModels from './components/shared/form-models';
 
-/* search module */
+/* Form Editor component */
+export { default as FormEditor } from './components/form-editor/App.vue';
+
+/* Search module */
 export * as search from './search/';
 
 /* Form module */

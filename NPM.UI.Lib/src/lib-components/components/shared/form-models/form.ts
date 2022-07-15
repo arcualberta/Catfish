@@ -5,7 +5,7 @@ import { Field } from "./field";
  * Form model
  * */
 
-export interface FormModel {
+export interface Form {
     /**
      * Unique field ID.
      * */
