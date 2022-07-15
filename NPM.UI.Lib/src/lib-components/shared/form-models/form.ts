@@ -4,7 +4,8 @@ import { Field } from "./field";
 /**
  * Form model
  * */
-export interface Form {
+
+export interface FormModel {
     /**
      * Unique field ID.
      * */
@@ -25,3 +26,4 @@ export interface Form {
      * */
     fields: Field[];
 }
+

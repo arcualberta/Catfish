@@ -1,6 +1,6 @@
 
-export { Form } from './form';
-export { Field, FieldTypes } from './field';
-export { Option, ExtensionType } from './option';
-export { Text } from './text'
-export { TextCollection } from './textCollection'
+export type { FormModel } from './form';
+export type { Field, FieldTypes } from './field';
+export type { Option, ExtensionType } from './option';
+export type { Text } from './text'
+export type { TextCollection } from './textCollection'
