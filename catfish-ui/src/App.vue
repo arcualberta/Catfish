@@ -5,11 +5,8 @@
 </script>
 
 <template>
-    <div>
-        <nav class="navigationalmenu">
-            <router-link to="/" class="navigation-menu-box">Home</router-link> | 
-            <router-link to="/form-builder" class="navigation-menu-box">Form Builder</router-link>
-        </nav>
+    <div class="header">
+        <router-link to="/" class="navigation-menu-box">Home</router-link>
     </div>
 
     <router-view />

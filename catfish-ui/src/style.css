@@ -27,14 +27,14 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  place-items: baseline;
   min-width: 320px;
   min-height: 100vh;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+    font-size: 3.2em;
+    line-height: 1.1;
 }
 
 button {
@@ -61,10 +61,11 @@ button:focus-visible {
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+    max-width: 1280px;
+    width:100%;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
 }
 
 @media (prefers-color-scheme: light) {
@@ -79,3 +80,16 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.header {
+    background-color:#242424;
+    height: 2rem;
+    border-bottom: solid #808080 1px;
+    padding-top: 0.3rem;
+}
+    .header a {
+        color: white;
+    }
+    .header a:hover {
+        font-weight: bold;
+    }
