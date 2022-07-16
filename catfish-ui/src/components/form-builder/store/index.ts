@@ -64,7 +64,7 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
             } as unknown as Field;
             this.form?.fields.push(field); 
         },
-
+        
 /*
         setTextValue(id: Guid, value: string) {
             const txt = this.textModels.find(field => field.id === id);

@@ -2,4 +2,4 @@
 export * as FormModels from './shared/form-models';
 
 /* Form Editor component */
-export { default as FormEditor } from './form-editor/App.vue';
+export { default as FormEditor } from './form-builder/App.vue';

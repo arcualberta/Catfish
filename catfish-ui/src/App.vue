@@ -8,7 +8,6 @@
     <div class="header">
         <router-link to="/" class="navigation-menu-box">Home</router-link>
     </div>
-
     <router-view />
 </template>
 
