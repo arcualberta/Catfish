@@ -93,7 +93,7 @@ export enum OptionFieldType {
  * Field types that does not take any user input.
  * */
 export enum InfoSectionType{
-    InfoSection
+    InfoSection = "InfoSection"
 }
 
 export const FieldTypes = { ...MultilingualFieldType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };

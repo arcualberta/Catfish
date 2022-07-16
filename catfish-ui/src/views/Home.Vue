@@ -1,6 +1,11 @@
+<script setup lang="ts">
+    import { useRouter } from 'vue-router'
+
+    const router = useRouter();
+    const navigateTo = (path) => { router.push(path); }
+</script>
+
 <template>
-    <h2>Components</h2>
-    <ul>
-        <li><router-link to="/form-builder" class="navigation-menu-box">Form Builder</router-link></li>
-    </ul>
+    <h2 class="component-name">Components</h2>
+    <button @click="navigateTo('/form-builder')">Form Builder</button>
 </template>
