@@ -53,7 +53,7 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
     actions: {
         newForm() {
             this.form = {
-                id: Guid.create().toString() as unknown as Guid,
+                id: Guid.EMPTY as unknown as Guid,
                 fields: [] as Field[]
             } as Form;
         },
@@ -63,6 +63,22 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
                 type: fieldType,
             } as unknown as Field;
             this.form?.fields.push(field); 
+        },
+        saveForm() {
+            if (!this.form) {
+                console.error("Cannot save null form.")
+                return;
+            }
+
+            const newForm = this.form?.id?.toString() === Guid.EMPTY;
+            if (newForm) {
+                console.log("Saving new form.")
+                this.form.id = Guid.create().toString() as unknown as Guid;
+            }
+            else {
+                console.log("Updating existing form.")
+
+            }
         },
         
 /*
