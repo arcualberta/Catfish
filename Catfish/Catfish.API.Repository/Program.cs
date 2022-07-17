@@ -17,7 +17,6 @@ builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(con
 builder.AddCatfishExtensions();
 
 //Adding services specific to this project
-builder.Services.AddScoped<IFormService, FormService>();
 
 
 var app = builder.Build();

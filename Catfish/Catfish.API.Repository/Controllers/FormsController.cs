@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Catfish.API.Repository;
 using Catfish.API.Repository.Models.Form;
 using CatfishExtensions.Constants;
 using Microsoft.AspNetCore.Cors;
@@ -18,29 +17,10 @@ namespace Catfish.API.Repository.Controllers
     public class FormsController : ControllerBase
     {
         private readonly RepoDbContext _context;
-        private readonly IFormService _formService;
 
-        public FormsController(RepoDbContext context, IFormService formService)
+        public FormsController(RepoDbContext context)
         {
             _context = context;
-            _formService = formService;
-        }
-
-        // GET: api/Forms
-        [HttpGet(Routes.Forms.GetFieldTemplates)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Field>))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult> GetFieldTemplates()
-        {
-            try
-            {
-                var fieldTemplates = await _formService.GetTFieldemplates();
-                return new JsonResult(fieldTemplates);
-            }
-            catch(AccessDeniedException)
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
         }
 
 

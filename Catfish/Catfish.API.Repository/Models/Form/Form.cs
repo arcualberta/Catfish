@@ -1,6 +1,8 @@
 ﻿
 
 
+using Newtonsoft.Json;
+
 namespace Catfish.API.Repository.Models.Form
 {
     /// <summary>
@@ -39,7 +41,7 @@ namespace Catfish.API.Repository.Models.Form
         public DateTime Updated { get; set; }
 
         /// <summary>
-        /// Stores the serialized list of field as a JSON string.
+        /// List of fields associated with the form in JSON serialized form.
         /// </summary>
         public string? SerializedFields { get; set; }
 
@@ -47,6 +49,10 @@ namespace Catfish.API.Repository.Models.Form
         /// List of fields associated with the form.
         /// </summary>
         [NotMapped]
-        public IList<Field> Fields { get; set; } = new List<Field>();
+        public IList<object>? Fields 
+        {
+            get => SerializedFields == null ? null : JsonConvert.DeserializeObject<List<object>>(SerializedFields);
+            set => SerializedFields = value == null ? null : JsonConvert.SerializeObject(value);
+        }
     }
 }
