@@ -1,7 +1,6 @@
-﻿
-namespace Catfish.API.Repository
+﻿namespace Catfish.API.Repository
 {
-    public class RepoDbContext: DbContext
+    public class RepoDbContext : DbContext
     {
         public RepoDbContext(DbContextOptions<RepoDbContext> options)
             : base(options)
@@ -9,12 +8,12 @@ namespace Catfish.API.Repository
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
-		{
-			base.OnModelCreating(builder);
+        {
+            base.OnModelCreating(builder);
 
             DbHelper.SetTablePrefix(builder, "CF_Repo_");
-		}
+        }
 
-		public DbSet<Form>? Forms { get; set; }
-	}
+        public DbSet<Form>? Forms { get; set; }
+    }
 }

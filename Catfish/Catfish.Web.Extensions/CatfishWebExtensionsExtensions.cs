@@ -4,6 +4,9 @@ using Microsoft.Extensions.FileProviders;
 using Piranha;
 using Piranha.AspNetCore;
 using CatfishWebExtensions;
+using CatfishExtensions.Helpers;
+using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
+using Microsoft.Extensions.Configuration;
 
 public static class CatfishWebExtensionsExtensions
 {
@@ -71,6 +74,11 @@ public static class CatfishWebExtensionsExtensions
                 policy.RequireClaim(Permissions.CatfishWebExtensionsDelete, Permissions.CatfishWebExtensionsDelete);
             });
         });
+
+
+        //Catfish services
+        services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
+
 
         //App.Modules.Manager().Scripts.Add("~/test.js");
 
