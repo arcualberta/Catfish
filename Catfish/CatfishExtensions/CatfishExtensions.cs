@@ -1,18 +1,19 @@
 ﻿
+using CatfishExtensions.Constants;
+using CatfishExtensions.Helpers;
+
 namespace CatfishExtensions
 {
     public static class CatfishExtensions
     {
-        /// <summary>
-        /// Adds catfish extensios to the service collection
-        /// </summary>
-        /// <param name="serviceCollection">The current service collection</param>
-        /// <param name="dbConnectionString">Optional db connection string. The current service collection</param>
-        /// <returns>The service collection</returns>
-        public static IServiceCollection AddCatfishServices(this IServiceCollection serviceCollection)
+        public static WebApplicationBuilder AddCatfishExtensions(this WebApplicationBuilder builder)
         {
+            ConfigurationManager configuration = builder.Configuration;
+            IServiceCollection services = builder.Services;
 
-            return serviceCollection;
+            CorsHelper.AddPolicies(configuration, services);
+
+            return builder;
         }
 
         /// <summary>
@@ -20,11 +21,12 @@ namespace CatfishExtensions
         /// </summary>
         /// <param name="application">The current web application</param>
         /// <returns>The web application</returns>
-        public static WebApplication UseCatfishExtensions(this WebApplication application)
+        public static WebApplication UseCatfishExtensions(this WebApplication app)
         {
-            //applicationBuilder.Builder.UseCatfishWebExtensions();
+            app.UseCors();
 
-            return application;
+            return app;
         }
+
     }
 }

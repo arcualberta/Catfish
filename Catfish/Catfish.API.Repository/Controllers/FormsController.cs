@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Catfish.API.Repository;
 using Catfish.API.Repository.Models.Form;
+using CatfishExtensions.Constants;
+using Microsoft.AspNetCore.Cors;
 
 namespace Catfish.API.Repository.Controllers
 {
     [Route(Routes.Forms.Root)]
     [ApiController]
+    [EnableCors(CorsPolicyNames.General)]
     public class FormsController : ControllerBase
     {
         private readonly RepoDbContext _context;

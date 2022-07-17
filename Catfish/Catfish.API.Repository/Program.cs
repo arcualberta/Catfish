@@ -14,7 +14,7 @@ ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("catfish")));
 
 //Adding general Catfish extensions
-builder.Services.AddCatfishServices();
+builder.AddCatfishExtensions();
 
 //Adding services specific to this project
 builder.Services.AddScoped<IFormService, FormService>();

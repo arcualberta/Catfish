@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CatfishExtensions.Constants
 {
-    public static class CorsPolicies
+    public static class CorsPolicyNames
     {
-        public static readonly string General = "General";
-        public static readonly string Restricted = "Restricted";
+        public const string General = "General";
+        public const string Restricted = "Restricted";
     }
 }
