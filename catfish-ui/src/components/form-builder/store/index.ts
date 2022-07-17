@@ -7,6 +7,8 @@ import { Form, Field, FieldType } from '../../shared/form-models'
 export const useFormEditorStore = defineStore('FormEditorStore', {
     state: () => ({
         form: null as Form | null,
+        transientMessage: null as string | null,
+        transientMessageClass: null as string | null
     }),
     getters: {
 /*
@@ -93,13 +95,37 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
                         'Content-Type': 'application/json'
                     },
                 })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(JSON.stringify(data))
+                .then(response => {
+                    if (response.ok) {
+                        this.transientMessage = "The form saved successfully"
+                        this.transientMessageClass = "success"
+                    }
+                    else {
+                        this.transientMessageClass = "danger"
+                        switch (response.status) {
+                            case 400:
+                                this.transientMessage = "Bad request. Failed to save the form";
+                                break;
+                            case 404:
+                                this.transientMessage = "Form not found";
+                                break;
+                            case 500:
+                                this.transientMessage = "An internal server error occurred. Failed to save the form"
+                                break;
+                            default:
+                                this.transientMessage = "Unknown error occured. Failed to save the form"
+                                break;
+                        }
+                    }
                 })
                 .catch((error) => {
-                    console.error('Form Save API Error:', error);
+                    this.transientMessage = "Unknown error occurred"
+                    this.transientMessageClass = "danger"
+                    console.error('Form Save API Error:', error)
                 });
+        },
+        clearMessages() {
+            this.transientMessage = null;
         },
         
 /*

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, PropType, computed} from "vue";
+    import { defineComponent, PropType, computed, watch} from "vue";
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
 
@@ -28,8 +28,12 @@
         setup(p) {
             const store = useFormEditorStore(p.piniaInstance);
 
-            if (p.formId) { }
-            console.log(JSON.stringify(store))
+            watch(() => store.transientMessage, async newMessage => {
+                if (newMessage)
+                    setTimeout(() => {
+                        store.clearMessages();
+                    }, 2000)
+            })
 
             return {
                 store,
@@ -46,6 +50,9 @@
 <style scoped src="./styles.css"></style>
 
 <template>
+    <transition name="fade">
+        <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
+    </transition>
     <h2>Form Builder</h2>
     <div class="control">
         <button type="button" class="btn btn-primary" :disabled="hasForm" @click="newForm">New Form</button>

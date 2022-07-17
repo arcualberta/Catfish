@@ -69,7 +69,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!FormExists(id))
                 {
@@ -77,11 +77,11 @@ namespace Catfish.API.Repository.Controllers
                 }
                 else
                 {
-                    throw;
+                    return StatusCode(500);
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Forms
@@ -89,14 +89,29 @@ namespace Catfish.API.Repository.Controllers
         [HttpPost]
         public async Task<ActionResult<Form>> PostForm(Form form)
         {
-          if (_context.Forms == null)
-          {
-              return Problem("Entity set 'RepoDbContext.Forms'  is null.");
-          }
-            _context.Forms.Add(form);
-            await _context.SaveChangesAsync();
+            try
+            {
 
-            return CreatedAtAction("GetForm", new { id = form.Id }, form);
+                if (_context.Forms == null)
+                {
+                    return Problem("Entity set 'RepoDbContext.Forms'  is null.");
+                }
+                _context.Forms.Add(form);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch(Exception)
+            {
+                if (FormExists(form.Id))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    return StatusCode(500);
+                }
+            }
         }
 
         // DELETE: api/Forms/5
