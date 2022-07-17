@@ -13,7 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.API.Authorization",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatfishWebExtensions", "Catfish.Web.Extensions\CatfishWebExtensions.csproj", "{9C196149-0689-4FB5-BE85-43EB45F73AD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatfishExtensions", "CatfishExtensions\CatfishExtensions.csproj", "{B6078F85-008B-4E23-B589-1B06792F7724}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatfishExtensions", "CatfishExtensions\CatfishExtensions.csproj", "{B6078F85-008B-4E23-B589-1B06792F7724}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A9144507-7A6C-4CC2-A9B2-82A6F39E009B}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

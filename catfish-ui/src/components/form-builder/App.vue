@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, PropType, computed} from "vue";
+    import { defineComponent, PropType, computed, watch} from "vue";
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
 
@@ -28,37 +28,52 @@
         setup(p) {
             const store = useFormEditorStore(p.piniaInstance);
 
-            if (p.formId) { }
-            console.log(JSON.stringify(store))
+            watch(() => store.transientMessage, async newMessage => {
+                if (newMessage)
+                    setTimeout(() => {
+                        store.clearMessages();
+                    }, 2000)
+            })
 
             return {
                 store,
                 FieldTypes,
                 newForm: () => store.newForm(),
-                isDisabled: computed(() => !store.form),
+                saveForm: () => store.saveForm(),
+                hasForm: computed(() => store.form ? true : false),
             }
         }
 
     });
 </script>
 
+<style scoped src="./styles.css"></style>
 
 <template>
+    <transition name="fade">
+        <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
+    </transition>
     <h2>Form Builder</h2>
-    <button :disabled="!isDisabled" @click="newForm">New Form</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.SingleLine)">+ TextField</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.Paragraph)">+ Paragraph</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.RichText)">+ Rich Text</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.Date)">+ Date</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.DateTime)">+ Date/Time</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.Decimal)">+ Decimal</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.Integer)">+ Integer</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.Email)">+ Email</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.CheckBoxes)">+ Checkboxes</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.DataList)">+ Data List</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.RadioButtons)">+ Radio Buttons</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.DropDown)">+ Drop Down</button>
-    <button :disabled="isDisabled" @click="store.newField(FieldTypes.InfoSection)">+ Info Section</button>
+    <div class="control">
+        <button type="button" class="btn btn-primary" :disabled="hasForm" @click="newForm">New Form</button>
+        <button type="button" class="btn btn-success" :disabled="!hasForm" @click="saveForm">Save</button>
+    </div>
+    <div class="toolbar">
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.SingleLine)">+ TextField</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.Paragraph)">+ Paragraph</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.RichText)">+ Rich Text</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.Date)">+ Date</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.DateTime)">+ Date/Time</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.Decimal)">+ Decimal</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.Integer)">+ Integer</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.Email)">+ Email</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.CheckBoxes)">+ Checkboxes</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.DataList)">+ Data List</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.RadioButtons)">+ Radio Buttons</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.DropDown)">+ Drop Down</button>
+        <button :disabled="!hasForm" @click="store.newField(FieldTypes.InfoSection)">+ Info Section</button>
+    </div>
     <hr />
     {{store.form}}
 </template>
+

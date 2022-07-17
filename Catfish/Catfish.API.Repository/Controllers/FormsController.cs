@@ -5,39 +5,22 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Catfish.API.Repository;
 using Catfish.API.Repository.Models.Form;
+using CatfishExtensions.Constants;
+using Microsoft.AspNetCore.Cors;
 
 namespace Catfish.API.Repository.Controllers
 {
     [Route(Routes.Forms.Root)]
     [ApiController]
+    [EnableCors(CorsPolicyNames.General)]
     public class FormsController : ControllerBase
     {
         private readonly RepoDbContext _context;
-        private readonly IFormService _formService;
 
-        public FormsController(RepoDbContext context, IFormService formService)
+        public FormsController(RepoDbContext context)
         {
             _context = context;
-            _formService = formService;
-        }
-
-        // GET: api/Forms
-        [HttpGet(Routes.Forms.GetFieldTemplates)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Field>))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult> GetFieldTemplates()
-        {
-            try
-            {
-                var fieldTemplates = await _formService.GetTFieldemplates();
-                return new JsonResult(fieldTemplates);
-            }
-            catch(AccessDeniedException)
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
         }
 
 
@@ -86,7 +69,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!FormExists(id))
                 {
@@ -94,11 +77,11 @@ namespace Catfish.API.Repository.Controllers
                 }
                 else
                 {
-                    throw;
+                    return StatusCode(500);
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Forms
@@ -106,14 +89,29 @@ namespace Catfish.API.Repository.Controllers
         [HttpPost]
         public async Task<ActionResult<Form>> PostForm(Form form)
         {
-          if (_context.Forms == null)
-          {
-              return Problem("Entity set 'RepoDbContext.Forms'  is null.");
-          }
-            _context.Forms.Add(form);
-            await _context.SaveChangesAsync();
+            try
+            {
 
-            return CreatedAtAction("GetForm", new { id = form.Id }, form);
+                if (_context.Forms == null)
+                {
+                    return Problem("Entity set 'RepoDbContext.Forms'  is null.");
+                }
+                _context.Forms.Add(form);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch(Exception)
+            {
+                if (FormExists(form.Id))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    return StatusCode(500);
+                }
+            }
         }
 
         // DELETE: api/Forms/5

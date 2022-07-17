@@ -38,18 +38,22 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    cursor: pointer;
+    transition: border-color 0.25s;
+    margin: 0.2rem;
 }
 button:hover {
   border-color: #646cff;
+}
+button:disabled:hover {
+  border-color: transparent;
 }
 button:focus,
 button:focus-visible {
@@ -93,3 +97,12 @@ button:focus-visible {
     .header a:hover {
         font-weight: bold;
     }
+
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 3s;
+}
+
+.fade-enter, .fade-leave-to  .fade-leave-active below version 2.1.8  {
+    opacity: 0;
+}

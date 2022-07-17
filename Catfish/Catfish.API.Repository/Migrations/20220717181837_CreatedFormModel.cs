@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Catfish.API.Repository.Migrations
 {
-    public partial class CreatedInitialFormModel : Migration
+    public partial class CreatedFormModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
