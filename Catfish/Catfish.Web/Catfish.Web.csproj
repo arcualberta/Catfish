@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Piranha" Version="10.1.0" />
     <PackageReference Include="Piranha.AspNetCore" Version="10.1.0" />
     <PackageReference Include="Piranha.AspNetCore.Identity.SQLite" Version="10.1.0" />
