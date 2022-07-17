@@ -71,14 +71,35 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
             }
 
             const newForm = this.form?.id?.toString() === Guid.EMPTY;
+            let api = "https://localhost:5020/api/forms";
+            let method = "";
             if (newForm) {
                 console.log("Saving new form.")
                 this.form.id = Guid.create().toString() as unknown as Guid;
+                method = "POST";
             }
             else {
                 console.log("Updating existing form.")
-
+                api = `${api}/${this.form.id}`
+                method = "PUT";
             }
+
+            fetch(api,
+                {
+                    body: JSON.stringify(this.form),
+                    method: method,
+                    headers: {
+                        'encType': 'multipart/form-data',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(JSON.stringify(data))
+                })
+                .catch((error) => {
+                    console.error('Form Save API Error:', error);
+                });
         },
         
 /*
