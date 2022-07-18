@@ -21,5 +21,8 @@ export default defineConfig({
             },
         },
     },
-  plugins: [vue()]
+    plugins: [vue()],
+    server: {
+        port: 8080
+    }
 })
