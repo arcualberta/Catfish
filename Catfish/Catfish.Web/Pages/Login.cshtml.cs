@@ -1,3 +1,4 @@
+
 using CatfishExtensions.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -6,12 +7,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Piranha.AspNetCore.Identity.Data;
 using Piranha.Manager.LocalAuth;
 
-namespace CatfishWebExtensions.Pages
+namespace Catfish.Web.Pages
 {
     public class LoginModel : PageModel
     {
         private readonly ISecurity _security;
         private SignInManager<User> _signInManager;
+
         [BindProperty]
         public string Username { get; set; }
         [BindProperty]
@@ -19,7 +21,6 @@ namespace CatfishWebExtensions.Pages
         public string ReturnUrl { get; set; }
         public string ErrorMessage { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
 
         public string GetReturnUrl()
         {
@@ -82,9 +83,8 @@ namespace CatfishWebExtensions.Pages
             this.SetReturnUrl(returnUrl);
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            return Page();
+            return Page(); 
         }
-
 
         /// <summary>
         /// This action handle the external google login.
@@ -92,7 +92,9 @@ namespace CatfishWebExtensions.Pages
         /// <param name="provider"></param>
         /// <param name="returnUrl"></param>
         /// <returns></returns>
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IActionResult> OnPostExternalLoginAsync(string provider, string returnUrl)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (string.IsNullOrEmpty(provider))
                 provider = "Google";
@@ -104,5 +106,6 @@ namespace CatfishWebExtensions.Pages
 
             return new ChallengeResult(provider, properties);
         }
+
     }
 }
