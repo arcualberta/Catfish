@@ -60,9 +60,9 @@ export interface Field {
 }
 
 /**
- * Multi-lingual text field types.
+ * Text input field types, including types applicable for multi-lingual text fields.
  * */
-export enum MultilingualFieldType {
+export enum TextType {
     SingleLine = "SingleLine",
     Paragraph = "Paragraph",
     RichText = "RichText"
@@ -96,6 +96,6 @@ export enum InfoSectionType{
     InfoSection = "InfoSection"
 }
 
-export const FieldTypes = { ...MultilingualFieldType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
+export const FieldTypes = { ...TextType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
 export type FieldType = typeof FieldTypes;
 
