@@ -4,12 +4,13 @@
     import { Guid } from "guid-typescript";
 
     import { useFormEditorStore } from './store';
-
+    import { default as Form } from './components/Form.vue';
     import { FieldType, FieldTypes } from '../shared/form-models';
 
     export default defineComponent({
         name: "FormEditor",
         components: {
+            Form
         },
         props: {
             piniaInstance: {
@@ -75,5 +76,6 @@
     </div>
     <hr />
     {{store.form}}
+    <Form v-if="store.form" :model="store.form" />
 </template>
 

@@ -1,5 +1,6 @@
 import { Guid } from "guid-typescript";
 import { Field } from "./field";
+import { TextCollection } from "./textCollection";
 
 /**
  * Form model
@@ -14,12 +15,12 @@ export interface Form {
     /**
      * Form name. Displayed to identify the form in form listings.
      * */
-    name: string;
+    name: TextCollection;
 
     /**
      * Form description.
      * */
-    description: string | null;
+    description: TextCollection;
 
     /**
      * List of fields in this form.

@@ -3,6 +3,7 @@
  * */
 
 import { Guid } from "guid-typescript"
+import { TextType } from "./field";
 
 export interface Text {
 
@@ -15,6 +16,10 @@ export interface Text {
      * The text string enclosed in this object
      * */
     value: string | null;
+
+    /**
+     * The type of text input taken by this Text object. */
+    textType: TextType | null;
 
     /**
      * Language

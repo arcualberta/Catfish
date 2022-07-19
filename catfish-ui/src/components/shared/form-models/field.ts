@@ -22,7 +22,7 @@ export interface Field {
      * Field name. Displayed in the rendered form. Each Text entry in 
      * the "name" TextCollection represents the name in a given language.
      * */
-    name: TextCollection;
+    title: TextCollection;
 
     /**
      * Field description. Displayed in the rendered form. Each Text entry in 
@@ -60,9 +60,9 @@ export interface Field {
 }
 
 /**
- * Multi-lingual text field types.
+ * Text input field types, including types applicable for multi-lingual text fields.
  * */
-export enum MultilingualFieldType {
+export enum TextType {
     SingleLine = "SingleLine",
     Paragraph = "Paragraph",
     RichText = "RichText"
@@ -96,6 +96,6 @@ export enum InfoSectionType{
     InfoSection = "InfoSection"
 }
 
-export const FieldTypes = { ...MultilingualFieldType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
+export const FieldTypes = { ...TextType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
 export type FieldType = typeof FieldTypes;
 

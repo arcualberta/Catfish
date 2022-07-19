@@ -6,6 +6,7 @@
  * */
 
 import { Guid } from "guid-typescript"
+import { Text } from './text';
 
 export interface TextCollection {
     /**
