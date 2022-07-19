@@ -35,6 +35,12 @@ namespace Catfish.Web.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public IActionResult Logout()
+        {
+            _security.SignOut(_db);
+            return RedirectPermanent(_catfishConfig.GetSiteURL());
+        }
+
         public IActionResult Index()
         {
             return View();
