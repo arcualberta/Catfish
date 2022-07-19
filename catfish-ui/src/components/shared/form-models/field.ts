@@ -22,7 +22,7 @@ export interface Field {
      * Field name. Displayed in the rendered form. Each Text entry in 
      * the "name" TextCollection represents the name in a given language.
      * */
-    name: TextCollection;
+    title: TextCollection;
 
     /**
      * Field description. Displayed in the rendered form. Each Text entry in 

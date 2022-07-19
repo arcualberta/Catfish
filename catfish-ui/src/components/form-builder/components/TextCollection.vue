@@ -1,17 +1,6 @@
-<script lang="ts">import { defineComponent } from "vue";
-
-    import { default as Text } from './Text.vue'
-
-    export default defineComponent({
-        name: "TextCollection",
-        components: {
-            Text
-        }
-    });
- </script>
-
 <script setup lang="ts">
     import { TextCollection, TextType } from '../../shared/form-models';
+    import { default as Text } from './Text.vue'
 
     const props = defineProps<{ model: TextCollection, textType: TextType }>();
 
@@ -20,6 +9,6 @@
 <template>
     <h5>Text Collection</h5>
     {{model.id}}
-    <Text v-for="text in model.values" :key="txt.id" :model="txt" :text-type="textType" />
+    <Text v-for="text in model.values" :key="text.id" :model="text" :text-type="textType" />
 </template>
 

@@ -2,10 +2,13 @@ import { defineStore } from 'pinia';
 
 import { Guid } from "guid-typescript";
 
-import { Form, Field, FieldType } from '../../shared/form-models'
+import { Form, Field, FieldType, OptionFieldType, TextCollection } from '../../shared/form-models'
+
+import { createOption, createTextCollection, isOptionField } from '../../shared/form-helpers'
 
 export const useFormEditorStore = defineStore('FormEditorStore', {
     state: () => ({
+        lang: ["en", "fr"],
         form: null as Form | null,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null
@@ -56,14 +59,24 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
         newForm() {
             this.form = {
                 id: Guid.EMPTY as unknown as Guid,
+                name: createTextCollection(this.lang),
+                description: createTextCollection(this.lang),
                 fields: [] as Field[]
             } as Form;
         },
         newField(fieldType: FieldType) {
+
             const field = {
                 id: Guid.create().toString() as unknown as Guid,
+                title: createTextCollection(this.lang),
+                description: createTextCollection(this.lang),
                 type: fieldType,
             } as unknown as Field;
+
+            if (isOptionField(field)) {
+                field.options = [createOption(this.lang)]
+            }
+
             this.form?.fields.push(field); 
         },
         saveForm() {

@@ -1,33 +1,29 @@
-<script lang="ts">
-    import { defineComponent } from "vue";
-    import { default as TextCollection } from './TextCollection.vue'
-
-    export default defineComponent({
-        name: "Field",
-        components: {
-            TextCollection
-        }
-    });
-</script>
 
 <script setup lang="ts">
-    import { Field } from '../../shared/form-models';
+    import { Field, FieldTypes } from '../../shared/form-models';
+    import { isOptionField } from '../../shared/form-helpers'
+    import { default as TextCollection } from './TextCollection.vue'
+    import { default as Opt } from './Option.vue'
 
     const props = defineProps<{ model: Field }>();
-
+    const isAnOptionField = isOptionField(props.model);
 </script>
 
 <template>
     <h4>{{model.type}}</h4>
     <div>
-        Name:
-        <TextCollection v-if="model.name" :model="model.name" />
+        Title:
+        <TextCollection v-if="model.title" :model="model.title" :text-type="FieldTypes.SingleLine" />
         <button v-else>Set name</button>
     </div>
     <div>
         Description:
-        <TextCollection v-if="model.descrption" :model="model.descrption" />
+        <TextCollection v-if="model.description" :model="model.description" :text-type="FieldTypes.Paragraph" />
         <button v-else>Set description</button>
+    </div>
+    <div v-if="isAnOptionField">
+        Options:
+        <Opt v-for="option in model.options" :key="option.id" :model="option" :option-type="model.type" />
     </div>
 </template>
 

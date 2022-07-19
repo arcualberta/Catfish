@@ -1,33 +1,22 @@
-<script lang="ts">
-    import { defineComponent } from "vue";
+
+<script setup lang="ts">
+    import { Form, FieldTypes } from '../../shared/form-models';
     import { default as Field } from './Field.vue'
     import { default as TextCollection } from './TextCollection.vue'
 
-    export default defineComponent({
-        name: "Form",
-        components: {
-            Field
-        }
-    });
-</script>
-
-<script setup lang="ts">
-    import { Form } from '../../shared/form-models';
-
     const props = defineProps<{ model: Form }>();
-
 </script>
 
 <template>
     <h3>Form properties</h3>
     <div>
         Name:
-        <TextCollection v-if="model.name" :model="model.name" />
+        <TextCollection v-if="model.name" :model="model.name" :text-type="FieldTypes.SingleLine" />
         <button v-else>Set name</button>
     </div>
     <div>
         Description:
-        <TextCollection v-if="model.descrption" :model="model.descrption" />
+        <TextCollection v-if="model.description" :model="model.description" :text-type="FieldTypes.Paragraph" />
         <button v-else>Set description</button>
     </div>
 

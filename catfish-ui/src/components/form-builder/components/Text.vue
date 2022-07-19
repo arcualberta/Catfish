@@ -1,14 +1,7 @@
-<script lang="ts">
-    import { defineComponent } from "vue";
-    import { useFormEditorStore } from '../store';
-
-    export default defineComponent({
-        name: "Text",
-    });
-</script>
 
 <script setup lang="ts">
     import { Text, TextType } from '../../shared/form-models';
+    import { useFormEditorStore } from '../store';
 
     const props = defineProps<{ model: Text, textType: TextType }>();
     const store = useFormEditorStore();
