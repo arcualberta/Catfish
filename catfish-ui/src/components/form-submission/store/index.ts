@@ -8,7 +8,7 @@ import { createOption, createTextCollection, isOptionField } from '../../shared/
 
 export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
     state: () => ({
-        lang: ["en", "fr"],
+        lang: null as string | null,
         form: null as Form | null,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null

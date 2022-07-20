@@ -63,7 +63,7 @@
         <button type="button" class="btn btn-primary" :disabled="!hasForm" @click="submitForm">Submit</button>
     </div>
     <hr />
-    {{store.form}}
+    <!--{{store.form}}-->
     <Form v-if="store.form" :model="store.form" />
 </template>
 

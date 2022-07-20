@@ -1,29 +1,40 @@
 
 <script setup lang="ts">
-    import { Field, FieldTypes } from '../../shared/form-models';
-    import { isOptionField } from '../../shared/form-helpers'
-    import { default as TextCollection } from './TextCollection.vue'
-    import { default as Opt } from './Option.vue'
+    import { Field, FieldType, FieldTypes } from '../../shared/form-models';
+    import { useFormSubmissionStore } from '../store';
+    import * as formHelper from '../../shared/form-helpers'
+    import { default as CheckBoxes } from './CheckBoxes.vue'
+    import { default as DataList } from './DataList.vue'
+    import { default as DropDown } from './DropDown.vue'
+    import { default as RadioButtons } from './RadioButtons.vue'
 
     const props = defineProps<{ model: Field }>();
-    const isAnOptionField = isOptionField(props.model);
+    const store = useFormSubmissionStore();
+
+    const title = formHelper.getFieldTitle(props.model, store.lang)
+    const description = formHelper.getFieldDescription(props.model, store.lang)
+
 </script>
 
 <template>
-    <h4>{{model.type}}</h4>
     <div>
-        Title:
-        <TextCollection v-if="model.title" :model="model.title" :text-type="FieldTypes.SingleLine" />
-        <button v-else>Set name</button>
-    </div>
-    <div>
-        Description:
-        <TextCollection v-if="model.description" :model="model.description" :text-type="FieldTypes.Paragraph" />
-        <button v-else>Set description</button>
-    </div>
-    <div v-if="isAnOptionField">
-        Options:
-        <Opt v-for="option in model.options" :key="option.id" :model="option" :option-type="model.type" />
+        <span class="fieldTitle">{{model.type}} - Title: {{title}}</span>
+        <span class="fieldTitle">Description: {{description}}</span>
+
+        <input type="text" v-if="model.type == FieldTypes.SingleLine" /> 
+
+        <textarea v-if="model.type == FieldTypes.Paragraph" />
+
+        <textarea v-if="model.type === FieldTypes.RichText" />
+
+        <input type="date" v-if="model.type === FieldTypes.Date" />
+
+        <input type="datetime" v-if="model.type === FieldTypes.DateTime" />
+
+        <CheckBoxes :model="model" v-if="model.type === FieldTypes.CheckBoxes" />
+        <DataList :model="model" v-if="model.type === FieldTypes.DataList" />
+        <DropDown :model="model" v-if="model.type === FieldTypes.DropDown" />
+        <RadioButtons :model="model" v-if="model.type === FieldTypes.RadioButtons" />
     </div>
 </template>
 
