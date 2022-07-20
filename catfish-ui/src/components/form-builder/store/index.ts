@@ -59,8 +59,8 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
         newForm() {
             this.form = {
                 id: Guid.EMPTY as unknown as Guid,
-                name: createTextCollection(this.lang),
-                description: createTextCollection(this.lang),
+                name: "",
+                description: "",
                 fields: [] as Field[]
             } as Form;
         },
@@ -114,6 +114,9 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
                         this.transientMessageClass = "success"
                     }
                     else {
+                        if (newForm && this.form)
+                            this.form.id = Guid.EMPTY as unknown as Guid;
+
                         this.transientMessageClass = "danger"
                         switch (response.status) {
                             case 400:
@@ -132,7 +135,10 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
                     }
                 })
                 .catch((error) => {
-                    this.transientMessage = "Unknown error occurred"
+                    if (newForm && this.form)
+                        this.form.id = Guid.EMPTY as unknown as Guid;
+
+                   this.transientMessage = "Unknown error occurred"
                     this.transientMessageClass = "danger"
                     console.error('Form Save API Error:', error)
                 });

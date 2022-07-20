@@ -11,13 +11,11 @@
     <h3>Form properties</h3>
     <div>
         Name:
-        <TextCollection v-if="model.name" :model="model.name" :text-type="FieldTypes.SingleLine" />
-        <button v-else>Set name</button>
+        <input type="text" />
     </div>
     <div>
         Description:
-        <TextCollection v-if="model.description" :model="model.description" :text-type="FieldTypes.Paragraph" />
-        <button v-else>Set description</button>
+        <textarea />
     </div>
 
     <h3>Fields</h3>

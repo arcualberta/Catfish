@@ -8,7 +8,7 @@
     import { FieldType, FieldTypes } from '../shared/form-models';
 
     export default defineComponent({
-        name: "FormEditor",
+        name: "FormBuilder",
         components: {
             Form
         },
