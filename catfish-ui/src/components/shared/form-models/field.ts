@@ -19,14 +19,14 @@ export interface Field {
     id: Guid;
 
     /**
-     * Field name. Displayed in the rendered form. Each Text entry in 
-     * the "name" TextCollection represents the name in a given language.
+     * Field title. Displayed in the rendered form. Each Text entry in 
+     * the "title" TextCollection represents the title in a given language.
      * */
     title: TextCollection;
 
     /**
      * Field description. Displayed in the rendered form. Each Text entry in 
-     * the "name" TextCollection represents the name in a given language.
+     * the "description" TextCollection represents the description in a given language.
      * */
     description: TextCollection | null
 

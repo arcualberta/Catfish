@@ -16,3 +16,9 @@ export function createTextCollection(languages: string[]): TextCollection {
 	return textCollection;
 }
 
+export function getTextValues(container: TextCollection | null, lang: string | null): string[] {
+	if (lang)
+		return container?.values?.filter(txt => txt.lang === lang).map(val => val.value) as string[]
+	else
+		return container?.values?.map(val => val.value) as string[]
+}

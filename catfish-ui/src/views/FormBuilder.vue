@@ -4,9 +4,9 @@
 
     import { getActivePinia } from 'pinia'
 
-    import { FormEditor } from '../components'
+    import { FormBuilder } from '../components'
 </script>
 
 <template>
-    <FormEditor :pinia-instance="getActivePinia()" repository-root="https://localhost:5020/" />
+    <FormBuilder :pinia-instance="getActivePinia()" repository-root="https://localhost:5020/" />
 </template>
