@@ -10,7 +10,7 @@
 </script>
 
 <template>
-    <h4>{{model.type}}</h4>
+    <h5>{{model.type}}</h5>
     <div>
         Title:
         <TextCollection v-if="model.title" :model="model.title" :text-type="FieldTypes.SingleLine" />

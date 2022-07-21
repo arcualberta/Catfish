@@ -8,7 +8,9 @@
 </script>
 
 <template>
-    <h3>Form properties</h3>
+    <div>
+        <h4>Form properties</h4>
+    </div>
     <div>
         Name:
         <input type="text" />

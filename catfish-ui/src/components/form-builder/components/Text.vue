@@ -9,8 +9,15 @@
 </script>
 
 <template>
-    <h6>Text</h6>
-    {{model}}
-    {{textType}}
+    <div v-if="dispLang">
+        <div v-if="textType==='SingleLine'">
+            {{model.lang}}: <span />
+            <input type="text" />
+        </div>
+        <div v-else-if="textType==='Paragraph'">
+            {{model.lang}}: <span />
+            <textarea /> 
+        </div>
+    </div>
 </template>
 
