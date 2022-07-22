@@ -13,11 +13,11 @@
     </div>
     <div>
         Name:
-        <input type="text" />
+        <input type="text" v-model="model.name"  />
     </div>
     <div>
         Description:
-        <textarea />
+        <textarea v-model="model.description"/>
     </div>
 
     <h3>Fields</h3>

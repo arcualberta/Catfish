@@ -1,5 +1,6 @@
 
 <script setup lang="ts">
+    import { ref } from 'vue';
     import { Text, TextType } from '../../shared/form-models';
     import { useFormEditorStore } from '../store';
 
@@ -12,7 +13,7 @@
     <div v-if="dispLang">
         <div v-if="textType==='SingleLine'">
             {{model.lang}}: <span />
-            <input type="text" />
+            <input type="text" v-model="model.value" />
         </div>
         <div v-else-if="textType==='Paragraph'">
             {{model.lang}}: <span />

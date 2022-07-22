@@ -1,3 +1,4 @@
+
 <script setup lang="ts">
     import { TextCollection, TextType } from '../../shared/form-models';
     import { default as Text } from './Text.vue'
