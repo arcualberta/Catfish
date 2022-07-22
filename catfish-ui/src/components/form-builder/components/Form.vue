@@ -8,14 +8,16 @@
 </script>
 
 <template>
-    <h3>Form properties</h3>
+    <div>
+        <h4>Form properties</h4>
+    </div>
     <div>
         Name:
-        <input type="text" />
+        <input type="text" v-model="model.name"  />
     </div>
     <div>
         Description:
-        <textarea />
+        <textarea v-model="model.description"/>
     </div>
 
     <h3>Fields</h3>
