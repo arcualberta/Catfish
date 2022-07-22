@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
     import { TextCollection, TextType } from '../../shared/form-models';
     import { default as Text } from './Text.vue'
@@ -8,6 +7,8 @@
 </script>
 
 <template>
-    <Text v-for="text in model.values" :key="text.id" :model="text" :text-type="textType" :disp-lang="model.values?.length > 1" />
+    <h5>Text Collection</h5>
+    {{model.id}}
+    <Text v-for="text in model.values" :key="text.id" :model="text" :text-type="textType" />
 </template>
 

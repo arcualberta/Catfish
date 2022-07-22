@@ -8,16 +8,16 @@
 </script>
 
 <template>
-    <h3>Form properties</h3>
+    <div>
+        <h4>Form properties</h4>
+    </div>
     <div>
         Name:
-        <TextCollection v-if="model.name" :model="model.name" :text-type="FieldTypes.SingleLine" />
-        <button v-else>Set name</button>
+        <input type="text" v-model="model.name"  />
     </div>
     <div>
         Description:
-        <TextCollection v-if="model.description" :model="model.description" :text-type="FieldTypes.Paragraph" />
-        <button v-else>Set description</button>
+        <textarea v-model="model.description"/>
     </div>
 
     <h3>Fields</h3>
