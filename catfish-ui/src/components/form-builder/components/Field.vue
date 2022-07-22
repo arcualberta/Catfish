@@ -29,24 +29,31 @@
 <template>
     <h5>{{model.type}}</h5>
     <div>
-        Title:
+        <h6>Title:</h6>
         <TextCollection :model="model.title" :text-type="FieldTypes.SingleLine" />
     </div>
     <div>
-        Description:
+        <h6>Description:</h6>
         <TextCollection :model="model.description" :text-type="FieldTypes.Paragraph" />
     </div>
     <div v-if="isAnOptionField">
-        Options:
+        <h6>Options:</h6>
         <!--Display the current list of options-->
-        <div v-for="option in model.options" :key="option.id">
-            <Opt :model="option" :option-type="model.type" />
-            <button class="opt-delete" @click="deleteOption(option.id)">X</button>
+        <div class="display-options">
+            <div v-for="option in model.options" :key="option.id">
+                <Opt :model="option" :option-type="model.type" />
+                <button class="opt-delete" @click="deleteOption(option.id)">X</button>
+                <div style="margin-bottom:15px;" />
+            </div>
         </div>
+        
 
         <!--Allow adding a new option to the list-->
-        <TextCollection :model="newOptionInput" :text-type="FieldTypes.SingleLine" />
-        <button class="opt-add" @click="addOption()">Add</button>
+        <div>
+            <TextCollection :model="newOptionInput" :text-type="FieldTypes.SingleLine" />
+            <button class="add-option" @click="addOption()">+</button>
+        </div>
+        
     </div>
 </template>
 

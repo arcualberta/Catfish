@@ -24,8 +24,8 @@
     const newForm = () => {
         store.form = {
             id: Guid.EMPTY as unknown as Guid,
-            name: "form name",
-            description: "form description",
+            name: "",
+            description: "",
             fields: [] as Field[]
         };
     }
