@@ -15,12 +15,12 @@ export interface Form {
     /**
      * Form name. Displayed to identify the form in form listings.
      * */
-    name: TextCollection;
+    name: string;
 
     /**
      * Form description.
      * */
-    description: TextCollection;
+    description: string;
 
     /**
      * List of fields in this form.

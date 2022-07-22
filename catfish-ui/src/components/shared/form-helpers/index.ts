@@ -1,3 +1,4 @@
-export { createTextCollection } from './textHelper';
+export { createTextCollection, cloneTextCollection, createGuid } from './textHelper';
 export { createOption } from './optionHelper';
-export { isOptionField } from './fieldHelper'
+
+export { isOptionField, getFieldTitle, getFieldDescription } from './fieldHelper'
