@@ -10,9 +10,8 @@
 </script>
 
 <template>
-    <h6>Option</h6>
-    
-    ### {{model}}
-    <br />
+    <span v-for="value in model.optionText.values">
+        <span class="option-values"> {{value.lang}}: {{value.value}} </span>
+    </span>
 </template>
 
