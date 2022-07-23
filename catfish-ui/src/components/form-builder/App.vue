@@ -14,6 +14,9 @@
 
     const store = useFormEditorStore(props.piniaInstance);
 
+    if (props.formId)
+        store.loadForm(props.formId)
+
     watch(() => store.transientMessage, async newMessage => {
         if (newMessage)
             setTimeout(() => {

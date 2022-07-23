@@ -17,7 +17,7 @@
         </div>
         <div v-else-if="textType==='Paragraph'">
             <span class="text-field-lable">{{model.lang}}: </span>
-            <textarea class="field-text-area" />
+            <textarea v-model="model.value" class="field-text-area" />
         </div>
     </div>
     <div v-else>
@@ -25,7 +25,7 @@
             <input type="text" v-model="model.value" class="text-field" />
         </div>
         <div v-else-if="textType==='Paragraph'">
-            <textarea class="field-text-area" />
+            <textarea v-model="model.value" class="field-text-area" />
         </div>
     </div>
 </template>
