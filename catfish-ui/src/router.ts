@@ -17,6 +17,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'newFormSubmission',
         component: () => import('./views/FormSubmission.vue')
     },
+    {
+        path: '/sandbox',
+        name: 'sandbox',
+        component: () => import('./views/Sandbox.vue')
+    },
 ]
 
 const router = createRouter({
