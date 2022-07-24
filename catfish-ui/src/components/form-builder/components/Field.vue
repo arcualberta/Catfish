@@ -45,7 +45,7 @@
             <draggable class="dragArea list-group w-full" :list="model.options">
                 <div v-for="option in model.options" :key="option.id" class="option-entry">
                     <Opt :model="option" :option-type="model.type" />
-                    <button class="opt-delete" @click="deleteOption(option.id)">X</button>
+                    <span><font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteOption(option.id)" class="fa-icon delete" /></span>
                 </div>
             </draggable>
         </div>
@@ -53,7 +53,7 @@
         <!--Allow adding a new option to the list-->
         <div>
             <TextCollection :model="newOptionInput" :text-type="FieldTypes.SingleLine" />
-            <button class="add-option" @click="addOption()">+</button>
+            <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addOption()" class="fa-icon plus add-option"/>
         </div>
         
     </div>

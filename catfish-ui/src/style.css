@@ -145,26 +145,6 @@ button:focus-visible {
     margin-bottom: 15px;
     padding: 5px;
 }
-.add-option {
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 50%;
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    margin-left: 147px;
-    margin-top: 10px;
-    padding-right: 4px;
-    padding-left: 4px;
-    padding-bottom: 20px;
-    padding-top: 1px;
-    text-decoration: none;
-    display: inline;
-    font-size: 14px;
-    cursor: pointer;
-    height: 25px;
-    width: 25px;
-}
 .text-field-lable {
     margin-left: 5%;
     font-weight: bold;
@@ -201,23 +181,30 @@ button:focus-visible {
     min-height:100px;
     margin-bottom:10px;
 }
-.field-delete {
-    float:right;
-    color: #fff;
-    background-color: #dc3545;
-    border-color: #dc3545;
-    margin-top: 10px;
-    margin-right: 5px;
-    display: inline-block;
-    font-weight: 400;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    border: 1px solid transparent;
-    padding: 0.375rem 0.75rem;
-    border-radius: 5px;
-}
 
 .display-options {
     margin-left: 147px;
 }
+
+.fa-icon {
+    margin: 5px 15px;
+    cursor: pointer;
+}
+    .fa-icon.delete {
+        color: #dc3545;
+    }
+    .fa-icon.plus {
+        color: #4CAF50;
+    }
+    .fa-icon.add-option {
+        margin-left: 147px;
+        margin-top: 10px;
+        height: 25px;
+        width: 25px;
+    }
+    .fa-icon.field-delete {
+        float: right;
+        color: #dc3545;
+        height: 25px;
+        width: 25px;
+    }

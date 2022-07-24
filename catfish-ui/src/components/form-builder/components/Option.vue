@@ -14,15 +14,15 @@
 </script>
 
 <template>
-    <div v-if="!editMode">
+    <span v-if="!editMode">
         <span v-for="value in model.optionText.values">
             <span v-if="value.value?.length > 0" class="option-values"> {{value.value}} </span>
         </span>
-        <button @click="editMode = true">Edit</button>
-    </div>
-    <div v-else>
+        <font-awesome-icon icon="fa-solid fa-pen-to-square" @click="editMode = true" class="fa-icon" />
+    </span>
+    <span v-else>
         <TextCollection :model="model.optionText" :text-type="FieldTypes.SingleLine" />
-        <button @click="editMode = false">Done</button>
-    </div>
+        <font-awesome-icon icon="fa-solid fa-circle-check" @click="editMode = false" class="fa-icon delete-button"/>
+    </span>
 </template>
 

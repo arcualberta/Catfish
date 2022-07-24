@@ -33,7 +33,7 @@
     <h3>Fields</h3>
     <draggable class="dragArea list-group w-full" :list="model?.fields">
         <div v-for="field in model?.fields" :key="field.id" class="form-field-border form-field">
-            <button class="field-delete" @click="deleteField(field.id)">Delete</button>
+            <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteField(field.id)" class="fa-icon field-delete" />
             <Field :model="field" />
         </div>
     </draggable>
