@@ -32,7 +32,7 @@
 
     <h3>Fields</h3>
     <draggable class="dragArea list-group w-full" :list="model?.fields">
-        <div v-for="field in model?.fields" :key="field.id" class="form-field-border">
+        <div v-for="field in model?.fields" :key="field.id" class="form-field-border form-field">
             <button class="field-delete" @click="deleteField(field.id)">Delete</button>
             <Field :model="field" />
         </div>

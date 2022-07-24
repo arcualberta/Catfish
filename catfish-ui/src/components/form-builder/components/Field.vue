@@ -2,6 +2,8 @@
 <script setup lang="ts">
     import { ref } from 'vue'
     import { Guid } from "guid-typescript";
+    import { VueDraggableNext as draggable } from 'vue-draggable-next'
+
     import { Field, FieldTypes, TextCollection as TextCollectionModel } from '../../shared/form-models';
     import { isOptionField, createTextCollection, createOption, cloneTextCollection } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
@@ -40,13 +42,13 @@
         <h6>Options:</h6>
         <!--Display the current list of options-->
         <div class="display-options">
-            <div v-for="option in model.options" :key="option.id">
-                <Opt :model="option" :option-type="model.type" />
-                <button class="opt-delete" @click="deleteOption(option.id)">X</button>
-                <div style="margin-bottom:15px;" />
-            </div>
+            <draggable class="dragArea list-group w-full" :list="model.options">
+                <div v-for="option in model.options" :key="option.id" class="option-entry">
+                    <Opt :model="option" :option-type="model.type" />
+                    <button class="opt-delete" @click="deleteOption(option.id)">X</button>
+                </div>
+            </draggable>
         </div>
-        
 
         <!--Allow adding a new option to the list-->
         <div>
@@ -57,3 +59,15 @@
     </div>
 </template>
 
+<style scope>
+    .form-field:hover {
+        background-color: #F0F0F0;
+    }
+    .option-entry{
+        margin-bottom: 15px;
+        padding: 10px;
+    }
+    .option-entry:hover {
+        border: solid 1px #808080;
+    }
+</style>
