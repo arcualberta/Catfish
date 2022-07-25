@@ -73,7 +73,7 @@
         <button :disabled="disabled" @click="newField(FieldTypes.Decimal)">+ Decimal</button>
         <button :disabled="disabled" @click="newField(FieldTypes.Integer)">+ Integer</button>
         <button :disabled="disabled" @click="newField(FieldTypes.Email)">+ Email</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.CheckBoxes)">+ Checkboxes</button>
+        <button :disabled="disabled" @click="newField(FieldTypes.Checkboxes)">+ Checkboxes</button>
         <button :disabled="disabled" @click="newField(FieldTypes.DataList)">+ Data List</button>
         <button :disabled="disabled" @click="newField(FieldTypes.RadioButtons)">+ Radio Buttons</button>
         <button :disabled="disabled" @click="newField(FieldTypes.DropDown)">+ Drop Down</button>

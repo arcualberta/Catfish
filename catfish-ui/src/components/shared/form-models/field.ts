@@ -83,7 +83,7 @@ export enum MonolingualFieldType {
  * Option field types.
  * */
 export enum OptionFieldType {
-    CheckBoxes = "CheckBoxes",
+    Checkboxes = "Checkboxes",
     DataList = "Data List",
     RadioButtons = "Radio Buttons",
     DropDown = "Drop Down"

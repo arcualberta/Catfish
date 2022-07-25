@@ -10,8 +10,8 @@
 </script>
 
 <template>
-    <span v-for="opt in model.options" :key="opt.id" v-if="model.type === FieldTypes.RadioButtons">
-        <input type="radio" /> {{model.type}}
+    <span v-for="opt in model.options" :key="opt.id">
+        <input type="checkbox" /> {{model.type}}
     </span>
 </template>
 
