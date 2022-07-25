@@ -19,11 +19,15 @@ export function createTextCollection(languages: string[]): TextCollection {
 export function createGuid() {
 	return Guid.create().toString() as unknown as Guid;
 }
-export function getTextValues(container: TextCollection | null, lang: string | null): string[] {
+
+export function getTextValue(container: TextCollection | null, lang: string | null, separator?: string | null): string[] | string {
+	let vals: string[]
 	if (lang)
-		return container?.values?.filter(txt => txt.lang === lang).map(val => val.value) as string[]
+		vals = container?.values?.filter(txt => txt.lang === lang).map(val => val.value) as string[]
 	else
-		return container?.values?.map(val => val.value) as string[]
+		vals = container?.values?.map(val => val.value) as string[]
+
+	return separator ? vals.join(separator) : vals
 }
 
 export function cloneTextCollection(textCollection: TextCollection) {
