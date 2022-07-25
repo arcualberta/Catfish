@@ -63,7 +63,7 @@ export interface Field {
  * Text input field types, including types applicable for multi-lingual text fields.
  * */
 export enum TextType {
-    ShortAnswer = "ShortAnswer",
+    ShortAnswer = "Short Answer",
     Paragraph = "Paragraph",
     RichText = "RichText"
 }
@@ -73,7 +73,7 @@ export enum TextType {
  * */
 export enum MonolingualFieldType {
     Date = "Date",
-    DateTime = "DateTime",
+    DateTime = "Date Time",
     Decimal = "Decimal",
     Integer = "Integer",
     Email = "Email"
@@ -84,16 +84,16 @@ export enum MonolingualFieldType {
  * */
 export enum OptionFieldType {
     CheckBoxes = "CheckBoxes",
-    DataList = "DataList",
-    RadioButtons = "RadioButtons",
-    DropDown = "DropDown"
+    DataList = "Data List",
+    RadioButtons = "Radio Buttons",
+    DropDown = "Drop Down"
 }
 
 /**
  * Field types that does not take any user input.
  * */
 export enum InfoSectionType{
-    InfoSection = "InfoSection"
+    InfoSection = "Info Section"
 }
 
 export const FieldTypes = { ...TextType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
