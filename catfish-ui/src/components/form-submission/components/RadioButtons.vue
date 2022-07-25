@@ -11,7 +11,7 @@
 
 <template>
     <span v-for="opt in model.options" :key="opt.id">
-        <input type="radio" /> {{model.type}}
+        <input type="radio" name="model.id" /> {{model.type}}: {{opt.selected}}
     </span>
 </template>
 

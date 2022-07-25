@@ -1,6 +1,7 @@
 
 <script setup lang="ts">
     import { Field, OptionFieldType, FieldTypes } from '../../shared/form-models';
+
     import { useFormSubmissionStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
     import { getTextValue } from '../../shared/form-helpers'
