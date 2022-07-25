@@ -21,16 +21,6 @@
         <span class="fieldTitle">{{model.type}} - Title: {{title}}</span>
         <span class="fieldTitle">Description: {{description}}</span>
 
-        <input type="text" v-if="model.type == FieldTypes.ShortAnswer" /> 
-
-        <textarea v-if="model.type == FieldTypes.Paragraph" />
-
-        <textarea v-if="model.type === FieldTypes.RichText" />
-
-        <input type="date" v-if="model.type === FieldTypes.Date" />
-
-        <input type="datetime" v-if="model.type === FieldTypes.DateTime" />
-
         <CheckBoxes :model="model" v-if="model.type === FieldTypes.CheckBoxes" />
         <DataList :model="model" v-if="model.type === FieldTypes.DataList" />
         <DropDown :model="model" v-if="model.type === FieldTypes.DropDown" />
