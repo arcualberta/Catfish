@@ -63,7 +63,7 @@ export interface Field {
  * Text input field types, including types applicable for multi-lingual text fields.
  * */
 export enum TextType {
-    SingleLine = "SingleLine",
+    ShortAnswer = "ShortAnswer",
     Paragraph = "Paragraph",
     RichText = "RichText"
 }

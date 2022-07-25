@@ -32,7 +32,7 @@
     <h5>{{model.type}}</h5>
     <div>
         <h6>Title:</h6>
-        <TextCollection :model="model.title" :text-type="FieldTypes.SingleLine" />
+        <TextCollection :model="model.title" :text-type="FieldTypes.ShortAnswer" />
     </div>
     <div>
         <h6>Description:</h6>
@@ -52,7 +52,7 @@
 
         <!--Allow adding a new option to the list-->
         <div>
-            <TextCollection :model="newOptionInput" :text-type="FieldTypes.SingleLine" />
+            <TextCollection :model="newOptionInput" :text-type="FieldTypes.ShortAnswer" />
             <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addOption()" class="fa-icon plus add-option"/>
         </div>
         

@@ -21,7 +21,7 @@
         <font-awesome-icon icon="fa-solid fa-pen-to-square" @click="editMode = true" class="fa-icon" />
     </span>
     <span v-else>
-        <TextCollection :model="model.optionText" :text-type="FieldTypes.SingleLine" />
+        <TextCollection :model="model.optionText" :text-type="FieldTypes.ShortAnswer" />
         <font-awesome-icon icon="fa-solid fa-circle-check" @click="editMode = false" class="fa-icon delete-button"/>
     </span>
 </template>

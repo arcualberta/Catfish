@@ -21,7 +21,7 @@
         <span class="fieldTitle">{{model.type}} - Title: {{title}}</span>
         <span class="fieldTitle">Description: {{description}}</span>
 
-        <input type="text" v-if="model.type == FieldTypes.SingleLine" /> 
+        <input type="text" v-if="model.type == FieldTypes.ShortAnswer" /> 
 
         <textarea v-if="model.type == FieldTypes.Paragraph" />
 
