@@ -114,3 +114,97 @@ button:focus-visible {
 .text-field-title {
     margin-top: 60px;
 }
+.opt-delete {
+    background-color: #FF0000;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    margin-left: 5px;
+    margin-top: 10px;
+    padding-right: 4px;
+    padding-left: 4px;
+    padding-bottom: 7px;
+    padding-top: 1px;
+    text-decoration: none;
+    display: inline;
+    font-size: 10px;
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+}
+
+.option-values {
+    background-color: lightgray;
+    border-style: solid;
+    border-radius: 3px;
+    border-color: black;
+    border-width: 1px;
+    margin-right: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+.text-field-lable {
+    margin-left: 5%;
+    font-weight: bold;
+    display: inline-block;
+    min-width: 75px;
+}
+.text-area-lable {
+    margin-left: 5%;
+    font-weight: bold;
+    display: inline-block;
+    min-width: 75px;
+}
+.text-field {
+    width: 350px;
+    height: 26px;
+    margin-bottom: 10px;
+    margin-left:15px;
+}
+.text-area {
+    width: 350px;
+    vertical-align: middle;
+    margin-bottom: 10px;
+}
+.field-text-area {
+    width: 350px;
+    vertical-align: middle;
+    margin-bottom: 10px;
+    margin-left: 15px;
+}
+.form-field-border {
+    border: 1px solid #ccc !important;
+    padding: 30px 16px;
+    border-radius: 16px;
+    min-height:100px;
+    margin-bottom:10px;
+}
+
+.display-options {
+    margin-left: 147px;
+}
+
+.fa-icon {
+    margin: 5px 15px;
+    cursor: pointer;
+}
+    .fa-icon.delete {
+        color: #dc3545;
+    }
+    .fa-icon.plus {
+        color: #4CAF50;
+    }
+    .fa-icon.add-option {
+        margin-left: 147px;
+        margin-top: 10px;
+        height: 25px;
+        width: 25px;
+    }
+    .fa-icon.field-delete {
+        float: right;
+        color: #dc3545;
+        height: 25px;
+        width: 25px;
+    }

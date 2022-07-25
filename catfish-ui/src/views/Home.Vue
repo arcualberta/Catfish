@@ -7,6 +7,13 @@
 
 <template>
     <h2 class="component-name">Components</h2>
-    <button @click="navigateTo('/form-builder')">Form Builder</button>
-    <button @click="navigateTo('/form-submission')">Form Submission</button>
+    <button class="home-link" @click="navigateTo('/sandbox')">Sandbox</button>
+    <button class="home-link" @click="navigateTo('/form-builder')">Form Builder</button>
+    <button class="home-link" @click="navigateTo('/form-submission')">Form Submission</button>
 </template>
+
+<style scoped>
+    .home-link{
+        margin:5px;
+    }
+</style>

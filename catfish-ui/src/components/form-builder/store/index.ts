@@ -14,6 +14,21 @@ export const useFormEditorStore = defineStore('FormEditorStore', {
         transientMessageClass: null as string | null
     }),
     actions: {
+        loadForm(id: Guid) {
+            let api = `https://localhost:5020/api/forms/${id}`;
+            console.log(api)
+            fetch(api, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.form = data;
+                })
+                .catch((error) => {
+                    console.error('Load Form API Error:', error);
+                });
+
+        },
         saveForm() {
             if (!this.form) {
                 console.error("Cannot save null form.")

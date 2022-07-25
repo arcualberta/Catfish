@@ -22,11 +22,10 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             })
                 .then(response => response.json())
                 .then(data => {
-                    //console.log(JSON.stringify(data))
                     this.form = data;
                 })
                 .catch((error) => {
-                    console.error('Item Load API Error:', error);
+                    console.error('Load Form API Error:', error);
                 });
 
         },

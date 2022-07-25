@@ -12,12 +12,20 @@
 <template>
     <div v-if="dispLang">
         <div v-if="textType==='SingleLine'">
-            {{model.lang}}: <span />
-            <input type="text" v-model="model.value" />
+            <span class="text-field-lable">{{model.lang}}: </span>
+            <input type="text" v-model="model.value" class="text-field" />
         </div>
         <div v-else-if="textType==='Paragraph'">
-            {{model.lang}}: <span />
-            <textarea /> 
+            <span class="text-field-lable">{{model.lang}}: </span>
+            <textarea v-model="model.value" class="field-text-area" />
+        </div>
+    </div>
+    <div v-else>
+        <div v-if="textType==='SingleLine'">
+            <input type="text" v-model="model.value" class="text-field" />
+        </div>
+        <div v-else-if="textType==='Paragraph'">
+            <textarea v-model="model.value" class="field-text-area" />
         </div>
     </div>
 </template>
