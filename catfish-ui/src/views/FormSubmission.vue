@@ -4,12 +4,17 @@
 
     import { ref } from 'vue'
     import { getActivePinia } from 'pinia'
+    import { useRoute } from 'vue-router'
+    import { Guid } from 'guid-typescript'
 
     import { FormSubmission } from '../components'
-    const formId = ref('6e1bdee4-9694-c599-624c-7d268d50031a')
+
+    const route = useRoute()
+    const formId = route.params.formId as unknown as Guid
 
 </script>
 
 <template>
-    <FormSubmission :pinia-instance="getActivePinia()" repository-root="https://localhost:5020/" :form-id="formId" />
+    <FormSubmission v-if="formId" :pinia-instance="getActivePinia()" repository-root="https://localhost:5020/" :form-id="formId" />
+    <div v-else>Please append the form ID to the URL.</div>
 </template>

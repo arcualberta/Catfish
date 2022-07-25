@@ -43,6 +43,7 @@ namespace Catfish.API.Repository.Models.Form
         /// <summary>
         /// List of fields associated with the form in JSON serialized form.
         /// </summary>
+        [JsonIgnore]
         public string? SerializedFields { get; set; }
 
         /// <summary>

@@ -14,6 +14,9 @@
 
     const store = useFormEditorStore(props.piniaInstance);
 
+    if (props.formId)
+        store.loadForm(props.formId)
+
     watch(() => store.transientMessage, async newMessage => {
         if (newMessage)
             setTimeout(() => {
@@ -24,8 +27,8 @@
     const newForm = () => {
         store.form = {
             id: Guid.EMPTY as unknown as Guid,
-            name: "form name",
-            description: "form description",
+            name: "",
+            description: "",
             fields: [] as Field[]
         };
     }

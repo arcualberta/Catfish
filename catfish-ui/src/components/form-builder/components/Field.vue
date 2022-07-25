@@ -2,6 +2,8 @@
 <script setup lang="ts">
     import { ref } from 'vue'
     import { Guid } from "guid-typescript";
+    import { VueDraggableNext as draggable } from 'vue-draggable-next'
+
     import { Field, FieldTypes, TextCollection as TextCollectionModel } from '../../shared/form-models';
     import { isOptionField, createTextCollection, createOption, cloneTextCollection } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
@@ -29,24 +31,43 @@
 <template>
     <h5>{{model.type}}</h5>
     <div>
-        Title:
+        <h6>Title:</h6>
         <TextCollection :model="model.title" :text-type="FieldTypes.SingleLine" />
     </div>
     <div>
-        Description:
+        <h6>Description:</h6>
         <TextCollection :model="model.description" :text-type="FieldTypes.Paragraph" />
     </div>
     <div v-if="isAnOptionField">
-        Options:
+        <h6>Options:</h6>
         <!--Display the current list of options-->
-        <div v-for="option in model.options" :key="option.id">
-            <Opt :model="option" :option-type="model.type" />
-            <button class="opt-delete" @click="deleteOption(option.id)">X</button>
+        <div class="display-options">
+            <draggable class="dragArea list-group w-full" :list="model.options">
+                <div v-for="option in model.options" :key="option.id" class="option-entry">
+                    <Opt :model="option" :option-type="model.type" />
+                    <span><font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteOption(option.id)" class="fa-icon delete" /></span>
+                </div>
+            </draggable>
         </div>
 
         <!--Allow adding a new option to the list-->
-        <TextCollection :model="newOptionInput" :text-type="FieldTypes.SingleLine" />
-        <button class="opt-add" @click="addOption()">Add</button>
+        <div>
+            <TextCollection :model="newOptionInput" :text-type="FieldTypes.SingleLine" />
+            <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addOption()" class="fa-icon plus add-option"/>
+        </div>
+        
     </div>
 </template>
 
+<style scope>
+    .form-field:hover {
+        background-color: #F0F0F0;
+    }
+    .option-entry{
+        margin-bottom: 15px;
+        padding: 10px;
+    }
+    .option-entry:hover {
+        border: solid 1px #808080;
+    }
+</style>
