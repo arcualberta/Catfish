@@ -10,7 +10,6 @@
     const store = useFormSubmissionStore();
 
     const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
-    console.log(props.model.type, ' => ', fieldData)
 </script>
 
 <template>
