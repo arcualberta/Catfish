@@ -1,5 +1,7 @@
-import { Field, OptionFieldType, TextType, MonolingualFieldType } from "../form-models";
-import { getTextValue } from './textHelper'
+import { Guid } from "guid-typescript"
+
+import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, Text, Form, FormData } from "../form-models";
+import { getTextValue, createTextCollection } from './textHelper'
 
 /**
  * Is the given field an option field?
@@ -33,3 +35,47 @@ export const getFieldTitle = (field: Field, lang: string | null): string | null 
  */
 export const getFieldDescription = (field: Field, lang: string | null): string | null => getTextValue(field.description, lang)[0]
 
+/**
+ * Creates and returns a FieldData object for a given field. 
+ * @param field
+ * @param lang Language or languages to be supported.
+ */
+export const createFieldData = (field: Field, lang: string[] | string): FieldData => {
+    const fieldData = {
+        id: Guid.create().toString() as unknown as Guid,
+        fieldId: field.id
+    } as FieldData;
+
+    if (isOptionField(field)) {
+        fieldData.selectedOptionIds = []
+
+        if (field.allowCustomOptionValues)
+            fieldData.customOptionValues = []
+
+        if (field.options?.find(opt => opt.isExtendedInput))
+            fieldData.extendedOptionValues = []
+    }
+    else if (isMultilingualTextInputField(field)) {
+        const languages = typeof(lang) == 'string' ? [lang] : lang
+        fieldData.multilingualTextValues = [createTextCollection(languages)]
+    }
+    else if (isMonolingualTextInputField(field)) {
+        fieldData.monolingualTextValues = [{} as Text]
+    }
+
+    return fieldData
+}
+export const createFormData = (form: Form, lang: string | string[]): FormData => {
+    const formData = {
+        id: Guid.create().toString() as unknown as Guid,
+        formId: form.id,
+        fieldData: []
+    } as FormData;
+
+    form.fields?.forEach(field => {
+        const fieldData = createFieldData(field, lang)
+        formData.fieldData.push(fieldData)
+    })
+
+    return formData
+}

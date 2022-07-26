@@ -36,6 +36,9 @@
 
         <!-- Monolingual Text Input field types -->
         <MonolingualTextInput :model="model" v-if="isMonolingualTextInputField" />
+
+        <br />
+        <br />
     </div>
 </template>
 
