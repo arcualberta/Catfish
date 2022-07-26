@@ -3,7 +3,7 @@
     import { Text, TextType } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
 
-    const props = defineProps<{ model: Text, textType: TextType }>();
+    const props = defineProps<{ model: Text, textType: TextType, decimalPoints: number }>();
     const store = useFormSubmissionStore();
 
 </script>

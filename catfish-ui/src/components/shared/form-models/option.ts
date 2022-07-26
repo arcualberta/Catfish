@@ -12,6 +12,11 @@ export interface Option {
     id: Guid;
 
     /**
+     * Is this option selected
+     * */
+    selected: boolean;
+
+    /**
      * The text label of the option, can be presented in multiple languages.
      * */
     optionText: TextCollection;

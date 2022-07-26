@@ -2,23 +2,24 @@
 <script setup lang="ts">
     import { computed } from 'vue'
 
-    import { Field, OptionFieldType, FieldTypes, FieldData } from '../../shared/form-models';
-
+    import { Field, OptionFieldType, FieldTypes } from '../../shared/form-models';
+    import { createText } from '../../shared/form-helpers'
     import { useFormSubmissionStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
-    import { getTextValue } from '../../shared/form-helpers'
 
     const props = defineProps<{ model: Field }>();
     const store = useFormSubmissionStore();
 
     const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
 
+    const addValue = () => fieldData.value.monolingualTextValues?.push(createText(null))
+
 </script>
 
 <template>
-    <select>
-        <option v-for="opt in model.options" :key="opt.id">{{getTextValue(opt.optionText, store.lang)}}</option>
-    </select>
-    {{fieldData}}
+    <div>
+        {{fieldData}}
+    </div>
+    <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" />
 </template>
 
