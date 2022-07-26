@@ -4,7 +4,7 @@
 
     import { Field, OptionFieldType, FieldTypes, FieldData } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
-    import { default as TextCollection } from './TextCollection.vue'
+    import { default as CustomOptions } from './CustomOptions.vue'
 
     const props = defineProps<{ model: Field }>();
     const store = useFormSubmissionStore();
@@ -17,5 +17,6 @@
         <input type="checkbox" v-model="opt.selected" /> {{model.type}}
     </span>
     {{fieldData}}
+    <CustomOptions :model="model" />
 </template>
 

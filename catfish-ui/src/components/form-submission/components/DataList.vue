@@ -4,7 +4,7 @@
 
     import { Field, OptionFieldType, FieldTypes, FieldData } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
-    import { default as TextCollection } from './TextCollection.vue'
+    import { default as CustomOptions } from './CustomOptions.vue'
     import { getTextValue } from '../../shared/form-helpers'
 
     const props = defineProps<{ model: Field }>();
@@ -20,5 +20,6 @@
         <option v-for="opt in model.options" :key="opt.id" :value="getTextValue(opt.optionText, store.lang)" />
     </datalist>
     {{fieldData}}
+    <CustomOptions :model="model" />
 </template>
 
