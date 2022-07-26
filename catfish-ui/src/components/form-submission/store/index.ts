@@ -2,8 +2,7 @@ import { defineStore } from 'pinia';
 
 import { Guid } from "guid-typescript";
 
-import { Form, Field, FieldType, OptionFieldType, TextCollection, FormData } from '../../shared/form-models'
-
+import { Form, FormData } from '../../shared/form-models'
 import { createFormData } from '../../shared/form-helpers'
 
 export const useFormSubmissionStore = defineStore('FormSubmissionStore', {

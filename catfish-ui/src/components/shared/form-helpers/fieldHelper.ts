@@ -48,7 +48,6 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
 
     if (isOptionField(field)) {
         fieldData.selectedOptionIds = []
-        //console.log(field.type, ' => ', fieldData.selectedOptionIds)
 
         if (field.allowCustomOptionValues)
             fieldData.customOptionValues = []
