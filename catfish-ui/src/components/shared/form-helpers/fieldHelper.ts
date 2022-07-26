@@ -48,6 +48,7 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
 
     if (isOptionField(field)) {
         fieldData.selectedOptionIds = []
+        //console.log(field.type, ' => ', fieldData.selectedOptionIds)
 
         if (field.allowCustomOptionValues)
             fieldData.customOptionValues = []
@@ -60,7 +61,7 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
         fieldData.multilingualTextValues = [createTextCollection(languages)]
     }
     else if (isMonolingualTextInputField(field)) {
-        fieldData.monolingualTextValues = [{} as Text]
+        fieldData.monolingualTextValues = [{ id: Guid.create().toString() as unknown as Guid } as Text]
     }
 
     return fieldData
