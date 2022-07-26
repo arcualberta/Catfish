@@ -7,8 +7,6 @@
 </script>
 
 <template>
-    <h5>Text Collection</h5>
-    {{model.id}}
     <Text v-for="text in model.values" :key="text.id" :model="text" :text-type="textType" />
 </template>
 
