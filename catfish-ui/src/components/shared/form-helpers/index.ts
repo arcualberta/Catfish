@@ -1,4 +1,19 @@
-export { createTextCollection, cloneTextCollection, createGuid } from './textHelper';
+export {
+    createTextCollection,
+    cloneTextCollection,
+    createText,
+    createGuid,
+    getTextValue
+} from './textHelper';
+
 export { createOption } from './optionHelper';
 
-export { isOptionField, getFieldTitle, getFieldDescription } from './fieldHelper'
+export {
+    isOptionField,
+    isMultilingualTextInputField,
+    isMonolingualTextInputField,
+    getFieldTitle,
+    getFieldDescription,
+    createFieldData,
+    createFormData
+} from './fieldHelper'

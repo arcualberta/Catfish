@@ -3,17 +3,21 @@
     import { Field, FieldType, FieldTypes } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
     import * as formHelper from '../../shared/form-helpers'
-    import { default as CheckBoxes } from './CheckBoxes.vue'
+
+    import { default as Checkboxes } from './Checkboxes.vue'
     import { default as DataList } from './DataList.vue'
     import { default as DropDown } from './DropDown.vue'
     import { default as RadioButtons } from './RadioButtons.vue'
+    import { default as MultilingualTextInput } from './MultilingualTextInput.vue'
+    import { default as MonolingualTextInput } from './MonolingualTextInput.vue'
 
     const props = defineProps<{ model: Field }>();
     const store = useFormSubmissionStore();
 
     const title = formHelper.getFieldTitle(props.model, store.lang)
     const description = formHelper.getFieldDescription(props.model, store.lang)
-
+    const isMultilingualTextInputField = formHelper.isMultilingualTextInputField(props.model)
+    const isMonolingualTextInputField = formHelper.isMonolingualTextInputField(props.model)
 </script>
 
 <template>
@@ -21,20 +25,20 @@
         <span class="fieldTitle">{{model.type}} - Title: {{title}}</span>
         <span class="fieldTitle">Description: {{description}}</span>
 
-        <input type="text" v-if="model.type == FieldTypes.SingleLine" /> 
-
-        <textarea v-if="model.type == FieldTypes.Paragraph" />
-
-        <textarea v-if="model.type === FieldTypes.RichText" />
-
-        <input type="date" v-if="model.type === FieldTypes.Date" />
-
-        <input type="datetime" v-if="model.type === FieldTypes.DateTime" />
-
-        <CheckBoxes :model="model" v-if="model.type === FieldTypes.CheckBoxes" />
+        <!-- Option field types -->
+        <Checkboxes :model="model" v-if="model.type === FieldTypes.Checkboxes" />
         <DataList :model="model" v-if="model.type === FieldTypes.DataList" />
         <DropDown :model="model" v-if="model.type === FieldTypes.DropDown" />
         <RadioButtons :model="model" v-if="model.type === FieldTypes.RadioButtons" />
+
+        <!-- Multilingual Text Input field types -->
+        <MultilingualTextInput :model="model" v-if="isMultilingualTextInputField" />
+
+        <!-- Monolingual Text Input field types -->
+        <MonolingualTextInput :model="model" v-if="isMonolingualTextInputField" />
+
+        <br />
+        <br />
     </div>
 </template>
 
