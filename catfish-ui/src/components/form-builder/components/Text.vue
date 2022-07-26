@@ -11,7 +11,7 @@
 
 <template>
     <div v-if="dispLang">
-        <div v-if="textType==='SingleLine'">
+        <div v-if="textType===TextType.ShortAnswer">
             <span class="text-field-lable">{{model.lang}}: </span>
             <input type="text" v-model="model.value" class="text-field" />
         </div>
@@ -21,7 +21,7 @@
         </div>
     </div>
     <div v-else>
-        <div v-if="textType==='SingleLine'">
+        <div v-if="textType===TextType.ShortAnswer">
             <input type="text" v-model="model.value" class="text-field" />
         </div>
         <div v-else-if="textType==='Paragraph'">
