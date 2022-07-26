@@ -1,5 +1,5 @@
 /**
- * Base model for form fields.
+ * Model for form fields.
  */
 
 import { Guid } from "guid-typescript"

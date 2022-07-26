@@ -8,24 +8,24 @@ import { TextCollection } from "./textCollection";
 
 export interface Form {
     /**
-     * Unique field ID.
+     * Unique form ID.
      * */
     id: Guid
 
     /**
      * Form name. Displayed to identify the form in form listings.
      * */
-    name: string;
+    name: string
 
     /**
      * Form description.
      * */
-    description: string;
+    description: string
 
     /**
      * List of fields in this form.
      * */
-    fields: Field[];
+    fields: Field[]
 
 }
 
