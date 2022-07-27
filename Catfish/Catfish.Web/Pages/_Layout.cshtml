@@ -35,7 +35,8 @@
                         <div class="signinout">
                             @if (!User.Identity.IsAuthenticated)
                             {
-                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@siteRoot/login?ret=WebApp.Url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
+                                var url = string.Format("{0}/login?ret={1}", siteRoot, WebApp?.CurrentPage?.Permalink);
+                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
                             }else
                                 {
                                     if (User.IsInRole("SysAdmin"))

@@ -59,7 +59,8 @@ builder.Services.AddAuthentication()
 ConfigHelper.Initialize(builder.Configuration);
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+var enableRemoteErrors = builder.Configuration.GetSection("SiteConfig:RemoteErrors").Get<bool>();
+if (app.Environment.IsDevelopment() | enableRemoteErrors)
 {
     app.UseDeveloperExceptionPage();
 }

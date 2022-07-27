@@ -99,8 +99,11 @@ namespace Catfish.Web.Pages
             if (string.IsNullOrEmpty(provider))
                 provider = "Google";
 
-            returnUrl = ConfigHelper.SiteUrl;
-            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", returnUrl);
+            if (string.IsNullOrEmpty(returnUrl))
+                returnUrl = "/";
+
+            //var redirectUrl = string.Format("{0}/Account/ExternalLoginCallback?returnUrl={1}", ConfigHelper.SiteUrl, returnUrl);
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", returnUrl, "https");
 
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl.ToString());
 
