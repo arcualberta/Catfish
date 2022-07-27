@@ -19,7 +19,7 @@
 <template>
     {{fieldData}}
     <div v-for="value in fieldData.monolingualTextValues" :key="value.id" :model="value">
-        <Text :model="value" />
+        <Text :model="value" :text-type="textType"/>
     </div>
     <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" />
 </template>
