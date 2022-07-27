@@ -20,6 +20,7 @@ library.add(faIcons.faCircleCheck)
 library.add(faIcons.faCircleXmark)
 library.add(faIcons.faPenToSquare)
 library.add(faIcons.faCirclePlus)
+library.add(faIcons.faQuestionCircle)
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)

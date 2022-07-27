@@ -10,6 +10,7 @@
     import { default as RadioButtons } from './RadioButtons.vue'
     import { default as MultilingualTextInput } from './MultilingualTextInput.vue'
     import { default as MonolingualTextInput } from './MonolingualTextInput.vue'
+    import { default as TextCollection } from './TextCollection.vue'
 
     const props = defineProps<{ model: Field }>();
     const store = useFormSubmissionStore();
@@ -22,9 +23,16 @@
 
 <template>
     <div>
-        <span class="fieldTitle">{{model.type}} - Title: {{title}}</span>
-        <span class="fieldTitle">Description: {{description}}</span>
+        <!-- print field name and discription-->
+        <div>
+            <span class="text-field-lable">{{title}}</span>:
+            <span class="hovertext" :data-hover="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span>
+        </div>
+        
+        <!--<span class="fieldTitle">{{model.type}} - Title: {{title}}</span>
+        <span class="fieldTitle">Description: {{description}}</span>-->
 
+        <!-- Rendering appropriate user input field-->
         <!-- Option field types -->
         <Checkboxes :model="model" v-if="model.type === FieldTypes.Checkboxes" />
         <DataList :model="model" v-if="model.type === FieldTypes.DataList" />
