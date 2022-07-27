@@ -9,8 +9,12 @@
 </script>
 
 <template>
-    <h6>Text</h6>
-    {{model}}
-    {{textType}}
+    textType{{textType}}
+    <div v-if="textType===TextType.ShortAnswer">
+        <input type="text" v-model="model.value" class="text-field" />
+    </div>
+    <div v-else-if="textType==='Paragraph'">
+        <textarea v-model="model.value" class="field-text-area" />
+    </div>
 </template>
 
