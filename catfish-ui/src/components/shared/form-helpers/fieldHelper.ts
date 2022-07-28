@@ -1,7 +1,7 @@
 import { Guid } from "guid-typescript"
 
 import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, Text, Form, FormData } from "../form-models";
-import { getTextValue, createTextCollection } from './textHelper'
+import { getTextValue, createTextCollection, createText } from './textHelper'
 
 /**
  * Is the given field an option field?
@@ -60,7 +60,7 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
         fieldData.multilingualTextValues = [createTextCollection(languages)]
     }
     else if (isMonolingualTextInputField(field)) {
-        fieldData.monolingualTextValues = [{ id: Guid.create().toString() as unknown as Guid } as Text]
+        fieldData.monolingualTextValues = [createText(null)]
     }
 
     return fieldData
