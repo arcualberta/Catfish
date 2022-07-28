@@ -24,14 +24,11 @@
 <template>
     <div>
         <!-- print field name and discription-->
-        <div>
-            <span class="text-field-lable">{{title}}</span>:
-            <span class="hovertext" :data-hover="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span>
-        </div>
+        <span>
+            <span class="text-field-lable">{{title}} <span class="hovertext" :data-hover="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span></span> :            
+        </span>
         
-        <!--<span class="fieldTitle">{{model.type}} - Title: {{title}}</span>
-        <span class="fieldTitle">Description: {{description}}</span>-->
-
+       
         <!-- Rendering appropriate user input field-->
         <!-- Option field types -->
         <Checkboxes :model="model" v-if="model.type === FieldTypes.Checkboxes" />
@@ -44,7 +41,7 @@
 
         <!-- Monolingual Text Input field types -->
         <MonolingualTextInput :model="model" v-if="isMonolingualTextInputField" />
-
+        
         <br />
         <br />
     </div>

@@ -18,9 +18,9 @@
 </script>
 
 <template>
-    <div v-for=" value in fieldData.multilingualTextValues" :key="value.id" :model="value">
+    <span v-for=" value in fieldData.multilingualTextValues" :key="value.id" :model="value">
         <TextCollection :model="value" :text-type="model.type" />
-    </div>
+    </span>
     <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" />
 </template>
 

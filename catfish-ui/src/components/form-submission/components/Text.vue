@@ -9,24 +9,30 @@
 </script>
 
 <template>
-    <div v-if="textType === FieldTypes.ShortAnswer">
+    <span v-if="textType === FieldTypes.ShortAnswer">
         <input type="text" v-model="model.value" class="text-field" />
-    </div>
-    <div v-else-if="textType === FieldTypes.Paragraph">
+    </span>
+    <span v-else-if="textType === FieldTypes.Paragraph">
         <textarea v-model="model.value" class="field-text-area" />
-    </div>
-    <div v-else-if="textType === FieldTypes.RichText">
+    </span>
+    <span v-else-if="textType === FieldTypes.RichText">
         <!--TODO: render a proper rich-text editor here -->
         <textarea v-model="model.value" class="field-text-area" />
-    </div>
-    <div v-if="textType === FieldTypes.Email">
+    </span>
+    <span v-if="textType === FieldTypes.Email">
         <input type="email" v-model="model.value" class="text-field" />
-    </div>
-    <div v-if="textType === FieldTypes.Integer">
+    </span>
+    <span v-if="textType === FieldTypes.Integer">
         <input type="number" step='1' v-model="model.value" class="text-field" />
-    </div>
-    <div v-if="textType === FieldTypes.Decimal">
+    </span>
+    <span v-if="textType === FieldTypes.Decimal">
         <input type="number" :step='Math.pow(10, -decPoints)' v-model="model.value" class="text-field" />
-    </div>
+    </span>
+    <span v-if="textType === FieldTypes.Date">
+        <input type="date" v-model="model.value" class="text-field" />
+    </span>
+    <span v-if="textType === FieldTypes.DateTime">
+        <input type="datetime" v-model="model.value" class="text-field" />
+    </span>
 </template>
 
