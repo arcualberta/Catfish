@@ -14,7 +14,7 @@
 
 <template>
     <span v-for="opt in model.options" :key="opt.id">
-        <input type="checkbox" v-model="opt.selected" /> {{model.type}}
+        <input type="checkbox" /> {{model.type}}
     </span>
     {{fieldData}}
     <CustomOptions :model="model" />

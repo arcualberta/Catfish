@@ -26,7 +26,7 @@
 <body>
     <nav class="navbar navbar-expand-md navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="~/">Piranha CMS <small>@version</small></a>
+            <a class="navbar-brand" href="~/">ARC CMS <small>3.0</small></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -35,7 +35,8 @@
                         <div class="signinout">
                             @if (!User.Identity.IsAuthenticated)
                             {
-                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@siteRoot/login?ret=WebApp.Url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
+                                var url = string.Format("{0}/login?ret={1}", siteRoot, WebApp?.CurrentPage?.Permalink);
+                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
                             }else
                                 {
                                     if (User.IsInRole("SysAdmin"))
