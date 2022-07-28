@@ -58,18 +58,66 @@
         </article>
         @Html.AntiForgeryToken()
         @if (allowGoogleLogin)
-        {<article class="@externalLoginDivClass">
+        {
+            <article class="@externalLoginDivClass">
                 <div class="grid_6 box login">
                     <div id="socialLoginDiv">
                         <h2>External Login </h2>
                         <hr />
-                        <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
+                        <script>
+                            function handleCredentialResponse(response) {
+                                console.log("Encoded JWT ID token: " + response.credential);
+                                fetch("https://localhost:5010/api/GoogleIdentity", {
+                                    body: JSON.stringify(response.credential),
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                    .then(response => { 
+                                        if(!response.ok)
+                                            console.log('Authentication API call failed')
+                                    })
+                                    .catch((error) => {
+                                        console.error('Authentication API Error:', error);
+                                    });
+                            }
+                            window.onload = function () {
+                                google.accounts.id.initialize({
+                                client_id: "589183038778-u256nlels7v2443j3h1unvtp367f80s4.apps.googleusercontent.com",
+                                callback: handleCredentialResponse
+                                //login_uri: "https://localhost:5010/api/GoogleIdentity"
+                                });
+                                google.accounts.id.renderButton(
+                                document.getElementById("buttonDiv"),
+                                { theme: "outline", size: "large" }  // customization attributes
+                                );
+                                google.accounts.id.prompt(); // also display the One Tap dialog
+                            }
+                        </script>
+                        <div id="buttonDiv"></div> 
+
+@*                        <div id="g_id_onload"
+                            data-client_id="589183038778-u256nlels7v2443j3h1unvtp367f80s4.apps.googleusercontent.com"
+                            data-login_uri="https://localhost:5010/api/GoogleIdentity"
+                            data-auto_prompt="false">
+                        </div>
+                        <div class="g_id_signin"
+                            data-type="standard"
+                            data-size="large"
+                            data-theme="outline"
+                            data-text="sign_in_with"
+                            data-shape="rectangular"
+                            data-logo_alignment="left">
+                        </div>*@
+
+@*                        <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
                             @foreach (var provider in Model.ExternalLogins)
                             {
                                 <input type="submit" class=" btn-primary goggleLoginBtn fa fa-google btn" value="@provider.Name" title="Login using your @provider.DisplayName account" />
                             }
                         </form>
-
+*@
                     </div>
                 </div>
                 <div class="alert alert-warning alert-dismissible allowDomain" style="visibility: hidden; text-align:center;">
