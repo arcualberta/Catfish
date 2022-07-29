@@ -1,6 +1,7 @@
 
 using CatfishExtensions.Helpers;
 using CatfishExtensions.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,13 @@ builder.Services.AddAuthentication()
 
 //Adding general Catfish extensions
 builder.AddCatfishExtensions();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 
 ConfigHelper.Initialize(builder.Configuration);
@@ -72,10 +80,14 @@ if (app.Environment.IsDevelopment() | enableRemoteErrors)
     app.UseDeveloperExceptionPage();
 }
 
+app.UseCookiePolicy();
+app.UseSession();
+
 app.UsePiranha(options =>
 {
     // Initialize Piranha
     App.Init(options.Api);
+
 
     // Build content types
     new ContentTypeBuilder(options.Api)
@@ -92,19 +104,17 @@ app.UsePiranha(options =>
     options.UseIdentity();
 });
 
-
 app.UseCatfishWebExtensions();
 
-app.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity/*, ISession session, IConfiguration configuration*/) =>
+app.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity, IConfiguration configuration, HttpRequest request) =>
 {
     try
     {
         var result = await googleIdentity.GetUserLoginResult(jwt);
-
-        //if (configuration.GetValue<bool>("Google:UseSession"))
-        //{
-        //    session.SetString("LoginResult", JsonSerializer.Serialize(result));
-        //}
+        if (configuration.GetValue<bool>("Google:UseSession"))
+        {
+            request.HttpContext.Session.SetString("LoginResult", JsonSerializer.Serialize(result));
+        }
 
         return result;
     }
