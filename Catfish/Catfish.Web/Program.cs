@@ -95,11 +95,17 @@ app.UsePiranha(options =>
 
 app.UseCatfishWebExtensions();
 
-app.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity) =>
+app.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity/*, ISession session, IConfiguration configuration*/) =>
 {
     try
     {
         var result = await googleIdentity.GetUserLoginResult(jwt);
+
+        //if (configuration.GetValue<bool>("Google:UseSession"))
+        //{
+        //    session.SetString("LoginResult", JsonSerializer.Serialize(result));
+        //}
+
         return result;
     }
     catch (Exception ex)

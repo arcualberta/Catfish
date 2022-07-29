@@ -11,6 +11,7 @@ global using Piranha.Models;
 global using Piranha.Extend;
 global using Piranha.Extend.Fields;
 global using Piranha.Extend.Blocks;
+global using System.Text.Json;
 
 
 //Shared project/NuGet namespaces
