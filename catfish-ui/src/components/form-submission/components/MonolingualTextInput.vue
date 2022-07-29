@@ -19,12 +19,10 @@
 <template>
     <span v-for="value in fieldData.monolingualTextValues" :key="value.id" :model="value">
         <Text :model="value" :text-type="model.type"/>
-        <br />
-        <br />
     </span>
     
         <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" style="margin-top: -45px; margin-left: 570px;"/>
-    
+    <br />
     
 </template>
 

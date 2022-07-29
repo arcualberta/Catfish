@@ -7,7 +7,10 @@
     const description = formHelper.getFieldDescription(props.model, store.lang)
 </script>
 <template>
-    model:{{JSON.stringify(model)}}
-    <div v-for="(txt, index) in description" :key="index" v-html="txt.value" />
+    <div>
+        <br />
+        <div v-html="description" class="alert alert-info" />
+    </div>
+    
 
 </template>

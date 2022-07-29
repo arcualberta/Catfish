@@ -146,21 +146,21 @@ button:focus-visible {
     padding: 5px;
 }
 .text-field-lable {
-    margin-left: 5%;
+    margin-left: 50px;
     font-weight: bold;
     display: inline-block;
-    min-width: 75px;
+    /*min-width: 150px;*/
 }
 .text-area-lable {
-    margin-left: 5%;
+    margin-left: 50px;
     font-weight: bold;
     display: inline-block;
-    min-width: 75px;
+    /*min-width: 150px;*/
 }
 .text-field {
     width: 350px;
     height: 30px;
-    /*margin-bottom: 40px;*/
+    margin-bottom: 30px;
     margin-left: 210px;
     margin-top: -25px;
     display:block;
