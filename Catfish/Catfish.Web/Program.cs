@@ -62,13 +62,6 @@ builder.Services.AddAuthentication()
 
 //Adding general Catfish extensions
 builder.AddCatfishExtensions();
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 
 
 ConfigHelper.Initialize(builder.Configuration);
@@ -105,23 +98,5 @@ app.UsePiranha(options =>
 });
 
 app.UseCatfishWebExtensions();
-
-////app.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity, IConfiguration configuration, HttpRequest request) =>
-////{
-////    try
-////    {
-////        var result = await googleIdentity.GetUserLoginResult(jwt);
-////        if (configuration.GetValue<bool>("Google:UseSession"))
-////        {
-////            request.HttpContext.Session.SetString("LoginResult", JsonSerializer.Serialize(result));
-////        }
-
-////        return result;
-////    }
-////    catch (Exception ex)
-////    {
-////        return new LoginResult();
-////    }
-////});
 
 app.Run();
