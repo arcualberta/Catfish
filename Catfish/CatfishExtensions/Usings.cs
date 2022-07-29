@@ -15,3 +15,6 @@ global using System.Text.Json.Serialization;
 
 //Project namespaces
 global using CatfishExtensions.Interfaces;
+global using CatfishExtensions.Services;
+global using CatfishExtensions.Models;
+global using CatfishExtensions.Exceptions;

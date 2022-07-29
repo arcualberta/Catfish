@@ -1,5 +1,6 @@
 ﻿
-namespace Catfish.API.Authorization.Services
+
+namespace CatfishExtensions.Services
 {
     public class GoogleIdentity : IGoogleIdentity
     {
@@ -42,12 +43,6 @@ namespace Catfish.API.Authorization.Services
                 Email = token?.Payload.FirstOrDefault(pair => pair.Key == "email").Value as string,
                 Name = token?.Payload.FirstOrDefault(pair => pair.Key == "name").Value as string
             };
-
-            //TODO:
-            //  check existance of the user,
-            //  create a new user-record if necessary,
-            //  and retrieve roles.
-            //
 
             return result;
         }

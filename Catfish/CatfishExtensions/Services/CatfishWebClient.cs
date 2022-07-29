@@ -3,7 +3,7 @@
 
 namespace CatfishExtensions.Services
 {
-    internal class CatfishWebClient : ICatfishWebClient
+    public class CatfishWebClient : ICatfishWebClient
     {
         private static readonly HttpClient _httpClient = new HttpClient();
         public Task<HttpResponseMessage> Get(string url)

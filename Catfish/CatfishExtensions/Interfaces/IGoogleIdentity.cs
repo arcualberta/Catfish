@@ -1,4 +1,4 @@
-﻿namespace Catfish.API.Authorization.Interfaces
+﻿namespace CatfishExtensions.Interfaces
 {
     public interface IGoogleIdentity
     {

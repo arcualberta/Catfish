@@ -12,6 +12,7 @@ namespace CatfishExtensions
 
             services.AddSingleton<ICatfishWebClient, CatfishWebClient>();
             services.AddScoped<IJwtProcessor, JwtProcessor>();
+            services.AddScoped<IGoogleIdentity, GoogleIdentity > ();
 
             return builder;
         }

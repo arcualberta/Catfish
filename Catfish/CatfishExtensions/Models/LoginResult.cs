@@ -1,4 +1,4 @@
-﻿namespace Catfish.API.Authorization.Models
+﻿namespace CatfishExtensions.Models
 {
     public class LoginResult
     {

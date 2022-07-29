@@ -21,22 +21,6 @@ namespace Catfish.API.Authorization.Controllers
         {
             try
             {
-                //var handler = new JwtSecurityTokenHandler();
-                //var token = handler.ReadJwtToken(jwt);
-                //var issuer = token.Issuer;
-
-                ////var publicKeyAPI = "https://www.googleapis.com/oauth2/v1/certs"; //PEM
-                //var publicKeyAPI = "https://www.googleapis.com/oauth2/v3/certs"; //JWK
-                //var response = await _catfishWebClient.Get(publicKeyAPI);
-                //var key = await response.Content.ReadAsStringAsync();
-
-                //var status = _jwtProcessor.ReadToken(jwt, out JwtSecurityToken? token, key);
-
-                //if(token != null)
-                //{
-                //    var issuer = token.Issuer;
-                //}
-
                 var result = await _googleIdentity.GetUserLoginResult(jwt);
                 return result;
             }

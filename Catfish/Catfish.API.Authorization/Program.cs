@@ -12,7 +12,6 @@ builder.Services.AddSwaggerGen();
 builder.AddCatfishExtensions();
 
 //Adding project-specific services
-builder.Services.AddScoped<IGoogleIdentity, GoogleIdentity>();
 
 var app = builder.Build();
 

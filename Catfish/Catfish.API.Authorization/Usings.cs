@@ -16,8 +16,6 @@ global using CatfishExtensions.Constants;
 global using CatfishExtensions.Helpers;
 global using CatfishExtensions.Interfaces;
 global using CatfishExtensions.Exceptions;
+global using CatfishExtensions.Models;
 
 //Project namespaces
-global using Catfish.API.Authorization.Interfaces;
-global using Catfish.API.Authorization.Services;
-global using Catfish.API.Authorization.Models;
