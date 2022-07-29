@@ -15,8 +15,10 @@ global using System.Text.Json;
 
 
 //Shared project/NuGet namespaces
+global using CatfishWebExtensions;
 global using CatfishWebExtensions.Models.Sites;
 global using CatfishExtensions;
+global using CatfishExtensions.Helpers;
 global using CatfishExtensions.Models;
 
 

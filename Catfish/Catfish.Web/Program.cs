@@ -1,7 +1,4 @@
 
-using CatfishExtensions.Helpers;
-using CatfishExtensions.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
