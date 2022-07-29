@@ -1,5 +1,7 @@
 
 using CatfishExtensions.Helpers;
+using CatfishExtensions.Interfaces;
+using CatfishExtensions.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,7 @@ namespace Catfish.Web.Pages
     {
         private readonly ISecurity _security;
         private SignInManager<User> _signInManager;
+        private readonly IGoogleIdentity _googleIdentity;
 
         [BindProperty]
         public string Username { get; set; }
@@ -31,10 +34,11 @@ namespace Catfish.Web.Pages
         {
             ReturnUrl = value;
         }
-        public LoginModel(ISecurity security, SignInManager<User> signInManager) : base()
+        public LoginModel(ISecurity security, SignInManager<User> signInManager, IGoogleIdentity googleIdentity) : base()
         {
             _security = security;
             _signInManager = signInManager;
+            _googleIdentity = googleIdentity;
 
         }
 
@@ -52,8 +56,6 @@ namespace Catfish.Web.Pages
                 if (!string.IsNullOrEmpty(ret) && (ret.StartsWith("/changepassword") || ret.StartsWith("/forgotPassword")))
                     ret = "";
 
-
-
                 if (ModelState.IsValid && await _security.SignIn(HttpContext, Username, Password))
                     return new RedirectResult(ConfigHelper.SiteUrl);
                 else
@@ -67,6 +69,7 @@ namespace Catfish.Web.Pages
             }
             return Page();
         }
+
 
         /// <summary>
         /// When someone click on the login button will this method call. Then after this method will check the wether system configuration allows
@@ -86,6 +89,12 @@ namespace Catfish.Web.Pages
             return Page(); 
         }
 
+
+
+
+
+
+/*
         /// <summary>
         /// This action handle the external google login.
         /// </summary>
@@ -109,6 +118,6 @@ namespace Catfish.Web.Pages
 
             return new ChallengeResult(provider, properties);
         }
-
+*/
     }
 }

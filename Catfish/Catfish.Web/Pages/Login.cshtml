@@ -67,7 +67,8 @@
                         <script>
                             function handleCredentialResponse(response) {
                                 console.log("Encoded JWT ID token: " + response.credential);
-                                fetch("https://localhost:5010/api/GoogleIdentity", {
+                                //fetch("https://localhost:5010/api/GoogleIdentity", {
+                                fetch("https://localhost:5000/google", {
                                     body: JSON.stringify(response.credential),
                                     method: 'POST',
                                     headers: {
@@ -103,7 +104,8 @@
                         </script>
                         <div id="buttonDiv"></div> 
 
-@*                        <div id="g_id_onload"
+@*
+                        <div id="g_id_onload"
                             data-client_id="589183038778-u256nlels7v2443j3h1unvtp367f80s4.apps.googleusercontent.com"
                             data-login_uri="https://localhost:5010/api/GoogleIdentity"
                             data-auto_prompt="false">
@@ -115,7 +117,9 @@
                             data-text="sign_in_with"
                             data-shape="rectangular"
                             data-logo_alignment="left">
-                        </div>*@
+                        </div>
+*@
+
 
 @*                        <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
                             @foreach (var provider in Model.ExternalLogins)

@@ -1,5 +1,6 @@
 
 using CatfishExtensions.Helpers;
+using CatfishExtensions.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,12 @@ builder.Services.AddAuthentication()
                 options.ClientSecret = googleAuthNSection["Catfish2Oauth-ClientSecret"];
 
             });
+
+
+//Adding general Catfish extensions
+builder.AddCatfishExtensions();
+
+
 ConfigHelper.Initialize(builder.Configuration);
 var app = builder.Build();
 
@@ -85,6 +92,20 @@ app.UsePiranha(options =>
     options.UseIdentity();
 });
 
+
 app.UseCatfishWebExtensions();
+
+app.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity) =>
+{
+    try
+    {
+        var result = await googleIdentity.GetUserLoginResult(jwt);
+        return result;
+    }
+    catch (Exception ex)
+    {
+        return new LoginResult();
+    }
+});
 
 app.Run();
