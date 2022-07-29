@@ -1,7 +1,4 @@
 ﻿
-using CatfishExtensions.Constants;
-using CatfishExtensions.Helpers;
-
 namespace CatfishExtensions
 {
     public static class CatfishExtensions
@@ -12,6 +9,9 @@ namespace CatfishExtensions
             IServiceCollection services = builder.Services;
 
             CorsHelper.AddPolicies(configuration, services);
+
+            services.AddSingleton<ICatfishWebClient, CatfishWebClient>();
+            services.AddScoped<IJwtProcessor, JwtProcessor>();
 
             return builder;
         }

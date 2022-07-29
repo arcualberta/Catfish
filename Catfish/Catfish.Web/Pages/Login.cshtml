@@ -75,8 +75,14 @@
                                     }
                                 })
                                     .then(response => { 
-                                        if(!response.ok)
+                                        if (!response.ok)
                                             console.log('Authentication API call failed')
+                                        else
+                                            return response.json();
+                                    })
+                                    .then(data => {
+                                        console.log('Login Result:')
+                                        console.log(JSON.stringify(data))
                                     })
                                     .catch((error) => {
                                         console.error('Authentication API Error:', error);
