@@ -7,6 +7,8 @@ using CatfishWebExtensions;
 using CatfishExtensions.Helpers;
 using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
 using Microsoft.Extensions.Configuration;
+using CatfishExtensions.Models;
+using Microsoft.AspNetCore.Http;
 
 public static class CatfishWebExtensionsExtensions
 {
@@ -97,6 +99,25 @@ public static class CatfishWebExtensionsExtensions
         App.Modules.Manager().Scripts
            .Add("~/manager/js/css.js");
 
+        //Google Login
+        (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity, IConfiguration configuration, HttpRequest request) =>
+        {
+            try
+            {
+                var result = await googleIdentity.GetUserLoginResult(jwt);
+                if (configuration.GetValue<bool>("Google:UseSession"))
+                {
+                    request.HttpContext.Session.SetString("LoginResult", JsonSerializer.Serialize(result));
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new LoginResult();
+            }
+        });
+
         return builder
             .UseStaticFiles(new StaticFileOptions
             {
@@ -125,4 +146,5 @@ public static class CatfishWebExtensionsExtensions
     {
         return modules.Get<Module>();
     }
+
 }

@@ -106,22 +106,22 @@ app.UsePiranha(options =>
 
 app.UseCatfishWebExtensions();
 
-app.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity, IConfiguration configuration, HttpRequest request) =>
-{
-    try
-    {
-        var result = await googleIdentity.GetUserLoginResult(jwt);
-        if (configuration.GetValue<bool>("Google:UseSession"))
-        {
-            request.HttpContext.Session.SetString("LoginResult", JsonSerializer.Serialize(result));
-        }
+////app.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity, IConfiguration configuration, HttpRequest request) =>
+////{
+////    try
+////    {
+////        var result = await googleIdentity.GetUserLoginResult(jwt);
+////        if (configuration.GetValue<bool>("Google:UseSession"))
+////        {
+////            request.HttpContext.Session.SetString("LoginResult", JsonSerializer.Serialize(result));
+////        }
 
-        return result;
-    }
-    catch (Exception ex)
-    {
-        return new LoginResult();
-    }
-});
+////        return result;
+////    }
+////    catch (Exception ex)
+////    {
+////        return new LoginResult();
+////    }
+////});
 
 app.Run();
