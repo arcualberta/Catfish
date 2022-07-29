@@ -1,0 +1,52 @@
+﻿@page "/login"
+
+@model CatfishWebExtensions.Pages.LoginModel
+@{
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @Model.ErrorMessage
+    </div>
+}
+
+<script>
+    function handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+        //fetch("https://localhost:5010/api/GoogleIdentity", {
+        fetch("https://localhost:5000/google", {
+            body: JSON.stringify(response.credential),
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => { 
+                if (!response.ok)
+                    console.log('Authentication API call failed')
+                else
+                    return response.json();
+            })
+            .then(data => {
+                console.log('Login Result:')
+                console.log(JSON.stringify(data))
+            })
+            .catch((error) => {
+                console.error('Authentication API Error:', error);
+            });
+    }
+    window.onload = function () {
+        google.accounts.id.initialize({
+        client_id: "589183038778-u256nlels7v2443j3h1unvtp367f80s4.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+        //login_uri: "https://localhost:5010/api/GoogleIdentity"
+        });
+        google.accounts.id.renderButton(
+        document.getElementById("buttonDiv"),
+        { theme: "outline", size: "large" }  // customization attributes
+        );
+        google.accounts.id.prompt(); // also display the One Tap dialog
+    }
+</script>
+<div id="buttonDiv"></div> 

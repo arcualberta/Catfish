@@ -16,30 +16,6 @@ namespace CatfishWebExtensions
         /// <summary>
         /// Adds the CatfishWebExtensions module.
         /// </summary>
-        /// <param name="serviceBuilder"></param>
-        /// <returns></returns>
-        public static PiranhaServiceBuilder UseCatfishWebExtensions(this PiranhaServiceBuilder serviceBuilder)
-        {
-            serviceBuilder.Services.AddCatfishWebExtensions();
-
-            return serviceBuilder;
-        }
-
-        /// <summary>
-        /// Uses the CatfishWebExtensions module.
-        /// </summary>
-        /// <param name="applicationBuilder">The current application builder</param>
-        /// <returns>The builder</returns>
-        public static PiranhaApplicationBuilder UseCatfishWebExtensions(this PiranhaApplicationBuilder applicationBuilder)
-        {
-            applicationBuilder.Builder.UseCatfishWebExtensions();
-
-            return applicationBuilder;
-        }
-
-        /// <summary>
-        /// Adds the CatfishWebExtensions module.
-        /// </summary>
         /// <param name="services">The current service collection</param>
         /// <returns>The services</returns>
         public static IServiceCollection AddCatfishWebExtensions(this IServiceCollection services)
@@ -81,6 +57,7 @@ namespace CatfishWebExtensions
 
             //Catfish services
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
+            services.AddScoped<ICatfishUserManager, CatfishUserManager>();
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -108,11 +85,14 @@ namespace CatfishWebExtensions
                .Add("~/manager/js/css.js");
 
             //Google Login
-            (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity, IConfiguration configuration, HttpRequest request) =>
+            (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity, IConfiguration configuration, HttpRequest request, ICatfishUserManager catfishUserManager) =>
             {
                 try
                 {
                     var result = await googleIdentity.GetUserLoginResult(jwt);
+
+                    var user = await catfishUserManager.ProcessExternalLogin(result);
+
                     if (configuration.GetValue<bool>("Google:UseSession"))
                     {
                         request.HttpContext.Session.SetString("LoginResult", JsonSerializer.Serialize(result));

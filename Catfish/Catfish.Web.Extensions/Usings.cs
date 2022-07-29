@@ -2,6 +2,11 @@
 global using Piranha;
 global using Piranha.Extend;
 global using Piranha.Extend.Fields;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Mvc.RazorPages;
+global using Piranha.AspNetCore.Identity.Data;
+global using Piranha.Manager.LocalAuth;
+
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
@@ -21,5 +26,8 @@ global using CatfishExtensions.Helpers;
 global using CatfishExtensions.Interfaces;
 global using CatfishExtensions.Services;
 global using CatfishExtensions.Exceptions;
+global using CatfishExtensions.Models;
 
 //Project namespaces
+global using CatfishWebExtensions.Interfaces;
+global using CatfishWebExtensions.Services;

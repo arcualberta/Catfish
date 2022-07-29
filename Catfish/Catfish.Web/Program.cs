@@ -21,9 +21,8 @@ builder.AddPiranha(options =>
     options.UseMemoryCache();
 
     var connectionString = builder.Configuration.GetConnectionString("catfish");
-    options.UseEF<SQLServerDb>(db => db.UseSqlServer(connectionString));//.UseSqlite(connectionString));
+    options.UseEF<SQLServerDb>(db => db.UseSqlServer(connectionString));
     options.UseIdentityWithSeed<IdentitySQLServerDb>(db => db.UseSqlServer(connectionString));
-
 
  
     /**
@@ -44,22 +43,10 @@ builder.AddPiranha(options =>
      */
 });
 
-builder.Services.AddCatfishWebExtensions();
-builder.Services.AddAuthentication()
-            .AddGoogle(options =>
-            {
-                IConfigurationSection googleAuthNSection =
-                    builder.Configuration.GetSection("GoogleExternalLogin");
 
-                options.ClientId = googleAuthNSection["Catfish2Oauth-ClientId"];
-                options.ClientSecret = googleAuthNSection["Catfish2Oauth-ClientSecret"];
-
-            });
-
-
-//Adding general Catfish extensions
+//Adding Catfish extensions
 builder.AddCatfishExtensions();
-
+builder.Services.AddCatfishWebExtensions();
 
 ConfigHelper.Initialize(builder.Configuration);
 var app = builder.Build();
