@@ -78,6 +78,7 @@ namespace CatfishWebExtensions
 
             AddRepositoryExtensions();
             AddBlockExtensions();
+
         }
 
         private void AddRepositoryExtensions()
@@ -108,7 +109,6 @@ namespace CatfishWebExtensions
 
         private void AddBlockExtensions()
         {
-
             App.Blocks.Register<Css>();
         }
     }

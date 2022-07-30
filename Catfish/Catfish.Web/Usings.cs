@@ -11,10 +11,15 @@ global using Piranha.Models;
 global using Piranha.Extend;
 global using Piranha.Extend.Fields;
 global using Piranha.Extend.Blocks;
+global using System.Text.Json;
 
 
 //Shared project/NuGet namespaces
+global using CatfishWebExtensions;
 global using CatfishWebExtensions.Models.Sites;
+global using CatfishExtensions;
+global using CatfishExtensions.Helpers;
+global using CatfishExtensions.Models;
 
 
 //Local namespaces
