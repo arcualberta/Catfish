@@ -40,13 +40,15 @@
                                 var url = string.Format("{0}/login?ret={1}", siteRoot, WebApp?.CurrentPage?.Permalink);
                                 <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
                             }else
+                            {
+                                if (User.IsInRole("SysAdmin"))
                                 {
-                                    if (User.IsInRole("SysAdmin"))
-                                    {
-                                        <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
-                                    }
-                                    <button id="btnSignOut" onclick="signOut('@siteRoot'); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
+                                    <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
                                 }
+                                var url = string.Format("{0}/logout", siteRoot);
+
+                                <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
+                            }
                             
 
 

@@ -91,12 +91,16 @@ namespace CatfishWebExtensions
                 {
                     var result = await googleIdentity.GetUserLoginResult(jwt);
 
-                    var user = await catfishUserManager.ProcessExternalLogin(result);
+                    var user = await catfishUserManager.GetUser(result);
+                    if (user == null)
+                        throw new CatfishException("Unable to retrieve or create user");
 
-                    if (configuration.GetValue<bool>("Google:UseSession"))
-                    {
-                        request.HttpContext.Session.SetString("LoginResult", JsonSerializer.Serialize(result));
-                    }
+                    //Obtain the list of global roles of the user
+                    result.GlobalRoles = await catfishUserManager.GetGlobalRoles(user);
+
+                    bool signInStatus = false;
+                    if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
+                        signInStatus = await catfishUserManager.SignIn(user, request.HttpContext);
 
                     return result;
                 }
@@ -105,6 +109,13 @@ namespace CatfishWebExtensions
                     return new LoginResult();
                 }
             });
+
+            //Sign Out
+            (builder as WebApplication)?.MapGet("/logout", async (IConfiguration configuration, HttpRequest request, ICatfishUserManager catfishUserManager) =>
+            {
+                return await catfishUserManager.SignOut(request.HttpContext);
+            });
+
 
             return builder
                 .UseStaticFiles(new StaticFileOptions
