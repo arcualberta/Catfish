@@ -5,8 +5,8 @@
 @{
     var version = Piranha.Utils.GetAssemblyVersion(typeof(Piranha.App).Assembly);
     version = version.Substring(0, version.LastIndexOf("."));
-     bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
-     var siteRoot = ConfigHelper.SiteUrl;
+    bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
+    var siteRoot = ConfigHelper.SiteUrl;
 }
 <!doctype html>
 <html lang="en">
@@ -49,9 +49,6 @@
 
                                 <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
                             }
-                            
-
-
                         </div>
                     }
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
