@@ -1,7 +1,17 @@
 ﻿@page "/login"
 
 @model CatfishWebExtensions.Pages.LoginModel
+
 @{
+    @inject IConfiguration configuration;
+
+    var redirectLocation = Request.Query["ret"].ToString();
+    if (string.IsNullOrEmpty(redirectLocation))
+    {       
+        redirectLocation = configuration.GetSection("SiteConfig:SiteUrl").Value;
+        if (string.IsNullOrEmpty(redirectLocation))
+            redirectLocation = "/";
+    }
 }
 
 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
@@ -31,6 +41,7 @@
             .then(data => {
                 console.log('Login Result:')
                 console.log(JSON.stringify(data))
+                window.location.href = '@redirectLocation';
             })
             .catch((error) => {
                 console.error('Authentication API Error:', error);

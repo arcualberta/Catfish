@@ -113,7 +113,12 @@ namespace CatfishWebExtensions
             //Sign Out
             (builder as WebApplication)?.MapGet("/logout", async (IConfiguration configuration, HttpRequest request, ICatfishUserManager catfishUserManager) =>
             {
-                return await catfishUserManager.SignOut(request.HttpContext);
+                await catfishUserManager.SignOut(request.HttpContext);
+
+                var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
+                if (string.IsNullOrEmpty(siteRoot))
+                    siteRoot = "/";
+                request.HttpContext.Response.Redirect(siteRoot);
             });
 
 
