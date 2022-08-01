@@ -21,6 +21,6 @@
     <span v-for=" value in fieldData.multilingualTextValues" :key="value.id" :model="value">
         <TextCollection :model="value" :text-type="model.type" />
     </span>
-    <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" />
+    <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" style="margin-top: -45px; margin-left: 570px;" />
 </template>
 
