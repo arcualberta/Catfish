@@ -22,7 +22,7 @@ namespace CatfishExtensions.Services
                 return new LoginResult();
 
             var issuer = _configuration.GetSection("Google:Identity:Issuer").Value;
-            var audience = _configuration.GetSection("Google:Identity:Audience").Value;
+            var audience = _configuration.GetSection("Google:ClientId").Value;
 
             var tokenValidationParams = new TokenValidationParameters()
             {
@@ -37,6 +37,7 @@ namespace CatfishExtensions.Services
             JwtSecurityToken? token = null;
             foreach (var key in keys)
             {
+                //We have to simply try each key until a successful key is found or all keys were tried.
                 try
                 {
                     tokenValidationParams.IssuerSigningKey = key;
@@ -55,9 +56,8 @@ namespace CatfishExtensions.Services
                     }
                     break;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-
                 }
             }
 
@@ -70,7 +70,6 @@ namespace CatfishExtensions.Services
         private async Task<JsonWebKey[]> GetPublicKeys()
         {
             var publicKeyApi = _configuration.GetSection("Google:Identity:PublicKeyApiJwk").Value;
-            var alg = _configuration.GetSection("Google:Identity:Alg").Value;
 
             if (string.IsNullOrEmpty(publicKeyApi))
                 throw new CatfishException("Googke Identity Public Key API not defined in appsettings.json");
@@ -80,7 +79,7 @@ namespace CatfishExtensions.Services
 
             JsonSerializerOptions options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
             var wrapper = JsonSerializer.Deserialize<KeyWrapper>(jwkPublicKeyStrings, options);
-   //         var key = wrapper?.keys.FirstOrDefault(key => key.Alg == alg);
+
             return wrapper == null ? new JsonWebKey[0] : wrapper.keys;
         }
         #endregion
