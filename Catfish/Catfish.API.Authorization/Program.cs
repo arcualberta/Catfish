@@ -10,6 +10,7 @@ builder.Services.AddSwaggerGen();
 
 //Adding general Catfish extensions
 builder.AddCatfishExtensions();
+builder.Services.AddCatfishWebExtensions();
 
 //Adding project-specific services
 

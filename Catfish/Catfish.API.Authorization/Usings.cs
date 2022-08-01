@@ -17,5 +17,7 @@ global using CatfishExtensions.Helpers;
 global using CatfishExtensions.Interfaces;
 global using CatfishExtensions.Exceptions;
 global using CatfishExtensions.Models;
+global using CatfishWebExtensions;
+global using CatfishWebExtensions.Interfaces;
 
 //Project namespaces
