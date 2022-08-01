@@ -17,8 +17,8 @@ namespace CatfishExtensions.Services
         #region Public Methods
         public async Task<LoginResult> GetUserLoginResult(string jwt)
         {
-            var key = await GetPublicKey();
-            if (key == null)
+            var keys = await GetPublicKeys();
+            if (keys.Length == 0)
                 return new LoginResult();
 
             var issuer = _configuration.GetSection("Google:Identity:Issuer").Value;
@@ -27,7 +27,6 @@ namespace CatfishExtensions.Services
             var tokenValidationParams = new TokenValidationParameters()
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = key,
                 ValidateIssuer = !string.IsNullOrEmpty(issuer),
                 ValidateAudience = !string.IsNullOrEmpty(audience),
                 ValidateLifetime = false,
@@ -35,22 +34,40 @@ namespace CatfishExtensions.Services
                 ValidAudience = audience
             };
 
-            var token = _jwtProcessor.ReadToken(jwt, key, tokenValidationParams);
-
-            var result = new LoginResult()
+            JwtSecurityToken? token = null;
+            foreach (var key in keys)
             {
-                Success = true,
-                Email = token?.Payload.FirstOrDefault(pair => pair.Key == "email").Value as string,
-                Name = token?.Payload.FirstOrDefault(pair => pair.Key == "name").Value as string
-            };
+                try
+                {
+                    tokenValidationParams.IssuerSigningKey = key;
+                    token = _jwtProcessor.ReadToken(jwt, key, tokenValidationParams);
 
-            return result;
+                    if (token != null)
+                    {
+                        var result = new LoginResult()
+                        {
+                            Success = true,
+                            Email = token?.Payload.FirstOrDefault(pair => pair.Key == "email").Value as string,
+                            Name = token?.Payload.FirstOrDefault(pair => pair.Key == "name").Value as string
+                        };
+
+                        return result;
+                    }
+                    break;
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+            return new LoginResult() { Success = false };
         }
 
         #endregion
 
         #region Private Methods
-        private async Task<JsonWebKey?> GetPublicKey()
+        private async Task<JsonWebKey[]> GetPublicKeys()
         {
             var publicKeyApi = _configuration.GetSection("Google:Identity:PublicKeyApiJwk").Value;
             var alg = _configuration.GetSection("Google:Identity:Alg").Value;
@@ -62,9 +79,9 @@ namespace CatfishExtensions.Services
             var jwkPublicKeyStrings = await response.Content.ReadAsStringAsync();
 
             JsonSerializerOptions options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-            var keys = JsonSerializer.Deserialize<KeyWrapper>(jwkPublicKeyStrings, options);
-            var key = keys?.keys.FirstOrDefault(key => key.Alg == alg);
-            return key;
+            var wrapper = JsonSerializer.Deserialize<KeyWrapper>(jwkPublicKeyStrings, options);
+   //         var key = wrapper?.keys.FirstOrDefault(key => key.Alg == alg);
+            return wrapper == null ? new JsonWebKey[0] : wrapper.keys;
         }
         #endregion
     }
