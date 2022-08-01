@@ -6,7 +6,8 @@
 
 <template>
     <div class="header">
-        <router-link to="/" class="navigation-menu-box">Home</router-link>
+        <router-link to="/" class="navigation-menu-box">Home</router-link> | 
+        <router-link to="/login" class="navigation-menu-box">Login</router-link>
     </div>
     <router-view />
 </template>
