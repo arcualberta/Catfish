@@ -1,5 +1,4 @@
 
-using CatfishExtensions.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +21,8 @@ builder.AddPiranha(options =>
     options.UseMemoryCache();
 
     var connectionString = builder.Configuration.GetConnectionString("catfish");
-    options.UseEF<SQLServerDb>(db => db.UseSqlServer(connectionString));//.UseSqlite(connectionString));
+    options.UseEF<SQLServerDb>(db => db.UseSqlServer(connectionString));
     options.UseIdentityWithSeed<IdentitySQLServerDb>(db => db.UseSqlServer(connectionString));
-
 
  
     /**
@@ -45,17 +43,11 @@ builder.AddPiranha(options =>
      */
 });
 
+
+//Adding Catfish extensions
+builder.AddCatfishExtensions();
 builder.Services.AddCatfishWebExtensions();
-builder.Services.AddAuthentication()
-            .AddGoogle(options =>
-            {
-                IConfigurationSection googleAuthNSection =
-                    builder.Configuration.GetSection("GoogleExternalLogin");
 
-                options.ClientId = googleAuthNSection["Catfish2Oauth-ClientId"];
-                options.ClientSecret = googleAuthNSection["Catfish2Oauth-ClientSecret"];
-
-            });
 ConfigHelper.Initialize(builder.Configuration);
 var app = builder.Build();
 
@@ -65,10 +57,14 @@ if (app.Environment.IsDevelopment() | enableRemoteErrors)
     app.UseDeveloperExceptionPage();
 }
 
+app.UseCookiePolicy();
+app.UseSession();
+
 app.UsePiranha(options =>
 {
     // Initialize Piranha
     App.Init(options.Api);
+
 
     // Build content types
     new ContentTypeBuilder(options.Api)
