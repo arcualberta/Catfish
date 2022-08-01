@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-    import { onMounted } from 'vue'
+    import { onMounted, ref } from 'vue'
     import { Pinia } from 'pinia'
     import { useAuthorizationStore } from './store'
     import { GoogleIdentityResult } from './models'
@@ -12,10 +12,13 @@
         authorizationStore.authorizationApiRoot = props.authorizationRoot;
     })
 
+    const cred = ref("");
+
     const callback = (response: GoogleIdentityResult) => {
         // This callback will be triggered when the user selects or login to
         // their Google account from the popup
         authorizationStore.authorize(response.credential);
+        cred.value = response.credential;
     }
 </script>
 
@@ -24,4 +27,6 @@
     <GoogleLogin :callback="callback" />
     <br />
     {{authorizationStore.loginResult}}
+
+    <div class="alert alert-info">{{cred}}</div>
 </template>

@@ -28,6 +28,11 @@ export default defineConfig({
     ],
     server: {
         port: 8080,
-        https: true
+        https: true,
+        hmr: {
+            host: 'localhost',
+            port: 8080,
+            protocol: 'wss'
+        }
     }
 })
