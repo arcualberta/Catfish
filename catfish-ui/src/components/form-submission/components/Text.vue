@@ -32,7 +32,8 @@
         <input type="date" v-model="model.value" class="text-field" />
     </span>
     <span v-if="textType === FieldTypes.DateTime">
-        <input type="datetime" v-model="model.value" class="text-field" />
+        <input type="datetime-local" v-model="model.value" class="text-field" />
     </span>
+   
 </template>
 
