@@ -146,22 +146,24 @@ button:focus-visible {
     padding: 5px;
 }
 .text-field-lable {
-    margin-left: 5%;
+    margin-left: 50px;
     font-weight: bold;
     display: inline-block;
-    min-width: 75px;
+    /*min-width: 150px;*/
 }
 .text-area-lable {
-    margin-left: 5%;
+    margin-left: 50px;
     font-weight: bold;
     display: inline-block;
-    min-width: 75px;
+    /*min-width: 150px;*/
 }
 .text-field {
     width: 350px;
-    height: 26px;
-    margin-bottom: 10px;
-    margin-left:15px;
+    height: 30px;
+    margin-bottom: 30px;
+    margin-left: 210px;
+    margin-top: -25px;
+    display:block;
 }
 .text-area {
     width: 350px;
@@ -227,10 +229,27 @@ button:focus-visible {
         position: absolute;
         z-index: 1;
         left: 0;
-        top: 110%;
+        /*top: 110%;*/
     }
 
     .hovertext:hover:before {
         opacity: 1;
         visibility: visible;
     }
+.plus-button{
+    margin-left:400px;
+    margin-top:-105px;
+}
+.alert {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    min-width:100%;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
