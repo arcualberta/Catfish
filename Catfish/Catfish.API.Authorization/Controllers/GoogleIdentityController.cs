@@ -2,6 +2,7 @@
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 
+
 namespace Catfish.API.Authorization.Controllers
 {
     [Route("api/[controller]")]
@@ -10,9 +11,11 @@ namespace Catfish.API.Authorization.Controllers
     public class GoogleIdentityController : ControllerBase
     {
         private readonly IGoogleIdentity _googleIdentity;
-        public GoogleIdentityController(IGoogleIdentity googleIdentity)
+        private readonly ICatfishUserManager _catfishUserManager;
+        public GoogleIdentityController(IGoogleIdentity googleIdentity, ICatfishUserManager catfishUserManager)
         {
             _googleIdentity = googleIdentity;
+            _catfishUserManager = catfishUserManager;   
         }
 
         // POST api/<GoogleIdentityController>
@@ -21,8 +24,15 @@ namespace Catfish.API.Authorization.Controllers
         {
             try
             {
-                var result = await _googleIdentity.GetUserLoginResult(jwt);
-                return result;
+                var externalLoginResult = await _googleIdentity.GetUserLoginResult(jwt);
+                if (externalLoginResult.Success)
+                {
+                    var user = await _catfishUserManager.GetUser(externalLoginResult);
+                    var globalUserRoles = await _catfishUserManager.GetGlobalRoles(user);
+                    externalLoginResult.Id = user.Id;
+                    externalLoginResult.GlobalRoles = globalUserRoles;
+                }
+                return externalLoginResult;
             }
             catch(Exception ex)
             {
