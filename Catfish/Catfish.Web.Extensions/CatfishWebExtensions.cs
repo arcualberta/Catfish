@@ -58,6 +58,7 @@ namespace CatfishWebExtensions
             //Catfish services
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<ICatfishUserManager, CatfishUserManager>();
+            services.AddScoped<ICatfishSignInManager, CatfishSignInManager>();
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -85,7 +86,12 @@ namespace CatfishWebExtensions
                .Add("~/manager/js/css.js");
 
             //Google Login
-            (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt, IGoogleIdentity googleIdentity, IConfiguration configuration, HttpRequest request, ICatfishUserManager catfishUserManager) =>
+            (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt, 
+                IGoogleIdentity googleIdentity, 
+                IConfiguration configuration, 
+                HttpRequest request, 
+                ICatfishUserManager catfishUserManager,
+                ICatfishSignInManager catfishSignInManager) =>
             {
                 try
                 {
@@ -100,7 +106,7 @@ namespace CatfishWebExtensions
 
                     bool signInStatus = false;
                     if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
-                        signInStatus = await catfishUserManager.SignIn(user, request.HttpContext);
+                        signInStatus = await catfishSignInManager.SignIn(user, request.HttpContext);
 
                     return result;
                 }
@@ -111,9 +117,9 @@ namespace CatfishWebExtensions
             });
 
             //Sign Out
-            (builder as WebApplication)?.MapGet("/logout", async (IConfiguration configuration, HttpRequest request, ICatfishUserManager catfishUserManager) =>
+            (builder as WebApplication)?.MapGet("/logout", async (IConfiguration configuration, HttpRequest request, ICatfishSignInManager catfishSignInManager) =>
             {
-                await catfishUserManager.SignOut(request.HttpContext);
+                await catfishSignInManager.SignOut(request.HttpContext);
 
                 var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
                 if (string.IsNullOrEmpty(siteRoot))

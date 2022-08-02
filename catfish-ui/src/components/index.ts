@@ -6,3 +6,6 @@ export { default as FormBuilder } from './form-builder/App.vue';
 
 /* Form Submission component */
 export { default as FormSubmission } from './form-submission/App.vue';
+
+/* Login component */
+export { default as Login } from './login/App.vue';
