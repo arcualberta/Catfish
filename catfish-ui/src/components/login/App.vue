@@ -12,21 +12,16 @@
         authorizationStore.authorizationApiRoot = props.authorizationRoot;
     })
 
-    const cred = ref("");
-
     const callback = (response: GoogleIdentityResult) => {
         // This callback will be triggered when the user selects or login to
         // their Google account from the popup
         authorizationStore.authorize(response.credential);
-        cred.value = response.credential;
     }
 </script>
 
 <template>
     <h2>Login</h2>
+    <br />
     <GoogleLogin :callback="callback" />
     <br />
-    {{authorizationStore.loginResult}}
-
-    <div class="alert alert-info">{{cred}}</div>
 </template>
