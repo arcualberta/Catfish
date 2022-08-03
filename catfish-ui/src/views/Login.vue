@@ -12,6 +12,7 @@
     const router = useRouter();
 
     watch(() => authorizationStore.loginResult, async newResult => {
+        console.log('watch(() => authorizationStore.loginResult, async newResult => ')
         if (newResult?.success)
             router.push("/");
     })
