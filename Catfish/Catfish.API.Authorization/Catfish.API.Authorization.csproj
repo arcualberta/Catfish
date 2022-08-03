@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Piranha" Version="10.1.0" />
+    <PackageReference Include="Piranha.AspNetCore.Identity" Version="10.1.0" />
+    <PackageReference Include="Piranha.AspNetCore.Identity.SQLServer" Version="10.1.0" />
+    <PackageReference Include="Piranha.Data.EF.SqlServer" Version="10.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Catfish.Web.Extensions\CatfishWebExtensions.csproj" />
+    <ProjectReference Include="..\CatfishExtensions\CatfishExtensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

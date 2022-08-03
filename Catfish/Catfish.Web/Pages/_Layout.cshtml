@@ -5,8 +5,8 @@
 @{
     var version = Piranha.Utils.GetAssemblyVersion(typeof(Piranha.App).Assembly);
     version = version.Substring(0, version.LastIndexOf("."));
-     bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
-     var siteRoot = ConfigHelper.SiteUrl;
+    bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
+    var siteRoot = ConfigHelper.SiteUrl;
 }
 <!doctype html>
 <html lang="en">
@@ -19,6 +19,8 @@
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="~/assets/css/style.min.css" asp-append-version="true">
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     @RenderSection("head", required: false)
 </head>
@@ -38,16 +40,15 @@
                                 var url = string.Format("{0}/login?ret={1}", siteRoot, WebApp?.CurrentPage?.Permalink);
                                 <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
                             }else
+                            {
+                                if (User.IsInRole("SysAdmin"))
                                 {
-                                    if (User.IsInRole("SysAdmin"))
-                                    {
-                                        <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
-                                    }
-                                    <button id="btnSignOut" onclick="signOut('@siteRoot'); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
+                                    <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
                                 }
-                            
+                                var url = string.Format("{0}/logout", siteRoot);
 
-
+                                <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
+                            }
                         </div>
                     }
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
@@ -68,34 +69,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"  crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-<script>
-    function signOut(siteUrl) {
-            //signout local login
-            $.ajax({
-                type: 'GET',
-                url: siteUrl + (siteUrl?.endsWith("/")  ? "" : "/") + "account/logout",
-                headers: {
-                    RequestVerificationToken:
-                        $('input:hidden[name="__RequestVerificationToken"]').val()
-                }
-            }).done(function (result) {
-                //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
-                try {
-                    var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
-                    auth2.signOut().then(function () {
-                        //console.log('User signed out.');
-                        auth2.disconnect();
-                        window.location.href = siteUrl;
-                    });
-                    auth2.disconnect();
-                } catch (ex) {
-                    window.location.href = "/";
-                }
-
-
-            });
-        }
-</script>
 
 </body>
 </html>
