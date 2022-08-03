@@ -17,7 +17,7 @@
 
 <template>
     <select>
-        <option v-for="opt in model.options" :key="opt.id">{{getTextValue(opt.optionText, store.lang)}}</option>
+        <option v-for="opt in model.options" :key="opt.id">{{formHelper.getOptionText(opt, store.lang)}}</option>
     </select>
     {{fieldData}}
 </template>

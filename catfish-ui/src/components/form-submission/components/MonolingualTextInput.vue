@@ -21,7 +21,7 @@
         <Text :model="value" :text-type="model.type"/>
     </span>
     
-        <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" style="margin-top: -45px; margin-left: 570px;"/>
+        <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" style="margin-top: -45px; margin-left: 530px;"/>
     <br />
     
 </template>

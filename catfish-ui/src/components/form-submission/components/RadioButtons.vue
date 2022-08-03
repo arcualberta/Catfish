@@ -2,6 +2,7 @@
 <script setup lang="ts">
     import { computed } from 'vue'
 
+    import * as formHelper from '../../shared/form-helpers'
     import { Field, OptionFieldType, FieldTypes, FieldData } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
@@ -14,9 +15,10 @@
 </script>
 
 <template>
-    <span v-for="opt in model.options" :key="opt.id">
-        <input type="radio" name="model.id" /> {{model.type}}: {{opt.selected}}
-    </span>
+    <div v-for="opt in model.options" :key="opt.id" class="option-field">
+        <input type="radio" name="model.id" /> {{formHelper.getOptionText(opt, store.lang)}}
+    </div>
+
     {{fieldData}}
 </template>
 
