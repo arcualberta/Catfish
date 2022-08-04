@@ -4,11 +4,14 @@ global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Runtime.Serialization;
 global using Newtonsoft.Json;
+global using Microsoft.AspNetCore.Cors;
+
 
 
 //Shared namespaces
 global using CatfishExtensions;
 global using CatfishExtensions.Helpers;
+global using CatfishExtensions.Constants;
 
 
 //Project namespaces

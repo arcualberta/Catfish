@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Catfish.API.Repository.Models.Form;
-using CatfishExtensions.Constants;
-using Microsoft.AspNetCore.Cors;
-
-namespace Catfish.API.Repository.Controllers
+﻿namespace Catfish.API.Repository.Controllers
 {
-    [Route(Routes.Forms.Root)]
     [ApiController]
     [EnableCors(CorsPolicyNames.General)]
+    [Route(Routes.Forms.Root)]
     public class FormsController : ControllerBase
     {
         private readonly RepoDbContext _context;

@@ -30,8 +30,73 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 });
 
         },
+        validateFormData() {
+            console.log("TODO: Validate form data.")
+            return true;
+        },
         submitForm() {
-            console.log("submitForm")
+            
+            if (!this.validateFormData()) {
+                console.log("Form validation failed.")
+                return;
+            }
+
+            const newForm = this.formData?.id?.toString() === Guid.EMPTY;
+            let api = "https://localhost:5020/api/form-submissions";
+            let method = "";
+            if (newForm) {
+                this.formData.id = Guid.create().toString() as unknown as Guid;
+                method = "POST";
+            }
+            else {
+                api = `${api}/${this.formData.id}`
+                method = "PUT";
+            }
+
+            fetch(api,
+                {
+                    body: JSON.stringify(this.formData),
+                    method: method,
+                    headers: {
+                        'encType': 'multipart/form-data',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        this.transientMessage = "Success"
+                        this.transientMessageClass = "success"
+                        console.log("Form submission successfull.")
+                    }
+                    else {
+                        if (newForm && this.formData)
+                            this.formData.id = Guid.EMPTY as unknown as Guid;
+
+                        this.transientMessageClass = "danger"
+                        switch (response.status) {
+                            case 400:
+                                this.transientMessage = "Bad request. Failed to submit the form";
+                                break;
+                            case 404:
+                                this.transientMessage = "Form submission not found";
+                                break;
+                            case 500:
+                                this.transientMessage = "An internal server error occurred. Failed to submit the form"
+                                break;
+                            default:
+                                this.transientMessage = "Unknown error occured. Failed to submit the form"
+                                break;
+                        }
+                    }
+                })
+                .catch((error) => {
+                    if (newForm && this.formData)
+                        this.formData.id = Guid.EMPTY as unknown as Guid;
+
+                    this.transientMessage = "Unknown error occurred"
+                    this.transientMessageClass = "danger"
+                    console.error('FormData Submit API Error:', error)
+                });
         },
         saveForm() {
             if (!this.form) {

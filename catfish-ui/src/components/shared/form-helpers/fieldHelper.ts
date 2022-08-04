@@ -67,10 +67,10 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
 }
 export const createFormData = (form: Form, lang: string | string[]): FormData => {
     const formData = {
-        id: Guid.create().toString() as unknown as Guid,
+        id: Guid.EMPTY as unknown as Guid,
         formId: form.id,
         fieldData: []
-    } as FormData;
+    } as unknown as FormData;
 
     form.fields?.forEach(field => {
         const fieldData = createFieldData(field, lang)

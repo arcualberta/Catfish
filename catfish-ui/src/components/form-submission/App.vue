@@ -34,12 +34,13 @@
         <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
     </transition>
     <h2>Form Submission</h2>
+    <hr />
+    <!--{{store.form}}-->
+    <Form v-if="store.form" :model="store.form" />
     <div class="control">
         <button type="button" class="btn btn-success" :disabled="!hasForm" @click="saveForm">Save</button>
         <button type="button" class="btn btn-primary" :disabled="!hasForm" @click="submitForm">Submit</button>
     </div>
-    <hr />
-    <!--{{store.form}}-->
-    <Form v-if="store.form" :model="store.form" />
+
 </template>
 
