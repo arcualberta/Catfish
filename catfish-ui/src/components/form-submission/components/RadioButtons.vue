@@ -23,5 +23,6 @@
     <div v-for="opt in model.options" :key="opt.id" class="option-field">
         <input type="radio" name="model.id" :value="opt.id" v-model="selectedOptionId" /> {{formHelper.getOptionText(opt, store.lang)}}
     </div>
+    {{fieldData}}
 </template>
 
