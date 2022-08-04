@@ -1,6 +1,7 @@
 
 <script setup lang="ts">
-    import { computed } from 'vue'
+    import { computed, ref } from 'vue'
+    import { Guid } from 'guid-typescript'
 
     import * as formHelper from '../../shared/form-helpers'
     import { Field, OptionFieldType, FieldTypes, FieldData } from '../../shared/form-models';
@@ -12,13 +13,19 @@
 
     const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
 
+    fieldData.value.selectedOptionIds = ['6a7b06ed-29bf-20a0-ef14-d6b770c9bae9' as unknown as Guid];
+
+    const selectedOptionId = computed({
+        get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] : Guid.EMPTY,
+        set: optId => fieldData.value.selectedOptionIds = [optId as unknown as Guid]
+    })
 </script>
 
 <template>
     <div v-for="opt in model.options" :key="opt.id" class="option-field">
-        <input type="radio" name="model.id" /> {{formHelper.getOptionText(opt, store.lang)}}
+        <input type="radio" name="model.id" :value="opt.id" v-model="selectedOptionId" /> {{formHelper.getOptionText(opt, store.lang)}} {{opt.id}}
     </div>
-
+    {{selectedOptionId}} <br />
     {{fieldData}}
 </template>
 
