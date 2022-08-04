@@ -37,10 +37,11 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<FormSubmissionController>
         [HttpPost]
-        public async Task Post([FromBody] FormData value)
+        public async Task<Guid> Post([FromBody] FormData value)
         {
-            _context.FormData.Add(value);
+            _context.FormData?.Add(value);
             await _context.SaveChangesAsync();
+            return value.Id;
         }
 
         // PUT api/<FormSubmissionController>/5

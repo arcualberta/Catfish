@@ -2,16 +2,25 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 
-    import { ref } from 'vue'
+    import { ref, watch } from 'vue'
     import { getActivePinia } from 'pinia'
-    import { useRoute } from 'vue-router'
+    import { useRoute, useRouter } from 'vue-router'
     import { Guid } from 'guid-typescript'
 
     import { FormSubmission } from '../components'
+    import { useFormSubmissionStore } from '../components'
 
     const route = useRoute()
     const formId = route.params.formId as unknown as Guid
 
+    const router = useRouter();
+    const formSubmissionStore = useFormSubmissionStore();
+    watch(formSubmissionStore.formData?.id as Guid, (newId: Guid, oldId: Guid) => {
+        console.log('watch(formSubmissionStore.formData?.id as Guid, (newId: Guid, oldId: Guid) => ...')
+        if (oldId.isEmpty() && !newId.isEmpty()) {
+            router.push(`/edit-form-submission/${newId}`)
+        }
+    })
 </script>
 
 <template>

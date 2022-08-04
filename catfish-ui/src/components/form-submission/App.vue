@@ -7,7 +7,12 @@
     import { default as Form } from './components/Form.vue';
     import { FieldType, FieldTypes } from '../shared/form-models';
 
-    const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, formId?: Guid, submissionId?: Guid }>();
+    const props = defineProps<{
+        piniaInstance: Pinia,
+        repositoryRoot: string,
+        formId?: Guid,
+        submissionId?: Guid
+    }>();
     const store = useFormSubmissionStore(props.piniaInstance);
 
 
