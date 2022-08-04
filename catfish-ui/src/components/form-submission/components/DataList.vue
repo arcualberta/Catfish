@@ -12,7 +12,6 @@
     const store = useFormSubmissionStore();
 
     const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
-    fieldData.value.selectedOptionIds = ["b3a698ca-35fd-027e-29da-f81d658bc9ae" as unknown as Guid]
 
     const getOptionLabel = (optId: Guid | undefined): string => {
         const option = props.model?.options?.filter(opt => opt.id === optId).at(0);
