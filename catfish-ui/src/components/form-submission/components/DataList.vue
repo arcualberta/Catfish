@@ -12,6 +12,7 @@
     const store = useFormSubmissionStore();
 
     const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
+    fieldData.value.selectedOptionIds = ["12f22208-da0b-f08f-75b7-39966420cb46" as unknown as Guid]
     const selectedOptionId = computed({
         get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] : Guid.EMPTY,
         set: optId => fieldData.value.selectedOptionIds = [optId as unknown as Guid]
@@ -19,9 +20,9 @@
 </script>
 
 <template>
-    <input list="dataOptions" id="model.id" name="model.id"  v-model="selectedOptionId" />
-    <datalist id="dataOptions">
-        <option v-for="opt in model.options" :key="opt.id">{{formHelper.getOptionText(opt.optionText, store.lang)}}</option>
+    <input list="dataOptions" id="model.id" name="model.id" v-model="selectedOptionId" />
+    <datalist id="dataOptions" >
+        <option v-for="opt in model.options" :key="opt.id" :value="opt.id">{{formHelper.getOptionText(opt, store.lang)}}</option>
     </datalist>
     {{fieldData}}
     <CustomOptions :model="model" />

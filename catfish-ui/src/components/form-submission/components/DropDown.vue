@@ -12,7 +12,6 @@
     const store = useFormSubmissionStore();
 
     const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
-    fieldData.value.selectedOptionIds = ["b0da267c-de92-41ef-02f3-67065eac7e18" as unknown as Guid]
     const selectedOptionId = computed({
         get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] : Guid.EMPTY,
         set: optId => fieldData.value.selectedOptionIds = [optId as unknown as Guid]
