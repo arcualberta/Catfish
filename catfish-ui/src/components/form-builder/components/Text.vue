@@ -25,7 +25,7 @@
             <input type="text" v-model="model.value" class="text-field" />
         </div>
         <div v-else-if="textType==='Paragraph'">
-            <textarea v-model="model.value" class="field-text-area" />
+            <textarea v-model="model.value" class="text-area" />
         </div>
     </div>
 </template>
