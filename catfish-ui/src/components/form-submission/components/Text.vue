@@ -2,7 +2,7 @@
 <script setup lang="ts">
     import { Text, FieldType, FieldTypes } from '../../shared/form-models';
 
-    const props = defineProps<{ model: Text, textType: FieldType, decimalPoints: number }>();
+    const props = defineProps<{ model: Text, textType: FieldType, decimalPoints?: number }>();
 
     const decPoints = props.decimalPoints ? props.decimalPoints : 2;
 

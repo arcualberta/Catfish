@@ -7,7 +7,7 @@
     import { useFormSubmissionStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Text } from './Text.vue'
-    const props = defineProps<{ model: Field, textType: TextType }>();
+    const props = defineProps<{ model: Field }>();
     const store = useFormSubmissionStore();
 
     const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
@@ -20,7 +20,6 @@
     <span v-for="value in fieldData.monolingualTextValues" :key="value.id" :model="value">
         <Text :model="value" :text-type="model.type"/>
     </span>
-    
         <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" style="margin-top: -45px; margin-left: 530px;"/>
     <br />
     

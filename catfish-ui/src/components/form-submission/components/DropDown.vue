@@ -6,7 +6,7 @@
 
     import { useFormSubmissionStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
-    import { getTextValue } from '../../shared/form-helpers'
+    import * as formHelper from '../../shared/form-helpers'
 
     const props = defineProps<{ model: Field }>();
     const store = useFormSubmissionStore();
