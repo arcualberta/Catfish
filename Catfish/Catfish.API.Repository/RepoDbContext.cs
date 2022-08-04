@@ -15,5 +15,6 @@
         }
 
         public DbSet<Form>? Forms { get; set; }
+        public DbSet<FormData>? FormData { get; set; }
     }
 }
