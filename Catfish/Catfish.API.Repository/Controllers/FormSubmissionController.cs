@@ -17,11 +17,16 @@ namespace Catfish.API.Repository.Controllers
         }
         // GET: api/<FormSubmissionController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<Guid>>> GetFormSubmissions()
         {
-            return new string[] { "value1", "value2" };
+          if (_context.FormData == null)
+          {
+              return NotFound();
+          }
+            return await _context.FormData.Select(fd => fd.Id).ToListAsync();
         }
 
+        // GET: api/Forms/5
         // GET api/<FormSubmissionController>/5
         [HttpGet("{id}")]
         public async Task<FormData?> Get(Guid id)

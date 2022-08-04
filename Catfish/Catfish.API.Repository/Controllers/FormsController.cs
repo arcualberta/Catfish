@@ -1,4 +1,5 @@
-﻿namespace Catfish.API.Repository.Controllers
+﻿
+namespace Catfish.API.Repository.Controllers
 {
     [ApiController]
     [EnableCors(CorsPolicyNames.General)]
@@ -15,13 +16,13 @@
 
         // GET: api/Forms
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Form>>> GetForms()
+        public async Task<ActionResult<IEnumerable<Guid>>> GetFormIds()
         {
           if (_context.Forms == null)
           {
               return NotFound();
           }
-            return await _context.Forms.ToListAsync();
+            return await _context.Forms.Select(form => form.Id).ToListAsync();
         }
 
         // GET: api/Forms/5

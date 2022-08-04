@@ -5,7 +5,7 @@ global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Runtime.Serialization;
 global using Newtonsoft.Json;
 global using Microsoft.AspNetCore.Cors;
-
+global using Microsoft.AspNetCore.Authorization;
 
 
 //Shared namespaces

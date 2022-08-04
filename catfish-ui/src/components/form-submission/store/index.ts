@@ -14,7 +14,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         transientMessageClass: null as string | null
     }),
     actions: {
-        loadForm(id: Guid) {
+        loadForm(id: Guid, retainCurrentFormData?: boolean) {
             let api = `https://localhost:5020/api/forms/${id}`;
             console.log(api)
             fetch(api, {
@@ -23,7 +23,26 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 .then(response => response.json())
                 .then(data => {
                     this.form = data
-                    this.formData = createFormData(this.form as Form, this.lang)
+                    if (!retainCurrentFormData)
+                        this.formData = createFormData(this.form as Form, this.lang);
+                })
+                .catch((error) => {
+                    console.error('Load Form API Error:', error);
+                });
+
+        },
+        loadSubmission(id: Guid) {
+            let api = `https://localhost:5020/api/form-submissions/${id}`;
+            console.log(api)
+            fetch(api, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.formData = data
+
+                    if (this.formData?.formId)
+                        this.loadForm(this.formData.formId as unknown as Guid, true)
                 })
                 .catch((error) => {
                     console.error('Load Form API Error:', error);
