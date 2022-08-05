@@ -11,7 +11,8 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         form: null as Form | null,
         formData: {} as FormData,
         transientMessage: null as string | null,
-        transientMessageClass: null as string | null
+        transientMessageClass: null as string | null,
+
     }),
     actions: {
         loadForm(id: Guid, retainCurrentFormData?: boolean) {
@@ -64,7 +65,6 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             let api = "https://localhost:5020/api/form-submissions";
             let method = "";
             if (newForm) {
-                this.formData.id = Guid.create().toString() as unknown as Guid;
                 method = "POST";
             }
             else {
@@ -81,16 +81,17 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                         'Content-Type': 'application/json'
                     },
                 })
-                .then(response => {
+                .then(async response => {
                     if (response.ok) {
-                        this.transientMessage = "Success"
-                        this.transientMessageClass = "success"
-                        console.log("Form submission successfull.")
+                        if (newForm) {
+                            const id = await response.json();
+                            this.formData.id = id as Guid;
+                        }
+                        this.transientMessage = "Success";
+                        this.transientMessageClass = "success";
+                        console.log("Form submission successfull.");
                     }
                     else {
-                        if (newForm && this.formData)
-                            this.formData.id = Guid.EMPTY as unknown as Guid;
-
                         this.transientMessageClass = "danger"
                         switch (response.status) {
                             case 400:

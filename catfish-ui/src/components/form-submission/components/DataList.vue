@@ -12,17 +12,36 @@
     const store = useFormSubmissionStore();
 
     const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
-    //fieldData.value.selectedOptionIds = ["12f22208-da0b-f08f-75b7-39966420cb46" as unknown as Guid]
-    const selectedOptionId = computed({
-        get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] : Guid.EMPTY,
-        set: optId => fieldData.value.selectedOptionIds = [optId as unknown as Guid]
+
+
+    const getOptionLabel = (optId: Guid | undefined): string => {
+        const option = props.model?.options?.filter(opt => opt.id === optId).at(0);
+        return option ? formHelper.getOptionText(option, store.lang) as string : "";
+    }
+
+    const getOptionId = (optLabel: string): Guid | undefined => {
+        const option = props.model?.options?.filter(opt => formHelper.getOptionText(opt, store.lang) as string === optLabel).at(0);
+        return option?.id;
+    }
+
+    const selectedOption = computed({
+        get: () => getOptionLabel(fieldData?.value?.selectedOptionIds?.at(0)),
+        set: optLabel => {
+            const optId = getOptionId(optLabel);
+            if (optId)
+                fieldData.value.selectedOptionIds = [optId];
+            else
+                fieldData.value.selectedOptionIds = [];
+        }
+
     })
 </script>
 
 <template>
-    <input list="dataOptions" id="model.id" name="model.id" @change="alert('Test')" />
+
+    <input list="dataOptions" id="model.id" name="model.id" v-model="selectedOption" />
     <datalist id="dataOptions" >
-        <option v-for="opt in model.options" :key="opt.id" >{{formHelper.getOptionText(opt, store.lang)}}</option>
+        <option v-for="opt in model.options" :key="opt.id">{{formHelper.getOptionText(opt, store.lang)}}</option>
     </datalist>
     {{fieldData}}
     <CustomOptions :model="model" />

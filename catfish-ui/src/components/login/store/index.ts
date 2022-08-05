@@ -4,7 +4,7 @@ import { Guid } from "guid-typescript";
 import { LoginResult } from '../models';
 
 
-export const useAuthorizationStore = defineStore('AuthorizationStore', {
+export const useLoginStore = defineStore('LoginStore', {
     state: () => ({
         authorizationApiRoot: null as string | null,
         loginResult: null as LoginResult | null,

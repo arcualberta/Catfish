@@ -3,7 +3,7 @@
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
 
-    import { useFormEditorStore } from './store';
+    import { useFormBuilderStore } from './store';
     import { Field } from '../shared/form-models'
     import { createTextCollection, isOptionField, createOption } from '../shared/form-helpers'
     import { FieldType, FieldTypes } from '../shared/form-models';
@@ -12,7 +12,7 @@
 
     const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, formId?: Guid }>();
 
-    const store = useFormEditorStore(props.piniaInstance);
+    const store = useFormBuilderStore(props.piniaInstance);
 
     if (props.formId)
         store.loadForm(props.formId)

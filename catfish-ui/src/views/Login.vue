@@ -6,9 +6,9 @@
     import { useRouter } from 'vue-router'
 
     import { Login } from '../components'
-    import { useAuthorizationStore } from '../components/login/store';
+    import { useLoginStore } from '../components/login/store';
 
-    const authorizationStore = useAuthorizationStore();
+    const authorizationStore = useLoginStore();
     const router = useRouter();
 
     watch(() => authorizationStore.loginResult, async newResult => {

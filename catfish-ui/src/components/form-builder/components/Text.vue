@@ -2,10 +2,10 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import { Text, TextType } from '../../shared/form-models';
-    import { useFormEditorStore } from '../store';
+    import { useFormBuilderStore } from '../store';
 
     const props = defineProps<{ model: Text, textType: TextType, dispLang: boolean }>();
-    const store = useFormEditorStore();
+    const store = useFormBuilderStore();
 
 </script>
 
