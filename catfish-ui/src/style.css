@@ -262,3 +262,10 @@ button:focus-visible {
     background-color: #d1ecf1;
     border-color: #bee5eb;
 }
+.multilingual-field {
+    display: inline-block;
+}
+.multilingual-field-delete {
+    margin-left: 210px;
+    margin-top: -25px;
+}
