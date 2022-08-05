@@ -1,8 +1,4 @@
 ﻿
-
-
-using Newtonsoft.Json;
-
 namespace Catfish.API.Repository.Models.Form
 {
     /// <summary>

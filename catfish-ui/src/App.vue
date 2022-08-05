@@ -2,11 +2,11 @@
 // This starter template is using Vue 3 <script setup> SFCs
     // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
     import { useRouter } from 'vue-router'
-    import { useAuthorizationStore } from './components/login/store';
+    import { useLoginStore } from './components/login/store';
 
     const router = useRouter();
 
-    const authorizationStore = useAuthorizationStore();
+    const authorizationStore = useLoginStore();
     const logout = () => {
         authorizationStore.loginResult = null;
         router.push("/");

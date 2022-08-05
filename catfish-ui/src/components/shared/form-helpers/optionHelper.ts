@@ -10,3 +10,12 @@ export function createOption(languages: string[], optionText: TextCollection | n
 	} as Option;
 	return opt;
 }
+export const getOptionText = (option: Option, lang: string | null): string[] | string  => getOptionValues(option.optionText, lang)
+
+export function getOptionValues(optionText: TextCollection | null, lang: string | null): string[] | string {
+	
+	if (lang)
+		return optionText?.values?.filter(txt => txt.lang === lang).map(val => val.value)?.at(0) as string
+	else
+		return optionText?.values?.map(val => val.value) as string[]
+}

@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Catfish.API.Repository.Models.Form;
-using CatfishExtensions.Constants;
-using Microsoft.AspNetCore.Cors;
-
+﻿
 namespace Catfish.API.Repository.Controllers
 {
-    [Route(Routes.Forms.Root)]
     [ApiController]
     [EnableCors(CorsPolicyNames.General)]
+    [Route(Routes.Forms.Root)]
     public class FormsController : ControllerBase
     {
         private readonly RepoDbContext _context;
@@ -26,13 +16,13 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Form>>> GetForms()
+        public async Task<ActionResult<IEnumerable<Guid>>> GetFormIds()
         {
           if (_context.Forms == null)
           {
               return NotFound();
           }
-            return await _context.Forms.ToListAsync();
+            return await _context.Forms.Select(form => form.Id).ToListAsync();
         }
 
         // GET: api/Forms/5

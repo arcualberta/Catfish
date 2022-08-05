@@ -3,11 +3,11 @@
     import { ref } from 'vue'
 
     import { Option, OptionFieldType, FieldTypes } from '../../shared/form-models';
-    import { useFormEditorStore } from '../store';
+    import { useFormBuilderStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
 
     const props = defineProps<{ model: Option, optionType: OptionFieldType }>();
-    const store = useFormEditorStore();
+    const store = useFormBuilderStore();
 
     const editMode = ref(false)
 

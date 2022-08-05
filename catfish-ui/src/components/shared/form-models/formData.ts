@@ -19,6 +19,16 @@ export interface FormData {
     formId: Guid
 
     /**
+     * Created timestamp
+     * */
+    created: Date;
+
+    /**
+     * Last updated timestamp
+     * */
+    updated: Date;
+
+    /**
      * List of field-data objects belongs to this form-data object. Each field-data
      * instance holds data submitted for a field in the parent form.
      * */

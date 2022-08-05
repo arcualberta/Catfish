@@ -6,7 +6,7 @@ import { Form, Field, FieldType, OptionFieldType, TextCollection, Option, Extens
 
 import { createOption, createTextCollection, isOptionField, cloneTextCollection } from '../../shared/form-helpers'
 
-export const useFormEditorStore = defineStore('FormEditorStore', {
+export const useFormBuilderStore = defineStore('FormBuilderStore', {
     state: () => ({
         lang: ["en", "fr"],
         form: null as Form | null,

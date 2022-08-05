@@ -7,21 +7,23 @@
     import { useFormSubmissionStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Text } from './Text.vue'
-    const props = defineProps<{ model: Field, textType: TextType }>();
+    const props = defineProps<{ model: Field }>();
     const store = useFormSubmissionStore();
 
     const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
 
     const addValue = () => fieldData.value.monolingualTextValues?.push(createText(null))
-
+    const deleteValue = (index: number) => {
+        fieldData.value.monolingualTextValues?.splice(index, 1);
+    }
 </script>
 
 <template>
     <span v-for="value in fieldData.monolingualTextValues" :key="value.id" :model="value">
-        <Text :model="value" :text-type="model.type"/>
+        <Text :model="value" :text-type="model.type" />
+        <span v-if="fieldData.monolingualTextValues.length > 1" class="multilingual-field-delete"><font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(value.id)" class="fa-icon delete" /></span>
     </span>
-    
-        <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" style="margin-top: -45px; margin-left: 570px;"/>
+        <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" style="margin-top: -45px; margin-left: 530px;"/>
     <br />
     
 </template>
