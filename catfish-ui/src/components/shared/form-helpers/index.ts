@@ -6,7 +6,10 @@ export {
     getTextValue
 } from './textHelper';
 
-export { createOption } from './optionHelper';
+export {
+    createOption,
+    getOptionText
+} from './optionHelper';
 
 export {
     isOptionField,

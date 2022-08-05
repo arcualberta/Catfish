@@ -3,7 +3,7 @@
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
 
-    import { useFormEditorStore } from './store';
+    import { useFormBuilderStore } from './store';
     import { Field } from '../shared/form-models'
     import { createTextCollection, isOptionField, createOption } from '../shared/form-helpers'
     import { FieldType, FieldTypes } from '../shared/form-models';
@@ -12,7 +12,7 @@
 
     const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, formId?: Guid }>();
 
-    const store = useFormEditorStore(props.piniaInstance);
+    const store = useFormBuilderStore(props.piniaInstance);
 
     if (props.formId)
         store.loadForm(props.formId)
@@ -60,6 +60,7 @@
         <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
     </transition>
     <h2>Form Builder</h2>
+    <Form v-if="store.form" :model="store.form" />
     <div class="control">
         <button type="button" class="btn btn-primary" :disabled="!disabled" @click="newForm">New Form</button>
         <button type="button" class="btn btn-success" :disabled="disabled" @click="saveForm">Save</button>
@@ -81,6 +82,6 @@
     </div>
     <hr />
     <!--{{store.form}}-->
-    <Form v-if="store.form" :model="store.form" />
+
 </template>
 

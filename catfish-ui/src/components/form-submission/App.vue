@@ -7,12 +7,19 @@
     import { default as Form } from './components/Form.vue';
     import { FieldType, FieldTypes } from '../shared/form-models';
 
-    const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, formId?: Guid }>();
+    const props = defineProps<{
+        piniaInstance: Pinia,
+        repositoryRoot: string,
+        formId?: Guid,
+        submissionId?: Guid
+    }>();
     const store = useFormSubmissionStore(props.piniaInstance);
 
 
     if (props.formId)
         store.loadForm(props.formId)
+    else if (props.submissionId)
+        store.loadSubmission(props.submissionId)
 
     watch(() => store.transientMessage, async newMessage => {
         if (newMessage)
@@ -34,12 +41,13 @@
         <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
     </transition>
     <h2>Form Submission</h2>
-    <div class="control">
-        <button type="button" class="btn btn-success" :disabled="!hasForm" @click="saveForm">Save</button>
-        <button type="button" class="btn btn-primary" :disabled="!hasForm" @click="submitForm">Submit</button>
-    </div>
     <hr />
     <!--{{store.form}}-->
     <Form v-if="store.form" :model="store.form" />
+    <div class="control">
+        <!--<button type="button" class="btn btn-success" :disabled="!hasForm" @click="saveForm">Save</button>-->
+        <button type="button" class="btn btn-primary" :disabled="!hasForm" @click="submitForm">Submit</button>
+    </div>
+
 </template>
 

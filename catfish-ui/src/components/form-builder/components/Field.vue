@@ -8,12 +8,12 @@
     import { isOptionField, createTextCollection, createOption, cloneTextCollection } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Opt } from './Option.vue'
-    import { useFormEditorStore } from '../store'
+    import { useFormBuilderStore } from '../store'
 
     const props = defineProps<{ model: Field }>();
     const isAnOptionField = isOptionField(props.model);
 
-    const store = useFormEditorStore();
+    const store = useFormBuilderStore();
     const newOptionInput = ref(createTextCollection(store.lang))
 
     const addOption = () => {

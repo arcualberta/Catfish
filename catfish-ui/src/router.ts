@@ -18,9 +18,14 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('./views/FormBuilder.vue')
     },
     {
-        path: '/form-submission/:formId?',
+        path: '/new-form-submission/:formId?',
         name: 'newFormSubmission',
-        component: () => import('./views/FormSubmission.vue')
+        component: () => import('./views/NewFormSubmission.vue')
+    },
+    {
+        path: '/edit-form-submission/:submissionId?',
+        name: 'editFormSubmission',
+        component: () => import('./views/EditFormSubmission.vue')
     },
     {
         path: '/sandbox',
