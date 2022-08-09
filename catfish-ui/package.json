@@ -16,7 +16,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.1",
     "@popperjs/core": "^2.11.5",
     "bootstrap": "^5.2.0",
-    "bootstrap-vue": "^2.22.0",
+    "bootstrap-vue-3": "^0.2.6",
     "guid-typescript": "^1.0.9",
     "pinia": "^2.0.16",
     "sortablejs": "^1.15.0",
