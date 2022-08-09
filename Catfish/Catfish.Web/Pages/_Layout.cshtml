@@ -2,11 +2,17 @@
 @inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishAppConfig;
 @inject Piranha.IApi _piranhaApi;
 @inject Piranha.Manager.ManagerLocalizer Localizer
+
 @{
     var version = Piranha.Utils.GetAssemblyVersion(typeof(Piranha.App).Assembly);
     version = version.Substring(0, version.LastIndexOf("."));
     bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
     var siteRoot = ConfigHelper.SiteUrl;
+    var siteTitle = WebApp.Site.Description.Title;
+    if (siteTitle == "Default Site")
+        siteTitle = "ARC CMS <small>3.0</small>";
+
+    var loginLinkPosition = _catfishAppConfig.GetLoginLinkPosition();
 }
 <!doctype html>
 <html lang="en">
@@ -28,39 +34,41 @@
 <body>
     <nav class="navbar navbar-expand-md navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="~/">ARC CMS <small>3.0</small></a>
+            <a class="navbar-brand" href="~/">@Html.Raw(siteTitle)</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            @if (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin)
-                    {
-                        <div class="signinout">
-                            @if (!User.Identity.IsAuthenticated)
-                            {
-                                var url = string.Format("{0}/login?ret={1}", siteRoot, WebApp?.CurrentPage?.Permalink);
-                                <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
-                            }else
-                            {
-                                if (User.IsInRole("SysAdmin"))
-                                {
-                                    <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
-                                }
-                                var url = string.Format("{0}/logout", siteRoot);
-
-                                <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
-                            }
-                        </div>
-                    }
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav ml-auto">
                     @foreach (var item in (await WebApp.Site.Sitemap.ForUserAsync(User, Auth)).Where(i => !i.IsHidden))
                     {
-                    <li class="nav-item@(item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? " active" : "")">
-                        <a class="nav-link" href="@WebApp.Url(item)">@item.MenuTitle</a>
-                    </li>
+                        <li class="nav-item@(item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? " active" : "")">
+                            <a class="nav-link" href="@WebApp.Url(item)">@item.MenuTitle</a>
+                        </li>
                     }
                 </ul>
             </div>
+
+                @if(loginLinkPosition == eLoginLinkPosition.Header && (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin))
+                {
+                    <div class="signinout">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            var url = string.Format("{0}/login?ret={1}", siteRoot, WebApp?.CurrentPage?.Permalink);
+                            <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
+                        }else
+                        {
+                            var url = string.Format("{0}/logout", siteRoot);
+
+                            <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
+                        }
+                    </div>
+                }
+                @if (User.IsInRole("SysAdmin"))
+                {
+                    <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                }
+
         </div>
     </nav>
 
