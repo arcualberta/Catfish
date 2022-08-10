@@ -1,6 +1,12 @@
 ﻿
 namespace CatfishExtensions.Helpers
 {
+    public enum eLoginLinkPosition
+    {
+        None = 0,
+        Header,
+        Footer
+    }
     public interface ICatfishAppConfiguration
     {
         bool IsAllowGoogleLogin();
@@ -19,6 +25,8 @@ namespace CatfishExtensions.Helpers
         string GetValue(string key, string defaultValue);
         string[] GetValue(string key, string[] defaultValue);
         int GetValue(string key, int defaultValue);
+
+        eLoginLinkPosition GetLoginLinkPosition();
 
         public class ReadAppConfiguration : ICatfishAppConfiguration
         {
@@ -64,15 +72,12 @@ namespace CatfishExtensions.Helpers
             public string GetSiteURL()
             {
                 string val = _configuration["SiteConfig:SiteURL"].TrimEnd('/');
-                return string.IsNullOrEmpty(val) ? "" : val.TrimEnd('/');
+                return string.IsNullOrEmpty(val) ? "" : val;
             }
             public string GetDefaultUserRole()
             {
                 return _configuration["GoogleExternalLogin:DefaultUserRole"];
             }
-
-
-
 
             public string[] GetAccessRestrictionAllowedDomains()
             {
@@ -106,7 +111,14 @@ namespace CatfishExtensions.Helpers
                 return string.IsNullOrEmpty(val) ? defaultValue : int.Parse(val);
             }
 
-
+            public eLoginLinkPosition GetLoginLinkPosition()
+            {
+                string val = _configuration.GetSection("SiteConfig:LoginLinkPosition").Value;
+                if (Enum.TryParse<eLoginLinkPosition>(_configuration.GetSection("SiteConfig:LoginLinkPosition").Value, out eLoginLinkPosition pos))
+                    return pos;
+                else
+                    return eLoginLinkPosition.Header;
+            }
         }
     }
 }

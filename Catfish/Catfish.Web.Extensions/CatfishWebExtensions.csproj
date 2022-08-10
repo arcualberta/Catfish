@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.7" />
     <PackageReference Include="Piranha" Version="10.1.0" />
+    <PackageReference Include="Piranha.AspNetCore" Version="10.1.0" />
     <PackageReference Include="Piranha.AspNetCore.Hosting" Version="10.1.0" />
     <PackageReference Include="Piranha.AspNetCore.Identity" Version="10.1.0" />
     <PackageReference Include="Piranha.AttributeBuilder" Version="10.1.0" />

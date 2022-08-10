@@ -1,0 +1,27 @@
+﻿@model CatfishWebExtensions.Blocks.ExtendedImage
+
+@inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishConfiguration;
+
+@{
+    var site_rrot = _catfishConfiguration.GetSiteURL();
+
+    var img_src = site_rrot + Model.Source.Media?.PublicUrl.TrimStart('~');
+
+    var link = Model.LinkUrl.Value;
+    if (!string.IsNullOrEmpty(link) && !link.StartsWith("http"))
+        link = site_rrot + link.TrimStart('~');
+
+    var target = Model.OpenOnNewPage.Value ? "target='_blank'" : "";
+    var css_classes = Model.CSSClasses.Value;
+   
+}
+
+
+@if (!string.IsNullOrEmpty(link))
+{
+    <a href="@link" @target><img src="@img_src" class="@css_classes" /></a>
+}
+else
+{
+    <img src="@img_src" class="@css_classes" />   
+}
