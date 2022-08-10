@@ -1,9 +1,11 @@
 @page
-@model SinglePage<CatfishWebExtensions.Models.StandardPage>
+@model SinglePage<StandardPage>
 @{
     ViewData["Title"] = !string.IsNullOrEmpty(Model.Data.MetaTitle) ? Model.Data.MetaTitle : Model.Data.Title;
     var hasImage = Model.Data.PrimaryImage.HasValue;
 }
+@inject Piranha.AspNetCore.Services.IApplicationService WebApp;
+
 @section head {
     @WebApp.MetaTags(Model.Data)
 }
