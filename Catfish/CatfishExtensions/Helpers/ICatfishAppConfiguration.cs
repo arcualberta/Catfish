@@ -72,7 +72,7 @@ namespace CatfishExtensions.Helpers
             public string GetSiteURL()
             {
                 string val = _configuration["SiteConfig:SiteURL"].TrimEnd('/');
-                return string.IsNullOrEmpty(val) ? "" : val.TrimEnd('/');
+                return string.IsNullOrEmpty(val) ? "" : val;
             }
             public string GetDefaultUserRole()
             {

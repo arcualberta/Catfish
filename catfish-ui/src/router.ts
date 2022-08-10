@@ -18,6 +18,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('./views/FormBuilder.vue')
     },
     {
+        path: '/workflow-builder/:id?',
+        name: 'workflow',
+        component: () => import('./views/WorkflowBuilder.vue')
+    },
+   {
         path: '/new-form-submission/:formId?',
         name: 'newFormSubmission',
         component: () => import('./views/NewFormSubmission.vue')

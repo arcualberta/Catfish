@@ -12,3 +12,8 @@ export { useFormSubmissionStore } from './form-submission/store';
 /* Login component */
 export { default as Login } from './login/App.vue';
 export { useLoginStore } from './login/store';
+
+/* Workflow Builder component */
+export { default as WorkflowBuilder } from './workflow-builder/App.vue';
+export { useWorkflowBuilderStore } from './workflow-builder/store';
+
