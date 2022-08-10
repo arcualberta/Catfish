@@ -5,7 +5,7 @@ namespace CatfishWebExtensions.Blocks
     public class ExtendedImage : Block
     {
         [Display(Name ="Image Source")]
-        public ImageField Sourse { get; set; }
+        public ImageField Source { get; set; }
 
         [Display(Name ="Link URL")]
         public StringField LinkUrl { get; set; }
