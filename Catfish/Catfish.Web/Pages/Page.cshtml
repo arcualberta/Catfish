@@ -1,5 +1,5 @@
 @page
-@model SinglePage<StandardPage>
+@model SinglePage<CatfishWebExtensions.Models.StandardPage>
 @{
     ViewData["Title"] = !string.IsNullOrEmpty(Model.Data.MetaTitle) ? Model.Data.MetaTitle : Model.Data.Title;
     var hasImage = Model.Data.PrimaryImage.HasValue;

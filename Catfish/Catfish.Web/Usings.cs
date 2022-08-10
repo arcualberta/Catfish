@@ -20,7 +20,7 @@ global using CatfishWebExtensions.Models.Sites;
 global using CatfishExtensions;
 global using CatfishExtensions.Helpers;
 global using CatfishExtensions.Models;
-
+global using CatfishWebExtensions.Models;
 
 //Local namespaces
 global using Catfish.Web.Models;

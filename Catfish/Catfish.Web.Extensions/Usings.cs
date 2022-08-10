@@ -23,7 +23,10 @@ global using System.ComponentModel.DataAnnotations;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.FileProviders;
-
+global using Piranha.AspNetCore.Models;
+global using Piranha.AttributeBuilder;
+global using Piranha.Models;
+global using Piranha.AspNetCore.Services;
 
 //Shared namespaces
 global using CatfishExtensions;
@@ -39,3 +42,4 @@ global using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
 global using CatfishWebExtensions.Interfaces;
 global using CatfishWebExtensions.Services;
 global using CatfishWebExtensions.Blocks;
+global using CatfishWebExtensions.Models;
