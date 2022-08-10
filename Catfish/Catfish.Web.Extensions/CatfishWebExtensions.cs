@@ -1,15 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Piranha;
-using Piranha.AspNetCore;
-using CatfishExtensions.Helpers;
-using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
-using Microsoft.Extensions.Configuration;
-using CatfishExtensions.Models;
-using Microsoft.AspNetCore.Http;
-
-namespace CatfishWebExtensions
+﻿namespace CatfishWebExtensions
 {
     public static class CatfishWebExtensions
     {
@@ -85,6 +74,9 @@ namespace CatfishWebExtensions
             App.Modules.Manager().Scripts
                .Add("~/manager/js/css.js");
 
+            //Registering blocks
+            RegisterBlocks();
+
             //Google Login
             (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt, 
                 IGoogleIdentity googleIdentity, 
@@ -157,5 +149,12 @@ namespace CatfishWebExtensions
             return modules.Get<Module>();
         }
 
+
+        #region Private methods
+        private static void RegisterBlocks()
+        {
+            Piranha.App.Blocks.Register<ExtendedImage>();
+        }
+        #endregion
     }
 }
