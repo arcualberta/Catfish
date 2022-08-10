@@ -18,6 +18,15 @@ global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.AspNetCore.Http;
+global using System.ComponentModel.DataAnnotations;
+
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.FileProviders;
+global using Piranha.AspNetCore.Models;
+global using Piranha.AttributeBuilder;
+global using Piranha.Models;
+global using Piranha.AspNetCore.Services;
 
 //Shared namespaces
 global using CatfishExtensions;
@@ -27,7 +36,10 @@ global using CatfishExtensions.Interfaces;
 global using CatfishExtensions.Services;
 global using CatfishExtensions.Exceptions;
 global using CatfishExtensions.Models;
+global using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
 
 //Project namespaces
 global using CatfishWebExtensions.Interfaces;
 global using CatfishWebExtensions.Services;
+global using CatfishWebExtensions.Blocks;
+global using CatfishWebExtensions.Models;
