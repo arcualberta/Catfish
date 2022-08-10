@@ -87,8 +87,6 @@ try
 
     app.Run();
 
-    throw new Exception("Exception testing");
-
 }
 catch(Exception ex)
 {
