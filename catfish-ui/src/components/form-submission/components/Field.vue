@@ -33,6 +33,7 @@
             <b-col v-else class="col-sm-2">
                 {{title}} <span class="hovertext" :data-hover="description" v-if="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span> :
             </b-col>
+            <b-col class="col-sm-10">
                 <!-- Rendering appropriate user input field-->
                 <!-- Option field types -->
                 <Checkboxes :model="model" v-if="model.type === FieldTypes.Checkboxes" />
@@ -45,6 +46,7 @@
                 <MonolingualTextInput :model="model" v-if="isMonolingualTextInputField" />
                 <!-- InfoSection  field types -->
                 <InfoSection :model="model" v-if="model.type === FieldTypes.InfoSection" />
+            </b-col>
         </b-row>
         <br />
     </b-container>
