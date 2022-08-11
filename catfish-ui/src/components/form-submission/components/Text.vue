@@ -33,7 +33,7 @@
         <b-form-input v-model="model.value" type="date"></b-form-input>
     </div>
     <div v-if="textType === FieldTypes.DateTime">
-        <input type="datetime-local" v-model="model.value" class="text-field" />
+        <input type="datetime-local" v-model="model.value" class="col-sm-8"/>
     </div>
    
 </template>
