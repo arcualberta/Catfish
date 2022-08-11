@@ -2,7 +2,6 @@
 @inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishAppConfig;
 @inject Piranha.IApi _piranhaApi;
 @inject Piranha.Manager.ManagerLocalizer Localizer
-
 @{
     var version = Piranha.Utils.GetAssemblyVersion(typeof(Piranha.App).Assembly);
     version = version.Substring(0, version.LastIndexOf("."));
