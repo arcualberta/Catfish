@@ -167,3 +167,6 @@ package-lock.json
 #Ignore the NPM.Lib's compiled outputs and dependency sources
 NPM.UI.Lib/arcualberta-catfish-ui*.tgz
 /Catfish/Catfish.Web/Properties/PublishProfiles/FolderProfile.pubxml
+/Catfish/Catfish.Web/wwwroot/assets/applets/catfish-ui.es.js
+/Catfish/Catfish.Web/wwwroot/assets/applets/catfish-ui.umd.js
+/Catfish/Catfish.Web/wwwroot/assets/applets/style.css
