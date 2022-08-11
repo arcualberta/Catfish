@@ -30,4 +30,8 @@
     <ProjectReference Include="..\Catfish.Web.Extensions\CatfishWebExtensions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\DisplayTemplates\" />
+  </ItemGroup>
+
 </Project>
