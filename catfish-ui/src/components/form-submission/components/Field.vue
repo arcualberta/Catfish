@@ -23,27 +23,30 @@
 </script>
 
 <template>
-    <div>
+    <b-container>
         <!-- print field name and discription-->
-        <div v-if="model.type === FieldTypes.InfoSection" class="alert alert-info">
-            <h3 class="text-field-lable">{{title}}</h3>
-        </div>
-        <span v-else>
+        <b-row>
 
-            <span class="text-field-lable">{{title}} <span class="hovertext" :data-hover="description" v-if="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span></span> :
-        </span>
-        <!-- Rendering appropriate user input field-->
-        <!-- Option field types -->
-        <Checkboxes :model="model" v-if="model.type === FieldTypes.Checkboxes" />
-        <DataList :model="model" v-if="model.type === FieldTypes.DataList" />
-        <DropDown :model="model" v-if="model.type === FieldTypes.DropDown" />
-        <RadioButtons :model="model" v-if="model.type === FieldTypes.RadioButtons" />
-        <!-- Multilingual Text Input field types -->
-        <MultilingualTextInput :model="model" v-if="isMultilingualTextInputField" />
-        <!-- Monolingual Text Input field types -->
-        <MonolingualTextInput :model="model" v-if="isMonolingualTextInputField" />
-        <!-- InfoSection  field types -->
-        <InfoSection :model="model" v-if="model.type === FieldTypes.InfoSection" />
-    </div>
+            <div v-if="model.type === FieldTypes.InfoSection" class="alert alert-info">
+                <h3 class="text-field-lable">{{title}}</h3>
+            </div>
+            <b-col v-else class="col-sm-2">
+                {{title}} <span class="hovertext" :data-hover="description" v-if="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span> :
+            </b-col>
+                <!-- Rendering appropriate user input field-->
+                <!-- Option field types -->
+                <Checkboxes :model="model" v-if="model.type === FieldTypes.Checkboxes" />
+                <DataList :model="model" v-if="model.type === FieldTypes.DataList" />
+                <DropDown :model="model" v-if="model.type === FieldTypes.DropDown" />
+                <RadioButtons :model="model" v-if="model.type === FieldTypes.RadioButtons" />
+                <!-- Multilingual Text Input field types -->
+                <MultilingualTextInput :model="model" v-if="isMultilingualTextInputField" />
+                <!-- Monolingual Text Input field types -->
+                <MonolingualTextInput :model="model" v-if="isMonolingualTextInputField" />
+                <!-- InfoSection  field types -->
+                <InfoSection :model="model" v-if="model.type === FieldTypes.InfoSection" />
+        </b-row>
+        <br />
+    </b-container>
 </template>
 

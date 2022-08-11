@@ -9,31 +9,32 @@
 </script>
 
 <template>
-    <span v-if="textType === FieldTypes.ShortAnswer">
-        <input type="text" v-model="model.value" class="text-field" />
-    </span>
-    <span v-else-if="textType === FieldTypes.Paragraph">
-        <textarea v-model="model.value" class="field-text-area" />
-    </span>
-    <span v-else-if="textType === FieldTypes.RichText">
+    <div v-if="textType === FieldTypes.ShortAnswer">
+        <b-form-input v-model="model.value" placeholder="Enter your name"></b-form-input>
+        <!--<input type="text" v-model="model.value" class="text-field" />-->
+    </div>
+    <div v-else-if="textType === FieldTypes.Paragraph">
+        <b-form-textarea v-model="model.value" rows="3" max-rows="6"></b-form-textarea>
+    </div>
+    <div v-else-if="textType === FieldTypes.RichText">
         <!--TODO: render a proper rich-text editor here -->
         <textarea v-model="model.value" class="field-text-area" />
-    </span>
-    <span v-if="textType === FieldTypes.Email">
-        <input type="email" v-model="model.value" class="text-field" />
-    </span>
-    <span v-if="textType === FieldTypes.Integer">
-        <input type="number" step='1' v-model="model.value" class="text-field" />
-    </span>
-    <span v-if="textType === FieldTypes.Decimal">
-        <input type="number" :step='Math.pow(10, -decPoints)' v-model="model.value" class="text-field" />
-    </span>
-    <span v-if="textType === FieldTypes.Date">
-        <input type="date" v-model="model.value" class="text-field" />
-    </span>
-    <span v-if="textType === FieldTypes.DateTime">
+    </div>
+    <div v-if="textType === FieldTypes.Email">
+        <b-form-input v-model="model.value" type="email"></b-form-input>
+    </div>
+    <div v-if="textType === FieldTypes.Integer">
+        <b-form-input type="number" step='1' v-model="model.value" />
+    </div>
+    <div v-if="textType === FieldTypes.Decimal">
+        <b-form-input type="number" :step='Math.pow(10, -decPoints)' v-model="model.value" />
+    </div>
+    <div v-if="textType === FieldTypes.Date" >
+        <b-form-input v-model="model.value" type="date"></b-form-input>
+    </div>
+    <div v-if="textType === FieldTypes.DateTime">
         <input type="datetime-local" v-model="model.value" class="text-field" />
-    </span>
+    </div>
    
 </template>
 
