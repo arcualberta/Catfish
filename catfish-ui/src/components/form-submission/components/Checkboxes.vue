@@ -18,7 +18,7 @@
 </script>
 
 <template>
-    <div v-for="opt in model.options" :key="opt.id" class="option-field">
+    <div v-for="opt in model.options" :key="opt.id" class="form-check option-field">
         <input type="checkbox" :checked="isSelected(opt.id)" @change="setSelection(opt.id, $event.target.checked)" /> {{formHelper.getOptionText(opt, store.lang)}}
         <span v-if="opt.isExtendedInput != ExtensionType.None">
         </span>

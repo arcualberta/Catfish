@@ -19,8 +19,8 @@
 </script>
 
 <template>
-    <div class="col-sm-8">
-        <select v-model="selectedOptionId">
+    <div class="col-sm-3">
+        <select v-model="selectedOptionId" class="form-select">
             <option v-for="opt in model.options" :key="opt.id" :value="opt.id">{{formHelper.getOptionText(opt, store.lang)}}</option>
         </select>
     </div>

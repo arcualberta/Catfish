@@ -10,7 +10,7 @@
 
 <template>
     <div v-if="textType === FieldTypes.ShortAnswer">
-        <b-form-input v-model="model.value" placeholder="Enter your name"></b-form-input>
+        <b-form-input v-model="model.value"  ></b-form-input>
         <!--<input type="text" v-model="model.value" class="text-field" />-->
     </div>
     <div v-else-if="textType === FieldTypes.Paragraph">
