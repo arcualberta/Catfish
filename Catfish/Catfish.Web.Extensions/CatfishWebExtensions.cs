@@ -100,6 +100,8 @@
                     if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
                         signInStatus = await catfishSignInManager.SignIn(user, request.HttpContext);
 
+                    result.Password = CryptographyHelper.GenerateHash(user.Email, configuration.GetSection("SiteConfig:LocalAccountPasswordSalt").Value);
+                    
                     return result;
                 }
                 catch (Exception ex)

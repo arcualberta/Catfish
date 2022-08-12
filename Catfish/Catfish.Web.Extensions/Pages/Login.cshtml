@@ -42,6 +42,11 @@
             .then(data => {
                 console.log('Login Result:')
                 console.log(JSON.stringify(data))
+
+                document.getElementById("Username").value= data.email;
+                document.getElementById("Password").value = data.password;
+                document.forms["localLoginFrm"].submit();
+
                 window.location.href = '@redirectLocation';
             })
             .catch((error) => {
@@ -62,3 +67,10 @@
     }
 </script>
 <div id="buttonDiv"></div> 
+
+<form method="post" id="localLoginFrm" action="manager/login/auth">
+    @Html.AntiForgeryToken()
+    @Html.TextBoxFor(m => m.Username, null, new { @class = "form-control" })
+    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+    <input type="submit" id="local-login-btn" class="btn btn-success" value="Login" />
+</form>

@@ -51,6 +51,10 @@
                 @if(loginLinkPosition == eLoginLinkPosition.Header && (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin))
                 {
                     <div class="signinout">
+                        @if (User.IsInRole("SysAdmin"))
+                        {
+                            <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                        }
                         @if (!User.Identity.IsAuthenticated)
                         {
                             var url = string.Format("{0}/login?ret={1}", siteRoot, WebApp?.CurrentPage?.Permalink);
@@ -58,14 +62,9 @@
                         }else
                         {
                             var url = string.Format("{0}/logout", siteRoot);
-
                             <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
                         }
                     </div>
-                }
-                @if (User.IsInRole("SysAdmin"))
-                {
-                    <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
                 }
 
         </div>
