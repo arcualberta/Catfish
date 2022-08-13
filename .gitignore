@@ -170,3 +170,5 @@ NPM.UI.Lib/arcualberta-catfish-ui*.tgz
 /Catfish/Catfish.Web/wwwroot/assets/applets/catfish-ui.es.js
 /Catfish/Catfish.Web/wwwroot/assets/applets/catfish-ui.umd.js
 /Catfish/Catfish.Web/wwwroot/assets/applets/style.css
+/Catfish/Catfish.Web/startup-error.txt
+
