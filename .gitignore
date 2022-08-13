@@ -167,3 +167,4 @@ package-lock.json
 #Ignore the NPM.Lib's compiled outputs and dependency sources
 NPM.UI.Lib/arcualberta-catfish-ui*.tgz
 /Catfish/Catfish.Web/Properties/PublishProfiles/FolderProfile.pubxml
+/Catfish/Catfish.Web/startup-error.txt
