@@ -47,25 +47,10 @@ namespace CatfishWebExtensions.Pages
             ReturnUrl = returnUrl;
         }
 
-
-        public async Task<IActionResult> OnPostAsync(/*[FromBody] string jwt, */string returnUrl = null)
+        [HttpPost]
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             await _security.SignOut(HttpContext);
-
-
-            //var result = await _googleIdentity.GetUserLoginResult(jwt);
-
-            //var user = await _catfishUserManager.GetUser(result);
-            //if (user == null)
-            //    throw new CatfishException("Unable to retrieve or create user");
-
-            ////Obtain the list of global roles of the user
-            //result.GlobalRoles = await _catfishUserManager.GetGlobalRoles(user);
-
-            //bool signInStatus = false;
-            //if (bool.TryParse(_configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
-            //    signInStatus = await _security.SignIn(HttpContext, Username, Password);
-
 
             if (!ModelState.IsValid || !await _security.SignIn(HttpContext, Username, Password))
             {
@@ -80,6 +65,5 @@ namespace CatfishWebExtensions.Pages
             }
             return LocalRedirect("~/manager/login/auth");
         }
-
     }
 }

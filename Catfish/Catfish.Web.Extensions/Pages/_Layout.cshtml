@@ -53,7 +53,7 @@
                     <div class="signinout">
                         @if (User.IsInRole("SysAdmin"))
                         {
-                            <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                            <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager/login/auth'"><span class="fa fa-table"> Dashboard</span></button>
                         }
                         @if (!User.Identity.IsAuthenticated)
                         {

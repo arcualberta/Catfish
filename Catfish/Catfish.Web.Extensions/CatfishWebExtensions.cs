@@ -99,9 +99,7 @@
                     bool signInStatus = false;
                     if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
                         signInStatus = await catfishSignInManager.SignIn(user, request.HttpContext);
-
-                    result.Password = CryptographyHelper.GenerateHash(user.Email, configuration.GetSection("SiteConfig:LocalAccountPasswordSalt").Value);
-                    
+                   
                     return result;
                 }
                 catch (Exception ex)
@@ -114,11 +112,13 @@
             (builder as WebApplication)?.MapGet("/logout", async (IConfiguration configuration, HttpRequest request, ICatfishSignInManager catfishSignInManager) =>
             {
                 await catfishSignInManager.SignOut(request.HttpContext);
-
-                var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
-                if (string.IsNullOrEmpty(siteRoot))
-                    siteRoot = "/";
-                request.HttpContext.Response.Redirect(siteRoot);
+                if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
+                {
+                    var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
+                    if (string.IsNullOrEmpty(siteRoot))
+                        siteRoot = "/";
+                    request.HttpContext.Response.Redirect(siteRoot);
+                }
             });
 
 
