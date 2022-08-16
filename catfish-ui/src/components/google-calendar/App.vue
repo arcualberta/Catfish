@@ -1,12 +1,15 @@
 <template>
     <h3 style="color: green">Google Calendar</h3>
-    <div>
-        {{JSON.stringify(store.events)}}
-    </div>
+    
     <h3>Upcoming events</h3>
-    <div>
-        {{JSON.stringify(upcomingEvents)}}
+    <div v-for="itm in upcomingEvents">
+        <div>Title: {{itm.summary}}</div>
+        <div>Description: {{itm.description}}</div>
+        <div>Start Date: {{itm.start.dateTime}}</div>
+      
+
     </div>
+    
 </template>
 <script setup lang="ts">
     import { Pinia } from 'pinia'
