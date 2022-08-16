@@ -29,43 +29,14 @@ export const useGoogleCalendarStore = defineStore('GoogleCalendarStore', {
                 });
 
         },
-        currentDateTime() {
-            const current = new Date();
-            const date = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
-            const time = current.getHours() + ":" + current.getMinutes() + ":" + current.getSeconds();
-            const dateTime = date + ' ' + time;
-
-            return dateTime;
-        },
         getUpcomingEvents() {
-
-            console.log("max event" + config.maxEvents)
-            
-            let count = 1;
-            //this.events?.forEach((ev) => {
-            //    let end = moment(ev.end?.dateTime).format("DD-MM-YYYY")
-            //    let curr = moment(this.currentDateTime()).format("DD-MM-YYYY")
-            //    if (end > curr) {
-                   
-            //        if (count <= config.maxEvents) {
-                       
-            //            this.upcomingEvents?.push(ev);
-            //            count++;
-            //        }  
-            //    }
-            //});
+            //console.log("max event" + config.maxEvents)          
             return this.events?.filter(this.checkCurrEvent)
-            //console.log("upcoming events:")
-            //console.log(JSON.stringify(this.upcomingEvents))
-          
         },
         checkCurrEvent(ev:Item){
-            let end = moment(ev.end?.dateTime).format("DD-MM-YYYY")
-            let curr = moment(this.currentDateTime()).format("DD-MM-YYYY")
-            if (end > curr) {
+            if (ev.end?.dateTime && (new Date(ev.end?.dateTime) > new Date())) {
                 return ev;
             }
           }
     }
-
 });

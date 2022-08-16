@@ -10,6 +10,7 @@
 </template>
 <script setup lang="ts">
     import { Pinia } from 'pinia'
+    import { computed } from 'vue'
     //import { Guid } from "guid-typescript";
 
     import { useGoogleCalendarStore } from './store';
@@ -21,5 +22,5 @@
     const store = useGoogleCalendarStore(props.piniaInstance);
 
     const events = store.loadEvents();
-    const upcomingEvents = store.getUpcomingEvents();
+    const upcomingEvents = computed(() => store.getUpcomingEvents());
 </script>
