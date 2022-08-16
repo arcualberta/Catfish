@@ -14,5 +14,5 @@
 </script>
 
 <template>
-    <GoogleCalendar :pinia-instance="getActivePinia()" :maxEvents="10" />
+    <GoogleCalendar :pinia-instance="getActivePinia()" />
 </template>

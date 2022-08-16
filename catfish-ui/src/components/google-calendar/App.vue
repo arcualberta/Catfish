@@ -3,6 +3,10 @@
     <div>
         {{JSON.stringify(store.events)}}
     </div>
+    <h3>Upcoming events</h3>
+    <div>
+        {{JSON.stringify(upcomingEvents)}}
+    </div>
 </template>
 <script setup lang="ts">
     import { Pinia } from 'pinia'
@@ -17,4 +21,5 @@
     const store = useGoogleCalendarStore(props.piniaInstance);
 
     const events = store.loadEvents();
+    const upcomingEvents = store.getUpcomingEvents();
 </script>
