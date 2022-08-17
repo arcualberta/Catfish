@@ -17,3 +17,7 @@ export { useLoginStore } from './login/store';
 export { default as WorkflowBuilder } from './workflow-builder/App.vue';
 export { useWorkflowBuilderStore } from './workflow-builder/store';
 
+/* google calendar component */
+export { default as GoogleCalendar } from './google-calendar/App.vue'
+export { useGoogleCalendarStore } from './google-calendar/store'
+
