@@ -38,12 +38,15 @@
 </script>
 
 <template>
-
-    <input list="dataOptions" id="model.id" name="model.id" v-model="selectedOption" />
-    <datalist id="dataOptions" >
-        <option v-for="opt in model.options" :key="opt.id">{{formHelper.getOptionText(opt, store.lang)}}</option>
-    </datalist>
-    {{fieldData}}
-    <CustomOptions :model="model" />
+    <div class="col-sm-8">
+        <b-form-input list="dataOptions" id="model.id" name="model.id" v-model="selectedOption" />
+        <datalist id="dataOptions">
+            <option v-for="opt in model.options" :key="opt.id">{{formHelper.getOptionText(opt, store.lang)}}</option>
+        </datalist>
+    </div>
+    <div class="col-sm-2">
+        <CustomOptions :model="model" />
+    </div>
+    
 </template>
 

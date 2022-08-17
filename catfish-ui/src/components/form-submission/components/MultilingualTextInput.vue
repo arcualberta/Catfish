@@ -20,11 +20,19 @@
 </script>
 
 <template>
-    <span v-for=" value in fieldData.multilingualTextValues" :key="value.id" :model="value">
-        <TextCollection :model="value" :text-type="model.type" />
-        <span v-if="fieldData.multilingualTextValues.length > 1" class="multilingual-field-delete"><font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(value.id)" class="fa-icon delete" /></span>
-        
-    </span>
-    <span style="margin-top: -45px; margin-left: 530px;"><font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option"  /></span>
+    <div v-for=" value in fieldData.multilingualTextValues" :key="value.id" :model="value" class="row mb-3">
+        <div class="col col-sm-11" >
+            <TextCollection :model="value" :text-type="model.type" />
+        </div>
+        <div class="col col-sm-1">
+            <div v-if="fieldData.multilingualTextValues.length > 1">
+                <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(value.id)" class="fa-icon delete" />
+            </div>
+        </div>
+    </div>
+    <div>
+        <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" />
+    </div>
+
 </template>
 
