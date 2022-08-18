@@ -9,9 +9,10 @@ export const getFieldName = (obj: models.Field | models.FieldContainer): string 
 }
 
 export const getFieldDescription = (obj: models.Field | models.FieldContainer): string => {
-    return obj?.description?.values?.$values
-        .map(txt => txt.value)
-        .join(" | ") as string;
+    return obj?.description?.values?.$values[0]?.value as string;
+//    obj?.description?.values?.$values
+//        .map(txt => txt.value)
+//        .join(" | ") as string;
 }
 
 export const getSelectedFieldLabels = (options: models.Option[]): string => {

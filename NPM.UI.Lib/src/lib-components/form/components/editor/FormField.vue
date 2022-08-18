@@ -76,6 +76,8 @@
     </div>
     <div v-else class="container">
 
+        {{model.description?.values?.$values[0]?.value}}<br />
+        {{description}}
         <span v-if="model.required" class="fieldName required">{{name}}<span class="hovertext" :data-hover="description" v-if="description"><button>test</button></span></span>
         <span v-else>{{name}}<span class="hovertext" :data-hover="description" v-if="description"><button class="fas fa-question-circle">test</button></span></span>
         <AttachmentField v-if="helpers.testFieldType(model, eFieldType.AttachmentField)" :model="model" />
@@ -87,7 +89,7 @@
         <DecimalField v-if="helpers.testFieldType(model, eFieldType.DecimalField)" :model="model" />
         <EmailField v-if="helpers.testFieldType(model, eFieldType.EmailField)" :model="model" />
         <IntegerField v-if="helpers.testFieldType(model, eFieldType.IntegerField)" :model="model" />
-        
+
         <span v-if="isMonolingualField === true && allowMultipleValues === true" class="add-field" @click="formStore.appendMonolingualValue(model)"> + </span>
 
         <span v-if="isMultilingualTextField && allowMultipleValues === true" class="add-field" @click="formStore.appendMutilingualValue(model)"> + </span>
