@@ -22,6 +22,7 @@
     "postbuild": "rimraf ./dist/types/dev ./dist/types/src/entry.d.ts"
   },
   "dependencies": {
+    "@fortawesome/vue-fontawesome": "^3.0.1",
     "@tinymce/tinymce-vue": "^4.0.5",
     "@vue/composition-api": "^1.6.2",
     "copyfiles": "^2.4.1",

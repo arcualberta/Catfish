@@ -8,6 +8,12 @@ export const getFieldName = (obj: models.Field | models.FieldContainer): string 
         .join(" | ") as string;
 }
 
+export const getFieldDescription = (obj: models.Field | models.FieldContainer): string => {
+    return obj?.description?.values?.$values
+        .map(txt => txt.value)
+        .join(" | ") as string;
+}
+
 export const getSelectedFieldLabels = (options: models.Option[]): string => {
     return options?.filter(opt => opt.selected)
         .map(opt => opt.optionText?.values.$values
