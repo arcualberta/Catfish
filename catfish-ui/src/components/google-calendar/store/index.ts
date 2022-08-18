@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import  {Item } from '../models'
 import config from '../../../appsettings'
-import moment from 'moment'
+
 
 export const useGoogleCalendarStore = defineStore('GoogleCalendarStore', {
     state: () => ({
@@ -30,11 +30,17 @@ export const useGoogleCalendarStore = defineStore('GoogleCalendarStore', {
 
         },
         getUpcomingEvents() {
-            //console.log("max event" + config.maxEvents)          
-            return this.events?.filter(this.checkCurrEvent)
+            //console.log("max event" + config.maxEvents)
+            //return this.events?.filter(this.checkCurrEvent)
+            console.log("all event" + this.events);
+            const futureEvents = this.events?.filter((ev) => this.checkCurrEvent(ev));
+            console.log("filtered" + futureEvents);
+
+            return futureEvents;
+          
         },
         checkCurrEvent(ev:Item){
-            if (ev.end?.dateTime && (new Date(ev.end?.dateTime) > new Date())) {
+            if (ev.start?.dateTime && (new Date(ev.start?.dateTime) >= new Date())) {
                 return ev;
             }
           }
