@@ -138,6 +138,11 @@
                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.Pages.DisplayTemplates"),
                     RequestPath = "/Pages/DisplayTemplates"
                 });
+                //.UseStaticFiles(new StaticFileOptions
+                //{
+                //    FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.bootstrap.js"),
+                //    RequestPath = "/js"
+                //});
         }
 
         /// <summary>
@@ -155,6 +160,8 @@
         private static void RegisterBlocks()
         {
             Piranha.App.Blocks.Register<ExtendedImage>();
+            Piranha.App.Blocks.Register<Accordion>();
+            Piranha.App.Blocks.Register<Card>();
         }
         #endregion
     }
