@@ -1,0 +1,32 @@
+﻿@model CatfishWebExtensions.Blocks.Accordion
+
+@inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishConfiguration;
+
+@{
+    var css_classes = Model.CSSClasses.Value;
+   
+}
+
+<div class="accordion" id="accordion-@Model.Id">
+
+    @foreach(var block in Model.Items)
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-@block.Id">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@block.Id" aria-expanded="false" aria-controls="collapse-@block.Id">
+                    @if(block is Card){@((block as Card).Title)}
+                </button>
+            </h2>
+            <div id="collapse-@block.Id" class="accordion-collapse collapse" aria-labelledby="heading-@block.Id" data-bs-parent="#accordion-@Model.Id">
+                <div class="accordion-body">
+                    @if(block is Card){
+                        @Html.Raw((block as Card).Content)
+                    }
+                    else{
+                        @Html.DisplayFor(m => block)
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
