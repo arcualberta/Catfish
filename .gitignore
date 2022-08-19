@@ -168,3 +168,4 @@ package-lock.json
 NPM.UI.Lib/arcualberta-catfish-ui*.tgz
 /Catfish/Catfish.Web/Properties/PublishProfiles/FolderProfile.pubxml
 /Catfish/Catfish.Web/startup-error.txt
+appsettings.ts
