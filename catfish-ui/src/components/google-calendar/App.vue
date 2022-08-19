@@ -57,7 +57,7 @@
             googleCalendarApiKey: config.googleApiKey,
 
             eventSources: calIds,
-            initialView:  'dayGridMonth', //'listMonth',
+            initialView: config.initialView,//'dayGridMonth', //'listMonth',
             //views: {
             //    listDay: { buttonText: 'list day' },
             //    listWeek: { buttonText: 'list week' },
