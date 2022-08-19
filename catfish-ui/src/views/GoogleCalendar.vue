@@ -13,6 +13,6 @@
 
 </script>
 
-<template>
+<template setup>
     <GoogleCalendar :pinia-instance="getActivePinia()" />
 </template>

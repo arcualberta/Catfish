@@ -1,20 +1,21 @@
 import { defineStore } from 'pinia';
-import  {Item } from '../models'
+import { Item, GoogleCalendarId } from '../models'
 import config from '../../../appsettings'
+import { Guid } from 'guid-typescript';
 
 
 export const useGoogleCalendarStore = defineStore('GoogleCalendarStore', {
     state: () => ({
-      
+        id: null as Guid | null,
         events: null as Item[] | null, //all events
-       
-        upcomingEvents: null as Item[] | null
+        upcomingEvents: null as Item[] | null,
+        calendarIds: null as  [] | null
         
     }),
     actions: {
         loadEvents() {
 
-            let api = `https://www.googleapis.com/calendar/v3/calendars/` + config.googleCalendarId + `/events?key=` + config.googleApiKey;
+            let api = `https://www.googleapis.com/calendar/v3/calendars/` + config.googleCalendarIds[0] + `/events?key=` + config.googleApiKey;
             
             fetch(api, {
                 method: 'GET'
@@ -32,9 +33,9 @@ export const useGoogleCalendarStore = defineStore('GoogleCalendarStore', {
         getUpcomingEvents() {
             //console.log("max event" + config.maxEvents)
             //return this.events?.filter(this.checkCurrEvent)
-            console.log("all event" + this.events);
+           // console.log("all event" + this.events);
             const futureEvents = this.events?.filter((ev) => this.checkCurrEvent(ev));
-            console.log("filtered" + futureEvents);
+           // console.log("filtered" + futureEvents);
 
             return futureEvents;
           
@@ -43,6 +44,22 @@ export const useGoogleCalendarStore = defineStore('GoogleCalendarStore', {
             if (ev.start?.dateTime && (new Date(ev.start?.dateTime) >= new Date())) {
                 return ev;
             }
-          }
+        },
+       
+    },
+    getters: {
+        getCalendarIds: (state) => {
+           // let calIds: object[] = [];
+            config.googleCalendarIds.map(function (cid) {
+                let calId = { googleCalendarId: cid, className: 'gcal-event' }
+               // calIds.push(calId);
+                state.calendarIds?.push(calId);
+            });
+           return state.calendarIds;
+        }
+            
+        
     }
+
+   
 });

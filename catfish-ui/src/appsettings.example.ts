@@ -1,4 +1,5 @@
 export default {
     googleApiKey: "xxxxxxxxxxxxxxxxxxxxxxxx",
-    googleCalendarId: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    googleCalendarIds: ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
+    maxEvents: 10
 }
