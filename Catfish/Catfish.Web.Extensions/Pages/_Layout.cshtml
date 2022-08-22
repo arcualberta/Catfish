@@ -12,6 +12,30 @@
         siteTitle = "ARC CMS <small>3.0</small>";
 
     var loginLinkPosition = _catfishAppConfig.GetLoginLinkPosition();
+
+
+    void subMenu(SitemapItem item)
+    {
+
+        <li class="nav-item dropdown @(item.Id == WebApp.PageId ? "active" : "")">
+            <a class="dropdown-toggle" id="navbarDropdownMenuLink_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                @item.MenuTitle
+            </a>
+           
+       
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_@item.Id">
+                    @foreach (var subItm in item.Items)
+                    {
+                        if (!subItm.IsHidden)
+                        {
+                            <li><a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a></li>
+                        }
+
+                    }
+                </ul>
+     </li>
+
+    }
 }
 <!doctype html>
 <html lang="en">
@@ -49,9 +73,14 @@
                 <ul class="navbar-nav ml-auto">
                     @foreach (var item in (await WebApp.Site.Sitemap.ForUserAsync(User, Auth)).Where(i => !i.IsHidden))
                     {
-                        <li class="nav-item@(item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? " active" : "")">
-                            <a class="nav-link" href="@WebApp.Url(item)">@item.MenuTitle</a>
-                        </li>
+                        if(item.Items.Count == 0){
+                            <li class="nav-item@(item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? " active" : "")">
+                                <a class="nav-link" href="@WebApp.Url(item)">@item.MenuTitle</a>
+                            </li>
+                        }else
+                        {
+                            subMenu(item);
+                        }
                     }
                 </ul>
             </div>
