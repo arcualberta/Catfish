@@ -159,9 +159,10 @@
         #region Private methods
         private static void RegisterBlocks()
         {
-            Piranha.App.Blocks.Register<ExtendedImage>();
-            Piranha.App.Blocks.Register<Accordion>();
-            Piranha.App.Blocks.Register<Card>();
+            App.Blocks.Register<ExtendedImage>();
+            App.Blocks.Register<Accordion>();
+            App.Blocks.Register<Card>();
+            App.Blocks.Register<GoogleCalendar>();
         }
         #endregion
     }
