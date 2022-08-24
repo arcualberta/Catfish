@@ -12,4 +12,6 @@
 
 <div>Google Calendar</div>
 
-<partial name="/Pages/DisplayTemplates/_AppletLoader.cshtml" view-data="@viewData" />
+@*<partial name="~/Pages/DisplayTemplates/_AppletLoader.cshtml" view-data="@viewData" />*@
+
+@await Html.PartialAsync("_AppletLoader.cshtml",@viewData)

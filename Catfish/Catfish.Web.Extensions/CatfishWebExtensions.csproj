@@ -31,7 +31,8 @@
 
   <ItemGroup>
     <Content Remove="assets\manager\js\css.js" />
-    <Content Remove="Pages\DisplayTemplates\_AppletLoader.cshtml" />
+    <Content Remove="Views\Shared\DisplayTemplates\_AppletLoader.cshtml" />
+    <Content Remove="Views\Shared\_AppletLoader.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,7 +51,7 @@
       <Generator></Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="assets\public\css\webextensions.css" />
-    <EmbeddedResource Include="Pages\DisplayTemplates\_AppletLoader.cshtml" />
+    <EmbeddedResource Include="Views\Shared\DisplayTemplates\_AppletLoader.cshtml" />
     <EmbeddedResource Include="Views\Shared\_AppletLoader.cshtml" />
   </ItemGroup>
 
