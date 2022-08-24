@@ -137,12 +137,12 @@
                 {
                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.Pages.DisplayTemplates"),
                     RequestPath = "/Pages/DisplayTemplates"
+                })
+                .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.css"),
+                     RequestPath = "/assets/css"
                 });
-                //.UseStaticFiles(new StaticFileOptions
-                //{
-                //    FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.bootstrap.js"),
-                //    RequestPath = "/js"
-                //});
         }
 
         /// <summary>

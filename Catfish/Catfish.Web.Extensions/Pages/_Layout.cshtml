@@ -12,6 +12,30 @@
         siteTitle = "ARC CMS <small>3.0</small>";
 
     var loginLinkPosition = _catfishAppConfig.GetLoginLinkPosition();
+
+
+    void subMenu(SitemapItem item)
+    {
+
+        <li class="nav-item dropdown @(item.Id == WebApp.PageId ? "active" : "")">
+            <a class="dropdown-toggle" id="navbarDropdownMenuLink_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                @item.MenuTitle
+            </a>
+           
+       
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_@item.Id">
+                    @foreach (var subItm in item.Items)
+                    {
+                        if (!subItm.IsHidden)
+                        {
+                            <li><a class="dropdown-item nav-link" href="@subItm.Permalink">@subItm.MenuTitle</a></li>
+                        }
+
+                    }
+                </ul>
+     </li>
+
+    }
 }
 <!doctype html>
 <html lang="en">
@@ -24,6 +48,7 @@
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="~/assets/css/style.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/assets/css/webextensions.css" asp-append-version="true">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -49,9 +74,14 @@
                 <ul class="navbar-nav ml-auto">
                     @foreach (var item in (await WebApp.Site.Sitemap.ForUserAsync(User, Auth)).Where(i => !i.IsHidden))
                     {
-                        <li class="nav-item@(item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? " active" : "")">
-                            <a class="nav-link" href="@WebApp.Url(item)">@item.MenuTitle</a>
-                        </li>
+                        if(item.Items.Count == 0){
+                            <li class="nav-item@(item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? " active" : "")">
+                                <a class="nav-link" href="@WebApp.Url(item)">@item.MenuTitle</a>
+                            </li>
+                        }else
+                        {
+                            subMenu(item);
+                        }
                     }
                 </ul>
             </div>
