@@ -48,6 +48,7 @@
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<ICatfishUserManager, CatfishUserManager>();
             services.AddScoped<ICatfishSignInManager, CatfishSignInManager>();
+            services.AddScoped<IAssetRegistry, AssetRegistry>();
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -142,10 +143,6 @@
                  {
                      FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.css"),
                      RequestPath = "/assets/css"
-                }).UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.Views.Shared.DisplayTemplates"),
-                    RequestPath = "/Views/Shared/DisplayTemplates"
                 });
         }
 
