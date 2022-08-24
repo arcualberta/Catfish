@@ -37,6 +37,7 @@
     <None Remove="assets\manager\images\arc.png" />
     <None Remove="assets\manager\images\favicon.ico" />
     <None Remove="assets\manager\js\css.js" />
+    <None Remove="assets\public\css\webextensions.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +48,7 @@
       <CustomToolNamespace></CustomToolNamespace>
       <Generator></Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="assets\public\css\webextensions.css" />
   </ItemGroup>
 
   <ItemGroup>
