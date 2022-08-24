@@ -1,3 +1,15 @@
 ﻿@model CatfishWebExtensions.Blocks.GoogleCalendar
 
-Google Calendar
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    var viewData = new ViewDataDictionary(this.ViewData)
+    {
+        { "data-api-key", Model.ApiKey.Value },
+        { "data-calendar-ids", Model.CalendarIds.Value },
+    };
+}
+
+<div>Google Calendar</div>
+
+<partial name="/Pages/DisplayTemplates/_AppletLoader.cshtml" view-data="@viewData" />

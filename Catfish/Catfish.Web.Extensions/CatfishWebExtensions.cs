@@ -142,7 +142,8 @@
                  {
                      FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.css"),
                      RequestPath = "/assets/css"
-                });
+                })
+                 ;
         }
 
         /// <summary>
