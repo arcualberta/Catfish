@@ -9,7 +9,6 @@
 <template>
     <div>
         <br />
-        <b-alert show>Default Alert</b-alert>
         <div v-html="description" class="alert alert-info" />
     </div>
     
