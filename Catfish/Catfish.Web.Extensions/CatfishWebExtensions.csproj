@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <Content Remove="assets\manager\js\css.js" />
-    <Content Remove="Views\Shared\_AppletLoader.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
