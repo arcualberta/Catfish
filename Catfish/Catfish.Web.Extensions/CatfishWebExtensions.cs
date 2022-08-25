@@ -152,6 +152,10 @@
                  {
                      FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vue3"),
                      RequestPath = "/assets/public/vendors/vue3"
+                 }).UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vuedemi"),
+                     RequestPath = "/assets/public/vendors/vuedemi"
                  });
         }
 

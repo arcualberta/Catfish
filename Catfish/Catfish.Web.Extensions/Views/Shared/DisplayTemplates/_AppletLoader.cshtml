@@ -34,13 +34,15 @@ Applet Loader is being rendered here ...
 <div id="@mountPointId"></div>
 <script src="/assets/public/vendors/vue3/vue.global.min.js"></script>
 <script src="/assets/public/vendors/vue3/vue.global.prod.min.js"></script>
-<script src="/assets/public/vendors/vue3/vue.ems-browser.min.js"></script>
+@*<script src="/assets/public/vendors/vue3/vue.esm-browser.min.js"></script> *@
 
+<script src="/assets/public/vendors/vuedemi/index.iife.min.js"></script>
 <script src="/assets/public/vendors/pinia/pinia.iife.min.js"></script>
 <script src="/assets/public/vendors/pinia/pinia.iife.prod.min.js"></script>
-<script src="/assets/public/vendors/pinia/pinia.ems-browser.min.js"></script>
+@*<script src="/assets/public/vendors/pinia/pinia.esm-browser.min.js"></script>*@
 
-<script src="/assets/applets/catfish-ui.es.js"></script>
+
+<script type="module" src="/assets/applets/catfish-ui.es.js"></script>
 
 <script type="module">
 

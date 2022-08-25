@@ -38,6 +38,7 @@
     <None Remove="assets\manager\images\favicon.ico" />
     <None Remove="assets\manager\js\css.js" />
     <None Remove="assets\public\css\webextensions.css" />
+    <None Remove="assets\public\vendors\vuedemi\index.iife.min.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,9 +57,10 @@
     <EmbeddedResource Include="assets\public\vendors\pinia2\pinia.iife.prod.min.js">
       <SubType>Code</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="assets\public\vendors\vue3\vue.ems-browser.min.js" />
+    <EmbeddedResource Include="assets\public\vendors\vue3\vue.esm-browser.min.js" />
     <EmbeddedResource Include="assets\public\vendors\vue3\vue.global.min.js" />
     <EmbeddedResource Include="assets\public\vendors\vue3\vue.global.prod.min.js" />
+    <EmbeddedResource Include="assets\public\vendors\vuedemi\index.iife.min.js" />
   </ItemGroup>
 
   <ItemGroup>
