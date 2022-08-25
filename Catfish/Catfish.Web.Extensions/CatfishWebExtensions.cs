@@ -143,8 +143,18 @@
                  {
                      FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.css"),
                      RequestPath = "/assets/css"
-                });
+                })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.pinia2"),
+                     RequestPath = "/assets/public/vendors/pinia"
+                 }).UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vue3"),
+                     RequestPath = "/assets/public/vendors/vue3"
+                 });
         }
+
 
         /// <summary>
         /// Static accessor to CatfishWebExtensions module if it is registered in the Piranha application.
