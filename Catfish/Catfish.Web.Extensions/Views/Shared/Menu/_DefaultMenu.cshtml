@@ -10,24 +10,19 @@
     var loginLinkPosition = _catfishAppConfig.GetLoginLinkPosition();
     var siteRoot = ConfigHelper.SiteUrl;
 
-    void subMenu(SitemapItem item)
+    void renderSubMenu(SitemapItem item)
     {
-        <li class="nav-item dropdown @(item.Id == WebApp.PageId ? "active" : "")">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        var highlight = item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? "active" : "";
+
+        <li class="nav-item dropdown">
+            <a class="btn dropdown-toggle @highlight" role="button" data-bs-toggle="dropdown"  href="#">
                 @item.MenuTitle
             </a>
-                    @*<a class="dropdown-toggle" id="navbarDropdownMenuLink_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                
-            </a>   *@        
-               
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_@item.Id">
-                @foreach (var subItm in item.Items)
+                @foreach (var subItm in item.Items.Where(it => !it.IsHidden))
                 {
-                    if (!subItm.IsHidden)
-                    {
-                                <li><a class="dropdown-item nav-link" href="@subItm.Permalink">@subItm.MenuTitle</a></li>
-                    }
-
+                    highlight = subItm.Id == WebApp.PageId ? "active" : "";
+                    <li><a class="dropdown-item nav-link @highlight" href="@subItm.Permalink">@subItm.MenuTitle</a></li>
                 }
             </ul>
         </li>
@@ -41,13 +36,14 @@
     <ul class="navbar-nav ml-auto">
         @foreach (var item in (await WebApp.Site.Sitemap.ForUserAsync(User, Auth)).Where(i => !i.IsHidden))
         {
-            if(item.Items.Count == 0){
-                <li class="nav-item@(item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? " active" : "")">
-                    <a class="nav-link" href="@WebApp.Url(item)">@item.MenuTitle</a>
+            if(item.Items.Where(it => !it.IsHidden).Any()){
+                renderSubMenu(item);
+            }else {
+                var highlight = item.Id == WebApp.PageId ? "active" : "";
+                <li class="nav-item @highlight">
+                    <a class="btn nav-link"  role="button" aria-expanded="false" href="@WebApp.Url(item)">@item.MenuTitle</a>
                 </li>
-            }else
-            {
-                subMenu(item);
+                
             }
         }
     </ul>
