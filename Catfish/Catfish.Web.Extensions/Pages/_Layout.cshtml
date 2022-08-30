@@ -1,41 +1,19 @@
 @using CatfishExtensions.Helpers
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishAppConfig;
 @inject Piranha.IApi _piranhaApi;
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @{
     var version = Piranha.Utils.GetAssemblyVersion(typeof(Piranha.App).Assembly);
     version = version.Substring(0, version.LastIndexOf("."));
-    bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
     var siteRoot = ConfigHelper.SiteUrl;
     var siteTitle = WebApp.Site.Description.Title;
     if (siteTitle == "Default Site")
         siteTitle = "ARC CMS <small>3.0</small>";
 
+    bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
     var loginLinkPosition = _catfishAppConfig.GetLoginLinkPosition();
-
-
-    void subMenu(SitemapItem item)
-    {
-
-        <li class="nav-item dropdown @(item.Id == WebApp.PageId ? "active" : "")">
-            <a class="dropdown-toggle" id="navbarDropdownMenuLink_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                @item.MenuTitle
-            </a>
-           
-       
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_@item.Id">
-                    @foreach (var subItm in item.Items)
-                    {
-                        if (!subItm.IsHidden)
-                        {
-                            <li><a class="dropdown-item nav-link" href="@subItm.Permalink">@subItm.MenuTitle</a></li>
-                        }
-
-                    }
-                </ul>
-     </li>
-
-    }
 }
 <!doctype html>
 <html lang="en">
@@ -67,44 +45,7 @@
     <nav class="navbar navbar-expand-md navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="~/">@Html.Raw(siteTitle)</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-                <ul class="navbar-nav ml-auto">
-                    @foreach (var item in (await WebApp.Site.Sitemap.ForUserAsync(User, Auth)).Where(i => !i.IsHidden))
-                    {
-                        if(item.Items.Count == 0){
-                            <li class="nav-item@(item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? " active" : "")">
-                                <a class="nav-link" href="@WebApp.Url(item)">@item.MenuTitle</a>
-                            </li>
-                        }else
-                        {
-                            subMenu(item);
-                        }
-                    }
-                </ul>
-            </div>
-
-                @if(loginLinkPosition == eLoginLinkPosition.Header && (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin))
-                {
-                    <div class="signinout">
-                        @if (User.IsInRole("SysAdmin"))
-                        {
-                            <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager/login/auth'"><span class="fa fa-table"> Dashboard</span></button>
-                        }
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-                            var url = string.Format("{0}/login?ret={1}", siteRoot, WebApp?.CurrentPage?.Permalink);
-                            <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
-                        }else
-                        {
-                            var url = string.Format("{0}/logout", siteRoot);
-                            <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
-                        }
-                    </div>
-                }
-
+            <partial name="Menu/_DefaultMenu" />
         </div>
     </nav>
 

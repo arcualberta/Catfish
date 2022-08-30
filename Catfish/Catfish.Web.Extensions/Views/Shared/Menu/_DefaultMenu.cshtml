@@ -1,0 +1,70 @@
+﻿@using CatfishExtensions.Helpers
+@using Piranha.Models
+@inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishAppConfig;
+@inject Piranha.IApi _piranhaApi;
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@inject Piranha.AspNetCore.Services.IApplicationService WebApp
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService Auth
+
+@{
+    bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
+    var loginLinkPosition = _catfishAppConfig.GetLoginLinkPosition();
+    var siteRoot = ConfigHelper.SiteUrl;
+
+    void renderSubMenu(SitemapItem item)
+    {
+        var highlight = item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? "active" : "";
+
+        <li class="nav-item dropdown">
+            <a class="btn dropdown-toggle @highlight" role="button" data-bs-toggle="dropdown"  href="#">
+                @item.MenuTitle
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_@item.Id">
+                @foreach (var subItm in item.Items.Where(it => !it.IsHidden))
+                {
+                    highlight = subItm.Id == WebApp.PageId ? "active" : "";
+                    <li><a class="dropdown-item nav-link @highlight" href="@subItm.Permalink">@subItm.MenuTitle</a></li>
+                }
+            </ul>
+        </li>
+    }
+}
+
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav ml-auto">
+        @foreach (var item in (await WebApp.Site.Sitemap.ForUserAsync(User, Auth)).Where(i => !i.IsHidden))
+        {
+            if(item.Items.Where(it => !it.IsHidden).Any()){
+                renderSubMenu(item);
+            }else {
+                var highlight = item.Id == WebApp.PageId ? "active" : "";
+                <li class="nav-item @highlight">
+                    <a class="btn nav-link"  role="button" aria-expanded="false" href="@WebApp.Url(item)">@item.MenuTitle</a>
+                </li>
+                
+            }
+        }
+    </ul>
+</div>
+
+@if(loginLinkPosition == eLoginLinkPosition.Header && (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin))
+{
+    <div class="signinout">
+        @if (User.IsInRole("SysAdmin"))
+        {
+            <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager/login/auth'"><span class="fa fa-table"> Dashboard</span></button>
+        }
+        @if (!User.Identity.IsAuthenticated)
+        {
+            var url = string.Format("{0}/login?ret={1}", siteRoot, WebApp?.CurrentPage?.Permalink);
+            <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-in-alt"> Sign In</span></button>
+        }else
+        {
+            var url = string.Format("{0}/logout", siteRoot);
+            <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
+        }
+    </div>
+}
