@@ -46,14 +46,17 @@ Applet Loader is being rendered here ...
 <script type="importmap">
 { "imports": {
   "vue":        "https:cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.esm-browser.min.js",
-  "vue-router": "https:cdnjs.cloudflare.com/ajax/libs/vue-router/4.0.16/vue-router.esm-browser.min.js"
+  "vue-router": "https:cdnjs.cloudflare.com/ajax/libs/vue-router/4.0.16/vue-router.esm-browser.min.js",
+ "pinia" : "https://cdnjs.cloudflare.com/ajax/libs/pinia/2.0.21/pinia.iife.js"
 } }
 </script> 
 
-<script type="module" src="/assets/applets/catfish-ui.es.js"></script>
+<script type="module" src="/assets/applets/applets.es.js"></script>
+<script type="module" src="/assets/applets/applets.umd.js"></script>
 
 
 <script type="module">
+
 
     const applet = Applets.@Model.GetType().Name;
     if (!applet)
@@ -81,13 +84,14 @@ Applet Loader is being rendered here ...
 
     //console.log("query params after initialize: " + JSON.stringify(queryParams))
 
-
-    const app = Vue.createApp(applet, {
-        pageId: '@pageId',
-        blockId: '@blockId',
-        dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes)),
-        queryParameters: queryParams
-    });
+//const pinia = createPinia();
+const app = Vue.createApp(applet, {
+    pageId: '@pageId',
+    blockId: '@blockId',
+    dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes)),
+    queryParameters: queryParams
+});
+ 
 
     if (applet.storeConfig) {
         const state = applet.storeConfig.state;
@@ -95,8 +99,9 @@ Applet Loader is being rendered here ...
         const actions = applet.storeConfig.actions;
         const getters = applet.storeConfig.getters;
 
-        const store = Vuex.createStore({ state, mutations, actions, getters });
-        app.use(store);
+        //const store = Vuex.createStore({ state, mutations, actions, getters });
+      //  app.use(Pinia.createPinia());
+        app.use(GoogleCalendar);
     }
 
     app.mount('#@mountPointId');
