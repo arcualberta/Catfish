@@ -335,7 +335,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             EmailTemplate applicantNotification = template.GetEmailTemplate("Admin Notification", lang, true);
             applicantNotification.SetDescription("This metadata set defines the email template to be sent to the portal admin.", lang);
 
-            string body = "<p>A new member has joined the <a href='https://intersectionality.artsrn.ualberta.ca'>IG Directory</a> and awaiting your approval.</p>";
+            string body = "<p>A new member has joined the <a href='http://localhost:8080/profile/@Item.Id'>IG Directory</a> and awaiting your approval.</p>";
             string subject = " IG Directory New Member Joining";
             //if (!string.IsNullOrEmpty(formName) && formName.Equals("SubmitResource"))
             //{
@@ -357,6 +357,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State approvedState = workflow.AddState(ws.GetStatus(template.Id, "Approved", true));
+            State rejectState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
@@ -377,7 +378,8 @@ Any public disclosures of information from the directory will be in aggregate fo
             EmailTemplate adminEmailTemplate = CreateEditorEmailTemplate(ref template, formName);
 
             EmailTrigger adminNotificationEmailTrigger = workflow.AddTrigger("ToAdmin", "SendEmail");
-            adminNotificationEmailTrigger.AddRecipientByEmail("intersectionsofgender@ualberta.ca"); //////////////////////////////NEED TO REPLACE!!!!
+            //adminNotificationEmailTrigger.AddRecipientByEmail("intersectionsofgender@ualberta.ca"); //////////////////////////////NEED TO REPLACE!!!!
+            adminNotificationEmailTrigger.AddRecipientByEmail("iwickram@ualberta.ca"); //////////////////////////////NEED TO REPLACE!!!!
             adminNotificationEmailTrigger.AddTemplate(adminEmailTemplate.Id, "Submission to  IGRD Notification");
 
             // =======================================
@@ -542,7 +544,7 @@ Any public disclosures of information from the directory will be in aggregate fo
             PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", @"<p>Application status changed successfully.");
 
             changeStatePostAction.AddStateMapping(submittedState.Id, approvedState.Id, "Approve");
-            changeStatePostAction.AddStateMapping(deleteState.Id, approvedState.Id, "Approve");
+            changeStatePostAction.AddStateMapping(submittedState.Id, rejectState.Id, "Reject");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp changeStateDecisionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to Approve? ", "Once approved, you cannot revise this decision.");

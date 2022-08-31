@@ -446,7 +446,30 @@ namespace Catfish.Core.Services
                 return null;
             }
         }
-
+        public PostAction GetPostActionByButtonName(EntityTemplate entityTemplate, string buttonName)
+        {
+            try
+            {
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
+                foreach (var action in workflow.Actions)
+                {
+                    foreach (var postAction in action.PostActions)
+                    {
+                        if (postAction.StateMappings.Where(sm => sm.ButtonLabel == buttonName).Any())
+                        {
+                            return postAction;
+                        }
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
         public GetAction GetGetActionByPostActionID(EntityTemplate entityTemplate, Guid postActionId)
         {
             try
@@ -764,6 +787,7 @@ namespace Catfish.Core.Services
             }
             return Guid.Empty;
         }
+
 
         //public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid? templateId)
         //{
