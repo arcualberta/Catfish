@@ -34,12 +34,10 @@ Applet Loader is being rendered here ...
 <div id="@mountPointId"></div>
 <script src="/assets/public/vendors/vue3/vue.global.min.js"></script>
 <script src="/assets/public/vendors/vue3/vue.global.prod.min.js"></script>
-@*<script src="/assets/public/vendors/vue3/vue.esm-browser.min.js"></script> *@
 
 <script src="/assets/public/vendors/vuedemi/index.iife.min.js"></script>
 <script src="/assets/public/vendors/pinia/pinia.iife.min.js"></script>
 <script src="/assets/public/vendors/pinia/pinia.iife.prod.min.js"></script>
-@*<script src="/assets/public/vendors/pinia/pinia.esm-browser.min.js"></script>*@
 
 
 
@@ -47,7 +45,7 @@ Applet Loader is being rendered here ...
 { "imports": {
   "vue":        "https:cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.esm-browser.min.js",
   "vue-router": "https:cdnjs.cloudflare.com/ajax/libs/vue-router/4.0.16/vue-router.esm-browser.min.js",
- "pinia" : "https://cdnjs.cloudflare.com/ajax/libs/pinia/2.0.21/pinia.iife.js"
+ 
 } }
 </script> 
 
@@ -58,7 +56,7 @@ Applet Loader is being rendered here ...
 <script type="module">
 
 
-    const applet = Applets.@Model.GetType().Name;
+    const applet = Applets.@Model.GetType().Name;//Applets.@Model.GetType().Name;
     if (!applet)
         throw "Applet \"@ViewData["applet"]\" not found.";
 
@@ -93,17 +91,19 @@ const app = Vue.createApp(applet, {
 });
  
 
-    if (applet.storeConfig) {
-        const state = applet.storeConfig.state;
-        const mutations = applet.storeConfig.mutations;
-        const actions = applet.storeConfig.actions;
-        const getters = applet.storeConfig.getters;
+if (applet.props.piniaInstance == null) {
+        //const state = applet.storeConfig.state;
+        //const mutations = applet.storeConfig.mutations;
+        //const actions = applet.storeConfig.actions;
+        //const getters = applet.storeConfig.getters;
 
         //const store = Vuex.createStore({ state, mutations, actions, getters });
-      //  app.use(Pinia.createPinia());
-        app.use(GoogleCalendar);
+     
+       app.use(Pinia.createPinia());
+     
     }
-
+  
     app.mount('#@mountPointId');
 
 </script>
+

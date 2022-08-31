@@ -1,6 +1,8 @@
 {
   "name": "catfish-ui",
-  "files": [ "dist" ],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/catfish-ui.umd.js",
   "module": "./dist/catfish-ui.es.js",
   "exports": {
@@ -42,6 +44,7 @@
     "@types/node": "^18.0.5",
     "@types/uuid": "^8.3.4",
     "@vitejs/plugin-vue": "^3.0.0",
+    "pinia": "^2.0.16",
     "typescript": "^4.6.4",
     "vite": "^3.0.2",
     "vue-tsc": "^0.38.4"
