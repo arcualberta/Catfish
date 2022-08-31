@@ -1,0 +1,16 @@
+﻿
+@inject CatfishWebExtensions.Interfaces.IAssetRegistry _assetRegistry;
+
+@{
+    var assets = _assetRegistry.GetStylesheets();
+    foreach (var asset in _assetRegistry.GetStylesheets())
+    {
+        <link rel="stylesheet" href="@asset" />
+    }
+
+    assets = _assetRegistry.GetScripts();
+    foreach (var asset in _assetRegistry.GetScripts())
+    {
+        <script type="module" src="@asset"></script>
+    }
+}
