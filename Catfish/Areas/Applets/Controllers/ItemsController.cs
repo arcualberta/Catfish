@@ -391,9 +391,9 @@ namespace Catfish.Areas.Applets.Controllers
             if (item != null)
             {
                 //check the user has permission to delete item, if yes, it can process, otherwise return Status401Unauthorized
-            //    if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
-            //.Succeeded)
-            //    {
+                if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+            .Succeeded)
+                {
                     Item statusChangeItem = _submissionService.StatusChange(item, buttonName);
                     //check item deleted sucessfully. if yes, return Status200OK, Otherwise return Status500InternalServerError
                     if (statusChangeItem != null)
@@ -406,11 +406,11 @@ namespace Catfish.Areas.Applets.Controllers
                         return StatusCode(StatusCodes.Status500InternalServerError);
                     }
 
-                //}
-                //else
-                //{
-                //    return StatusCode(StatusCodes.Status401Unauthorized);
-                //}
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
             }
             else
             {

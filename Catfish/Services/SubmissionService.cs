@@ -703,9 +703,9 @@ namespace Catfish.Services
                 Guid currentStatusId = postAction.StateMappings.Where(sm => sm.ButtonLabel == buttonName).Select(sm => sm.Current).FirstOrDefault();
                 item.StatusId = nextStatusId;
                 item.Updated = DateTime.Now;
-                //User user = _workflowService.GetLoggedUser();
+                User user = _workflowService.GetLoggedUser();
                 DataItem emptyDataItem = new DataItem();
-                item.AddAuditEntry(Guid.Empty,
+                item.AddAuditEntry(user.Id,
                     emptyDataItem,
                     currentStatusId,
                     nextStatusId,
