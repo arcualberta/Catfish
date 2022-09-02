@@ -48,6 +48,7 @@
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<ICatfishUserManager, CatfishUserManager>();
             services.AddScoped<ICatfishSignInManager, CatfishSignInManager>();
+            services.AddScoped<IAssetRegistry, AssetRegistry>();
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -142,8 +143,29 @@
                  {
                      FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.css"),
                      RequestPath = "/assets/css"
-                });
+                })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.pinia"),
+                     RequestPath = "/assets/public/vendors/pinia"
+                 })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vue3"),
+                     RequestPath = "/assets/public/vendors/vue3"
+                 })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vuedemi"),
+                     RequestPath = "/assets/public/vendors/vuedemi"
+                 })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vuerouter"),
+                     RequestPath = "/assets/public/vendors/vuerouter"
+                 });
         }
+
 
         /// <summary>
         /// Static accessor to CatfishWebExtensions module if it is registered in the Piranha application.
@@ -159,9 +181,11 @@
         #region Private methods
         private static void RegisterBlocks()
         {
-            Piranha.App.Blocks.Register<ExtendedImage>();
-            Piranha.App.Blocks.Register<Accordion>();
-            Piranha.App.Blocks.Register<Card>();
+            App.Blocks.Register<ExtendedImage>();
+            App.Blocks.Register<Accordion>();
+            App.Blocks.Register<Card>();
+            App.Blocks.Register<GoogleCalendar>();
+            App.Blocks.Register<FormBuilder>();
         }
         #endregion
     }

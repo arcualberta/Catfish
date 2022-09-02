@@ -47,7 +47,7 @@ namespace CatfishExtensions.Helpers
             }
             public string GetGoogleCalendarAPIKey()
             {
-                return _configuration["GoogleCalendar:APIKey"];
+                return _configuration["Google:GoogleCalendarApiKey"];
             }
             public string GetAllowDomain()
             {

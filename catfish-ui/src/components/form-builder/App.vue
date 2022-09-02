@@ -7,10 +7,17 @@
     import { Field } from '../shared/form-models'
     import { createTextCollection, isOptionField, createOption } from '../shared/form-helpers'
     import { FieldType, FieldTypes } from '../shared/form-models';
+    import { AppletAttribute } from '../shared/props'
 
     import { default as Form } from './components/Form.vue';
 
-    const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, formId?: Guid }>();
+    const props = defineProps<{
+        dataAttributes: AppletAttribute | null,
+        queryParameters: AppletAttribute | null,
+        piniaInstance: Pinia,
+        repositoryRoot: string,
+        formId?: Guid
+    }>();
 
     const store = useFormBuilderStore(props.piniaInstance);
 
