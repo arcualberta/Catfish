@@ -25,10 +25,15 @@ export default defineConfig({
         },
     },
     plugins: [
-        vue()
+        vue(),
+        
     ],
     
     server: {
         port: 8080
     }
 })
+function importToCDN(arg0: { modules: { name: string; var: string; path: string; }[]; }): import("vite").PluginOption {
+    throw new Error('Function not implemented.');
+}
+

@@ -2,12 +2,7 @@
     <h3 style="color: green">Google Calendar</h3>
     
     <h3>Upcoming events</h3>
-    <!--<div v-for="itm in upcomingEvents">
-        <div>Title: {{itm.summary}}</div>
-        <div>Description: {{itm.description}}</div>
-        <div>Start Date: {{itm.start.dateTime}}</div>
-    </div>-->
- 
+   
     <div id="es-calendar">
       
     </div>
@@ -16,6 +11,7 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
     import { computed, onMounted } from 'vue'
+   import {default as sharedProps, DataAttribute} from '../shared/props'
     //import { Guid } from "guid-typescript";
 
     //ES6 fullcalendar
@@ -28,23 +24,27 @@
     import config from '../../appsettings'
 
 
+
     const props = defineProps < {
         piniaInstance: Pinia,
-        
-    } > ();
+        //dataAttributes : DataAttribute
+     } > ();
 
+     const _props = computed(()=> sharedProps);
+     console.log("shared props: " + _props.value)
+    //const piniaInstance = props.piniaInstance? props.piniaInstance: getActivePinia();
     const store = useGoogleCalendarStore(props.piniaInstance);
 
     const events = store.loadEvents();
     const upcomingEvents = computed(() => store.getUpcomingEvents());
-
+   
     // lifecycle hooks
     onMounted(() => {
       
         let calendarEl = document.getElementById('es-calendar') as HTMLElement;
         let calIds: object[] = [] ;
-
-      // calIds =  store.getCalendarIds;
+        
+        
 
         config.googleCalendarIds.map(function (cid) {
            

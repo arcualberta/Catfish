@@ -1,12 +1,17 @@
 ﻿@model CatfishWebExtensions.Blocks.GoogleCalendar
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishConfiguration;
 
 @{
+    var calIds = Model.getCalendarIds();
     var viewData = new ViewDataDictionary(this.ViewData)
     {
-        { "data-api-key", Model.ApiKey.Value },
-        { "data-calendar-ids", Model.CalendarIds.Value },
+        { "data-api-key", _catfishConfiguration.GetGoogleCalendarAPIKey() },
+
+        { "data-calendar-ids", Model.getCalendarIds() },
+        { "data-css-class", Model.CssClass.Value },
+        { "data-display-style", Model.getDisplayStyle() },
     };
 }
 
