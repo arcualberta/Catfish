@@ -26,31 +26,25 @@ Applet Loader is being rendered here ...
 
     
     //Registering assets
-    _assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/applets/catfish-ui.es.js");
+    _assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/public/vendors/vue3/vue.global.prod.min.js", 
+                                  @ConfigHelper.SiteUrl+"/assets/public/vendors/vue3/vue.global.min.js");
+    
+    _assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/public/vendors/vuedemi/index.iife.min.js");
+
+    _assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/public/vendors/vuerouter/vuerouter.global.prod.js", 
+                                  @ConfigHelper.SiteUrl+"/assets/public/vendors/vuerouter/vuerouter.global.js");
+
+    _assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/public/vendors/pinia/pinia.iife.prod.min.js", 
+                                  @ConfigHelper.SiteUrl+"/assets/public/vendors/pinia/pinia.iife.min.js");
+
+    _assetRegistry.RegisterModule(@ConfigHelper.SiteUrl+"/assets/applets/applets.es.js");
+    _assetRegistry.RegisterModule(@ConfigHelper.SiteUrl+"/assets/applets/applets.umd.js");
     _assetRegistry.RegisterStylesheet(@ConfigHelper.SiteUrl+"/assets/applets/style.css");
 
 }
 
 <div id="@mountPointId"></div>
-<script src="/assets/public/vendors/vue3/vue.global.min.js"></script>
-<script src="/assets/public/vendors/vue3/vue.global.prod.min.js"></script>
 
-<script src="/assets/public/vendors/vuedemi/index.iife.min.js"></script>
-<script src="/assets/public/vendors/pinia/pinia.iife.min.js"></script>
-<script src="/assets/public/vendors/pinia/pinia.iife.prod.min.js"></script>
-
-
-
-<script type="importmap">
-{ "imports": {
-    "vue":        "https:cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.esm-browser.min.js",
-    "vue-router": "https:cdnjs.cloudflare.com/ajax/libs/vue-router/4.0.16/vue-router.esm-browser.min.js"
-    } 
-}
-</script> 
-
-<script type="module" src="/assets/applets/applets.es.js"></script>
-<script type="module" src="/assets/applets/applets.umd.js"></script>
 
 
 <script type="module">
