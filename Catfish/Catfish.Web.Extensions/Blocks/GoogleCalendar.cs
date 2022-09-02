@@ -30,9 +30,9 @@ namespace CatfishWebExtensions.Blocks
         public string getDisplayStyle()
         {
             if (DisplayStyle.Value == DisplayOptions.Calendar)
-                return "listMonth";
-            else
                 return "dayGridMonth";
+            else
+                return "listMonth";
         }
 
     }
