@@ -23,7 +23,7 @@ export const useGoogleCalendarStore = defineStore('GoogleCalendarStore', {
                 .then(response => response.json())
                 .then(data => {
                     this.events = data.items;
-                    console.log("events" + this.events)
+                    //console.log("events" + this.events)
                 })
                 .catch((error) => {
                     console.error('Load google api Error:', error);
