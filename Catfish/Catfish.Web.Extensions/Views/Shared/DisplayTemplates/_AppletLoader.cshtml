@@ -24,9 +24,6 @@ Applet Loader is being rendered here ...
     }
     dataAttributes.Add("SiteUrl", ConfigHelper.SiteUrl);
 
-    <script src="/assets/public/vendors/vue3/vue.global.min.js"></script>
-<script src="/assets/public/vendors/vue3/vue.global.prod.min.js"></script>
-
     
     //Registering assets
     _assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/public/vendors/vue3/vue.global.prod.min.js", 
@@ -47,6 +44,8 @@ Applet Loader is being rendered here ...
 }
 
 <div id="@mountPointId"></div>
+
+
 
 <script type="module">
 
