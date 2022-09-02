@@ -36,8 +36,8 @@
     
      const store = useGoogleCalendarStore(props.piniaInstance);
 
-    const events = store.loadEvents();
-    const upcomingEvents = computed(() => store.getUpcomingEvents());
+   // const events = store.loadEvents();
+   // const upcomingEvents = computed(() => store.getUpcomingEvents());
    
     // lifecycle hooks
     onMounted(() => {
@@ -49,7 +49,7 @@
         let gCalIds: string[] = (_dataAttributes.value["calendar-ids"]) as unknown as Array<string>;
         gCalIds.map(function (cid) {
            
-            let calId= { googleCalendarId: cid, className:'gcal-event' }
+            let calId= { googleCalendarId: cid.trim(), className:'gcal-event' }
             calIds?.push(calId);
         });
         let displayStyle = _dataAttributes.value["display-style"] as string;
