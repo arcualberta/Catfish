@@ -3,10 +3,6 @@ import { Guid } from "guid-typescript";
 
 /**
  * A*/
-export interface DataAttribute {
-    [key: string]: string | number | null;
-}
-
-export interface QueryParameter {
+export interface AppletAttribute {
     [key: string]: string | number | null;
 }

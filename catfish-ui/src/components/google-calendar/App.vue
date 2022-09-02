@@ -11,7 +11,7 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
     import { onMounted, toRef } from 'vue'
-    import { DataAttribute, QueryParameter } from '../shared/props'
+    import { AppletAttribute } from '../shared/props'
     //import { Guid } from "guid-typescript";
 
     //ES6 fullcalendar
@@ -27,8 +27,8 @@
 
     const props = defineProps < {
         piniaInstance: Pinia,
-        dataAttributes: DataAttribute,
-        queryParameters: QueryParameter | null
+        dataAttributes: AppletAttribute,
+        queryParameters: AppletAttribute | null
      } > ();
 
      const _dataAttributes = toRef(props, 'dataAttributes')

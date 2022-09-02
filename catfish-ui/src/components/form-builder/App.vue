@@ -7,13 +7,13 @@
     import { Field } from '../shared/form-models'
     import { createTextCollection, isOptionField, createOption } from '../shared/form-helpers'
     import { FieldType, FieldTypes } from '../shared/form-models';
-    import { DataAttribute, QueryParameter } from '../shared/props'
+    import { AppletAttribute } from '../shared/props'
 
     import { default as Form } from './components/Form.vue';
 
     const props = defineProps<{
-        dataAttributes: Map<string, object> | null,
-        queryParameters: QueryParameter | null,
+        dataAttributes: AppletAttribute | null,
+        queryParameters: AppletAttribute | null,
         piniaInstance: Pinia,
         repositoryRoot: string,
         formId?: Guid
