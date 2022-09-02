@@ -2,9 +2,12 @@
 {
     public interface IAssetRegistry
     {
-        public void RegisterStylesheet(string pathName);
+        public void RegisterStylesheet(string productionVersionPathName, string devVersionPathName = null);
         public IReadOnlyList<string> GetStylesheets();
-        public void RegisterScript(string pathName);
+        public void RegisterScript(string productionVersionPathName, string devVersionPathName = null);
         public IReadOnlyList<string> GetScripts();
+        public void RegisterModule(string productionVersionPathName, string devVersionPathName = null);
+        public IReadOnlyList<string> GetModules();
+
     }
 }

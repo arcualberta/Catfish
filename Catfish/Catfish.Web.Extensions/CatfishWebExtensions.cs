@@ -146,16 +146,23 @@
                 })
                  .UseStaticFiles(new StaticFileOptions
                  {
-                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.pinia2"),
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.pinia"),
                      RequestPath = "/assets/public/vendors/pinia"
-                 }).UseStaticFiles(new StaticFileOptions
+                 })
+                 .UseStaticFiles(new StaticFileOptions
                  {
                      FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vue3"),
                      RequestPath = "/assets/public/vendors/vue3"
-                 }).UseStaticFiles(new StaticFileOptions
+                 })
+                 .UseStaticFiles(new StaticFileOptions
                  {
                      FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vuedemi"),
                      RequestPath = "/assets/public/vendors/vuedemi"
+                 })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vuerouter"),
+                     RequestPath = "/assets/public/vendors/vuerouter"
                  });
         }
 
