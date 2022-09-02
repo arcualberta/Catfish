@@ -185,6 +185,7 @@
             App.Blocks.Register<Accordion>();
             App.Blocks.Register<Card>();
             App.Blocks.Register<GoogleCalendar>();
+            App.Blocks.Register<FormBuilder>();
         }
         #endregion
     }

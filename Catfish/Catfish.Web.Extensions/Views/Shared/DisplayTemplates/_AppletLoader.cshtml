@@ -78,8 +78,6 @@ Applet Loader is being rendered here ...
 
 //const pinia = createPinia();
 const app = Vue.createApp(applet, {
-    pageId: '@pageId',
-    blockId: '@blockId',
     dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes)),
     queryParameters: queryParams
 });
