@@ -3,7 +3,7 @@
     
     <h3>Upcoming events</h3>
    
-    <div id="es-calendar" :class="cssClass">
+    <div v-bind:id="cidEl" :class="cssClass">
       
     </div>
     
@@ -12,7 +12,7 @@
     import { Pinia } from 'pinia'
     import { onMounted, toRef } from 'vue'
     import { AppletAttribute } from '../shared/props'
-    //import { Guid } from "guid-typescript";
+    import { Guid } from "guid-typescript";
 
     //ES6 fullcalendar
     import '@fullcalendar/core/vdom';
@@ -36,14 +36,14 @@
      const cssClass = _dataAttributes.value["css-class"] as string;
     
      const store = useGoogleCalendarStore(props.piniaInstance);
-
+    const cidEl=Guid.create().toString() as unknown as Guid
    // const events = store.loadEvents();
    // const upcomingEvents = computed(() => store.getUpcomingEvents());
    
     // lifecycle hooks
     onMounted(() => {
       
-        let calendarEl = document.getElementById('es-calendar') as HTMLElement;
+        let calendarEl = document.getElementById(cidEl) as HTMLElement;
         let calIds: object[] = [] ;
         
         //get the calendar id(s) from the dataattributes)
