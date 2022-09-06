@@ -84,13 +84,7 @@ const app = Vue.createApp(applet, {
  
 
 if (applet.props.piniaInstance == null) {
-        //const state = applet.storeConfig.state;
-        //const mutations = applet.storeConfig.mutations;
-        //const actions = applet.storeConfig.actions;
-        //const getters = applet.storeConfig.getters;
-
-        //const store = Vuex.createStore({ state, mutations, actions, getters });
-     
+       
        app.use(Pinia.createPinia());
      
     }
