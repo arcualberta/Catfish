@@ -26,6 +26,13 @@ namespace Catfish.Core.Models.Solr
                 .FirstOrDefault();
             Id = string.IsNullOrEmpty(valStr) ? Guid.Empty : Guid.Parse(valStr);
 
+            //set the status ID
+            valStr = doc.Elements("str")
+                .Where(ele => ele.Attribute("name").Value == "status_s")
+                .Select(ele => ele.Value)
+                .FirstOrDefault();
+            StatusId = string.IsNullOrEmpty(valStr) ? Guid.Empty : Guid.Parse(valStr);
+            
             //set the item template ID
             valStr = doc.Elements("str")
                 .Where(ele => ele.Attribute("name").Value == "template_s")
