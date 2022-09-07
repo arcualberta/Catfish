@@ -10,6 +10,7 @@ namespace Catfish.Areas.Applets.Models.Blocks.KeywordSearchModels
         public string Title { get; set; }
         public string Subtitle { get; set; }
         public string Content { get; set; }
+        public Guid StatusId { get; set; }
         public string Thumbnail { get; set; }
         public DateTime Date { get; set; }
         public string DetailedViewUrl { get; set; }
