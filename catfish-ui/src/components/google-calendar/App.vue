@@ -1,8 +1,6 @@
 <template>
-    <h3 style="color: green">Google Calendar</h3>
-    
-    <h3>Upcoming events</h3>
-   
+    <div v-if="title" class="title">{{title}}</div>
+    <div v-if="description" class="description">{{description}}</div>
     <div v-bind:id="cidEl" :class="cssClass">
       
     </div>
@@ -23,8 +21,6 @@
     import { useGoogleCalendarStore } from './store';
     import config from '../../appsettings'
 
-
-
     const props = defineProps < {
         piniaInstance: Pinia,
         dataAttributes: AppletAttribute,
@@ -33,12 +29,11 @@
 
      const _dataAttributes = toRef(props, 'dataAttributes')
      
-     const cssClass = _dataAttributes.value["css-class"] as string;
-    
+     const cssClass ="google-calendar " +  _dataAttributes.value["css-class"] as string;
+     const title = _dataAttributes.value["calendar-title"] as string;
+     const description = _dataAttributes.value["calendar-description"] as string;
      const store = useGoogleCalendarStore(props.piniaInstance);
-    const cidEl=Guid.create().toString() as unknown as Guid
-   // const events = store.loadEvents();
-   // const upcomingEvents = computed(() => store.getUpcomingEvents());
+    const cidEl=Guid.create().toString();
    
     // lifecycle hooks
     onMounted(() => {
@@ -75,3 +70,4 @@
         calendar.render();
     });
 </script>
+<style scoped src="./style.css"></style>

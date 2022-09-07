@@ -12,10 +12,10 @@
         { "data-calendar-ids", Model.getCalendarIds() },
         { "data-css-class", Model.CssClass.Value },
         { "data-display-style", Model.getDisplayStyle() },
+         { "data-calendar-title", Model.Title.Value },
+          { "data-calendar-description", Model.Description.Value }
     };
 }
-
-<div>Google Calendar</div>
 
 <partial name="_AppletLoader.cshtml" view-data="@viewData" />
 
