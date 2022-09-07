@@ -2,6 +2,7 @@
 
 export interface ResultItem {
     id: Guid;
+    statusId: Guid;
     title: string;
     subtitle: string;
     categories: string[];
