@@ -65,6 +65,7 @@ namespace Catfish.Areas.Applets.Controllers
             {
 
                 resultItem.Id = resultEntry.Id;
+                resultItem.StatusId = resultEntry.StatusId;
                 resultItem.RootFormInstaceId = resultEntry.RootFormInstaceId;
                 resultItem.Date = resultEntry.Created;
                 string solrFieldId = "";
