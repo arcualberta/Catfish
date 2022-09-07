@@ -27,6 +27,7 @@ global using Piranha.AspNetCore.Models;
 global using Piranha.AttributeBuilder;
 global using Piranha.Models;
 global using Piranha.AspNetCore.Services;
+global using Piranha.Manager;
 
 //Shared namespaces
 global using CatfishExtensions;
@@ -42,4 +43,3 @@ global using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
 global using CatfishWebExtensions.Interfaces;
 global using CatfishWebExtensions.Services;
 global using CatfishWebExtensions.Blocks;
-global using CatfishWebExtensions.Models;

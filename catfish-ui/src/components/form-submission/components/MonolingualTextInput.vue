@@ -19,13 +19,18 @@
 </script>
 
 <template>
-    <span v-for="value in fieldData.monolingualTextValues" :key="value.id" :model="value">
-        <Text :model="value" :text-type="model.type" />
-        <span v-if="fieldData.monolingualTextValues.length > 1" class="multilingual-field-delete"><font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(value.id)" class="fa-icon delete" /></span>
-    </span>
-    
-    <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" style="margin-top: -45px; margin-left: 530px;" />
-    <br />
+    <div v-for="value in fieldData.monolingualTextValues" :key="value.id" :model="value" class="row mb-3">
+        <div class="col col-sm-11">
+            <Text :model="value" :text-type="model.type" />
+        </div>
+            <div v-if="fieldData.monolingualTextValues.length > 1" class="col-sm-1">
+                <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(value.id)" class="fa-icon delete" />
+            </div>
+        </div>
+        <div class="col-sm-1">
+            <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" />
+        </div>
+        {{fieldData}}
 
 </template>
 

@@ -10,6 +10,7 @@
     else if (!siteUrl.EndsWith("/"))
         siteUrl += "/";
 
+    var clientId = configuration.GetSection("Google:ClientId").Value;
     var redirectLocation = Request.Query["ret"].ToString();
     if (string.IsNullOrEmpty(redirectLocation))
         redirectLocation = siteUrl;
@@ -33,31 +34,31 @@
                 'Content-Type': 'application/json'
             }
         })
-            .then(response => { 
+        .then(response => { 
                 if (!response.ok)
                     console.log('Authentication API call failed')
                 else
                     return response.json();
-            })
-            .then(data => {
-                console.log('Login Result:')
-                console.log(JSON.stringify(data))
+        }).then(data => {
                 window.location.href = '@redirectLocation';
-            })
-            .catch((error) => {
+        })
+        .catch((error) => {
                 console.error('Authentication API Error:', error);
-            });
+        });
     }
+
     window.onload = function () {
         google.accounts.id.initialize({
-        client_id: "589183038778-u256nlels7v2443j3h1unvtp367f80s4.apps.googleusercontent.com",
-        callback: handleCredentialResponse
-        //login_uri: "https://localhost:5010/api/GoogleIdentity"
+            client_id: "@clientId",
+            callback: handleCredentialResponse
         });
+
         google.accounts.id.renderButton(
-        document.getElementById("buttonDiv"),
-        { theme: "outline", size: "large" }  // customization attributes
+            document.getElementById("buttonDiv"), {
+                theme: "outline", size: "large" 
+            }  // customization attributes
         );
+
         google.accounts.id.prompt(); // also display the One Tap dialog
     }
 </script>

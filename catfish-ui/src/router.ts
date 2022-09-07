@@ -37,6 +37,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'sandbox',
         component: () => import('./views/Sandbox.vue')
     },
+    {
+        path: '/google-calendar',
+        name: 'googleCaendar',
+        component: () => import('./views/GoogleCalendar.vue')
+    },
 ]
 
 const router = createRouter({

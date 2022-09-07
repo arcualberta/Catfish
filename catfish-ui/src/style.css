@@ -209,8 +209,6 @@ button:focus-visible {
         color: #4CAF50;
     }
     .fa-icon.add-option {
-        margin-left: 147px;
-        margin-top: 10px;
         height: 25px;
         width: 25px;
     }
@@ -266,6 +264,6 @@ button:focus-visible {
     display: inline-block;
 }
 .multilingual-field-delete {
-    margin-left: 210px;
+    float:right;
     margin-top: -25px;
 }
