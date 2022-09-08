@@ -1,10 +1,11 @@
 <template>
-    <div v-if="title" class="title">{{title}}</div>
-    <div v-if="description" class="description">{{description}}</div>
-    <div v-bind:id="cidEl" :class="cssClass">
-      
+    <div :class="cssClass">
+        <div v-if="title" class="title">{{title}}</div>
+        <div v-if="description" class="description">{{description}}</div>
+        <div v-bind:id="cidEl" class="reder-target">
+        </div>
     </div>
-    
+
 </template>
 <script setup lang="ts">
     import { Pinia } from 'pinia'
