@@ -25,6 +25,17 @@ export namespace SolrQuery {
             this.internalId = internalId ? internalId : null;
         }
 
+        setValueConstraints(filedValueOptions: string[], fieldValueSelectionStatus: boolean): void {
+            //Empty existing value constrains
+            this.valueConstraints = [];
+
+            //Add the new set of value constraints
+            filedValueOptions.forEach(val =>
+                this.valueConstraints.push({ value: val, selected: fieldValueSelectionStatus } as ValueConstraint)
+            );
+
+        }
+
         buildQueryString(): string | null {
             const segments = [] as string[];
             this.valueConstraints.forEach(valConst => {
@@ -64,13 +75,12 @@ export namespace SolrQuery {
         appendNewFieldConstraint(solrFieldName: string, filedValueOptions: string[], fieldValueSelectionStatus: boolean, aggregationOperator: AggregationOperator, internalId: string): FieldConstraint {
             const fieldConstraint = new FieldConstraint(solrFieldName, aggregationOperator, internalId);
 
-            filedValueOptions.forEach(val =>
-                fieldConstraint.valueConstraints.push({ value: val, selected: fieldValueSelectionStatus } as ValueConstraint)
-            );
+            fieldConstraint.setValueConstraints(filedValueOptions, fieldValueSelectionStatus);
 
             this.queryConstraints.push(fieldConstraint);
             return fieldConstraint;
         }
+
 
         appendNewChildQueryModel(aggregationOperator: AggregationOperator, internalId: string): QueryModel {
             const childQuery = new QueryModel(aggregationOperator, internalId);
