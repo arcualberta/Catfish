@@ -1,7 +1,7 @@
 ﻿
 namespace CatfishWebExtensions.Blocks
 {
-    [BlockType(Name = "Extended Image", Category = "Content", Icon = "fas fas-image")]
+    [BlockType(Name = "Extended Image", Category = "Content", Icon = "fas fa-images")]
     public class ExtendedImage : Block
     {
         [Display(Name ="Image Source")]

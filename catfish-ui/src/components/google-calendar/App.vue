@@ -1,18 +1,17 @@
 <template>
-    <h3 style="color: green">Google Calendar</h3>
-    
-    <h3>Upcoming events</h3>
-   
-    <div id="es-calendar" :class="cssClass">
-      
+    <div :class="cssClass">
+        <div v-if="title" class="title">{{title}}</div>
+        <div v-if="description" class="description">{{description}}</div>
+        <div v-bind:id="cidEl" class="reder-target">
+        </div>
     </div>
-    
+
 </template>
 <script setup lang="ts">
     import { Pinia } from 'pinia'
     import { onMounted, toRef } from 'vue'
     import { AppletAttribute } from '../shared/props'
-    //import { Guid } from "guid-typescript";
+    import { Guid } from "guid-typescript";
 
     //ES6 fullcalendar
     import '@fullcalendar/core/vdom';
@@ -23,8 +22,6 @@
     import { useGoogleCalendarStore } from './store';
     import config from '../../appsettings'
 
-
-
     const props = defineProps < {
         piniaInstance: Pinia,
         dataAttributes: AppletAttribute,
@@ -33,17 +30,16 @@
 
      const _dataAttributes = toRef(props, 'dataAttributes')
      
-     const cssClass = _dataAttributes.value["css-class"] as string;
-    
+     const cssClass ="google-calendar " +  _dataAttributes.value["css-class"] as string;
+     const title = _dataAttributes.value["calendar-title"] as string;
+     const description = _dataAttributes.value["calendar-description"] as string;
      const store = useGoogleCalendarStore(props.piniaInstance);
-
-   // const events = store.loadEvents();
-   // const upcomingEvents = computed(() => store.getUpcomingEvents());
+    const cidEl=Guid.create().toString();
    
     // lifecycle hooks
     onMounted(() => {
       
-        let calendarEl = document.getElementById('es-calendar') as HTMLElement;
+        let calendarEl = document.getElementById(cidEl) as HTMLElement;
         let calIds: object[] = [] ;
         
         //get the calendar id(s) from the dataattributes)
@@ -75,3 +71,4 @@
         calendar.render();
     });
 </script>
+<style scoped src="./style.css"></style>

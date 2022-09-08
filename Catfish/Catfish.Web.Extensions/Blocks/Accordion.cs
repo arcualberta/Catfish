@@ -1,7 +1,7 @@
 ﻿
 namespace CatfishWebExtensions.Blocks
 {
-    [BlockGroupType(Name = "Accordion", Category = "Content", Icon = "fas fas-image")]
+    [BlockGroupType(Name = "Accordion", Category = "Content", Icon = "fas fa-caret-square-down")]
     public class Accordion : BlockGroup
     {
         [Display(Name = "CSS Classes")]
