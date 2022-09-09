@@ -11,7 +11,7 @@ export interface Field {
     /**
      * Type of the field.
      * */
-    type: typeof FieldTypes;
+    type: FieldType;
 
     /**
      * Unique field ID.
@@ -96,6 +96,27 @@ export enum InfoSectionType{
     InfoSection = "Info Section"
 }
 
-export const FieldTypes = { ...TextType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
-export type FieldType = typeof FieldTypes;
+//export const FieldTypes = { ...TextType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
+//export type FieldType = typeof FieldTypes;
+
+
+export enum FieldType{
+    ShortAnswer = "Short Answer",
+    Paragraph = "Paragraph",
+    RichText = "Rich Text",
+
+    Date = "Date",
+    DateTime = "Date Time",
+    Decimal = "Decimal",
+    Integer = "Integer",
+    Email = "Email",
+
+    Checkboxes = "Checkboxes",
+    DataList = "Data List",
+    RadioButtons = "Radio Buttons",
+    DropDown = "Drop Down",
+
+    InfoSection = "Info Section"
+}
+
 

@@ -5,7 +5,7 @@
 
     import { useFormSubmissionStore } from './store';
     import { default as Form } from './components/Form.vue';
-    import { FieldType, FieldTypes } from '../shared/form-models';
+    import { FieldType } from '../shared/form-models';
 
     const props = defineProps<{
         piniaInstance: Pinia,
