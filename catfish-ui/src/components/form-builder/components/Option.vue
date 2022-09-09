@@ -2,7 +2,7 @@
 <script setup lang="ts">
     import { ref } from 'vue'
 
-    import { Option, OptionFieldType } from '../../shared/form-models';
+    import { Option, OptionFieldType, FieldType } from '../../shared/form-models';
     import { useFormBuilderStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
 
@@ -16,7 +16,7 @@
 <template>
     <span v-if="!editMode">
         <span v-for="value in model.optionText.values">
-            <span v-if="value.value?.length > 0" class="option-values"> {{value.value}} </span>
+            <span v-if="value.value?.length! > 0" class="option-values"> {{value.value}} </span>
         </span>
         <font-awesome-icon icon="fa-solid fa-pen-to-square" @click="editMode = true" class="fa-icon" />
     </span>

@@ -29,7 +29,7 @@
       }
     },
     methods: {
-      log(event) {
+      log(event: any) {
         console.log(event)
       },
     },

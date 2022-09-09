@@ -25,7 +25,7 @@
             <TextCollection :model="value" :text-type="model.type" />
         </div>
         <div class="col col-sm-1">
-            <div v-if="fieldData.multilingualTextValues.length > 1">
+            <div v-if="fieldData.multilingualTextValues!.length > 1">
                 <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(index)" class="fa-icon delete" />
             </div>
         </div>

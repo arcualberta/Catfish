@@ -20,9 +20,9 @@
         <div>
             <p>{{model.description}}</p>
             Form:
-            <select v-model="model.formId">
-                <option>TO DO Form 1</option>
-                <option>TO DO Form 2</option>
+            <select>
+                <option value="b01e8c95-abef-4db2-ac3a-9ab35c4f6e11">TO DO Form 1</option>
+                <option value="139e7084-20ba-4268-9396-61bac78cda52">TO DO Form 2</option>
             </select>
         </div>
     </div>

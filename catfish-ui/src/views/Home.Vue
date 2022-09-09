@@ -2,7 +2,7 @@
     import { useRouter } from 'vue-router'
 
     const router = useRouter();
-    const navigateTo = (path) => { router.push(path); }
+    const navigateTo = (path: string) => { router.push(path); }
 </script>
 
 <template>

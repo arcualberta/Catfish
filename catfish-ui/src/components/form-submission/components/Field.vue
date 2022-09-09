@@ -28,7 +28,7 @@
         <b-row>
 
             <div v-if="model.type === FieldType.InfoSection" class="alert alert-info">
-                <h3 class="text-field-lable">{{title}}</h3>
+                <h3 class="text-field-label">{{title}}</h3>
             </div>
             <b-col v-else class="col-sm-2">
                 {{title}} <span class="hovertext" :data-hover="description" v-if="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span> :
