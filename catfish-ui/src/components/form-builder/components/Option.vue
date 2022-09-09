@@ -2,7 +2,7 @@
 <script setup lang="ts">
     import { ref } from 'vue'
 
-    import { Option, OptionFieldType, FieldTypes } from '../../shared/form-models';
+    import { Option, OptionFieldType } from '../../shared/form-models';
     import { useFormBuilderStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
 
@@ -21,7 +21,7 @@
         <font-awesome-icon icon="fa-solid fa-pen-to-square" @click="editMode = true" class="fa-icon" />
     </span>
     <span v-else>
-        <TextCollection :model="model.optionText" :text-type="FieldTypes.ShortAnswer" />
+        <TextCollection :model="model.optionText" :text-type="FieldType.ShortAnswer" />
         <font-awesome-icon icon="fa-solid fa-circle-check" @click="editMode = false" class="fa-icon delete-button"/>
     </span>
 </template>

@@ -3,7 +3,7 @@
     import { Guid } from "guid-typescript";
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
-    import { Form, FieldTypes } from '../../shared/form-models';
+    import { Form } from '../../shared/form-models';
     import { getFieldTitle } from '../../shared/form-helpers';
     import { default as Field } from './Field.vue'
     import { default as TextCollection } from './TextCollection.vue'

@@ -2,7 +2,7 @@
 <script setup lang="ts">
     import { computed } from 'vue'
     import { Guid } from 'guid-typescript'
-    import { Field, OptionFieldType, FieldTypes, FieldData } from '../../shared/form-models';
+    import { Field, OptionFieldType, FieldData } from '../../shared/form-models';
 
     import { useFormSubmissionStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'

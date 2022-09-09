@@ -20,13 +20,13 @@
 </script>
 
 <template>
-    <div v-for=" value in fieldData.multilingualTextValues" :key="value.id" :model="value" class="row mb-3">
+    <div v-for="value, index in fieldData.multilingualTextValues" :key="value.id" :model="value" class="row mb-3">
         <div class="col col-sm-11" >
             <TextCollection :model="value" :text-type="model.type" />
         </div>
         <div class="col col-sm-1">
             <div v-if="fieldData.multilingualTextValues.length > 1">
-                <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(value.id)" class="fa-icon delete" />
+                <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(index)" class="fa-icon delete" />
             </div>
         </div>
     </div>

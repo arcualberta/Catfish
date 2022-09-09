@@ -6,7 +6,7 @@
     import { useFormBuilderStore } from './store';
     import { Field } from '../shared/form-models'
     import { createTextCollection, isOptionField, createOption } from '../shared/form-helpers'
-    import { FieldType, FieldTypes } from '../shared/form-models';
+    import { FieldType } from '../shared/form-models';
     import { AppletAttribute } from '../shared/props'
 
     import { default as Form } from './components/Form.vue';
@@ -73,19 +73,19 @@
         <button type="button" class="btn btn-success" :disabled="disabled" @click="saveForm">Save</button>
     </div>
     <div class="toolbar">
-        <button :disabled="disabled" @click="newField(FieldTypes.ShortAnswer)">+ Short Answer</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.Paragraph)">+ Paragraph</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.RichText)">+ Rich Text</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.Date)">+ Date</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.DateTime)">+ Date/Time</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.Decimal)">+ Decimal</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.Integer)">+ Integer</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.Email)">+ Email</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.Checkboxes)">+ Checkboxes</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.DataList)">+ Data List</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.RadioButtons)">+ Radio Buttons</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.DropDown)">+ Drop Down</button>
-        <button :disabled="disabled" @click="newField(FieldTypes.InfoSection)">+ Info Section</button>
+        <button :disabled="disabled" @click="newField(FieldType.ShortAnswer)">+ Short Answer</button>
+        <button :disabled="disabled" @click="newField(FieldType.Paragraph)">+ Paragraph</button>
+        <button :disabled="disabled" @click="newField(FieldType.RichText)">+ Rich Text</button>
+        <button :disabled="disabled" @click="newField(FieldType.Date)">+ Date</button>
+        <button :disabled="disabled" @click="newField(FieldType.DateTime)">+ Date/Time</button>
+        <button :disabled="disabled" @click="newField(FieldType.Decimal)">+ Decimal</button>
+        <button :disabled="disabled" @click="newField(FieldType.Integer)">+ Integer</button>
+        <button :disabled="disabled" @click="newField(FieldType.Email)">+ Email</button>
+        <button :disabled="disabled" @click="newField(FieldType.Checkboxes)">+ Checkboxes</button>
+        <button :disabled="disabled" @click="newField(FieldType.DataList)">+ Data List</button>
+        <button :disabled="disabled" @click="newField(FieldType.RadioButtons)">+ Radio Buttons</button>
+        <button :disabled="disabled" @click="newField(FieldType.DropDown)">+ Drop Down</button>
+        <button :disabled="disabled" @click="newField(FieldType.InfoSection)">+ Info Section</button>
     </div>
     <hr />
     <!--{{store.form}}-->

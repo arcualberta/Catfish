@@ -18,7 +18,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "vue-tsc --noEmit | findstr /V \"TS2786\""
+    "check": "vue-tsc --noEmit | findstr /V \"TS2786\" | findstr /V \"TS2607\" | findstr /V \"TS2322\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
