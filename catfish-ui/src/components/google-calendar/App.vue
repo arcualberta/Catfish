@@ -24,15 +24,17 @@
 
     const props = defineProps < {
         piniaInstance: Pinia,
-        dataAttributes: AppletAttribute,
+        dataAttributes: AppletAttribute | null,
         queryParameters: AppletAttribute | null
      } > ();
 
      const _dataAttributes = toRef(props, 'dataAttributes')
+     let _cssClass = _dataAttributes && _dataAttributes?.value? (_dataAttributes.value["css-class"] as string) : null;
+     const cssClass =_cssClass ? "google-calendar " + _cssClass : "google-calendar";
      
-     const cssClass ="google-calendar " +  _dataAttributes.value["css-class"] as string;
-     const title = _dataAttributes.value["calendar-title"] as string;
-     const description = _dataAttributes.value["calendar-description"] as string;
+     console.log(cssClass)
+     const title = _dataAttributes && _dataAttributes?.value? (_dataAttributes.value["calendar-title"] as string): null;
+     const description =_dataAttributes && _dataAttributes?.value? (_dataAttributes.value["calendar-description"] as string) : null
      const store = useGoogleCalendarStore(props.piniaInstance);
     const cidEl=Guid.create().toString();
    
@@ -43,15 +45,20 @@
         let calIds: object[] = [] ;
         
         //get the calendar id(s) from the dataattributes)
-        let gCalIds: string[] = (_dataAttributes.value["calendar-ids"]) as unknown as Array<string>;
-        gCalIds.map(function (cid) {
-           
+        let gCalIds: string[] =_dataAttributes && _dataAttributes?.value?((_dataAttributes?.value["calendar-ids"]) as unknown as Array<string>): Array<string>();
+        if(!gCalIds || !gCalIds.length)
+           gCalIds = config.googleCalendarIds;
+
+        gCalIds.map(function (cid) {  
             let calId= { googleCalendarId: cid.trim(), className:'gcal-event' }
             calIds?.push(calId);
         });
-        let displayStyle = _dataAttributes.value["display-style"] as string;
+        let displayStyle = _dataAttributes && _dataAttributes?.value?(_dataAttributes?.value["display-style"] as string) : null;
         
-        const apikey =_dataAttributes.value["api-key"] as string;
+        if(!displayStyle)
+           displayStyle = config.initialView;
+
+        const apikey =_dataAttributes && _dataAttributes?.value?(_dataAttributes?.value["api-key"] as string) : null;
          //use the api key from the data attribute if existed, if not use the one in the appsettings
         let gApiKey = apikey? apikey: config.googleApiKey;
 
