@@ -173,3 +173,4 @@ NPM.UI.Lib/arcualberta-catfish-ui*.tgz
 /Catfish/Catfish.Web/startup-error.txt
 appsettings.ts
 /Catfish/Catfish.Web/wwwroot/assets/applets
+.history

@@ -4,6 +4,12 @@ namespace CatfishWebExtensions.Blocks
     [BlockType(Name = "Google Calendar", Category = "Widgets", Icon = "fas fa-calendar-alt")]
     public class GoogleCalendar : Block
     {
+        [Field(Title = "Title", Description ="Optional title for the calendar")]
+        public StringField Title { get; set; }
+
+        [Field(Title = "Description", Description ="Optional short description for the calendar")]
+        public TextField Description { get; set; }
+
         [Field(Title = "Css Class")]
         public StringField CssClass { get; set; }
 

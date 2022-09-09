@@ -8,7 +8,7 @@
     <strong>We're sorry but Vue Applets don't work without JavaScript enabled. Please enable it to continue.</strong>
 </noscript>
 
-Applet Loader is being rendered here ...
+
 
 @{
     var pageId = _webApp.PageId;
@@ -84,13 +84,7 @@ const app = Vue.createApp(applet, {
  
 
 if (applet.props.piniaInstance == null) {
-        //const state = applet.storeConfig.state;
-        //const mutations = applet.storeConfig.mutations;
-        //const actions = applet.storeConfig.actions;
-        //const getters = applet.storeConfig.getters;
-
-        //const store = Vuex.createStore({ state, mutations, actions, getters });
-     
+       
        app.use(Pinia.createPinia());
      
     }

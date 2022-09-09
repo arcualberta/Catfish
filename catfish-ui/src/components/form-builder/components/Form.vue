@@ -3,7 +3,7 @@
     import { Guid } from "guid-typescript";
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
-    import { Form, FieldTypes } from '../../shared/form-models';
+    import { Form } from '../../shared/form-models';
     import { getFieldTitle } from '../../shared/form-helpers';
     import { default as Field } from './Field.vue'
     import { default as TextCollection } from './TextCollection.vue'
@@ -21,11 +21,11 @@
     </div>
     <div class="form-field-border">
         <div>
-            <span class="text-field-lable">Name:</span>
+            <span class="text-field-label">Name:</span>
             <input type="text" v-model="model.name" class="text-field" />
         </div>
         <div style="display:inline;">
-            <span class="text-area-lable">Description:</span>
+            <span class="text-area-label">Description:</span>
             <textarea v-model="model.description" class="text-area" />
         </div>
     </div>
