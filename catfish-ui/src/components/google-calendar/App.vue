@@ -24,8 +24,8 @@
 
     const props = defineProps < {
         piniaInstance: Pinia,
-        dataAttributes: AppletAttribute | null,
-        queryParameters: AppletAttribute | null
+        dataAttributes?: AppletAttribute | null,
+        queryParameters?: AppletAttribute | null
      } > ();
 
      const _dataAttributes = toRef(props, 'dataAttributes')
