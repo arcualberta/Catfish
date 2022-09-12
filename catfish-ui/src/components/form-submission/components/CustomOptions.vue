@@ -26,8 +26,8 @@
 
 <template>
     <div>
-        <span class="custom-option" v-for="(val, index) in fieldData.customOptionValues" :key="val.id">
-            <input type="text" v-model="fieldData.customOptionValues[index]" />
+        <span class="custom-option" v-for="(_, index) in fieldData.customOptionValues" :key="index">
+            <input type="text" v-model="fieldData.customOptionValues![index]" />
             <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(index)" class="fa-icon delete" />
         </span>
     </div>
