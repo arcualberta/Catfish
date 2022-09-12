@@ -75,11 +75,8 @@
         <InfoSection :model="model" />
     </div>
     <div v-else class="container">
-
-        {{model.description?.values?.$values[0]?.value}}<br />
-        {{description}}
-        <span v-if="model.required" class="fieldName required">{{name}}<span class="hovertext" :data-hover="description" v-if="description"><button>test</button></span></span>
-        <span v-else>{{name}}<span class="hovertext" :data-hover="description" v-if="description"><button class="fas fa-question-circle">test</button></span></span>
+        <span v-if="model.required" class="fieldName required">{{name}}<span class="hovertext" :data-hover="description" v-if="description"><button></button></span></span>
+        <span v-else>{{name}}<span class="hovertext" :data-hover="description" v-if="description"><button class="fas fa-question-circle"></button></span></span>
         <AttachmentField v-if="helpers.testFieldType(model, eFieldType.AttachmentField)" :model="model" />
         <RadioField v-if="helpers.testFieldType(model, eFieldType.RadioField)" :model="model" />
         <CheckboxField v-if="helpers.testFieldType(model, eFieldType.CheckboxField)" :model="model" />
