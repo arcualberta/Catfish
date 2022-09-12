@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-    import { Field, FieldType, FieldTypes } from '../../shared/form-models';
+    import { Field, FieldType } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
     import * as formHelper from '../../shared/form-helpers'
 
@@ -27,8 +27,8 @@
         <!-- print field name and discription-->
         <b-row>
 
-            <div v-if="model.type === FieldTypes.InfoSection" class="alert alert-info">
-                <h3 class="text-field-lable">{{title}}</h3>
+            <div v-if="model.type === FieldType.InfoSection" class="alert alert-info">
+                <h3 class="text-field-label">{{title}}</h3>
             </div>
             <b-col v-else class="col-sm-2">
                 {{title}} <span class="hovertext" :data-hover="description" v-if="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span> :
@@ -36,16 +36,16 @@
             <b-col class="col-sm-10">
                 <!-- Rendering appropriate user input field-->
                 <!-- Option field types -->
-                <Checkboxes :model="model" v-if="model.type === FieldTypes.Checkboxes" />
-                <DataList :model="model" v-if="model.type === FieldTypes.DataList" />
-                <DropDown :model="model" v-if="model.type === FieldTypes.DropDown" />
-                <RadioButtons :model="model" v-if="model.type === FieldTypes.RadioButtons" />
+                <Checkboxes :model="model" v-if="model.type === FieldType.Checkboxes" />
+                <DataList :model="model" v-if="model.type === FieldType.DataList" />
+                <DropDown :model="model" v-if="model.type === FieldType.DropDown" />
+                <RadioButtons :model="model" v-if="model.type === FieldType.RadioButtons" />
                 <!-- Multilingual Text Input field types -->
                 <MultilingualTextInput :model="model" v-if="isMultilingualTextInputField" />
                 <!-- Monolingual Text Input field types -->
                 <MonolingualTextInput :model="model" v-if="isMonolingualTextInputField" />
                 <!-- InfoSection  field types -->
-                <InfoSection :model="model" v-if="model.type === FieldTypes.InfoSection" />
+                <InfoSection :model="model" v-if="model.type === FieldType.InfoSection" />
             </b-col>
         </b-row>
         <br />

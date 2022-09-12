@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { Field, FieldType, FieldTypes } from '../../shared/form-models';
+    import { Field, FieldType } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
     import * as formHelper from '../../shared/form-helpers'
     const props = defineProps<{ model: Field }>();
