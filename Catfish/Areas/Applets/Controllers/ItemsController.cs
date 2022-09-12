@@ -134,11 +134,12 @@ namespace Catfish.Areas.Applets.Controllers
             {
                 //Guid collectionId = Guid.Parse("9ed65277-6a9e-4a96-c86a-e6825889234a"); ;
                 //Guid groupId = Guid.Parse("2BD48E47-3DD7-4DA0-9F07-BEB72EE3542D");
-         
+                EntityTemplate template = _appDb.EntityTemplates.Where(e => e.Id == itemTemplateId).FirstOrDefault();//newly added to set email trigger
                 DataItem itemInstance = JsonConvert.DeserializeObject<DataItem>(datamodel, settings);
 
                 Guid stateMappingId = _workflowService.GetSubmitStateMappingId(itemTemplateId);//Guid.Parse("57a5509e-6aa2-463c-9cb6-b18178450aca");
                 string actionButton = "Submit";
+                Guid postActionId = _workflowService.GetPostActionByButtonName(template, actionButton).Id;//newly added to set email trigger
                 itemInstance.TemplateId = itemInstance.Id;
                 itemInstance.Id = Guid.NewGuid();
                 Item newItem = _submissionService.SetSubmission(itemInstance, itemTemplateId, collectionId, groupId, stateMappingId, actionButton, files, fileKeys);
@@ -149,7 +150,8 @@ namespace Catfish.Areas.Applets.Controllers
                     _appDb.Items.Add(newItem);
                     _appDb.SaveChanges();
 
-                    bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
+                    bool triggerExecute = _submissionService.ExecuteTriggers(itemTemplateId, newItem, postActionId);//newly added to set email trigger
+                    //bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
                 }
             }
             catch (Exception ex)
@@ -219,7 +221,6 @@ namespace Catfish.Areas.Applets.Controllers
             else
                 return Content(JsonConvert.SerializeObject("Authorization failed", settings), "text/plain");
         }
-
         [HttpGet("getChildForm/{instanceId}/{childFormId}")]
         public async Task<ContentResult> GetChildFormAsync(Guid instanceId, Guid childFormId)
         {
@@ -360,6 +361,42 @@ namespace Catfish.Areas.Applets.Controllers
                     Item deletedItem = _submissionService.DeleteSubmission(item);
                     //check item deleted sucessfully. if yes, return Status200OK, Otherwise return Status500InternalServerError
                     if (deletedItem != null)
+                    {
+                        _appDb.SaveChanges();
+                        return StatusCode(StatusCodes.Status200OK);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+        }
+
+        [HttpPost("changeState/{itemId}/{buttonName}")]
+        public async Task<IActionResult> PostAsync(Guid itemId, string buttonName)
+        {
+            //retrive item data according to the item id
+            Item item = _appDb.Items.FirstOrDefault(it => it.Id == itemId);
+            //check item, if it is not null, then it can process. Otherwise need to return Status404NotFound
+            if (item != null)
+            {
+                //check the user has permission to delete item, if yes, it can process, otherwise return Status401Unauthorized
+                if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+            .Succeeded)
+                {
+                    Item statusChangeItem = _submissionService.StatusChange(item, buttonName);
+                    //check item deleted sucessfully. if yes, return Status200OK, Otherwise return Status500InternalServerError
+                    if (statusChangeItem != null)
                     {
                         _appDb.SaveChanges();
                         return StatusCode(StatusCodes.Status200OK);

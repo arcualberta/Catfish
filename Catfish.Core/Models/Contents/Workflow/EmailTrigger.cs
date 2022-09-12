@@ -171,7 +171,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             try
             {
                 Email email = new Email();
-                email.UserName = workflowService.GetLoggedUserEmail();
+                email.UserName = recipient;
                 email.Subject = emailTemplate.GetSubject();
                 email.FromEmail = config.GetSmtpEmail();
                 email.RecipientEmail = recipient;

@@ -691,6 +691,34 @@ namespace Catfish.Services
             }
         }
 
+        public Item StatusChange(Item item, string buttonName)
+        {
+            try
+            {
+                EntityTemplate template = _db.EntityTemplates.Where(e => e.Id == item.TemplateId).FirstOrDefault();
+
+                PostAction postAction = _workflowService.GetPostActionByButtonName(template, buttonName);
+
+                Guid nextStatusId = postAction.StateMappings.Where(sm => sm.ButtonLabel == buttonName).Select(sm => sm.Next).FirstOrDefault();
+                Guid currentStatusId = postAction.StateMappings.Where(sm => sm.ButtonLabel == buttonName).Select(sm => sm.Current).FirstOrDefault();
+                item.StatusId = nextStatusId;
+                item.Updated = DateTime.Now;
+                User user = _workflowService.GetLoggedUser();
+                DataItem emptyDataItem = new DataItem();
+                item.AddAuditEntry(user.Id,
+                    emptyDataItem,
+                    currentStatusId,
+                    nextStatusId,
+                    buttonName);
+                return item;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
         public Item AddChild(DataItem value, Guid entityTemplateId, Guid itemId, Guid stateId, Guid buttonId, string fileNames = null)
         {
             try
