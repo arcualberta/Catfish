@@ -17,5 +17,6 @@ global using CatfishExtensions.Constants;
 //Project namespaces
 global using Catfish.API.Repository.Enumerations;
 global using CatfishExtensions.Exceptions;
-global using Catfish.API.Repository.Models.Form;
+global using Catfish.API.Repository.Models.Forms;
 global using Catfish.API.Repository.Constants;
+global using Catfish.API.Repository.Models.Entities;

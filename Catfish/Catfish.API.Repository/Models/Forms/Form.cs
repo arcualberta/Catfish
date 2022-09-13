@@ -1,5 +1,5 @@
 ﻿
-namespace Catfish.API.Repository.Models.Form
+namespace Catfish.API.Repository.Models.Forms
 {
     /// <summary>
     /// Defines a form that consists of a list of fields.
