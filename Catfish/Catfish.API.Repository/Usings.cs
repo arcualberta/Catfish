@@ -6,7 +6,7 @@ global using System.Runtime.Serialization;
 global using Newtonsoft.Json;
 global using Microsoft.AspNetCore.Cors;
 global using Microsoft.AspNetCore.Authorization;
-
+global using System.ComponentModel.DataAnnotations;
 
 //Shared namespaces
 global using CatfishExtensions;

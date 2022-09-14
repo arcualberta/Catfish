@@ -48,7 +48,7 @@ namespace Catfish.API.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CF_Repo_Forms");
+                    b.ToTable("CF_Repo_Forms", (string)null);
                 });
 
             modelBuilder.Entity("Catfish.API.Repository.Models.Form.FormData", b =>
@@ -71,7 +71,7 @@ namespace Catfish.API.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CF_Repo_FormData");
+                    b.ToTable("CF_Repo_FormData", (string)null);
                 });
 #pragma warning restore 612, 618
         }

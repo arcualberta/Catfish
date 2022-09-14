@@ -1,18 +1,25 @@
-﻿namespace Catfish.API.Repository.Models.Entities
+﻿
+namespace Catfish.API.Repository.Models.Entities
 {
     public class Entity
     {
-        public Guid Guid { get; set; }
-        public Guid TemplateId { get; set; }
-        public EntityTemplate Template { get; set; }
-        public ICollection<Entity> SubjectEntities { get; set; } = new List<Entity>();
-        public ICollection<Entity> ObjectEntities { get; set; } = new List<Entity>();
-        public List<Relationship> Relationships { get; set; } = new List<Relationship>();
+        public Guid Id { get; set; }
 
         [JsonIgnore]
         public string? SerializedData { get; set; }
 
         [NotMapped]
         public ICollection<FormData> Data { get; set; } = new List<FormData>();
+
+        public Guid TemplateId { get; set; }
+        public EntityTemplate Template { get; set; }
+
+
+        [InverseProperty("SubjectEntity")]
+        public ICollection<SubjectRelationship> SubjectRelationships { get; set; } = new List<SubjectRelationship>();
+
+        [InverseProperty("ObjectEntity")]
+        public ICollection<ObjectRelationship> ObjectRelationships { get; set; } = new List<ObjectRelationship>();
+
     }
 }

@@ -9,6 +9,7 @@ namespace Catfish.API.Repository.Models.Forms
         /// <summary>
         /// Unique form ID.
         /// </summary>
+        [Key]
         public Guid Id { get; set; }
 
         /// <summary>
@@ -51,5 +52,9 @@ namespace Catfish.API.Repository.Models.Forms
             get => SerializedFields == null ? null : JsonConvert.DeserializeObject<List<object>>(SerializedFields);
             set => SerializedFields = value == null ? null : JsonConvert.SerializeObject(value);
         }
+
+        public ICollection<ItemTemplate> ItemTemplates { get; set; } = new List<ItemTemplate>();
+        public ICollection<CollectionTemplate> CollectionTemplates { get; set; } = new List<CollectionTemplate>();
+
     }
 }
