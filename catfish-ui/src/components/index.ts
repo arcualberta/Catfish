@@ -1,3 +1,5 @@
+import GoogleCalendar from '../views/GoogleCalendar.vue';
+
 /* Shared form models module */
 export * as FormModels from './shared/form-models';
 
@@ -16,4 +18,9 @@ export { useLoginStore } from './login/store';
 /* Workflow Builder component */
 export { default as WorkflowBuilder } from './workflow-builder/App.vue';
 export { useWorkflowBuilderStore } from './workflow-builder/store';
+
+/* google calendar component */
+export { default as GoogleCalendar } from './google-calendar/App.vue'
+export { useGoogleCalendarStore } from './google-calendar/store'
+
 

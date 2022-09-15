@@ -1,4 +1,4 @@
-﻿namespace Catfish.API.Repository.Models.Form
+﻿namespace Catfish.API.Repository.Models.Forms
 {
     public class FormData
     {

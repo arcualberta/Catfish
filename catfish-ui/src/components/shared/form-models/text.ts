@@ -15,7 +15,7 @@ export interface Text {
     /**
      * The text string enclosed in this object
      * */
-    value: string | null;
+    value: string;
 
     /**
      * The type of text input taken by this Text object. */

@@ -2,7 +2,7 @@
     import { computed } from 'vue'
     import { Guid } from 'guid-typescript'
     import * as formHelper from '../../shared/form-helpers'
-    import { Field, OptionFieldType, FieldTypes, FieldData, ExtensionType, Option } from '../../shared/form-models';
+    import { Field, OptionFieldType, FieldData, ExtensionType, Option } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
     import { default as CustomOptions } from './CustomOptions.vue'
 
@@ -19,7 +19,7 @@
 
 <template>
     <div v-for="opt in model.options" :key="opt.id" class="option-field">
-        <input type="checkbox" :checked="isSelected(opt.id)" @change="setSelection(opt.id, $event.target.checked)" /> {{formHelper.getOptionText(opt, store.lang)}}
+        <input type="checkbox" :checked="isSelected(opt.id)" @change="setSelection(opt.id, ($event.target as HTMLInputElement).checked)" /> {{formHelper.getOptionText(opt, store.lang)}}
         <span v-if="opt.isExtendedInput != ExtensionType.None">
         </span>
     </div>

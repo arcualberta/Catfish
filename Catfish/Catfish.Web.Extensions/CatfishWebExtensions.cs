@@ -48,6 +48,7 @@
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<ICatfishUserManager, CatfishUserManager>();
             services.AddScoped<ICatfishSignInManager, CatfishSignInManager>();
+            services.AddScoped<IAssetRegistry, AssetRegistry>();
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -99,7 +100,7 @@
                     bool signInStatus = false;
                     if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
                         signInStatus = await catfishSignInManager.SignIn(user, request.HttpContext);
-
+                   
                     return result;
                 }
                 catch (Exception ex)
@@ -112,11 +113,13 @@
             (builder as WebApplication)?.MapGet("/logout", async (IConfiguration configuration, HttpRequest request, ICatfishSignInManager catfishSignInManager) =>
             {
                 await catfishSignInManager.SignOut(request.HttpContext);
-
-                var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
-                if (string.IsNullOrEmpty(siteRoot))
-                    siteRoot = "/";
-                request.HttpContext.Response.Redirect(siteRoot);
+                if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
+                {
+                    var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
+                    if (string.IsNullOrEmpty(siteRoot))
+                        siteRoot = "/";
+                    request.HttpContext.Response.Redirect(siteRoot);
+                }
             });
 
 
@@ -135,8 +138,34 @@
                 {
                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.Pages.DisplayTemplates"),
                     RequestPath = "/Pages/DisplayTemplates"
-                });
+                })
+                .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.css"),
+                     RequestPath = "/assets/css"
+                })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.pinia"),
+                     RequestPath = "/assets/public/vendors/pinia"
+                 })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vue3"),
+                     RequestPath = "/assets/public/vendors/vue3"
+                 })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vuedemi"),
+                     RequestPath = "/assets/public/vendors/vuedemi"
+                 })
+                 .UseStaticFiles(new StaticFileOptions
+                 {
+                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vuerouter"),
+                     RequestPath = "/assets/public/vendors/vuerouter"
+                 });
         }
+
 
         /// <summary>
         /// Static accessor to CatfishWebExtensions module if it is registered in the Piranha application.
@@ -152,7 +181,11 @@
         #region Private methods
         private static void RegisterBlocks()
         {
-            Piranha.App.Blocks.Register<ExtendedImage>();
+            App.Blocks.Register<ExtendedImage>();
+            App.Blocks.Register<Accordion>();
+            App.Blocks.Register<Card>();
+            App.Blocks.Register<GoogleCalendar>();
+            App.Blocks.Register<FormBuilder>();
         }
         #endregion
     }

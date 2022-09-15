@@ -12,11 +12,11 @@
 <template>
     <div v-if="dispLang">
         <div v-if="textType===TextType.ShortAnswer">
-            <span class="text-field-lable">{{model.lang}}: </span>
+            <span class="text-field-label">{{model.lang}}: </span>
             <input type="text" v-model="model.value" class="text-field" />
         </div>
         <div v-else-if="textType==='Paragraph'">
-            <span class="text-field-lable">{{model.lang}}: </span>
+            <span class="text-field-label">{{model.lang}}: </span>
             <textarea v-model="model.value" class="field-text-area" />
         </div>
     </div>

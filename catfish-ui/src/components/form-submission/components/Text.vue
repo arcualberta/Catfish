@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-    import { Text, FieldType, FieldTypes } from '../../shared/form-models';
+    import { Text, FieldType } from '../../shared/form-models';
 
     const props = defineProps<{ model: Text, textType: FieldType, decimalPoints?: number }>();
 
@@ -9,27 +9,27 @@
 </script>
 
 <template>
-    <div v-if="textType === FieldTypes.ShortAnswer">
+    <div v-if="textType === FieldType.ShortAnswer">
         <b-form-input v-model="model.value"  ></b-form-input>
         <!--<input type="text" v-model="model.value" class="text-field" />-->
     </div>
-    <div v-else-if="textType === FieldTypes.Paragraph">
+    <div v-else-if="textType === FieldType.Paragraph">
         <b-form-textarea v-model="model.value" rows="3" max-rows="6"></b-form-textarea>
     </div>
-    <div v-else-if="textType === FieldTypes.RichText">
+    <div v-else-if="textType === FieldType.RichText">
         <!--TODO: render a proper rich-text editor here -->
         <b-form-textarea v-model="model.value" rows="3" max-rows="6"></b-form-textarea>
     </div>
-    <div v-if="textType === FieldTypes.Email">
+    <div v-if="textType === FieldType.Email">
         <b-form-input v-model="model.value" type="email"></b-form-input>
     </div>
-    <div v-if="textType === FieldTypes.Integer">
+    <div v-if="textType === FieldType.Integer">
         <b-form-input type="number" step='1' v-model="model.value" />
     </div>
-    <div v-if="textType === FieldTypes.Decimal">
+    <div v-if="textType === FieldType.Decimal">
         <b-form-input type="number" :step='Math.pow(10, -decPoints)' v-model="model.value" />
     </div>
-    <div v-if="textType === FieldTypes.Date" >
+    <div v-if="textType === FieldType.Date" >
         <b-form-input v-model="model.value" type="date"></b-form-input>
     </div>
     <div v-if="textType === FieldTypes.DateTime">

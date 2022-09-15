@@ -1,0 +1,13 @@
+﻿
+li.nav-item.dropdown {
+    margin-top: 1px;
+}
+
+    li.nav-item.dropdown .btn {
+        color: rgba(0,0,0,.55) !important;
+    }
+
+        li.nav-item.dropdown .btn.active, li a.dropdown-item.nav-link.active {
+            color: #f94c3b !important;
+            background-color: transparent !important;
+        }

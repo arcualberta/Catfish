@@ -22,7 +22,70 @@ namespace Catfish.API.Repository.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Form.Form", b =>
+            modelBuilder.Entity("Catfish.API.Repository.Models.Entities.Entity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("EntityType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SerializedData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateId");
+
+                    b.ToTable("CF_Repo_Entities", (string)null);
+                });
+
+            modelBuilder.Entity("Catfish.API.Repository.Models.Entities.EntityTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CF_Repo_EntityTemplates", (string)null);
+                });
+
+            modelBuilder.Entity("Catfish.API.Repository.Models.Entities.Relationship", b =>
+                {
+                    b.Property<Guid>("SubjectEntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ObjectEntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.HasKey("SubjectEntityId");
+
+                    b.HasIndex("ObjectEntityId");
+
+                    b.ToTable("CF_Repo_Relationships");
+                });
+
+            modelBuilder.Entity("Catfish.API.Repository.Models.Forms.Form", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -51,7 +114,7 @@ namespace Catfish.API.Repository.Migrations
                     b.ToTable("CF_Repo_Forms");
                 });
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Form.FormData", b =>
+            modelBuilder.Entity("Catfish.API.Repository.Models.Forms.FormData", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,6 +135,73 @@ namespace Catfish.API.Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CF_Repo_FormData");
+                });
+
+            modelBuilder.Entity("EntityTemplateForm", b =>
+                {
+                    b.Property<Guid>("EntityTemplatesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FormsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("EntityTemplatesId", "FormsId");
+
+                    b.HasIndex("FormsId");
+
+                    b.ToTable("CF_Repo_EntityTemplateForm");
+                });
+
+            modelBuilder.Entity("Catfish.API.Repository.Models.Entities.Entity", b =>
+                {
+                    b.HasOne("Catfish.API.Repository.Models.Entities.EntityTemplate", "Template")
+                        .WithMany()
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Template");
+                });
+
+            modelBuilder.Entity("Catfish.API.Repository.Models.Entities.Relationship", b =>
+                {
+                    b.HasOne("Catfish.API.Repository.Models.Entities.Entity", "ObjectEntity")
+                        .WithMany("ObjectRelationships")
+                        .HasForeignKey("ObjectEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Catfish.API.Repository.Models.Entities.Entity", "SubjectEntity")
+                        .WithMany("SubjectRelationships")
+                        .HasForeignKey("SubjectEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ObjectEntity");
+
+                    b.Navigation("SubjectEntity");
+                });
+
+            modelBuilder.Entity("EntityTemplateForm", b =>
+                {
+                    b.HasOne("Catfish.API.Repository.Models.Entities.EntityTemplate", null)
+                        .WithMany()
+                        .HasForeignKey("EntityTemplatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Catfish.API.Repository.Models.Forms.Form", null)
+                        .WithMany()
+                        .HasForeignKey("FormsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Catfish.API.Repository.Models.Entities.Entity", b =>
+                {
+                    b.Navigation("ObjectRelationships");
+
+                    b.Navigation("SubjectRelationships");
                 });
 #pragma warning restore 612, 618
         }

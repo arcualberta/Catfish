@@ -4,7 +4,7 @@
     import { Guid } from "guid-typescript";
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
-    import { Field, FieldTypes, TextCollection as TextCollectionModel } from '../../shared/form-models';
+    import { Field, TextCollection as TextCollectionModel, FieldType } from '../../shared/form-models';
     import { isOptionField, createTextCollection, createOption, cloneTextCollection } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Opt } from './Option.vue'
@@ -32,11 +32,11 @@
     <h5>{{model.type}}</h5>
     <div>
         <h6>Title:</h6>
-        <TextCollection :model="model.title" :text-type="FieldTypes.ShortAnswer" />
+        <TextCollection :model="model.title" :text-type="FieldType.ShortAnswer" />
     </div>
     <div>
         <h6>Description:</h6>
-        <TextCollection :model="model.description" :text-type="FieldTypes.Paragraph" />
+        <TextCollection :model="model.description" :text-type="FieldType.Paragraph" />
     </div>
     <div v-if="isAnOptionField">
         <h6>Options:</h6>
@@ -52,7 +52,7 @@
 
         <!--Allow adding a new option to the list-->
         <div>
-            <TextCollection :model="newOptionInput" :text-type="FieldTypes.ShortAnswer" />
+            <TextCollection :model="newOptionInput" :text-type="FieldType.ShortAnswer" />
             <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addOption()" class="fa-icon plus add-option" />
         </div>
 

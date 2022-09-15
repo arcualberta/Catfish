@@ -2,7 +2,7 @@
     import { useRouter } from 'vue-router'
 
     const router = useRouter();
-    const navigateTo = (path) => { router.push(path); }
+    const navigateTo = (path: string) => { router.push(path); }
 </script>
 
 <template>
@@ -12,6 +12,7 @@
     <button class="home-link" @click="navigateTo('/workflow-builder')">Workflow Builder</button>
     <button class="home-link" @click="navigateTo('/new-form-submission')">New Form Submission</button>
     <button class="home-link" @click="navigateTo('/edit-form-submission')">Edit Form Submission</button>
+    <button class="home-link" @click="navigateTo('/google-calendar')">Google Calendar</button>
 </template>
 
 <style scoped>

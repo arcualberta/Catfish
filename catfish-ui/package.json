@@ -1,12 +1,24 @@
 {
   "name": "catfish-ui",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/catfish-ui.umd.js",
+  "module": "./dist/catfish-ui.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/catfish-ui.es.js",
+      "require": "./dist/catfish-ui.umd.js"
+    }
+  },
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "check-ts.bat"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
@@ -14,6 +26,10 @@
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/vue-fontawesome": "^3.0.1",
+    "@fullcalendar/core": "^5.11.2",
+    "@fullcalendar/daygrid": "^5.11.2",
+    "@fullcalendar/google-calendar": "^5.11.2",
+    "@fullcalendar/list": "^5.11.2",
     "@popperjs/core": "^2.11.5",
     "bootstrap": "^5.2.0",
     "bootstrap-vue-3": "^0.2.6",
@@ -29,8 +45,9 @@
     "@types/node": "^18.0.5",
     "@types/uuid": "^8.3.4",
     "@vitejs/plugin-vue": "^3.0.0",
+    "pinia": "^2.0.16",
     "typescript": "^4.6.4",
     "vite": "^3.0.2",
-    "vue-tsc": "^0.38.4"
+    "vue-tsc": "^0.38.9"
   }
 }

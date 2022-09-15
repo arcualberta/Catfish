@@ -153,14 +153,14 @@ button:focus-visible {
     margin-bottom: 15px;
     padding: 5px;
 }
-.text-field-lable {
+.text-field-label {
     margin-left: 50px;
     font-weight: bold;
     display: inline-block;
     margin-top:20px;
     /*min-width: 150px;*/
 }
-.text-area-lable {
+.text-area-label {
     margin-left: 50px;
     font-weight: bold;
 }
