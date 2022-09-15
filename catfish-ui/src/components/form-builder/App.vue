@@ -12,8 +12,8 @@
     import { default as Form } from './components/Form.vue';
 
     const props = defineProps<{
-        dataAttributes: AppletAttribute | null,
-        queryParameters: AppletAttribute | null,
+        dataAttributes?: AppletAttribute | null,
+        queryParameters?: AppletAttribute | null,
         piniaInstance: Pinia,
         repositoryRoot: string,
         formId?: Guid
@@ -51,12 +51,16 @@
             title: createTextCollection(store.lang),
             description: createTextCollection(store.lang),
             type: fieldType,
-        } as unknown as Field;
+        } as Field;
+
+        //TODO: Restrict the following isMultiValued property only for monolingual and multilingual fields. We should leave
+        //it undefined for other field types.
+        field.isMultiValued = false;
 
         if (isOptionField(field)) {
             field.options = [createOption(store.lang, null)]
         }
-        store.form?.fields.push(field);
+        store.form!.fields.push(field);
     }
 
 </script>

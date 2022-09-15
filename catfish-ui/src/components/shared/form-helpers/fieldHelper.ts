@@ -36,7 +36,9 @@ export const getFieldTitle = (field: Field, lang: string | null): string | null 
 export const getFieldDescription = (field: Field, lang: string | null): string | null => getTextValue(field.description, lang)[0]
 
 /**
- * Creates and returns a FieldData object for a given field. 
+ * Creates and returns a FieldData object for a given field. This function should be called by implementation of form-submission 
+ * functionality to create objects to store values submitted by users for form fields.
+ * 
  * @param field
  * @param lang Language or languages to be supported.
  */
