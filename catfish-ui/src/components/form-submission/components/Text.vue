@@ -18,7 +18,7 @@
     </div>
     <div v-else-if="textType === FieldType.RichText">
         <!--TODO: render a proper rich-text editor here -->
-        <textarea v-model="model.value" class="field-text-area" />
+        <b-form-textarea v-model="model.value" rows="3" max-rows="6"></b-form-textarea>
     </div>
     <div v-if="textType === FieldType.Email">
         <b-form-input v-model="model.value" type="email"></b-form-input>
@@ -33,7 +33,7 @@
         <b-form-input v-model="model.value" type="date"></b-form-input>
     </div>
     <div v-if="textType === FieldType.DateTime">
-        <input type="datetime-local" v-model="model.value" class="col-sm-8"/>
+        <b-form-input type="datetime-local" v-model="model.value" />
     </div>
    
 </template>
