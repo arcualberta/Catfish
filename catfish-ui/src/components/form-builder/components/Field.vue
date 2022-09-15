@@ -53,10 +53,30 @@
         <!--Allow adding a new option to the list-->
         <div>
             <TextCollection :model="newOptionInput" :text-type="FieldTypes.ShortAnswer" />
-            <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addOption()" class="fa-icon plus add-option"/>
+            <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addOption()" class="fa-icon plus add-option" />
         </div>
-        
+
     </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <h6>Multiple Value Field:</h6>
+        </div>
+        <input :model="model.isMultiValued" type="checkbox" class="checkbox" />
+        <!--<div class="col-sm-10">
+        <br />
+        <div class="toggle-button-cover">
+            <div class="button-cover">
+                <div class="button r" id="button-1">
+                    <input :model="model.isMultiValued" type="checkbox" class="checkbox" />
+                    <div class="knobs"></div>
+                    <div class="layer"></div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+        {{model}}
+    </div>
+    
 </template>
 
 <style scope>
