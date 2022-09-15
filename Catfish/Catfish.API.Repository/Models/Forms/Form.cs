@@ -53,8 +53,6 @@ namespace Catfish.API.Repository.Models.Forms
             set => SerializedFields = value == null ? null : JsonConvert.SerializeObject(value);
         }
 
-        public ICollection<ItemTemplate> ItemTemplates { get; set; } = new List<ItemTemplate>();
-        public ICollection<CollectionTemplate> CollectionTemplates { get; set; } = new List<CollectionTemplate>();
-
+        public ICollection<EntityTemplate> EntityTemplates { get; set; } = new List<EntityTemplate>();
     }
 }
