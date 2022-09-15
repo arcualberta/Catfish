@@ -1,5 +1,5 @@
 ﻿
-namespace Catfish.API.Repository.Models.Form
+namespace Catfish.API.Repository.Models.Forms
 {
     /// <summary>
     /// Defines a form that consists of a list of fields.
@@ -9,6 +9,7 @@ namespace Catfish.API.Repository.Models.Form
         /// <summary>
         /// Unique form ID.
         /// </summary>
+        [Key]
         public Guid Id { get; set; }
 
         /// <summary>
@@ -51,5 +52,7 @@ namespace Catfish.API.Repository.Models.Form
             get => SerializedFields == null ? null : JsonConvert.DeserializeObject<List<object>>(SerializedFields);
             set => SerializedFields = value == null ? null : JsonConvert.SerializeObject(value);
         }
+
+        public ICollection<EntityTemplate> EntityTemplates { get; set; } = new List<EntityTemplate>();
     }
 }
