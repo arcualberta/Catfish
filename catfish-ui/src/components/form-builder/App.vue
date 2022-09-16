@@ -56,9 +56,11 @@
         //TODO: Restrict the following isMultiValued property only for monolingual and multilingual fields. We should leave
         //it undefined for other field types.
         field.isMultiValued = false;
+        field.isRequired = false;
 
         if (isOptionField(field)) {
             field.options = [createOption(store.lang, null)]
+            field.allowCustomOptionValues = false;
         }
         store.form!.fields.push(field);
     }
