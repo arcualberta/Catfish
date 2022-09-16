@@ -34,14 +34,23 @@
 
 <template>
     <h5>{{model.type}}</h5>
-    <div>
-        <h6>Title:</h6>
-        <TextCollection :model="model.title" :text-type="FieldType.ShortAnswer" />
-    </div>
-    <div>
-        <h6>Description:</h6>
-        <TextCollection :model="model.description" :text-type="FieldType.Paragraph" />
-    </div>
+    <b-row >
+        <b-col class="col-sm-2">
+            <h6>Title:</h6>
+        </b-col>
+        <b-col class="col-sm-10">
+            <TextCollection :model="model.title" :text-type="FieldType.ShortAnswer" />
+        </b-col>
+    </b-row>
+    <b-row>
+        <b-col class="col-sm-2">
+            <h6>Description:</h6>
+        </b-col>
+        <b-col class="col-sm-10">
+            <TextCollection :model="model.description" :text-type="FieldType.Paragraph" />
+        </b-col>
+    </b-row>
+    <br />
     <div v-if="isAnOptionField">
         <h6>Options:</h6>
         <!--Display the current list of options-->
@@ -59,15 +68,33 @@
 
             <TextCollection :model="newOptionInput" :text-type="FieldType.ShortAnswer" />
             <b-row>
-                <b-col class="col-sm-2">
-                    <h6>Custom Option Field:</h6>
+                <b-col class="col-sm-3">
+                    <h6>Extended Input Field:</h6>
                 </b-col>
-                <b-col class="col-sm-10">
+                <b-col class="col-sm-9">
                     <br />
                     <div class="toggle-button-cover">
                         <div class="button-cover">
                             <div class="button r" id="button-1">
-                                <input v-model="model.allowCustomOptionValues" type="checkbox" class="checkbox" />
+                                <input v-model="model.options.isExtendedInput" type="checkbox" class="checkbox" />
+                                <div class="knobs"></div>
+                                <div class="layer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </b-col>
+            </b-row>
+            <br />
+            <b-row v-if="model.options.isExtendedInput">
+                <b-col class="col-sm-3">
+                    <h6>Extended Input Required Field:</h6>
+                </b-col>
+                <b-col class="col-sm-9">
+                    <br />
+                    <div class="toggle-button-cover">
+                        <div class="button-cover">
+                            <div class="button r" id="button-1">
+                                <input v-model="model.options.isExtendedInputRequired" type="checkbox" class="checkbox" />
                                 <div class="knobs"></div>
                                 <div class="layer"></div>
                             </div>

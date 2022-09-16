@@ -57,10 +57,9 @@
         //it undefined for other field types.
         field.isMultiValued = false;
         field.isRequired = false;
-
+        field.allowCustomOptionValues = false;
         if (isOptionField(field)) {
             field.options = [createOption(store.lang, null)]
-            field.allowCustomOptionValues = false;
         }
         store.form!.fields.push(field);
     }

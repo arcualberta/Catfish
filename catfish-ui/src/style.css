@@ -154,11 +154,11 @@ button:focus-visible {
     padding: 5px;
 }
 .text-field-label {
-    margin-left: 50px;
+    margin-left: 0px;
     font-weight: bold;
     display: inline-block;
     margin-top:20px;
-    /*min-width: 150px;*/
+    min-width: 30px;
 }
 .text-area-label {
     margin-left: 50px;
@@ -168,7 +168,7 @@ button:focus-visible {
     width: 350px;
     height: 30px;
     margin-bottom: 30px;
-    margin-left: 210px;
+    margin-left: 40px;
     margin-top: -25px;
     display:block;
 }
@@ -182,7 +182,7 @@ button:focus-visible {
     width: 350px;
     vertical-align: middle;
     margin-bottom: 10px;
-    margin-left: 210px;
+    margin-left: 10px;
 }
 .option-field-text-area {
     width: 350px;

@@ -22,13 +22,13 @@
     </div>
     <div v-else>
         <TextCollection :model="model.optionText" :text-type="FieldType.ShortAnswer" />
-        <h6>Custom Option Field:</h6>
+        <h6>Extended Input Field:</h6>
         <div class="col-sm-10">
             <br />
             <div class="toggle-button-cover">
                 <div class="button-cover">
                     <div class="button r" id="button-1">
-                        <input v-model="model.allowCustomOptionValues" type="checkbox" class="checkbox" />
+                        <input v-model="model.options.isExtendedInput" type="checkbox" class="checkbox" />
                         <div class="knobs"></div>
                         <div class="layer"></div>
                     </div>

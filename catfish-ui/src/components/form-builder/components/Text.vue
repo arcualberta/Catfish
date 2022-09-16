@@ -11,21 +11,31 @@
 
 <template>
     <div v-if="dispLang">
-        <div v-if="textType===TextType.ShortAnswer">
-            <span class="text-field-label">{{model.lang}}: </span>
-            <input type="text" v-model="model.value" class="text-field" />
-        </div>
-        <div v-else-if="textType==='Paragraph'">
-            <span class="text-field-label">{{model.lang}}: </span>
-            <textarea v-model="model.value" class="field-text-area" />
-        </div>
+        <b-row v-if="textType===TextType.ShortAnswer">
+            <b-col class="col-sm-1">
+                <h6>{{model.lang}}: </h6>
+            </b-col>
+            <b-col class="col-sm-11">
+                <b-form-input v-model="model.value"></b-form-input>
+                <br />
+            </b-col>
+        </b-row>
+        <b-row v-else-if="textType===TextType.Paragraph">
+            <b-col class="col-sm-1">
+                <h6>{{model.lang}}: </h6>
+            </b-col>
+            <b-col class="col-sm-11">
+                <b-form-textarea v-model="model.value" rows="3" max-rows="6"></b-form-textarea>
+                <br />
+            </b-col>
+        </b-row>
     </div>
     <div v-else>
         <div v-if="textType===TextType.ShortAnswer">
-            <input type="text" v-model="model.value" class="text-field" />
+            <b-form-input v-model="model.value"></b-form-input>
         </div>
         <div v-else-if="textType==='Paragraph'">
-            <textarea v-model="model.value" class="text-area" />
+            <b-form-textarea v-model="model.value" rows="3" max-rows="6"></b-form-textarea>
         </div>
     </div>
 </template>

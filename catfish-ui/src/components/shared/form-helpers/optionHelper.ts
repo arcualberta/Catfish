@@ -6,6 +6,7 @@ export function createOption(languages: string[], optionText: TextCollection | n
 	const opt = {
 		id: Guid.create().toString() as unknown as Guid,
 		isExtendedInput: false,
+		isExtendedInputRequired: false,
 		optionText: optionText ? optionText : createTextCollection(languages)
 	} as Option;
 	return opt;
