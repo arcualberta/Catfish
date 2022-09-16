@@ -39,7 +39,7 @@ export interface Field {
      * Does this field take multiple values?. Only applicable for multilingual
      * and Monolingual text fields.
      */
-    isMultiValued: boolean | null;
+    isMultiValued: boolean;
 
     /**
      * The number of decimal points to be used, when type is Decimal.

@@ -24,26 +24,13 @@ export interface Option {
     /**
      * Is this an option that would allow the user to type-in an addional text input?
      * */
-    isExtendedInput: ExtensionType | null;
-}
-
-/**
- * Specifies whether the user should be presented with an option to input
- * a text value when this option is selected.
- * */
-export enum ExtensionType {
-    /**
-     * No extended input is provided.
-     * */
-    None,
+    isExtendedInput: boolean;
 
     /**
-     * The User can optionally provide a text input.
+     * If the user selected an extended option, should we force the user to input a value 
+     * for the extended input field. 
      * */
-    Optional,
-
-    /**The user is required to provide a text input.
-     */
-    Required
+    isExtendedInputRequired: boolean
 
 }
+
