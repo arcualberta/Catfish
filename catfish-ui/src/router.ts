@@ -42,6 +42,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'googleCaendar',
         component: () => import('./views/GoogleCalendar.vue')
     },
+    {
+        path: '/entity-template-builder',
+        name: 'entityTemplateBuilder',
+        component: () => import('./views/EntityTemplateBuilder.vue')
+    },
 ]
 
 const router = createRouter({

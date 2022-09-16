@@ -13,6 +13,7 @@
     <button class="home-link" @click="navigateTo('/new-form-submission')">New Form Submission</button>
     <button class="home-link" @click="navigateTo('/edit-form-submission')">Edit Form Submission</button>
     <button class="home-link" @click="navigateTo('/google-calendar')">Google Calendar</button>
+    <button class="home-link" @click="navigateTo('/entity-template-builder')">Entity Template Builder</button>
 </template>
 
 <style scoped>
