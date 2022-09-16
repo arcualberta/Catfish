@@ -13,6 +13,6 @@ export interface entityTemplate {
     name: string | null;
     description: string | null;
     state: eState | null;
-    metadateForms: formEntry[] | null;
+    metadataForms: formEntry[] | null;
     dataForms: formEntry[] | null;
 }

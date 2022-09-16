@@ -1,28 +1,26 @@
 import { Guid } from 'guid-typescript';
 import { defineStore } from 'pinia';
+import { entityTemplate, formEntry } from '../models';
 
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
         id: null as Guid | null,
-        
+        template: null as entityTemplate | null
         
     }),
     actions: {
         newTemplate() {
-            let api = `https://localhost:5020/api/entityTemplate/`;
-            console.log(api)
-            fetch(api, {
-                method: 'POST'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-                    //this.form = data;
-                })
-                .catch((error) => {
-                    console.error('create Entity Template :', error);
-                });
+            this.template =  {
+                id: Guid.EMPTY as unknown as Guid,
+                created: new Date(),
+                updated: new Date(),
+                name: "New Entity Template",
+                description: "Description about this new Entity Template",
+                state: null,
+                metadataForms: [] as formEntry[],
+                dataForms: [] as formEntry[]
+            };
 
         },
     },
