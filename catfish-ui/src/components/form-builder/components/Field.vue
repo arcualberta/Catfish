@@ -4,8 +4,8 @@
     import { Guid } from "guid-typescript";
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
-    import { Field, TextCollection as TextCollectionModel, FieldType } from '../../shared/form-models';
-    import { isOptionField, createTextCollection, createOption, cloneTextCollection } from '../../shared/form-helpers'
+    import { Field, TextCollection as TextCollectionModel, FieldType, TextType, MonolingualFieldType } from '../../shared/form-models';
+    import { isOptionField, createTextCollection, createOption, cloneTextCollection, isMultilingualTextInputField, isMonolingualTextInputField } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Opt } from './Option.vue'
     import { useFormBuilderStore } from '../store'
@@ -24,6 +24,10 @@
     const deleteOption = (optId: Guid) => {
         const idx = props.model.options?.findIndex(opt => opt.id == optId)
         props.model.options?.splice(idx as number, 1)
+    }
+
+    const isTextInputField = (field: Field) => {
+        return isMultilingualTextInputField(field) || isMonolingualTextInputField(field);
     }
 
 </script>
@@ -93,7 +97,7 @@
         </div>
     </div>
     <br />
-    <div class="row">
+    <div class="row" v-if="isTextInputField(model)">
         <div class="col-sm-2">
             <h6>Multiple Value Field:</h6>
         </div>
