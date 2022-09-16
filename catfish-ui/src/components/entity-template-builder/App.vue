@@ -2,7 +2,18 @@
     <h3>Entity Template Builder</h3>
     <button @click="createTemplate">New Template</button>
 
-    <div>{{_template}}</div>
+    <div v-if="_template">
+       <div>Name : {{_template.name}} </div>
+       <div>Description : {{_template.description}} </div>
+       <div v-if="_template.metadataForms">
+             <h5>Metadata Forms</h5>
+               <div v-for="frm in _template.metadataForms" :key="frm.name">{{JSON.stringify(frm)}}</div>
+       </div>
+       <div v-if="_template.dataForms">
+             <h5>Data Forms</h5>
+               <div v-for="frm in _template.dataForms" :key="frm.name">{{JSON.stringify(frm)}}</div>
+       </div>
+    </div>
 
 </template>
 
