@@ -7,12 +7,16 @@
        <div>Description : {{_template.description}} </div>
        <div v-if="_template.metadataForms">
              <h5>Metadata Forms</h5>
-               <div v-for="frm in _template.metadataForms" :key="frm.name">{{JSON.stringify(frm)}}</div>
+             <div v-for="frm in _template.metadataForms" :key="frm.name" >
+                    <FormEntry :model="frm"  />
+               </div>
        </div>
        <div v-if="_template.dataForms">
              <h5>Data Forms</h5>
-               <div v-for="frm in _template.dataForms" :key="frm.name">{{JSON.stringify(frm)}}</div>
-       </div>
+             <div v-for="frm in _template.dataForms" :key="frm.name" >
+               <FormEntry :model="frm" />   
+               </div>
+        </div>
     </div>
 
 </template>
@@ -22,6 +26,7 @@ import { Pinia } from 'pinia'
 import { computed } from 'vue'
 import config from '../../appsettings'
 import { useEntityTemplateBuilderStore } from './store';
+import { default as FormEntry } from './components/FormEntry.vue';
 
 const props = defineProps < {
         piniaInstance: Pinia,
