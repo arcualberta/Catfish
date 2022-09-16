@@ -310,8 +310,8 @@ button:focus-visible {
     position: relative;
     top: 50%;
     width: 74px;
-    height: 36px;
-    margin: -20px auto 0 auto;
+    height: 25px;
+    margin: -30px auto 0 auto;
     overflow: hidden;
 }
 
@@ -352,14 +352,14 @@ button:focus-visible {
     position: absolute;
     top: 4px;
     left: 4px;
-    width: 26px;
-    height: 26px;
+    width: 18px;
+    height: 18px;
     color: #fff;
-    font-size: 10px;
-    font-weight: bold;
+    font-size: 8px;
+    /*font-weight: bold;*/
     text-align: center;
     line-height: 1;
-    padding: 9px 4px;
+    padding: 6px 1px;
     background-color: #f44336;
     border-radius: 50%;
     transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
@@ -367,7 +367,7 @@ button:focus-visible {
 /*#0b8533*/
 #button-1 .checkbox:checked + .knobs:before {
     content: "Yes";
-    left: 42px;
+    left: 51px;
     background-color: #0b8533;
 }
 
