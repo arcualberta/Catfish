@@ -11,15 +11,14 @@
             <div v-for="frm in template.metadataForms" :key="frm.formId">
                 <FormEntryTemplate :model="frm" />
             </div>
-
             <button @click="addMetadataForm">+ Add</button>
-
         </div>
-        <div v-if="template.dataForms">
+        <div>
             <h5>Data Forms</h5>
             <div v-for="frm in template.dataForms" :key="frm.formId">
                 <FormEntryTemplate :model="frm" />
             </div>
+            <button @click="addDataForm">+ Add</button>
         </div>
 
         <div class="alert alert-info">{{JSON.stringify(template)}}</div>
@@ -45,9 +44,15 @@
     const store = useEntityTemplateBuilderStore(props.piniaInstance);
     const createTemplate = () => store.newTemplate();
     const template = computed(() => store.template);
+
     const addMetadataForm = () => {
         store.template?.metadataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
     }
+
+    const addDataForm = () => {
+        store.template?.dataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
+    }
+
     onMounted(() => store.loadForms());
 
 </script>
