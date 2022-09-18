@@ -15,6 +15,7 @@ export {
     isOptionField,
     isMultilingualTextInputField,
     isMonolingualTextInputField,
+    isTextInputField,
     getFieldTitle,
     getFieldDescription,
     createFieldData,

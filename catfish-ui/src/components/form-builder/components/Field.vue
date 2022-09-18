@@ -5,7 +5,7 @@
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
     import { Field, TextCollection as TextCollectionModel, FieldType, TextType, MonolingualFieldType } from '../../shared/form-models';
-    import { isOptionField, createTextCollection, createOption, cloneTextCollection, isMultilingualTextInputField, isMonolingualTextInputField } from '../../shared/form-helpers'
+    import { isOptionField, createTextCollection, createOption, cloneTextCollection, isTextInputField } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Opt } from './Option.vue'
     import { useFormBuilderStore } from '../store'
@@ -24,10 +24,6 @@
     const deleteOption = (optId: Guid) => {
         const idx = props.model.options?.findIndex(opt => opt.id == optId)
         props.model.options?.splice(idx as number, 1)
-    }
-
-    const isTextInputField = (field: Field) => {
-        return isMultilingualTextInputField(field) || isMonolingualTextInputField(field);
     }
 
 </script>
