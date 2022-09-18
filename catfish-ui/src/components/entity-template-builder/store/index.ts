@@ -18,6 +18,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 name: "New Entity Template",
                 description: "Description about this new Entity Template",
                 state: null,
+                forms: [],
                 metadataForms: [{name: "Metadata Template",
                     formId: Guid.create()}],
                 dataForms: [{name: "Data Template",

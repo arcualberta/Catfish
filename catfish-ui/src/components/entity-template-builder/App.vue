@@ -2,18 +2,18 @@
     <h3>Entity Template Builder</h3>
     <button @click="createTemplate">New Template</button>
 
-    <div v-if="_template">
-       <div>Name : {{_template.name}} </div>
-       <div>Description : {{_template.description}} </div>
-       <div v-if="_template.metadataForms">
+    <div v-if="template">
+        <div>Name : {{template.name}} </div>
+        <div>Description : {{template.description}} </div>
+       <div v-if="template.metadataForms">
              <h5>Metadata Forms</h5>
-             <div v-for="frm in _template.metadataForms" :key="frm.name" >
+             <div v-for="frm in template.metadataForms" :key="frm.formId" >
                     <FormEntry :model="frm"  />
                </div>
        </div>
-       <div v-if="_template.dataForms">
+       <div v-if="template.dataForms">
              <h5>Data Forms</h5>
-             <div v-for="frm in _template.dataForms" :key="frm.name" >
+             <div v-for="frm in template.dataForms" :key="frm.formId" >
                <FormEntry :model="frm" />   
                </div>
         </div>
@@ -35,7 +35,7 @@ const props = defineProps < {
 const store = useEntityTemplateBuilderStore(props.piniaInstance);
 const createTemplate = ()=> store.newTemplate();
 
-const _template = computed(()=>store.template);
+const template = computed(()=>store.template);
 
 </script>
 <style scoped src="./style.css"></style>
