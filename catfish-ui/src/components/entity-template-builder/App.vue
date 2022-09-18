@@ -5,6 +5,7 @@
     <div v-if="template">
         <div>Name : {{template.name}} </div>
         <div>Description : {{template.description}} </div>
+        <div>State: {{template.state}}</div>
        <div v-if="template.metadataForms">
              <h5>Metadata Forms</h5>
              <div v-for="frm in template.metadataForms" :key="frm.formId" >

@@ -9,10 +9,10 @@ export interface FormEntry {
 
 export interface EntityTemplate {
     id: Guid | null;
-    name: string | null;
+    name: string;
     description: string | null;
-    state: eState | null;
-    created: Date | null;
+    state: eState;
+    created: Date;
     updated: Date | null;
     forms: Form[];
     metadataForms: FormEntry[] | null;

@@ -1,6 +1,7 @@
 import { Guid } from 'guid-typescript';
 import { defineStore } from 'pinia';
 import { EntityTemplate, FormEntry } from '../models';
+import { eState } from "../../shared/constants";
 
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
@@ -13,16 +14,14 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         newTemplate() {
             this.template =  {
                 id: Guid.EMPTY as unknown as Guid,
-                created: new Date(),
-                updated: new Date(),
                 name: "New Entity Template",
                 description: "Description about this new Entity Template",
-                state: null,
+                created: new Date(),
+                updated: null,
+                state: eState.Unpublished,
                 forms: [],
-                metadataForms: [{name: "Metadata Template",
-                    formId: Guid.create()}],
-                dataForms: [{name: "Data Template",
-                formId: Guid.create()}]
+                metadataForms: [],
+                dataForms: []
             };
 
         },
