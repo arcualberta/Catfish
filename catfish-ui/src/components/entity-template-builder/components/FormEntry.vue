@@ -6,11 +6,11 @@
 
 <script setup lang="ts">
 
-import {formEntry} from '../models'
+import {FormEntry} from '../models'
 
 
 const props = defineProps < {    
-        model: formEntry  
+        model: FormEntry  
      } > ();
 
 </script>

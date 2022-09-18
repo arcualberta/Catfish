@@ -1,12 +1,12 @@
 import { Guid } from 'guid-typescript';
 import { defineStore } from 'pinia';
-import { entityTemplate, formEntry } from '../models';
+import { EntityTemplate, FormEntry } from '../models';
 
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
         id: null as Guid | null,
-        template: null as entityTemplate | null
+        template: null as EntityTemplate | null
         
     }),
     actions: {
