@@ -6,16 +6,19 @@
         <div>Name : <input v-model="template.name" /> </div>
         <div>Description : <textarea v-model="template.description" /> </div>
         <div>State: {{template.state}}</div>
-        <div v-if="template.metadataForms">
+        <div>
             <h5>Metadata Forms</h5>
             <div v-for="frm in template.metadataForms" :key="frm.formId">
-                <FormEntry :model="frm" />
+                <FormEntryTemplate :model="frm" />
             </div>
+
+            <button @click="addMetadataForm">+ Add</button>
+
         </div>
         <div v-if="template.dataForms">
             <h5>Data Forms</h5>
             <div v-for="frm in template.dataForms" :key="frm.formId">
-                <FormEntry :model="frm" />
+                <FormEntryTemplate :model="frm" />
             </div>
         </div>
 
@@ -27,18 +30,24 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
     import { computed, onMounted } from 'vue'
-    import config from '../../appsettings'
     import { useEntityTemplateBuilderStore } from './store';
-    import { default as FormEntry } from './components/FormEntry.vue';
+    import { AppletAttribute } from '@/components/shared/props'
+    import { default as FormEntryTemplate } from './components/FormEntry.vue';
+    import { Guid } from 'guid-typescript';
+    import { FormEntry } from './models';
 
     const props = defineProps<{
-        piniaInstance: Pinia,
+        dataAttributes?: AppletAttribute | null,
+        queryParameters?: AppletAttribute | null,
+        piniaInstance: Pinia
     }>();
 
     const store = useEntityTemplateBuilderStore(props.piniaInstance);
     const createTemplate = () => store.newTemplate();
     const template = computed(() => store.template);
-
+    const addMetadataForm = () => {
+        store.template?.metadataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
+    }
     onMounted(() => store.loadForms());
 
 </script>

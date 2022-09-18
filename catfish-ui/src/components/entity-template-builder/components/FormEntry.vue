@@ -1,17 +1,26 @@
 <template>
-    <h3>Form Entry</h3>
-    <div>Name: {{model.name}}</div>
-    <div>FormId:  {{model.formId.toString()}}</div>
+    <div class="">
+        <div>Name : <input v-model="model.name" /> </div>
+        <label :for="model.formId">Form:</label>
+
+        <select v-model="model.formId" :name="model.formId">
+            <option v-for="entry in store.formEntries" :key="entry.formId" :value="entry.formId">{{entry.name}}</option>
+        </select>
+
+        <div>FormId:  {{model.formId}}</div>
+    </div>
 </template>
 
 <script setup lang="ts">
+    import { Pinia } from 'pinia'
+    import { FormEntry } from '../models'
+    import { useEntityTemplateBuilderStore } from '../store';
 
-import {FormEntry} from '../models'
+    const props = defineProps<{
+        model: FormEntry
+    }>();
 
-
-const props = defineProps < {    
-        model: FormEntry  
-     } > ();
+    const store = useEntityTemplateBuilderStore();
 
 </script>
 <style scoped src="../style.css"></style>
