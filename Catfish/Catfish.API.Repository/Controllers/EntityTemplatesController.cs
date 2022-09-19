@@ -7,11 +7,11 @@ namespace Catfish.API.Repository.Controllers
     [ApiController]
     [EnableCors(CorsPolicyNames.General)]
     [Route("[controller]")]
-    public class EntityTemplateController : ControllerBase
+    public class EntityTemplatesController : ControllerBase
     {
         private readonly RepoDbContext _context;
 
-        public EntityTemplateController(RepoDbContext context)
+        public EntityTemplatesController(RepoDbContext context)
         {
             _context = context;
         }
@@ -35,7 +35,7 @@ namespace Catfish.API.Repository.Controllers
         //    return formData;
         //}
 
-        // POST api/<EntityTemplateController>
+        // POST api/<EntityTemplatesController>
         [HttpPost]
         public async Task<Guid> Post([FromBody] EntityTemplate value)
         {
@@ -58,7 +58,7 @@ namespace Catfish.API.Repository.Controllers
             return value.Id;
         }
 
-        // PUT api/<EntityTeplateController>/5
+        // PUT api/<EntityTeplatesController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] EntityTemplate value)
         {

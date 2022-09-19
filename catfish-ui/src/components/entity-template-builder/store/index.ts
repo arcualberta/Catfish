@@ -45,7 +45,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         saveTemplate(){
             console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
-            let api = "${config.dataRepositoryApiRoot}/api/entityTemplate";
+            let api = "${config.dataRepositoryApiRoot}/api/entityTemplates";
             let method = "";
             if (newTemplate) {
                 console.log("Saving new template.");
