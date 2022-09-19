@@ -42,8 +42,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                     console.error('Load Form API Error:', error);
                 });
         },
-        loadTemplate() {
-            const api = `${config.dataRepositoryApiRoot}/api/entityTemplates`;
+        loadTemplate(id: Guid) {
+            const api = `${config.dataRepositoryApiRoot}/api/entityTemplates/${id}`;
             console.log("loading entityTemplate: ", api);
 
             fetch(api, {
