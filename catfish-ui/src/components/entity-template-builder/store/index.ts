@@ -67,10 +67,9 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                     alert("save successful")
             })
             .catch((error) => {
-                if(method === 'POST'){
-                   if(this.template?.id)
-                    this.template.id = Guid.EMPTY as unknown as Guid;
-                }
+                if (newTemplate && this.template)
+                        this.template.id = Guid.EMPTY as unknown as Guid;
+               
                 console.error('Save/Update Entity Template API Error:', error);
             });
         }
