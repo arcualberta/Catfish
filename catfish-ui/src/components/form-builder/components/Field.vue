@@ -4,8 +4,8 @@
     import { Guid } from "guid-typescript";
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
-    import { Field, TextCollection as TextCollectionModel, FieldType, TextType, MonolingualFieldType } from '../../shared/form-models';
-    import { isOptionField, createTextCollection, createOption, cloneTextCollection, isTextInputField } from '../../shared/form-helpers'
+    import { Field, TextCollection as TextCollectionModel, FieldType, TextType, MonolingualFieldType, Option } from '../../shared/form-models';
+    import { isOptionField, createTextCollection, createOption, cloneTextCollection, isTextInputField, cloneOption } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Opt } from './Option.vue'
     import { useFormBuilderStore } from '../store'
@@ -14,11 +14,15 @@
     const isAnOptionField = isOptionField(props.model);
 
     const store = useFormBuilderStore();
-    const newOptionInput = ref(createTextCollection(store.lang))
+    const newOptionModel = ref(createOption(store.lang, cloneTextCollection(createTextCollection(store.lang) as TextCollectionModel)));
 
     const addOption = () => {
-        props.model.options!.push(createOption(store.lang, cloneTextCollection(newOptionInput.value as TextCollectionModel)))
-        newOptionInput.value.values.forEach(val => { val.value = "" })
+        props.model.options!.push(cloneOption(newOptionModel.value as Option))
+
+        //Resetting the new option model properties
+        newOptionModel.value.isExtendedInput = false;
+        newOptionModel.value.isExtendedInputRequired = false;
+        newOptionModel.value.optionText.values.forEach(txt => txt.value = "");
     }
 
     const deleteOption = (optId: Guid) => {
@@ -54,7 +58,7 @@
             <draggable class="dragArea list-group w-full" :list="model.options">
                 <div v-for="option in model.options" :key="option.id" class="option-entry row">
                     <div class="col-10">
-                        <Opt :model="option" :option-type="model.type" />
+                        <Opt :model="option" :option-field-type="model.type" />
                     </div>
                     <div class="col-2">
                         <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteOption(option.id)" class="fa-icon delete" />
@@ -64,9 +68,10 @@
         </div>
 
         <!--Allow adding a new option to the list-->
-        <div>
-            <TextCollection :model="newOptionInput" :text-type="FieldType.ShortAnswer" />
-            <b-row>
+        <div class="alert alert-success">
+            <h6>Add Option</h6>
+            <Opt :model="newOptionModel" :option-field-type="model.type" :disable-inline-editing="true" />
+            <!--<b-row>
                 <b-col class="col-sm-3">
                     <h6>Extended Input Field:</h6>
                 </b-col>
@@ -82,8 +87,8 @@
                         </div>
                     </div>
                 </b-col>
-            </b-row>
-            <br />
+            </b-row>-->
+            <!--<br />
             <b-row v-if="model.options.isExtendedInput">
                 <b-col class="col-sm-3">
                     <h6>Extended Input Required Field:</h6>
@@ -100,7 +105,7 @@
                         </div>
                     </div>
                 </b-col>
-            </b-row>
+            </b-row>-->
             <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addOption()" class="fa-icon plus add-option" />
         </div>
 

@@ -61,7 +61,7 @@
             field.allowCustomOptionValues = false;
         }
         if (isOptionField(field)) {
-            field.options = [createOption(store.lang, null)]
+            field.options = []
         }
         store.form!.fields.push(field);
     }

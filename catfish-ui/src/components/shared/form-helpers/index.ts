@@ -8,7 +8,8 @@ export {
 
 export {
     createOption,
-    getOptionText
+    getOptionText,
+    cloneOption
 } from './optionHelper';
 
 export {

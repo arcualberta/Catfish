@@ -20,3 +20,11 @@ export function getOptionValues(optionText: TextCollection | null, lang: string 
 	else
 		return optionText?.values?.map(val => val.value) as string[]
 }
+
+export const cloneOption = (option: Option) => {
+	const clone = JSON.parse(JSON.stringify(option)) as Option;
+	clone.id = Guid.create();
+	clone.optionText.id = Guid.create();
+	clone.optionText.values.forEach(txt => txt.id = Guid.create())
+	return clone;
+}
