@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div class="alert alert-success">
         <div>Name : <input v-model="model.name" /> </div>
         <label :for="model.formId">Form:</label>
 
