@@ -17,7 +17,7 @@
     const newOptionInput = ref(createTextCollection(store.lang))
 
     const addOption = () => {
-        props.model.options?.push(createOption(store.lang, cloneTextCollection(newOptionInput.value as TextCollectionModel)))
+        props.model.options!.push(createOption(store.lang, cloneTextCollection(newOptionInput.value as TextCollectionModel)))
         newOptionInput.value.values.forEach(val => { val.value = "" })
     }
 
@@ -52,16 +52,19 @@
         <!--Display the current list of options-->
         <div class="display-options">
             <draggable class="dragArea list-group w-full" :list="model.options">
-                <div v-for="option in model.options" :key="option.id" class="option-entry">
-                    <Opt :model="option" :option-type="model.type" />
-                    <span><font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteOption(option.id)" class="fa-icon delete" /></span>
+                <div v-for="option in model.options" :key="option.id" class="option-entry row">
+                    <div class="col-10">
+                        <Opt :model="option" :option-type="model.type" />
+                    </div>
+                    <div class="col-2">
+                        <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteOption(option.id)" class="fa-icon delete" />
+                    </div>
                 </div>
             </draggable>
         </div>
 
         <!--Allow adding a new option to the list-->
         <div>
-
             <TextCollection :model="newOptionInput" :text-type="FieldType.ShortAnswer" />
             <b-row>
                 <b-col class="col-sm-3">
