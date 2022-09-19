@@ -29,7 +29,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         },
         loadForms() {
             const api = `${config.dataRepositoryApiRoot}/api/forms`;
-            console.log("loading forms: ", api)
+            console.log("loading forms: ", api);
 
             fetch(api, {
                 method: 'GET'
@@ -41,6 +41,22 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 .catch((error) => {
                     console.error('Load Form API Error:', error);
                 });
+        },
+        saveTemplate(){
+            //const api = `${config.dataRepositoryApiRoot}/api/forms`;
+           
+            console.log("save form template: ", JSON.stringify(this.template));
+
+           // fetch(api, {
+           //     method: 'POST'
+           // })
+           // .then(response => response.json())
+           // .then(data => {
+          //          console.log(data)
+           // })
+           // .catch((error) => {
+           //     console.error('Save Form API Error:', error);
+           // });
         }
     },    
 });
