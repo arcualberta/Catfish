@@ -26,14 +26,14 @@ namespace Catfish.API.Repository.Controllers
         //    return await _context.FormData.Select(fd => fd.Id).ToListAsync();
         //}
 
-        // GET: api/Forms/5
-        // GET api/<FormSubmissionController>/5
-        //[HttpGet("{id}")]
-        //public async Task<FormData?> Get(Guid id)
-        //{
-        //    FormData? formData = await _context.FormData.FirstOrDefaultAsync(fd => fd.Id == id);
-        //    return formData;
-        //}
+       // GET: api/Forms/5
+      //   GET api/<EntityTemplatesController>/5
+        [HttpGet("{id}")]
+        public async Task<EntityTemplate> Get(Guid id)
+        {
+            EntityTemplate? entityTemplate = await _context.EntityTemplates.FirstOrDefaultAsync(fd => fd.Id == id); ;
+            return entityTemplate;
+        }
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
