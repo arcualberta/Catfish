@@ -43,20 +43,36 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 });
         },
         saveTemplate(){
-            //const api = `${config.dataRepositoryApiRoot}/api/forms`;
-           
             console.log("save form template: ", JSON.stringify(this.template));
-
-           // fetch(api, {
-           //     method: 'POST'
-           // })
-           // .then(response => response.json())
-           // .then(data => {
-          //          console.log(data)
-           // })
-           // .catch((error) => {
-           //     console.error('Save Form API Error:', error);
-           // });
+            const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
+            let api = "${config.dataRepositoryApiRoot}/api/entityTemplate";
+            let method = "";
+            if (newTemplate) {
+                console.log("Saving new template.");
+                if(this.template?.id?.toString() === Guid.EMPTY)
+                    this.template.id = Guid.create().toString() as unknown as Guid;
+                method = "POST";
+            }
+            else {
+                console.log("Updating existing template.")
+                api = `${api}/${this.template?.id}`
+                method = "PUT";
+            }
+            fetch(api, {
+                method: method
+            })
+            .then(response => response.json())
+            .then(data => {
+                    console.log(data);
+                    alert("save successful")
+            })
+            .catch((error) => {
+                if(method === 'POST'){
+                   if(this.template?.id)
+                    this.template.id = Guid.EMPTY as unknown as Guid;
+                }
+                console.error('Save/Update Entity Template API Error:', error);
+            });
         }
     },    
 });
