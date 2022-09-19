@@ -55,7 +55,9 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                     method: method,
                     headers: {
                         'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '${config.dataRepositoryApiRoot}',
+                        'Access-Control-Allow-Credentials': 'true'
                     },
                 })
                 .then(response => {

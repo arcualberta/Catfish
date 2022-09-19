@@ -42,6 +42,22 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                     console.error('Load Form API Error:', error);
                 });
         },
+        loadTemplate() {
+            const api = `${config.dataRepositoryApiRoot}/api/entityTemplates`;
+            console.log("loading entityTemplate: ", api);
+
+            fetch(api, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    this.template = data;
+                })
+                .catch((error) => {
+                    console.error('Load Entity Template API Error:', error);
+                });
+        },
         saveTemplate(){
             console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
@@ -59,7 +75,14 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 method = "PUT";
             }
             fetch(api, {
-                method: method
+                body: JSON.stringify(this.template),
+                method: method,
+                headers: {
+                        'encType': 'multipart/form-data',
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '${config.dataRepositoryApiRoot}',
+                        'Access-Control-Allow-Credentials': 'true'
+                },
             })
             .then(response => response.json())
             .then(data => {
