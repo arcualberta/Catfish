@@ -1,10 +1,10 @@
 <template>
     <div class="alert alert-success">
         <div>Name : <input v-model="model.name" /> </div>
-        <label :for="model.formId">Form:</label>
+        <label :for="model.formId.toString()">Form:</label>
 
-        <select v-model="model.formId" :name="model.formId">
-            <option v-for="entry in store.formEntries" :key="entry.formId" :value="entry.formId">{{entry.name}}</option>
+        <select v-model="model.formId" :name="model.formId.toString()">
+            <option v-for="entry in store.formEntries" :key="entry.formId.toString()" :value="entry.formId">{{entry.name}}</option>
         </select>
 
         <div>FormId:  {{model.formId}}</div>
