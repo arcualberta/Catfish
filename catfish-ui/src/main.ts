@@ -21,13 +21,13 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
 import * as faIcons from '@fortawesome/free-solid-svg-icons'
-
 /* add icons to the library */
 library.add(faIcons.faCircleCheck)
 library.add(faIcons.faCircleXmark)
 library.add(faIcons.faPenToSquare)
 library.add(faIcons.faCirclePlus)
 library.add(faIcons.faQuestionCircle)
+library.add(faIcons.faThList)
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)
