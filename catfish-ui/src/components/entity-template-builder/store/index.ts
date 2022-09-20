@@ -3,6 +3,8 @@ import { defineStore } from 'pinia';
 import { EntityTemplate, FormEntry } from '../models';
 import { eState } from "../../shared/constants";
 import { default as config } from "@/appsettings";
+import router from '@/router';
+
 
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
@@ -90,6 +92,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             .then(response => {
                 if (response.ok) {
                     alert("save successful")
+                    router.push(`/edit-entity-template/${this.template.id}`)
                 }
             })
             .catch((error) => {

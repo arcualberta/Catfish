@@ -35,17 +35,19 @@
     import { default as FormEntryTemplate } from './components/FormEntry.vue';
     import { Guid } from 'guid-typescript';
     import { FormEntry } from './models';
+        import { useRouter} from 'vue-router';
 
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
-        piniaInstance: Pinia
+        piniaInstance: Pinia,
+        
     }>();
 
     const store = useEntityTemplateBuilderStore(props.piniaInstance);
     const createTemplate = () => store.newTemplate();
     const template = computed(() => store.template);
-
+    const router = useRouter();
     const addMetadataForm = () => {
         store.template?.entityTemplateSettings.metadataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
     }
@@ -58,10 +60,10 @@
 
     onMounted(() => {
         store.loadForms();
-       // if(template.value){ 
-       //     if(template.value.id?.toString() !== Guid.EMPTY)
-       //         store.loadTemplate(template.value.id as Guid)
-       //  }
+       if(template.value){ 
+            if(template.value.id?.toString() !== Guid.EMPTY)
+               router.push(`/edit-entity-template/${template.value.id}`)
+       }
     });
 
 
