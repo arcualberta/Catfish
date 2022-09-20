@@ -78,6 +78,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 api = `${api}/${this.template?.id}`
                 method = "PUT";
             }
+
+            console.log("Entity Template\m", JSON.stringify(this.template))
             fetch(api, {
                 body: JSON.stringify(this.template),
                 method: method,

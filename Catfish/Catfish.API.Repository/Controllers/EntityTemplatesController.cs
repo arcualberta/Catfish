@@ -41,7 +41,7 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
-        public async Task<Guid> Post([FromBody] EntityTemplate value)
+        public async Task<IActionResult> Post([FromBody] EntityTemplate value)
         {
             try
             {
@@ -51,16 +51,17 @@ namespace Catfish.API.Repository.Controllers
                 }
                 if (ModelState.IsValid && !EntityTemplateExists(value.Id))
                 {
-                    _entityTemplateService.SaveEntityTemplate(value);
+                    _entityTemplateService.UpdateEntityTemplateSettings(value);
                     _context.EntityTemplates?.Add(value);
                     await _context.SaveChangesAsync();
                 }
+                return Ok();
             }
             catch(Exception ex)
             {
-                throw ex;
+                //TODO: Log the error in error log
+                return StatusCode(500);
             }
-            return value.Id;
         }
 
         // PUT api/<EntityTeplatesController>/5
@@ -76,6 +77,7 @@ namespace Catfish.API.Repository.Controllers
 
             try
             {
+                _entityTemplateService.UpdateEntityTemplateSettings(value);
                 await _context.SaveChangesAsync();
             }
             catch (Exception)

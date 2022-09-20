@@ -10,42 +10,29 @@ namespace Catfish.API.Repository.Services
         {
             _context = context;
         }
-        public void SaveEntityTemplate(EntityTemplate entityTemplate)
+        public void UpdateEntityTemplateSettings(EntityTemplate entityTemplate)
         {
-            //Clear the Forms collection
-            //Go over each entry in the MetadataForms and DataForms arrays
-            //Grab the form for each entry
-            //Add them into the Forms collection,
-            try {
-                entityTemplate.Forms.Clear();
-                if (entityTemplate.EntityTemplateSettings != null)
-                {
-                    foreach (FormEntry fe in entityTemplate.EntityTemplateSettings.MetadataForms)
-                    {
-                        if (!(fe.FormId == Guid.Empty))
-                        {
-                            Form? frm = _context.Forms?.SingleOrDefault(f => f.Id == fe.FormId);
-                            if (frm != null)
-                                entityTemplate.Forms.Add(frm);
-                        }
-                    }
-                    foreach (FormEntry fe in entityTemplate.EntityTemplateSettings.DataForms)
-                    {
-                        if (!(fe.FormId == Guid.Empty))
-                        {
-                            Form? frm = _context.Forms?.SingleOrDefault(f => f.Id == fe.FormId);
-                            if (frm != null)
-                                entityTemplate.Forms.Add(frm);
-                        }
-                    }
-                }
+            entityTemplate.Forms.Clear();
+            if (entityTemplate.EntityTemplateSettings == null)
+                throw new CatfishException("Entity template settings is null in the template");
 
-
-            }
-            catch (Exception ex)
+            foreach (FormEntry fe in entityTemplate.EntityTemplateSettings.MetadataForms)
             {
-                throw ex;
+                Form? frm = _context.Forms!.SingleOrDefault(f => f.Id == fe.FormId);
+                if (frm == null)
+                    throw new CatfishException($"No form with ID {fe.FormId} found");
+
+                entityTemplate.Forms.Add(frm);
             }
-         }
+
+            foreach (FormEntry fe in entityTemplate.EntityTemplateSettings.DataForms)
+            {
+                Form? frm = _context.Forms!.SingleOrDefault(f => f.Id == fe.FormId);
+                if (frm == null)
+                    throw new CatfishException($"No form with ID {fe.FormId} found");
+
+                entityTemplate.Forms.Add(frm);
+            }
+        }
     }
 }
