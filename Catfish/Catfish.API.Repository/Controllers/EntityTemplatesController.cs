@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Catfish.API.Repository.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,9 +12,12 @@ namespace Catfish.API.Repository.Controllers
     {
         private readonly RepoDbContext _context;
 
-        public EntityTemplatesController(RepoDbContext context)
+        private readonly IEntityTemplateService _entityTemplateService;
+
+        public EntityTemplatesController(RepoDbContext context, IEntityTemplateService entityTemplateService)
         {
             _context = context;
+            _entityTemplateService = entityTemplateService;
         }
         // GET: api/<EntityTemplateController>
         //[HttpGet]
@@ -47,7 +51,7 @@ namespace Catfish.API.Repository.Controllers
                 }
                 if (ModelState.IsValid && !EntityTemplateExists(value.Id))
                 {
-                    //Call _entityTemplateService.SaveEntityTemplate
+                    _entityTemplateService.SaveEntityTemplate(value);
                     _context.EntityTemplates?.Add(value);
                     await _context.SaveChangesAsync();
                 }

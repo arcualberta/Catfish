@@ -2,6 +2,6 @@
 {
     public interface IEntityTemplateService
     {
-        public bool SaveEntityTemplate(EntityTemplate entityTemplate);
+        public void SaveEntityTemplate(EntityTemplate entityTemplate);
     }
 }

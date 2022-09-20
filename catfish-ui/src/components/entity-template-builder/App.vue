@@ -9,14 +9,14 @@
         <div>State: {{template.state}}</div>
         <div>
             <h5>Metadata Forms</h5>
-            <div v-for="frm in template.metadataForms" :key="frm.formId">
+            <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId">
                 <FormEntryTemplate :model="frm" />
             </div>
             <button @click="addMetadataForm">+ Add</button>
         </div>
         <div>
             <h5>Data Forms</h5>
-            <div v-for="frm in template.dataForms" :key="frm.formId">
+            <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.formId">
                 <FormEntryTemplate :model="frm" />
             </div>
             <button @click="addDataForm">+ Add</button>
@@ -47,11 +47,11 @@
     const template = computed(() => store.template);
 
     const addMetadataForm = () => {
-        store.template?.metadataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
+        store.template?.entityTemplateSettings.metadataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
     }
 
     const addDataForm = () => {
-        store.template?.dataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
+        store.template?.entityTemplateSettings.dataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
     }
 
     const saveTemplate = ()=>store.saveTemplate();

@@ -19,11 +19,13 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 name: "New Entity Template",
                 description: "Description about this new Entity Template",
                 created: new Date(),
-                updated: null,
+                updated: new Date(),
                 state: eState.Unpublished,
-                forms: [],
-                metadataForms: [],
-                dataForms: []
+                entityTemplateSettings: {
+                    metadataForms: [],
+                    dataForms: []
+                }
+                
             };
 
         },
@@ -61,7 +63,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         saveTemplate(){
             console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
-            //let api = "${config.dataRepositoryApiRoot}/api/entityTemplates";
+           
             let api = config.dataRepositoryApiRoot + "/api/entity-templates";
             let method = "";
             if (newTemplate) {
@@ -86,6 +88,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             .then(response => response.json())
             .then(data => {
                     console.log(data);
+                  //  this.template.id = data as string as Guid;
                     alert("save successful")
             })
             .catch((error) => {

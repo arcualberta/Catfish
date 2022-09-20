@@ -8,8 +8,7 @@ namespace Catfish.API.Repository.Models.Entities
         public string Name { get; set; }
         public string Description { get; set; }
 
-        //TODO: Define eState enum in Constants\Enums.cs file and enable:
-        //public eState State { get; set; }
+        public Enums.eState State { get; set; }
 
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }

@@ -6,6 +6,10 @@ export interface FormEntry {
     name: string;
     formId: Guid;
 }
+export interface EntityTemplateSettings{
+    metadataForms: FormEntry[] | null;
+    dataForms: FormEntry[] | null;
+}
 
 export interface EntityTemplate {
     id: Guid | null;
@@ -14,7 +18,6 @@ export interface EntityTemplate {
     state: eState;
     created: Date;
     updated: Date | null;
-    forms: Form[];
-    metadataForms: FormEntry[] | null;
-    dataForms: FormEntry[] | null;
+    entityTemplateSettings: EntityTemplateSettings;
+    forms: Form[] | null;
 }
