@@ -21,6 +21,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 created: new Date(),
                 updated: new Date(),
                 state: eState.Unpublished,
+                forms:[],
                 entityTemplateSettings: {
                     metadataForms: [],
                     dataForms: []

@@ -1,5 +1,5 @@
 ﻿using Catfish.API.Repository.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,7 +35,7 @@ namespace Catfish.API.Repository.Controllers
         [HttpGet("{id}")]
         public async Task<EntityTemplate> Get(Guid id)
         {
-            EntityTemplate? entityTemplate = await _context.EntityTemplates.FirstOrDefaultAsync(fd => fd.Id == id); ;
+            EntityTemplate? entityTemplate = await _context.EntityTemplates?.FirstOrDefaultAsync(fd => fd.Id == id); ;
             return entityTemplate;
         }
 
