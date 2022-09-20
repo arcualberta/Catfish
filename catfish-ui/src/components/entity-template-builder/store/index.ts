@@ -69,8 +69,9 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             let method = "";
             if (newTemplate) {
                 console.log("Saving new template.");
-                if(this.template?.id?.toString() === Guid.EMPTY)
+                if(this.template?.id?.toString() === Guid.EMPTY){
                     this.template.id = Guid.create().toString() as unknown as Guid;
+                }
                 method = "POST";
             }
             else {
@@ -78,8 +79,6 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 api = `${api}/${this.template?.id}`
                 method = "PUT";
             }
-
-            console.log("Entity Template\m", JSON.stringify(this.template))
             fetch(api, {
                 body: JSON.stringify(this.template),
                 method: method,
@@ -88,11 +87,10 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                         'Content-Type': 'application/json'
                 },
             })
-            .then(response => response.json())
-            .then(data => {
-                    console.log(data);
-                  //  this.template.id = data as string as Guid;
+            .then(response => {
+                if (response.ok) {
                     alert("save successful")
+                }
             })
             .catch((error) => {
                 if (newTemplate && this.template)
