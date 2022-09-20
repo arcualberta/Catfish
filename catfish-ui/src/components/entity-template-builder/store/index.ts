@@ -29,7 +29,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         },
         loadForms() {
             const api = `${config.dataRepositoryApiRoot}/api/forms`;
-            console.log("loading forms: ", api)
+            console.log("loading forms: ", api);
 
             fetch(api, {
                 method: 'GET'
@@ -41,6 +41,60 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 .catch((error) => {
                     console.error('Load Form API Error:', error);
                 });
+        },
+        loadTemplate(id: Guid) {
+            const api = `${config.dataRepositoryApiRoot}/api/entityTemplates/${id}`;
+            console.log("loading entityTemplate: ", api);
+
+            fetch(api, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    this.template = data;
+                })
+                .catch((error) => {
+                    console.error('Load Entity Template API Error:', error);
+                });
+        },
+        saveTemplate(){
+            console.log("save form template: ", JSON.stringify(this.template));
+            const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
+            let api = "${config.dataRepositoryApiRoot}/api/entityTemplates";
+            let method = "";
+            if (newTemplate) {
+                console.log("Saving new template.");
+                if(this.template?.id?.toString() === Guid.EMPTY)
+                    this.template.id = Guid.create().toString() as unknown as Guid;
+                method = "POST";
+            }
+            else {
+                console.log("Updating existing template.")
+                api = `${api}/${this.template?.id}`
+                method = "PUT";
+            }
+            fetch(api, {
+                body: JSON.stringify(this.template),
+                method: method,
+                headers: {
+                        'encType': 'multipart/form-data',
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '${config.dataRepositoryApiRoot}',
+                        'Access-Control-Allow-Credentials': 'true'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                    console.log(data);
+                    alert("save successful")
+            })
+            .catch((error) => {
+                if (newTemplate && this.template)
+                        this.template.id = Guid.EMPTY as unknown as Guid;
+               
+                console.error('Save/Update Entity Template API Error:', error);
+            });
         }
     },    
 });

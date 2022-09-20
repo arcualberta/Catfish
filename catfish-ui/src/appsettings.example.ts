@@ -3,5 +3,5 @@ export default {
     googleCalendarIds: ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
     maxEvents: 10,
     initialView: 'dayGridMonth',
-    dataRepositoryApiRoot: "https://localhost:5020/"
+    dataRepositoryApiRoot: "https://localhost:5020"
 }

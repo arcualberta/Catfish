@@ -1,6 +1,7 @@
 <template>
     <h3>Entity Template Builder</h3>
     <button @click="createTemplate">New Template</button>
+    <button @click="saveTemplate">Save</button>
 
     <div v-if="template">
         <div>Name : <input v-model="template.name" /> </div>
@@ -53,7 +54,11 @@
         store.template?.dataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
     }
 
+    const saveTemplate = ()=>store.saveTemplate();
+
     onMounted(() => store.loadForms());
+
+
 
 </script>
 <style scoped src="./style.css"></style>
