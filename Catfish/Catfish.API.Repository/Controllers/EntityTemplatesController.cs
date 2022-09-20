@@ -47,6 +47,7 @@ namespace Catfish.API.Repository.Controllers
                 }
                 if (ModelState.IsValid && !EntityTemplateExists(value.Id))
                 {
+                    //Call _entityTemplateService.SaveEntityTemplate
                     _context.EntityTemplates?.Add(value);
                     await _context.SaveChangesAsync();
                 }
