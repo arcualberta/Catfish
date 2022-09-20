@@ -43,7 +43,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 });
         },
         loadTemplate(id: Guid) {
-            const api = `${config.dataRepositoryApiRoot}/api/entityTemplates/${id}`;
+            const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${id}`;
             console.log("loading entityTemplate: ", api);
 
             fetch(api, {
@@ -61,7 +61,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         saveTemplate(){
             console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
-            let api = "${config.dataRepositoryApiRoot}/api/entityTemplates";
+            //let api = "${config.dataRepositoryApiRoot}/api/entityTemplates";
+            let api = config.dataRepositoryApiRoot + "/api/entity-templates";
             let method = "";
             if (newTemplate) {
                 console.log("Saving new template.");
@@ -79,9 +80,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 method: method,
                 headers: {
                         'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '${config.dataRepositoryApiRoot}',
-                        'Access-Control-Allow-Credentials': 'true'
+                        'Content-Type': 'application/json'
                 },
             })
             .then(response => response.json())

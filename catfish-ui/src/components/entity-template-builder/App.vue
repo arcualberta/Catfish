@@ -56,7 +56,13 @@
 
     const saveTemplate = ()=>store.saveTemplate();
 
-    onMounted(() => store.loadForms());
+    onMounted(() => {
+        store.loadForms();
+       // if(template.value){ 
+       //     if(template.value.id?.toString() !== Guid.EMPTY)
+       //         store.loadTemplate(template.value.id as Guid)
+       //  }
+    });
 
 
 

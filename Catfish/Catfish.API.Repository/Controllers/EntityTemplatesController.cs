@@ -6,7 +6,7 @@ namespace Catfish.API.Repository.Controllers
 {
     [ApiController]
     [EnableCors(CorsPolicyNames.General)]
-    [Route("[controller]")]
+    [Route(Routes.EntityTemplates.Root)]
     public class EntityTemplatesController : ControllerBase
     {
         private readonly RepoDbContext _context;
