@@ -1,31 +1,59 @@
 <template>
     <h3>Entity Template Builder</h3>
-    <button @click="createTemplate">New Template</button>
-    <button @click="saveTemplate">Save</button>
-
+    <div class="control">
+        <button class="btn btn-primary" @click="createTemplate">New Template</button>
+        <button class="btn btn-success" @click="saveTemplate">Save</button>
+    </div>
+    <br />
     <div v-if="template">
-        <div>Name : <input v-model="template.name" /> </div>
-        <div>Description : <textarea v-model="template.description" /> </div>
-        <div>State: {{template.state}}</div>
-        <div>
-            <h5>Metadata Forms</h5>
-            <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.metadataForms">
-    
-                <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId" >
-                    <FormEntryTemplate :model="frm" class="form-field-border form-field" />
-                </div>
-            </draggable>
-            <button @click="addMetadataForm">+ Add</button>
+        <div class="form-field-border">
+            <b-row>
+                <b-col class="col-sm-2">
+                    <h6>Name :</h6>
+                </b-col>
+                <b-col class="col-sm-10">
+                    <b-form-input v-model="template.name"></b-form-input>
+                </b-col>
+            </b-row>
+            <br />
+            <b-row>
+                <b-col class="col-sm-2">
+                    <h6>Description :</h6>
+                </b-col>
+                <b-col class="col-sm-10">
+                    <b-form-textarea v-model="template.description"></b-form-textarea>
+                </b-col>
+            </b-row>
+            <br />
+            <b-row>
+                <b-col class="col-sm-2">
+                    <h6>State:</h6>
+                </b-col>
+                <b-col class="col-sm-10">
+                    <h6>{{template.state}}</h6>
+                </b-col>
+            </b-row>
         </div>
+
         <div>
+            <div class="form-field-border blue">
+                <h5>Metadata Forms</h5>
+                <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.metadataForms">
+                    <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId">
+                        <FormEntryTemplate :model="frm" class="form-field-border form-field blue" />
+                    </div>
+                </draggable>
+                <button class="btn btn-primary btn-blue" @click="addMetadataForm">+ Add</button>
+            </div>
+        </div>
+        <div class="form-field-border red">
             <h5>Data Forms</h5>
             <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.dataForms">
-    
-                <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.formId" >
-                    <FormEntryTemplate :model="frm" class="form-field-border form-field" />
+                <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.formId">
+                    <FormEntryTemplate :model="frm" class="form-field-border form-field red" />
                 </div>
             </draggable>
-            <button @click="addDataForm">+ Add</button>
+            <button class="btn btn-warning btn-red" @click="addDataForm">+ Add</button>
         </div>
 
         <div class="alert alert-info">{{JSON.stringify(template)}}</div>
