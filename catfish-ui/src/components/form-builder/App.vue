@@ -5,7 +5,7 @@
 
     import { useFormBuilderStore } from './store';
     import { Field } from '../shared/form-models'
-    import { createTextCollection, isOptionField, createOption } from '../shared/form-helpers'
+    import { createTextCollection, isOptionField, isTextInputField, createOption } from '../shared/form-helpers'
     import { FieldType } from '../shared/form-models';
     import { AppletAttribute } from '../shared/props'
 
@@ -55,12 +55,13 @@
 
         //TODO: Restrict the following isMultiValued property only for monolingual and multilingual fields. We should leave
         //it undefined for other field types.
-        field.isMultiValued = false;
-        field.isRequired = false;
-
-        if (isOptionField(field)) {
-            field.options = [createOption(store.lang, null)]
+        if (isTextInputField(field)) {
+            field.isMultiValued = false;
+            field.isRequired = false;
             field.allowCustomOptionValues = false;
+        }
+        if (isOptionField(field)) {
+            field.options = []
         }
         store.form!.fields.push(field);
     }

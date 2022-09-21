@@ -20,14 +20,23 @@
         <h4>Form properties</h4>
     </div>
     <div class="form-field-border">
-        <div>
-            <span class="text-field-label">Name:</span>
-            <input type="text" v-model="model.name" class="text-field" />
-        </div>
-        <div style="display:inline;">
-            <span class="text-area-label">Description:</span>
-            <textarea v-model="model.description" class="text-area" />
-        </div>
+        <b-row>
+            <b-col class="col-sm-2">
+                <h6 >Name:</h6>
+            </b-col>
+            <b-col class="col-sm-10">
+                <b-form-input v-model="model.name"></b-form-input>
+            </b-col>
+        </b-row>
+        <br />
+        <b-row>
+            <b-col class="col-sm-2">
+                <h6 >Description:</h6>
+            </b-col>
+            <b-col class="col-sm-10">
+                <b-form-textarea v-model="model.description" rows="3" max-rows="6"></b-form-textarea>
+            </b-col>
+        </b-row>
     </div>
 
     <h3>Fields</h3>

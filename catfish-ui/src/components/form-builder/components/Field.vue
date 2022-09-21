@@ -4,8 +4,8 @@
     import { Guid } from "guid-typescript";
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
-    import { Field, TextCollection as TextCollectionModel, FieldType } from '../../shared/form-models';
-    import { isOptionField, createTextCollection, createOption, cloneTextCollection } from '../../shared/form-helpers'
+    import { Field, TextCollection as TextCollectionModel, FieldType, TextType, MonolingualFieldType, Option } from '../../shared/form-models';
+    import { isOptionField, createTextCollection, createOption, cloneTextCollection, isTextInputField, cloneOption } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Opt } from './Option.vue'
     import { useFormBuilderStore } from '../store'
@@ -14,11 +14,15 @@
     const isAnOptionField = isOptionField(props.model);
 
     const store = useFormBuilderStore();
-    const newOptionInput = ref(createTextCollection(store.lang))
+    const newOptionModel = ref(createOption(store.lang, cloneTextCollection(createTextCollection(store.lang) as TextCollectionModel)));
 
     const addOption = () => {
-        props.model.options?.push(createOption(store.lang, cloneTextCollection(newOptionInput.value as TextCollectionModel)))
-        newOptionInput.value.values.forEach(val => { val.value = "" })
+        props.model.options!.push(cloneOption(newOptionModel.value as Option))
+
+        //Resetting the new option model properties
+        newOptionModel.value.isExtendedInput = false;
+        newOptionModel.value.isExtendedInputRequired = false;
+        newOptionModel.value.optionText.values.forEach(txt => txt.value = "");
     }
 
     const deleteOption = (optId: Guid) => {
@@ -30,47 +34,78 @@
 
 <template>
     <h5>{{model.type}}</h5>
-    <div>
-        <h6>Title:</h6>
-        <TextCollection :model="model.title" :text-type="FieldType.ShortAnswer" />
-    </div>
-    <div>
-        <h6>Description:</h6>
-        <TextCollection :model="model.description" :text-type="FieldType.Paragraph" />
-    </div>
+    <b-row >
+        <b-col class="col-sm-2">
+            <h6>Title:</h6>
+        </b-col>
+        <b-col class="col-sm-10">
+            <TextCollection :model="model.title" :text-type="FieldType.ShortAnswer" />
+        </b-col>
+    </b-row>
+    <b-row>
+        <b-col class="col-sm-2">
+            <h6>Description:</h6>
+        </b-col>
+        <b-col class="col-sm-10">
+            <TextCollection :model="model.description" :text-type="FieldType.Paragraph" />
+        </b-col>
+    </b-row>
+    <br />
     <div v-if="isAnOptionField">
         <h6>Options:</h6>
         <!--Display the current list of options-->
         <div class="display-options">
             <draggable class="dragArea list-group w-full" :list="model.options">
-                <div v-for="option in model.options" :key="option.id" class="option-entry">
-                    <Opt :model="option" :option-type="model.type" />
-                    <span><font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteOption(option.id)" class="fa-icon delete" /></span>
+                <div v-for="option in model.options" :key="option.id" class="option-entry row">
+                    <div class="col-10">
+                        <Opt :model="option" :option-field-type="model.type" />
+                    </div>
+                    <div class="col-2">
+                        <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteOption(option.id)" class="fa-icon delete" />
+                    </div>
                 </div>
             </draggable>
         </div>
 
         <!--Allow adding a new option to the list-->
-        <div>
-
-            <TextCollection :model="newOptionInput" :text-type="FieldType.ShortAnswer" />
-            <b-row>
-                <b-col class="col-sm-2">
-                    <h6>Custom Option Field:</h6>
+        <div class="alert alert-success">
+            <h6>Add Option</h6>
+            <Opt :model="newOptionModel" :option-field-type="model.type" :disable-inline-editing="true" />
+            <!--<b-row>
+                <b-col class="col-sm-3">
+                    <h6>Extended Input Field:</h6>
                 </b-col>
-                <b-col class="col-sm-10">
+                <b-col class="col-sm-9">
                     <br />
                     <div class="toggle-button-cover">
                         <div class="button-cover">
                             <div class="button r" id="button-1">
-                                <input v-model="model.allowCustomOptionValues" type="checkbox" class="checkbox" />
+                                <input v-model="model.options.isExtendedInput" type="checkbox" class="checkbox" />
                                 <div class="knobs"></div>
                                 <div class="layer"></div>
                             </div>
                         </div>
                     </div>
                 </b-col>
-            </b-row>
+            </b-row>-->
+            <!--<br />
+            <b-row v-if="model.options.isExtendedInput">
+                <b-col class="col-sm-3">
+                    <h6>Extended Input Required Field:</h6>
+                </b-col>
+                <b-col class="col-sm-9">
+                    <br />
+                    <div class="toggle-button-cover">
+                        <div class="button-cover">
+                            <div class="button r" id="button-1">
+                                <input v-model="model.options.isExtendedInputRequired" type="checkbox" class="checkbox" />
+                                <div class="knobs"></div>
+                                <div class="layer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </b-col>
+            </b-row>-->
             <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addOption()" class="fa-icon plus add-option" />
         </div>
 
@@ -93,7 +128,7 @@
         </div>
     </div>
     <br />
-    <div class="row">
+    <div class="row" v-if="isTextInputField(model)">
         <div class="col-sm-2">
             <h6>Multiple Value Field:</h6>
         </div>
@@ -110,7 +145,6 @@
             </div>
         </div>
     </div>
-    {{model}}
 </template>
 
 <style scope>
