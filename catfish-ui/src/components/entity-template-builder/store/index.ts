@@ -101,6 +101,16 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                
                 console.error('Save/Update Entity Template API Error:', error);
             });
+        },
+        deleteFormEntry(id: Guid) {
+            let index = this.template!.entityTemplateSettings.dataForms!.findIndex(fe => fe.id === id);
+            if (index >= 0)
+                this.template!.entityTemplateSettings.dataForms!.splice(index, 1);
+            else {
+                index = this.template!.entityTemplateSettings.metadataForms!.findIndex(fe => fe.id === id);
+                if (index >= 0)
+                    this.template!.entityTemplateSettings.metadataForms!.splice(index, 1);
+            }
         }
     },    
 });

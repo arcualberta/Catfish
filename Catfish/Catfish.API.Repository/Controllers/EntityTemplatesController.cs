@@ -48,7 +48,7 @@ namespace Catfish.API.Repository.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                     return BadRequest();
 
                 var code = await _entityTemplateService.AddEntity(value);

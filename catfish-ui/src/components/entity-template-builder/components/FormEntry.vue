@@ -1,13 +1,16 @@
 <template>
-    <div class="alert alert-success">
-        <div>Name : <input v-model="model.name" /> </div>
-        <label :for="model.formId.toString()">Form:</label>
+    <div class="row alert alert-success">
+        <div class="col-11">
+            <div>Name : <input v-model="model.name" /> </div>
+            <label :for="model.formId.toString()">Form:</label>
 
-        <select v-model="model.formId" :name="model.formId.toString()">
-            <option v-for="entry in store.formEntries" :key="entry.formId.toString()" :value="entry.formId">{{entry.name}}</option>
-        </select>
-
-        <div>FormId:  {{model.formId}}</div>
+            <select v-model="model.formId" :name="model.formId.toString()">
+                <option v-for="entry in store.formEntries" :key="entry.formId.toString()" :value="entry.formId">{{entry.name}}</option>
+            </select>
+        </div>
+        <div class="col-1">
+            <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="store.deleteFormEntry(model.id)" class="fa-icon delete" />
+        </div>
     </div>
 </template>
 

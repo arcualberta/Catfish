@@ -49,11 +49,11 @@
     const template = computed(() => store.template);
     const router = useRouter();
     const addMetadataForm = () => {
-        store.template?.entityTemplateSettings.metadataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
+        store.template?.entityTemplateSettings.metadataForms?.push({ id: Guid.create().toString() as unknown as Guid, formId: Guid.createEmpty(), name: "" } as FormEntry);
     }
 
     const addDataForm = () => {
-        store.template?.entityTemplateSettings.dataForms?.push({ formId: Guid.createEmpty(), name: "" } as FormEntry);
+        store.template?.entityTemplateSettings.dataForms?.push({ id: Guid.create().toString() as unknown as Guid, formId: Guid.createEmpty(), name: "" } as FormEntry);
     }
 
     const saveTemplate = ()=>store.saveTemplate();
