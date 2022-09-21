@@ -14,9 +14,6 @@ namespace Catfish.API.Repository
 
             DbHelper.SetTablePrefix(builder, "CF_Repo_");
 
-            //builder.Entity<EntityTemplate>()
-            //    .HasDiscriminator<string>("Discrimiinator");
-
             builder.Entity<EntityTemplate>()
                 .ToTable("CF_Repo_EntityTemplates");
 

@@ -33,13 +33,13 @@ export interface Field {
     /**
      * Is this a required field?
      * */
-    isRequired: boolean | null;
+    isRequired: boolean;
 
     /**
      * Does this field take multiple values?. Only applicable for multilingual
      * and Monolingual text fields.
      */
-    isMultiValued: boolean | null;
+    isMultiValued: boolean;
 
     /**
      * The number of decimal points to be used, when type is Decimal.
@@ -55,7 +55,7 @@ export interface Field {
      * Should the user be allowed to input custom option values?
      * . Only applicable for OptionFieldType fields.
      * */
-    allowCustomOptionValues: boolean | null;
+    allowCustomOptionValues: boolean;
 
 }
 
