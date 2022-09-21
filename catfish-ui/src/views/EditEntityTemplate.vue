@@ -7,7 +7,7 @@
     import { useRoute } from 'vue-router'
     import { Guid } from 'guid-typescript'
     import { useEntityTemplateBuilderStore } from '../components/entity-template-builder/store';
-    import { EntityTemplateBuilder as EntityTemplate } from '../components'
+    import { EntityTemplateBuilder } from '../components'
  
     const route = useRoute()
     const templateId = route.params.templateId as unknown as Guid
@@ -19,6 +19,6 @@
 </script>
 
 <template>
-    <h5>edit Template </h5>
-    <EntityTemplate  :pinia-instance="getActivePinia()"  />
+    <h5>Edit Template </h5>
+    <EntityTemplateBuilder  :pinia-instance="getActivePinia()"  />
    </template>

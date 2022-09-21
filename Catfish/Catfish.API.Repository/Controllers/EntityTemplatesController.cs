@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository.Interfaces;
+using System.Net;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -33,10 +34,12 @@ namespace Catfish.API.Repository.Controllers
        // GET: api/Forms/5
       //   GET api/<EntityTemplatesController>/5
         [HttpGet("{id}")]
-        public async Task<EntityTemplate> Get(Guid id)
+        public async Task<EntityTemplate?> Get(Guid id, bool includeForms = false)
         {
-            EntityTemplate? entityTemplate = await _context.EntityTemplates?.FirstOrDefaultAsync(fd => fd.Id == id); ;
-            return entityTemplate;
+            if(includeForms)
+                return await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(fd => fd.Id == id);
+            else
+                return await _context.EntityTemplates!.FirstOrDefaultAsync(fd => fd.Id == id);
         }
 
         // POST api/<EntityTemplatesController>
@@ -45,22 +48,17 @@ namespace Catfish.API.Repository.Controllers
         {
             try
             {
-                if (EntityTemplateExists(value.Id))
-                {
-                    throw new Exception("This object has been existed in the database!");
-                }
-                if (ModelState.IsValid && !EntityTemplateExists(value.Id))
-                {
-                    _entityTemplateService.UpdateEntityTemplateSettings(value);
-                    _context.EntityTemplates?.Add(value);
-                    await _context.SaveChangesAsync();
-                }
-                return Ok();
+                if (ModelState.IsValid)
+                    return BadRequest();
+
+                var code = await _entityTemplateService.AddEntity(value);
+                await _context.SaveChangesAsync();
+                return StatusCode((int)code);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 //TODO: Log the error in error log
-                return StatusCode(500);
+                return StatusCode((int) HttpStatusCode.InternalServerError);
             }
         }
 
@@ -68,31 +66,20 @@ namespace Catfish.API.Repository.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] EntityTemplate value)
         {
-            if (id != value.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(value).State = EntityState.Modified;
-
             try
             {
-                _entityTemplateService.UpdateEntityTemplateSettings(value);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                if (!EntityTemplateExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return StatusCode(500);
-                }
-            }
+                if (id != value.Id)
+                    return BadRequest();
 
-            return Ok();
+                var code = await _entityTemplateService.UpdateEntity(value);
+                await _context.SaveChangesAsync();
+                return StatusCode((int) code);
+            }
+            catch(Exception)
+            {
+                //TODO: Log the error in error log
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         //// PATCH api/<FormSubmissionController>/5

@@ -1,4 +1,8 @@
 ﻿using Catfish.API.Repository.Interfaces;
+using Catfish.API.Repository.Models.Forms;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace Catfish.API.Repository.Services
 {
@@ -10,29 +14,60 @@ namespace Catfish.API.Repository.Services
         {
             _context = context;
         }
-        public void UpdateEntityTemplateSettings(EntityTemplate entityTemplate)
+        public async Task<HttpStatusCode> AddEntity(EntityTemplate entityTemplate)
         {
-            entityTemplate.Forms.Clear();
-            if (entityTemplate.EntityTemplateSettings == null)
-                throw new CatfishException("Entity template settings is null in the template");
+            List<Form> associatedForms = await LoadAssociatedForms(entityTemplate);
+            foreach(var form in associatedForms)
+                entityTemplate.Forms.Add(form);
 
-            foreach (FormEntry fe in entityTemplate.EntityTemplateSettings.MetadataForms)
-            {
-                Form? frm = _context.Forms!.SingleOrDefault(f => f.Id == fe.FormId);
-                if (frm == null)
-                    throw new CatfishException($"No form with ID {fe.FormId} found");
-
-                entityTemplate.Forms.Add(frm);
-            }
-
-            foreach (FormEntry fe in entityTemplate.EntityTemplateSettings.DataForms)
-            {
-                Form? frm = _context.Forms!.SingleOrDefault(f => f.Id == fe.FormId);
-                if (frm == null)
-                    throw new CatfishException($"No form with ID {fe.FormId} found");
-
-                entityTemplate.Forms.Add(frm);
-            }
+            _context.EntityTemplates!.Add(entityTemplate);
+            return HttpStatusCode.OK;
         }
+
+        public async Task<HttpStatusCode> UpdateEntity(EntityTemplate entityTemplate)
+        {
+            //Loading the entity from the database
+            EntityTemplate? dbEntityTemplate = await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(et => et.Id == entityTemplate.Id);
+            if (dbEntityTemplate == null)
+                return HttpStatusCode.NotFound;
+
+            //Loading the list of forms to be associated with the dbEntityTemplate
+            List<Form> associatedForms = await LoadAssociatedForms(entityTemplate);
+
+            //Add new form associations that do not already exist in the database
+            foreach (Form form in associatedForms)
+                if (!dbEntityTemplate.Forms.Any(f => f.Id == form.Id))
+                    dbEntityTemplate.Forms.Add(form);
+
+            //Remove forms that are no longer in the forms associated with the input entityTemplate
+            var keepingFormIds = associatedForms.Select(form => form.Id);
+            var toBeRemoved = dbEntityTemplate.Forms.Where(f => !keepingFormIds.Contains(f.Id)).ToList();
+            foreach (var form in toBeRemoved)
+                dbEntityTemplate.Forms.Remove(form);
+
+            //Copying property values to the dbEntityTemplate
+            dbEntityTemplate.Description = entityTemplate.Description;
+            dbEntityTemplate.Updated = DateTime.Now;
+            dbEntityTemplate.Name = entityTemplate.Name;
+            dbEntityTemplate.EntityTemplateSettings = entityTemplate.EntityTemplateSettings;
+
+            return HttpStatusCode.OK;
+        }
+
+
+        #region Private Methods
+
+        private async Task<List<Form>> LoadAssociatedForms(EntityTemplate entityTemplate)
+        {
+            var formIds = entityTemplate.EntityTemplateSettings?.DataForms.Select(form => form.FormId)
+                .Union(entityTemplate.EntityTemplateSettings.MetadataForms.Select(form => form.FormId))
+                .ToList();
+
+            if (formIds != null && formIds.Any())
+                return await _context.Forms!.Where(form => formIds!.Contains(form.Id)).ToListAsync();
+            else
+                return new List<Form>();
+        }
+        #endregion
     }
 }
