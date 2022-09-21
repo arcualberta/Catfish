@@ -9,16 +9,22 @@
         <div>State: {{template.state}}</div>
         <div>
             <h5>Metadata Forms</h5>
+            <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.metadataForms">
+    
             <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId">
                 <FormEntryTemplate :model="frm" />
             </div>
+            </draggable>
             <button @click="addMetadataForm">+ Add</button>
         </div>
         <div>
             <h5>Data Forms</h5>
+            <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.dataForms">
+    
             <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.formId">
                 <FormEntryTemplate :model="frm" />
             </div>
+            </draggable>
             <button @click="addDataForm">+ Add</button>
         </div>
 
@@ -35,7 +41,9 @@
     import { default as FormEntryTemplate } from './components/FormEntry.vue';
     import { Guid } from 'guid-typescript';
     import { FormEntry } from './models';
-        import { useRouter} from 'vue-router';
+    import { useRouter} from 'vue-router';
+    import { VueDraggableNext as draggable } from 'vue-draggable-next'
+
 
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
