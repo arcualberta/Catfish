@@ -4,3 +4,6 @@
 .description{
     font-size: large;
 }
+.control button, .toolbar button {
+    margin: 0.2rem;
+}
