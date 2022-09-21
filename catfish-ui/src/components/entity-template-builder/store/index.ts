@@ -92,7 +92,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             .then(response => {
                 if (response.ok) {
                     alert("save successful")
-                    router.push(`/edit-entity-template/${this.template.id}`)
+                    router.push(`/edit-entity-template/${this.template!.id}`)
                 }
             })
             .catch((error) => {
