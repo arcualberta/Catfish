@@ -8,13 +8,15 @@ export {
 
 export {
     createOption,
-    getOptionText
+    getOptionText,
+    cloneOption
 } from './optionHelper';
 
 export {
     isOptionField,
     isMultilingualTextInputField,
     isMonolingualTextInputField,
+    isTextInputField,
     getFieldTitle,
     getFieldDescription,
     createFieldData,

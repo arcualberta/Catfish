@@ -22,6 +22,12 @@ export const isMultilingualTextInputField = (field: Field): boolean => Object.va
 export const isMonolingualTextInputField = (field: Field): boolean => Object.values(MonolingualFieldType).map(x => x as unknown as string).includes(field.type as unknown as string);
 
 /**
+ * Is the given field a text input field (i.e. monolingual or multilingual)?
+ * @param field
+ */
+export const isTextInputField = (field: Field): boolean => Object.values(MonolingualFieldType).map(x => x as unknown as string).includes(field.type as unknown as string);
+
+/**
  * Returns the title of a field as a string. If multiple values are specified, only returns the first value.
  * @param field: input field
  * @param lang: optional language. If not specified, returns the value in the first language.

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 import { Guid } from "guid-typescript";
 
-import { Form, Field, FieldType, OptionFieldType, TextCollection, Option, ExtensionType } from '../../shared/form-models'
+import { Form, Field, FieldType, OptionFieldType, TextCollection, Option } from '../../shared/form-models'
 
 import { createOption, createTextCollection, isOptionField, cloneTextCollection } from '../../shared/form-helpers'
 
