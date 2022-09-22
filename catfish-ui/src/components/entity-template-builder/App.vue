@@ -27,8 +27,19 @@
             </draggable>
             <button @click="addDataForm">+ Add</button>
         </div>
+        <div>
+            <h5>Field Mappings</h5>
+            <div class="row">
+                <div class="col-1">
+                    Title
+                </div>
+                <div class="col-11">
+                    <FormFieldSelectionDropdown :model="formFieldSelectorSource" />
+                </div>
+            </div>
+        </div>
 
-        <div class="alert alert-info">{{JSON.stringify(template)}}</div>
+        <!--<div class="alert alert-info">{{template}}</div>-->
     </div>
 
 </template>
@@ -40,10 +51,11 @@
     import { AppletAttribute } from '@/components/shared/props'
     import { default as FormEntryTemplate } from './components/FormEntry.vue';
     import { Guid } from 'guid-typescript';
-    import { FormEntry } from './models';
     import { useRouter} from 'vue-router';
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
+    import { FormEntry } from '../shared/form-models';
 
+    import { FormFieldSelectionDropdown } from '@/components/shared/components'
 
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
@@ -55,7 +67,9 @@
     const store = useEntityTemplateBuilderStore(props.piniaInstance);
     const createTemplate = () => store.newTemplate();
     const template = computed(() => store.template);
+    const formFieldSelectorSource = computed(() => [{ formGroupName: 'Matadata Form', formGroup: template.value?.entityTemplateSettings.metadataForms }, { formGroupName: 'Data Form', formGroup: template.value?.entityTemplateSettings.dataForms }])
     const router = useRouter();
+
     const addMetadataForm = () => {
         store.template?.entityTemplateSettings.metadataForms?.push({ id: Guid.create().toString() as unknown as Guid, formId: Guid.createEmpty(), name: "" } as FormEntry);
     }
@@ -64,7 +78,7 @@
         store.template?.entityTemplateSettings.dataForms?.push({ id: Guid.create().toString() as unknown as Guid, formId: Guid.createEmpty(), name: "" } as FormEntry);
     }
 
-    const saveTemplate = ()=>store.saveTemplate();
+    const saveTemplate = () => store.saveTemplate();
 
     onMounted(() => {
         store.loadForms();

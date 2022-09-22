@@ -1,18 +1,12 @@
 import { Guid } from "guid-typescript"
 import { eState } from "../../shared/constants";
-import { Form } from "../../shared/form-models";
+import { Form, FormEntry, FieldEntry } from "../../shared/form-models";
 
-export interface FormEntry {
-    /**
-     * A unique form-entry ID used for the UI purposes
-     * */
-    id: Guid;
-    name: string;
-    formId: Guid;
-}
 export interface EntityTemplateSettings{
     metadataForms: FormEntry[] | null;
     dataForms: FormEntry[] | null;
+    titleField: FieldEntry | null;
+    descriptionField: FieldEntry | null;
 }
 
 export interface EntityTemplate {

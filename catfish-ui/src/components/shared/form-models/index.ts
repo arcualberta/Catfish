@@ -1,5 +1,5 @@
 
-export type { Form } from './form';
+export type { Form, FormEntry, FieldEntry } from './form';
 
 export type { Field } from './field';
 export { TextType, MonolingualFieldType, OptionFieldType, InfoSectionType, FieldType } from './field';

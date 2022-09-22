@@ -34,7 +34,7 @@ namespace Catfish.API.Repository.Controllers
        // GET: api/Forms/5
       //   GET api/<EntityTemplatesController>/5
         [HttpGet("{id}")]
-        public async Task<EntityTemplate?> Get(Guid id, bool includeForms = false)
+        public async Task<EntityTemplate?> Get(Guid id, bool includeForms = true)
         {
             if(includeForms)
                 return await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(fd => fd.Id == id);

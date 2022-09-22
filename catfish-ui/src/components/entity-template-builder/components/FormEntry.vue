@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { FormEntry } from '../models'
+    import { FormEntry } from '../../shared/form-models';
     import { useEntityTemplateBuilderStore } from '../store';
 
     const props = defineProps<{
