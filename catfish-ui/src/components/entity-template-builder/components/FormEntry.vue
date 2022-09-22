@@ -1,17 +1,30 @@
 <template>
-    <div class="row alert alert-success">
-        <div class="col-11">
-            <div>Name : <input v-model="model.name" /> </div>
-            <label :for="model.formId.toString()">Form:</label>
-
-            <select v-model="model.formId" :name="model.formId.toString()">
-                <option v-for="entry in store.formEntries" :key="entry.formId.toString()" :value="entry.formId">{{entry.name}}</option>
-            </select>
-        </div>
-        <div class="col-1">
+    <b-row>
+        <b-col class="col-sm-11">
+            <b-row>
+                <b-col class="col-sm-2">
+                    <h6>Name :</h6>
+                </b-col>
+                <b-col class="col-sm-10">
+                    <b-form-input v-model="model.name"></b-form-input>
+                </b-col>
+            </b-row>
+            <br />
+            <b-row>
+                <b-col class="col-sm-2">
+                    <label :for="model.formId.toString()">Form:</label>
+                </b-col>
+                <b-col class="col-sm-10">
+                    <select v-model="model.formId" :name="model.formId.toString()" class="form-select">
+                        <option v-for="entry in store.formEntries" :key="entry.formId.toString()" :value="entry.formId">{{entry.name}}</option>
+                    </select>
+                </b-col>
+            </b-row>
+        </b-col>
+        <b-col class="col-sm-1">
             <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="store.deleteFormEntry(model.id)" class="fa-icon delete" />
-        </div>
-    </div>
+        </b-col>
+    </b-row>
 </template>
 
 <script setup lang="ts">
