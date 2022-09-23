@@ -4,7 +4,7 @@ import { EntityTemplate } from '../models';
 import { eState } from "../../shared/constants";
 import { default as config } from "@/appsettings";
 import router from '@/router';
-import { FormEntry } from '../../shared/form-models';
+import { FieldEntry, FormEntry } from '../../shared/form-models';
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
@@ -26,8 +26,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 entityTemplateSettings: {
                     metadataForms: [],
                     dataForms: [],
-                    titleField: null,
-                    descriptionField: null
+                    titleField: {} as FieldEntry,
+                    descriptionField: {} as FieldEntry
                 }
                 
             };
