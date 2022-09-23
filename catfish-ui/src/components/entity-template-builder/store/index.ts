@@ -57,7 +57,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
+                    //console.log(data);
                     this.template = data;
                 })
                 .catch((error) => {
@@ -65,7 +65,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 });
         },
         saveTemplate(){
-            console.log("save form template: ", JSON.stringify(this.template));
+            //console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
            
             let api = config.dataRepositoryApiRoot + "/api/entity-templates";

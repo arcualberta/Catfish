@@ -1,23 +1,28 @@
 <script setup lang="ts">
-    import { ref, computed } from 'vue'
+    import { ref, computed, watch } from 'vue'
     import { Guid } from "guid-typescript";
-    import { Field, TextCollection as TextCollectionModel, FieldType, TextType, MonolingualFieldType, Option } from '../../shared/form-models';
-    import { FormEntry, FieldEntry } from '../../form-models';
+    import { Form, FormEntry, FieldEntry } from '../../form-models';
     import { isString } from '@vue/shared';
+    import { getFieldTitle } from '@/components/shared/form-helpers'
     import { OptionEntry, SelectableOption, OptionGroup } from './models'
 
     const props = defineProps<{
-        model: FieldEntry,
+        model?: FieldEntry,
         optionSource : {
             formGroupName: string,
             formGroup: FormEntry[]
-        }[]
+        }[],
+        forms: Form[]
     }>();
-    
-    const id = ref(Guid.create().toString() as unknown as Guid);
-    const selected = ref("");
 
-    const options = computed(() => {
+    const emit = defineEmits<{
+        (e: 'update', value: FieldEntry): void
+    }>()
+
+    const selectedFormId = ref(null as Guid | null);
+    const selectedFieldId = ref(null as Guid | null);
+
+    const formSelectionOptions = computed(() => {
         const opts: OptionEntry[] = [{ value: null, text: 'Please select a form' } as unknown as SelectableOption];
         props.optionSource.forEach(group => {
             const groupOpt: OptionGroup = {
@@ -35,9 +40,36 @@
         })
         return opts;
     });
+
+    const fieldSelectionOptions = computed(() => {
+        if (selectedFormId.value === null || selectedFormId.value?.toString() === "")
+            return [{ value: null, text: "Please select a form first." }]
+
+        const options = props.forms?.filter(form => form.id === selectedFormId.value)[0]
+            ?.fields.map(field => {
+                return {
+                    value: field.id,
+                    text: getFieldTitle(field, null)
+                } as SelectableOption
+            });
+        return options;
+    });
+
+    watch(() => selectedFormId.value, _ => {
+        selectedFieldId.value = null;
+    })
+
+    watch(() => selectedFieldId.value, _ => emit('update', { formId: selectedFormId.value, fieldId: selectedFieldId.value } as FieldEntry))
 </script>
 
 <template>
-    <b-form-select v-model="selected" :options="options" class="col-6"></b-form-select>
-    <div class="alert alert-info" style="margin-top:2em;">{{selected}}</div>
+    <div class="row">
+        <div class="col-6">
+            <b-form-select v-model="selectedFormId" :options="formSelectionOptions"></b-form-select>
+        </div>
+
+        <div class="col-6">
+            <b-form-select v-model="selectedFieldId" :options="fieldSelectionOptions"></b-form-select>
+        </div>
+    </div>
 </template>

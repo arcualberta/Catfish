@@ -7,7 +7,7 @@
     import { Guid } from 'guid-typescript';
     import { useRouter } from 'vue-router';
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
-    import { FormEntry } from '../shared/form-models';
+    import { FieldEntry, FormEntry } from '../shared/form-models';
 
     import { FormFieldSelectionDropdown } from '@/components/shared/components'
 
@@ -22,8 +22,6 @@
     const createTemplate = () => store.newTemplate();
 
     const template = computed(() => store.template);
-    const titleField = computed(() => template.value?.entityTemplateSettings.titleField);
-    const descriptionField = computed(() => template.value?.entityTemplateSettings.descriptionField);
 
     const formFieldSelectorSource = computed(() => [{ formGroupName: 'Matadata Form', formGroup: template.value?.entityTemplateSettings.metadataForms }, { formGroupName: 'Data Form', formGroup: template.value?.entityTemplateSettings.dataForms }])
     const router = useRouter();
@@ -46,7 +44,8 @@
         }
     });
 
-
+    const setTitleField = (e: FieldEntry) => template.value!.entityTemplateSettings.titleField = e;
+    const setDescriptionField = (e: FieldEntry) => template.value!.entityTemplateSettings.descriptionField = e;
 
 </script>
 
@@ -110,16 +109,24 @@
         <div>
             <h5>Field Mappings</h5>
             <div class="row">
-                <div class="col-1">
+                <div class="col-2">
                     Title
                 </div>
-                <div class="col-11">
-                    <FormFieldSelectionDropdown :model="titleField" :option-source="formFieldSelectorSource" />
+                <div class="col-10">
+                    <FormFieldSelectionDropdown @update="setTitleField" :option-source="formFieldSelectorSource" :forms="template.forms" />
                 </div>
             </div>
-        </div>
-        <div class="alert alert-info" style="margin-top:2em;">{{template}}</div>
+            <div class="row">
+                <div class="col-2">
+                    Description
+                </div>
+                <div class="col-10">
+                    <FormFieldSelectionDropdown @update="setDescriptionField" :option-source="formFieldSelectorSource" :forms="template.forms" />
+                </div>
+            </div>
+      </div>
     </div>
+    <div class="alert alert-info" style="margin-top:2em;">{{template}}</div>
 
 </template>
 
