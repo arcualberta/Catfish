@@ -11,16 +11,14 @@
     }>();
 
     const store = useEntityEditorStore(props.piniaInstance);
-    store.loadTemplates();
-    const templateEntries = computed(()=>store.templates);
-
+    //store.loadTemplates();
     
 
-    //onMounted(() => {
-    //    store.loadTemplates();
-   //     const templateEntries = computed(()=>store.templates);
-   // });
-
+    onMounted(() => {
+        store.loadTemplates();
+        
+    });
+    const templateEntries = computed(()=>store.templates);
 </script>
 
 <template>
