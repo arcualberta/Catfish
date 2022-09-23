@@ -7,3 +7,6 @@
 .control button, .toolbar button {
     margin: 0.2rem;
 }
+.hideBtn{
+    display: none;
+}
