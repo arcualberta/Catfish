@@ -22,9 +22,10 @@ namespace Catfish.API.Repository.Controllers
         }
         // GET: api/<EntityTemplateController>
         [HttpGet]
+       
         public async Task<ActionResult<IEnumerable<TemplateEntry>>> Get()
         {
-            if (_context.FormData == null)
+            if (_context.EntityTemplates == null)
             {
                 return NotFound();
             }
