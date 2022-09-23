@@ -1,12 +1,7 @@
 ﻿
 namespace Catfish.API.Repository.Models.Entities
 {
-    public enum eEntityType
-    {
-        Item,
-        Collection
-    }
-    public class Entity
+     public class Entity
     {
         public Guid Id { get; set; }
         public eEntityType EntityType { get; set; }

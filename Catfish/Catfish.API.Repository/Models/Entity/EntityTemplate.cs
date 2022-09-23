@@ -1,6 +1,4 @@
-﻿using Catfish.API.Repository.Models.Entity;
-
-namespace Catfish.API.Repository.Models.Entities
+﻿namespace Catfish.API.Repository.Models.Entities
 {
     public class EntityTemplate
     {
@@ -8,7 +6,7 @@ namespace Catfish.API.Repository.Models.Entities
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public Enums.eState State { get; set; }
+        public eState State { get; set; }
 
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }

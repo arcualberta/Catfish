@@ -1,11 +1,10 @@
 import { Guid } from 'guid-typescript';
 import { defineStore } from 'pinia';
-import { EntityTemplate, FormEntry } from '../models';
+import { EntityTemplate } from '../models';
 import { eState } from "../../shared/constants";
 import { default as config } from "@/appsettings";
 import router from '@/router';
-
-
+import { FormEntry } from '../../shared/form-models';
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
@@ -26,7 +25,9 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 forms:[],
                 entityTemplateSettings: {
                     metadataForms: [],
-                    dataForms: []
+                    dataForms: [],
+                    titleField: null,
+                    descriptionField: null
                 }
                 
             };
@@ -56,7 +57,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
+                    //console.log(data);
                     this.template = data;
                 })
                 .catch((error) => {
@@ -64,7 +65,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 });
         },
         saveTemplate(){
-            console.log("save form template: ", JSON.stringify(this.template));
+            //console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
            
             let api = config.dataRepositoryApiRoot + "/api/entity-templates";

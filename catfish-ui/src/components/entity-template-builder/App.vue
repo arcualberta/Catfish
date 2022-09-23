@@ -1,3 +1,53 @@
+<script setup lang="ts">
+    import { Pinia } from 'pinia'
+    import { computed, onMounted } from 'vue'
+    import { useEntityTemplateBuilderStore } from './store';
+    import { AppletAttribute } from '@/components/shared/props'
+    import { default as FormEntryTemplate } from './components/FormEntry.vue';
+    import { Guid } from 'guid-typescript';
+    import { useRouter } from 'vue-router';
+    import { VueDraggableNext as draggable } from 'vue-draggable-next'
+    import { FieldEntry, FormEntry } from '../shared/form-models';
+
+    import { FormFieldSelectionDropdown } from '@/components/shared/components'
+
+    const props = defineProps<{
+        dataAttributes?: AppletAttribute | null,
+        queryParameters?: AppletAttribute | null,
+        piniaInstance: Pinia,
+
+    }>();
+
+    const store = useEntityTemplateBuilderStore(props.piniaInstance);
+    const createTemplate = () => store.newTemplate();
+
+    const template = computed(() => store.template);
+    const titleField = computed(() => template.value?.entityTemplateSettings.titleField);
+    const descriptionField = computed(() => template.value?.entityTemplateSettings.descriptionField);
+
+    const formFieldSelectorSource = computed(() => [{ formGroupName: 'Matadata Form', formGroup: template.value?.entityTemplateSettings.metadataForms }, { formGroupName: 'Data Form', formGroup: template.value?.entityTemplateSettings.dataForms }])
+    const router = useRouter();
+
+    const addMetadataForm = () => {
+        store.template?.entityTemplateSettings.metadataForms?.push({ id: Guid.create().toString() as unknown as Guid, formId: Guid.createEmpty(), name: "" } as FormEntry);
+    }
+
+    const addDataForm = () => {
+        store.template?.entityTemplateSettings.dataForms?.push({ id: Guid.create().toString() as unknown as Guid, formId: Guid.createEmpty(), name: "" } as FormEntry);
+    }
+
+    const saveTemplate = () => store.saveTemplate();
+
+    onMounted(() => {
+        store.loadForms();
+        if (template.value) {
+            if (template.value.id?.toString() !== Guid.EMPTY)
+                router.push(`/edit-entity-template/${template.value.id}`)
+        }
+    });
+
+</script>
+
 <template>
     <h3>Entity Template Builder</h3>
     <div class="control">
@@ -55,54 +105,29 @@
             </draggable>
             <button class="btn btn-warning btn-red" @click="addDataForm">+ Add</button>
         </div>
-
-        <div class="alert alert-info">{{JSON.stringify(template)}}</div>
+        <div>
+            <h5>Field Mappings</h5>
+            <div class="row">
+                <div class="col-2">
+                    Title
+                </div>
+                <div class="col-10">
+                    <FormFieldSelectionDropdown :model="titleField" :option-source="formFieldSelectorSource" :forms="template.forms" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    Description
+                </div>
+                <div class="col-10">
+                    <FormFieldSelectionDropdown :model="descriptionField" :option-source="formFieldSelectorSource" :forms="template.forms" />
+                </div>
+            </div>
+      </div>
     </div>
+    <div class="alert alert-info" style="margin-top:2em;">{{template}}</div>
 
 </template>
 
-<script setup lang="ts">
-    import { Pinia } from 'pinia'
-    import { computed, onMounted } from 'vue'
-    import { useEntityTemplateBuilderStore } from './store';
-    import { AppletAttribute } from '@/components/shared/props'
-    import { default as FormEntryTemplate } from './components/FormEntry.vue';
-    import { Guid } from 'guid-typescript';
-    import { FormEntry } from './models';
-    import { useRouter} from 'vue-router';
-    import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
-
-    const props = defineProps<{
-        dataAttributes?: AppletAttribute | null,
-        queryParameters?: AppletAttribute | null,
-        piniaInstance: Pinia,
-        
-    }>();
-
-    const store = useEntityTemplateBuilderStore(props.piniaInstance);
-    const createTemplate = () => store.newTemplate();
-    const template = computed(() => store.template);
-    const router = useRouter();
-    const addMetadataForm = () => {
-        store.template?.entityTemplateSettings.metadataForms?.push({ id: Guid.create().toString() as unknown as Guid, formId: Guid.createEmpty(), name: "" } as FormEntry);
-    }
-
-    const addDataForm = () => {
-        store.template?.entityTemplateSettings.dataForms?.push({ id: Guid.create().toString() as unknown as Guid, formId: Guid.createEmpty(), name: "" } as FormEntry);
-    }
-
-    const saveTemplate = ()=>store.saveTemplate();
-
-    onMounted(() => {
-        store.loadForms();
-       if(template.value){ 
-            if(template.value.id?.toString() !== Guid.EMPTY)
-               router.push(`/edit-entity-template/${template.value.id}`)
-       }
-    });
-
-
-
-</script>
 <style scoped src="./style.css"></style>
