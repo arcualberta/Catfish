@@ -1,8 +1,7 @@
 <script setup lang="ts">
-    import { ref, computed, watch } from 'vue'
+    import { computed, watch } from 'vue'
     import { Guid } from "guid-typescript";
     import { Form, FormEntry, FieldEntry } from '../../form-models';
-    import { isString } from '@vue/shared';
     import { getFieldTitle } from '@/components/shared/form-helpers'
     import { OptionEntry, SelectableOption, OptionGroup } from './models'
 
@@ -14,13 +13,6 @@
         }[],
         forms: Form[]
     }>();
-
-    const emit = defineEmits<{
-        (e: 'update', value: FieldEntry): void
-    }>()
-
-    const selectedFormId = ref(props.model?.formId as Guid | null);
-    const selectedFieldId = ref(props.model?.fieldId as Guid | null);
 
     const formSelectionOptions = computed(() => {
         const opts: OptionEntry[] = [{ value: null, text: 'Please select a form' } as unknown as SelectableOption];
@@ -42,10 +34,10 @@
     });
 
     const fieldSelectionOptions = computed(() => {
-        if (selectedFormId.value === null || selectedFormId.value?.toString() === "")
+        if (props.model?.formId === null || props.model?.formId?.toString() === "")
             return [{ value: null, text: "Please select a form first." }]
 
-        const options = props.forms?.filter(form => form.id === selectedFormId.value)[0]
+        const options = props.forms?.filter(form => form.id === props.model?.formId)[0]
             ?.fields.map(field => {
                 return {
                     value: field.id,
@@ -55,21 +47,20 @@
         return options;
     });
 
-    watch(() => selectedFormId.value, _ => {
-        selectedFieldId.value = null;
+    watch(() => props.model.formId, _ => {
+        props.model.fieldId = Guid.EMPTY as unknown as Guid;
     })
 
-    watch(() => selectedFieldId.value, _ => emit('update', { formId: selectedFormId.value, fieldId: selectedFieldId.value } as FieldEntry))
 </script>
 
 <template>
     <div class="row">
         <div class="col-6">
-            <b-form-select v-model="selectedFormId" :options="formSelectionOptions"></b-form-select>
+            <b-form-select v-model="model.formId" :options="formSelectionOptions"></b-form-select>
         </div>
 
         <div class="col-6">
-            <b-form-select v-model="selectedFieldId" :options="fieldSelectionOptions"></b-form-select>
+            <b-form-select v-model="model.fieldId" :options="fieldSelectionOptions"></b-form-select>
         </div>
     </div>
 </template>
