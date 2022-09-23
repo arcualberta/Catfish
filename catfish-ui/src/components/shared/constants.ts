@@ -1,2 +1,2 @@
 
-export enum eState{ Unpublished, Published, Archived, Deleted }
+export enum eState { Unpublished = "Unpublished", Published = "Published", Archived = "Archived", Deleted = "Deleted" }
