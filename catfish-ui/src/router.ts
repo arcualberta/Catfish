@@ -52,6 +52,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'editEntityTemplate',
         component: () => import('./views/EditEntityTemplate.vue')
     },
+    {
+        path: '/entity-editor/',
+        name: 'entityEditor',
+        component: () => import('./views/EntityEditor.vue')
+    },
 ]
 
 const router = createRouter({

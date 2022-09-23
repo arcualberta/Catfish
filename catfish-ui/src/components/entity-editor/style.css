@@ -1,0 +1,12 @@
+.title{
+    font-size: x-large;
+}
+.description{
+    font-size: large;
+}
+.control button, .toolbar button {
+    margin: 0.2rem;
+}
+.hideBtn{
+    display: none;
+}

@@ -4,12 +4,12 @@ import { Form, FormEntry, FieldEntry } from "../../shared/form-models";
 export interface Entity{
     id: Guid
     templateId: Guid
-    entityType: eEntityType
+    //entityType: eEntityType
     data: FormData[]
 }
 
 export interface TemplateEntry {
-    id: Guid | null;
+    //id: Guid | null;
     
     templateId: Guid
     templateName: string
