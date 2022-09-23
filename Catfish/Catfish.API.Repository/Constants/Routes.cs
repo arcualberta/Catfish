@@ -12,6 +12,9 @@
         {
             public const string Root = "api/form-submissions";
         }
-
+        internal static class EntityTemplates
+        {
+            public const string Root = "api/entity-templates";
+        }
     }
 }

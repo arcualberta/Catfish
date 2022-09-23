@@ -1,4 +1,6 @@
 using Catfish.API.Repository;
+using Catfish.API.Repository.Interfaces;
+using Catfish.API.Repository.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +19,7 @@ builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(con
 builder.AddCatfishExtensions();
 
 //Adding services specific to this project
-
+builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 
 var app = builder.Build();
 

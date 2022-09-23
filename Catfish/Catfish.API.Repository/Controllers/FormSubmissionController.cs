@@ -31,7 +31,7 @@ namespace Catfish.API.Repository.Controllers
         [HttpGet("{id}")]
         public async Task<FormData?> Get(Guid id)
         {
-            FormData? formData = await _context.FormData.FirstOrDefaultAsync(fd => fd.Id == id);
+            FormData? formData = await _context.FormData!.FirstOrDefaultAsync(fd => fd.Id == id);
             return formData;
         }
 

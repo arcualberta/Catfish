@@ -32,14 +32,20 @@ export const isTextInputField = (field: Field): boolean => Object.values(Monolin
  * @param field: input field
  * @param lang: optional language. If not specified, returns the value in the first language.
  */
-export const getFieldTitle = (field: Field, lang: string | null): string | null => getTextValue(field.title, lang)[0]
+export const getFieldTitle = (field: Field, lang: string | null): string | null => {
+    const txtVals = getTextValue(field.title, lang);
+    return txtVals?.length > 0 ? txtVals[0] : null;
+}
 
 /**
  * Returns the description of a field as a string. If multiple values are specified, only returns the first value.
  * @param field: input field
  * @param lang: optional language. If not specified, returns the value in the first language.
  */
-export const getFieldDescription = (field: Field, lang: string | null): string | null => getTextValue(field.description, lang)[0]
+export const getFieldDescription = (field: Field, lang: string | null): string | null => {
+    const txtVals = getTextValue(field.description, lang);
+    return txtVals?.length > 0 ? txtVals[0] : null;
+}
 
 /**
  * Creates and returns a FieldData object for a given field. This function should be called by implementation of form-submission 

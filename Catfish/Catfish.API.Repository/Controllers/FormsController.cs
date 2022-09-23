@@ -16,23 +16,23 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Guid>>> GetFormIds()
+        public async Task<ActionResult<IEnumerable<FormEntry>>> Get()
         {
-          if (_context.Forms == null)
-          {
-              return NotFound();
-          }
-            return await _context.Forms.Select(form => form.Id).ToListAsync();
+            if (_context.Forms == null)
+            {
+                return NotFound();
+            }
+            return await _context.Forms.Select(form => new FormEntry() { FormId = form.Id, Name = form.Name?? form.Id.ToString() }).ToListAsync();
         }
 
         // GET: api/Forms/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Form>> GetForm(Guid id)
         {
-          if (_context.Forms == null)
-          {
-              return NotFound();
-          }
+            if (_context.Forms == null)
+            {
+                return NotFound();
+            }
             var form = await _context.Forms.FindAsync(id);
 
             if (form == null)
@@ -91,7 +91,7 @@ namespace Catfish.API.Repository.Controllers
 
                 return Ok();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 if (FormExists(form.Id))
                 {

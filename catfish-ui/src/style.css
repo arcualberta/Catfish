@@ -191,7 +191,7 @@ button:focus-visible {
     margin-left: 70px;
 }
 .form-field-border {
-    border: 1px solid #ccc !important;
+    border: 1px solid;
     padding: 30px 16px;
     border-radius: 16px;
     min-height:100px;
@@ -379,4 +379,16 @@ button:focus-visible {
 #button-1 .knobs:before,
 #button-1 .layer {
     transition: 0.3s ease all;
+}
+.blue {
+    border-color: #B0F3F9;
+}
+.red {
+    border-color: #FCD2C2;
+}
+.btn-blue {
+    background-color: #B0F3F9;
+}
+.btn-red {
+    background-color: #FCD2C2;
 }

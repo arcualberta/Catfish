@@ -48,7 +48,7 @@ namespace Catfish.API.Repository
         public DbSet<Form>? Forms { get; set; }
         public DbSet<FormData>? FormData { get; set; }
         public DbSet<Entity>? Entities { get; set; }
-        //public DbSet<Item>? Items { get; set; }
+        public DbSet<EntityTemplate>? EntityTemplates { get; set; }
         //public DbSet<Collection>? Collections { get; set; }
         public DbSet<Relationship>? Relationships { get; set; }
 
