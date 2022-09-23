@@ -7,7 +7,7 @@
     import { OptionEntry, SelectableOption, OptionGroup } from './models'
 
     const props = defineProps<{
-        model?: FieldEntry,
+        model: FieldEntry,
         optionSource : {
             formGroupName: string,
             formGroup: FormEntry[]
@@ -19,8 +19,8 @@
         (e: 'update', value: FieldEntry): void
     }>()
 
-    const selectedFormId = ref(null as Guid | null);
-    const selectedFieldId = ref(null as Guid | null);
+    const selectedFormId = ref(props.model?.formId as Guid | null);
+    const selectedFieldId = ref(props.model?.fieldId as Guid | null);
 
     const formSelectionOptions = computed(() => {
         const opts: OptionEntry[] = [{ value: null, text: 'Please select a form' } as unknown as SelectableOption];

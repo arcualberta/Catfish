@@ -22,6 +22,11 @@
     const createTemplate = () => store.newTemplate();
 
     const template = computed(() => store.template);
+    const titleField = computed(() => template.value?.entityTemplateSettings.titleField);
+    const descriptionField = computed(() => template.value?.entityTemplateSettings.descriptionField);
+
+    const setTitleField = (e: FieldEntry) => template.value!.entityTemplateSettings.titleField = e;
+    const setDescriptionField = (e: FieldEntry) => template.value!.entityTemplateSettings.descriptionField = e;
 
     const formFieldSelectorSource = computed(() => [{ formGroupName: 'Matadata Form', formGroup: template.value?.entityTemplateSettings.metadataForms }, { formGroupName: 'Data Form', formGroup: template.value?.entityTemplateSettings.dataForms }])
     const router = useRouter();
@@ -43,9 +48,6 @@
                 router.push(`/edit-entity-template/${template.value.id}`)
         }
     });
-
-    const setTitleField = (e: FieldEntry) => template.value!.entityTemplateSettings.titleField = e;
-    const setDescriptionField = (e: FieldEntry) => template.value!.entityTemplateSettings.descriptionField = e;
 
 </script>
 
@@ -113,7 +115,7 @@
                     Title
                 </div>
                 <div class="col-10">
-                    <FormFieldSelectionDropdown @update="setTitleField" :option-source="formFieldSelectorSource" :forms="template.forms" />
+                    <FormFieldSelectionDropdown :model="titleField" @update="setTitleField" :option-source="formFieldSelectorSource" :forms="template.forms" />
                 </div>
             </div>
             <div class="row">
@@ -121,7 +123,7 @@
                     Description
                 </div>
                 <div class="col-10">
-                    <FormFieldSelectionDropdown @update="setDescriptionField" :option-source="formFieldSelectorSource" :forms="template.forms" />
+                    <FormFieldSelectionDropdown :model="descriptionField" @update="setDescriptionField" :option-source="formFieldSelectorSource" :forms="template.forms" />
                 </div>
             </div>
       </div>

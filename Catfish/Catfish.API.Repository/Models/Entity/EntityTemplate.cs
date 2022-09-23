@@ -1,6 +1,4 @@
-﻿using Catfish.API.Repository.Models.Entity;
-
-namespace Catfish.API.Repository.Models.Entities
+﻿namespace Catfish.API.Repository.Models.Entities
 {
     public class EntityTemplate
     {
