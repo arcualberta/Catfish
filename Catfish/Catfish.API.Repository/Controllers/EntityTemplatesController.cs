@@ -21,18 +21,19 @@ namespace Catfish.API.Repository.Controllers
             _entityTemplateService = entityTemplateService;
         }
         // GET: api/<EntityTemplateController>
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Guid>>> GetFormSubmissions()
-        //{
-        //  if (_context.FormData == null)
-        //  {
-        //      return NotFound();
-        //  }
-        //    return await _context.FormData.Select(fd => fd.Id).ToListAsync();
-        //}
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TemplateEntry>>> Get()
+        {
+            if (_context.FormData == null)
+            {
+                return NotFound();
+            }
+            return await _context.EntityTemplates!.Select(te => new TemplateEntry() { TemplateId = te.Id, TemplateName = te.Name ?? te.Id.ToString() }).ToListAsync();
+            
+        }
 
-       // GET: api/Forms/5
-      //   GET api/<EntityTemplatesController>/5
+        // GET: api/Forms/5
+        //   GET api/<EntityTemplatesController>/5
         [HttpGet("{id}")]
         public async Task<EntityTemplate?> Get(Guid id, bool includeForms = true)
         {
