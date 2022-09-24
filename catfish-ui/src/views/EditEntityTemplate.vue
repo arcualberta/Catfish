@@ -20,5 +20,7 @@
 
 <template>
     <h5>Edit Template </h5>
-    <EntityTemplateBuilder  :pinia-instance="getActivePinia()"  />
-   </template>
+    <EntityTemplateBuilder  :pinia-instance="getActivePinia()"   />
+</template>
+
+
