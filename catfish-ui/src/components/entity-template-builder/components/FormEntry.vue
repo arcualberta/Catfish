@@ -39,7 +39,6 @@
             <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="store.deleteFormEntry(model.id)" class="fa-icon delete" />
         </b-col>
     </b-row>
-    {{model.formId}}
 </template>
 
 <style scoped src="../style.css"></style>
