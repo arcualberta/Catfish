@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { computed, onMounted } from 'vue'
+    import { computed, onMounted, watch } from 'vue'
     import { useEntityTemplateBuilderStore } from './store';
     import { AppletAttribute } from '@/components/shared/props'
     import { default as FormEntryTemplate } from './components/FormEntry.vue';
@@ -38,8 +38,12 @@
 
     const saveTemplate = () => store.saveTemplate();
 
+    watch(() => titleField?.value?.formId, newVal => {
+        store.associateForm(newVal as unknown as Guid)
+    })
+
     onMounted(() => {
-        store.loadForms();
+        store.loadFormEntries();
         if (template.value) {
             if (template.value.id?.toString() !== Guid.EMPTY)
                 router.push(`/edit-entity-template/${template.value.id}`)
@@ -90,7 +94,7 @@
                 <h5>Metadata Forms</h5>
                 <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.metadataForms">
                     <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId">
-                        <FormEntryTemplate :model="frm" class="form-field-border form-field blue" />
+                        <FormEntryTemplate :model="frm" />
                     </div>
                 </draggable>
                 <button class="btn btn-primary btn-blue" @click="addMetadataForm">+ Add</button>
