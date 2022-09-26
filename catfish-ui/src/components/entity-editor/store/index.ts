@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { Entity,  TemplateEntry } from '../models';
 import {EntityTemplate} from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
+import { eEntityType } from '@/components/shared/constants';
 
 
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
@@ -27,6 +28,14 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 .catch((error) => {
                     console.error('Load Templates API Error:', error);
                 });
-       }
+       },
+      initializeEntity(){
+        this.entity={
+            id: Guid.createEmpty(),
+            templateId: Guid.createEmpty(),
+            entityType: eEntityType.Unknown,
+            data: [] as FormData[] 
+        }
+      } 
     }
 });

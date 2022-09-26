@@ -1,7 +1,8 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { computed, onMounted } from 'vue'
+    import { computed, onMounted, ref} from 'vue'
     import { useEntityEditorStore } from './store';
+    import {default as EntitySummaryEditor} from './components/entity-summary-editor.vue'
     
 
     const props = defineProps<{
@@ -16,18 +17,25 @@
 
     onMounted(() => {
         store.loadTemplates();
-        
+        store.initializeEntity();
     });
+
     const templateEntries = computed(()=>store.templates);
+    let isShowEditor= ref(false);
+    const showEditor = ()=>{
+        isShowEditor.value = true;
+    };
+
+    const entity = computed(()=>store.entity)
 </script>
 
 <template>
     <h3>Entity Editor</h3>
     <div class="control">
-        <button >New Editor</button>
+        <button @click="showEditor()">New Editor</button>
         <button class="btn btn-success">Save</button>
     </div>
-    
+    <EntitySummaryEditor v-if="isShowEditor" :model="entity" />
 </template>
 
 
