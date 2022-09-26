@@ -1,3 +1,17 @@
+<script setup lang="ts">
+    import { Pinia } from 'pinia';
+    import { computed } from 'vue';
+    import { FormEntry } from '../../shared/form-models';
+    import { useEntityTemplateBuilderStore } from '../store';
+    import { SelectableOption } from '@/components/shared/components/form-field-selection-dropdown/models'
+    const props = defineProps<{
+        model: FormEntry
+    }>();
+
+    const store = useEntityTemplateBuilderStore();
+
+</script>
+
 <template>
     <b-row>
         <b-col class="col-sm-11">
@@ -27,16 +41,4 @@
     </b-row>
 </template>
 
-<script setup lang="ts">
-    import { Pinia } from 'pinia'
-    import { FormEntry } from '../../shared/form-models';
-    import { useEntityTemplateBuilderStore } from '../store';
-
-    const props = defineProps<{
-        model: FormEntry
-    }>();
-
-    const store = useEntityTemplateBuilderStore();
-
-</script>
 <style scoped src="../style.css"></style>

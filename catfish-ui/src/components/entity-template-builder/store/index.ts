@@ -4,7 +4,7 @@ import { EntityTemplate } from '../models';
 import { eState } from "../../shared/constants";
 import { default as config } from "@/appsettings";
 import router from '@/router';
-import { FormEntry } from '../../shared/form-models';
+import { FieldEntry, Form, FormEntry } from '../../shared/form-models';
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
@@ -26,14 +26,29 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 entityTemplateSettings: {
                     metadataForms: [],
                     dataForms: [],
-                    titleField: null,
-                    descriptionField: null
+                    titleField: {} as FieldEntry,
+                    descriptionField: {} as FieldEntry
                 }
-                
             };
-
         },
-        loadForms() {
+        associateForm(formId: Guid) {
+            if (this.template!.forms!.findIndex(form => form.id === formId) < 0) {
+                const api = `${config.dataRepositoryApiRoot}/api/forms/${formId}`;
+                console.log("loading form: ", api);
+
+                fetch(api, {
+                    method: 'GET'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.template?.forms?.push(data as Form)
+                    })
+                    .catch((error) => {
+                        console.error('Load Form API Error:', error);
+                    });
+            }
+        },
+        loadFormEntries() {
             const api = `${config.dataRepositoryApiRoot}/api/forms`;
             console.log("loading forms: ", api);
 
@@ -45,7 +60,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                     this.formEntries = data as FormEntry[]
                 })
                 .catch((error) => {
-                    console.error('Load Form API Error:', error);
+                    console.error('Load Forms API Error:', error);
                 });
         },
         loadTemplate(id: Guid) {

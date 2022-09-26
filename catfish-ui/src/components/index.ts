@@ -24,9 +24,13 @@ export { default as GoogleCalendar } from './google-calendar/App.vue'
 export { useGoogleCalendarStore } from './google-calendar/store'
 
 
-/* google calendar component */
+/* Entity Template builder component */
 export { default as EntityTemplateBuilder } from './entity-template-builder/App.vue'
 export { useEntityTemplateBuilderStore } from './entity-template-builder/store'
+
+/* Entity Editor component */
+export { default as EntityEditor } from './entity-editor/App.vue'
+export { useEntityEditorStore } from './entity-editor/store'
 
 
 

@@ -1,11 +1,12 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { computed, onMounted } from 'vue'
+    import { computed, onMounted, watch } from 'vue'
     import { useEntityTemplateBuilderStore } from './store';
     import { AppletAttribute } from '@/components/shared/props'
     import { default as FormEntryTemplate } from './components/FormEntry.vue';
     import { Guid } from 'guid-typescript';
-    import { useRouter } from 'vue-router';
+    import { useRoute ,useRouter } from 'vue-router';
+   
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
     import { FieldEntry, FormEntry } from '../shared/form-models';
 
@@ -14,8 +15,7 @@
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
-        piniaInstance: Pinia,
-
+        piniaInstance: Pinia
     }>();
 
     const store = useEntityTemplateBuilderStore(props.piniaInstance);
@@ -37,12 +37,22 @@
     }
 
     const saveTemplate = () => store.saveTemplate();
+    let btnClasses="btn btn-primary";
+    const route = useRoute()
+    const templateId = route.params.templateId as unknown as Guid
+    if(templateId)
+       btnClasses="btn btn-primary hideBtn";
+    watch(() => titleField?.value?.formId, newVal => {
+        store.associateForm(newVal as unknown as Guid)
+    })
 
     onMounted(() => {
-        store.loadForms();
+        store.loadFormEntries();
         if (template.value) {
-            if (template.value.id?.toString() !== Guid.EMPTY)
+            if (template.value.id?.toString() !== Guid.EMPTY){
                 router.push(`/edit-entity-template/${template.value.id}`)
+                btnClasses="btn btn-primary hideBtn";
+            }
         }
     });
 
@@ -51,7 +61,7 @@
 <template>
     <h3>Entity Template Builder</h3>
     <div class="control">
-        <button class="btn btn-primary" @click="createTemplate">New Template</button>
+        <button :class="btnClasses" @click="createTemplate">New Template</button>
         <button class="btn btn-success" @click="saveTemplate">Save</button>
     </div>
     <br />
@@ -90,7 +100,7 @@
                 <h5>Metadata Forms</h5>
                 <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.metadataForms">
                     <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId">
-                        <FormEntryTemplate :model="frm" class="form-field-border form-field blue" />
+                        <FormEntryTemplate :model="frm" />
                     </div>
                 </draggable>
                 <button class="btn btn-primary btn-blue" @click="addMetadataForm">+ Add</button>
@@ -105,7 +115,7 @@
             </draggable>
             <button class="btn btn-warning btn-red" @click="addDataForm">+ Add</button>
         </div>
-        <div>
+        <div v-if="template.forms">
             <h5>Field Mappings</h5>
             <div class="row">
                 <div class="col-2">
