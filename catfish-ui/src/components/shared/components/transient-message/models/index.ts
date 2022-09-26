@@ -1,6 +1,6 @@
 import { Guid } from "guid-typescript";
 
-export interface TransientMessage {
-    transientMessage: string,
-    transientMessageClass: string
+export interface TransientMessageModel {
+    transientMessage: string | null,
+    transientMessageClass: string | null
 };
