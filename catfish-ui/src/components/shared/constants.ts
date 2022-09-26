@@ -4,5 +4,6 @@ export enum eState { Unpublished = "Unpublished", Published = "Published", Archi
 export enum eEntityType 
 {
     Item="Item",
-    Collection="Collection"
+    Collection="Collection",
+    Unknown="Unknown"
 }

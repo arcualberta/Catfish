@@ -2,11 +2,7 @@ import { Guid } from "guid-typescript"
 import { eEntityType } from "../../shared/constants";
 import { Form, FormEntry, FieldEntry } from "../../shared/form-models";
 
-public enum eEntityType 
-{
-    Item,
-    Collection
-}
+
 export interface Entity{
     id: Guid
     templateId: Guid
