@@ -36,7 +36,7 @@
         <button @click="showEditor()">New Entity</button>
         <button class="btn btn-success">Save</button>
     </div>
-    <EntitySummaryEditor v-if="isShowEditor" :model="entity" />
+    <EntitySummaryEditor v-if="isShowEditor" :model="entity" :piniaInstance="piniaInstance" />
 </template>
 
 

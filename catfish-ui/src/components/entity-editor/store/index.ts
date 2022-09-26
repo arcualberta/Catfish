@@ -36,6 +36,30 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             entityType: eEntityType.Unknown,
             data: [] as FormData[] 
         }
-      } 
+      },
+      loadTemplate(id:Guid){
+        const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${id}`;
+            
+            fetch(api, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.entityTemplate = data as  EntityTemplate;
+                    
+                })
+                .catch((error) => {
+                    console.error('Load Template API Error:', error);
+                });
+       },
+       getEntityTemplate(){
+        return this.entityTemplate;
+    }
+    },
+
+    getters:{
+       // getEntityTemplate:(state)=>{
+       //     return state.entityTemplate;
+       // }
     }
 });

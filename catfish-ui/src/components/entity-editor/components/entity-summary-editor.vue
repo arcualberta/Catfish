@@ -16,7 +16,7 @@
             <label >Template:</label>
         </div>
         <div class="col-sm-10">
-           <select v-model="model.templateId"  class="form-select">
+           <select v-model="model.templateId"  class="form-select" @change="loadTemplate()">
                 <option v-for="template in templateEntries" :key="template.templateId" :value="template.templateId">{{template.templateName}}</option>
             </select> 
         </div>
@@ -46,8 +46,11 @@ import { Guid } from 'guid-typescript';
 
     const eEntityTypes = Object.values(eEntityType);
 
-    //const entity =computed(()=>store.entity);
-    //let selectedEntityType = null as eEntityType | eEntityType.Item;
+    const loadTemplate = ()=>{
+        store.loadTemplate(props.model.templateId); 
+        const entityTemplate=store.getEntityTemplate();
+    console.log(JSON.stringify(entityTemplate)) 
+    }
    
      
 </script>
