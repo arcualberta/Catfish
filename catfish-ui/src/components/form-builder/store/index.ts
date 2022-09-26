@@ -5,13 +5,13 @@ import { Guid } from "guid-typescript";
 import { Form, Field, FieldType, OptionFieldType, TextCollection, Option } from '../../shared/form-models'
 
 import { createOption, createTextCollection, isOptionField, cloneTextCollection } from '../../shared/form-helpers'
+import { TransientMessageModel } from '../../shared/components/transient-message/models'
 
 export const useFormBuilderStore = defineStore('FormBuilderStore', {
     state: () => ({
         lang: ["en", "fr"],
         form: null as Form | null,
-        transientMessage: null as string | null,
-        transientMessageClass: null as string | null
+        transientMessageModel: null as TransientMessageModel | null
     }),
     actions: {
         loadForm(id: Guid) {

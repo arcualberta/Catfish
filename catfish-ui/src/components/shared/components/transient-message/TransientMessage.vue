@@ -1,9 +1,16 @@
 <script setup lang="ts">
-    import { TransientMessage} from './models';
+    import { TransientMessageModel } from './models';
+    import { watch } from "vue";
 
     const props = defineProps<{
-        model: TransientMessage,
+        model: TransientMessageModel,
     }>();
+    watch(() => props.model.transientMessage, async newMessage => {
+        if (newMessage)
+            setTimeout(() => {
+                props.model.transientMessage = null;
+            }, 2000)
+    })
 </script>
 
 <template>
