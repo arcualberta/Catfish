@@ -17,13 +17,14 @@
 
     onMounted(() => {
         store.loadTemplates();
-        store.initializeEntity();
+       
     });
 
     const templateEntries = computed(()=>store.templates);
     let isShowEditor= ref(false);
     const showEditor = ()=>{
         isShowEditor.value = true;
+        store.initializeEntity();
     };
 
     const entity = computed(()=>store.entity)
@@ -32,7 +33,7 @@
 <template>
     <h3>Entity Editor</h3>
     <div class="control">
-        <button @click="showEditor()">New Editor</button>
+        <button @click="showEditor()">New Entity</button>
         <button class="btn btn-success">Save</button>
     </div>
     <EntitySummaryEditor v-if="isShowEditor" :model="entity" />
