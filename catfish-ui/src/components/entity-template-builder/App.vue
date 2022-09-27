@@ -123,7 +123,7 @@
                     Title
                 </div>
                 <div class="col-10">
-                    <FormFieldSelectionDropdown :model="titleField" :option-source="formFieldSelectorSource" :forms="template.forms" />
+                    <FormFieldSelectionDropdown :model="titleField" :option-source="formFieldSelectorSource" :forms="store.forms" />
                 </div>
             </div>
             <div class="row">
@@ -131,7 +131,7 @@
                     Description
                 </div>
                 <div class="col-10">
-                    <FormFieldSelectionDropdown :model="descriptionField" :option-source="formFieldSelectorSource" :forms="template.forms" />
+                    <FormFieldSelectionDropdown :model="descriptionField" :option-source="formFieldSelectorSource" :forms="store.forms" />
                 </div>
             </div>
         </div>
