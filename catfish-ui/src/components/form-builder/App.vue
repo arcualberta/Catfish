@@ -17,11 +17,12 @@
         queryParameters?: AppletAttribute | null,
         piniaInstance: Pinia,
         repositoryRoot: string,
-        formId?: Guid,
-        transientMessage: TransientMessageModel
+        formId?: Guid
     }>();
 
     const store = useFormBuilderStore(props.piniaInstance);
+
+    //const transientMessage = computed(() => store.transientMessageModel);
 
     if (props.formId)
         store.loadForm(props.formId)
@@ -72,7 +73,7 @@
 <style scoped src="./styles.css"></style>
 
 <template>
-    <TransientMessage :model="transientMessage"></TransientMessage>
+    <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <!--<transition name="fade">
         <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
     </transition>-->

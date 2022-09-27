@@ -9,7 +9,7 @@
    
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
     import { FieldEntry, FormEntry } from '../shared/form-models';
-
+    import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
     import { FormFieldSelectionDropdown } from '@/components/shared/components'
 
     const props = defineProps<{
@@ -59,6 +59,7 @@
 </script>
 
 <template>
+    <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <h3>Entity Template Builder</h3>
     <div class="control">
         <button :class="btnClasses" @click="createTemplate">New Template</button>
@@ -133,7 +134,7 @@
                     <FormFieldSelectionDropdown :model="descriptionField" :option-source="formFieldSelectorSource" :forms="template.forms" />
                 </div>
             </div>
-      </div>
+        </div>
     </div>
     <div class="alert alert-info" style="margin-top:2em;">{{template}}</div>
 

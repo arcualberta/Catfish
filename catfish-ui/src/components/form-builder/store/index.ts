@@ -11,7 +11,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
     state: () => ({
         lang: ["en", "fr"],
         form: null as Form | null,
-        transientMessageModel: null as TransientMessageModel | null
+        transientMessageModel: {} as TransientMessageModel
     }),
     actions: {
         loadForm(id: Guid) {
@@ -62,26 +62,26 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                 })
                 .then(response => {
                     if (response.ok) {
-                        this.transientMessage = "The form saved successfully"
-                        this.transientMessageClass = "success"
+                        this.transientMessageModel.message = "The form saved successfully"
+                        this.transientMessageModel.messageClass = "success"
                     }
                     else {
                         if (newForm && this.form)
                             this.form.id = Guid.EMPTY as unknown as Guid;
 
-                        this.transientMessageClass = "danger"
+                        this.transientMessageModel.messageClass = "danger"
                         switch (response.status) {
                             case 400:
-                                this.transientMessage = "Bad request. Failed to save the form";
+                                this.transientMessageModel.message = "Bad request. Failed to save the form";
                                 break;
                             case 404:
-                                this.transientMessage = "Form not found";
+                                this.transientMessageModel.message = "Form not found";
                                 break;
                             case 500:
-                                this.transientMessage = "An internal server error occurred. Failed to save the form"
+                                this.transientMessageModel.message = "An internal server error occurred. Failed to save the form"
                                 break;
                             default:
-                                this.transientMessage = "Unknown error occured. Failed to save the form"
+                                this.transientMessageModel.message = "Unknown error occured. Failed to save the form"
                                 break;
                         }
                     }
@@ -90,8 +90,8 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                     if (newForm && this.form)
                         this.form.id = Guid.EMPTY as unknown as Guid;
 
-                   this.transientMessage = "Unknown error occurred"
-                    this.transientMessageClass = "danger"
+                    this.transientMessageModel.message = "Unknown error occurred"
+                    this.transientMessageModel.messageClass = "danger"
                     console.error('Form Save API Error:', error)
                 });
         },
