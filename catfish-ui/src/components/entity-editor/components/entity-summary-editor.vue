@@ -26,16 +26,19 @@
             <div class="col-sm-2">
                 <label>Title:</label>
             </div>
-            <div class="col-sm-10">
-               <input v-model="titleField" />
+            <div class="col-sm-10" >
+               <FieldComponent :model="titleField" v-if="titleField" />
+               {{titleField}}
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col-sm-2">
+            <div class='col-sm-2'>
                 <label>Description:</label>
             </div>
             <div class="col-sm-10">
-                <input v-model="descriptionField" />
+               
+                <FieldComponent :model="descriptionField" v-if="descriptionField" />
+                {{descriptionField}}
             </div>
         </div>
     </div>
@@ -50,7 +53,7 @@
     import { Guid } from 'guid-typescript';
     import { Field, Form } from '../../shared/form-models'
     import {EntityTemplate} from '../../entity-template-builder/models'
-   
+    import {default as FieldComponent} from '../../form-submission/components/Field.vue'
    const store = useEntityEditorStore();
     const entity = computed(() => store.entity)
     const isNewEntity = computed(() => store.entity!.id.toString() === Guid.EMPTY);
@@ -63,12 +66,14 @@
 
     let titleField: Field;
     let descriptionField: Field;
-    
+
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
 
         // get the title and description field
-        titleField = ((entityTemplate as EntityTemplate).forms.findIndex(form => form.id === entityTemplateSettings.titleField.formId)).fields.findIndex(field=>field.id ==entityTemplateSettings.titleField.fieldId);
-        descriptionField = ((entityTemplate as EntityTemplate).forms.findIndex(form => form.id === entityTemplateSettings.descriptionField.formId)).fields.findIndex(field=>field.id ==entityTemplateSettings.descriptionField.fieldId);
+        titleField =((entityTemplate as EntityTemplate).forms.map(form => form.id === entityTemplateSettings.titleField.formId))
+                     .fields.map(field=>field.id ==entityTemplateSettings.titleField.fieldId) as Field;
+        descriptionField = ((entityTemplate as EntityTemplate).forms.map(form => form.id === entityTemplateSettings.descriptionField.formId))
+                  .fields.map(field=>field.id ==entityTemplateSettings.descriptionField.fieldId) as Field;
     })
 </script>
