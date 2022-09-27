@@ -12,8 +12,8 @@
     }>();
 
     const store = useEntityEditorStore(props.piniaInstance);
-    const entityTemplate = computed(() => store.entityTemplate);
-    let selectedButton = ref("summery");
+    const entityTemplate = true;// computed(() => store.entityTemplate);
+    let selectedButton = ref("summary");
 
     onMounted(() => {
         store.loadTemplates();
