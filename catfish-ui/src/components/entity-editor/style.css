@@ -10,3 +10,11 @@
 .hideBtn{
     display: none;
 }
+.active {
+    background-color: #cff4fc;
+}
+.pannel-buttons{
+    border-color:black;
+    margin:5px 5px 5px 5px;
+    border-radius:10px;
+}
