@@ -22,9 +22,8 @@
 
     const templateEntries = computed(()=>store.templates);
     let isShowEditor= ref(false);
-    const showEditor = ()=>{
-        isShowEditor.value = true;
-        store.initializeEntity();
+    const createEntity = ()=>{
+        store.createNewEntity();
     };
 
     const entity = computed(()=>store.entity)
@@ -33,10 +32,13 @@
 <template>
     <h3>Entity Editor</h3>
     <div class="control">
-        <button @click="showEditor()">New Entity</button>
+        <button @click="createEntity()">New Entity</button>
         <button class="btn btn-success">Save</button>
     </div>
-    <EntitySummaryEditor v-if="isShowEditor" :model="entity" />
+    <EntitySummaryEditor v-if="entity !== null" />
+
+    <div v-if="store.entityTemplate" class="alert alert-info mt-4"><h3>Entity Template</h3>{{store.entityTemplate}}</div>
+    <div v-if="entity" class="alert alert-info mt-4"><h3>Entity</h3>{{entity}}</div>
 </template>
 
 
