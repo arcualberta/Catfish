@@ -26,16 +26,19 @@
             <div class="col-sm-2">
                 <label>Title:</label>
             </div>
-            <div class="col-sm-10">
-               <input v-model="titleField" />
+            <div class="col-sm-10" >
+               <FieldComponent :model="titleField" v-if="titleField" />
+               {{titleField}}
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col-sm-2">
+            <div class='col-sm-2'>
                 <label>Description:</label>
             </div>
             <div class="col-sm-10">
-                <input v-model="descriptionField" />
+               
+                <FieldComponent :model="descriptionField" v-if="descriptionField" />
+                {{descriptionField}}
             </div>
         </div>
     </div>
@@ -43,13 +46,14 @@
 
 <script setup lang="ts">
 
-    import { computed, watch } from "vue"
+    import { computed, ref, watch } from "vue"
 
     import { useEntityEditorStore } from "../store"
     import { eEntityType } from "../../shared/constants"
     import { Guid } from 'guid-typescript';
     import { Field, Form } from '../../shared/form-models'
     import {EntityTemplate} from '../../entity-template-builder/models'
+    import {default as FieldComponent} from '../../form-submission/components/Field.vue'
    
    const store = useEntityEditorStore();
     const entity = computed(() => store.entity)
@@ -61,14 +65,22 @@
     //const dataForms = computed(() => entityTemplate.value!.forms!.filter(form => metadataFormEntries.value!.map(formEntry => formEntry.id).findIndex((form as Form).id) > 0)
     const eEntityTypes = Object.values(eEntityType);
 
-    let titleField: Field;
-    let descriptionField: Field;
-    
+    const titleField= ref({}as Field);
+ const descriptionField=  ref({}as Field);;
+
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
+    })
 
-        // get the title and description field
-        titleField = ((entityTemplate as EntityTemplate).forms.findIndex(form => form.id === entityTemplateSettings.titleField.formId)).fields.findIndex(field=>field.id ==entityTemplateSettings.titleField.fieldId);
-        descriptionField = ((entityTemplate as EntityTemplate).forms.findIndex(form => form.id === entityTemplateSettings.descriptionField.formId)).fields.findIndex(field=>field.id ==entityTemplateSettings.descriptionField.fieldId);
+    watch(()=> entityTemplate.value, async newTemplate =>{
+        // get the title and description 
+        console.log("the entity template : " + JSON.stringify(newTemplate))
+        let frm = newTemplate?.forms?.find((form) => {return form.id === newTemplate?.entityTemplateSettings?.titleField?.formId});
+        console.log("the form : " + frm)
+       titleField = frm?.fields.filter((field)=>{ return field.id ==newTemplate?.entityTemplateSettings?.titleField?.fieldId});
+        descriptionField = frm?.fields.filter((field)=>{ return field.id ==newTemplate?.entityTemplateSettings?.descriptionField?.fieldId});
+
+        console.log("titleField : " + titleField)
+       console.log("descriptionField : " + titleField)
     })
 </script>
