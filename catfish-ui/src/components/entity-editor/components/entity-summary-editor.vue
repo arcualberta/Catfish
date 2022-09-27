@@ -70,10 +70,13 @@
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
 
-        // get the title and description field
-        titleField =((entityTemplate as EntityTemplate).forms.map(form => form.id === entityTemplateSettings.titleField.formId))
-                     .fields.map(field=>field.id ==entityTemplateSettings.titleField.fieldId) as Field;
-        descriptionField = ((entityTemplate as EntityTemplate).forms.map(form => form.id === entityTemplateSettings.descriptionField.formId))
-                  .fields.map(field=>field.id ==entityTemplateSettings.descriptionField.fieldId) as Field;
+        // get the title and description 
+        let frm = entityTemplate?.value?.forms?.find((form) => {return form.id === entityTemplateSettings.titleField.formId});
+        console.log("the form : " + frm)
+        titleField = frm?.fields.filter((field)=>{ return field.id ==entityTemplateSettings.titleField.fieldId});
+        descriptionField = frm?.fields.filter((field)=>{ return field.id ==entityTemplateSettings.descriptionField.fieldId});
+
+        console.log("titleField : " + titleField)
+        console.log("descriptionField : " + titleField)
     })
 </script>
