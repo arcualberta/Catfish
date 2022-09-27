@@ -12,9 +12,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         id: null as Guid | null,
         template: null as EntityTemplate | null,
         formEntries: [] as FormEntry[],
-        transientMessageModel: {} as TransientMessageModel
-
-
+        transientMessageModel: {} as TransientMessageModel,
+        forms: [] as Form[]
     }),
     actions: {
         newTemplate() {
@@ -35,7 +34,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             };
         },
         associateForm(formId: Guid) {
-            if (this.template!.forms!.findIndex(form => form.id === formId) < 0) {
+            if (this.forms.findIndex(form => form.id === formId) < 0) {
                 const api = `${config.dataRepositoryApiRoot}/api/forms/${formId}`;
                 console.log("loading form: ", api);
 
@@ -44,7 +43,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 })
                     .then(response => response.json())
                     .then(data => {
-                        this.template?.forms?.push(data as Form)
+                        this.forms.push(data as Form)
                     })
                     .catch((error) => {
                         console.error('Load Form API Error:', error);
