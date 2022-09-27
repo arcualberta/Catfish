@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 
-    import { computed, watch } from "vue"
+    import { computed, ref, watch } from "vue"
 
     import { useEntityEditorStore } from "../store"
     import { eEntityType } from "../../shared/constants"
@@ -54,6 +54,7 @@
     import { Field, Form } from '../../shared/form-models'
     import {EntityTemplate} from '../../entity-template-builder/models'
     import {default as FieldComponent} from '../../form-submission/components/Field.vue'
+   
    const store = useEntityEditorStore();
     const entity = computed(() => store.entity)
     const isNewEntity = computed(() => store.entity!.id.toString() === Guid.EMPTY);
@@ -64,19 +65,22 @@
     //const dataForms = computed(() => entityTemplate.value!.forms!.filter(form => metadataFormEntries.value!.map(formEntry => formEntry.id).findIndex((form as Form).id) > 0)
     const eEntityTypes = Object.values(eEntityType);
 
-    let titleField: Field;
-    let descriptionField: Field;
+    const titleField= ref({}as Field);
+ const descriptionField=  ref({}as Field);;
 
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
+    })
 
+    watch(()=> entityTemplate.value, async newTemplate =>{
         // get the title and description 
-        let frm = entityTemplate?.value?.forms?.find((form) => {return form.id === entityTemplateSettings.titleField.formId});
+        console.log("the entity template : " + JSON.stringify(newTemplate))
+        let frm = newTemplate?.forms?.find((form) => {return form.id === newTemplate?.entityTemplateSettings?.titleField?.formId});
         console.log("the form : " + frm)
-        titleField = frm?.fields.filter((field)=>{ return field.id ==entityTemplateSettings.titleField.fieldId});
-        descriptionField = frm?.fields.filter((field)=>{ return field.id ==entityTemplateSettings.descriptionField.fieldId});
+       titleField = frm?.fields.filter((field)=>{ return field.id ==newTemplate?.entityTemplateSettings?.titleField?.fieldId});
+        descriptionField = frm?.fields.filter((field)=>{ return field.id ==newTemplate?.entityTemplateSettings?.descriptionField?.fieldId});
 
         console.log("titleField : " + titleField)
-        console.log("descriptionField : " + titleField)
+       console.log("descriptionField : " + titleField)
     })
 </script>
