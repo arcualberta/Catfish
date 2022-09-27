@@ -1,6 +1,5 @@
 <template>
-    <h5>Entity </h5>
-    <div>
+    <div class="pt-2 mt-2">
         <div class="row mt-2">
             <div class="col-sm-2">
                 <label>EntityType:</label>
@@ -33,13 +32,15 @@
     import { useEntityEditorStore } from "../store"
     import { eEntityType } from "../../shared/constants"
     import { Guid } from 'guid-typescript';
+    import { Form } from '../../shared/form-models'
 
     const store = useEntityEditorStore();
     const entity = computed(() => store.entity)
     const isNewEntity = computed(() => store.entity!.id.toString() === Guid.EMPTY);
     const templateEntries = computed(() => store.templates);
-    const entityTemplate = computed(() => store.entityTemplate)
-
+    const entityTemplate = computed(() => store.entityTemplate);
+    const metadataFormEntries = computed(() => entityTemplate.value?.entityTemplateSettings.metadataForms)
+    //const dataForms = computed(() => entityTemplate.value!.forms!.filter(form => metadataFormEntries.value!.map(formEntry => formEntry.id).findIndex((form as Form).id) > 0)
     const eEntityTypes = Object.values(eEntityType);
 
     watch(() => entity.value?.templateId, async newTemplateId => {

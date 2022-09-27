@@ -12,7 +12,7 @@
     }>();
 
     const store = useEntityEditorStore(props.piniaInstance);
-    //store.loadTemplates();
+    const entityTemplate = computed(() => store.entityTemplate);
     
 
     onMounted(() => {
@@ -35,8 +35,15 @@
         <button @click="createEntity()">New Entity</button>
         <button class="btn btn-success">Save</button>
     </div>
-    <EntitySummaryEditor v-if="entity !== null" />
-
+    <div v-if="entityTemplate" class="row mt-2 pt-2 border-top">
+        <div class="col-sm-10"><button>Summary</button></div>
+    </div>
+    <!--<div v-if="selectedButton === 'summery'">-->
+        <EntitySummaryEditor v-if="entity !== null" />
+    <!--</div>-->
+    <!--<div v-if="selectedButton === 'data'">
+        Data
+    </div>-->
     <div v-if="store.entityTemplate" class="alert alert-info mt-4"><h3>Entity Template</h3>{{store.entityTemplate}}</div>
     <div v-if="entity" class="alert alert-info mt-4"><h3>Entity</h3>{{entity}}</div>
 </template>
