@@ -27,8 +27,8 @@
                 <label>Title:</label>
             </div>
             <div class="col-sm-10" >
-               <FieldComponent :model="titleField" v-if="titleField" />
-               {{titleField}}
+               <!--<FieldComponent :model="store.titleField" v-if="store.titleField" />-->
+               {{store.titleField}}
             </div>
         </div>
         <div class="row mt-2">
@@ -36,9 +36,8 @@
                 <label>Description:</label>
             </div>
             <div class="col-sm-10">
-               
-                <FieldComponent :model="descriptionField" v-if="descriptionField" />
-                {{descriptionField}}
+                <!--<FieldComponent :model="store.descriptionField" v-if="store.descriptionField" />-->
+                {{store.descriptionField}}
             </div>
         </div>
     </div>
@@ -60,27 +59,14 @@
     const isNewEntity = computed(() => store.entity!.id.toString() === Guid.EMPTY);
     const templateEntries = computed(() => store.templates);
     const entityTemplate = computed(() => store.entityTemplate);
-    const entityTemplateSettings = computed(() => store.entityTemplate?.entityTemplateSettings)
-    const metadataFormEntries = computed(() => entityTemplate.value?.entityTemplateSettings.metadataForms)
-    //const dataForms = computed(() => entityTemplate.value!.forms!.filter(form => metadataFormEntries.value!.map(formEntry => formEntry.id).findIndex((form as Form).id) > 0)
     const eEntityTypes = Object.values(eEntityType);
-
-    const titleField= ref({}as Field);
- const descriptionField=  ref({}as Field);;
 
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
     })
 
-    watch(()=> entityTemplate.value, async newTemplate =>{
-        // get the title and description 
-        console.log("the entity template : " + JSON.stringify(newTemplate))
-        let frm = newTemplate?.forms?.find((form) => {return form.id === newTemplate?.entityTemplateSettings?.titleField?.formId});
-        console.log("the form : " + frm)
-       titleField = frm?.fields.filter((field)=>{ return field.id ==newTemplate?.entityTemplateSettings?.titleField?.fieldId});
-        descriptionField = frm?.fields.filter((field)=>{ return field.id ==newTemplate?.entityTemplateSettings?.descriptionField?.fieldId});
-
-        console.log("titleField : " + titleField)
-       console.log("descriptionField : " + titleField)
+    watch(() => entityTemplate.value, async newTemplate => {
+        store.instantiateEntityFormData();
     })
+
 </script>

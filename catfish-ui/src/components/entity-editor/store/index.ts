@@ -4,7 +4,9 @@ import { Entity, TemplateEntry } from '../models';
 import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { eEntityType } from '@/components/shared/constants';
-
+import { createFormData } from '@/components/shared/form-helpers'
+import { Form, FormData } from '@/components/shared/form-models'
+import { FORMERR } from 'dns';
 
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
     state: () => ({
@@ -51,5 +53,40 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                     console.error('Load Template API Error:', error);
                 });
         },
+        instantiateEntityFormData() {
+            //Instantiating FormData objects for primary metadata forms
+            this.entityTemplate?.entityTemplateSettings?.metadataForms?.filter(form => form.isPrimary).forEach(formEntry => {
+                if (this.entity!.data.filter(formData => formData.formId == formEntry.formId).length == 0) {
+                    const form = this.entityTemplate!.forms!.filter(f => f.id == formEntry.formId)[0] as Form;
+                    const formData = createFormData(form!, "");
+                    formData.id = Guid.create().toString() as unknown as Guid;
+                    this.entity!.data.push(formData)
+                }
+            })
+
+            //Instantiating FormData objects for primary data forms
+            this.entityTemplate?.entityTemplateSettings?.dataForms?.filter(form => form.isPrimary).forEach(formEntry => {
+                if (this.entity!.data.filter(formData => formData.formId == formEntry.formId).length == 0) {
+                    const form = this.entityTemplate!.forms!.filter(f => f.id == formEntry.formId)[0] as Form;
+                    const formData = createFormData(form!, "");
+                    formData.id = Guid.create().toString() as unknown as Guid;
+                    this.entity!.data.push(formData)
+                }
+            })
+        }
+    },
+    getters: {
+        titleField: (state) => {
+            const fieldEntry = state?.entityTemplate?.entityTemplateSettings?.titleField;
+            const field = state.entityTemplate?.forms?.filter(form => form.id === fieldEntry?.formId)[0]
+                ?.fields.filter(field => field.id == fieldEntry?.fieldId)[0];
+            return field;
+        },
+        descriptionField: (state) => {
+            const fieldEntry = state?.entityTemplate?.entityTemplateSettings?.descriptionField;
+            const field = state.entityTemplate?.forms?.filter(form => form.id === fieldEntry?.formId)[0]
+                ?.fields.filter(field => field.id == fieldEntry?.fieldId)[0];
+            return field;
+        }
     }
 });
