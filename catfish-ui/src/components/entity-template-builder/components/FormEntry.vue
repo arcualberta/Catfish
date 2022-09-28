@@ -35,7 +35,7 @@
                 </b-col>
             </b-row>
             <div>
-                <input type="checkbox" v-model="model.isPrimary" /> Is Primary?
+                <input type="checkbox" v-model="model.isRequired" /> Is Required?
             </div>
         </b-col>
         <b-col class="col-sm-1">

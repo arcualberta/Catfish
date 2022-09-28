@@ -26,9 +26,9 @@
             <div class="col-sm-2">
                 <label>Title:</label>
             </div>
-            <div class="col-sm-10" >
-               <!--<FieldComponent :model="store.titleField" v-if="store.titleField" />-->
-               {{store.titleField}}
+            <div class="col-sm-10">
+                <!--<FieldComponent :model="store.titleField" v-if="store.titleField" />-->
+                {{titleField}}<br /><br />{{titleFieldData}}
             </div>
         </div>
         <div class="row mt-2">
@@ -37,7 +37,7 @@
             </div>
             <div class="col-sm-10">
                 <!--<FieldComponent :model="store.descriptionField" v-if="store.descriptionField" />-->
-                {{store.descriptionField}}
+                {{descriptionField}}<br /><br />{{descriptionFieldData}}
             </div>
         </div>
     </div>
@@ -50,23 +50,30 @@
     import { useEntityEditorStore } from "../store"
     import { eEntityType } from "../../shared/constants"
     import { Guid } from 'guid-typescript';
-    import { Field, Form } from '../../shared/form-models'
-    import {EntityTemplate} from '../../entity-template-builder/models'
-    import {default as FieldComponent} from '../../form-submission/components/Field.vue'
+    import { Field, Form, FieldEntry } from '../../shared/form-models'
+    import { EntityTemplate } from '../../entity-template-builder/models'
+    import { default as FieldComponent } from '../../form-submission/components/Field.vue'
+    import { instantiateRequiredForms, getField, getFieldData } from '@/components/shared/entity-helpers'
+    import { Entity } from "../../entity-editor/models";
    
-   const store = useEntityEditorStore();
+    const store = useEntityEditorStore();
     const entity = computed(() => store.entity)
     const isNewEntity = computed(() => store.entity!.id.toString() === Guid.EMPTY);
     const templateEntries = computed(() => store.templates);
     const entityTemplate = computed(() => store.entityTemplate);
     const eEntityTypes = Object.values(eEntityType);
 
+    const titleField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
+    const titleFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
+    const descriptionField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
+    const descriptionFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
+
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
     })
 
     watch(() => entityTemplate.value, async newTemplate => {
-        store.instantiateEntityFormData();
+        instantiateRequiredForms(entity.value as Entity, newTemplate as EntityTemplate);
     })
 
 </script>

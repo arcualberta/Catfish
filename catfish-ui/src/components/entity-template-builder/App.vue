@@ -25,8 +25,8 @@
     const titleField = computed(() => template.value?.entityTemplateSettings.titleField);
     const descriptionField = computed(() => template.value?.entityTemplateSettings.descriptionField);
 
-    const formFieldSelectorSource = computed(() => [{ formGroupName: 'Matadata Form', formGroup: template.value?.entityTemplateSettings.metadataForms?.filter(form => form.isPrimary) },
-        { formGroupName: 'Data Form', formGroup: template.value?.entityTemplateSettings.dataForms?.filter(form => form.isPrimary) }])
+    const formFieldSelectorSource = computed(() => [{ formGroupName: 'Matadata Form', formGroup: template.value?.entityTemplateSettings.metadataForms?.filter(form => form.isRequired) },
+        { formGroupName: 'Data Form', formGroup: template.value?.entityTemplateSettings.dataForms?.filter(form => form.isRequired) }])
     const router = useRouter();
 
     const addMetadataForm = () => {
