@@ -27,8 +27,8 @@
                 <label>Title:</label>
             </div>
             <div class="col-sm-10">
-                <!--<FieldComponent :model="store.titleField" v-if="store.titleField" />-->
-                {{titleField}}<br /><br />{{titleFieldData}}
+                <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />
+                <!--{{titleField}}<br /><br />{{titleFieldData}}-->
             </div>
         </div>
         <div class="row mt-2">
@@ -36,8 +36,8 @@
                 <label>Description:</label>
             </div>
             <div class="col-sm-10">
-                <!--<FieldComponent :model="store.descriptionField" v-if="store.descriptionField" />-->
-                {{descriptionField}}<br /><br />{{descriptionFieldData}}
+                <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />
+               <!-- {{descriptionField}}<br /><br />{{descriptionFieldData}}-->
             </div>
         </div>
     </div>
@@ -52,10 +52,11 @@
     import { Guid } from 'guid-typescript';
     import { Field, Form, FieldEntry } from '../../shared/form-models'
     import { EntityTemplate } from '../../entity-template-builder/models'
-    import { default as FieldComponent } from '../../form-submission/components/Field.vue'
     import { instantiateRequiredForms, getField, getFieldData } from '@/components/shared/entity-helpers'
     import { Entity } from "../../entity-editor/models";
-   
+
+    import { default as FieldComponent } from '../../form-submission/components/Field.vue'
+
     const store = useEntityEditorStore();
     const entity = computed(() => store.entity)
     const isNewEntity = computed(() => store.entity!.id.toString() === Guid.EMPTY);
