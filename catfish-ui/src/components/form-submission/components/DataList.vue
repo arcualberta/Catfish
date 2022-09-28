@@ -8,10 +8,12 @@
     import { default as CustomOptions } from './CustomOptions.vue'
     import { getTextValue } from '../../shared/form-helpers'
     import * as formHelper from '../../shared/form-helpers'
-    const props = defineProps<{ model: Field }>();
+    const props = defineProps<{ model: Field,
+                                modelData?: FieldData | null }>();
     const store = useFormSubmissionStore();
 
-    const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
+     const fieldData = computed(() => props.modelData? props.modelData :
+                 store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
 
 
     const getOptionLabel = (optId: Guid | undefined): string => {
