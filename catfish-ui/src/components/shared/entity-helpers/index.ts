@@ -10,18 +10,18 @@ import { createFormData } from "../form-helpers";
  * @param entity
  * @param formId
  */
-export const getFormData = (entity: Entity, formId: Guid): FormData =>
-    entity?.data.filter(formData => formData.formId == formId)[0];
+export const getFormData = (entity: Entity, formId: Guid): FormData | undefined =>
+    entity?.data.find(formData => formData.formId === formId);
 
 /**
- * Returns the FieldData objects that corresponds to the field identified by 
+ * Returns the FieldData object that corresponds to the field identified by 
  * the fieldEntry.fieldId in the first form data object of the form identified by the fieldEntry.formId from the input entity
  * 
  * @param entity
  * @param fieldEntry
  */
-export const getFieldData = (entity: Entity, fieldEntry: FieldEntry): FieldData[] =>
-    getFormData(entity, fieldEntry?.formId)?.fieldData.filter(fieldData => fieldData.fieldId == fieldEntry?.fieldId);
+export const getFieldData = (entity: Entity, fieldEntry: FieldEntry): FieldData | undefined =>
+    getFormData(entity, fieldEntry?.formId)?.fieldData.find(fieldData => fieldData.fieldId === fieldEntry?.fieldId);
 
 /**
  * Returns the field specified by the fieldEntry.fieldId from the form with the given fieldEntry.formId from the input template.
@@ -30,7 +30,7 @@ export const getFieldData = (entity: Entity, fieldEntry: FieldEntry): FieldData[
  * @param fieldEntry
  */
 export const getField = (template: EntityTemplate, fieldEntry: FieldEntry): Field | undefined =>
-    template?.forms?.filter(form => form?.id === fieldEntry.formId)[0]?.fields.filter(field => field.id === fieldEntry?.fieldId)[0];
+    template?.forms?.find(form => form?.id === fieldEntry.formId)?.fields.find(field => field.id === fieldEntry?.fieldId);
 
 /**
  * Finds the form identified by the formId from the template, instantiates a FormData object for it, and add it
@@ -41,7 +41,7 @@ export const getField = (template: EntityTemplate, fieldEntry: FieldEntry): Fiel
  * @param formId
  */
 export const appendFormDataObject = (entity: Entity, template: EntityTemplate, formId: Guid) => {
-    const form = template.forms!.filter(form => form.id == formId)[0];
+    const form = template.forms!.find(form => form.id == formId)!;
     const formData = createFormData(form, "");
     formData.id = Guid.create().toString() as unknown as Guid;
     entity!.data.push(formData)
