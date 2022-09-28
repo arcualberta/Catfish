@@ -5,10 +5,12 @@
     import { Field, FieldData } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
 
-    const props = defineProps<{ model: Field }>();
+    const props = defineProps<{ model: Field,
+                                modelData?: FieldData | null }>();
     const store = useFormSubmissionStore();
 
-    const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData);
+     const fieldData = computed(() => props.modelData? props.modelData :
+                 store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
 
     const deleteValue = (index: number) => {
         console.log(index)
