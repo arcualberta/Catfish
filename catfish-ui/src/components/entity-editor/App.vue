@@ -25,7 +25,10 @@
     const createEntity = ()=>{
         store.createNewEntity();
     };
-    const entity = computed(()=>store.entity)
+    const entity = computed(() => store.entity)
+
+    const metadataForms = computed(() => store.entityTemplate?.entityTemplateSettings.metadataForms)
+    const dataForms = computed(() => store.entityTemplate?.entityTemplateSettings.dataForms)
 </script>
 
 <template>
@@ -51,10 +54,10 @@
             <EntitySummaryEditor v-if="entity !== null" />Summary
         </div>
         <div v-if="selectedButton === 'data'">
-            Data<!--<FormList></FormList>-->
+            <FormList :forms="dataForms" ></FormList>
         </div>
         <div v-if="selectedButton === 'metadata'">
-            Matadata<!--<FormList></FormList>-->
+            <FormList :forms="metadataForms"></FormList>
         </div>
         <div v-if="selectedButton === 'collections'">
             Collections
