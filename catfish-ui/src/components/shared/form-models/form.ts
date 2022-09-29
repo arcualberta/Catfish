@@ -36,6 +36,7 @@ export interface FormEntry {
     id: Guid;
     name: string;
     formId: Guid;
+    isRequired?: boolean;
 }
 
 export interface FieldEntry {

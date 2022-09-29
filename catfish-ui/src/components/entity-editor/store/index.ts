@@ -4,7 +4,8 @@ import { Entity, TemplateEntry } from '../models';
 import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { eEntityType } from '@/components/shared/constants';
-
+import { createFormData } from '@/components/shared/form-helpers'
+import { Form, FormData } from '@/components/shared/form-models'
 
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
     state: () => ({
@@ -50,6 +51,20 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 .catch((error) => {
                     console.error('Load Template API Error:', error);
                 });
+        }
+    },
+    getters: {
+        titleField: (state) => {
+            const fieldEntry = state?.entityTemplate?.entityTemplateSettings?.titleField;
+            const field = state.entityTemplate?.forms?.filter(form => form.id === fieldEntry?.formId)[0]
+                ?.fields.filter(field => field.id == fieldEntry?.fieldId)[0];
+            return field;
         },
+        descriptionField: (state) => {
+            const fieldEntry = state?.entityTemplate?.entityTemplateSettings?.descriptionField;
+            const field = state.entityTemplate?.forms?.filter(form => form.id === fieldEntry?.formId)[0]
+                ?.fields.filter(field => field.id == fieldEntry?.fieldId)[0];
+            return field;
+        }
     }
 });

@@ -13,7 +13,7 @@
 </script>
 
 <template>
-    <b-row>
+    <b-row class="mb-2">
         <b-col class="col-sm-11">
             <b-row>
                 <b-col class="col-sm-2">
@@ -34,6 +34,9 @@
                     </select>
                 </b-col>
             </b-row>
+            <div>
+                <input type="checkbox" v-model="model.isRequired" /> Is Required?
+            </div>
         </b-col>
         <b-col class="col-sm-1">
             <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="store.deleteFormEntry(model.id)" class="fa-icon delete" />
