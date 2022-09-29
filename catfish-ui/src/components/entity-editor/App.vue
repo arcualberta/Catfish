@@ -12,7 +12,7 @@
     }>();
 
     const store = useEntityEditorStore(props.piniaInstance);
-    const entityTemplate =  computed(() => store.entityTemplate);
+    const entityTemplate = true;// computed(() => store.entityTemplate);
     let selectedButton = ref("summary");
 
     onMounted(() => {
@@ -51,10 +51,10 @@
             <EntitySummaryEditor v-if="entity !== null" />Summary
         </div>
         <div v-if="selectedButton === 'data'">
-            <FormList></FormList>
+            Data<!--<FormList></FormList>-->
         </div>
         <div v-if="selectedButton === 'metadata'">
-            <FormList></FormList>
+            Matadata<!--<FormList></FormList>-->
         </div>
         <div v-if="selectedButton === 'collections'">
             Collections
