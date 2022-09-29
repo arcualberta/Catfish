@@ -16,7 +16,7 @@
                 <label>Template:</label>
             </div>
             <div class="col-sm-10">
-                <select v-if="isNewEntity" v-model="selectedTemplateId" class="form-select">
+                <select v-if="isNewEntity" v-model="entity.templateId" class="form-select">
                     <option v-for="template in templateEntries" :key="template.templateId" :value="template.templateId?.toString()">{{template.templateName}}</option>
                 </select>
                 <span v-else>{{entityTemplate!.name}}</span>
@@ -68,11 +68,6 @@
     const titleFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
     const descriptionField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
     const descriptionFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
-
-    const selectedTemplateId = computed({
-        get: (): string => entity.value!.templateId?.toString(),
-        set: (val: string) => entity.value!.templateId = val as unknown as Guid
-    });
 
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
