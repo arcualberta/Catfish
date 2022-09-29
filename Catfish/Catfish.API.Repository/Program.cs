@@ -20,6 +20,7 @@ builder.AddCatfishExtensions();
 
 //Adding services specific to this project
 builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();
+builder.Services.AddScoped<IEntityService, EntityService>();
 
 var app = builder.Build();
 
