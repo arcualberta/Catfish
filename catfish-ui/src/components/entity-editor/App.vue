@@ -29,13 +29,15 @@
 
     const metadataForms = computed(() => store.entityTemplate?.entityTemplateSettings.metadataForms)
     const dataForms = computed(() => store.entityTemplate?.entityTemplateSettings.dataForms)
+
+    const saveEntity= ()=>{store.saveEntity()}
 </script>
 
 <template>
     <h3>Entity Editor</h3>
     <div class="control">
         <button @click="createEntity()">New Entity</button>
-        <button class="btn btn-success">Save</button>
+        <button class="btn btn-success" @click="saveEntity()">Save</button>
     </div>
     <div class="form-field-border">
         <b-row v-if="entityTemplate">

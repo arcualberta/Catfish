@@ -6,5 +6,6 @@ namespace Catfish.API.Repository.Interfaces
     {
         public Task<HttpStatusCode> AddEntity(EntityTemplate entityTemplate);
         public Task<HttpStatusCode> UpdateEntity(EntityTemplate entityTemplate);
+        public EntityTemplate GetEntityTemplate(Guid id);
     }
 }
