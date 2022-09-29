@@ -1,19 +1,21 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import {ref} from "vue"
+    import { ref, computed } from "vue"
     import { useEntityEditorStore } from "../store"
-    import { Form } from '../../shared/form-models'
+    import { FormEntry } from '../../shared/form-models'
     import {EntityTemplate} from '../../entity-template-builder/models'
 
     const store = useEntityEditorStore();
     const props = defineProps<{
-        forms: Form[],
+        formEntries: FormEntry[]
     }>();
-    let selectedform = ref(props.forms[0].id);
+    const selectedFormId = ref(props.formEntries[0]?.formId)
+    const selectedForm = computed(() => store.entityTemplate?.forms?.filter(form => form.id === selectedFormId.value))
 </script>
 
 <template>
-    <div v-if="forms">
-        <span v-for="form in forms" :key="form.id" :model="form"><a @click="selectedform=form.id">{{form.name}}</a></span>
+    <div v-if="formEntries">
+        <span v-for="formEntry in formEntries" :key="formEntry.id"><a href="#" @click="selectedFormId=formEntry.formId">{{formEntry.name}} | </a></span>
+        {{selectedForm}}
     </div>
 </template>
