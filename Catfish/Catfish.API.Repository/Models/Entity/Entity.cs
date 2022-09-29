@@ -19,8 +19,8 @@ namespace Catfish.API.Repository.Models.Entities
         public Guid TemplateId { get; set; }
         public EntityTemplate Template { get; set; }
 
-        public virtual List<Relationship> SubjectRelationships { get; set; }
-        public virtual List<Relationship> ObjectRelationships { get; set; }
+        public virtual List<Relationship> SubjectRelationships { get; set; } = new List<Relationship>();
+        public virtual List<Relationship> ObjectRelationships { get; set; } = new List<Relationship>();
     }
 
 }

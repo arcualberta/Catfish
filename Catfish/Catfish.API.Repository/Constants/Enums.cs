@@ -11,7 +11,8 @@
     public enum eEntityType 
     {
         Item,
-        Collection
+        Collection,
+        Unknown
     }
 
 }

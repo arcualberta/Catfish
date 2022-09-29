@@ -63,6 +63,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             let method = "";
             if (newEntity) {
                 console.log("Saving new entity.");
+                console.log(JSON.stringify(this.entity));
                 if(this.entity?.id?.toString() === Guid.EMPTY){
                     this.entity.id = Guid.create().toString() as unknown as Guid;
                 }
