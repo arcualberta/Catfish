@@ -50,16 +50,16 @@
             </b-col>
         </b-row>
         <!--<div v-if="entityTemplate" class="row mt-2 pt-2 border-top">
-        <div class="col-sm-10"></div>
-    </div>-->
+            <div class="col-sm-10"></div>
+        </div>-->
         <div v-if="selectedButton === 'summary'">
             <EntitySummaryEditor v-if="entity !== null" />Summary
         </div>
         <div v-if="selectedButton === 'data'">
-            <FormList :forms="dataForms" ></FormList>
+            <FormList :form-entries="dataForms"></FormList>
         </div>
         <div v-if="selectedButton === 'metadata'">
-            <FormList :forms="metadataForms"></FormList>
+            <FormList :form-entries="metadataForms"></FormList>
         </div>
         <div v-if="selectedButton === 'collections'">
             Collections
@@ -68,7 +68,7 @@
             Related
         </div>
     </div>
-    
+
     <div v-if="store.entityTemplate" class="alert alert-info mt-4"><h3>Entity Template</h3>{{store.entityTemplate}}</div>
     <div v-if="entity" class="alert alert-info mt-4"><h3>Entity</h3>{{entity}}</div>
 </template>
