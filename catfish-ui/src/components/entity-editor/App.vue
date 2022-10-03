@@ -4,6 +4,7 @@
     import { useEntityEditorStore } from './store';
     import {default as EntitySummaryEditor} from './components/entity-summary-editor.vue'
     import { default as FormList } from './components/FormList.vue'
+    import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
     import { useRoute ,useRouter } from 'vue-router';
 import { Guid } from 'guid-typescript';
     const props = defineProps<{
@@ -53,6 +54,7 @@ import { Guid } from 'guid-typescript';
 
 <template>
     <h3>Entity Editor</h3>
+     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <div class="control">
         <button @click="createEntity()" v-if="isNewEntity">New Entity</button>
         <button class="btn btn-success" @click="saveEntity()" >Save</button>
