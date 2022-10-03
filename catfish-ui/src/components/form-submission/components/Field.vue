@@ -24,6 +24,7 @@
 </script>
 
 <template>
+    fields:{{model}}
     <b-container>
         <!-- print field name and discription-->
         <b-row>
@@ -37,7 +38,7 @@
             <b-col class="col-sm-10">
                 <!-- Rendering appropriate user input field-->
                 <!-- Option field types -->
-                <Checkboxes :model="model" :modelData="modelData" v-if="model.type === FieldType.Checkboxes"  />
+                <Checkboxes :model="model" :modelData="modelData" v-if="model.type === FieldType.Checkboxes" />
                 <DataList :model="model" :modelData="modelData" v-if="model.type === FieldType.DataList" />
                 <DropDown :model="model" :modelData="modelData" v-if="model.type === FieldType.DropDown" />
                 <RadioButtons :model="model" :modelData="modelData" v-if="model.type === FieldType.RadioButtons" />

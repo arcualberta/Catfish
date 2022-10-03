@@ -4,6 +4,7 @@
     import { useEntityEditorStore } from './store';
     import {default as EntitySummaryEditor} from './components/entity-summary-editor.vue'
     import { default as FormList } from './components/FormList.vue'
+    
 
     const props = defineProps<{
        // dataAttributes?: AppletAttribute | null,
@@ -12,7 +13,7 @@
     }>();
 
     const store = useEntityEditorStore(props.piniaInstance);
-    const entityTemplate = true;// computed(() => store.entityTemplate);
+    const entityTemplate =  computed(() => store.entityTemplate);
     let selectedButton = ref("summary");
 
     onMounted(() => {
@@ -56,10 +57,10 @@
             <EntitySummaryEditor v-if="entity !== null" />Summary
         </div>
         <div v-if="selectedButton === 'data'">
-            <FormList :form-entries="dataForms"></FormList>
+            <FormList :form-entries="dataForms" :entity="entity"></FormList>
         </div>
         <div v-if="selectedButton === 'metadata'">
-            <FormList :form-entries="metadataForms"></FormList>
+            <FormList :form-entries="metadataForms" :entity="entity"></FormList>
         </div>
         <div v-if="selectedButton === 'collections'">
             Collections
