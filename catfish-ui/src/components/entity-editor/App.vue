@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { computed, onMounted, ref, watch} from 'vue'
+    import { computed, onMounted, ref} from 'vue'
     import { useEntityEditorStore } from './store';
     import {default as EntitySummaryEditor} from './components/entity-summary-editor.vue'
     import { default as FormList } from './components/FormList.vue'
@@ -13,7 +13,7 @@ import { Guid } from 'guid-typescript';
     }>();
 
     const store = useEntityEditorStore(props.piniaInstance);
-    const entityTemplate = true;// computed(() => store.entityTemplate);
+    const entityTemplate =  computed(() => store.entityTemplate);
     let selectedButton = ref("summary");
     const router = useRouter();
      const route = useRoute();
@@ -74,10 +74,10 @@ import { Guid } from 'guid-typescript';
             <EntitySummaryEditor v-if="entity !== null" />Summary
         </div>
         <div v-if="selectedButton === 'data'">
-            <FormList :form-entries="dataForms"></FormList>
+            <FormList :form-entries="dataForms" :entity="entity"></FormList>
         </div>
         <div v-if="selectedButton === 'metadata'">
-            <FormList :form-entries="metadataForms"></FormList>
+            <FormList :form-entries="metadataForms" :entity="entity"></FormList>
         </div>
         <div v-if="selectedButton === 'collections'">
             Collections
