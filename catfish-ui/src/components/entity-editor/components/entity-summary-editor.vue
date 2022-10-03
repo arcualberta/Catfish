@@ -22,24 +22,29 @@
                 <span v-else>{{entityTemplate!.name}}</span>
             </div>
         </div>
-        <div class="row mt-2">
+        <br />
+        <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />
+        <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />
+        <!--<div class="row mt-2">
             <div class="col-sm-2">
                 <label>Title:</label>
             </div>
             <div class="col-sm-10">
-                <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />
+                <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />-->
                 <!--{{titleField}}<br /><br />{{titleFieldData}}-->
-            </div>
+            <!--</div>
         </div>
         <div class="row mt-2">
+        l-
+            
             <div class='col-sm-2'>
                 <label>Description:</label>
             </div>
             <div class="col-sm-10">
-                <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />
+                <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />-->
                 <!-- {{descriptionField}}<br /><br />{{descriptionFieldData}}-->
-            </div>
-        </div>
+            <!--</div>
+        </div>-->
     </div>
 </template>
 

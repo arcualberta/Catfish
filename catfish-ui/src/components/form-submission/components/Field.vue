@@ -24,7 +24,6 @@
 </script>
 
 <template>
-    fields:{{model}}
     <b-container>
         <!-- print field name and discription-->
         <b-row>

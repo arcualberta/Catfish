@@ -29,7 +29,7 @@
 <template>
     <div>
         <span class="custom-option" v-for="(_, index) in fieldData.customOptionValues" :key="index">
-            <input type="text" v-model="fieldData.customOptionValues![index]" />
+            <input type="text" v-model="fieldData.customOptionValues[index]" />
             <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(index)" class="fa-icon delete" />
         </span>
     </div>

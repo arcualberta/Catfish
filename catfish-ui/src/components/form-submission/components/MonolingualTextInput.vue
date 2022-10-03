@@ -32,7 +32,6 @@
         <div class="col-sm-1">
             <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" />
         </div>
-        {{fieldData}}
 
 </template>
 

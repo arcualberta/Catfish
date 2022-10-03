@@ -22,7 +22,7 @@
 </script>
 
 <template>
-    <div v-for="value, index in fieldData.multilingualTextValues" :key="value.id" :model="value" class="row mb-3">
+    <div v-for="value, index in fieldData?.multilingualTextValues" :key="value.id" :model="value" class="row mb-3">
         <div class="col col-sm-11" >
             <TextCollection :model="value" :text-type="model.type" />
         </div>

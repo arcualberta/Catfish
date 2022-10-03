@@ -69,9 +69,6 @@
             Related
         </div>
     </div>
-
-    <div v-if="store.entityTemplate" class="alert alert-info mt-4"><h3>Entity Template</h3>{{store.entityTemplate}}</div>
-    <div v-if="entity" class="alert alert-info mt-4"><h3>Entity</h3>{{entity}}</div>
 </template>
 
 
