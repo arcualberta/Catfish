@@ -13,13 +13,13 @@ import { Entity } from '../models'
         entity: Entity
     }>();
     const selectedFormId = ref(props.formEntries[0]?.formId)
-    const selectedForm = computed(() => store.entityTemplate?.forms?.filter(form => form.id === selectedFormId.value))
+    const selectedForm = computed(() => store.entityTemplate?.forms?.find(form => form.id === selectedFormId.value))
 </script>
 
 <template>
     <div v-if="formEntries">
         <span v-for="formEntry in formEntries" :key="formEntry.id"><a href="#" @click="selectedFormId=formEntry.formId">{{formEntry.name}} | </a></span>
-        <Form :model="selectedForm" :entity="entity"></Form>
+        <Form v-if="selectedForm" :model="selectedForm" :entity="entity"></Form>
     </div>
     
 </template>
