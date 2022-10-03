@@ -64,7 +64,7 @@
         store.loadTemplate(newTemplateId as Guid);
     })
    
-    if(entity.value?.templateId.toString() !== Guid.EMPTY)
+    //if(entity.value?.templateId.toString() !== Guid.EMPTY)
         store.loadTemplate(entity.value?.templateId as Guid);
     const isNewEntity = computed(() => store.entity!.id.toString() === Guid.EMPTY);
     const templateEntries = computed(() => store.templates);

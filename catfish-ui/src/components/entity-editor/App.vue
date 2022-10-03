@@ -17,26 +17,36 @@ import { Guid } from 'guid-typescript';
     let selectedButton = ref("summary");
     const router = useRouter();
      const route = useRoute();
-    const entityId = route.params.entityId as unknown as Guid
+    const entityId =route.params.entityId as unknown as Guid; 
     onMounted(() => {
         store.loadTemplates();
        
     });
 
     const templateEntries = computed(()=>store.templates);
-    let isShowEditor= ref(false);
+    
     const createEntity = ()=>{
         store.createNewEntity();
     };
-     if(entityId){
+    let isNewEntity = ref(true);
+    if(entityId){
            store.loadEntity(entityId);
+           isNewEntity.value=false;
     }
     const entity = computed(() => store.entity)
    
     const metadataForms = computed(() => store.entityTemplate?.entityTemplateSettings.metadataForms)
     const dataForms = computed(() => store.entityTemplate?.entityTemplateSettings.dataForms)
 
-    const saveEntity= ()=>{store.saveEntity()}
+    const saveEntity= ()=>{
+        store.saveEntity();
+        isNewEntity.value=false;
+    }
+
+    
+
+    
+  
    
   
 </script>
@@ -44,7 +54,7 @@ import { Guid } from 'guid-typescript';
 <template>
     <h3>Entity Editor</h3>
     <div class="control">
-        <button @click="createEntity()" v-if="!entityId">New Entity</button>
+        <button @click="createEntity()" v-if="isNewEntity">New Entity</button>
         <button class="btn btn-success" @click="saveEntity()" >Save</button>
     </div>
     <div class="form-field-border">
