@@ -7,6 +7,7 @@ import { eEntityType } from '@/components/shared/constants';
 import { createFormData } from '@/components/shared/form-helpers'
 import { Form, FormData } from '@/components/shared/form-models'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
+import router from '@/router';
 
 
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
@@ -87,6 +88,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                     
                     this.transientMessageModel.message = "The entity saved successfully"
                     this.transientMessageModel.messageClass = "success"
+                    router.push(`/edit-entity-editor/${this.entity!.id}`)
                 }
                 else {
                     if (newEntity && this.entity)
@@ -116,6 +118,20 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 this.transientMessageModel.messageClass = "danger"
                 console.error('Save/Update Entity API Error:', error);
             });
+        },
+        loadEntity(entityId: Guid) {
+            const api = `${config.dataRepositoryApiRoot}/api/entities/${entityId}`;
+
+            fetch(api, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.entity = data as Entity;
+                })
+                .catch((error) => {
+                    console.error('Load Entity API Error:', error);
+                });
         },
     },
     getters: {

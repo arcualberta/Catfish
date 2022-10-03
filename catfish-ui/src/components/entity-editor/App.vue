@@ -4,8 +4,9 @@
     import { useEntityEditorStore } from './store';
     import {default as EntitySummaryEditor} from './components/entity-summary-editor.vue'
     import { default as FormList } from './components/FormList.vue'
-    
-
+    import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
+    import { useRoute ,useRouter } from 'vue-router';
+import { Guid } from 'guid-typescript';
     const props = defineProps<{
        // dataAttributes?: AppletAttribute | null,
         //queryParameters?: AppletAttribute | null,
@@ -15,33 +16,51 @@
     const store = useEntityEditorStore(props.piniaInstance);
     const entityTemplate =  computed(() => store.entityTemplate);
     let selectedButton = ref("summary");
-
+    const router = useRouter();
+     const route = useRoute();
+    const entityId =route.params.entityId as unknown as Guid; 
     onMounted(() => {
         store.loadTemplates();
        
     });
 
     const templateEntries = computed(()=>store.templates);
-    let isShowEditor= ref(false);
+    
     const createEntity = ()=>{
         store.createNewEntity();
     };
+    let isNewEntity = ref(true);
+    if(entityId){
+           store.loadEntity(entityId);
+           isNewEntity.value=false;
+    }
     const entity = computed(() => store.entity)
-
+   
     const metadataForms = computed(() => store.entityTemplate?.entityTemplateSettings.metadataForms)
     const dataForms = computed(() => store.entityTemplate?.entityTemplateSettings.dataForms)
 
-    const saveEntity= ()=>{store.saveEntity()}
+    const saveEntity= ()=>{
+        store.saveEntity();
+        isNewEntity.value=false;
+    }
+
+    
+
+    
+  
+   
+  
 </script>
 
 <template>
     <h3>Entity Editor</h3>
+     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <div class="control">
-        <button @click="createEntity()">New Entity</button>
-        <button class="btn btn-success" @click="saveEntity()">Save</button>
+        <button @click="createEntity()" v-if="isNewEntity">New Entity</button>
+        <button class="btn btn-success" @click="saveEntity()" >Save</button>
     </div>
     <div class="form-field-border">
-        <b-row v-if="entityTemplate">
+        <b-row v-if="entityTemplate"> 
             <b-col class="btn-group" role="group" id="toolBtns">
                 <button class="pannel-buttons" @click="selectedButton='summary'" :class="{active: selectedButton === 'summary'}">Summary</button>
                 <button class="pannel-buttons" @click="selectedButton='data'" :class="{active: selectedButton === 'data'}">Data</button>

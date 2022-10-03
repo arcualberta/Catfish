@@ -40,7 +40,10 @@ namespace Catfish.API.Repository.Controllers
         public async Task<Entity> Get(Guid id, bool includeRelationship=true)
         {
              if(includeRelationship)
-                return await _context.Entities!.Include(e=>e.SubjectRelationships).Include(e=>e.ObjectRelationships).FirstOrDefaultAsync(fd => fd.Id == id);
+                return await _context.Entities!.Include(e=>e.SubjectRelationships)
+                                               .Include(e=>e.ObjectRelationships)
+                                               .Include(e=>e.Template)
+                                               .FirstOrDefaultAsync(fd => fd.Id == id);
              else
                 return await _context.Entities!.FirstOrDefaultAsync(fd => fd.Id == id);
         }
