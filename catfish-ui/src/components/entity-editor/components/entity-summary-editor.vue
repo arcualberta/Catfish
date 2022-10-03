@@ -8,7 +8,7 @@
                 <select v-if="isNewEntity" v-model="entity!.entityType" class="form-select">
                     <option v-for="type in eEntityTypes" :key="type" :value="type">{{type}}</option>
                 </select>
-                <span v-else>{{entity!.entityType}}</span>
+                <span v-else>{{entity?.entityType}}</span>
             </div>
         </div>
         <div class="row mt-2">
@@ -19,7 +19,7 @@
                 <select v-if="isNewEntity" v-model="entity.templateId" class="form-select">
                     <option v-for="template in templateEntries" :key="template.templateId" :value="template.templateId?.toString()">{{template.templateName}}</option>
                 </select>
-                <span v-else>{{entityTemplate!.name}}</span>
+                <span v-else>{{entityTemplate?.name}}</span>
             </div>
         </div>
         <div class="row mt-2">
@@ -59,9 +59,17 @@
 
     const store = useEntityEditorStore();
     const entity = computed(() => store.entity)
+   
+    watch(() => entity.value?.templateId, async newTemplateId => {
+        store.loadTemplate(newTemplateId as Guid);
+    })
+   
+    if(entity.value?.templateId.toString() !== Guid.EMPTY)
+        store.loadTemplate(entity.value?.templateId as Guid);
     const isNewEntity = computed(() => store.entity!.id.toString() === Guid.EMPTY);
     const templateEntries = computed(() => store.templates);
     const entityTemplate = computed(() => store.entityTemplate);
+   
     const eEntityTypes = Object.values(eEntityType);
 
     const titleField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
@@ -69,9 +77,7 @@
     const descriptionField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
     const descriptionFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
 
-    watch(() => entity.value?.templateId, async newTemplateId => {
-        store.loadTemplate(newTemplateId as Guid);
-    })
+   
 
     watch(() => entityTemplate.value, async newTemplate => {
         instantiateRequiredForms(entity.value as Entity, newTemplate as EntityTemplate);

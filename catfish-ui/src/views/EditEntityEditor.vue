@@ -12,8 +12,8 @@
     const route = useRoute()
     const entityId = route.params.entityId as unknown as Guid
     const store = useEntityEditorStore(getActivePinia());
-    //if(entityId)
-     //   store.loadTemplate(templateId)
+    if(entityId)
+        store.loadEntity(entityId)
        
 
 </script>
