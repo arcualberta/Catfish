@@ -24,6 +24,7 @@
     const template = computed(() => store.template);
     const titleField = computed(() => template.value?.entityTemplateSettings.titleField);
     const descriptionField = computed(() => template.value?.entityTemplateSettings.descriptionField);
+    const mediaField = computed(() => template.value?.entityTemplateSettings.mediaField);
 
     const formFieldSelectorSource = computed(() => [{ formGroupName: 'Matadata Form', formGroup: template.value?.entityTemplateSettings.metadataForms?.filter(form => form.isRequired) },
         { formGroupName: 'Data Form', formGroup: template.value?.entityTemplateSettings.dataForms?.filter(form => form.isRequired) }])
@@ -133,6 +134,14 @@
                 </div>
                 <div class="col-10">
                     <FormFieldSelectionDropdown :model="descriptionField" :option-source="formFieldSelectorSource" :forms="store.forms" />
+                </div>
+            </div>
+             <div class="row">
+                <div class="col-2">
+                    Media
+                </div>
+                <div class="col-10">
+                    <FormFieldSelectionDropdown :model="mediaField" :option-source="formFieldSelectorSource" :forms="store.forms" />
                 </div>
             </div>
         </div>

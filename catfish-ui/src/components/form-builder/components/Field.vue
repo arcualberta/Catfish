@@ -30,6 +30,8 @@
         props.model.options?.splice(idx as number, 1)
     }
 
+    const isAttachmentField = props.model.type === FieldType.AttachmentField ? true: false;
+    
 </script>
 
 <template>
@@ -143,6 +145,16 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+     <div class="row" v-if="isAttachmentField">
+        <div class="col-sm-2">
+            <h6>File:</h6>
+        </div>
+        <div class="col-sm-10">
+            <br />
+            <input type="file" />
         </div>
     </div>
 </template>

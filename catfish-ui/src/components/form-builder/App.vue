@@ -97,6 +97,7 @@
         <button :disabled="disabled" @click="newField(FieldType.RadioButtons)">+ Radio Buttons</button>
         <button :disabled="disabled" @click="newField(FieldType.DropDown)">+ Drop Down</button>
         <button :disabled="disabled" @click="newField(FieldType.InfoSection)">+ Info Section</button>
+        <button :disabled="disabled" @click="newField(FieldType.AttachmentField)">+ Attachment Field</button>
     </div>
     <hr />
     <!--{{store.form}}-->

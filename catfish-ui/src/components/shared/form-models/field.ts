@@ -76,7 +76,8 @@ export enum MonolingualFieldType {
     DateTime = "Date Time",
     Decimal = "Decimal",
     Integer = "Integer",
-    Email = "Email"
+    Email = "Email",
+    AttachmentField="AttachmentField"
 }
 
 /**
@@ -116,7 +117,9 @@ export enum FieldType{
     RadioButtons = "Radio Buttons",
     DropDown = "Drop Down",
 
-    InfoSection = "Info Section"
+    InfoSection = "Info Section",
+
+    AttachmentField="AttachmentField"
 }
 
 
