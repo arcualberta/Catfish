@@ -122,4 +122,21 @@ export enum FieldType{
     AttachmentField="AttachmentField"
 }
 
+export interface FileReference {
+    id: Guid;
+    fileName: string;
+    originalFileName: string;
+    thumbnail: string;
+    contentType: string;
+    size: number;
+    created: Date;
+    updated: Date;
+    cssClass: string;
+    modelType: string;
+    $type: string;
+    file: File;
+    fieldId: Guid;
+}
+
+
 
