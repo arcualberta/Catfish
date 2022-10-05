@@ -7,6 +7,7 @@ export interface EntityTemplateSettings{
     dataForms: FormEntry[] | null;
     titleField: FieldEntry | null;
     descriptionField: FieldEntry | null;
+    mediaField: FieldEntry | null;
 }
 
 export interface EntityTemplate {

@@ -29,14 +29,15 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                     metadataForms: [],
                     dataForms: [],
                     titleField: {} as FieldEntry,
-                    descriptionField: {} as FieldEntry
+                    descriptionField: {} as FieldEntry,
+                    mediaField: {} as FieldEntry
                 }
             };
         },
         associateForm(formId: Guid) {
             if (this.forms.findIndex(form => form.id === formId) < 0) {
                 const api = `${config.dataRepositoryApiRoot}/api/forms/${formId}`;
-                console.log("loading form: ", api);
+               // console.log("loading form: ", api);
 
                 fetch(api, {
                     method: 'GET'

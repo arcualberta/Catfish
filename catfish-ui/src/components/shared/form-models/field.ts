@@ -76,7 +76,8 @@ export enum MonolingualFieldType {
     DateTime = "Date Time",
     Decimal = "Decimal",
     Integer = "Integer",
-    Email = "Email"
+    Email = "Email",
+    AttachmentField="AttachmentField"
 }
 
 /**
@@ -116,7 +117,26 @@ export enum FieldType{
     RadioButtons = "Radio Buttons",
     DropDown = "Drop Down",
 
-    InfoSection = "Info Section"
+    InfoSection = "Info Section",
+
+    AttachmentField="AttachmentField"
 }
+
+export interface FileReference {
+    id: Guid;
+    fileName: string;
+    originalFileName: string;
+    thumbnail: string;
+    contentType: string;
+    size: number;
+    created: Date;
+    updated: Date;
+    cssClass: string;
+    modelType: string;
+    $type: string;
+    file: File;
+    fieldId: Guid;
+}
+
 
 
