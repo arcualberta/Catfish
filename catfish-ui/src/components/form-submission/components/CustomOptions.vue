@@ -5,10 +5,12 @@
     import { Field, FieldData } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
 
-    const props = defineProps<{ model: Field }>();
+    const props = defineProps<{ model: Field,
+                                modelData?: FieldData | null }>();
     const store = useFormSubmissionStore();
 
-    const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData);
+     const fieldData = computed(() => props.modelData? props.modelData :
+                 store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
 
     const deleteValue = (index: number) => {
         console.log(index)
@@ -27,7 +29,7 @@
 <template>
     <div>
         <span class="custom-option" v-for="(_, index) in fieldData.customOptionValues" :key="index">
-            <input type="text" v-model="fieldData.customOptionValues![index]" />
+            <input type="text" v-model="fieldData.customOptionValues[index]" />
             <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(index)" class="fa-icon delete" />
         </span>
     </div>

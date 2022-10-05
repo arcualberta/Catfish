@@ -16,5 +16,9 @@
         {
             public const string Root = "api/entity-templates";
         }
+        internal static class Entities
+        {
+            public const string Root = "api/entities";
+        }
     }
 }

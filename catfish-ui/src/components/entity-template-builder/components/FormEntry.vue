@@ -1,5 +1,19 @@
+<script setup lang="ts">
+    import { Pinia } from 'pinia';
+    import { computed } from 'vue';
+    import { FormEntry } from '../../shared/form-models';
+    import { useEntityTemplateBuilderStore } from '../store';
+    import { SelectableOption } from '@/components/shared/components/form-field-selection-dropdown/models'
+    const props = defineProps<{
+        model: FormEntry
+    }>();
+
+    const store = useEntityTemplateBuilderStore();
+
+</script>
+
 <template>
-    <b-row>
+    <b-row class="mb-2">
         <b-col class="col-sm-11">
             <b-row>
                 <b-col class="col-sm-2">
@@ -20,6 +34,9 @@
                     </select>
                 </b-col>
             </b-row>
+            <div>
+                <input type="checkbox" v-model="model.isRequired" /> Is Required?
+            </div>
         </b-col>
         <b-col class="col-sm-1">
             <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="store.deleteFormEntry(model.id)" class="fa-icon delete" />
@@ -27,16 +44,4 @@
     </b-row>
 </template>
 
-<script setup lang="ts">
-    import { Pinia } from 'pinia'
-    import { FormEntry } from '../../shared/form-models';
-    import { useEntityTemplateBuilderStore } from '../store';
-
-    const props = defineProps<{
-        model: FormEntry
-    }>();
-
-    const store = useEntityTemplateBuilderStore();
-
-</script>
 <style scoped src="../style.css"></style>

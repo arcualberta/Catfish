@@ -9,8 +9,9 @@
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Opt } from './Option.vue'
     import { useFormBuilderStore } from '../store'
+    import {default as AttachmentField} from './AttachmentField.vue'
 
-    const props = defineProps<{ model: Field }>();
+   const props = defineProps<{ model: Field }>();
     const isAnOptionField = isOptionField(props.model);
 
     const store = useFormBuilderStore();
@@ -30,6 +31,17 @@
         props.model.options?.splice(idx as number, 1)
     }
 
+//AttachmentFild
+    const isAttachmentField = props.model.type === FieldType.AttachmentField ? true: false;
+    const dropzoneFile=ref("");
+    const fieldElementId=props.model.id.toString();
+    const drop=(e)=>{
+            dropzoneFile.value= e.dataTransfer.files[0];
+    };
+
+    const selectedFile=(fieldId)=>{
+        dropzoneFile.value=document.getElementById(fieldId).files[0];
+    }
 </script>
 
 <template>
@@ -145,6 +157,13 @@
             </div>
         </div>
     </div>
+
+     <div class="row" v-if="isAttachmentField">
+       <AttachmentField :model="model" :elementId="fieldElementId" @drop="drop" @change="selectedFile(fieldElementId)" />
+      <span class="dropzoneFiles">Selected File: {{dropzoneFile.name}}</span>
+       
+    
+    </div>
 </template>
 
 <style scope>
@@ -158,4 +177,5 @@
     .option-entry:hover {
         border: solid 1px #808080;
     }
+    
 </style>
