@@ -8,5 +8,6 @@
 
         public FieldEntry TitleField { get; set; }
         public FieldEntry DescriptionField { get; set; }
+        public FieldEntry MediaField { get; set; }
     }
 }

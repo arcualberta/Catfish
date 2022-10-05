@@ -47,12 +47,6 @@ import { Guid } from 'guid-typescript';
         store.saveEntity();
         isNewEntity.value=false;
     }
-
-    
-
-    
-  
-   
   
 </script>
 

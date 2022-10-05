@@ -1,5 +1,6 @@
 
 <script setup lang="ts">
+    import { ref } from 'vue'
     import { Field, FieldData, FieldType } from '../../shared/form-models';
     import { useFormSubmissionStore } from '../store';
     import * as formHelper from '../../shared/form-helpers'
@@ -12,7 +13,7 @@
     import { default as MonolingualTextInput } from './MonolingualTextInput.vue'
     import { default as TextCollection } from './TextCollection.vue'
     import { default as InfoSection } from './InfoSection.vue'
-
+    import {default as AttachmentField} from './AttachmentField.vue'
     const props = defineProps<{ model: Field,
                                 modelData?: FieldData | null}>();
     const store = useFormSubmissionStore();
@@ -21,6 +22,17 @@
     const description = formHelper.getFieldDescription(props.model, store.lang)
     const isMultilingualTextInputField = formHelper.isMultilingualTextInputField(props.model)
     const isMonolingualTextInputField = formHelper.isMonolingualTextInputField(props.model)
+//
+    const isAttachmentField = props.model.type === FieldType.AttachmentField ? true: false;
+    const dropzoneFile=ref("");
+    const fieldElementId=props.model.id.toString();
+    const drop=(e)=>{
+            dropzoneFile.value= e.dataTransfer.files[0];
+    };
+
+    const selectedFile=(fieldId)=>{
+        dropzoneFile.value=document.getElementById(fieldId).files[0];
+    }
 </script>
 
 <template>
@@ -47,6 +59,10 @@
                 <MonolingualTextInput :model="model" :modelData="modelData" v-if="isMonolingualTextInputField" />
                 <!-- InfoSection  field types -->
                 <InfoSection :model="model" v-if="model.type === FieldType.InfoSection" />
+               <div v-if="isAttachmentField">
+                  <AttachmentField :model="model" :elementId="fieldElementId" @drop="drop" @change="selectedFile(fieldElementId)" />
+                  <span class="dropzoneFiles">Selected File: {{dropzoneFile.name}}</span>
+                </div>
             </b-col>
         </b-row>
         <br />

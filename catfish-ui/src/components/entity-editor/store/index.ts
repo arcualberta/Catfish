@@ -146,6 +146,12 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             const field = state.entityTemplate?.forms?.filter(form => form.id === fieldEntry?.formId)[0]
                 ?.fields.filter(field => field.id == fieldEntry?.fieldId)[0];
             return field;
+        },
+        mediaField: (state) => {
+            const fieldEntry = state?.entityTemplate?.entityTemplateSettings?.mediaField;
+            const field = state.entityTemplate?.forms?.filter(form => form.id === fieldEntry?.formId)[0]
+                ?.fields.filter(field => field.id == fieldEntry?.fieldId)[0];
+            return field;
         }
     }
 });
