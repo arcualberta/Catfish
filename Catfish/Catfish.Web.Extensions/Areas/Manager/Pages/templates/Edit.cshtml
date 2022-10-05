@@ -1,0 +1,31 @@
+﻿@page "~/manager/templates/edit/{id:Guid}"
+
+@{
+    ViewBag.Title = "Edit Entity Template";
+    ViewBag.MenuItem = "CatfishWebExtensionsCollections";
+}
+
+<div id="CatfishWebExtensions">
+    <div class="top">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">Templates</li>
+                <li class="breadcrumb-item">Entity Templates</li>
+                <li class="breadcrumb-item active" aria-current="page">Edit</li>
+            </ol>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="top-nav">
+                <button class="btn btn-icon btn-info">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn btn-labeled btn-primary">
+                    <i class="fas fa-plus"></i>Collection
+                </button>
+@*                <button class="btn btn-labeled btn-success">
+                    <i class="fas fa-check"></i>Main action
+                </button>
+*@            </div>
+        </div>
+    </div>

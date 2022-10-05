@@ -1,0 +1,31 @@
+﻿@page "~/manager/items/{id:Guid}"
+
+@{
+    ViewBag.Title = "View Item";
+    ViewBag.MenuItem = "CatfishWebExtensionsCollections";
+}
+
+<div id="CatfishWebExtensions">
+    <div class="top">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">Data</li>
+                <li class="breadcrumb-item" aria-current="page">Items</li>
+                <li class="breadcrumb-item active" aria-current="page">View</li>
+            </ol>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="top-nav">
+                <button class="btn btn-icon btn-info">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn btn-labeled btn-primary">
+                    <i class="fas fa-plus"></i>Collection
+                </button>
+@*                <button class="btn btn-labeled btn-success">
+                    <i class="fas fa-check"></i>Main action
+                </button>
+*@            </div>
+        </div>
+    </div>
