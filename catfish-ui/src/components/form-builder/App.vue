@@ -2,12 +2,13 @@
     import { computed, watch } from "vue";
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
-
+    import { TransientMessageModel } from '../shared/components/transient-message/models'
     import { useFormBuilderStore } from './store';
     import { Field } from '../shared/form-models'
     import { createTextCollection, isOptionField, isTextInputField, createOption } from '../shared/form-helpers'
     import { FieldType } from '../shared/form-models';
     import { AppletAttribute } from '../shared/props'
+    import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
 
     import { default as Form } from './components/Form.vue';
 
@@ -21,15 +22,17 @@
 
     const store = useFormBuilderStore(props.piniaInstance);
 
+    //const transientMessage = computed(() => store.transientMessageModel);
+
     if (props.formId)
         store.loadForm(props.formId)
 
-    watch(() => store.transientMessage, async newMessage => {
-        if (newMessage)
-            setTimeout(() => {
-                store.transientMessage = null;
-            }, 2000)
-    })
+    //watch(() => store.transientMessage, async newMessage => {
+    //    if (newMessage)
+    //        setTimeout(() => {
+    //            store.transientMessage = null;
+    //        }, 2000)
+    //})
 
     const newForm = () => {
         store.form = {
@@ -70,9 +73,10 @@
 <style scoped src="./styles.css"></style>
 
 <template>
-    <transition name="fade">
+    <TransientMessage :model="store.transientMessageModel"></TransientMessage>
+    <!--<transition name="fade">
         <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
-    </transition>
+    </transition>-->
     <h2>Form Builder</h2>
     <Form v-if="store.form" :model="store.form" />
     <div class="control">
@@ -93,6 +97,7 @@
         <button :disabled="disabled" @click="newField(FieldType.RadioButtons)">+ Radio Buttons</button>
         <button :disabled="disabled" @click="newField(FieldType.DropDown)">+ Drop Down</button>
         <button :disabled="disabled" @click="newField(FieldType.InfoSection)">+ Info Section</button>
+        <button :disabled="disabled" @click="newField(FieldType.AttachmentField)">+ Attachment Field</button>
     </div>
     <hr />
     <!--{{store.form}}-->

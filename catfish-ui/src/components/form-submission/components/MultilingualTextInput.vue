@@ -6,10 +6,12 @@
     import { createTextCollection } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
 
-    const props = defineProps<{ model: Field }>();
+    const props = defineProps<{ model: Field,
+                                modelData?: FieldData | null }>();
     const store = useFormSubmissionStore();
 
-    const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
+     const fieldData = computed(() => props.modelData? props.modelData :
+                 store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
 
     const addValue = () => fieldData.value.multilingualTextValues?.push(createTextCollection(store.lang))
 
@@ -20,7 +22,7 @@
 </script>
 
 <template>
-    <div v-for="value, index in fieldData.multilingualTextValues" :key="value.id" :model="value" class="row mb-3">
+    <div v-for="value, index in fieldData?.multilingualTextValues" :key="value.id" :model="value" class="row mb-3">
         <div class="col col-sm-11" >
             <TextCollection :model="value" :text-type="model.type" />
         </div>

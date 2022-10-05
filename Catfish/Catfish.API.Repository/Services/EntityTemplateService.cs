@@ -14,6 +14,11 @@ namespace Catfish.API.Repository.Services
         {
             _context = context;
         }
+        public EntityTemplate GetEntityTemplate(Guid id)
+        {
+            return _context.EntityTemplates!.Where(t => t.Id == id).FirstOrDefault();
+        }
+
         public async Task<HttpStatusCode> AddEntity(EntityTemplate entityTemplate)
         {
             List<Form> associatedForms = await LoadAssociatedForms(entityTemplate);

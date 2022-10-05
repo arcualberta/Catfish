@@ -8,10 +8,12 @@
     import { useFormSubmissionStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
 
-    const props = defineProps<{ model: Field }>();
+    const props = defineProps<{ model: Field,
+                                 modelData?: FieldData | null }>();
     const store = useFormSubmissionStore();
 
-    const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
+     const fieldData = computed(() => props.modelData? props.modelData :
+                 store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
 
     const selectedOptionId = computed({
         get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] as unknown as string : Guid.EMPTY as unknown as string ,
@@ -23,6 +25,5 @@
     <div v-for="opt in model.options" :key="opt.id" class="option-field">
         <input type="radio" name="model.id" :value="(opt.id as unknown as string)" v-model="selectedOptionId" /> {{formHelper.getOptionText(opt, store.lang)}}
     </div>
-    {{fieldData}}
 </template>
 

@@ -7,10 +7,12 @@
     import { useFormSubmissionStore } from '../store';
     import { default as TextCollection } from './TextCollection.vue'
     import { default as Text } from './Text.vue'
-    const props = defineProps<{ model: Field }>();
+    const props = defineProps<{ model: Field,
+                                modelData?: FieldData | null }>();
     const store = useFormSubmissionStore();
 
-    const fieldData = computed(() => store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
+     const fieldData = computed(() => props.modelData? props.modelData :
+                 store.formData.fieldData?.find(fd => fd.fieldId == props.model.id) as FieldData)
 
     const addValue = () => fieldData.value.monolingualTextValues?.push(createText(null))
     const deleteValue = (index: number) => {
@@ -30,7 +32,6 @@
         <div class="col-sm-1">
             <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" />
         </div>
-        {{fieldData}}
 
 </template>
 

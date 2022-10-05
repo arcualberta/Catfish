@@ -4,14 +4,16 @@ import { EntityTemplate } from '../models';
 import { eState } from "../../shared/constants";
 import { default as config } from "@/appsettings";
 import router from '@/router';
-import { FormEntry } from '../../shared/form-models';
+import { FieldEntry, Form, FormEntry } from '../../shared/form-models';
+import { TransientMessageModel } from '../../shared/components/transient-message/models'
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
         id: null as Guid | null,
         template: null as EntityTemplate | null,
-        formEntries: [] as FormEntry[]
-
+        formEntries: [] as FormEntry[],
+        transientMessageModel: {} as TransientMessageModel,
+        forms: [] as Form[]
     }),
     actions: {
         newTemplate() {
@@ -26,14 +28,30 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 entityTemplateSettings: {
                     metadataForms: [],
                     dataForms: [],
-                    titleField: null,
-                    descriptionField: null
+                    titleField: {} as FieldEntry,
+                    descriptionField: {} as FieldEntry,
+                    mediaField: {} as FieldEntry
                 }
-                
             };
-
         },
-        loadForms() {
+        associateForm(formId: Guid) {
+            if (this.forms.findIndex(form => form.id === formId) < 0) {
+                const api = `${config.dataRepositoryApiRoot}/api/forms/${formId}`;
+               // console.log("loading form: ", api);
+
+                fetch(api, {
+                    method: 'GET'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.forms.push(data as Form)
+                    })
+                    .catch((error) => {
+                        console.error('Load Form API Error:', error);
+                    });
+            }
+        },
+        loadFormEntries() {
             const api = `${config.dataRepositoryApiRoot}/api/forms`;
             console.log("loading forms: ", api);
 
@@ -45,7 +63,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                     this.formEntries = data as FormEntry[]
                 })
                 .catch((error) => {
-                    console.error('Load Form API Error:', error);
+                    console.error('Load Forms API Error:', error);
                 });
         },
         loadTemplate(id: Guid) {
@@ -92,14 +110,36 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             })
             .then(response => {
                 if (response.ok) {
-                    alert("save successful")
                     router.push(`/edit-entity-template/${this.template!.id}`)
+                    this.transientMessageModel.message = "The template saved successfully"
+                    this.transientMessageModel.messageClass = "success"
+                }
+                else {
+                    if (newTemplate && this.template)
+                        this.template.id = Guid.EMPTY as unknown as Guid;
+
+                    this.transientMessageModel.messageClass = "danger"
+                    switch (response.status) {
+                        case 400:
+                            this.transientMessageModel.message = "Bad request. Failed to save the form";
+                            break;
+                        case 404:
+                            this.transientMessageModel.message = "Form not found";
+                            break;
+                        case 500:
+                            this.transientMessageModel.message = "An internal server error occurred. Failed to save the form"
+                            break;
+                        default:
+                            this.transientMessageModel.message = "Unknown error occured. Failed to save the form"
+                            break;
+                    }
                 }
             })
             .catch((error) => {
                 if (newTemplate && this.template)
                         this.template.id = Guid.EMPTY as unknown as Guid;
-               
+                this.transientMessageModel.message = "Unknown error occurred"
+                this.transientMessageModel.messageClass = "danger"
                 console.error('Save/Update Entity Template API Error:', error);
             });
         },
