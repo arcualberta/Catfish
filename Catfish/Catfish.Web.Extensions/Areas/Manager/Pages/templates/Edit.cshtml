@@ -1,8 +1,9 @@
-﻿@page "~/manager/templates/edit/{id:Guid}"
+﻿@page "~/manager/templates/edit/{id:Guid?}"
 
 @{
     ViewBag.Title = "Edit Entity Template";
     ViewBag.MenuItem = "CatfishWebExtensionsCollections";
+    var id = ViewContext.RouteData.Values["id"]?.ToString();
 }
 
 <div id="CatfishWebExtensions">
