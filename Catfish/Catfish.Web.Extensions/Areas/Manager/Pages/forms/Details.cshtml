@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "View Form";
     ViewBag.MenuItem = "CatfishWebExtensionsCollections";
+    var id = ViewContext.RouteData.Values["id"]?.ToString();
 }
 
 <div id="CatfishWebExtensions">
@@ -11,7 +12,8 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item">Templates</li>
                 <li class="breadcrumb-item">Forms</li>
-                <li class="breadcrumb-item active" aria-current="page">View</li>
+                <li class="breadcrumb-item" aria-current="page">View</li>
+                <li class="breadcrumb-item active" aria-current="page">@id</li>
             </ol>
         </nav>
 

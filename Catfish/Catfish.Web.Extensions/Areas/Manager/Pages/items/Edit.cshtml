@@ -1,8 +1,9 @@
-﻿@page "~/manager/items/edit/{id:Guid}"
+﻿@page "~/manager/items/edit/{id:Guid?}"
 
 @{
     ViewBag.Title = "Edit Item";
     ViewBag.MenuItem = "CatfishWebExtensionsCollections";
+    var id = ViewContext.RouteData.Values["id"]?.ToString();
 }
 
 <div id="CatfishWebExtensions">
