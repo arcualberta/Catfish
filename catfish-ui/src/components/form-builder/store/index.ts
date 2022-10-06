@@ -95,5 +95,41 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                     console.error('Form Save API Error:', error)
                 });
         },
+        updateFileReference(fieldId: Guid, file: File) {
+         
+            const field = this.form?.fields.$values.find(fd => fd.id == fieldId);
+            if (field) {
+
+                const fileRef = this.fileReferences?.find(f => f.fileName == file.name && !f.id);
+                if (fileRef) {
+                    fileRef.fileName = file.name;
+                    fileRef.originalFileName = file.name;
+                    fileRef.size = file.size;
+                    fileRef.file = file;
+                    fileRef.fieldId = field.id as Guid;
+                }
+                else {
+
+                    const fileRef: models.FileReference = {
+                        id: Guid.create().toString() as unknown as Guid,
+                        fileName: file.name,
+                        fieldId: field.id as Guid,
+                        originalFileName: file.name,
+                        contentType: file.type,
+                        created: new Date(),
+                        updated: new Date(Date.now.toString()),
+                        size: file.size,
+                        modelType: "Catfish.Core.Models.Contents.FileReference",
+                        $type: "Catfish.Core.Models.Contents.FileReference",
+                        file: file,
+                        thumbnail: "",
+                        cssClass: ""
+                    };
+
+                    field.files?.push(fileRef)
+                }
+            }
+
+        },
     }
 });
