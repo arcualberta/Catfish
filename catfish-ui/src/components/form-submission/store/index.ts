@@ -12,6 +12,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         formData: {} as FormData,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
+        files: [] as File[] | null
 
     }),
     actions: {
@@ -179,5 +180,8 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         clearMessages() {
             this.transientMessage = null;
         },
+        addFile(file: File){
+            this.files?.push(file);
+        }
     }
 });

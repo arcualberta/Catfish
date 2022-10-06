@@ -7,7 +7,8 @@
     import { default as AssociationPanel } from './components/EntityAssociationPanel.vue'
     import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
     import { useRoute ,useRouter } from 'vue-router';
-import { Guid } from 'guid-typescript';
+    import { Guid } from 'guid-typescript';
+    
     const props = defineProps<{
        // dataAttributes?: AppletAttribute | null,
         //queryParameters?: AppletAttribute | null,
