@@ -1,5 +1,7 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
+    //import {storeToRefs} from 'pinia'
+
     import { computed, onMounted, ref} from 'vue'
     import { useEntityEditorStore } from './store';
     import {default as EntitySummaryEditor} from './components/entity-summary-editor.vue'
@@ -21,7 +23,7 @@
     const store = useEntityEditorStore(props.piniaInstance);
     const entityTemplate =  computed(() => store.entityTemplate);
     let selectedButton = ref("summary");
-    const router = useRouter();
+    
      const route = useRoute();
     const entityId =route.params.entityId as unknown as Guid; 
     onMounted(() => {
@@ -48,7 +50,8 @@
         store.saveEntity();
         isNewEntity.value=false;
     }
-  
+    
+    const files =computed(()=>store.getFiles)
 </script>
 
 <template>
@@ -86,6 +89,9 @@
         <div v-if="selectedButton === 'related'">
             <AssociationPanel :entity="entity" :relationshipType="relationshipValue" :panelTitle="ItemValue"></AssociationPanel>
         </div>
+    </div>
+    <div v-for='f in files' :key='f.name'>
+       {{f.name}}
     </div>
 </template>
 

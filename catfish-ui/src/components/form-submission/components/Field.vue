@@ -44,8 +44,8 @@
             });
     }
 
-    const files = computed(()=>store.files as File[])
-    console.log(files.value)
+   // const files = computed(()=>store.files as File[])
+   // console.log(files.value)
 </script>
 
 <template>
@@ -75,7 +75,7 @@
                <div v-if="isAttachmentField">
                   <AttachmentField :model="model" :elementId="fieldElementId" @drop="drop" @change="selectedFile(fieldElementId)" />
                   <span class="dropzoneFiles">Selected File: {{dropzoneFile.name}}</span>
-                 {{JSON.stringify(files)}}
+               
                 </div>
                
             </b-col>

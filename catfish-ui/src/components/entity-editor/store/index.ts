@@ -9,7 +9,7 @@ import { Form, FormData as FormDataModel } from '@/components/shared/form-models
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
 import router from '@/router';
 
-
+import { useFormSubmissionStore } from '@/components/form-submission/store';
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
     state: () => ({
         id: null as Guid | null,
@@ -17,7 +17,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         entityTemplate: null as EntityTemplate | null,
         entity: null as Entity | null,
         transientMessageModel: {} as TransientMessageModel,
-        files: [] as File[] | null
+       
     }),
     actions: {
         loadTemplates() {
@@ -40,6 +40,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 templateId: Guid.createEmpty().toString() as unknown as Guid,
                 entityType: eEntityType.Unknown,
                 data: [] as FormDataModel[]
+                //files: [] as File[]
             }
         },
         loadTemplate(templateId: Guid) {
@@ -76,11 +77,16 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 method = "PUT";
             }
             //get files if any
-            var formData = new FormData()
+            var formData = new FormData();
+            const formSubmissionstore = useFormSubmissionStore();
+            
+            //let attachedFiles = formSubmissionstore.files as File[];
+             //   this.entity!.files = attachedFiles.slice();
+           
             formData.append('value', JSON.stringify(this.entity));
-          //  formData.append('files', this.files);
+
             fetch(api, {
-                body: formData, //JSON.stringify(this.entity),
+                body: JSON.stringify(this.entity),
                 method: method,
                 headers: {
                         'encType': 'multipart/form-data',
@@ -156,6 +162,10 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             const field = state.entityTemplate?.forms?.filter(form => form.id === fieldEntry?.formId)[0]
                 ?.fields.filter(field => field.id == fieldEntry?.fieldId)[0];
             return field;
+        },
+        getFiles: (state)=>{
+              const formSubmissionstore = useFormSubmissionStore();
+              return formSubmissionstore.files;
         }
     }
 });
