@@ -1,0 +1,19 @@
+﻿
+@{
+    var trail = (Model as string[]).ToList();
+    string id = ViewContext.RouteData.Values["id"]?.ToString();
+    if (!string.IsNullOrEmpty(id))
+        trail.Add(id);
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-0">
+        @for (int i = 0; i < trail.Count-1; ++i){
+                <li class="breadcrumb-item">@trail[i]</li>
+        }
+        <li class="breadcrumb-item active" aria-current="page">@trail[trail.Count-1]</li>
+    </ol>
+</nav>
+
+
+
