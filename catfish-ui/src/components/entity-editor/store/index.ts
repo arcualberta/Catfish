@@ -5,19 +5,19 @@ import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { eEntityType } from '@/components/shared/constants';
 import { createFormData } from '@/components/shared/form-helpers'
-import { Form, FormData } from '@/components/shared/form-models'
+import { Form, FormData as FormDataModel } from '@/components/shared/form-models'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
 import router from '@/router';
 
-
+import { useFormSubmissionStore } from '@/components/form-submission/store';
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
     state: () => ({
         id: null as Guid | null,
         templates: [] as TemplateEntry[],
         entityTemplate: null as EntityTemplate | null,
         entity: null as Entity | null,
-        transientMessageModel: {} as TransientMessageModel
-
+        transientMessageModel: {} as TransientMessageModel,
+       
     }),
     actions: {
         loadTemplates() {
@@ -39,7 +39,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 id: Guid.createEmpty().toString() as unknown as Guid,
                 templateId: Guid.createEmpty().toString() as unknown as Guid,
                 entityType: eEntityType.Unknown,
-                data: [] as FormData[]
+                data: [] as FormDataModel[]
+                //files: [] as File[]
             }
         },
         loadTemplate(templateId: Guid) {
@@ -64,7 +65,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             let method = "";
             if (newEntity) {
                 console.log("Saving new entity.");
-                console.log(JSON.stringify(this.entity));
+                //console.log(JSON.stringify(this.entity));
                 if(this.entity?.id?.toString() === Guid.EMPTY){
                     this.entity.id = Guid.create().toString() as unknown as Guid;
                 }
@@ -75,6 +76,15 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 api = `${api}/${this.entity?.id}`
                 method = "PUT";
             }
+            //get files if any
+            var formData = new FormData();
+            const formSubmissionstore = useFormSubmissionStore();
+            
+            //let attachedFiles = formSubmissionstore.files as File[];
+             //   this.entity!.files = attachedFiles.slice();
+           
+            formData.append('value', JSON.stringify(this.entity));
+
             fetch(api, {
                 body: JSON.stringify(this.entity),
                 method: method,
@@ -152,6 +162,10 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             const field = state.entityTemplate?.forms?.filter(form => form.id === fieldEntry?.formId)[0]
                 ?.fields.filter(field => field.id == fieldEntry?.fieldId)[0];
             return field;
+        },
+        getFiles: (state)=>{
+              const formSubmissionstore = useFormSubmissionStore();
+              return formSubmissionstore.files;
         }
     }
 });

@@ -1,7 +1,7 @@
 ﻿
 namespace Catfish.API.Repository.Models.Entities
 {
-     public class Entity
+    public class Entity
     {
         public Guid Id { get; set; }
         public eEntityType EntityType { get; set; }
@@ -21,6 +21,9 @@ namespace Catfish.API.Repository.Models.Entities
 
         public virtual List<Relationship> SubjectRelationships { get; set; } = new List<Relationship>();
         public virtual List<Relationship> ObjectRelationships { get; set; } = new List<Relationship>();
+
+        //[NotMapped]
+       // public IFormFile[] Files { get; set; } 
     }
 
 }
