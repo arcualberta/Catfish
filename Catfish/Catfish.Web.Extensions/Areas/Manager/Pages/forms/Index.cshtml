@@ -1,4 +1,5 @@
 ﻿@page "~/manager/forms"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewBag.Title = "Forms";
@@ -7,12 +8,7 @@
 
 <div id="CatfishWebExtensions">
     <div class="top">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item">Templates</li>
-                <li class="breadcrumb-item active" aria-current="page">Forms</li>
-            </ol>
-        </nav>
+        <partial name="_Breadcrumb" model='new string[] { "Templates", "Forms" }' />
 
         <div class="container-fluid">
             <div class="top-nav">

@@ -1,4 +1,5 @@
 ﻿@page "~/manager/items/{id:Guid}"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewBag.Title = "View Item";
@@ -8,13 +9,7 @@
 
 <div id="CatfishWebExtensions">
     <div class="top">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item">Data</li>
-                <li class="breadcrumb-item" aria-current="page">Items</li>
-                <li class="breadcrumb-item active" aria-current="page">View</li>
-            </ol>
-        </nav>
+        <partial name="_Breadcrumb" model='new string[] { "Data", "Items", "View" }' />
 
         <div class="container-fluid">
             <div class="top-nav">
@@ -22,7 +17,7 @@
                     <i class="fas fa-cog"></i>
                 </button>
                 <button class="btn btn-labeled btn-primary">
-                    <i class="fas fa-plus"></i>Collection
+                    <i class="fas fa-edit"></i>Edit
                 </button>
             </div>
         </div>

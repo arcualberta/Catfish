@@ -19,13 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="assets\dist\**\*" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Compile Remove="assets\dist\**" />
     <Compile Remove="Models\SiteTypes\**" />
+    <Content Remove="assets\dist\**" />
     <Content Remove="Models\SiteTypes\**" />
+    <EmbeddedResource Remove="assets\dist\**" />
     <EmbeddedResource Remove="Models\SiteTypes\**" />
+    <None Remove="assets\dist\**" />
     <None Remove="Models\SiteTypes\**" />
   </ItemGroup>
 
@@ -75,10 +75,6 @@
 
   <ItemGroup>
     <Resource Include="assets\manager\js\css.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="assets\dist\" />
   </ItemGroup>
 
   <ItemGroup>
