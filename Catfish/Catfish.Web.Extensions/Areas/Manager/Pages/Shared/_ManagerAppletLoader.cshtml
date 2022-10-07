@@ -42,6 +42,8 @@
 }
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
 <partial name="_AssetRegistry" />
 
 <div id="@mountPointId"></div>
@@ -51,7 +53,7 @@
 <script type="module">
 
 
-    const applet = Applets.@Model.GetType().Name;//Applets.@Model.GetType().Name;
+    const applet = Applets.FormBuilder;
     if (!applet)
         throw "Applet \"@ViewData["applet"]\" not found.";
 
