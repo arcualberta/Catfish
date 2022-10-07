@@ -39,8 +39,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 id: Guid.createEmpty().toString() as unknown as Guid,
                 templateId: Guid.createEmpty().toString() as unknown as Guid,
                 entityType: eEntityType.Unknown,
-                data: [] as FormDataModel[]
-                //files: [] as File[]
+                data: [] as FormDataModel[],
+                files: [] as File[]
             }
         },
         loadTemplate(templateId: Guid) {
@@ -80,10 +80,12 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             var formData = new FormData();
             const formSubmissionstore = useFormSubmissionStore();
             
-            //let attachedFiles = formSubmissionstore.files as File[];
-             //   this.entity!.files = attachedFiles.slice();
-           
-            formData.append('value', JSON.stringify(this.entity));
+            let attachedFiles = formSubmissionstore.files as File[];
+             //  this.entity!.files = attachedFiles.slice();
+            // attachedFiles.forEach((file)=>{
+            //        this.entity?.files?.push(file);
+            // });
+           //formData.append('value', JSON.stringify(this.entity));
 
             fetch(api, {
                 body: JSON.stringify(this.entity),
