@@ -5,6 +5,7 @@ import pinia from 'pinia'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    define: { 'process.env.NODE_ENV': '"production"' },
     build: {
         lib: {
             entry: path.resolve(__dirname, 'src/components/index.ts'),
@@ -22,7 +23,7 @@ export default defineConfig({
                     
                 },
             },
-        },
+        }
     },
     plugins: [
         vue(),

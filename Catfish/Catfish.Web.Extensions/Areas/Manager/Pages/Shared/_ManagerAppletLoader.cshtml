@@ -1,5 +1,6 @@
 ﻿@using Newtonsoft.Json;
 
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject Piranha.AspNetCore.Services.IApplicationService _webApp
 @inject CatfishWebExtensions.Interfaces.IAssetRegistry _assetRegistry;
 
@@ -7,104 +8,39 @@
     <strong>We're sorry but Vue Applets don't work without JavaScript enabled. Please enable it to continue.</strong>
 </noscript>
 
-
-
 @{
     var pageId = _webApp.PageId;
     var mountPointId = string.Format("app-{0}", pageId);
 
-    //Creating a dictionary of all data attributes
-    var dataAttributes = new Dictionary<string, object>();
-    foreach (var pair in ViewData)
-    {
-        if (pair.Key.StartsWith("data-"))
-            dataAttributes.Add(pair.Key.Substring(5), pair.Value);
-    }
-    dataAttributes.Add("SiteUrl", ConfigHelper.SiteUrl);
+    _assetRegistry.RegisterScript("assets/public/vendors/vue3/vue.global.min.js",
+                              "assets/public/vendors/vue3/vue.global.prod.min.js");
 
-    
-    //Registering assets
-    //_assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/public/vendors/vue3/vue.global.prod.min.js", 
-    //                              @ConfigHelper.SiteUrl+"/assets/public/vendors/vue3/vue.global.min.js");
-    
-    //_assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/public/vendors/vuedemi/index.iife.min.js");
+    _assetRegistry.RegisterScript("assets/public/vendors/vuedemi/index.iife.min.js");
 
-    //_assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/public/vendors/vuerouter/vuerouter.global.prod.js", 
-    //                              @ConfigHelper.SiteUrl+"/assets/public/vendors/vuerouter/vuerouter.global.js");
+    _assetRegistry.RegisterScript("assets/public/vendors/pinia/pinia.iife.prod.min.js",
+                                  "assets/public/vendors/pinia/pinia.iife.min.js");
 
-    //_assetRegistry.RegisterScript(@ConfigHelper.SiteUrl+"/assets/public/vendors/pinia/pinia.iife.prod.min.js", 
-    //                              @ConfigHelper.SiteUrl+"/assets/public/vendors/pinia/pinia.iife.min.js");
-
-    _assetRegistry.RegisterModule(@ConfigHelper.SiteUrl + "/assets/applets/applets.es.js");
-    _assetRegistry.RegisterModule(@ConfigHelper.SiteUrl + "/assets/applets/applets.umd.js");
-    _assetRegistry.RegisterStylesheet(@ConfigHelper.SiteUrl+"/assets/applets/style.css");
-
+    _assetRegistry.RegisterScript("assets/applets/applets.umd.js",
+                                  "assets/applets/applets.umd.js");
 }
-
-<script type="importmap">
-    {
-      "imports": {
-        "vue":          "/assets/public/vendors/vue3/vue.esm-browser.min.js",
-        "vue-router":   "/assets/public/vendors/vuerouter/vuerouter.global.js",
-        "vue-demi":     "https://cdn.jsdelivr.net/npm/vue-demi",
-        "pinia":        "/assets/public/vendors/pinia/pinia.esm-browser.min.js"
-      }
-    }
-</script>
-
-
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
 
 <partial name="_AssetRegistry" />
 
 <div id="@mountPointId"></div>
 
-
-
-<script type="module">
-
+<script>
 
     const applet = Applets.FormBuilder;
+
     if (!applet)
-        throw "Applets.FormBuilder\" not found.";
+        throw "Applet not found.";
 
-    //TODO: Read all URL query parameters and build queryParams associative array    
-    let queryParams = {}; //Cresting a temporary associative array for now.
+    const { createApp } = Vue
 
-    //grab the query parameters
-    let qparams = window.location.search.substr(1).split('&');
-    
-    qparams.forEach((q) => {
-        let keyPair = q.split("=");
+    const app = createApp(applet);
+    app.use(Pinia.createPinia());
 
-        //check if the value is a number
-        let keyName = keyPair[0];
-        let val = Number(keyPair[1]);
-        if (!Number.isNaN(val)) {
-            queryParams[keyName] = val;
-        } else {
-            queryParams[keyName] = keyPair[1];
-        }
-
-    });
-
-    //console.log("query params after initialize: " + JSON.stringify(queryParams))
-
-//const pinia = createPinia();
-const app = Vue.createApp(applet, {
-    dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes)),
-    queryParameters: queryParams
-});
- 
-
-if (applet.props.piniaInstance == null) {
-       
-       app.use(Pinia.createPinia());
-     
-    }
-  
-    app.mount('#@mountPointId');
+    app.mount('#@mountPointId')
 
 </script>
 

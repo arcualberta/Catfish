@@ -5,10 +5,12 @@
   ],
   "main": "./dist/applets.umd.js",
   "module": "./dist/applets.es.js",
+  "unpkg": "./dist/applets.unpkg.js", 
   "exports": {
     ".": {
       "import": "./dist/applets.es.js",
-      "require": "./dist/applets.umd.js"
+      "require": "./dist/applets.umd.js",
+      "unpkg": "./dist/applets.unpkg.js"
     }
   },
   "private": true,
