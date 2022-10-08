@@ -22,3 +22,12 @@
         </div>
     </div>
 </div>
+
+@{
+    var viewData = new ViewDataDictionary(this.ViewData)
+    {
+    };
+    var appName = "EntityTemplateBuilder";
+}
+
+<partial name="_ManagerAppletLoader" view-data="@viewData" model="@appName" />

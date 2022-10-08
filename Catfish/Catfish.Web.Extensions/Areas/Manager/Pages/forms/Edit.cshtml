@@ -28,8 +28,7 @@
     var viewData = new ViewDataDictionary(this.ViewData)
     {
     };
+    var appName = "FormBuilder";
 }
 
-<div>Form Builder</div>
-
-<partial name="_ManagerAppletLoader" view-data="@viewData" />
+<partial name="_ManagerAppletLoader" view-data="@viewData" model="@appName" />

@@ -23,8 +23,11 @@
     </div>
 </div>
 
+@{
+    var viewData = new ViewDataDictionary(this.ViewData)
+    {
+    };
+    var appName = "EntityEditor";
+}
 
-<script type="module" crossorigin src="/assets/applets/form-builder/assets/index.9a6faab9.js"></script>
-<link rel="stylesheet" href="/assets/applets/form-builder/assets/index.9c1d568a.css">
-<div id="app"></div>
-
+<partial name="_ManagerAppletLoader" view-data="@viewData" model="@appName" />

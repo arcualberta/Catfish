@@ -1,4 +1,6 @@
-﻿@using Newtonsoft.Json;
+﻿@model string;
+
+@using Newtonsoft.Json;
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject Piranha.AspNetCore.Services.IApplicationService _webApp
@@ -22,6 +24,9 @@
 
     _assetRegistry.RegisterScript("assets/applets/applets.umd.js",
                                   "assets/applets/applets.umd.js");
+
+    _assetRegistry.RegisterScript("assets/public/vendors/vuedemi/vuerouter.global.js");
+
 }
 
 <partial name="_AssetRegistry" />
@@ -30,12 +35,12 @@
 
 <script>
 
-    const applet = Applets.FormBuilder;
+    const applet = Applets.@Model;
 
     if (!applet)
         throw "Applet not found.";
 
-    const { createApp } = Vue
+    const { createApp } = Vue;
 
     const app = createApp(applet);
     app.use(Pinia.createPinia());
