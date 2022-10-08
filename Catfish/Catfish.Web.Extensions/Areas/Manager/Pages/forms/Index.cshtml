@@ -1,0 +1,24 @@
+﻿@page "~/manager/forms"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewBag.Title = "Forms";
+    ViewBag.MenuItem = "CatfishWebExtensionsItems";
+}
+
+<div id="CatfishWebExtensions">
+    <div class="top">
+        <partial name="_Breadcrumb" model='new string[] { "Templates", "Forms" }' />
+
+        <div class="container-fluid">
+            <div class="top-nav">
+                <button class="btn btn-icon btn-info">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn btn-labeled btn-primary">
+                    <i class="fas fa-plus"></i>Forms
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

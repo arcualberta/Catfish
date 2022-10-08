@@ -1,22 +1,29 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
+    //import {storeToRefs} from 'pinia'
+
     import { computed, onMounted, ref} from 'vue'
     import { useEntityEditorStore } from './store';
     import {default as EntitySummaryEditor} from './components/entity-summary-editor.vue'
     import { default as FormList } from './components/FormList.vue'
+    import { default as AssociationPanel } from './components/EntityAssociationPanel.vue'
     import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
     import { useRoute ,useRouter } from 'vue-router';
-import { Guid } from 'guid-typescript';
+    import { Guid } from 'guid-typescript';
+    
     const props = defineProps<{
        // dataAttributes?: AppletAttribute | null,
         //queryParameters?: AppletAttribute | null,
         piniaInstance: Pinia
     }>();
-
+    const memberofValue = ref("Member of");
+    const collectionValue = ref("Collections")
+    const relationshipValue = ref("Relationship");
+    const ItemValue = ref("Items")
     const store = useEntityEditorStore(props.piniaInstance);
     const entityTemplate =  computed(() => store.entityTemplate);
     let selectedButton = ref("summary");
-    const router = useRouter();
+    
      const route = useRoute();
     const entityId =route.params.entityId as unknown as Guid; 
     onMounted(() => {
@@ -43,13 +50,8 @@ import { Guid } from 'guid-typescript';
         store.saveEntity();
         isNewEntity.value=false;
     }
-
     
-
-    
-  
-   
-  
+    const files =computed(()=>store.getFiles)
 </script>
 
 <template>
@@ -82,11 +84,14 @@ import { Guid } from 'guid-typescript';
             <FormList :form-entries="metadataForms" :entity="entity"></FormList>
         </div>
         <div v-if="selectedButton === 'collections'">
-            Collections
+            <AssociationPanel :entity="entity" :relationshipType="memberofValue" :panelTitle="collectionValue"></AssociationPanel>
         </div>
         <div v-if="selectedButton === 'related'">
-            Related
+            <AssociationPanel :entity="entity" :relationshipType="relationshipValue" :panelTitle="ItemValue"></AssociationPanel>
         </div>
+    </div>
+    <div v-for='f in files' :key='f.name'>
+       {{f.name}}
     </div>
 </template>
 
