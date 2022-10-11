@@ -1,0 +1,33 @@
+﻿@page "~/manager/templates"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewBag.Title = "Templates";
+    ViewBag.MenuItem = "CatfishWebExtensionsTemplates";
+}
+
+<div id="CatfishWebExtensions">
+    <div class="top">
+        <partial name="_Breadcrumb" model='new string[] { "Data", "Templates" }' />
+
+        <div class="container-fluid">
+            <div class="top-nav">
+                <button class="btn btn-icon btn-info">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn btn-labeled btn-primary">
+                    <i class="fas fa-plus"></i>Template
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    var viewData = new ViewDataDictionary(this.ViewData)
+    {
+    };
+    var appName = "EntityTemplateBuilder";
+}
+
+<partial name="_ManagerAppletLoader" view-data="@viewData" model="@appName" />

@@ -1,0 +1,51 @@
+﻿@model string;
+
+@using Newtonsoft.Json;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Piranha.AspNetCore.Services.IApplicationService _webApp
+@inject CatfishWebExtensions.Interfaces.IAssetRegistry _assetRegistry;
+
+<noscript>
+    <strong>We're sorry but Vue Applets don't work without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+
+@{
+    var pageId = _webApp.PageId;
+    var mountPointId = string.Format("app-{0}", pageId);
+
+    _assetRegistry.RegisterScript("assets/public/vendors/vue3/vue.global.min.js",
+                              "assets/public/vendors/vue3/vue.global.prod.min.js");
+
+    _assetRegistry.RegisterScript("assets/public/vendors/vuedemi/index.iife.min.js");
+
+    _assetRegistry.RegisterScript("assets/public/vendors/pinia/pinia.iife.prod.min.js",
+                                  "assets/public/vendors/pinia/pinia.iife.min.js");
+
+    _assetRegistry.RegisterScript("assets/applets/applets.umd.js",
+                                  "assets/applets/applets.umd.js");
+
+    _assetRegistry.RegisterScript("assets/public/vendors/vuedemi/vuerouter.global.js");
+
+}
+
+<partial name="_AssetRegistry" />
+
+<div id="@mountPointId"></div>
+
+<script>
+
+    const applet = Applets.@Model;
+
+    if (!applet)
+        throw "Applet not found.";
+
+    const { createApp } = Vue;
+
+    const app = createApp(applet);
+    app.use(Pinia.createPinia());
+
+    app.mount('#@mountPointId')
+
+</script>
+
