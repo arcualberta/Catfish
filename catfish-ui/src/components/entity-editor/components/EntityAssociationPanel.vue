@@ -1,0 +1,53 @@
+<script setup lang="ts">
+    import { Pinia } from 'pinia'
+    import { useEntityEditorStore } from "../store"
+import { Entity } from '../models'
+
+    const store = useEntityEditorStore();
+    const props = defineProps<{
+        entity: Entity,
+        relationshipType: string,
+        panelTitle:string
+    }>();
+    
+</script>
+
+<template>
+    <b-row>
+        <b-col class="col-sm-5">
+            <h6>{{relationshipType}}</h6>
+        </b-col>
+        <b-col class="col-sm-2">
+
+        </b-col>
+        <b-col class="col-sm-5">
+            <h6>{{panelTitle}}</h6>
+        </b-col>
+    </b-row>
+    <b-row>
+        <b-col class="col-sm-5">
+            <div class="form-field-border">
+                
+            </div>
+        </b-col>
+        <b-col class="col-sm-2">
+            <b-row>
+                <b-col class="col-sm-4">
+
+                </b-col>
+                <b-col class="col-sm-4">
+                    <button class="btn btn-primary"><font-awesome-icon icon="fa-solid fa-arrow-left" /></button>
+                </b-col>
+                <b-col class="col-sm-4">
+
+                </b-col>
+            </b-row>
+        </b-col>
+        <b-col class="col-sm-5">
+            <div class="form-field-border">
+
+            </div>
+        </b-col>
+    </b-row>
+
+</template>

@@ -8,6 +8,7 @@ export interface Entity{
     templateId: Guid
     entityType: eEntityType
     data: FormData[]
+    files: File[] | null
 }
 
 export interface TemplateEntry {
@@ -16,3 +17,4 @@ export interface TemplateEntry {
     templateId: Guid
     templateName: string
 }
+

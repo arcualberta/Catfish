@@ -1,4 +1,6 @@
-﻿namespace CatfishWebExtensions
+﻿using Microsoft.AspNetCore.Mvc.Razor;
+
+namespace CatfishWebExtensions
 {
     public static class CatfishWebExtensions
     {

@@ -1,0 +1,25 @@
+﻿@page "~/manager/templates/{id:Guid}"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewBag.Title = "View Entity Template";
+    ViewBag.MenuItem = "CatfishWebExtensionsCollections";
+    var id = ViewContext.RouteData.Values["id"]?.ToString();
+}
+
+<div id="CatfishWebExtensions">
+    <div class="top">
+        <partial name="_Breadcrumb" model='new string[] { "Data", "Templates", "View" }' />
+
+        <div class="container-fluid">
+            <div class="top-nav">
+                <button class="btn btn-icon btn-info">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn btn-labeled btn-primary">
+                    <i class="fas fa-edit"></i>Edit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

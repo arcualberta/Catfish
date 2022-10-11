@@ -1,0 +1,24 @@
+﻿@page "~/manager/collections/edit/{id:Guid}"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewBag.Title = "Edit Collection";
+    ViewBag.MenuItem = "CatfishWebExtensionsCollections";
+}
+
+<div id="CatfishWebExtensions">
+    <div class="top">
+        <partial name="_Breadcrumb" model='new string[] { "Data", "Collections", "Edit" }' />
+
+        <div class="container-fluid">
+            <div class="top-nav">
+                <button class="btn btn-icon btn-info">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn btn-labeled btn-primary">
+                    <i class="fas fa-save"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

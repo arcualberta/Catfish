@@ -25,26 +25,9 @@
         <br />
         <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />
         <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />
-        <!--<div class="row mt-2">
-            <div class="col-sm-2">
-                <label>Title:</label>
-            </div>
-            <div class="col-sm-10">
-                <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />-->
-                <!--{{titleField}}<br /><br />{{titleFieldData}}-->
-            <!--</div>
-        </div>
-        <div class="row mt-2">
-        l-
-            
-            <div class='col-sm-2'>
-                <label>Description:</label>
-            </div>
-            <div class="col-sm-10">
-                <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />-->
-                <!-- {{descriptionField}}<br /><br />{{descriptionFieldData}}-->
-            <!--</div>
-        </div>-->
+        <FieldComponent :model="mediaField" :model-data="mediaFieldData" v-if="store.mediaField" />
+        
+       
     </div>
 </template>
 
@@ -81,6 +64,8 @@
     const titleFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
     const descriptionField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
     const descriptionFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
+    const mediaField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
+    const mediaFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
 
    
 
