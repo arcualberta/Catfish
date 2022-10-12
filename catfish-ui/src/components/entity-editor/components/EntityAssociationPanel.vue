@@ -3,8 +3,8 @@
     import { computed } from "vue"
     import { eEntityType } from "../../shared/constants"
     import { useEntityEditorStore } from "../store"
-import { Entity } from '../models'
-import { contains } from 'bootstrap-vue-3/dist/utils';
+    import { Entity } from '../models'
+    import { contains } from 'bootstrap-vue-3/dist/utils';
 
     const store = useEntityEditorStore();
     const props = defineProps<{
@@ -13,6 +13,7 @@ import { contains } from 'bootstrap-vue-3/dist/utils';
         panelTitle:string
     }>();
     const dataList = computed(() => props.entity?.subjectRelationships.filter(form => form.name == props.relationshipType))
+    
     
 </script>
 
@@ -52,5 +53,10 @@ import { contains } from 'bootstrap-vue-3/dist/utils';
             </div>
         </b-col>
     </b-row>
+
+
+    <div class="row">
+        <v-multiselect-listbox :options="['Alabama', 'California']"></v-multiselect-listbox>
+    </div>
 
 </template>
