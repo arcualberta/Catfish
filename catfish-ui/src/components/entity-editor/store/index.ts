@@ -47,7 +47,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
 
             if(templateId.toString() === Guid.EMPTY)
                 return;
-                
+
             const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${templateId}`;
 
             fetch(api, {

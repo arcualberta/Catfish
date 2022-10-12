@@ -12,7 +12,8 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         formData: {} as FormData,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
-        files: [] as File[] | null
+        files: [] as File[] | null,
+        fileKeys: [] as string[] | null
 
     }),
     actions: {
@@ -180,8 +181,19 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         clearMessages() {
             this.transientMessage = null;
         },
-        addFile(file: File){
+        addFile(file: File, fieldId: Guid){
             this.files?.push(file);
+            //fieldKeys will consist of "formId_fieldId"
+          //  let fKey: string=formId.toString() + "_" + fieldId.toString();
+          // this.fileKeys?.push(fKey);
+           this.fileKeys?.push(fieldId.toString());
+        } ,
+        getFile(files: FileList, fieldId: Guid, formId: Guid){
+            Array.from(files).forEach(file => { 
+                console.log("fieldId:" + fieldId )
+                this.addFile(file, fieldId);
+                //console.log("file:" + JSON.stringify(store.files))
+            });
         }
     }
 });

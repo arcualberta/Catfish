@@ -10,11 +10,12 @@
         model: Form,
         entity: Entity
     }>();
+    const formId: Guid= props.model.id;
     const getFieldDataModel = (fieldId: Guid) => 
         getFieldData(props.entity, { formId: props.model.id, fieldId } as FieldEntry)
 </script>
 
 <template>
-    <Field v-for="field in model?.fields" :key="field.id" :model="field" :modelData="getFieldDataModel(field.id)" />
+    <Field v-for="field in model?.fields" :key="field.id" :model="field" :formId="formId" :modelData="getFieldDataModel(field.id)" />
 </template>
 
