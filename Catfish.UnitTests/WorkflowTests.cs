@@ -4379,5 +4379,24 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             _db.EntityTemplates.Add(template);
             _db.SaveChanges();
         }
+
+        [Test]
+        public void ImportLuhmannSasData()
+        {
+            string filename = "c:\\tmp\\luhmann22.xml";
+            XElement xml = XElement.Load(filename);
+
+            Item entity = new Item();
+            entity.Data = xml;
+            entity.Id = Guid.Parse("aa97c6fb-d2ce-41ae-ab93-d0bad00cc698");
+            entity.TemplateId = Guid.Parse("056bc826-05b7-473b-9c9e-7d97816b5c3c");
+            entity.StatusId = Guid.Parse("AE4533F3-75BA-40A8-A515-8489E29797C8");
+            entity.Created = DateTime.Now;
+            entity.UserEmail = "luhmann@ualberta.ca";
+            entity.PrimaryCollectionId = Guid.Parse("8DCA9311-FAD6-4C5A-A35F-5275DDD8DD63");
+            _db.Items.Add(entity);
+            _db.SaveChanges();
+
+        }
     }
 }
