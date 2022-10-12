@@ -1,4 +1,5 @@
 import GoogleCalendar from '../views/GoogleCalendar.vue';
+import HelloWorldVue from './HelloWorld/HelloWorld.vue';
 
 /* Shared form models module */
 export * as FormModels from './shared/form-models';
@@ -33,4 +34,4 @@ export { default as EntityEditor } from './entity-editor/App.vue'
 export { useEntityEditorStore } from './entity-editor/store'
 
 
-
+export {default as HelloWorld} from './hello-world/App.vue'

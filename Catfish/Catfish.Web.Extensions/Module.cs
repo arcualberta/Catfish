@@ -56,26 +56,6 @@ namespace CatfishWebExtensions
                 App.Permissions["CatfishWebExtensions"].Add(permission);
             }
 
-            // Add manager menu items
-            Menu.Items.Add(new MenuItem
-            {
-                InternalId = "CatfishWebExtensions",
-                Name = "CatfishWebExtensions",
-                Css = "fas fa-box"
-            });
-            Menu.Items["CatfishWebExtensions"].Items.Add(new MenuItem
-            {
-                InternalId = "CatfishWebExtensionsStart",
-                Name = "Module Start",
-                Route = "~/manager/catfishwebextensions",
-                Policy = Permissions.CatfishWebExtensions,
-                Css = "fas fa-box"
-            });
-
-            var itemGroup = Menu.Items.FirstOrDefault(ite => ite.Name == "Content");
-            if(itemGroup != null)
-                itemGroup.Name = "Web";
-
             AddRepositoryExtensions();
             AddBlockExtensions();
 
@@ -83,28 +63,82 @@ namespace CatfishWebExtensions
 
         private void AddRepositoryExtensions()
         {
-            Menu.Items.Add(new MenuItem
+            MenuItem group;
+
+            ////// Add manager menu items
+            ////Menu.Items.Add(new MenuItem
+            ////{
+            ////    InternalId = "CatfishWebExtensions",
+            ////    Name = "CatfishWebExtensions",
+            ////    Css = "fas fa-box"
+            ////});
+            ////Menu.Items["CatfishWebExtensions"].Items.Add(new MenuItem
+            ////{
+            ////    InternalId = "CatfishWebExtensionsStart",
+            ////    Name = "Module Start",
+            ////    Route = "~/manager/catfishwebextensions",
+            ////    Policy = Permissions.CatfishWebExtensions,
+            ////    Css = "fas fa-box"
+            ////});
+
+            //Renaming the "Content" group as "Web"
+            group = Menu.Items.FirstOrDefault(ite => ite.Name == "Content");
+            if (group != null)
+                group.Name = "Web";
+
+            //Inserting the "Data" group as the second group in the dashboard's left menu.
+            Menu.Items.Insert(1, group = new MenuItem
             {
                 InternalId = "CatfishWebExtensionsData",
                 Name = "Data",
                 Css = "fas fa-box"
             });
-            Menu.Items["CatfishWebExtensionsData"].Items.Add(new MenuItem
+            group.Items.Add(new MenuItem
             {
-                InternalId = "CatfishWebExtensionsDataItems",
+                InternalId = "CatfishWebExtensionstems",
                 Name = "Items",
                 Route = "~/manager/items",
                 //Policy = Permissions.CatfishWebExtensions,
-                Css = "fas fa-box"
+                Css = "fas fa-chess"
             });
-            Menu.Items["CatfishWebExtensionsData"].Items.Add(new MenuItem
+            group.Items.Add(new MenuItem
             {
-                InternalId = "CatfishWebExtensionsDataCollections",
+                InternalId = "CatfishWebExtensionsCollections",
                 Name = "Collections",
                 Route = "~/manager/collections",
                 //Policy = Permissions.CatfishWebExtensions,
-                Css = "fas fa-box"
+                Css = "fas fa-cubes"
             });
+
+            //Inserting the "Templates" group
+            Menu.Items.Insert(2, group = new MenuItem
+            {
+                InternalId = "CatfishWebExtensionsTemplates",
+                Name = "Templates",
+                Css = "fas fa-toolbox"
+            });
+            group.Items.Add(new MenuItem
+            {
+                InternalId = "CatfishWebExtensionsForms",
+                Name = "Forms",
+                Route = "~/manager/forms",
+                //Policy = Permissions.CatfishWebExtensions,
+                Css = "fab fa-wpforms"
+            });
+            group.Items.Add(new MenuItem
+            {
+                InternalId = "CatfishWebExtensionsTemplates",
+                Name = "Templates",
+                Route = "~/manager/templates",
+                //Policy = Permissions.CatfishWebExtensions,
+                Css = "fas fa-stroopwafel"
+            });
+
+            //Removing the Settings group
+            group = Menu.Items.FirstOrDefault(ite => ite.Name == "Settings");
+            Menu.Items.Remove(group);
+
+
         }
 
         private void AddBlockExtensions()

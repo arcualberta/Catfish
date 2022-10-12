@@ -10,6 +10,7 @@ export interface Entity{
     data: FormData[]
     subjectRelationships: Relationship[]
     objectRelationships: Relationship[]
+    files: File[] | null
 }
 
 export interface TemplateEntry {
@@ -18,6 +19,7 @@ export interface TemplateEntry {
     templateId: Guid
     templateName: string
 }
+
 export interface Relationship {
     subjectEntityId: Guid
     subjectEntity: Entity
@@ -26,3 +28,12 @@ export interface Relationship {
     name: string
     order: number
 }
+
+
+
+
+
+
+
+
+>>>>>>> .theirs

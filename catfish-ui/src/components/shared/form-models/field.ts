@@ -57,6 +57,9 @@ export interface Field {
      * */
     allowCustomOptionValues: boolean;
 
+    /* Files attachment*/
+    files: FileReference[] | null;
+
 }
 
 /**
@@ -65,7 +68,8 @@ export interface Field {
 export enum TextType {
     ShortAnswer = "Short Answer",
     Paragraph = "Paragraph",
-    RichText = "Rich Text"
+    RichText = "Rich Text",
+    AttachmentField="AttachmentField"
 }
 
 /**
@@ -76,8 +80,8 @@ export enum MonolingualFieldType {
     DateTime = "Date Time",
     Decimal = "Decimal",
     Integer = "Integer",
-    Email = "Email",
-    AttachmentField="AttachmentField"
+    Email = "Email"
+    
 }
 
 /**
