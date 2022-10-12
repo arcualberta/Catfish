@@ -50,7 +50,7 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Entity value)
+        public async Task<IActionResult> Post([FromForm] Entity value, [FromForm] List<IFormFile> files)
         {
             try
             {

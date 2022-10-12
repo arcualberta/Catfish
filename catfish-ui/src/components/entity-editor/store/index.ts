@@ -77,10 +77,15 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 method = "PUT";
             }
             //get files if any
-            var formData = new FormData();
-            const formSubmissionstore = useFormSubmissionStore();
-            
+            const formSubmissionstore = useFormSubmissionStore();           
             let attachedFiles = formSubmissionstore.files as File[];
+
+            var formData = new FormData();
+            formData.append('value', JSON.stringify(this.entity))
+            attachedFiles?.forEach(file => {
+                formData.append('files', file);
+            })
+
              //  this.entity!.files = attachedFiles.slice();
             // attachedFiles.forEach((file)=>{
             //        this.entity?.files?.push(file);
@@ -88,11 +93,10 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
            //formData.append('value', JSON.stringify(this.entity));
 
             fetch(api, {
-                body: JSON.stringify(this.entity),
+                body: formData, //JSON.stringify(this.entity),
                 method: method,
                 headers: {
-                        'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json'
+                        'encType': 'multipart/form-data'
                 },
             })
             .then(response => {
