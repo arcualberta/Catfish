@@ -44,6 +44,10 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             }
         },
         loadTemplate(templateId: Guid) {
+
+            if(templateId.toString() === Guid.EMPTY)
+                return;
+                
             const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${templateId}`;
 
             fetch(api, {
@@ -79,19 +83,19 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             //get files if any
             const formSubmissionstore = useFormSubmissionStore();           
             let attachedFiles = formSubmissionstore.files as File[];
+            let fileKeys = formSubmissionstore.fileKeys as string[];
 
             var formData = new FormData();
             formData.append('value', JSON.stringify(this.entity))
             attachedFiles?.forEach(file => {
                 formData.append('files', file);
+            });
+
+            fileKeys?.forEach(key => {
+                formData.append('fileKeys', key);
             })
 
-             //  this.entity!.files = attachedFiles.slice();
-            // attachedFiles.forEach((file)=>{
-            //        this.entity?.files?.push(file);
-            // });
-           //formData.append('value', JSON.stringify(this.entity));
-
+           
             fetch(api, {
                 body: formData, //JSON.stringify(this.entity),
                 method: method,
