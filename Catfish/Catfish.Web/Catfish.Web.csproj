@@ -31,4 +31,8 @@
     <ProjectReference Include="..\Catfish.Web.Extensions\CatfishWebExtensions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="App_Data\uploads\attachments\" />
+  </ItemGroup>
+
 </Project>

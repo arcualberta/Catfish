@@ -135,10 +135,8 @@ export interface FileReference {
     size: number;
     created: Date;
     updated: Date;
-    cssClass: string;
-    modelType: string;
-    $type: string;
-    file: File;
+    
+    //file: File;
     fieldId: Guid;
 }
 
