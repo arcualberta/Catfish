@@ -1,10 +1,13 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue'
-  import { VueDraggableNext } from 'vue-draggable-next'
+   import { VueDraggableNext } from 'vue-draggable-next'
+   import { vMultiselectListbox } from 'vue-multiselect-listbox'
+   import 'vue-multiselect-listbox/dist/vue-multi-select-listbox.css'
   export default defineComponent({
     components: {
-      draggable: VueDraggableNext,
+          draggable: VueDraggableNext,
+          'v-multiselect-listbox': vMultiselectListbox,
     },
     data() {
       return {

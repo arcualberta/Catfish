@@ -34,6 +34,3 @@ export interface Relationship {
 
 
 
-
-
->>>>>>> .theirs

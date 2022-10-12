@@ -31,12 +31,11 @@ library.add(faIcons.faThList)
 library.add(faIcons.faArrowLeft)
 
 
-import vMultiselectListbox from 'vue-multiselect-listbox';
+
 
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)
-    .component('v-multiselect-listbox', vMultiselectListbox)
     .use(createPinia())
     .use(router)
     .use(BootstrapVue3) // Make BootstrapVue available throughout your project
