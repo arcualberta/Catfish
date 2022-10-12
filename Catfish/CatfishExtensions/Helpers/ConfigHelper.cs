@@ -15,5 +15,15 @@
                 return string.IsNullOrEmpty(val) ? "" : val.TrimEnd('/');
             }
         }
+
+        public static string GetAttachmentsFolder(bool createIfNotExist = false)
+        {
+            string path = Path.Combine(Configuration.GetSection("SiteConfig:UploadRoot").Value, "attachments"); ;
+
+            if (createIfNotExist)
+                Directory.CreateDirectory(path);
+
+            return path;
+        }
     }
 }

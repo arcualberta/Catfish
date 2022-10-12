@@ -2,6 +2,7 @@ import { Guid } from "guid-typescript"
 
 import { TextCollection } from "./textCollection";
 import { Text } from "./text";
+import { FileReference } from "./field";
 
 /**
  * The model for field values
@@ -46,6 +47,9 @@ export interface FieldData {
      * field that has some options which takes extended values.
      * */
     extendedOptionValues: ExtendedOptionValue[]
+
+    /* storing attachment files if any */
+    fileReferences: FileReference[] | null
 
 }
 
