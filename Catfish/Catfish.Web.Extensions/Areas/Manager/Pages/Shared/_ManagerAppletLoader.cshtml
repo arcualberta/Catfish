@@ -25,7 +25,7 @@
     _assetRegistry.RegisterScript("assets/applets/applets.umd.js",
                                   "assets/applets/applets.umd.js");
 
-    _assetRegistry.RegisterScript("assets/public/vendors/vuedemi/vuerouter.global.js");
+    _assetRegistry.RegisterScript("assets/public/vendors/vuerouter/vuerouter.global.js");
 
 }
 
@@ -36,9 +36,8 @@
 <script>
 
     const applet = Applets.@Model;
-
     if (!applet)
-        throw "Applet not found.";
+        throw "Applets.@Model not found";
 
     const { createApp } = Vue;
 
