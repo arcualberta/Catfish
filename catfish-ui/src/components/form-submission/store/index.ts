@@ -187,6 +187,8 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
           //  let fKey: string=formId.toString() + "_" + fieldId.toString();
           // this.fileKeys?.push(fKey);
            this.fileKeys?.push(fieldId.toString());
+         
+           //add FileReference
         } ,
         getFile(files: FileList, fieldId: Guid, formId: Guid){
             Array.from(files).forEach(file => { 
@@ -194,6 +196,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 this.addFile(file, fieldId);
                 //console.log("file:" + JSON.stringify(store.files))
             });
-        }
+        },
+       
     }
 });

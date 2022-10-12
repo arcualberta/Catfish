@@ -29,30 +29,23 @@ import { Guid } from 'guid-typescript';
     const isAttachmentField = props.model.type === FieldType.AttachmentField ? true: false;
     const dropzoneFile=ref("");
     const fieldElementId=props.model.id.toString();
-    const frmId=ref(props.formId);
+    const frmId=computed(()=>props.formId);
+    
     const drop=(e: any)=>{
             dropzoneFile.value= e.dataTransfer.files[0];
-           // Array.from(e.dataTransfer.files as FileList).forEach(file => { 
-           //     console.log("fieldId:" + fieldElementId + "model Id" + props.model.id)
-           //    store.addFile(file, fieldElementId);
-                //console.log("file:" + JSON.stringify(store.files))
-          //  });
+           
           store.getFile(e.dataTransfer.files as FileList, props.model.id, props.formId);
     };
 
     const selectedFile=(fieldId: string)=>{
         dropzoneFile.value=document.getElementById(fieldId).files[0];
          const inputElement = document.getElementById(fieldId) as HTMLInputElement;
-            //Array.from(inputElement?.files as FileList).forEach(file => {
-            //    store.addFile(file,fieldElementId);
-                //console.log("file:" + JSON.stringify(store.files))
-           // });
-           console.log("formId" + frmId.value)
+           
+           console.log("formId: " + frmId.value)
             store.getFile(inputElement?.files as FileList, props.model.id, frmId.value);
     }
 
-   // const files = computed(()=>store.files as File[])
-   // console.log(files.value)
+  
 </script>
 
 <template>
