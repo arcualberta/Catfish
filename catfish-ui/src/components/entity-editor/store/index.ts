@@ -130,10 +130,6 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
 
             attachedFiles?.forEach(file => {
                 formData.append('files', file);
-               
-                this.addFileReference(file, Guid.parse(fileKeys[fileKeyIdx]));
-                fileKeyIdx++;
-
             });
             
             fileKeys?.forEach(key => {
