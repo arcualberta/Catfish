@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository.Interfaces;
+using Newtonsoft.Json.Serialization;
 using System.Net;
 
 
@@ -50,20 +51,28 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Entity value)
+        public async Task<IActionResult> Post([FromForm] string value, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest();
 
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                Entity entityInstance = JsonConvert.DeserializeObject<Entity>(value, settings);
+
                 // var code = await _entityTemplateService.AddEntity(value);
-                EntityTemplate template = _entityTemplateService.GetEntityTemplate(value.TemplateId);
-                value.Template = template;
+                EntityTemplate template = _entityTemplateService.GetEntityTemplate(entityInstance.TemplateId);//value.TemplateId)
+                entityInstance.Template = template; //value.Template=template
 
-                var code = await _entityService.AddEntity(value);
+                var code = await _entityService.AddEntity(entityInstance, files, fileKeys);//value
 
-                await _context.SaveChangesAsync();
+               // await _context.SaveChangesAsync();
                return StatusCode((int)code);
             }
             catch(Exception)

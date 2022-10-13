@@ -39,11 +39,15 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 id: Guid.createEmpty().toString() as unknown as Guid,
                 templateId: Guid.createEmpty().toString() as unknown as Guid,
                 entityType: eEntityType.Unknown,
-                data: [] as FormDataModel[],
-                files: [] as File[]
+                data: [] as FormDataModel[]
+              
             }
         },
         loadTemplate(templateId: Guid) {
+
+            if(templateId.toString() === Guid.EMPTY)
+                return;
+
             const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${templateId}`;
 
             fetch(api, {
@@ -56,6 +60,31 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 .catch((error) => {
                     console.error('Load Template API Error:', error);
                 });
+        },
+        addFileReference(file: File, fieldId: Guid){
+            //let fdIndex = this.formData.fieldData.findIndex(fd=>fd.fieldId === fieldId) as number;
+            this.entity?.data.forEach((frmd)=>{
+                frmd.fieldData.forEach(fld => {
+                    if(fld.fieldId === fieldId){
+                        fld.fileReferences?.push({
+                        
+                            id: Guid.create(),
+                            fileName:file.name,
+                            originalFileName: file.name,
+                            thumbnail: "",
+                            contentType: file.type,
+                            size: file.size,
+                            created: new Date(),
+                            updated: new Date(),
+        
+                            //file: file,
+                            fieldId: fieldId
+                        })
+                    }
+                
+                })
+            })
+           
         },
         saveEntity(){
             //console.log("save form template: ", JSON.stringify(this.template));
@@ -77,22 +106,40 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 method = "PUT";
             }
             //get files if any
-            var formData = new FormData();
-            const formSubmissionstore = useFormSubmissionStore();
-            
+            const formSubmissionstore = useFormSubmissionStore();           
             let attachedFiles = formSubmissionstore.files as File[];
-             //  this.entity!.files = attachedFiles.slice();
-            // attachedFiles.forEach((file)=>{
-            //        this.entity?.files?.push(file);
-            // });
-           //formData.append('value', JSON.stringify(this.entity));
+            let fileKeys = formSubmissionstore.fileKeys as string[];
 
+             //update fileReferences
+             
+
+            var formData = new FormData();
+             //update fileReference
+            let fileKeyIdx=0;
+            attachedFiles?.forEach(file => {
+                this.addFileReference(file, Guid.parse(fileKeys[fileKeyIdx]));
+                fileKeyIdx++;
+            });
+            formData.append('value', JSON.stringify(this.entity));
+
+            attachedFiles?.forEach(file => {
+                formData.append('files', file);
+               
+                this.addFileReference(file, Guid.parse(fileKeys[fileKeyIdx]));
+                fileKeyIdx++;
+
+            });
+            
+            fileKeys?.forEach(key => {
+                formData.append('fileKeys', key);
+            })
+            
+           
             fetch(api, {
-                body: JSON.stringify(this.entity),
+                body: formData, //JSON.stringify(this.entity),
                 method: method,
                 headers: {
-                        'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json'
+                        'encType': 'multipart/form-data'
                 },
             })
             .then(response => {

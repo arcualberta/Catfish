@@ -22,9 +22,9 @@ namespace Catfish.API.Repository.Models.Entities
         public virtual List<Relationship> SubjectRelationships { get; set; } = new List<Relationship>();
         public virtual List<Relationship> ObjectRelationships { get; set; } = new List<Relationship>();
 
-        [NotMapped]
+        //[NotMapped]
        // public IFormFile[]? Files { get; set; }
-        public List<IFormFile>? Files { get; set; } = new List<IFormFile>();
+       // public List<IFormFile>? Files { get; set; } = new List<IFormFile>();
 
     }
 
