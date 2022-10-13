@@ -4,7 +4,6 @@
     import { eEntityType } from "../../shared/constants"
     import { useEntityEditorStore } from "../store"
     import { Entity } from '../models'
-    import { contains } from 'bootstrap-vue-3/dist/utils';
 
     const store = useEntityEditorStore();
     const props = defineProps<{
