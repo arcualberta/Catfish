@@ -8,6 +8,8 @@ export interface Entity{
     templateId: Guid
     entityType: eEntityType
     data: FormData[]
+    subjectRelationships: Relationship[]
+    objectRelationships: Relationship[]
     files: File[] | null
 }
 
@@ -17,4 +19,18 @@ export interface TemplateEntry {
     templateId: Guid
     templateName: string
 }
+
+export interface Relationship {
+    subjectEntityId: Guid
+    subjectEntity: Entity
+    objectEntityId: Guid
+    objectEntity: Entity
+    name: string
+    order: number
+}
+
+
+
+
+
 

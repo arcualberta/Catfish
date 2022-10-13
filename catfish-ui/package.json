@@ -5,7 +5,7 @@
   ],
   "main": "./dist/applets.umd.js",
   "module": "./dist/applets.es.js",
-  "unpkg": "./dist/applets.unpkg.js", 
+  "unpkg": "./dist/applets.unpkg.js",
   "exports": {
     ".": {
       "import": "./dist/applets.es.js",

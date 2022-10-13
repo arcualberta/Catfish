@@ -30,6 +30,10 @@ library.add(faIcons.faQuestionCircle)
 library.add(faIcons.faThList)
 library.add(faIcons.faArrowLeft)
 
+
+
+
+
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)
     .use(createPinia())
