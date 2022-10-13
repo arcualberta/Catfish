@@ -69,7 +69,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             //let fdIndex = this.formData.fieldData.findIndex(fd=>fd.fieldId === fieldId) as number;
             this.entity?.data.forEach((frmd)=>{
                 frmd.fieldData.forEach(fld => {
-                    if(fld.fieldId === fieldId){
+                    if(fld.fieldId.toString() === fieldId.toString()){
                         if(!fld.fileReferences)
                         fld.fileReferences= [] as FileReference[];
                         fld.fileReferences?.push({
