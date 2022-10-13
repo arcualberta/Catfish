@@ -14,12 +14,12 @@ namespace Catfish.API.Repository.Services
         {
             _context = context;
         }
-        public Entity GetEntity(Guid id)
+        public EntityData GetEntity(Guid id)
         {
             return _context.Entities.Where(t => t.Id == id).FirstOrDefault();
         }
 
-        public async Task<HttpStatusCode> AddEntity(Entity entity, List<IFormFile> files, List<string> fileKeys)
+        public async Task<HttpStatusCode> AddEntity(EntityData entity, List<IFormFile> files, List<string> fileKeys)
         {
             if (files.Count > 0 && fileKeys.Count > 0)
             {
@@ -29,11 +29,11 @@ namespace Catfish.API.Repository.Services
             return HttpStatusCode.OK;
         }
 
-        public async Task<HttpStatusCode> UpdateEntity(Entity entity)
+        public async Task<HttpStatusCode> UpdateEntity(EntityData entity)
         {
             throw new NotImplementedException();
         }
-        protected void AttachFiles(List<IFormFile> files, List<string> fileKeys, Entity dst)
+        protected void AttachFiles(List<IFormFile> files, List<string> fileKeys, EntityData dst)
         {
             //Grouping files by attachment field IDs into a dictionary
             //Dictionary<Guid, List<IFormFile>> groupdFileList = new Dictionary<Guid, List<IFormFile>>();

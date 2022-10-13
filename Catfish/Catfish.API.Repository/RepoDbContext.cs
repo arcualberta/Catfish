@@ -20,7 +20,7 @@ namespace Catfish.API.Repository
             //builder.Entity<Entity>()
             //    .HasDiscriminator<string>("Discrimiinator");
 
-            builder.Entity<Entity>()
+            builder.Entity<EntityData>()
                 .ToTable("CF_Repo_Entities");
 
             //builder.Entity<Item>()
@@ -47,7 +47,7 @@ namespace Catfish.API.Repository
 
         public DbSet<Form>? Forms { get; set; }
         public DbSet<FormData>? FormData { get; set; }
-        public DbSet<Entity>? Entities { get; set; }
+        public DbSet<EntityData>? Entities { get; set; }
         public DbSet<EntityTemplate>? EntityTemplates { get; set; }
         //public DbSet<Collection>? Collections { get; set; }
         public DbSet<Relationship>? Relationships { get; set; }
