@@ -6,7 +6,7 @@ import { TextCollection } from "./textCollection";
  * Form model
  * */
 
-export interface Form {
+export interface FormTemplate {
     /**
      * Unique form ID.
      * */
