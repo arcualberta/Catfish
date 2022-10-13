@@ -1,12 +1,13 @@
 import { Guid } from 'guid-typescript';
 import { defineStore } from 'pinia';
-import { Entity, TemplateEntry } from '../models';
+import { EntityData, Relationship, TemplateEntry } from '../models';
 import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { eEntityType } from '@/components/shared/constants';
 import { createFormData } from '@/components/shared/form-helpers'
 import { Form, FormData as FormDataModel } from '@/components/shared/form-models'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
+import {FileReference} from '@/components/shared/form-models/field'
 import router from '@/router';
 
 import { useFormSubmissionStore } from '@/components/form-submission/store';
@@ -15,7 +16,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         id: null as Guid | null,
         templates: [] as TemplateEntry[],
         entityTemplate: null as EntityTemplate | null,
-        entity: null as Entity | null,
+        entity: null as EntityData | null,
         transientMessageModel: {} as TransientMessageModel,
        
     }),
@@ -39,7 +40,10 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 id: Guid.createEmpty().toString() as unknown as Guid,
                 templateId: Guid.createEmpty().toString() as unknown as Guid,
                 entityType: eEntityType.Unknown,
-                data: [] as FormDataModel[]
+                data: [] as FormDataModel[],
+                subjectRelationships:[] as Relationship[],
+                objectRelationships: [] as Relationship[],
+                files: [] as File[]
               
             }
         },
@@ -66,6 +70,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             this.entity?.data.forEach((frmd)=>{
                 frmd.fieldData.forEach(fld => {
                     if(fld.fieldId === fieldId){
+                        if(!fld.fileReferences)
+                        fld.fileReferences= [] as FileReference[];
                         fld.fileReferences?.push({
                         
                             id: Guid.create(),
@@ -186,7 +192,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             })
                 .then(response => response.json())
                 .then(data => {
-                    this.entity = data as Entity;
+                    this.entity = data as EntityData;
                 })
                 .catch((error) => {
                     console.error('Load Entity API Error:', error);

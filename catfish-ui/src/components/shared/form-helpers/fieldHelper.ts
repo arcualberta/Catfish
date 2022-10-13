@@ -1,3 +1,4 @@
+import AttachmentField from "@/components/form-submission/components/AttachmentField.vue";
 import { Guid } from "guid-typescript"
 
 import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, Text, Form, FormData } from "../form-models";
@@ -27,6 +28,7 @@ export const isMonolingualTextInputField = (field: Field): boolean => Object.val
  */
 export const isTextInputField = (field: Field): boolean => Object.values(MonolingualFieldType).map(x => x as unknown as string).includes(field.type as unknown as string);
 
+export const isAttachmentField = (field: Field): boolean => Object.values(AttachmentField).map(x => x as unknown as string).includes(field.type as unknown as string);
 /**
  * Returns the title of a field as a string. If multiple values are specified, only returns the first value.
  * @param field: input field
@@ -62,6 +64,15 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
 
     if (isOptionField(field)) {
         fieldData.selectedOptionIds = []
+
+        if (field.allowCustomOptionValues)
+            fieldData.customOptionValues = []
+
+        if (field.options?.find(opt => opt.isExtendedInput))
+            fieldData.extendedOptionValues = []
+    }
+    else if (isAttachmentField(field)) {
+        fieldData.fileReferences = [];
 
         if (field.allowCustomOptionValues)
             fieldData.customOptionValues = []

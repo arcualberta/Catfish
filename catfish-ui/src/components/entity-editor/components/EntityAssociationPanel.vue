@@ -3,11 +3,11 @@
     import { computed } from "vue"
     import { eEntityType } from "../../shared/constants"
     import { useEntityEditorStore } from "../store"
-    import { Entity } from '../models'
+    import { EntityData } from '../models'
 
     const store = useEntityEditorStore();
     const props = defineProps<{
-        entity: Entity,
+        entity: EntityData,
         relationshipType: string,
         panelTitle:string
     }>();
