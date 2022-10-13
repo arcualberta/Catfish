@@ -41,7 +41,7 @@
     import { Field, Form, FieldEntry } from '../../shared/form-models'
     import { EntityTemplate } from '../../entity-template-builder/models'
     import { instantiateRequiredForms, getField, getFieldData } from '@/components/shared/entity-helpers'
-    import { Entity } from "../../entity-editor/models";
+    import { EntityData } from "../../entity-editor/models";
 
     import { default as FieldComponent } from '../../form-submission/components/Field.vue'
 
@@ -61,16 +61,16 @@
     const eEntityTypes = Object.values(eEntityType);
 
     const titleField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
-    const titleFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
+    const titleFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
     const descriptionField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
-    const descriptionFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
+    const descriptionFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
     const mediaField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
-    const mediaFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
+    const mediaFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
 
    
 
     watch(() => entityTemplate.value, async newTemplate => {
-        instantiateRequiredForms(entity.value as Entity, newTemplate as EntityTemplate);
+        instantiateRequiredForms(entity.value as EntityData, newTemplate as EntityTemplate);
     })
 
 </script>

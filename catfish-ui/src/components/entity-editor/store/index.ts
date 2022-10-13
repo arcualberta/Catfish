@@ -1,12 +1,13 @@
 import { Guid } from 'guid-typescript';
 import { defineStore } from 'pinia';
-import { Entity, TemplateEntry } from '../models';
+import { EntityData, Relationship, TemplateEntry } from '../models';
 import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { eEntityType } from '@/components/shared/constants';
 import { createFormData } from '@/components/shared/form-helpers'
 import { Form, FormData as FormDataModel } from '@/components/shared/form-models'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
+import {FileReference} from '@/components/shared/form-models/field'
 import router from '@/router';
 
 import { useFormSubmissionStore } from '@/components/form-submission/store';
@@ -15,9 +16,9 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         id: null as Guid | null,
         templates: [] as TemplateEntry[],
         entityTemplate: null as EntityTemplate | null,
-        entity: null as Entity | null,
+        entity: null as EntityData | null,
         transientMessageModel: {} as TransientMessageModel,
-       
+        updatedFileKeys: [] as string[] | null
     }),
     actions: {
         loadTemplates() {
@@ -39,7 +40,10 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 id: Guid.createEmpty().toString() as unknown as Guid,
                 templateId: Guid.createEmpty().toString() as unknown as Guid,
                 entityType: eEntityType.Unknown,
-                data: [] as FormDataModel[]
+                data: [] as FormDataModel[],
+                subjectRelationships:[] as Relationship[],
+                objectRelationships: [] as Relationship[],
+                files: [] as File[]
               
             }
         },
@@ -62,14 +66,19 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 });
         },
         addFileReference(file: File, fieldId: Guid){
-            //let fdIndex = this.formData.fieldData.findIndex(fd=>fd.fieldId === fieldId) as number;
+            let fileKey="";
             this.entity?.data.forEach((frmd)=>{
                 frmd.fieldData.forEach(fld => {
-                    if(fld.fieldId === fieldId){
+                    if(fld.fieldId.toString() === fieldId.toString()){
+                        if(!fld.fileReferences)
+                        fld.fileReferences= [] as FileReference[];
+                        fileKey=this.entity!.id + "_" + fld.id + "_" + fld.fieldId;
+                        this.updatedFileKeys?.push(fileKey);
+                        let fileName=fileKey+ "_" + file.name;
                         fld.fileReferences?.push({
                         
                             id: Guid.create(),
-                            fileName:file.name,
+                            fileName:fileName,
                             originalFileName: file.name,
                             thumbnail: "",
                             contentType: file.type,
@@ -80,6 +89,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                             //file: file,
                             fieldId: fieldId
                         })
+                        
                     }
                 
                 })
@@ -109,7 +119,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             const formSubmissionstore = useFormSubmissionStore();           
             let attachedFiles = formSubmissionstore.files as File[];
             let fileKeys = formSubmissionstore.fileKeys as string[];
-
+           
              //update fileReferences
              
 
@@ -117,20 +127,17 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
              //update fileReference
             let fileKeyIdx=0;
             attachedFiles?.forEach(file => {
-                this.addFileReference(file, Guid.parse(fileKeys[fileKeyIdx]));
+                let newFileKey = this.addFileReference(file, Guid.parse(fileKeys[fileKeyIdx]));
+                
                 fileKeyIdx++;
             });
             formData.append('value', JSON.stringify(this.entity));
 
             attachedFiles?.forEach(file => {
                 formData.append('files', file);
-               
-                this.addFileReference(file, Guid.parse(fileKeys[fileKeyIdx]));
-                fileKeyIdx++;
-
             });
             
-            fileKeys?.forEach(key => {
+            this.updatedFileKeys?.forEach(key => {
                 formData.append('fileKeys', key);
             })
             
@@ -186,7 +193,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             })
                 .then(response => response.json())
                 .then(data => {
-                    this.entity = data as Entity;
+                    this.entity = data as EntityData;
                 })
                 .catch((error) => {
                     console.error('Load Entity API Error:', error);

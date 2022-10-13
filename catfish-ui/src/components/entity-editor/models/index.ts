@@ -3,7 +3,7 @@ import { eEntityType } from "../../shared/constants";
 import { FormData } from "../../shared/form-models";
 
 
-export interface Entity{
+export interface EntityData{
     id: Guid
     templateId: Guid
     entityType: eEntityType
@@ -22,9 +22,9 @@ export interface TemplateEntry {
 
 export interface Relationship {
     subjectEntityId: Guid
-    subjectEntity: Entity
+    subjectEntity: EntityData
     objectEntityId: Guid
-    objectEntity: Entity
+    objectEntity: EntityData
     name: string
     order: number
 }

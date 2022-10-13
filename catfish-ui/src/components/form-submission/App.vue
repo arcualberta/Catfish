@@ -1,11 +1,11 @@
 <script setup lang="ts">
-    import { defineComponent, PropType, computed, watch} from "vue";
+    import { computed, watch} from "vue";
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
 
     import { useFormSubmissionStore } from './store';
-    import { default as Form } from './components/Form.vue';
-    import { FieldType } from '../shared/form-models';
+    //import { default as Form } from './components/Form.vue';
+    //import { FieldType } from '../shared/form-models';
 
     const props = defineProps<{
         piniaInstance: Pinia,

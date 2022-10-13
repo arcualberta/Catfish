@@ -34,4 +34,3 @@ export { default as EntityEditor } from './entity-editor/App.vue'
 export { useEntityEditorStore } from './entity-editor/store'
 
 
-export {default as HelloWorld} from './hello-world/App.vue'
