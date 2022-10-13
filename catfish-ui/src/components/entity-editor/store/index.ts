@@ -18,7 +18,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         entityTemplate: null as EntityTemplate | null,
         entity: null as EntityData | null,
         transientMessageModel: {} as TransientMessageModel,
-       
+        updatedFileKeys: [] as string[] | null
     }),
     actions: {
         loadTemplates() {
@@ -66,16 +66,19 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 });
         },
         addFileReference(file: File, fieldId: Guid){
-            //let fdIndex = this.formData.fieldData.findIndex(fd=>fd.fieldId === fieldId) as number;
+            let fileKey="";
             this.entity?.data.forEach((frmd)=>{
                 frmd.fieldData.forEach(fld => {
                     if(fld.fieldId.toString() === fieldId.toString()){
                         if(!fld.fileReferences)
                         fld.fileReferences= [] as FileReference[];
+                        fileKey=this.entity!.id + "_" + fld.id + "_" + fld.fieldId;
+                        this.updatedFileKeys?.push(fileKey);
+                        let fileName=fileKey+ "_" + file.name;
                         fld.fileReferences?.push({
                         
                             id: Guid.create(),
-                            fileName:file.name,
+                            fileName:fileName,
                             originalFileName: file.name,
                             thumbnail: "",
                             contentType: file.type,
@@ -86,6 +89,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                             //file: file,
                             fieldId: fieldId
                         })
+                        
                     }
                 
                 })
@@ -115,7 +119,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             const formSubmissionstore = useFormSubmissionStore();           
             let attachedFiles = formSubmissionstore.files as File[];
             let fileKeys = formSubmissionstore.fileKeys as string[];
-
+           
              //update fileReferences
              
 
@@ -123,7 +127,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
              //update fileReference
             let fileKeyIdx=0;
             attachedFiles?.forEach(file => {
-                this.addFileReference(file, Guid.parse(fileKeys[fileKeyIdx]));
+                let newFileKey = this.addFileReference(file, Guid.parse(fileKeys[fileKeyIdx]));
+                
                 fileKeyIdx++;
             });
             formData.append('value', JSON.stringify(this.entity));
@@ -132,7 +137,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 formData.append('files', file);
             });
             
-            fileKeys?.forEach(key => {
+            this.updatedFileKeys?.forEach(key => {
                 formData.append('fileKeys', key);
             })
             

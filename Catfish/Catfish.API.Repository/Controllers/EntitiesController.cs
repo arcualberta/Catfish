@@ -72,7 +72,7 @@ namespace Catfish.API.Repository.Controllers
 
                 var code = await _entityService.AddEntity(entityInstance, files, fileKeys);//value
 
-               // await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                return StatusCode((int)code);
             }
             catch(Exception)
