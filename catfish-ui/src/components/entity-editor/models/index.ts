@@ -33,8 +33,21 @@ export interface Relationship {
     order: number
 }
 
+export interface EntityEntry
+{
+    id: Guid
+    title: string
+    description: string
+    created: Date
+    updated: Date
+}
 
-
+export interface EntitySearchResult
+{
+    result: EntityEntry[];
+    offset: number
+    total: number
+}
 
 
 
