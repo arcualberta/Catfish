@@ -22,7 +22,24 @@
                 <span v-else>{{entityTemplate?.name}}</span>
             </div>
         </div>
+        <div class="row mt-2">
+            <div class="col-sm-2">
+                <label>Entity Title:</label>
+            </div>
+            <div class="col-sm-10">
+               <input type="text" v-model="entity!.title" class="form-control"  />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-sm-2">
+                <label>Entity Description:</label>
+            </div>
+            <div class="col-sm-10">
+               <input type="text" v-model="entity!.description" class="form-control"  />
+            </div>
+        </div>
         <br />
+        <h5>Form Fields</h5>
         <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />
         <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />
         <FieldComponent :model="mediaField" :model-data="mediaFieldData" v-if="store.mediaField" />
@@ -34,7 +51,7 @@
 <script setup lang="ts">
 
     import { computed, ref, watch } from "vue"
-
+    import {storeToRefs} from "pinia"
     import { useEntityEditorStore } from "../store"
     import { eEntityType } from "../../shared/constants"
     import { Guid } from 'guid-typescript';
@@ -46,8 +63,9 @@
     import { default as FieldComponent } from '../../form-submission/components/Field.vue'
 
     const store = useEntityEditorStore();
-    const entity = computed(() => store.entity)
-   
+    //const entity = computed(() => store.entity)
+    const {entity} = storeToRefs(store);
+    
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
     })
@@ -72,5 +90,6 @@
     watch(() => entityTemplate.value, async newTemplate => {
         instantiateRequiredForms(entity.value as EntityData, newTemplate as EntityTemplate);
     })
+     
 
 </script>

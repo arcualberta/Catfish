@@ -43,7 +43,11 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 data: [] as FormDataModel[],
                 subjectRelationships:[] as Relationship[],
                 objectRelationships: [] as Relationship[],
-                files: [] as File[]
+                files: [] as File[],
+                created: new Date(),
+                updated: new Date(),
+                title: "",
+                description: ""
               
             }
         },
@@ -199,6 +203,12 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                     console.error('Load Entity API Error:', error);
                 });
         },
+        updateTitle(title: string){
+            this.entity!.title = title;
+        },
+        updateDescription(description: string){
+            this.entity!.description = description;
+        }
     },
     getters: {
         titleField: (state) => {

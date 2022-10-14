@@ -10,7 +10,11 @@ export interface EntityData{
     data: FormData[]
     subjectRelationships: Relationship[]
     objectRelationships: Relationship[]
-    files: File[] | null
+    files: File[] | null,
+    created: Date,
+    updated?: Date | null,
+    title: string,
+    description: string | null
 }
 
 export interface TemplateEntry {
