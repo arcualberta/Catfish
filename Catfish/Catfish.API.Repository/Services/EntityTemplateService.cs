@@ -21,7 +21,7 @@ namespace Catfish.API.Repository.Services
 
         public async Task<HttpStatusCode> AddEntity(EntityTemplate entityTemplate)
         {
-            List<Form> associatedForms = await LoadAssociatedForms(entityTemplate);
+            List<FormTemplate> associatedForms = await LoadAssociatedForms(entityTemplate);
             foreach(var form in associatedForms)
                 entityTemplate.Forms.Add(form);
 
@@ -37,10 +37,10 @@ namespace Catfish.API.Repository.Services
                 return HttpStatusCode.NotFound;
 
             //Loading the list of forms to be associated with the dbEntityTemplate
-            List<Form> associatedForms = await LoadAssociatedForms(entityTemplate);
+            List<FormTemplate> associatedForms = await LoadAssociatedForms(entityTemplate);
 
             //Add new form associations that do not already exist in the database
-            foreach (Form form in associatedForms)
+            foreach (FormTemplate form in associatedForms)
                 if (!dbEntityTemplate.Forms.Any(f => f.Id == form.Id))
                     dbEntityTemplate.Forms.Add(form);
 
@@ -62,7 +62,7 @@ namespace Catfish.API.Repository.Services
 
         #region Private Methods
 
-        private async Task<List<Form>> LoadAssociatedForms(EntityTemplate entityTemplate)
+        private async Task<List<FormTemplate>> LoadAssociatedForms(EntityTemplate entityTemplate)
         {
             var formIds = entityTemplate.EntityTemplateSettings?.DataForms.Select(form => form.FormId)
                 .Union(entityTemplate.EntityTemplateSettings.MetadataForms.Select(form => form.FormId))
@@ -71,7 +71,7 @@ namespace Catfish.API.Repository.Services
             if (formIds != null && formIds.Any())
                 return await _context.Forms!.Where(form => formIds!.Contains(form.Id)).ToListAsync();
             else
-                return new List<Form>();
+                return new List<FormTemplate>();
         }
         #endregion
     }
