@@ -1,9 +1,9 @@
 import { Guid } from 'guid-typescript';
 import { defineStore } from 'pinia';
-import { EntityData, Relationship, TemplateEntry } from '../models';
+import { EntityData, Relationship, TemplateEntry, EntitySearchResult } from '../models';
 import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
-import { eEntityType } from '@/components/shared/constants';
+import { eEntityType, eSearchTarget } from '@/components/shared/constants';
 import { createFormData } from '@/components/shared/form-helpers'
 import { Form, FormData as FormDataModel } from '@/components/shared/form-models'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
@@ -18,7 +18,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         entityTemplate: null as EntityTemplate | null,
         entity: null as EntityData | null,
         transientMessageModel: {} as TransientMessageModel,
-        updatedFileKeys: [] as string[] | null
+        updatedFileKeys: [] as string[] | null,
+        entitySearchResult: null as EntitySearchResult | null
     }),
     actions: {
         loadTemplates() {
@@ -203,11 +204,18 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                     console.error('Load Entity API Error:', error);
                 });
         },
-        updateTitle(title: string){
-            this.entity!.title = title;
-        },
-        updateDescription(description: string){
-            this.entity!.description = description;
+        loadEntities(entityType: eEntityType, searchTarget: eSearchTarget, searchText: string, offset: number, max?: number){
+            let api = config.dataRepositoryApiRoot + "/api/entities/"+ entityType + "/" + searchTarget + "/" + searchText + "/" +offset + "/" + max ;
+            fetch(api, {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                    this.entitySearchResult = data as EntitySearchResult;
+            })
+            .catch((error) => {
+                console.error('Load Entities API Error:', error);
+            });
         }
     },
     getters: {

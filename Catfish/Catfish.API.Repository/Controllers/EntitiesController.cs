@@ -23,7 +23,7 @@ namespace Catfish.API.Repository.Controllers
             _entityService = entityService;
         }
         // GET: api/<EntityTemplateController>
-        [HttpGet]
+        [HttpGet("{entityType}/{searchTarget}/{searchText}/{offset}/{max}")]
        
         public async Task<ActionResult<EntitySearchResult>> Get(eEntityType entityType, eSearchTarget searchTarget,string searchText, int offset=0,int? max=null)
         {
