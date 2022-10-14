@@ -14,5 +14,11 @@
         Collection,
         Unknown
     }
+    public enum eSearchTarget
+    {
+        Title,
+        Description,
+        Unknown
+    }
 
 }

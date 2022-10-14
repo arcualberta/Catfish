@@ -26,6 +26,11 @@ namespace Catfish.API.Repository.Models.Entities
        // public IFormFile[]? Files { get; set; }
        // public List<IFormFile>? Files { get; set; } = new List<IFormFile>();
 
+        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+
     }
 
 }

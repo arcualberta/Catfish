@@ -4,7 +4,7 @@
     import { eEntityType } from "../../shared/constants"
     import { useEntityEditorStore } from "../store"
     import { EntityData } from '../models'
-
+    import { EntitySelectionList } from "../../shared/components/"
     const store = useEntityEditorStore();
     const props = defineProps<{
         entity: EntityData,
@@ -49,13 +49,9 @@
         </b-col>
         <b-col class="col-sm-5">
             <div class="form-field-border">
+                <EntitySelectionList></EntitySelectionList>
             </div>
         </b-col>
     </b-row>
-
-
-    <div class="row">
-        <v-multiselect-listbox :options="['Alabama', 'California']"></v-multiselect-listbox>
-    </div>
 
 </template>

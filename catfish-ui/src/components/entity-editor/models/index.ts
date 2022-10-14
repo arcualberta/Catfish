@@ -10,7 +10,11 @@ export interface EntityData{
     data: FormData[]
     subjectRelationships: Relationship[]
     objectRelationships: Relationship[]
-    files: File[] | null
+    files: File[] | null,
+    created: Date,
+    updated?: Date | null,
+    title: string,
+    description: string | null
 }
 
 export interface TemplateEntry {
@@ -29,8 +33,21 @@ export interface Relationship {
     order: number
 }
 
+export interface EntityEntry
+{
+    id: Guid
+    title: string
+    description: string
+    created: Date
+    updated: Date
+}
 
-
+export interface EntitySearchResult
+{
+    result: EntityEntry[];
+    offset: number
+    total: number
+}
 
 
 
