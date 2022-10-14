@@ -19,7 +19,30 @@ namespace Catfish.API.Repository.Services
             return _context.Entities.Where(t => t.Id == id).FirstOrDefault();
         }
 
-        public async Task<HttpStatusCode> AddEntity(EntityData entity, List<IFormFile> files, List<string> fileKeys)
+        public List<EntityEntry> GetEntities(eEntityType entityType, eSearchTarget searchTarget, string searchText, int offset = 0, int? max = null)
+        {
+            var query = _context.Entities.Where(e => e.EntityType == entityType);
+            if(searchTarget == eSearchTarget.Title)
+            {
+                query.Where(e=>e.Title == searchText);
+            }
+            else if(searchTarget == eSearchTarget.Description)
+            {
+                query.Where(e=>e.Description == searchText);
+            }
+            else
+            {
+                query.Where(e => e.Title == searchText || e.Description == searchText);
+            }
+
+            if (offset > 0)
+                query.Skip(offset);
+            if (max != null && max > 0)
+                query.Take(max.Value);
+
+            return query.Select(e => new EntityEntry { Id = e.Id, Title = e.Title, Description = e.Description, Created = e.Created, Updated = e.Updated }).ToList();
+        }
+            public async Task<HttpStatusCode> AddEntity(EntityData entity, List<IFormFile> files, List<string> fileKeys)
         {
             if (files.Count > 0 && fileKeys.Count > 0)
             {

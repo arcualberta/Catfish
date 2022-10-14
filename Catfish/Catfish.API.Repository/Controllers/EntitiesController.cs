@@ -25,13 +25,23 @@ namespace Catfish.API.Repository.Controllers
         // GET: api/<EntityTemplateController>
         [HttpGet]
        
-        public async Task<ActionResult<IEnumerable<EntityData>>> Get()
+        public async Task<ActionResult<EntitySearchResult>> Get(eEntityType entityType, eSearchTarget searchTarget,string searchText, int offset=0,int? max=null)
         {
             if (_context.Entities == null)
             {
                 return NotFound();
             }
-            return await _context.Entities.ToListAsync();
+
+            EntitySearchResult result = new EntitySearchResult();
+            
+            List<EntityEntry> entities = _entityService.GetEntities(entityType, searchTarget, searchText, offset, max);
+
+
+            result.Result = entities;
+            result.Offset = offset;
+            result.Total = entities.Count;
+
+            return result;
             
         }
 
