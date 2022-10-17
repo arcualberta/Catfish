@@ -24,7 +24,7 @@ namespace Catfish.API.Repository.Services
             var query = _context.Entities.Where(e => e.EntityType == entityType);
             if(searchTarget == eSearchTarget.Title)
             {
-                query.Where(e=>e.Title == searchText);
+                query.Where(e=>e.Title.Contains( searchText));
             }
             else if(searchTarget == eSearchTarget.Description)
             {
