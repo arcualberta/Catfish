@@ -111,7 +111,30 @@ namespace Catfish.API.Repository.Migrations
                     b.ToTable("CF_Repo_Relationships");
                 });
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Forms.Form", b =>
+            modelBuilder.Entity("Catfish.API.Repository.Models.Forms.FormData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FormId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SerializedFieldData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CF_Repo_FormData");
+                });
+
+            modelBuilder.Entity("Catfish.API.Repository.Models.Forms.FormTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -140,30 +163,7 @@ namespace Catfish.API.Repository.Migrations
                     b.ToTable("CF_Repo_Forms");
                 });
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Forms.FormData", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("FormId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SerializedFieldData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CF_Repo_FormData");
-                });
-
-            modelBuilder.Entity("EntityTemplateForm", b =>
+            modelBuilder.Entity("EntityTemplateFormTemplate", b =>
                 {
                     b.Property<Guid>("EntityTemplatesId")
                         .HasColumnType("uniqueidentifier");
@@ -175,7 +175,7 @@ namespace Catfish.API.Repository.Migrations
 
                     b.HasIndex("FormsId");
 
-                    b.ToTable("CF_Repo_EntityTemplateForm");
+                    b.ToTable("CF_Repo_EntityTemplateFormTemplate");
                 });
 
             modelBuilder.Entity("Catfish.API.Repository.Models.Entities.EntityData", b =>
@@ -208,7 +208,7 @@ namespace Catfish.API.Repository.Migrations
                     b.Navigation("SubjectEntity");
                 });
 
-            modelBuilder.Entity("EntityTemplateForm", b =>
+            modelBuilder.Entity("EntityTemplateFormTemplate", b =>
                 {
                     b.HasOne("Catfish.API.Repository.Models.Entities.EntityTemplate", null)
                         .WithMany()
@@ -216,7 +216,7 @@ namespace Catfish.API.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Catfish.API.Repository.Models.Forms.Form", null)
+                    b.HasOne("Catfish.API.Repository.Models.Forms.FormTemplate", null)
                         .WithMany()
                         .HasForeignKey("FormsId")
                         .OnDelete(DeleteBehavior.Cascade)

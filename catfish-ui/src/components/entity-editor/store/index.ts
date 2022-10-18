@@ -58,6 +58,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 return;
 
             const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${templateId}`;
+            console.log(api)
 
             fetch(api, {
                 method: 'GET'
