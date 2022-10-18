@@ -15,7 +15,7 @@ namespace Catfish.API.Repository.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
-
+#pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
@@ -111,7 +111,7 @@ namespace Catfish.API.Repository.Migrations
                     b.ToTable("CF_Repo_Relationships");
                 });
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Forms.FormTemplate", b =>
+            modelBuilder.Entity("Catfish.API.Repository.Models.Forms.Form", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -216,7 +216,7 @@ namespace Catfish.API.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Catfish.API.Repository.Models.Forms.FormTemplate", null)
+                    b.HasOne("Catfish.API.Repository.Models.Forms.Form", null)
                         .WithMany()
                         .HasForeignKey("FormsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -229,7 +229,7 @@ namespace Catfish.API.Repository.Migrations
 
                     b.Navigation("SubjectRelationships");
                 });
-  
+#pragma warning restore 612, 618
         }
     }
 }
