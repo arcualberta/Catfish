@@ -34,7 +34,9 @@ import { default as config } from "@/appsettings";
       
       actions:{
             seach(entityType: eEntityType, searchTarget: eSearchTarget, searchText: string){
-              let api = config.dataRepositoryApiRoot + "/api/entities/"+ entityType + "/" + searchTarget + "/" + searchText + "/" +offset + "/" + max ;
+                let offset=0;
+                let max=10;
+                let api = config.dataRepositoryApiRoot + "/api/entities/"+ entityType + "/" + searchTarget + "/" + searchText + "/" +offset + "/" + max ;
               fetch(api, {
                   method: 'GET'
               })
