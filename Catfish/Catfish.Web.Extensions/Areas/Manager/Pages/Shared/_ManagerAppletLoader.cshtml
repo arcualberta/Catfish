@@ -33,6 +33,18 @@
 
 <div id="@mountPointId"></div>
 
+@{
+    //Creating a dictionary of all data attributes
+    var dataAttributes = new Dictionary<string, object>();
+    foreach (var pair in ViewData)
+    {
+        if (pair.Key.StartsWith("data-"))
+            dataAttributes.Add(pair.Key.Substring(5), pair.Value);
+    }
+    dataAttributes.Add("SiteUrl", ConfigHelper.SiteUrl);
+
+}
+
 <script>
 
     const applet = Applets.@Model;
@@ -41,7 +53,9 @@
 
     const { createApp } = Vue;
 
-    const app = createApp(applet);
+    const app = createApp(applet, {
+        dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes))
+    });
     app.use(Pinia.createPinia());
 
     app.mount('#@mountPointId')
