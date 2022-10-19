@@ -1,5 +1,4 @@
 ﻿@model string;
-
 @using Newtonsoft.Json;
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
@@ -14,8 +13,8 @@
     var pageId = _webApp.PageId;
     var mountPointId = string.Format("app-{0}", pageId);
 
-    _assetRegistry.RegisterScript("assets/public/vendors/vue3/vue.global.min.js",
-                              "assets/public/vendors/vue3/vue.global.prod.min.js");
+    _assetRegistry.RegisterScript("assets/public/vendors/vue3/vue.global.prod.min.js",
+                                  "assets/public/vendors/vue3/vue.global.min.js");
 
     _assetRegistry.RegisterScript("assets/public/vendors/vuedemi/index.iife.min.js");
 
@@ -45,7 +44,7 @@
 
 }
 
-<script>
+<script type="module">
 
     const applet = Applets.@Model;
     if (!applet)

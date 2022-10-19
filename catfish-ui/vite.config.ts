@@ -13,14 +13,14 @@ export default defineConfig({
             fileName: (format) => `applets.${format}.js`,
         },
         rollupOptions: {
-            external: ['vue', 'pinia'],
+            external: ['vue', 'pinia', 'router'],
             output: {
                 // Provide global variables to use in the UMD build
                 // Add external deps here
                 globals: {
                     vue: 'Vue',
                     pinia: 'Pinia',
-                    
+                    router: 'Router'
                 },
             },
         }
@@ -38,7 +38,8 @@ export default defineConfig({
         port: 8080
     }
 })
+/*
 function importToCDN(arg0: { modules: { name: string; var: string; path: string; }[]; }): import("vite").PluginOption {
     throw new Error('Function not implemented.');
 }
-
+*/

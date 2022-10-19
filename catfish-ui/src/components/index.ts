@@ -1,5 +1,3 @@
-import GoogleCalendar from '../views/GoogleCalendar.vue';
-import HelloWorldVue from './HelloWorld/HelloWorld.vue';
 
 /* Shared form models module */
 export * as FormModels from './shared/form-models';
@@ -20,7 +18,7 @@ export { useLoginStore } from './login/store';
 export { default as WorkflowBuilder } from './workflow-builder/App.vue';
 export { useWorkflowBuilderStore } from './workflow-builder/store';
 
-/* google calendar component */
+/* Google calendar component */
 export { default as GoogleCalendar } from './google-calendar/App.vue'
 export { useGoogleCalendarStore } from './google-calendar/store'
 
