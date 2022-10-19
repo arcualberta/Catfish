@@ -2,13 +2,14 @@ import { defineStore } from 'pinia';
 
 import { Guid } from "guid-typescript";
 
-import { Form, FormData } from '../../shared/form-models'
+import { FormData } from '../../shared/form-models'
 import { createFormData } from '../../shared/form-helpers'
+import { FormTemplate } from '@/components/shared/form-models/formTemplate';
 
 export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
     state: () => ({
         lang: "en",
-        form: null as Form | null,
+        form: null as FormTemplate | null,
         formData: {} as FormData,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
@@ -27,7 +28,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 .then(data => {
                     this.form = data
                     if (!retainCurrentFormData)
-                        this.formData = createFormData(this.form as Form, this.lang);
+                        this.formData = createFormData(this.form as FormTemplate, this.lang);
                 })
                 .catch((error) => {
                     console.error('Load Form API Error:', error);

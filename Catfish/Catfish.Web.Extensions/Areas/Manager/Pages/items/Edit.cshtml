@@ -5,6 +5,7 @@
     ViewBag.Title = "Edit Item";
     ViewBag.MenuItem = "CatfishWebExtensionsCollections";
     var id = ViewContext.RouteData.Values["id"]?.ToString();
+
 }
 
 <div id="CatfishWebExtensions">
@@ -24,3 +25,4 @@
     </div>
 </div>
 
+<partial name="_ManagerAppletLoader" model='"EntityEditor"' />

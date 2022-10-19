@@ -14,9 +14,7 @@ import { ref } from 'vue';
     const dropzoneFile=ref("");
     const selectFiles = () => {
                 const inputElement = document.getElementById(fieldElementId) as HTMLInputElement;
-				//Array.from(inputElement?.files as FileList).forEach(file => {
-				//	store.commit(FlattenedFormFiledMutations.ADD_FILE, { id: p.model.id, val: file })
-				//});
+				
 		};
     const active = ref(false);
     const toggleActive= ()=>{

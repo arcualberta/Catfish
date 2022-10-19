@@ -5,12 +5,12 @@
     import { FormEntry } from '../../shared/form-models'
     import { EntityTemplate } from '../../entity-template-builder/models'
     import { default as Form } from '../../form-submission/components/Form.vue'
-import { Entity } from '../models'
+import { EntityData } from '../models'
 
     const store = useEntityEditorStore();
     const props = defineProps<{
         formEntries: FormEntry[],
-        entity: Entity
+        entity: EntityData
     }>();
     const selectedFormId = ref(props.formEntries[0]?.formId)
     const selectedForm = computed(() => store.entityTemplate?.forms?.find(form => form.id === selectedFormId.value))

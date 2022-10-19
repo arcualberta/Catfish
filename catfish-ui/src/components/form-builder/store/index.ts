@@ -1,16 +1,14 @@
 import { defineStore } from 'pinia';
-
 import { Guid } from "guid-typescript";
-
-import { Form, Field, FieldType, OptionFieldType, TextCollection, Option } from '../../shared/form-models'
-
+import { Field, FieldType, OptionFieldType, TextCollection, Option } from '../../shared/form-models'
 import { createOption, createTextCollection, isOptionField, cloneTextCollection } from '../../shared/form-helpers'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
+import { FormTemplate } from '@/components/shared/form-models/formTemplate';
 
 export const useFormBuilderStore = defineStore('FormBuilderStore', {
     state: () => ({
         lang: ["en", "fr"],
-        form: null as Form | null,
+        form: null as FormTemplate | null,
         transientMessageModel: {} as TransientMessageModel
     }),
     actions: {
@@ -95,7 +93,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                     console.error('Form Save API Error:', error)
                 });
         },
-        updateFileReference(fieldId: Guid, file: File) {
+        /*updateFileReference(fieldId: Guid, file: File) {
          
             const field = this.form?.fields.$values.find(fd => fd.id == fieldId);
             if (field) {
@@ -130,6 +128,6 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                 }
             }
 
-        },
+        },*/
     }
 });

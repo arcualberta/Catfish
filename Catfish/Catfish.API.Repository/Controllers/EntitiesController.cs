@@ -23,22 +23,32 @@ namespace Catfish.API.Repository.Controllers
             _entityService = entityService;
         }
         // GET: api/<EntityTemplateController>
-        [HttpGet]
+        [HttpGet("{entityType}/{searchTarget}/{searchText}/{offset}/{max}")]
        
-        public async Task<ActionResult<IEnumerable<Entity>>> Get()
+        public async Task<ActionResult<EntitySearchResult>> Get(eEntityType entityType, eSearchTarget searchTarget,string searchText, int offset=0,int? max=null)
         {
             if (_context.Entities == null)
             {
                 return NotFound();
             }
-            return await _context.Entities.ToListAsync();
+
+            EntitySearchResult result = new EntitySearchResult();
+            
+            List<EntityEntry> entities = _entityService.GetEntities(entityType, searchTarget, searchText, offset, max);
+
+
+            result.Result = entities;
+            result.Offset = offset;
+            result.Total = entities.Count;
+
+            return result;
             
         }
 
         // GET: api/Forms/5
         //   GET api/<EntitiesController>/5
         [HttpGet("{id}")]
-        public async Task<Entity> Get(Guid id, bool includeRelationship=true)
+        public async Task<EntityData> Get(Guid id, bool includeRelationship=true)
         {
              if(includeRelationship)
                 return await _context.Entities!.Include(e=>e.SubjectRelationships)
@@ -64,7 +74,7 @@ namespace Catfish.API.Repository.Controllers
                     TypeNameHandling = TypeNameHandling.All,
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
-                Entity entityInstance = JsonConvert.DeserializeObject<Entity>(value, settings);
+                EntityData entityInstance = JsonConvert.DeserializeObject<EntityData>(value, settings);
 
                 // var code = await _entityTemplateService.AddEntity(value);
                 EntityTemplate template = _entityTemplateService.GetEntityTemplate(entityInstance.TemplateId);//value.TemplateId)
@@ -72,7 +82,7 @@ namespace Catfish.API.Repository.Controllers
 
                 var code = await _entityService.AddEntity(entityInstance, files, fileKeys);//value
 
-               // await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                return StatusCode((int)code);
             }
             catch(Exception)
@@ -84,7 +94,7 @@ namespace Catfish.API.Repository.Controllers
 
         // PUT api/<EntitiesController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] Entity value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] EntityData value)
         {
             try
             {

@@ -21,6 +21,6 @@
             set => SerializedEntityTemplateSettings = value == null ? null : JsonConvert.SerializeObject(value);
         }
 
-        public ICollection<Form> Forms { get; set; } = new List<Form>();
+        public ICollection<FormTemplate> Forms { get; set; } = new List<FormTemplate>();
     }
 }

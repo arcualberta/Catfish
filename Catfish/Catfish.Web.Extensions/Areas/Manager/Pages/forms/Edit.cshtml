@@ -25,9 +25,9 @@
 </div>
 
 @{
-    var viewData = new ViewDataDictionary(this.ViewData)
-    {
-    };
+    var viewData = new ViewDataDictionary(this.ViewData);
+    viewData.Add("data-id", id);
+
     var appName = "FormBuilder";
 }
 

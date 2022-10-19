@@ -11,10 +11,10 @@
     {
         [Key]
         public Guid SubjectEntityId { get; set; }
-        public virtual Entity SubjectEntity { get; set; }
+        public virtual EntityData SubjectEntity { get; set; }
 
         public Guid ObjectEntityId { get; set; }
-        public virtual Entity ObjectEntity { get; set; }
+        public virtual EntityData ObjectEntity { get; set; }
 
         public string Name { get; set; }
         public int Order { get; set; }

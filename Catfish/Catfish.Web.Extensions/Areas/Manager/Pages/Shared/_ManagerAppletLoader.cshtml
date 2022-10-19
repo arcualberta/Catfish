@@ -1,5 +1,4 @@
 ﻿@model string;
-
 @using Newtonsoft.Json;
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
@@ -14,8 +13,8 @@
     var pageId = _webApp.PageId;
     var mountPointId = string.Format("app-{0}", pageId);
 
-    _assetRegistry.RegisterScript("assets/public/vendors/vue3/vue.global.min.js",
-                              "assets/public/vendors/vue3/vue.global.prod.min.js");
+    _assetRegistry.RegisterScript("assets/public/vendors/vue3/vue.global.prod.min.js",
+                                  "assets/public/vendors/vue3/vue.global.min.js");
 
     _assetRegistry.RegisterScript("assets/public/vendors/vuedemi/index.iife.min.js");
 
@@ -33,7 +32,19 @@
 
 <div id="@mountPointId"></div>
 
-<script>
+@{
+    //Creating a dictionary of all data attributes
+    var dataAttributes = new Dictionary<string, object>();
+    foreach (var pair in ViewData)
+    {
+        if (pair.Key.StartsWith("data-"))
+            dataAttributes.Add(pair.Key.Substring(5), pair.Value);
+    }
+    dataAttributes.Add("SiteUrl", ConfigHelper.SiteUrl);
+
+}
+
+<script type="module">
 
     const applet = Applets.@Model;
     if (!applet)
@@ -41,7 +52,9 @@
 
     const { createApp } = Vue;
 
-    const app = createApp(applet);
+    const app = createApp(applet, {
+        dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes))
+    });
     app.use(Pinia.createPinia());
 
     app.mount('#@mountPointId')
