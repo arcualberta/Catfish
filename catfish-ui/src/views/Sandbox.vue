@@ -3,7 +3,7 @@
   import { ref } from 'vue'
   import { VueDraggableNext as draggable } from 'vue-draggable-next'
   import {default as EntitySelectionList} from '../components/shared/components/entity-selection-list/EntitySelectionList.vue'
-  
+  import {eEntityType} from '../components/shared/constants'
   const list = ref([
           { name: 'John', id: 1 },
           { name: 'Joao', id: 2 },
@@ -35,14 +35,14 @@
   </div>
 
   <h3>List 1</h3>
-  <EntitySelectionList :store-id = "store1_id"/>
+  <EntitySelectionList :store-id = "store1_id" :entityType="eEntityType.Item"/>
   <div class="alert alert-info">
     <h3>List 1 Selections</h3>
     {{store1.selectedEntityIds}}
   </div>
 
   <h3>List 2</h3>
-  <EntitySelectionList :store-id = "store2_id"/>
+  <EntitySelectionList :store-id = "store2_id" :entityType="eEntityType.Item" />
 
   <div class="alert alert-info">
     <h3>List 2 Selections</h3>
