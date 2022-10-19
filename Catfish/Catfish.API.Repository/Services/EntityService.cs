@@ -24,15 +24,15 @@ namespace Catfish.API.Repository.Services
             var query = _context.Entities.Where(e => e.EntityType == entityType);
             if(searchTarget == eSearchTarget.Title)
             {
-                query.Where(e=>e.Title.Contains( searchText));
+                query.Where(e=> e.EntityType == entityType && e.Title.ToLower().Contains(searchText));
             }
             else if(searchTarget == eSearchTarget.Description)
             {
-                query.Where(e=>e.Description == searchText);
+                query.Where(e=> e.EntityType == entityType &&  e.Description.ToLower().Contains(searchText));
             }
             else
             {
-                query.Where(e => e.Title == searchText || e.Description == searchText);
+                query.Where(e => e.EntityType == entityType && (e.Title.ToLower().Contains(searchText) || e.Description.ToLower().Contains(searchText)));
             }
 
             if (offset > 0)
