@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { useEntitySelectStore } from '@/components/shared/components/entity-selection-list/store';
   import { ref } from 'vue'
-  import { VueDraggableNext } from 'vue-draggable-next'
+  import { VueDraggableNext as draggable } from 'vue-draggable-next'
   import {default as EntitySelectionList} from '../components/shared/components/entity-selection-list/EntitySelectionList.vue'
   
   const list = ref([
