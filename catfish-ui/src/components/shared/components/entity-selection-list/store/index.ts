@@ -1,7 +1,8 @@
-import { EntityData, EntitySearchResult } from "@/components/entity-editor/models";
+import { EntityData, EntityEntry, EntitySearchResult } from "@/components/entity-editor/models";
 import { eEntityType, eSearchTarget } from "@/components/shared/constants";
 import { defineStore } from "pinia";
 import { default as config } from "@/appsettings";
+import { Guid } from "guid-typescript";
 
 
 const definedStores = new Map<string, ReturnType<typeof defineEntitySelectStore>>();
@@ -18,7 +19,7 @@ const entitySelectStoreFactory = (storeId: string) => {
 function defineEntitySelectStore<Id extends string>(storeId: Id) {
   return defineStore(`entitySelectStore/${storeId}`, {
     state: () => ({
-        entities: {} as EntityData[],
+        selectedEntityIds: [] as Guid[],
         entitySearchResult: null as unknown as EntitySearchResult
       }),
       

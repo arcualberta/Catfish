@@ -4,24 +4,23 @@
       import { Pinia, storeToRefs } from 'pinia' 
       import { useEntitySelectStore } from './store';
      //import { EntityData, EntitySearchResult, EntityEntry } from "@/components/entity-editor/models";
-import { eEntityType, eSearchTarget } from '../../constants';
+    import { eEntityType, eSearchTarget } from '../../constants';
 
        const props = defineProps<{
-        piniaInstance: Pinia
+        storeId: string
     }>();
     //const tableId = props.table.id // Just as an example
         const storeId =Guid.create();
       // const entityListStore = useEntitySelectStore(props.piniaInstance);
-       const entityListStore = useEntitySelectStore("store1");
+       const entityListStore = useEntitySelectStore(props.storeId);
        entityListStore.seach(eEntityType.Item, eSearchTarget.Title, "title");
        const {entitySearchResult} = storeToRefs(entityListStore);
        
 </script>
 
 <template>
-    Entity Selection List
-    <div v-for="entry in entitySearchResult.result" v-bind:key="entry.id">
-        <div>{{entry.title}}</div>
-        <div>{{entry.description}}</div>
+    <h4>Entity Selection List</h4>
+    <div v-for="entry in entitySearchResult?.result" v-bind:key="entry.id.toString()">
+        <div>{{entry.title}}  => >{{entry.description}}</div>
     </div>
 </template>
