@@ -24,21 +24,21 @@ namespace Catfish.API.Repository.Services
             var query = _context.Entities.Where(e => e.EntityType == entityType);
             if(searchTarget == eSearchTarget.Title)
             {
-                query.Where(e=> e.EntityType == entityType && e.Title.ToLower().Contains(searchText));
+                query = query.Where(e=> e.Title.ToLower().Contains(searchText));
             }
             else if(searchTarget == eSearchTarget.Description)
             {
-                query.Where(e=> e.EntityType == entityType &&  e.Description.ToLower().Contains(searchText));
+               query =  query.Where(e=> e.Description.ToLower().Contains(searchText));
             }
             else
             {
-                query.Where(e => e.EntityType == entityType && (e.Title.ToLower().Contains(searchText) || e.Description.ToLower().Contains(searchText)));
+                query =query.Where(e =>e.Title.ToLower().Contains(searchText) || e.Description.ToLower().Contains(searchText));
             }
 
             if (offset > 0)
-                query.Skip(offset);
+               query = query.Skip(offset);
             if (max != null && max > 0)
-                query.Take(max.Value);
+                query =query.Take(max.Value);
 
             return query.Select(e => new EntityEntry { Id = e.Id, Title = e.Title, Description = e.Description, Created = e.Created, Updated = e.Updated }).ToList();
         }
