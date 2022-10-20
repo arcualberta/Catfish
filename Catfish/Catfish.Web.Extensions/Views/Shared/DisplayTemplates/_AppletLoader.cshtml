@@ -47,9 +47,9 @@
 <script type="module">
 
 
-    const applet = Applets.@Model.GetType().Name;
+    const applet = CatfishUI.Apps.@Model.GetType().Name;
     if (!applet)
-        throw "Applet \"@ViewData["applet"]\" not found.";
+        throw "CatfishUI.Apps: \"@ViewData["applet"]\" not found.";
 
     //Reading all URL query parameters and build queryParams associative array    
 
