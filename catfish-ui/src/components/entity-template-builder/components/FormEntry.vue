@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia';
     import { computed } from 'vue';
-    import { FormEntry } from '../../shared/form-models';
+    import { FormEntry } from '../../shared';
     import { useEntityTemplateBuilderStore } from '../store';
     import { SelectableOption } from '@/components/shared/components/form-field-selection-dropdown/models'
     const props = defineProps<{

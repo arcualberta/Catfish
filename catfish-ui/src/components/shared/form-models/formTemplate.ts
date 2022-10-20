@@ -29,16 +29,6 @@ export interface FormTemplate {
 
 }
 
-export interface FormEntry {
-    /**
-     * A unique form-entry ID used for the UI purposes
-     * */
-    id: Guid;
-    name: string;
-    formId: Guid;
-    isRequired?: boolean;
-}
-
 export interface FieldEntry {
     formId: Guid;
     fieldId: Guid;
