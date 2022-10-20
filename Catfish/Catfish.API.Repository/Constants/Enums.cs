@@ -18,7 +18,7 @@
     {
         Title,
         Description,
-        Unknown
+        TitleOrDescription
     }
 
 }

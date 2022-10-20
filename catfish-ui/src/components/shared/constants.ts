@@ -12,5 +12,5 @@ export enum eSearchTarget
 {
     Title="Title",
     Description="Description",
-    Both="Title Or Description"
+    TitleOrDescription="TitleOrDescription"
 }
