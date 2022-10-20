@@ -34,12 +34,12 @@ namespace Catfish.API.Repository.Controllers
 
             EntitySearchResult result = new EntitySearchResult();
             
-            List<EntityEntry> entities = _entityService.GetEntities(entityType, searchTarget, searchText, offset, max);
+            List<EntityEntry> entities = _entityService.GetEntities(entityType, searchTarget, searchText, offset, max, out int total);
 
 
             result.Result = entities;
             result.Offset = offset;
-            result.Total = entities.Count;
+            result.Total = total;
 
             return result;
             

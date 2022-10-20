@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
- import { Field, FieldType } from '../../shared/form-models';
+import { Field, FieldType } from '../../shared/form-models';
  
- 
-
     const props = defineProps<{
         model: Field,
         elementId:string
@@ -13,8 +11,7 @@ import { ref } from 'vue';
     const fieldElementId = props.elementId;
     const dropzoneFile=ref("");
     const selectFiles = () => {
-                const inputElement = document.getElementById(fieldElementId) as HTMLInputElement;
-				
+            const inputElement = document.getElementById(fieldElementId) as HTMLInputElement;		
 		};
     const active = ref(false);
     const toggleActive= ()=>{

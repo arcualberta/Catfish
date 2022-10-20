@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
-
 import { Guid } from "guid-typescript";
-
+import { default as config } from "@/appsettings";
 import { FormData } from '../../shared/form-models'
 import { createFormData } from '../../shared/form-helpers'
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
@@ -19,7 +18,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
     }),
     actions: {
         loadForm(id: Guid, retainCurrentFormData?: boolean) {
-            let api = `https://localhost:5020/api/forms/${id}`;
+            let api = `${config.dataRepositoryApiRoot}/api/forms/${id}`;//`https://localhost:5020/api/forms/${id}`;
             console.log(api)
             fetch(api, {
                 method: 'GET'
@@ -36,7 +35,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
 
         },
         loadSubmission(id: Guid) {
-            let api = `https://localhost:5020/api/form-submissions/${id}`;
+            let api = `${config.dataRepositoryApiRoot}/api/form-submissions/${id}`;//`https://localhost:5020/api/form-submissions/${id}`;
             console.log(api)
             fetch(api, {
                 method: 'GET'
@@ -65,7 +64,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             }
 
             const newForm = this.formData?.id?.toString() === Guid.EMPTY;
-            let api = "https://localhost:5020/api/form-submissions";
+            let api = `${config.dataRepositoryApiRoot}/api/form-submissions`;//"https://localhost:5020/api/form-submissions";
             let method = "";
             if (newForm) {
                 method = "POST";
@@ -128,7 +127,8 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             }
 
             const newForm = this.form?.id?.toString() === Guid.EMPTY;
-            let api = "https://localhost:5020/api/forms";
+            let api = `${config.dataRepositoryApiRoot}/api/forms`;
+            
             let method = "";
             if (newForm) {
                 console.log("Saving new form.")
@@ -191,7 +191,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
          
            //add FileReference
         } ,
-        getFile(files: FileList, fieldId: Guid, formId: Guid){
+        attachFile(files: FileList, fieldId: Guid, formId: Guid){
             Array.from(files).forEach(file => { 
                 console.log("fieldId:" + fieldId )
                 this.addFile(file, fieldId);
