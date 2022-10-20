@@ -34,7 +34,7 @@ import { Guid } from 'guid-typescript';
     const drop=(e: any)=>{
             dropzoneFile.value= e.dataTransfer.files[0];
            
-          store.getFile(e.dataTransfer.files as FileList, props.model.id, props.formId);
+          store.attachFile(e.dataTransfer.files as FileList, props.model.id, props.formId);
     };
 
     const selectedFile=(fieldId: string)=>{
@@ -42,7 +42,7 @@ import { Guid } from 'guid-typescript';
          const inputElement = document.getElementById(fieldId) as HTMLInputElement;
            
            console.log("formId: " + frmId.value)
-            store.getFile(inputElement?.files as FileList, props.model.id, frmId.value);
+            store.attachFile(inputElement?.files as FileList, props.model.id, frmId.value);
     }
 
   

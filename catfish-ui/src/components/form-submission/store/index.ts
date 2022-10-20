@@ -191,7 +191,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
          
            //add FileReference
         } ,
-        getFile(files: FileList, fieldId: Guid, formId: Guid){
+        attachFile(files: FileList, fieldId: Guid, formId: Guid){
             Array.from(files).forEach(file => { 
                 console.log("fieldId:" + fieldId )
                 this.addFile(file, fieldId);
