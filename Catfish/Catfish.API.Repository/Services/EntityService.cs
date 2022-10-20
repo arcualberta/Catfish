@@ -14,14 +14,14 @@ namespace Catfish.API.Repository.Services
         {
             _context = context;
         }
-        public EntityData GetEntity(Guid id)
+        public EntityData? GetEntity(Guid id)
         {
-            return _context.Entities.Where(t => t.Id == id).FirstOrDefault();
+            return _context.Entities!.Where(t => t.Id == id).FirstOrDefault();
         }
 
-        public List<EntityEntry> GetEntities(eEntityType entityType, eSearchTarget searchTarget, string searchText, int offset = 0, int? max = null)
+        public List<EntityEntry> GetEntities(eEntityType entityType, eSearchTarget searchTarget, string searchText, int offset, int? max, out int total)
         {
-            var query = _context.Entities.Where(e => e.EntityType == entityType);
+            var query = _context.Entities!.Where(e => e.EntityType == entityType);
             if(searchTarget == eSearchTarget.Title)
             {
                 query = query.Where(e=> e.Title.ToLower().Contains(searchText));
@@ -34,6 +34,8 @@ namespace Catfish.API.Repository.Services
             {
                 query =query.Where(e =>e.Title.ToLower().Contains(searchText) || e.Description.ToLower().Contains(searchText));
             }
+
+            total = query.Count();
 
             if (offset > 0)
                query = query.Skip(offset);
