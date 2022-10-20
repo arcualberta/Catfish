@@ -39,10 +39,9 @@ import { Guid } from 'guid-typescript';
 
     const selectedFile=(fieldId: string)=>{
         dropzoneFile.value=document.getElementById(fieldId).files[0];
-         const inputElement = document.getElementById(fieldId) as HTMLInputElement;
-           
-           console.log("formId: " + frmId.value)
-            store.attachFile(inputElement?.files as FileList, props.model.id, frmId.value);
+        const inputElement = document.getElementById(fieldId) as HTMLInputElement;
+        
+        store.attachFile(inputElement?.files as FileList, props.model.id, frmId.value);
     }
 
   
