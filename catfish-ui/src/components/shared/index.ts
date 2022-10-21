@@ -1,2 +1,2 @@
 
-export type {ListEntry, FormEntry} from './models/listEntries'
+export type {ListEntry, FormEntry, EntityEntry} from './models/listEntries'

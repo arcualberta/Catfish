@@ -1,4 +1,5 @@
-import { EntityData, EntityEntry, EntitySearchResult } from "@/components/entity-editor/models";
+import { EntityData, EntitySearchResult } from "@/components/entity-editor/models";
+import { EntityEntry } from '@/components/shared'
 import { eEntityType, eSearchTarget } from "@/components/shared/constants";
 import { defineStore } from "pinia";
 import { default as config } from "@/appsettings";

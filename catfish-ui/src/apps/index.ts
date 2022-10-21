@@ -3,7 +3,7 @@
 export { default as CollectionManager } from './collection-manager/App.vue';
 
 /* Item Manager app */
-export { default as ItemManager } from './item-manager/App.vue';
+export * as ItemManager from './item-manager';
 
 /* Entity Template Manager app */
 export { default as EntityTemplateManager } from './entity-template-manager/App.vue';

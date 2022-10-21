@@ -24,10 +24,6 @@
 </div>
 
 @{
-    var viewData = new ViewDataDictionary(this.ViewData)
-    {
-    };
-    var appName = "EntityEditor";
+    string appName = "ItemManager";
 }
-
-<partial name="_ManagerAppletLoader" view-data="@viewData" model="@appName" />
+<partial name="_ManagerAppletLoader" model="@appName" />

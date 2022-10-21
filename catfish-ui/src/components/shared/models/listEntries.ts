@@ -17,3 +17,10 @@ export interface FormEntry extends ListEntry {
     formId: Guid;
     isRequired?: boolean;
 }
+
+export interface EntityEntry extends ListEntry
+{
+    description: string
+    created: Date
+    updated: Date
+}
