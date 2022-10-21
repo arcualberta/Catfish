@@ -97,7 +97,7 @@ namespace Catfish.API.Repository.Services
                 }
         }
 
-        private static string GetAttachmentsFolder(bool createIfNotExist = false)
+        public string GetAttachmentsFolder(bool createIfNotExist = false)
         {
             //ConfigurationManager configuration = new ConfigurationManager();
            
@@ -112,5 +112,6 @@ namespace Catfish.API.Repository.Services
             return path;
         }
 
+       
     }
 }
