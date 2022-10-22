@@ -2,13 +2,12 @@
 <script setup lang="ts">
     import { Guid } from "guid-typescript";
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
-
-    import { Form } from '../../shared/form-models';
     import { getFieldTitle } from '../../shared/form-helpers';
     import { default as Field } from './Field.vue'
     import { default as TextCollection } from './TextCollection.vue'
+    import { FormTemplate } from "@/components/shared/form-models/formTemplate";
 
-    const props = defineProps<{ model: Form }>();
+    const props = defineProps<{ model: FormTemplate }>();
     const deleteField = (optId: Guid) => {
         const idx = props.model.fields?.findIndex(opt => opt.id == optId)
         props.model.fields?.splice(idx as number, 1)

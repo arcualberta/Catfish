@@ -27,7 +27,7 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Form>> GetForm(Guid id)
+        public async Task<ActionResult<FormTemplate>> GetForm(Guid id)
         {
             if (_context.Forms == null)
             {
@@ -46,7 +46,7 @@ namespace Catfish.API.Repository.Controllers
         // PUT: api/Forms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutForm(Guid id, Form form)
+        public async Task<IActionResult> PutForm(Guid id, FormTemplate form)
         {
             if (id != form.Id)
             {
@@ -77,7 +77,7 @@ namespace Catfish.API.Repository.Controllers
         // POST: api/Forms
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Form>> PostForm(Form form)
+        public async Task<ActionResult<FormTemplate>> PostForm(FormTemplate form)
         {
             try
             {

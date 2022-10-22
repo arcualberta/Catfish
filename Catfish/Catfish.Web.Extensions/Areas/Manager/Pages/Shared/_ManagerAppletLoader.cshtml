@@ -1,5 +1,4 @@
 ﻿@model string;
-
 @using Newtonsoft.Json;
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
@@ -11,11 +10,11 @@
 </noscript>
 
 @{
-    var pageId = _webApp.PageId;
+    var pageId = Guid.NewGuid();
     var mountPointId = string.Format("app-{0}", pageId);
 
-    _assetRegistry.RegisterScript("assets/public/vendors/vue3/vue.global.min.js",
-                              "assets/public/vendors/vue3/vue.global.prod.min.js");
+    _assetRegistry.RegisterScript("assets/public/vendors/vue3/vue.global.prod.min.js",
+                                  "assets/public/vendors/vue3/vue.global.min.js");
 
     _assetRegistry.RegisterScript("assets/public/vendors/vuedemi/index.iife.min.js");
 
@@ -33,18 +32,39 @@
 
 <div id="@mountPointId"></div>
 
+@{
+    //Creating a dictionary of all data attributes
+    var dataAttributes = new Dictionary<string, object>();
+    foreach (var pair in ViewData)
+    {
+        if (pair.Key.StartsWith("data-"))
+            dataAttributes.Add(pair.Key.Substring(5), pair.Value);
+    }
+    dataAttributes.Add("SiteUrl", ConfigHelper.SiteUrl);
+
+}
+
 <script>
 
-    const applet = Applets.@Model;
+    const applet = CatfishUI.Apps.@{@Model}.App;
     if (!applet)
-        throw "Applets.@Model not found";
+        throw '@{@string.Format("CatfishUI.Apps.{0}.App not found", Model);}'
 
-    const { createApp } = Vue;
+    const pinia = CatfishUI.Apps.@{@Model}?.pinia;
 
-    const app = createApp(applet);
-    app.use(Pinia.createPinia());
+    const router = CatfishUI.Apps.@{@Model}?.router;
+    
+    const app = Vue.createApp(applet, {
+        dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes))
+    });
 
-    app.mount('#@mountPointId')
+    if (pinia)
+        app.use(pinia)
+
+    if (router)
+        app.use(router)
+
+    app.mount('#@mountPointId');
 
 </script>
 

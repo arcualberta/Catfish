@@ -35,4 +35,10 @@
     <Folder Include="App_Data\uploads\attachments\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\favicon">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

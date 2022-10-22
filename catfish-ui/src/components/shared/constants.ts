@@ -7,3 +7,10 @@ export enum eEntityType
     Collection="Collection",
     Unknown="Unknown"
 }
+
+export enum eSearchTarget 
+{
+    Title="Title",
+    Description="Description",
+    Both="Title Or Description"
+}

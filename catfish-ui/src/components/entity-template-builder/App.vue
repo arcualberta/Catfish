@@ -8,9 +8,10 @@
     import { useRoute ,useRouter } from 'vue-router';
    
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
-    import { FieldEntry, FormEntry } from '../shared/form-models';
+    import { FormEntry } from '../shared';
     import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
     import { FormFieldSelectionDropdown } from '@/components/shared/components'
+import { FieldEntry, FormTemplate } from '../shared/form-models';
  
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
@@ -102,8 +103,8 @@
             <div class="form-field-border blue">
                 <h5>Metadata Forms</h5>
                 <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.metadataForms">
-                    <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId">
-                        <FormEntryTemplate :model="frm" />
+                    <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId.toString()">
+                        <FormEntryTemplate :model="(frm as FormEntry)" />
                     </div>
                 </draggable>
                 <button class="btn btn-primary btn-blue" @click="addMetadataForm">+ Add</button>
@@ -112,8 +113,8 @@
         <div class="form-field-border red">
             <h5>Data Forms</h5>
             <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.dataForms">
-                <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.formId">
-                    <FormEntryTemplate :model="frm" class="form-field-border form-field red" />
+                <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.formId.toString()">
+                    <FormEntryTemplate :model="(frm as FormEntry)" class="form-field-border form-field red" />
                 </div>
             </draggable>
             <button class="btn btn-warning btn-red" @click="addDataForm">+ Add</button>
@@ -125,7 +126,6 @@
                     Title
                 </div>
                 <div class="col-10">
-                    <FormFieldSelectionDropdown :model="titleField" :option-source="formFieldSelectorSource" :forms="store.forms" />
                 </div>
             </div>
             <div class="row">
@@ -133,7 +133,7 @@
                     Description
                 </div>
                 <div class="col-10">
-                    <FormFieldSelectionDropdown :model="descriptionField" :option-source="formFieldSelectorSource" :forms="store.forms" />
+                    <FormFieldSelectionDropdown :model="(descriptionField as FieldEntry)" :option-source="formFieldSelectorSource" :forms="(store.forms as FormTemplate[])" />
                 </div>
             </div>
              <div class="row">

@@ -1,22 +1,23 @@
 
 <script setup lang="ts">
+    import {default as FormTemplate } from "@/components/shared/form-models/formTemplate";
     import { Guid } from "guid-typescript";
-import { computed } from "vue";
-    import { Entity } from "../../entity-editor/models";
+    import { computed } from "vue";
+    import { EntityData } from "../../entity-editor/models";
     import { getFieldData } from "../../shared/entity-helpers"
-    import { FieldEntry, Form } from '../../shared/form-models';
+    import { FieldEntry} from '../../shared/form-models';
     import { default as Field } from './Field.vue'
 
     const props = defineProps<{
-        model: Form,
-        entity: Entity
+        model: FormTemplate,
+        entity: EntityData
     }>();
-    const formId: Guid= computed(()=>props.model.id);
+    //const formTemplateId: Guid= computed(()=>props.model.id);
     const getFieldDataModel = (fieldId: Guid) => 
         getFieldData(props.entity, { formId: props.model.id, fieldId } as FieldEntry)
 </script>
 
 <template>
-    <Field v-for="field in model?.fields" :key="field.id" :model="field" :formId="formId" :modelData="getFieldDataModel(field.id)" />
+    <Field v-for="field in model?.fields" :key="field.id" :model="field"  :modelData="getFieldDataModel(field.id)" />
 </template>
 

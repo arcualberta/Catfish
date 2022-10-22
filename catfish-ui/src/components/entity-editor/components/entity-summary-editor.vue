@@ -17,12 +17,29 @@
             </div>
             <div class="col-sm-10">
                 <select v-if="isNewEntity" v-model="entity.templateId" class="form-select">
-                    <option v-for="template in templateEntries" :key="template.templateId" :value="template.templateId?.toString()">{{template.templateName}}</option>
+                    <option v-for="template in templateEntries" :key="template.templateId.toString()" :value="template.templateId?.toString()">{{template.templateName}}</option>
                 </select>
                 <span v-else>{{entityTemplate?.name}}</span>
             </div>
         </div>
+        <div class="row mt-2">
+            <div class="col-sm-2">
+                <label>Entity Title:</label>
+            </div>
+            <div class="col-sm-10">
+               <input type="text" v-model="entity!.title" class="form-control"  />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-sm-2">
+                <label>Entity Description:</label>
+            </div>
+            <div class="col-sm-10">
+               <input type="text" v-model="entity!.description" class="form-control"  />
+            </div>
+        </div>
         <br />
+        <h5>Form Fields</h5>
         <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />
         <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />
         <FieldComponent :model="mediaField" :model-data="mediaFieldData" v-if="store.mediaField" />
@@ -34,20 +51,21 @@
 <script setup lang="ts">
 
     import { computed, ref, watch } from "vue"
-
+    import {storeToRefs} from "pinia"
     import { useEntityEditorStore } from "../store"
     import { eEntityType } from "../../shared/constants"
     import { Guid } from 'guid-typescript';
-    import { Field, Form, FieldEntry } from '../../shared/form-models'
+    import { FieldEntry } from '../../shared/form-models'
     import { EntityTemplate } from '../../entity-template-builder/models'
     import { instantiateRequiredForms, getField, getFieldData } from '@/components/shared/entity-helpers'
-    import { Entity } from "../../entity-editor/models";
+    import { EntityData } from "../../entity-editor/models";
 
     import { default as FieldComponent } from '../../form-submission/components/Field.vue'
 
     const store = useEntityEditorStore();
-    const entity = computed(() => store.entity)
-   
+    //const entity = computed(() => store.entity)
+    const {entity} = storeToRefs(store);
+    
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
     })
@@ -61,16 +79,17 @@
     const eEntityTypes = Object.values(eEntityType);
 
     const titleField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
-    const titleFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
+    const titleFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
     const descriptionField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
-    const descriptionFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
+    const descriptionFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
     const mediaField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
-    const mediaFieldData = computed(() => getFieldData(entity.value as Entity, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
+    const mediaFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
 
    
 
     watch(() => entityTemplate.value, async newTemplate => {
-        instantiateRequiredForms(entity.value as Entity, newTemplate as EntityTemplate);
+        instantiateRequiredForms(entity.value as EntityData, newTemplate as EntityTemplate);
     })
+     
 
 </script>

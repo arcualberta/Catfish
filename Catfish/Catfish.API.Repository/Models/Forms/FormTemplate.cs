@@ -4,7 +4,7 @@ namespace Catfish.API.Repository.Models.Forms
     /// <summary>
     /// Defines a form that consists of a list of fields.
     /// </summary>
-    public class Form
+    public class FormTemplate
     {
         /// <summary>
         /// Unique form ID.

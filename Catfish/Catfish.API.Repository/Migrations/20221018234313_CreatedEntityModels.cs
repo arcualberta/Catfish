@@ -15,7 +15,11 @@ namespace Catfish.API.Repository.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    State = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Updated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    SerializedEntityTemplateSettings = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,7 +33,11 @@ namespace Catfish.API.Repository.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EntityType = table.Column<int>(type: "int", nullable: false),
                     SerializedData = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TemplateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    TemplateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,7 +51,7 @@ namespace Catfish.API.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CF_Repo_EntityTemplateForm",
+                name: "CF_Repo_EntityTemplateFormTemplate",
                 columns: table => new
                 {
                     EntityTemplatesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -51,15 +59,15 @@ namespace Catfish.API.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CF_Repo_EntityTemplateForm", x => new { x.EntityTemplatesId, x.FormsId });
+                    table.PrimaryKey("PK_CF_Repo_EntityTemplateFormTemplate", x => new { x.EntityTemplatesId, x.FormsId });
                     table.ForeignKey(
-                        name: "FK_CF_Repo_EntityTemplateForm_CF_Repo_EntityTemplates_EntityTemplatesId",
+                        name: "FK_CF_Repo_EntityTemplateFormTemplate_CF_Repo_EntityTemplates_EntityTemplatesId",
                         column: x => x.EntityTemplatesId,
                         principalTable: "CF_Repo_EntityTemplates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CF_Repo_EntityTemplateForm_CF_Repo_Forms_FormsId",
+                        name: "FK_CF_Repo_EntityTemplateFormTemplate_CF_Repo_Forms_FormsId",
                         column: x => x.FormsId,
                         principalTable: "CF_Repo_Forms",
                         principalColumn: "Id",
@@ -98,8 +106,8 @@ namespace Catfish.API.Repository.Migrations
                 column: "TemplateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CF_Repo_EntityTemplateForm_FormsId",
-                table: "CF_Repo_EntityTemplateForm",
+                name: "IX_CF_Repo_EntityTemplateFormTemplate_FormsId",
+                table: "CF_Repo_EntityTemplateFormTemplate",
                 column: "FormsId");
 
             migrationBuilder.CreateIndex(
@@ -111,7 +119,7 @@ namespace Catfish.API.Repository.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CF_Repo_EntityTemplateForm");
+                name: "CF_Repo_EntityTemplateFormTemplate");
 
             migrationBuilder.DropTable(
                 name: "CF_Repo_Relationships");

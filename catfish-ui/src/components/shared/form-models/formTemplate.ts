@@ -6,7 +6,7 @@ import { TextCollection } from "./textCollection";
  * Form model
  * */
 
-export interface Form {
+export interface FormTemplate {
     /**
      * Unique form ID.
      * */
@@ -27,16 +27,6 @@ export interface Form {
      * */
     fields: Field[]
 
-}
-
-export interface FormEntry {
-    /**
-     * A unique form-entry ID used for the UI purposes
-     * */
-    id: Guid;
-    name: string;
-    formId: Guid;
-    isRequired?: boolean;
 }
 
 export interface FieldEntry {

@@ -1,6 +1,7 @@
+import AttachmentField from "@/components/form-submission/components/AttachmentField.vue";
 import { Guid } from "guid-typescript"
 
-import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, Text, Form, FormData } from "../form-models";
+import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, FormData, FormTemplate } from "../form-models";
 import { getTextValue, createTextCollection, createText } from './textHelper'
 
 /**
@@ -27,6 +28,7 @@ export const isMonolingualTextInputField = (field: Field): boolean => Object.val
  */
 export const isTextInputField = (field: Field): boolean => Object.values(MonolingualFieldType).map(x => x as unknown as string).includes(field.type as unknown as string);
 
+export const isAttachmentField = (field: Field): boolean => Object.values(AttachmentField).map(x => x as unknown as string).includes(field.type as unknown as string);
 /**
  * Returns the title of a field as a string. If multiple values are specified, only returns the first value.
  * @param field: input field
@@ -69,6 +71,15 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
         if (field.options?.find(opt => opt.isExtendedInput))
             fieldData.extendedOptionValues = []
     }
+    else if (isAttachmentField(field)) {
+        fieldData.fileReferences = [];
+
+        if (field.allowCustomOptionValues)
+            fieldData.customOptionValues = []
+
+        if (field.options?.find(opt => opt.isExtendedInput))
+            fieldData.extendedOptionValues = []
+    }
     else if (isMultilingualTextInputField(field)) {
         const languages = typeof(lang) == 'string' ? [lang] : lang
         fieldData.multilingualTextValues = [createTextCollection(languages)]
@@ -79,7 +90,7 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
 
     return fieldData
 }
-export const createFormData = (form: Form, lang: string | string[]): FormData => {
+export const createFormData = (form: FormTemplate, lang: string | string[]): FormData => {
     const formData = {
         id: Guid.EMPTY as unknown as Guid,
         formId: form.id,
