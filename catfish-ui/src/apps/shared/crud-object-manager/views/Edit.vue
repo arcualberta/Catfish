@@ -10,6 +10,7 @@ const id = computed(() => route.params?.id as unknown as Guid)
 </script>
 
 <template>
-    <h4>{{id ? "Edit" : "Create"}} View</h4>
+    <h4>{{id ? "Edit" : "Create"}} <slot name="object-type"/></h4>
+    <slot name="edit-title"></slot>
     {{id}}
 </template>

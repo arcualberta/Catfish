@@ -7,6 +7,9 @@ const apiRoot = "/entities";
 
 <template>
     <CrudObjectManager :api-root="apiRoot">
-        <title>Item Manager</title>
+        <template #object-type>Item</template>      
+        <template #list-title>List Items</template>
+        <template #edit-title>Edit Items</template>
+        <template #create-title>Create Items</template>
     </CrudObjectManager>
 </template>

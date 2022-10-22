@@ -1,3 +1,4 @@
 <template>
-    <h4>Details View</h4>
+    <h4><slot name="object-type"/> Details</h4>
+    <slot name="view-title"></slot>
 </template>
