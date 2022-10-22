@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { stringToInteger } from 'bootstrap-vue-3/dist/utils';
 
+const items = [1,2,3,4,5];
 </script>
 
 <template>
-    <h4><slot name="object-type"/>s</h4>
-    <slot name="list-title"></slot>
+    <h4>List <slot name="object-type"/>s</h4>
+
+    <div v-for="item in items">
+        <slot name="list-entry-delegate"></slot> {{item}}
+    </div>
 </template>

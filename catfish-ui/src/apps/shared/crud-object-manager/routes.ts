@@ -9,17 +9,22 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/create',
         name: 'Create',
-        component: () => import('./views/Edit.vue')
+        component: () => import('./views/Create.vue')
     },
     {
-        path: '/details/:id',
-        name: 'Details',
-        component: () => import('./views/Details.vue')
+        path: '/read/:id',
+        name: 'Read',
+        component: () => import('./views/Read.vue')
     },
     {
-        path: '/edit/:id',
-        name: 'Edit',
-        component: () => import('./views/Edit.vue')
+        path: '/update/:id',
+        name: 'Update',
+        component: () => import('./views/Update.vue')
+    },
+    {
+        path: '/delete/:id',
+        name: 'Delete',
+        component: () => import('./views/Delete.vue')
     },
 ]
 

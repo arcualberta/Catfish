@@ -23,4 +23,7 @@
     </div>
 </div>
 
-<partial name="_ManagerAppletLoader" model='"EntityEditor"' />
+@{
+    string appName = "CollectionManager";
+}
+<partial name="_ManagerAppletLoader" model="@appName" />

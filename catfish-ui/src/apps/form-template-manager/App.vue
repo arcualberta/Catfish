@@ -1,18 +1,17 @@
 <script lang="ts" setup>
-import { AppletAttribute } from '@/components/shared/props';
+import {default as CrudObjectManager} from '../shared/crud-object-manager/App.vue'
 
-const props = defineProps<{
-    dataAttributes?: AppletAttribute | null,
-}>()
+const apiRoot = "/forms";
 
 </script>
 
 <template>
-    <h4>Form Templates</h4>
-    <div class="header">
-        <router-link to="/" class="navigation-menu-box">List</router-link> | 
-        <router-link to="/create" class="navigation-menu-box">Create</router-link> | 
-        <router-link to="/edit/381449d3-9e3d-412a-9630-ea4cb6f35d8b" class="navigation-menu-box">Edit</router-link>
-    </div>
-    <router-view /> 
+    <CrudObjectManager :api-root="apiRoot">
+        <template #object-type>Form Template</template>      
+        <template #list-entry-delegate>List Entry</template>
+        <template #create-delegate>Create</template>
+        <template #read-delegate>Read</template>
+        <template #udapte-delegate>Update</template>
+        <template #delete-delegate>Delete</template>
+    </CrudObjectManager>
 </template>

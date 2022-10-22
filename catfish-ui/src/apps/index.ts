@@ -1,12 +1,12 @@
 
 /* Collection Manager app */
-export { default as CollectionManager } from './collection-manager/App.vue';
+export * as  CollectionManager from './collection-manager';
 
 /* Item Manager app */
 export * as ItemManager from './item-manager';
 
 /* Entity Template Manager app */
-export { default as EntityTemplateManager } from './entity-template-manager/App.vue';
+export * as EntityTemplateManager from './entity-template-manager';
 
 /* Form Template Manager app */
 export * as FormTemplateManager from './form-template-manager';

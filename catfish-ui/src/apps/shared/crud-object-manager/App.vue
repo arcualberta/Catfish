@@ -8,20 +8,26 @@ const props = defineProps<{
 </script>
 
 <template>
-    <router-view v-slot="{ Component, route }">
-        <component :is="Component">
-            <template #object-type><slot name="object-type"/></template>
-            <template #list-title><slot name="list-title"/></template>
-            <template #create-title><slot name="create-title"/></template>
-            <template #edit-title><slot name="edit-title"/></template>
-        </component>
-    </router-view>   
-    
-    <div class="header">
-        <router-link to="/" class="navigation-menu-box">List</router-link> | 
-        <router-link to="/create" class="navigation-menu-box">Create</router-link> | 
-        <router-link to="/edit/381449d3-9e3d-412a-9630-ea4cb6f35d8b" class="navigation-menu-box">Edit</router-link>
+    <div class="m-2">
+        <div class="header">
+            <router-link to="/" class="navigation-menu-box">List</router-link> | 
+            <router-link to="/create" class="navigation-menu-box">Create</router-link> | 
+            <router-link to="/read/381449d3-9e3d-412a-9630-ea4cb6f35d8b" class="navigation-menu-box">Read</router-link> | 
+            <router-link to="/update/381449d3-9e3d-412a-9630-ea4cb6f35d8b" class="navigation-menu-box">Update</router-link> | 
+            <router-link to="/delete/381449d3-9e3d-412a-9630-ea4cb6f35d8b" class="navigation-menu-box">Delete</router-link>
+        </div>
+
+        <router-view v-slot="{ Component, route }">
+            <component :is="Component">
+                <template #object-type><slot name="object-type"/></template>      
+                <template #list-entry-delegate><slot name="list-entry-delegate"/></template>
+                <template #create-delegate><slot name="create-delegate"/></template>
+                <template #read-delegate><slot name="read-delegate"/></template>
+                <template #udapte-delegate><slot name="udapte-delegate"/></template>
+                <template #delete-delegate><slot name="delete-delegate"/></template>
+            </component>
+        </router-view>   
+        
+        <div>API Root: {{apiRoot}}</div>
     </div>
-    {{apiRoot}}
-    
 </template>
