@@ -4,7 +4,8 @@ import { EntityTemplate } from '../models';
 import { eState } from "../../shared/constants";
 import { default as config } from "@/appsettings";
 import router from '@/router';
-import { FieldEntry, Form, FormEntry } from '../../shared/form-models';
+import { FieldEntry, FormTemplate } from '../../shared/form-models';
+import { FormEntry } from '../../shared';
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
@@ -13,7 +14,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         template: null as EntityTemplate | null,
         formEntries: [] as FormEntry[],
         transientMessageModel: {} as TransientMessageModel,
-        forms: [] as Form[]
+        forms: [] as FormTemplate[]
     }),
     actions: {
         newTemplate() {
@@ -44,7 +45,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 })
                     .then(response => response.json())
                     .then(data => {
-                        this.forms.push(data as Form)
+                        this.forms.push(data as FormTemplate)
                     })
                     .catch((error) => {
                         console.error('Load Form API Error:', error);

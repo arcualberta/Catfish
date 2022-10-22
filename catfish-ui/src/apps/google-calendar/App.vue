@@ -10,7 +10,7 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
     import { onMounted, toRef } from 'vue'
-    import { AppletAttribute } from '../shared/props'
+    import { AppletAttribute } from '@/components/shared/props'
     import { Guid } from "guid-typescript";
 
     //ES6 fullcalendar
@@ -23,7 +23,6 @@
     import config from '../../appsettings'
 
     const props = defineProps < {
-        piniaInstance: Pinia,
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null
      } > ();
@@ -35,7 +34,7 @@
      console.log(cssClass)
      const title = _dataAttributes && _dataAttributes?.value? (_dataAttributes.value["calendar-title"] as string): null;
      const description =_dataAttributes && _dataAttributes?.value? (_dataAttributes.value["calendar-description"] as string) : null
-     const store = useGoogleCalendarStore(props.piniaInstance);
+     const store = useGoogleCalendarStore();
     const cidEl=Guid.create().toString();
    
     // lifecycle hooks

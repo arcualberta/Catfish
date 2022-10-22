@@ -19,7 +19,7 @@
             </div>
             <div class="col-sm-10">
                 <select v-if="isNewEntity" v-model="entity.templateId" class="form-select">
-                    <option v-for="template in templateEntries" :key="template.templateId" :value="template.templateId?.toString()">{{template.templateName}}</option>
+                    <option v-for="template in templateEntries" :key="template.templateId.toString()" :value="template.templateId?.toString()">{{template.templateName}}</option>
                 </select>
                 <span v-else>{{entityTemplate?.name}}</span>
             </div>
@@ -73,7 +73,7 @@
     import { useEntityEditorStore } from "../store"
     import { eEntityType } from "../../shared/constants"
     import { Guid } from 'guid-typescript';
-    import { Field, Form, FieldEntry } from '../../shared/form-models'
+    import { FieldEntry } from '../../shared/form-models'
     import { EntityTemplate } from '../../entity-template-builder/models'
     import { instantiateRequiredForms, getField, getFieldData } from '@/components/shared/entity-helpers'
     import { EntityData } from "../../entity-editor/models";

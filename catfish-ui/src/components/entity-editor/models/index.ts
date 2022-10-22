@@ -1,7 +1,7 @@
 import { Guid } from "guid-typescript"
 import { eEntityType } from "../../shared/constants";
 import { FormData } from "../../shared/form-models";
-
+import { EntityEntry } from '@/components/shared'
 
 export interface EntityData{
     id: Guid
@@ -33,14 +33,6 @@ export interface Relationship {
     order: number
 }
 
-export interface EntityEntry
-{
-    id: Guid
-    title: string
-    description: string
-    created: Date
-    updated: Date
-}
 
 export interface EntitySearchResult
 {

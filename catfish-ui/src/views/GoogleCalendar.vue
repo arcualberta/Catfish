@@ -6,7 +6,7 @@
     import { useRoute } from 'vue-router'
    
 
-    import { GoogleCalendar } from '../components'
+    import { GoogleCalendar } from '../apps'
 
     const route = useRoute()
    
@@ -14,5 +14,5 @@
 </script>
 
 <template setup>
-    <GoogleCalendar :pinia-instance="getActivePinia()" />
+    <GoogleCalendar />
 </template>

@@ -8,8 +8,8 @@ export default defineConfig({
     define: { 'process.env.NODE_ENV': '"production"' },
     build: {
         lib: {
-            entry: path.resolve(__dirname, 'src/components/index.ts'),
-            name: 'Applets',//'CatfishUI'
+            entry: path.resolve(__dirname, 'src/library-exports.ts'),
+            name: 'CatfishUI',
             fileName: (format) => `applets.${format}.js`,
         },
         rollupOptions: {

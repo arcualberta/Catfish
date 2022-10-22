@@ -1,7 +1,8 @@
 <script setup lang="ts">
     import { computed, watch } from 'vue'
     import { Guid } from "guid-typescript";
-    import { Form, FormEntry, FieldEntry } from '../../form-models';
+    import { FieldEntry, FormTemplate } from '../../form-models';
+    import { FormEntry } from '@/components/shared';
     import { getFieldTitle } from '@/components/shared/form-helpers'
     import { OptionEntry, SelectableOption, OptionGroup } from './models'
 
@@ -11,7 +12,7 @@
             formGroupName: string,
             formGroup: FormEntry[]
         }[],
-        forms: Form[]
+        forms: FormTemplate[]
     }>();
 
     const formSelectionOptions = computed(() => {
