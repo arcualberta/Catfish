@@ -1,5 +1,7 @@
 <template>
     <div class="pt-2 mt-2">
+        <div class="row"> 
+            <filedset class="col-sm-7">
         <div class="row mt-2">
             <div class="col-sm-2">
                 <label>EntityType:</label>
@@ -17,7 +19,7 @@
             </div>
             <div class="col-sm-10">
                 <select v-if="isNewEntity" v-model="entity.templateId" class="form-select">
-                    <option v-for="template in templateEntries" :key="template.templateId" :value="template.templateId?.toString()">{{template.templateName}}</option>
+                    <option v-for="template in templateEntries" :key="template.templateId.toString()" :value="template.templateId?.toString()">{{template.templateName}}</option>
                 </select>
                 <span v-else>{{entityTemplate?.name}}</span>
             </div>
@@ -43,8 +45,24 @@
         <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />
         <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />
         <FieldComponent :model="mediaField" :model-data="mediaFieldData" v-if="store.mediaField" />
-        
-       
+        <div v-if="store.mediaField && mediaFieldData.fileReferences.length > 0"> 
+            <div v-for="fr in mediaFieldData.fileReferences" :key="fr.id">
+                 <div>{{fr.originalFileName}}</div>
+            </div>
+        </div>
+    </filedset>
+    <fieldset class="col-sm-5"><legend> Right side </legend>
+              <div class="col-sm-8">
+                <div>{{titleField.title.values[0].value}}: {{titleFieldData.multilingualTextValues[0].values[0].value}}</div>
+                <div>{{descriptionField.title.values[0].value}}: {{descriptionFieldData.multilingualTextValues[0].values[0].value}}</div>
+                 <div>{{mediaFieldData.fileReferences[0].originalFileName}}</div>
+                
+              </div>
+              <div class="col-sm-4">
+                 <img src="#" />
+              </div>
+            </fieldset>
+       </div>
     </div>
 </template>
 
@@ -55,7 +73,7 @@
     import { useEntityEditorStore } from "../store"
     import { eEntityType } from "../../shared/constants"
     import { Guid } from 'guid-typescript';
-    import { Field, Form, FieldEntry } from '../../shared/form-models'
+    import { FieldEntry } from '../../shared/form-models'
     import { EntityTemplate } from '../../entity-template-builder/models'
     import { instantiateRequiredForms, getField, getFieldData } from '@/components/shared/entity-helpers'
     import { EntityData } from "../../entity-editor/models";

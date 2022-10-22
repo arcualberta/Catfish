@@ -8,8 +8,8 @@ export default defineConfig({
     define: { 'process.env.NODE_ENV': '"production"' },
     build: {
         lib: {
-            entry: path.resolve(__dirname, 'src/components/index.ts'),
-            name: 'Applets',//'CatfishUI'
+            entry: path.resolve(__dirname, 'src/library-exports.ts'),
+            name: 'CatfishUI',
             fileName: (format) => `applets.${format}.js`,
         },
         rollupOptions: {
@@ -38,8 +38,4 @@ export default defineConfig({
         port: 8080
     }
 })
-/*
-function importToCDN(arg0: { modules: { name: string; var: string; path: string; }[]; }): import("vite").PluginOption {
-    throw new Error('Function not implemented.');
-}
-*/
+

@@ -5,12 +5,14 @@ import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { eEntityType, eSearchTarget } from '@/components/shared/constants';
 import { createFormData } from '@/components/shared/form-helpers'
-import { Form, FormData as FormDataModel } from '@/components/shared/form-models'
+import { FormData as FormDataModel } from '@/components/shared/form-models'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
 import {FileReference} from '@/components/shared/form-models/field'
 import router from '@/router';
 
 import { useFormSubmissionStore } from '@/components/form-submission/store';
+import {useEntitySelectStore} from '../../shared/components/entity-selection-list/store'
+
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
     state: () => ({
         id: null as Guid | null,
@@ -19,7 +21,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         entity: null as EntityData | null,
         transientMessageModel: {} as TransientMessageModel,
         updatedFileKeys: [] as string[] | null,
-        entitySearchResult: null as EntitySearchResult | null
+        entitySearchResult: null as EntitySearchResult | null,
+        storeId:(Guid.create()).toString()
     }),
     actions: {
         loadTemplates() {
@@ -217,6 +220,22 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             .catch((error) => {
                 console.error('Load Entities API Error:', error);
             });
+        },
+        AddToRelationObject(){
+            console.log("add to relation object")
+            let selectedIds = this.getSelectedEntityIds;
+            console.log("selectedIds" + JSON.stringify(selectedIds))
+            selectedIds.forEach((sid)=>{  
+              this.entity?.subjectRelationships.push({
+                subjectEntityId: sid,
+                subjectEntity: this.entity,
+                objectEntityId: sid,
+                objectEntity: this.entity,
+                name: "unlnown",
+                order: 1
+                })
+            });
+            console.log("after adding: " + JSON.stringify(this.entity))
         }
     },
     getters: {
@@ -241,6 +260,13 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         getFiles: (state)=>{
               const formSubmissionstore = useFormSubmissionStore();
               return formSubmissionstore.files;
+        },
+        getSelectedEntityIds: (state)=>{
+            console.log("entity editor store id: " + state.storeId)
+            const entityListStore = useEntitySelectStore(state.storeId);
+
+            return entityListStore.selectedEntityIds;
+            
         }
     }
 });

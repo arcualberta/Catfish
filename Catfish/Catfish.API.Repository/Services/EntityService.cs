@@ -14,31 +14,33 @@ namespace Catfish.API.Repository.Services
         {
             _context = context;
         }
-        public EntityData GetEntity(Guid id)
+        public EntityData? GetEntity(Guid id)
         {
-            return _context.Entities.Where(t => t.Id == id).FirstOrDefault();
+            return _context.Entities!.Where(t => t.Id == id).FirstOrDefault();
         }
 
-        public List<EntityEntry> GetEntities(eEntityType entityType, eSearchTarget searchTarget, string searchText, int offset = 0, int? max = null)
+        public List<EntityEntry> GetEntities(eEntityType entityType, eSearchTarget searchTarget, string searchText, int offset, int? max, out int total)
         {
-            var query = _context.Entities.Where(e => e.EntityType == entityType);
+            var query = _context.Entities!.Where(e => e.EntityType == entityType);
             if(searchTarget == eSearchTarget.Title)
             {
-                query.Where(e=>e.Title.Contains( searchText));
+                query = query.Where(e=> e.Title.ToLower().Contains(searchText));
             }
             else if(searchTarget == eSearchTarget.Description)
             {
-                query.Where(e=>e.Description == searchText);
+               query =  query.Where(e=> e.Description.ToLower().Contains(searchText));
             }
             else
             {
-                query.Where(e => e.Title == searchText || e.Description == searchText);
+                query =query.Where(e =>e.Title.ToLower().Contains(searchText) || e.Description.ToLower().Contains(searchText));
             }
 
+            total = query.Count();
+
             if (offset > 0)
-                query.Skip(offset);
+               query = query.Skip(offset);
             if (max != null && max > 0)
-                query.Take(max.Value);
+                query =query.Take(max.Value);
 
             return query.Select(e => new EntityEntry { Id = e.Id, Title = e.Title, Description = e.Description, Created = e.Created, Updated = e.Updated }).ToList();
         }
@@ -95,7 +97,7 @@ namespace Catfish.API.Repository.Services
                 }
         }
 
-        private static string GetAttachmentsFolder(bool createIfNotExist = false)
+        public string GetAttachmentsFolder(bool createIfNotExist = false)
         {
             //ConfigurationManager configuration = new ConfigurationManager();
            
@@ -110,5 +112,6 @@ namespace Catfish.API.Repository.Services
             return path;
         }
 
+       
     }
 }

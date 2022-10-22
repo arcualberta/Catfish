@@ -1,6 +1,7 @@
 import { Guid } from "guid-typescript";
-import { Field, FieldData, FieldEntry, Form, FormData, FormEntry } from '@/components/shared/form-models'
-import { Entity } from "../../entity-editor/models";
+import { Field, FieldData, FieldEntry, FormTemplate, FormData } from '@/components/shared/form-models'
+import { FormEntry } from '@/components/shared'
+import { EntityData } from "../../entity-editor/models";
 import { EntityTemplate } from "../../entity-template-builder/models";
 import { createFormData } from "../form-helpers";
 
@@ -10,7 +11,7 @@ import { createFormData } from "../form-helpers";
  * @param entity
  * @param formId
  */
-export const getFormData = (entity: Entity, formId: Guid): FormData | undefined =>
+export const getFormData = (entity: EntityData, formId: Guid): FormData | undefined =>
     entity?.data.find(formData => formData.formId === formId);
 
 /**
@@ -20,7 +21,7 @@ export const getFormData = (entity: Entity, formId: Guid): FormData | undefined 
  * @param entity
  * @param fieldEntry
  */
-export const getFieldData = (entity: Entity, fieldEntry: FieldEntry): FieldData | undefined =>
+export const getFieldData = (entity: EntityData, fieldEntry: FieldEntry): FieldData | undefined =>
     getFormData(entity, fieldEntry?.formId)?.fieldData.find(fieldData => fieldData.fieldId === fieldEntry?.fieldId);
 
 /**
@@ -40,7 +41,7 @@ export const getField = (template: EntityTemplate, fieldEntry: FieldEntry): Fiel
  * @param template
  * @param formId
  */
-export const appendFormDataObject = (entity: Entity, template: EntityTemplate, formId: Guid) => {
+export const appendFormDataObject = (entity: EntityData, template: EntityTemplate, formId: Guid) => {
     const form = template.forms!.find(form => form.id == formId)!;
     const formData = createFormData(form, "");
     formData.id = Guid.create().toString() as unknown as Guid;
@@ -54,7 +55,7 @@ export const appendFormDataObject = (entity: Entity, template: EntityTemplate, f
  * @param entity
  * @param template
  */
-export const instantiateRequiredForms = (entity: Entity, template: EntityTemplate) => {
+export const instantiateRequiredForms = (entity: EntityData, template: EntityTemplate) => {
     instantiateRequiredFormsFromArray(entity, template.entityTemplateSettings!.metadataForms!, template.forms!);
     instantiateRequiredFormsFromArray(entity, template.entityTemplateSettings!.dataForms!, template.forms!);
 }
@@ -65,11 +66,11 @@ export const instantiateRequiredForms = (entity: Entity, template: EntityTemplat
  * @param formEntries
  * @param forms
  */
-const instantiateRequiredFormsFromArray = (entity: Entity, formEntries: FormEntry[], forms: Form[]) => {
+const instantiateRequiredFormsFromArray = (entity: EntityData, formEntries: FormEntry[], forms: FormTemplate[]) => {
     formEntries.filter(formEntry => formEntry.isRequired).forEach(formEntry => {
         if (entity.data.filter(formData => formData.formId == formEntry.formId).length == 0) {
             appendFormDataObject
-            const form = forms.filter(f => f.id === formEntry.formId)[0] as Form;
+            const form = forms.filter(f => f.id === formEntry.formId)[0] as FormTemplate;
             const formData = createFormData(form, "");
             formData.id = Guid.create().toString() as unknown as Guid;
             entity.data.push(formData)

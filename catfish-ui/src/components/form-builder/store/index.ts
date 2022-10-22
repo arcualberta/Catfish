@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { Guid } from "guid-typescript";
+import { default as config } from "@/appsettings";
 import { Field, FieldType, OptionFieldType, TextCollection, Option } from '../../shared/form-models'
 import { createOption, createTextCollection, isOptionField, cloneTextCollection } from '../../shared/form-helpers'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
@@ -13,7 +14,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
     }),
     actions: {
         loadForm(id: Guid) {
-            let api = `https://localhost:5020/api/forms/${id}`;
+            let api = `${config.dataRepositoryApiRoot}/api/forms/${id}`;//`https://localhost:5020/api/forms/${id}`;
             console.log(api)
             fetch(api, {
                 method: 'GET'
@@ -34,7 +35,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
             }
 
             const newForm = this.form?.id?.toString() === Guid.EMPTY;
-            let api = "https://localhost:5020/api/forms";
+            let api = `${config.dataRepositoryApiRoot}/api/forms`//"https://localhost:5020/api/forms";
             let method = "";
             if (newForm) {
                 console.log("Saving new form.")
@@ -54,7 +55,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                     headers: {
                         'encType': 'multipart/form-data',
                         'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': 'http://localhost:5020',
+                        'Access-Control-Allow-Origin': `${config.dataRepositoryApiRoot}`,//'http://localhost:5020',
                         'Access-Control-Allow-Credentials': 'true'
                     },
                 })

@@ -1,7 +1,7 @@
 import AttachmentField from "@/components/form-submission/components/AttachmentField.vue";
 import { Guid } from "guid-typescript"
 
-import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, Text, Form, FormData } from "../form-models";
+import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, FormData, FormTemplate } from "../form-models";
 import { getTextValue, createTextCollection, createText } from './textHelper'
 
 /**
@@ -90,7 +90,7 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
 
     return fieldData
 }
-export const createFormData = (form: Form, lang: string | string[]): FormData => {
+export const createFormData = (form: FormTemplate, lang: string | string[]): FormData => {
     const formData = {
         id: Guid.EMPTY as unknown as Guid,
         formId: form.id,

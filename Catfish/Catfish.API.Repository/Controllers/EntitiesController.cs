@@ -34,12 +34,12 @@ namespace Catfish.API.Repository.Controllers
 
             EntitySearchResult result = new EntitySearchResult();
             
-            List<EntityEntry> entities = _entityService.GetEntities(entityType, searchTarget, searchText, offset, max);
+            List<EntityEntry> entities = _entityService.GetEntities(entityType, searchTarget, searchText, offset, max, out int total);
 
 
             result.Result = entities;
             result.Offset = offset;
-            result.Total = entities.Count;
+            result.Total = total;
 
             return result;
             
@@ -128,6 +128,21 @@ namespace Catfish.API.Repository.Controllers
             throw new NotImplementedException();
         }
 
-        
+        [HttpGet("{contentType}/{fileName}")]
+        public IActionResult? GetFileAttachment(string contentType, string fileName)
+        {
+            string attachmentFolder = _entityService.GetAttachmentsFolder(false);
+            string[] fnames = fileName.Split('_');
+            string originalFileName = fnames[fnames.Length - 1];
+            contentType = contentType.Replace("%2F", "/");
+
+            string pathName = Path.Combine(attachmentFolder, fileName);
+            if (System.IO.File.Exists(pathName))
+            {
+                var data = System.IO.File.ReadAllBytes(pathName);
+                return File(data, contentType, originalFileName);
+            }
+            return null;
+        }
     }
 }
