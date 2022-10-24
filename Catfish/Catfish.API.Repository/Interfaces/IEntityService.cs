@@ -8,5 +8,6 @@ namespace Catfish.API.Repository.Interfaces
         public Task<HttpStatusCode> UpdateEntity(EntityData entityTemplate);
         public EntityData? GetEntity(Guid id);
         public List<EntityEntry> GetEntities(eEntityType entityType, eSearchTarget searchTarget, string searchText, int offset, int? max, out int total);
+        public string GetAttachmentsFolder(bool createIfNotExist);
     }
 }

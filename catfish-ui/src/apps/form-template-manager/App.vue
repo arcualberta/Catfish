@@ -9,9 +9,9 @@ const apiRoot = "/forms";
     <CrudObjectManager :api-root="apiRoot">
         <template #object-type>Form Template</template>      
         <template #list-entry-delegate>List Entry</template>
-        <template #create-delegate>Create</template>
-        <template #read-delegate>Read</template>
-        <template #udapte-delegate>Update</template>
+        <template #create-delegate>CreateFormComponent</template>
+        <template #read-delegate>ReadFormComponent</template>
+        <template #udapte-delegate>UpdateFormComponent</template>
         <template #delete-delegate>Delete</template>
     </CrudObjectManager>
 </template>

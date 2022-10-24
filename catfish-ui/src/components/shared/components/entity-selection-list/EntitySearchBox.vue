@@ -9,7 +9,7 @@
             </div>
             <div class="col-sm-6">
                 <label> Search Text </label>
-                <input type="text" v-model="searchText" class="form-control" @blur="performSearch"/>
+                <input type="text" v-model="searchText" class="form-control" @blur="performSearch" @keydown.enter="performSearch"/>
                
             </div>
         </div>
