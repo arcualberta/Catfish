@@ -9,9 +9,10 @@ const props = defineProps<{
 }>()
 
 //API ROOT/read/{entry.id}
-const detailUrl =config.dataRepositoryApiRoot + "/read/" + props.entry.id;
-const updateUrl =config.dataRepositoryApiRoot + "/update/" + props.entry.id;
-const deleteUrl =config.dataRepositoryApiRoot + "/delete/" + props.entry.id;
+//
+const detailUrl ="/read/" + props.entry.id;
+const updateUrl ="/update/" + props.entry.id;
+const deleteUrl = "/delete/" + props.entry.id;
 </script>
 
 <template>
