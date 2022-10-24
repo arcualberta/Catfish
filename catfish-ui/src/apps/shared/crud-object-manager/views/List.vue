@@ -12,8 +12,8 @@ const {entries} = storeToRefs(store);
 <template>
     <h4>List <slot name="object-type"/>s</h4>
 
-    <div v-for="entry in entries" :key="entry.id.toString()">
-       <!-- <slot name="list-entry-delegate"></slot> {{entry}}-->
+    <div v-for="entry in entries" :key="entry.id.toString()" >
+      
        <slot name="list-entry-delegate"><component :is="ListEntry" :entry="entry" /></slot>
     </div>
 
