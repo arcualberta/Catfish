@@ -29,7 +29,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            return await _context.EntityTemplates!.Select(te => new TemplateEntry() { TemplateId = te.Id, TemplateName = te.Name ?? te.Id.ToString() }).ToListAsync();
+            return await _context.EntityTemplates!.Select(te => new TemplateEntry() { Id = te.Id, Name = te.Name ?? te.Id.ToString() }).ToListAsync();
             
         }
 
