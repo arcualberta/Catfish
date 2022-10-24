@@ -53,9 +53,9 @@
     </filedset>
     <fieldset class="col-sm-5"><legend> Right side </legend>
               <div class="col-sm-8">
-                <div>{{titleField.title.values[0].value}}: {{titleFieldData.multilingualTextValues[0].values[0].value}}</div>
-                <div>{{descriptionField.title.values[0].value}}: {{descriptionFieldData.multilingualTextValues[0].values[0].value}}</div>
-                 <div>{{mediaFieldData.fileReferences[0].originalFileName}}</div>
+                <div>{{titleField?.title?.values[0]?.value}}: {{titleFieldData?.multilingualTextValues[0]?.values[0]?.value}}</div>
+                <div>{{descriptionField?.title?.values[0]?.value}}: {{descriptionFieldData?.multilingualTextValues[0]?.values[0]?.value}}</div>
+                 <div>{{mediaFieldData?.fileReferences[0]?.originalFileName}}</div>
                 
               </div>
               <div class="col-sm-4">
