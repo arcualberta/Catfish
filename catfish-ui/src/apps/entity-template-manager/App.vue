@@ -1,7 +1,13 @@
 <script lang="ts" setup>
+import { AppletAttribute } from '@/components/shared/props';
+import { computed } from 'vue';
 import {default as CrudObjectManager} from '../shared/crud-object-manager/App.vue'
 
-const apiRoot = "/entity-templates";
+const props = defineProps<{
+    dataAttributes?: AppletAttribute | null,
+}>()
+
+const apiRoot = computed(() => (props.dataAttributes ? props.dataAttributes["RepositoryMicroserviceUrl"] : "") + "/api/entity-templates");
 
 </script>
 
