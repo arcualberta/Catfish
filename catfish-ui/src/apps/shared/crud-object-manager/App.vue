@@ -1,9 +1,17 @@
 <script lang="ts" setup>
 import { AppletAttribute } from '@/components/shared/props';
+import { computed, onMounted } from 'vue';
+import {useCRUDManagerStore} from './store'
 
 const props = defineProps<{
-    apiRoot?: string,
+    apiRoot?: string
+   
 }>()
+const store = useCRUDManagerStore();
+const apiUrl = computed(()=>props.apiRoot);
+ onMounted(() => {
+      store.loadEntries(apiUrl?.value as string);
+    });
 
 </script>
 

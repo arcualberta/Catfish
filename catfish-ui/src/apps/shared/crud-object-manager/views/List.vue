@@ -1,6 +1,11 @@
 <script lang="ts" setup>
+import {useCRUDManagerStore} from '../store'
+import {storeToRefs} from 'pinia'
 
-const entries = [1,2,3,4,5];
+const store = useCRUDManagerStore();
+
+const {entries} = storeToRefs(store);
+//const entries = store//[1,2,3,4,5];
 </script>
 
 <template>
