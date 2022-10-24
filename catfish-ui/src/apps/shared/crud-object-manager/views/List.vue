@@ -16,4 +16,5 @@ const {entries} = storeToRefs(store);
        <!-- <slot name="list-entry-delegate"></slot> {{entry}}-->
        <slot name="list-entry-delegate"><component :is="ListEntry" :entry="entry" /></slot>
     </div>
+
 </template>
