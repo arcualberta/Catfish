@@ -9,9 +9,9 @@ const apiRoot = "/collections";
     <CrudObjectManager :api-root="apiRoot">
         <template #object-type>Collection</template>      
         <template #list-entry-delegate>List Entry</template>
-        <template #create-delegate>Create</template>
-        <template #read-delegate>Read</template>
-        <template #udapte-delegate>Update</template>
+        <template #create-delegate>CreateCollectionComponent</template>
+        <template #read-delegate>ReadCollectionComponent</template>
+        <template #udapte-delegate>UpdateCollectionComponent</template>
         <template #delete-delegate>Delete</template>
     </CrudObjectManager>
 </template>

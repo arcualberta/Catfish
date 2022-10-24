@@ -9,9 +9,9 @@ const apiRoot = "/entity-templates";
     <CrudObjectManager :api-root="apiRoot">
         <template #object-type>Entity Template</template>      
         <template #list-entry-delegate>List Entry</template>
-        <template #create-delegate>Create</template>
-        <template #read-delegate>Read</template>
-        <template #udapte-delegate>Update</template>
+        <template #create-delegate>CreateEntityTemplateComponent</template>
+        <template #read-delegate>ReadEntityTemplateComponent</template>
+        <template #udapte-delegate>UpdateEntityTemplateComponent</template>
         <template #delete-delegate>Delete</template>
     </CrudObjectManager>
 </template>
