@@ -72,6 +72,9 @@
         dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes))
     });
 
+    app.use(CatfishUI.BootstrapVue3);
+    app.use(CatfishUI.BootstrapVue3Icons);
+
     if (pinia)
         app.use(pinia)
 
