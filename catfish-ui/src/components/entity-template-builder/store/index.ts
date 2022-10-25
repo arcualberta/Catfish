@@ -38,7 +38,9 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         },
         associateForm(formId: Guid) {
             if (this.forms.findIndex(form => form.id === formId) < 0) {
-                const api = `${this.getApiRoot}/api/forms/${formId}`;
+                //this.getApiRoot => https://localhost:40520/api/entityTemlate
+            let webRoot = this.getApiRoot.split("/")[0]+"//" + this.getApiRoot.split("/")[2];
+                const api = `${webRoot}/api/forms/${formId}`;
                // console.log("loading form: ", api);
 
                 fetch(api, {
@@ -54,7 +56,9 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             }
         },
         loadFormEntries() {
-            const api = `${this.getApiRoot}/api/forms`;
+            //this.getApiRoot => localhost:40520/api/entity-temlates
+            let webRoot = this.getApiRoot.split("/")[0]+"//" + this.getApiRoot.split("/")[2];
+            const api = `${webRoot}/api/forms`;
             console.log("loading forms: ", api);
 
             fetch(api, {
@@ -69,7 +73,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 });
         },
         loadTemplate(id: Guid) {
-            const api = `${this.getApiRoot}/api/entity-templates/${id}`;
+            const api = `${this.getApiRoot}/${id}`;
             console.log("loading entityTemplate: ", api);
 
             fetch(api, {
@@ -88,7 +92,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             //console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
            
-            let api = this.getApiRoot + "/api/entity-templates";
+            let api = this.getApiRoot;
             let method = "";
             if (newTemplate) {
                 console.log("Saving new template.");
@@ -161,7 +165,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
     },
     getters:{
         getApiRoot(state){
-            return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot;
+            return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/entity-templates";
         }
     }    
 });

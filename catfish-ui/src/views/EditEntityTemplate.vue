@@ -11,7 +11,7 @@
  
     const route = useRoute()
     const templateId = route.params.templateId as unknown as Guid
-    const store = useEntityTemplateBuilderStore(getActivePinia());
+    const store = useEntityTemplateBuilderStore();
     if(templateId)
         store.loadTemplate(templateId)
        
@@ -20,7 +20,7 @@
 
 <template>
     <h5>Edit Template </h5>
-    <EntityTemplateBuilder  :pinia-instance="getActivePinia()"   />
+    <EntityTemplateBuilder   />
 </template>
 
 
