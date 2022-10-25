@@ -14,7 +14,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         template: null as EntityTemplate | null,
         formEntries: [] as FormEntry[],
         transientMessageModel: {} as TransientMessageModel,
-        forms: [] as FormTemplate[]
+        forms: [] as FormTemplate[],
+        apiRoot: null as string |null
     }),
     actions: {
         newTemplate() {
@@ -77,7 +78,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 .then(response => response.json())
                 .then(data => {
                     //console.log(data);
-                    this.template = data;
+                    this.template = data as EntityTemplate;
                 })
                 .catch((error) => {
                     console.error('Load Entity Template API Error:', error);
@@ -153,6 +154,14 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 if (index >= 0)
                     this.template!.entityTemplateSettings.metadataForms!.splice(index, 1);
             }
+        },
+        setApiRoot(api: string){
+            this.apiRoot = api;
         }
-    },    
+    },
+    getters:{
+        getApiRoot(state){
+            return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot;
+        }
+    }    
 });

@@ -16,10 +16,10 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
-        piniaInstance: Pinia
+       //piniaInstance: Pinia
     }>();
 
-    const store = useEntityTemplateBuilderStore(props.piniaInstance);
+    const store = useEntityTemplateBuilderStore();
     const createTemplate = () => store.newTemplate();
 
     const template = computed(() => store.template);
