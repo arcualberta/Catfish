@@ -38,7 +38,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         },
         associateForm(formId: Guid) {
             if (this.forms.findIndex(form => form.id === formId) < 0) {
-                const api = `${config.dataRepositoryApiRoot}/api/forms/${formId}`;
+                const api = `${this.getApiRoot}/api/forms/${formId}`;
                // console.log("loading form: ", api);
 
                 fetch(api, {
@@ -54,7 +54,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             }
         },
         loadFormEntries() {
-            const api = `${config.dataRepositoryApiRoot}/api/forms`;
+            const api = `${this.getApiRoot}/api/forms`;
             console.log("loading forms: ", api);
 
             fetch(api, {
@@ -69,7 +69,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 });
         },
         loadTemplate(id: Guid) {
-            const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${id}`;
+            const api = `${this.getApiRoot}/api/entity-templates/${id}`;
             console.log("loading entityTemplate: ", api);
 
             fetch(api, {
@@ -88,7 +88,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             //console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
            
-            let api = config.dataRepositoryApiRoot + "/api/entity-templates";
+            let api = this.getApiRoot + "/api/entity-templates";
             let method = "";
             if (newTemplate) {
                 console.log("Saving new template.");
