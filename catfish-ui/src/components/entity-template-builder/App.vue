@@ -125,7 +125,10 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
                 <div class="col-2">
                     Title
                 </div>
+                
                 <div class="col-10">
+                    <FormFieldSelectionDropdown :model="titleField" :option-source="formFieldSelectorSource" :forms="store.forms" />
+                
                 </div>
             </div>
             <div class="row">
@@ -133,7 +136,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
                     Description
                 </div>
                 <div class="col-10">
-                    <FormFieldSelectionDropdown :model="(descriptionField as FieldEntry)" :option-source="formFieldSelectorSource" :forms="(store.forms as FormTemplate[])" />
+                    <FormFieldSelectionDropdown :model="(descriptionField as FieldEntry)" :option-source="formFieldSelectorSource" :forms="(store.forms)" />
                 </div>
             </div>
              <div class="row">
