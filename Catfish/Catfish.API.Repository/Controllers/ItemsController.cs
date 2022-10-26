@@ -31,7 +31,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            return await _context.Entities.Select(item => new EntityEntry() { Id = item.Id, Name = item.Title ?? item.Id.ToString() }).ToListAsync();
+            return await _context.Entities.Where(item=>item.EntityType == eEntityType.Item).Select(item => new EntityEntry() { Id = item.Id, Name = item.Title ?? item.Id.ToString() }).ToListAsync();
 
         }
 
