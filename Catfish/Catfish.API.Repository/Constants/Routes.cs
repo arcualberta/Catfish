@@ -20,5 +20,9 @@
         {
             public const string Root = "api/entities";
         }
+        internal static class Items
+        {
+            public const string Root = "api/items";
+        }
     }
 }

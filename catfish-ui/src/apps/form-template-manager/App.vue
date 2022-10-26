@@ -10,7 +10,7 @@ const props = defineProps<{
     dataAttributes?: AppletAttribute | null,
 }>()
 
-const apiRoot = computed(() => (props.dataAttributes ? props.dataAttributes["RepositoryMicroserviceUrl"] : "") + "/api/entity-templates");
+const apiRoot = computed(() => (props.dataAttributes ? props.dataAttributes["RepositoryMicroserviceUrl"] : "") + "/api/forms");
 
 
 </script>
