@@ -19,7 +19,7 @@
             </div>
             <div class="col-sm-10">
                 <select v-if="isNewEntity" v-model="entity.templateId" class="form-select">
-                    <option v-for="template in templateEntries" :key="template.templateId.toString()" :value="template.templateId?.toString()">{{template.templateName}}</option>
+                    <option v-for="template in templateEntries" :key="template.id.toString()" :value="template.id?.toString()">{{template.name}}</option>
                 </select>
                 <span v-else>{{entityTemplate?.name}}</span>
             </div>
@@ -53,9 +53,9 @@
     </filedset>
     <fieldset class="col-sm-5"><legend> Right side </legend>
               <div class="col-sm-8">
-                <div>{{titleField.title.values[0].value}}: {{titleFieldData.multilingualTextValues[0].values[0].value}}</div>
-                <div>{{descriptionField.title.values[0].value}}: {{descriptionFieldData.multilingualTextValues[0].values[0].value}}</div>
-                 <div>{{mediaFieldData.fileReferences[0].originalFileName}}</div>
+                <div>{{titleField?.title?.values[0]?.value}}: {{titleFieldData?.multilingualTextValues[0]?.values[0]?.value}}</div>
+                <div>{{descriptionField?.title?.values[0]?.value}}: {{descriptionFieldData?.multilingualTextValues[0]?.values[0].value}}</div>
+                 <div>{{mediaFieldData?.fileReferences[0]?.originalFileName}}</div>
                 
               </div>
               <div class="col-sm-4">

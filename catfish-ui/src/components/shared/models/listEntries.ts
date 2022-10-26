@@ -20,6 +20,7 @@ export interface FormEntry extends ListEntry {
 
 export interface EntityEntry extends ListEntry
 {
+    title: string
     description: string
     created: Date
     updated: Date
