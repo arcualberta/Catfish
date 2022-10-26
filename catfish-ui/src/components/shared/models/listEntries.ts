@@ -14,7 +14,7 @@ export interface ListEntry{
 }
 
 export interface FormEntry extends ListEntry {
-    formId: Guid;
+    //formId: Guid;
     isRequired?: boolean;
 }
 

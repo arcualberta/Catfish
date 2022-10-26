@@ -29,8 +29,8 @@
                     <label :for="model.formId.toString()">Form:</label>
                 </b-col>
                 <b-col class="col-sm-10">
-                    <select v-model="model.formId" :name="model.formId.toString()" class="form-select">
-                        <option v-for="entry in store.formEntries" :key="entry.formId.toString()" :value="entry.formId">{{entry.name}}</option>
+                    <select v-model="model.id" :name="model.id.toString()" class="form-select">
+                        <option v-for="entry in store.formEntries" :key="entry.id.toString()" :value="entry.id">{{entry.name}}</option>
                     </select>
                 </b-col>
             </b-row>
