@@ -50,8 +50,10 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     let btnClasses="btn btn-primary";
     const route = useRoute()
     const templateId = route.params.templateId as unknown as Guid
-    if(templateId)
+    if(templateId){
        btnClasses="btn btn-primary hideBtn";
+       store.loadTemplate(templateId)
+    }
     watch(() => titleField?.value?.formId, newVal => {
         store.associateForm(newVal as unknown as Guid)
     })
@@ -60,7 +62,9 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
         store.loadFormEntries();
         if (template.value) {
             if (template.value.id?.toString() !== Guid.EMPTY){
-                router.push(`/edit-entity-template/${template.value.id}`)
+                store.loadTemplate(template.value.id as Guid)
+                //router.push(`/edit-entity-template/${template.value.id}`)
+                //router.push(`/update/${template.value.id}`)
                 btnClasses="btn btn-primary hideBtn";
             }
         }
