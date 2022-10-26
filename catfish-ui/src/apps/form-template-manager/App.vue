@@ -3,7 +3,7 @@ import { AppletAttribute } from '@/components/shared/props';
 import { computed } from 'vue';
 import {default as CrudObjectManager} from '../shared/crud-object-manager/App.vue'
 
-//import {EntityTemplateBuilder} from '../../components'
+import {FormBuilder} from '../../components'
 
 //const apiRoot = "/forms";
 const props = defineProps<{

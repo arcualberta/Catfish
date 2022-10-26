@@ -23,7 +23,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     const store = useEntityTemplateBuilderStore();
     
     if(props.apiRoot){
-        console.log("api root from props: " + props.apiRoot);
+       // console.log("api root from props: " + props.apiRoot);
         store.setApiRoot(props.apiRoot);
     }
 

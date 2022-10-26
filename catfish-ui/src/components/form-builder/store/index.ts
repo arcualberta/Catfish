@@ -10,11 +10,13 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
     state: () => ({
         lang: ["en", "fr"],
         form: null as FormTemplate | null,
-        transientMessageModel: {} as TransientMessageModel
+        transientMessageModel: {} as TransientMessageModel,
+        apiRoot: null as string |null
     }),
     actions: {
         loadForm(id: Guid) {
-            let api = `${config.dataRepositoryApiRoot}/api/forms/${id}`;//`https://localhost:5020/api/forms/${id}`;
+            // //this.getApiRoot => localhost:40520/api/forms
+            let api = `${this.getApiRoot}/${id}`;//`https://localhost:5020/api/forms/${id}`;
             console.log(api)
             fetch(api, {
                 method: 'GET'
@@ -35,7 +37,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
             }
 
             const newForm = this.form?.id?.toString() === Guid.EMPTY;
-            let api = `${config.dataRepositoryApiRoot}/api/forms`//"https://localhost:5020/api/forms";
+            let api = `${this.getApiRoot}`;//`${config.dataRepositoryApiRoot}/api/forms`//"https://localhost:5020/api/forms";
             let method = "";
             if (newForm) {
                 console.log("Saving new form.")
@@ -94,41 +96,14 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                     console.error('Form Save API Error:', error)
                 });
         },
-        /*updateFileReference(fieldId: Guid, file: File) {
-         
-            const field = this.form?.fields.$values.find(fd => fd.id == fieldId);
-            if (field) {
-
-                const fileRef = this.fileReferences?.find(f => f.fileName == file.name && !f.id);
-                if (fileRef) {
-                    fileRef.fileName = file.name;
-                    fileRef.originalFileName = file.name;
-                    fileRef.size = file.size;
-                    fileRef.file = file;
-                    fileRef.fieldId = field.id as Guid;
-                }
-                else {
-
-                    const fileRef: models.FileReference = {
-                        id: Guid.create().toString() as unknown as Guid,
-                        fileName: file.name,
-                        fieldId: field.id as Guid,
-                        originalFileName: file.name,
-                        contentType: file.type,
-                        created: new Date(),
-                        updated: new Date(Date.now.toString()),
-                        size: file.size,
-                        modelType: "Catfish.Core.Models.Contents.FileReference",
-                        $type: "Catfish.Core.Models.Contents.FileReference",
-                        file: file,
-                        thumbnail: "",
-                        cssClass: ""
-                    };
-
-                    field.files?.push(fileRef)
-                }
-            }
-
-        },*/
-    }
+        setApiRoot(api: string){
+            this.apiRoot = api;
+        }
+        
+    },
+    getters:{
+        getApiRoot(state){
+            return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/entity-templates";
+        }
+    } 
 });

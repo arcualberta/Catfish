@@ -15,13 +15,18 @@
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
-        piniaInstance: Pinia,
-        repositoryRoot: string,
-        formId?: Guid
+       // piniaInstance: Pinia,
+       // repositoryRoot: string,
+        formId?: Guid,
+        apiRoot: string | null
     }>();
 
-    const store = useFormBuilderStore(props.piniaInstance);
+    const store = useFormBuilderStore();
 
+    if(props.apiRoot){
+        console.log("api root from props: " + props.apiRoot);
+        store.setApiRoot(props.apiRoot);
+    }
     //const transientMessage = computed(() => store.transientMessageModel);
 
     if (props.formId)
@@ -73,7 +78,7 @@
 <style scoped src="./styles.css"></style>
 
 <template>
-    <TransientMessage :model="store.transientMessageModel"></TransientMessage>
+   
     <!--<transition name="fade">
         <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
     </transition>-->
@@ -83,6 +88,7 @@
         <button type="button" class="btn btn-primary" :disabled="!disabled" @click="newForm">New Form</button>
         <button type="button" class="btn btn-success" :disabled="disabled" @click="saveForm">Save</button>
     </div>
+     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <div class="toolbar">
         <button :disabled="disabled" @click="newField(FieldType.ShortAnswer)">+ Short Answer</button>
         <button :disabled="disabled" @click="newField(FieldType.Paragraph)">+ Paragraph</button>
