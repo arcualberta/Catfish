@@ -11,6 +11,7 @@
     import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
 
     import { default as Form } from './components/Form.vue';
+import { useRoute } from "vue-router";
 
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
@@ -22,15 +23,17 @@
     }>();
 
     const store = useFormBuilderStore();
-
+    const route = useRoute()
+   
+    const formId = props.formId? props.formId : route.params.id as unknown as Guid;
     if(props.apiRoot){
-        console.log("api root from props: " + props.apiRoot);
+        //console.log("api root from props: " + props.apiRoot);
         store.setApiRoot(props.apiRoot);
     }
     //const transientMessage = computed(() => store.transientMessageModel);
 
-    if (props.formId)
-        store.loadForm(props.formId)
+    if (formId)
+        store.loadForm(formId)
 
     //watch(() => store.transientMessage, async newMessage => {
     //    if (newMessage)
