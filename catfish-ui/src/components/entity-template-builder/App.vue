@@ -16,7 +16,8 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
-        apiRoot?: string |null
+        apiRoot?: string |null,
+       // templateId?: Guid | null
        //piniaInstance: Pinia
     }>();
 
@@ -49,7 +50,8 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     const saveTemplate = () => store.saveTemplate();
     let btnClasses="btn btn-primary";
     const route = useRoute()
-    const templateId = route.params.templateId as unknown as Guid
+    const templateId = route.params.id as unknown as Guid
+    
     const isNewTemplate=ref(true);
     if(templateId){
        isNewTemplate.value=false;
