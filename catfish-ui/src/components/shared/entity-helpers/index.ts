@@ -68,9 +68,9 @@ export const instantiateRequiredForms = (entity: EntityData, template: EntityTem
  */
 const instantiateRequiredFormsFromArray = (entity: EntityData, formEntries: FormEntry[], forms: FormTemplate[]) => {
     formEntries.filter(formEntry => formEntry.isRequired).forEach(formEntry => {
-        if (entity.data.filter(formData => formData.formId == formEntry.formId).length == 0) {
+        if (entity.data.filter(formData => formData.formId == formEntry.id).length == 0) {
             appendFormDataObject
-            const form = forms.filter(f => f.id === formEntry.formId)[0] as FormTemplate;
+            const form = forms.filter(f => f.id === formEntry.id)[0] as FormTemplate;
             const formData = createFormData(form, "");
             formData.id = Guid.create().toString() as unknown as Guid;
             entity.data.push(formData)

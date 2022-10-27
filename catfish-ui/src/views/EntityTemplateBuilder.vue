@@ -14,5 +14,5 @@
 </script>
 
 <template setup>
-     <EntityTemplateBuilder  />
+     <EntityTemplateBuilder api-root="https://localhost:5020/api/entity-templates" />
 </template>
