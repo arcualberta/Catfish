@@ -11,6 +11,6 @@ const id = computed(() => route.params?.id as unknown as Guid)
 
 <template>
     <h4>Update <slot name="object-type"/></h4>
-    <slot name="udapte-delegate"></slot>
+    <slot name="update-delegate"></slot>
     {{id}}
 </template>

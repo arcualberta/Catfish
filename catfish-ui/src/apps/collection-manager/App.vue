@@ -17,7 +17,7 @@ const apiRoot = computed(() => (props.dataAttributes ? props.dataAttributes["Rep
         
         <template #create-delegate>CreateCollectionComponent</template>
         <template #read-delegate>ReadCollectionComponent</template>
-        <template #udapte-delegate>UpdateCollectionComponent</template>
+        <template #update-delegate>UpdateCollectionComponent</template>
         <template #delete-delegate>Delete</template>
     </CrudObjectManager>
 </template>

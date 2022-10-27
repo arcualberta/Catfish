@@ -48,6 +48,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('./views/EntityTemplateBuilder.vue')
     },
     {
+        path: '/entity-template-builder/:templateId',
+        name: 'updateEntityTemplate',
+        component: () => import('./views/EntityTemplateBuilder.vue')
+    },
+    
+    {
         path: '/edit-entity-template/:templateId',
         name: 'editEntityTemplate',
         component: () => import('./views/EditEntityTemplate.vue')

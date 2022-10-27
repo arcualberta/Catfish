@@ -26,7 +26,7 @@ const apiRoot = computed(() => (props.dataAttributes ? props.dataAttributes["Rep
        <!-- <template #list-entry-delegate>List Entry</template>-->
         <template #create-delegate><form-builder :api-root="apiRoot" :form-id="formId" /></template>
         <template #read-delegate>ReadFormComponent</template>
-        <template #udapte-delegate>UpdateFormComponent</template>
+        <template #update-delegate>UpdateFormComponent</template>
         <template #delete-delegate>Delete</template>
     </CrudObjectManager>
 </template>

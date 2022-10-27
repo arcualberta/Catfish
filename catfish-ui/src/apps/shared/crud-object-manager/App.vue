@@ -31,7 +31,7 @@ const apiUrl = computed(()=>props.apiRoot);
                 <template #list-entry-delegate><slot name="list-entry-delegate"/></template>
                 <template #create-delegate><slot name="create-delegate"/></template>
                 <template #read-delegate><slot name="read-delegate"/></template>
-                <template #udapte-delegate><slot name="udapte-delegate"/></template>
+                <template #update-delegate><slot name="update-delegate"/></template>
                 <template #delete-delegate><slot name="delete-delegate"/></template>
             </component>
         </router-view>   

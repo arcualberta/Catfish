@@ -53,7 +53,8 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     const isNewTemplate=ref(true);
     if(templateId){
        isNewTemplate.value=false;
-       store.loadTemplate(templateId)
+       console.log("not a new template load existing template")
+       store.loadTemplate(templateId);
     }
     watch(() => titleField?.value?.formId, newVal => {
         store.associateForm(newVal as unknown as Guid)
@@ -65,6 +66,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
             if (template.value.id?.toString() !== Guid.EMPTY){
                 store.loadTemplate(template.value.id as Guid)
                  isNewTemplate.value=false;
+                  console.log("on mounted : not a new template load existing template")
                 //router.push(`/edit-entity-template/${template.value.id}`)
                
                
