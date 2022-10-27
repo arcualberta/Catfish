@@ -26,7 +26,7 @@
             <br />
             <b-row>
                 <b-col class="col-sm-2">
-                    <label :for="model.formId.toString()">Form:</label>
+                    <label :for="model.id.toString()">Form:</label>
                 </b-col>
                 <b-col class="col-sm-10">
                     <select v-model="model.id" :name="model.id.toString()" class="form-select">

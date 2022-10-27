@@ -116,7 +116,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             })
             .then(response => {
                 if (response.ok) {
-                    router.push(`/edit-entity-template/${this.template!.id}`)
+                    //router.push(`/edit-entity-template/${this.template!.id}`)
                     this.transientMessageModel.message = "The template saved successfully"
                     this.transientMessageModel.messageClass = "success"
                 }

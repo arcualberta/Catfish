@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { computed, onMounted, watch } from 'vue'
+    import { computed, onMounted, ref, watch } from 'vue'
     import { useEntityTemplateBuilderStore } from './store';
     import { AppletAttribute } from '@/components/shared/props'
     import { default as FormEntryTemplate } from './components/FormEntry.vue';
@@ -50,8 +50,9 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     let btnClasses="btn btn-primary";
     const route = useRoute()
     const templateId = route.params.templateId as unknown as Guid
+    const isNewTemplate=ref(true);
     if(templateId){
-       btnClasses="btn btn-primary hideBtn";
+       isNewTemplate.value=false;
        store.loadTemplate(templateId)
     }
     watch(() => titleField?.value?.formId, newVal => {
@@ -63,9 +64,10 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
         if (template.value) {
             if (template.value.id?.toString() !== Guid.EMPTY){
                 store.loadTemplate(template.value.id as Guid)
+                 isNewTemplate.value=false;
                 //router.push(`/edit-entity-template/${template.value.id}`)
-                //router.push(`/update/${template.value.id}`)
-                btnClasses="btn btn-primary hideBtn";
+               
+               
             }
         }
     });
@@ -76,7 +78,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <h3>Entity Template Builder</h3>
     <div class="control">
-        <button :class="btnClasses" @click="createTemplate">New Template</button>
+        <button class="btn btn-primary" @click="createTemplate" v-if="isNewTemplate">New Template</button>
         <button class="btn btn-success" @click="saveTemplate">Save</button>
     </div>
     <br />
@@ -114,7 +116,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
             <div class="form-field-border blue">
                 <h5>Metadata Forms</h5>
                 <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.metadataForms">
-                    <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId.toString()">
+                    <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.id.toString()">
                         <FormEntryTemplate :model="(frm as FormEntry)" />
                     </div>
                 </draggable>
@@ -124,7 +126,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
         <div class="form-field-border red">
             <h5>Data Forms</h5>
             <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.dataForms">
-                <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.formId.toString()">
+                <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.id.toString()">
                     <FormEntryTemplate :model="(frm as FormEntry)" class="form-field-border form-field red" />
                 </div>
             </draggable>
