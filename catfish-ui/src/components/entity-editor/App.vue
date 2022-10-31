@@ -34,7 +34,7 @@
     let selectedButton = ref("summary");
     
      const route = useRoute();
-    const entityId =route.params.entityId as unknown as Guid; 
+    const entityId =route.params.id as unknown as Guid; 
     onMounted(() => {
         store.loadTemplates();
        
