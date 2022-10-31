@@ -167,7 +167,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                     
                     this.transientMessageModel.message = "The entity saved successfully"
                     this.transientMessageModel.messageClass = "success"
-                    router.push(`/edit-entity-editor/${this.entity!.id}`)
+                   // router.push(`/edit-entity-editor/${this.entity!.id}`)
                 }
                 else {
                     if (newEntity && this.entity)
