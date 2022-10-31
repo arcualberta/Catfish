@@ -39,7 +39,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         associateForm(formId: Guid) {
             if (this.forms.findIndex(form => form.id === formId) < 0) {
                 //this.getApiRoot => https://localhost:40520/api/entity-temlates
-            let webRoot = this.getApiRoot.split("/")[0]+"//" + this.getApiRoot.split("/")[2];
+            let webRoot = "https://" + this.getApiRoot.split("/")[2];
                 const api = `${webRoot}/api/forms/${formId}`;
                // console.log("loading form: ", api);
 

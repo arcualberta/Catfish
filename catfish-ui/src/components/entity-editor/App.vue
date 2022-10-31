@@ -14,13 +14,22 @@
     const props = defineProps<{
        // dataAttributes?: AppletAttribute | null,
         //queryParameters?: AppletAttribute | null,
-        piniaInstance: Pinia
+        //piniaInstance: Pinia
+        apiRoot?: string | null
     }>();
     const memberofValue = ref("Member of");
     const collectionValue = ref("Collections")
     const relationshipValue = ref("Relationship");
     const ItemValue = ref("Items")
-    const store = useEntityEditorStore(props.piniaInstance);
+    const store = useEntityEditorStore();
+    
+    //set apiRoot
+     
+    if(props.apiRoot){
+        console.log("api root from props: " + props.apiRoot)
+        store.setApiRoot(props.apiRoot);
+    }
+
     const entityTemplate =  computed(() => store.entityTemplate);
     let selectedButton = ref("summary");
     

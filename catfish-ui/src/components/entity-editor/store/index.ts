@@ -22,11 +22,14 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         transientMessageModel: {} as TransientMessageModel,
         updatedFileKeys: [] as string[] | null,
         entitySearchResult: null as EntitySearchResult | null,
-        storeId:(Guid.create()).toString()
+        storeId:(Guid.create()).toString(),
+        apiRoot: null as string | null
     }),
     actions: {
         loadTemplates() {
-            const api = `${config.dataRepositoryApiRoot}/api/entity-templates/`;
+            let webRoot = "https://" + this.getApiRoot.split("/")[2];
+            const api = `${webRoot}/api/entity-templates/`;
+            //const api = `${config.dataRepositoryApiRoot}/api/entity-templates/`;
 
             fetch(api, {
                 method: 'GET'
@@ -60,7 +63,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             if(templateId.toString() === Guid.EMPTY)
                 return;
 
-            const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${templateId}`;
+            let webRoot = "https://" + this.getApiRoot.split("/")[2];
+            const api = `${webRoot}/api/entity-templates/${templateId}`;
             console.log(api)
 
             fetch(api, {
@@ -109,7 +113,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             //console.log("save form template: ", JSON.stringify(this.template));
             const newEntity = this.entity?.id?.toString() === Guid.EMPTY;
            
-            let api = config.dataRepositoryApiRoot + "/api/entities";
+            let api =  this.getApiRoot;//config.dataRepositoryApiRoot + "/api/entities";
             let method = "";
             if (newEntity) {
                 console.log("Saving new entity.");
@@ -236,6 +240,9 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 })
             });
             console.log("after adding: " + JSON.stringify(this.entity))
+        },
+        setApiRoot(apiUrl: string){
+            this.apiRoot = apiUrl;
         }
     },
     getters: {
@@ -267,6 +274,9 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
 
             return entityListStore.selectedEntityIds;
             
+        },
+        getApiRoot: (state) =>{
+            return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/entities";
         }
     }
 });

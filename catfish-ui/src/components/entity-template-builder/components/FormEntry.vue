@@ -13,6 +13,7 @@
 </script>
 
 <template>
+   {{model.id.toString()}}
     <b-row class="mb-2">
         <b-col class="col-sm-11">
             <b-row>

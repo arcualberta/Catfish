@@ -122,6 +122,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
                 <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.metadataForms">
                     <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.id.toString()">
                         <FormEntryTemplate :model="(frm as FormEntry)" />
+                       <span> parent:  {{frm.id.toString}} </span>
                     </div>
                 </draggable>
                 <button class="btn btn-primary btn-blue" @click="addMetadataForm">+ Add</button>

@@ -44,7 +44,7 @@ namespace Catfish.API.Repository.Controllers
                 return await _context.Entities!.Include(e=>e.SubjectRelationships)
                                                .Include(e=>e.ObjectRelationships)
                                                .Include(e=>e.Template)
-                                               .FirstOrDefaultAsync(fd => fd.Id == id);
+                                               .FirstOrDefaultAsync(fd => fd.Id == id && fd.EntityType == eEntityType.Collection);
              else
                 return await _context.Entities!.FirstOrDefaultAsync(fd => fd.Id == id);
         }
