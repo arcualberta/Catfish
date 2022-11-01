@@ -16,7 +16,7 @@ const deleteUrl = "/delete/" + props.entry.id;
 </script>
 
 <template>
-    <div class="entryRow">
+    <div class="row entryRow">
     <router-link :to="detailUrl" class="col-8">{{entry.name}}</router-link>
     <router-link :to="updateUrl" class="col-2">Update</router-link>
    <router-link :to="deleteUrl" class="col-2">Delete</router-link>
