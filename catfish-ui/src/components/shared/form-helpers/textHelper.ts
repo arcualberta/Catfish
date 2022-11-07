@@ -1,6 +1,6 @@
 
 import { Guid } from 'guid-typescript';
-import { TextCollection, Text, TextType, Field, FieldType } from '../form-models';
+import { TextCollection, Text, TextType, Field, FieldType, FieldData } from '../form-models';
 
 /**
  * Creates a new TextColleciton object
@@ -59,18 +59,22 @@ export const cloneTextCollection = (textCollection: TextCollection): TextCollect
 	return clone;
 }
 
-export const getConcatenatedTextValue = (container: TextCollection | Text ,containerType:FieldType,  separator: string ): string => {
+export const getConcatenatedValues = (container: FieldData,  separator: string ): string => {
 	var vals: string="";
-	//multilingual Text
-	if(containerType === FieldType.Paragraph || containerType === FieldType.ShortAnswer || containerType === FieldType.RichText)
+	var texts: string[]=[];
+	
+	if(container.multilingualTextValues && container.multilingualTextValues?.length > 0)
 	{
-		vals = getTextValue(container as TextCollection,null,  separator) as string;
-	}  
-    else if(containerType === FieldType.Date || containerType === FieldType.DateTime || containerType === FieldType.Email){
-		//monolingual Text
-		vals = (container as Text).value;
-
+		container.multilingualTextValues.forEach((multiTextVal)=>{
+			vals += getTextValue(multiTextVal as TextCollection,null,  separator) as string;
+		})
+	}else if(container.monolingualTextValues && container.monolingualTextValues?.length > 0){
+       
+		container.monolingualTextValues.forEach((text)=>{
+			texts.push(text.value);
+		});
+		vals = texts?.join(separator);
 	}
-
+	
 	return vals;
 }
