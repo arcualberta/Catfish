@@ -85,7 +85,7 @@ export const getConcatenatedTitle = (entity: EntityData, template:EntityTemplate
     var fieldData = entity.data.filter(dt=>dt.formId == titleField?.formId)[0]
                     .fieldData.filter(fd=>fd.fieldId == titleField?.fieldId)[0];
     return getConcatenatedValues(fieldData, separator);
-   // return "";
+  
 }
 
 export const getConcatenatedDescription = (entity: EntityData, template:EntityTemplate, separator: string): string => {
@@ -94,7 +94,7 @@ export const getConcatenatedDescription = (entity: EntityData, template:EntityTe
     var descData = entity.data.filter(dt=>dt.formId == descriptionField?.formId)[0]
                     .fieldData.filter(fd=>fd.fieldId == descriptionField?.fieldId)[0];
     return getConcatenatedValues(descData, separator);
-    return "";
+   
 }
 
 //export const getConcatenatedValues = (fieldData: FieldData, separator: string) : string => {
