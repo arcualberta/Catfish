@@ -78,3 +78,16 @@ const instantiateRequiredFormsFromArray = (entity: EntityData, formEntries: Form
     })
 }
 
+export const getConcatenatedTitle = (entity: EntityData, template:EntityTemplate, separator: string): string => {
+
+    return "";
+}
+
+export const getConcatenatedDescription = (entity: EntityData, template:EntityTemplate, separator: string): string => {
+
+    return "";
+}
+
+export const getConcatenatedValues = (fieldData: FieldData, separator: string) : string => {
+    return "";
+}
