@@ -1,5 +1,6 @@
+
 import { Guid } from 'guid-typescript';
-import { TextCollection, Text } from '../form-models';
+import { TextCollection, Text, TextType, Field, FieldType } from '../form-models';
 
 /**
  * Creates a new TextColleciton object
@@ -56,4 +57,20 @@ export const cloneTextCollection = (textCollection: TextCollection): TextCollect
 	clone.id = createGuid();
 	clone.values.forEach(txt => { txt.id = createGuid() })
 	return clone;
+}
+
+export const getConcatenatedTextValue = (container: TextCollection | Text ,containerType:FieldType,  separator: string ): string => {
+	var vals: string="";
+	//multilingual Text
+	if(containerType === FieldType.Paragraph || containerType === FieldType.ShortAnswer || containerType === FieldType.RichText)
+	{
+		vals = getTextValue(container as TextCollection,null,  separator) as string;
+	}  
+    else if(containerType === FieldType.Date || containerType === FieldType.DateTime || containerType === FieldType.Email){
+		//monolingual Text
+		vals = (container as Text).value;
+
+	}
+
+	return vals;
 }
