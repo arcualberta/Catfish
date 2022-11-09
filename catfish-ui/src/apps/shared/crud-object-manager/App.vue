@@ -33,6 +33,6 @@ const apiUrl = computed(()=>props.apiRoot);
             </component>
         </router-view>   
         
-        <div>API Root: {{apiRoot}}</div>
+        <!--<div>API Root: {{apiRoot}}</div> -->
     </div>
 </template>
