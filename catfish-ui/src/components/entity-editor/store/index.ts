@@ -9,6 +9,7 @@ import { FormData as FormDataModel } from '@/components/shared/form-models'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
 import {FileReference} from '@/components/shared/form-models/field'
 import router from '@/router';
+import { getConcatenatedTitle, getConcatenatedDescription} from '@/components/shared/entity-helpers'
 
 import { useFormSubmissionStore } from '@/components/form-submission/store';
 import {useEntitySelectStore} from '../../shared/components/entity-selection-list/store'
@@ -112,7 +113,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         saveEntity(){
             //console.log("save form template: ", JSON.stringify(this.template));
             const newEntity = this.entity?.id?.toString() === Guid.EMPTY;
-           
+            this.entity!.title = getConcatenatedTitle(this.entity as EntityData , this.entityTemplate as EntityTemplate, ' | ')
+            this.entity!.description = getConcatenatedDescription(this.entity as EntityData, this.entityTemplate as EntityTemplate, ' | ')
             let api =  this.getApiRoot;//config.dataRepositoryApiRoot + "/api/entities";
             let method = "";
             if (newEntity) {
@@ -144,6 +146,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 
                 fileKeyIdx++;
             });
+            
+
             formData.append('value', JSON.stringify(this.entity));
 
             attachedFiles?.forEach(file => {
