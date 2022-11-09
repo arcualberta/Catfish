@@ -80,7 +80,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
 
 <template>
     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
-    <h3>Entity Template Builder</h3>
+   
     <div class="control">
         <button class="btn btn-primary" @click="createTemplate" v-if="isNewTemplate">New Template</button>
         <button class="btn btn-success" @click="saveTemplate">Save</button>
