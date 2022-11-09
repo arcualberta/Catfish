@@ -63,6 +63,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     })
 
     onMounted(() => {
+         store.newTemplate();
         store.loadFormEntries();
         if (template.value) {
             if (template.value.id?.toString() !== Guid.EMPTY){
@@ -70,8 +71,6 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
                  isNewTemplate.value=false;
                 //  console.log("on mounted : not a new template load existing template")
                 //router.push(`/edit-entity-template/${template.value.id}`)
-               
-               
             }
         }
     });
@@ -82,7 +81,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
    
     <div class="control">
-        <button class="btn btn-primary" @click="createTemplate" v-if="isNewTemplate">New Template</button>
+     <!--    <button class="btn btn-primary" @click="createTemplate" v-if="isNewTemplate">New Template</button> -->
         <button class="btn btn-success" @click="saveTemplate">Save</button>
     </div>
     <br />

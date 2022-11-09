@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed, watch } from "vue";
+    import { computed, onMounted, watch } from "vue";
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
     import { TransientMessageModel } from '../shared/components/transient-message/models'
@@ -42,14 +42,14 @@ import { useRoute } from "vue-router";
     //        }, 2000)
     //})
 
-    const newForm = () => {
-        store.form = {
-            id: Guid.EMPTY as unknown as Guid,
-            name: "",
-            description: "",
-            fields: [] as Field[]
-        };
-    }
+   // const newForm = () => {
+   //     store.form = {
+   //         id: Guid.EMPTY as unknown as Guid,
+   //         name: "",
+   //         description: "",
+   //         fields: [] as Field[]
+   //     };
+   // }
 
     const saveForm = () => store.saveForm()
 
@@ -77,21 +77,25 @@ import { useRoute } from "vue-router";
         store.form!.fields.push(field);
     }
 
+    onMounted(()=>{
+        store.createNewForm();
+    });
+
 </script>
 <style scoped src="./styles.css"></style>
 
 <template>
-   
+   <div class="control">
+       <!-- <button type="button" class="btn btn-primary" :disabled="!disabled" @click="newForm">New Form</button> -->
+        <button type="button" class="btn btn-success" :disabled="disabled" @click="saveForm">Save</button>
+    </div>
+     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <!--<transition name="fade">
         <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
     </transition>-->
    
     <Form v-if="store.form" :model="store.form" />
-    <div class="control">
-        <button type="button" class="btn btn-primary" :disabled="!disabled" @click="newForm">New Form</button>
-        <button type="button" class="btn btn-success" :disabled="disabled" @click="saveForm">Save</button>
-    </div>
-     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
+    
     <div class="toolbar">
         <button :disabled="disabled" @click="newField(FieldType.ShortAnswer)">+ Short Answer</button>
         <button :disabled="disabled" @click="newField(FieldType.Paragraph)">+ Paragraph</button>

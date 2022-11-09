@@ -14,6 +14,14 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
         apiRoot: null as string |null
     }),
     actions: {
+        createNewForm(){
+            this.form = {
+                id: Guid.EMPTY as unknown as Guid,
+                name: "",
+                description: "",
+                fields: [] as Field[]
+            };
+        },
         loadForm(id: Guid) {
             // //this.getApiRoot => localhost:40520/api/forms
             let api = `${this.getApiRoot}/${id}`;//`https://localhost:5020/api/forms/${id}`;
