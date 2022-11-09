@@ -61,13 +61,17 @@
     }
     
     const files =computed(()=>store.getFiles)
+
+     onMounted(() => {
+        createEntity();
+    });
 </script>
 
 <template>
     
      <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <div class="control">
-        <button @click="createEntity()" v-if="isNewEntity">New Entity</button>
+       <!-- <button @click="createEntity()" v-if="isNewEntity">New Entity</button> -->
         <button class="btn btn-success" @click="saveEntity()" >Save</button>
     </div>
     <div class="form-field-border">
