@@ -85,7 +85,7 @@ import { useRoute } from "vue-router";
     <!--<transition name="fade">
         <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
     </transition>-->
-    <h2>Form Builder</h2>
+   
     <Form v-if="store.form" :model="store.form" />
     <div class="control">
         <button type="button" class="btn btn-primary" :disabled="!disabled" @click="newForm">New Form</button>
