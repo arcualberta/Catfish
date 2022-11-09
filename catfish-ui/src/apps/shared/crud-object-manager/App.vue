@@ -19,10 +19,7 @@ const apiUrl = computed(()=>props.apiRoot);
     <div class="m-2">
         <div class="header">
             <router-link to="/" class="navigation-menu-box">List</router-link> | 
-            <router-link to="/create" class="navigation-menu-box">Create</router-link> | 
-            <router-link to="/read/381449d3-9e3d-412a-9630-ea4cb6f35d8b" class="navigation-menu-box">Read</router-link> | 
-            <router-link to="/update/381449d3-9e3d-412a-9630-ea4cb6f35d8b" class="navigation-menu-box">Update</router-link> | 
-            <router-link to="/delete/381449d3-9e3d-412a-9630-ea4cb6f35d8b" class="navigation-menu-box">Delete</router-link>
+            <router-link to="/create" class="navigation-menu-box">Create</router-link>  
         </div>
 
         <router-view v-slot="{ Component, route }">
