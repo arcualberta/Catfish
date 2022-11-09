@@ -64,7 +64,7 @@
 </script>
 
 <template>
-    <h3>Entity Editor</h3>
+    
      <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <div class="control">
         <button @click="createEntity()" v-if="isNewEntity">New Entity</button>
