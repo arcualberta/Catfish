@@ -24,7 +24,7 @@
                 <span v-else>{{entityTemplate?.name}}</span>
             </div>
         </div>
-        <div class="row mt-2">
+       <!-- <div class="row mt-2">
             <div class="col-sm-2">
                 <label>Entity Title:</label>
             </div>
@@ -39,7 +39,7 @@
             <div class="col-sm-10">
                <input type="text" v-model="entity!.description" class="form-control"  />
             </div>
-        </div>
+        </div>-->
         <br />
         <h5>Form Fields</h5>
         <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />
