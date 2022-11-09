@@ -167,7 +167,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
             </div>
         </div>
     </div>
-    <div class="alert alert-info" style="margin-top:2em;">{{template}}</div>
+  <!--  <div class="alert alert-info" style="margin-top:2em;">{{template}}</div> -->
 
    
 
