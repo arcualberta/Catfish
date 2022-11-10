@@ -92,12 +92,12 @@ namespace Catfish.API.Repository.Controllers
         //}
 
 
-        //// DELETE api/<FormSubmissionController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(Guid id)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        // DELETE api/<FormSubmissionController>/5
+        [HttpDelete("{id}")]
+        public void Delete(Guid id)
+        {
+            throw new NotImplementedException();
+        }
 
         #region Private methods
         private bool EntityTemplateExists(Guid id)
