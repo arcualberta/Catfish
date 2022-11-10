@@ -9,6 +9,7 @@
     import { FieldType } from '../shared/form-models';
     import { AppletAttribute } from '../shared/props'
     import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
+    import '../../style.css'
 
     import { default as Form } from './components/Form.vue';
 import { useRoute } from "vue-router";
