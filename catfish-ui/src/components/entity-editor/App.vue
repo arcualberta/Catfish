@@ -26,7 +26,7 @@
     //set apiRoot
      
     if(props.apiRoot){
-        console.log("api root from props: " + props.apiRoot)
+        //console.log("api root from props: " + props.apiRoot)
         store.setApiRoot(props.apiRoot);
     }
 
@@ -36,7 +36,15 @@
      const route = useRoute();
     const entityId =route.params.id as unknown as Guid; 
     onMounted(() => {
-        store.loadTemplates();
+
+        if(entityId){
+            console.log("entity Id: " + entityId.toString())
+            store.loadEntity(entityId);
+        }
+        else{
+            console.log("load empty template")
+            store.loadTemplates();
+        }
        
     });
 

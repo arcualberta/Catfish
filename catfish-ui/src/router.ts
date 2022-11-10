@@ -47,14 +47,9 @@ const routes: Array<RouteRecordRaw> = [
         name: 'entityTemplateBuilder',
         component: () => import('./views/EntityTemplateBuilder.vue')
     },
-    {
-        path: '/entity-template-builder/:templateId',
-        name: 'updateEntityTemplate',
-        component: () => import('./views/EntityTemplateBuilder.vue')
-    },
     
     {
-        path: '/edit-entity-template/:templateId',
+        path: '/edit-entity-template/:id',
         name: 'editEntityTemplate',
         component: () => import('./views/EditEntityTemplate.vue')
     },
@@ -64,7 +59,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('./views/EntityEditor.vue')
     },
     {
-        path: '/edit-entity-editor/:entityId',
+        path: '/edit-entity-editor/:id',
         name: 'editEntityEditor',
         component: () => import('./views/EntityEditor.vue')
     },

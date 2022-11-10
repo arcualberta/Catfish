@@ -21,7 +21,7 @@ const templateId = route.params.id as unknown as Guid;
         <template #object-type>Entity Template</template>      
          <template #create-delegate><EntityTemplateBuilder :api-root="apiRoot" /></template>
         <template #read-delegate>ReadEntityTemplateComponent</template>
-        <template #update-delegate><EntityTemplateBuilder :api-root="apiRoot" :template-id="templateId" /></template>
+        <template #update-delegate><EntityTemplateBuilder :api-root="apiRoot"  /></template>
         <template #delete-delegate>Delete</template>
     </CrudObjectManager>
 </template>
