@@ -64,6 +64,14 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
         store.associateForm(newVal as unknown as Guid)
     })
 
+     watch(() => descriptionField?.value?.formId, newVal => {
+        store.associateForm(newVal as unknown as Guid)
+    })
+     watch(() => mediaField?.value?.formId, newVal => {
+        store.associateForm(newVal as unknown as Guid)
+    })
+
+
     onMounted(() => {
          store.newTemplate();
         store.loadFormEntries();
@@ -155,7 +163,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
                     Description
                 </div>
                 <div class="col-10">
-                    <FormFieldSelectionDropdown :model="(descriptionField as FieldEntry)" :option-source="formFieldSelectorSource" :forms="(store.forms)" />
+                    <FormFieldSelectionDropdown :model="(descriptionField as FieldEntry)" :option-source="formFieldSelectorSource" :forms="store.forms" />
                 </div>
             </div>
              <div class="row">
