@@ -136,7 +136,7 @@ export interface FileReference {
     created: Date;
     updated: Date;
     
-    //file: File;
+    formDataId: Guid;
     fieldId: Guid;
 }
 

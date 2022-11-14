@@ -184,18 +184,12 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         },
         addFile(file: File, fieldId: Guid){
             this.files?.push(file);
-            //fieldKeys will consist of "formId_fieldId"
-          //  let fKey: string=formId.toString() + "_" + fieldId.toString();
-          // this.fileKeys?.push(fKey);
-           this.fileKeys?.push(fieldId.toString());
-         
-           //add FileReference
-        } ,
-        attachFile(files: FileList, fieldId: Guid, formId: Guid){
+            this.fileKeys?.push(fieldId.toString());
+        },
+        putFile(files: FileList, fieldId: Guid){
             Array.from(files).forEach(file => { 
                 console.log("fieldId:" + fieldId )
                 this.addFile(file, fieldId);
-                //console.log("file:" + JSON.stringify(store.files))
             });
         },
        
