@@ -14,12 +14,13 @@ export interface ListEntry{
 }
 
 export interface FormEntry extends ListEntry {
-    formId: Guid;
+    //formId: Guid;
     isRequired?: boolean;
 }
 
 export interface EntityEntry extends ListEntry
 {
+    title: string
     description: string
     created: Date
     updated: Date

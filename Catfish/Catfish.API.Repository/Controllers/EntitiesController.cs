@@ -54,7 +54,7 @@ namespace Catfish.API.Repository.Controllers
                 return await _context.Entities!.Include(e=>e.SubjectRelationships)
                                                .Include(e=>e.ObjectRelationships)
                                                .Include(e=>e.Template)
-                                               .FirstOrDefaultAsync(fd => fd.Id == id);
+                                               .FirstOrDefaultAsync(e => e.Id == id);
              else
                 return await _context.Entities!.FirstOrDefaultAsync(fd => fd.Id == id);
         }
@@ -140,7 +140,7 @@ namespace Catfish.API.Repository.Controllers
             if (System.IO.File.Exists(pathName))
             {
                 var data = System.IO.File.ReadAllBytes(pathName);
-                return File(data, contentType, originalFileName);
+                 return File(data, contentType, originalFileName);
             }
             return null;
         }

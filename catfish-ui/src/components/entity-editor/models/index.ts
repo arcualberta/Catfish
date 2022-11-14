@@ -1,7 +1,7 @@
 import { Guid } from "guid-typescript"
 import { eEntityType } from "../../shared/constants";
 import { FormData } from "../../shared/form-models";
-import { EntityEntry } from '@/components/shared'
+import { EntityEntry, ListEntry } from '@/components/shared'
 
 export interface EntityData{
     id: Guid
@@ -17,11 +17,11 @@ export interface EntityData{
     description: string | null
 }
 
-export interface TemplateEntry {
+export interface TemplateEntry extends ListEntry {
     //id: Guid | null;
     
-    templateId: Guid
-    templateName: string
+   // templateId: Guid
+    //templateName: string
 }
 
 export interface Relationship {

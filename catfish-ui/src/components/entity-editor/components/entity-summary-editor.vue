@@ -1,7 +1,7 @@
 <template>
     <div class="pt-2 mt-2">
         <div class="row"> 
-            <filedset class="col-sm-7">
+            <fieldset class="col-sm-7" >
         <div class="row mt-2">
             <div class="col-sm-2">
                 <label>EntityType:</label>
@@ -19,12 +19,12 @@
             </div>
             <div class="col-sm-10">
                 <select v-if="isNewEntity" v-model="entity.templateId" class="form-select">
-                    <option v-for="template in templateEntries" :key="template.templateId.toString()" :value="template.templateId?.toString()">{{template.templateName}}</option>
+                    <option v-for="template in templateEntries" :key="template.id.toString()" :value="template.id?.toString()">{{template.name}}</option>
                 </select>
                 <span v-else>{{entityTemplate?.name}}</span>
             </div>
         </div>
-        <div class="row mt-2">
+       <!-- <div class="row mt-2">
             <div class="col-sm-2">
                 <label>Entity Title:</label>
             </div>
@@ -39,18 +39,18 @@
             <div class="col-sm-10">
                <input type="text" v-model="entity!.description" class="form-control"  />
             </div>
-        </div>
+        </div>-->
         <br />
         <h5>Form Fields</h5>
         <FieldComponent :model="titleField" :model-data="titleFieldData" v-if="store.titleField" />
         <FieldComponent :model="descriptionField" :model-data="descriptionFieldData" v-if="store.descriptionField" />
         <FieldComponent :model="mediaField" :model-data="mediaFieldData" v-if="store.mediaField" />
-        <div v-if="store.mediaField && mediaFieldData.fileReferences.length > 0"> 
-            <div v-for="fr in mediaFieldData.fileReferences" :key="fr.id">
+        <div v-if="store.mediaField && mediaFieldData?.fileReferences?.length > 0"> 
+            <div v-for="fr in mediaFieldData?.fileReferences" :key="fr.id">
                  <div>{{fr.originalFileName}}</div>
             </div>
         </div>
-    </filedset>
+    </fieldset>
     <fieldset class="col-sm-5"><legend> Right side </legend>
               <div class="col-sm-8">
                 <div>{{titleField?.title?.values[0]?.value}}: {{titleFieldData?.multilingualTextValues[0]?.values[0]?.value}}</div>

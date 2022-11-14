@@ -25,7 +25,7 @@
 
             group.formGroup.forEach(form => {
                 groupOpt.options.push({
-                    value: form.formId,
+                    value: form.id,
                     text: form.name
                 });
             });

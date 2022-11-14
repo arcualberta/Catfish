@@ -9,6 +9,7 @@ import { FormData as FormDataModel } from '@/components/shared/form-models'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
 import {FileReference} from '@/components/shared/form-models/field'
 import router from '@/router';
+import { getConcatenatedTitle, getConcatenatedDescription} from '@/components/shared/entity-helpers'
 
 import { useFormSubmissionStore } from '@/components/form-submission/store';
 import {useEntitySelectStore} from '../../shared/components/entity-selection-list/store'
@@ -22,11 +23,14 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         transientMessageModel: {} as TransientMessageModel,
         updatedFileKeys: [] as string[] | null,
         entitySearchResult: null as EntitySearchResult | null,
-        storeId:(Guid.create()).toString()
+        storeId:(Guid.create()).toString(),
+        apiRoot: null as string | null
     }),
     actions: {
         loadTemplates() {
-            const api = `${config.dataRepositoryApiRoot}/api/entity-templates/`;
+            let webRoot = "https://" + this.getApiRoot.split("/")[2];
+            const api = `${webRoot}/api/entity-templates/`;
+            //const api = `${config.dataRepositoryApiRoot}/api/entity-templates/`;
 
             fetch(api, {
                 method: 'GET'
@@ -60,7 +64,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             if(templateId.toString() === Guid.EMPTY)
                 return;
 
-            const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${templateId}`;
+            let webRoot = "https://" + this.getApiRoot.split("/")[2];
+            const api = `${webRoot}/api/entity-templates/${templateId}`;
             console.log(api)
 
             fetch(api, {
@@ -108,8 +113,9 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         saveEntity(){
             //console.log("save form template: ", JSON.stringify(this.template));
             const newEntity = this.entity?.id?.toString() === Guid.EMPTY;
-           
-            let api = config.dataRepositoryApiRoot + "/api/entities";
+            this.entity!.title = getConcatenatedTitle(this.entity as EntityData , this.entityTemplate as EntityTemplate, ' | ')
+            this.entity!.description = getConcatenatedDescription(this.entity as EntityData, this.entityTemplate as EntityTemplate, ' | ')
+            let api =  this.getApiRoot;//config.dataRepositoryApiRoot + "/api/entities";
             let method = "";
             if (newEntity) {
                 console.log("Saving new entity.");
@@ -140,6 +146,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 
                 fileKeyIdx++;
             });
+            
+
             formData.append('value', JSON.stringify(this.entity));
 
             attachedFiles?.forEach(file => {
@@ -163,7 +171,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                     
                     this.transientMessageModel.message = "The entity saved successfully"
                     this.transientMessageModel.messageClass = "success"
-                    router.push(`/edit-entity-editor/${this.entity!.id}`)
+                   // router.push(`/edit-entity-editor/${this.entity!.id}`)
                 }
                 else {
                     if (newEntity && this.entity)
@@ -236,6 +244,9 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 })
             });
             console.log("after adding: " + JSON.stringify(this.entity))
+        },
+        setApiRoot(apiUrl: string){
+            this.apiRoot = apiUrl;
         }
     },
     getters: {
@@ -267,6 +278,9 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
 
             return entityListStore.selectedEntityIds;
             
+        },
+        getApiRoot: (state) =>{
+            return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/entities";
         }
     }
 });

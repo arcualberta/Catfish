@@ -4,6 +4,7 @@ import { FormEntry } from '@/components/shared'
 import { EntityData } from "../../entity-editor/models";
 import { EntityTemplate } from "../../entity-template-builder/models";
 import { createFormData } from "../form-helpers";
+import { getConcatenatedValues } from "../form-helpers/textHelper";
 
 /**
  * Returns the first occurrence of the FormData object that corresponds to the form identified by the formId from the input entity
@@ -68,9 +69,9 @@ export const instantiateRequiredForms = (entity: EntityData, template: EntityTem
  */
 const instantiateRequiredFormsFromArray = (entity: EntityData, formEntries: FormEntry[], forms: FormTemplate[]) => {
     formEntries.filter(formEntry => formEntry.isRequired).forEach(formEntry => {
-        if (entity.data.filter(formData => formData.formId == formEntry.formId).length == 0) {
+        if (entity.data.filter(formData => formData.formId == formEntry.id).length == 0) {
             appendFormDataObject
-            const form = forms.filter(f => f.id === formEntry.formId)[0] as FormTemplate;
+            const form = forms.filter(f => f.id === formEntry.id)[0] as FormTemplate;
             const formData = createFormData(form, "");
             formData.id = Guid.create().toString() as unknown as Guid;
             entity.data.push(formData)
@@ -78,3 +79,24 @@ const instantiateRequiredFormsFromArray = (entity: EntityData, formEntries: Form
     })
 }
 
+export const getConcatenatedTitle = (entity: EntityData, template:EntityTemplate, separator: string): string => {
+
+    var titleField = template.entityTemplateSettings.titleField;
+    var fieldData = entity.data.filter(dt=>dt.formId == titleField?.formId)[0]
+                    .fieldData.filter(fd=>fd.fieldId == titleField?.fieldId)[0];
+    return getConcatenatedValues(fieldData, separator);
+  
+}
+
+export const getConcatenatedDescription = (entity: EntityData, template:EntityTemplate, separator: string): string => {
+
+    var descriptionField = template.entityTemplateSettings.descriptionField;
+    var descData = entity.data.filter(dt=>dt.formId == descriptionField?.formId)[0]
+                    .fieldData.filter(fd=>fd.fieldId == descriptionField?.fieldId)[0];
+    return getConcatenatedValues(descData, separator);
+   
+}
+
+//export const getConcatenatedValues = (fieldData: FieldData, separator: string) : string => {
+//    return "";
+//}

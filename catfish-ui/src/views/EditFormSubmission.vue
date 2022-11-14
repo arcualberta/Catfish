@@ -15,6 +15,6 @@
 </script>
 
 <template>
-    <FormSubmission v-if="submissionId" :pinia-instance="getActivePinia()" repository-root="https://localhost:5020/" :submission-id="submissionId" />
+    <FormSubmission v-if="submissionId" repository-root="https://localhost:5020/" :submission-id="submissionId" />
     <div v-else class="alert alert-danger mt-5">Please append the submission ID to the URL.</div>
 </template>

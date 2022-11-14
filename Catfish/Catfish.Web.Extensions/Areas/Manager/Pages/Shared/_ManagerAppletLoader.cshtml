@@ -4,6 +4,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject Piranha.AspNetCore.Services.IApplicationService _webApp
 @inject CatfishWebExtensions.Interfaces.IAssetRegistry _assetRegistry;
+@inject IConfiguration _configuration;
 
 <noscript>
     <strong>We're sorry but Vue Applets don't work without JavaScript enabled. Please enable it to continue.</strong>
@@ -26,7 +27,13 @@
 
     _assetRegistry.RegisterScript("assets/public/vendors/vuerouter/vuerouter.global.js");
 
+   // _assetRegistry.RegisterStylesheet("assets/css/style.min.css");
+     _assetRegistry.RegisterStylesheet("assets/applets/style.css");
+
+    var repositoryMicroserviceApiRoot = _configuration.GetSection("SiteConfig:RepositoryMicroServiceUrl").Value?.TrimEnd('/');
+
 }
+
 
 <partial name="_AssetRegistry" />
 
@@ -41,6 +48,7 @@
             dataAttributes.Add(pair.Key.Substring(5), pair.Value);
     }
     dataAttributes.Add("SiteUrl", ConfigHelper.SiteUrl);
+    dataAttributes.Add("RepositoryMicroserviceUrl", repositoryMicroserviceApiRoot);
 
 }
 
@@ -57,6 +65,9 @@
     const app = Vue.createApp(applet, {
         dataAttributes: @Html.Raw(JsonConvert.SerializeObject(dataAttributes))
     });
+
+    app.use(CatfishUI.BootstrapVue3);
+    app.use(CatfishUI.BootstrapVue3Icons);
 
     if (pinia)
         app.use(pinia)

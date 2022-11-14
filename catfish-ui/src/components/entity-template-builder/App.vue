@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { computed, onMounted, watch } from 'vue'
+    import { computed, onMounted, ref, watch } from 'vue'
     import { useEntityTemplateBuilderStore } from './store';
     import { AppletAttribute } from '@/components/shared/props'
     import { default as FormEntryTemplate } from './components/FormEntry.vue';
@@ -16,10 +16,18 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
-        piniaInstance: Pinia
+        apiRoot?: string |null,
+      //  templateId?: Guid | null
+       //piniaInstance: Pinia
     }>();
 
-    const store = useEntityTemplateBuilderStore(props.piniaInstance);
+    const store = useEntityTemplateBuilderStore();
+    
+    if(props.apiRoot){
+       // console.log("api root from props: " + props.apiRoot);
+        store.setApiRoot(props.apiRoot);
+    }
+
     const createTemplate = () => store.newTemplate();
 
     const template = computed(() => store.template);
@@ -42,19 +50,37 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     const saveTemplate = () => store.saveTemplate();
     let btnClasses="btn btn-primary";
     const route = useRoute()
-    const templateId = route.params.templateId as unknown as Guid
-    if(templateId)
-       btnClasses="btn btn-primary hideBtn";
+    const templateId = route.params.id as unknown as Guid
+   // if(props.templateId)
+   //      templateId = props.templateId as Guid;
+
+    const isNewTemplate=ref(true);
+    if(templateId){
+       isNewTemplate.value=false;
+      // console.log("not a new template load existing template")
+       store.loadTemplate(templateId);
+    }
     watch(() => titleField?.value?.formId, newVal => {
         store.associateForm(newVal as unknown as Guid)
     })
 
+     watch(() => descriptionField?.value?.formId, newVal => {
+        store.associateForm(newVal as unknown as Guid)
+    })
+     watch(() => mediaField?.value?.formId, newVal => {
+        store.associateForm(newVal as unknown as Guid)
+    })
+
+
     onMounted(() => {
+         store.newTemplate();
         store.loadFormEntries();
         if (template.value) {
             if (template.value.id?.toString() !== Guid.EMPTY){
-                router.push(`/edit-entity-template/${template.value.id}`)
-                btnClasses="btn btn-primary hideBtn";
+                store.loadTemplate(template.value.id as Guid)
+                 isNewTemplate.value=false;
+                //  console.log("on mounted : not a new template load existing template")
+                //router.push(`/edit-entity-template/${template.value.id}`)
             }
         }
     });
@@ -63,9 +89,9 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
 
 <template>
     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
-    <h3>Entity Template Builder</h3>
+   
     <div class="control">
-        <button :class="btnClasses" @click="createTemplate">New Template</button>
+     <!--    <button class="btn btn-primary" @click="createTemplate" v-if="isNewTemplate">New Template</button> -->
         <button class="btn btn-success" @click="saveTemplate">Save</button>
     </div>
     <br />
@@ -103,8 +129,9 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
             <div class="form-field-border blue">
                 <h5>Metadata Forms</h5>
                 <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.metadataForms">
-                    <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.formId.toString()">
+                    <div v-for="frm in template.entityTemplateSettings.metadataForms" :key="frm.id.toString()">
                         <FormEntryTemplate :model="(frm as FormEntry)" />
+                       
                     </div>
                 </draggable>
                 <button class="btn btn-primary btn-blue" @click="addMetadataForm">+ Add</button>
@@ -113,7 +140,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
         <div class="form-field-border red">
             <h5>Data Forms</h5>
             <draggable class="dragArea list-group w-full" :list="template.entityTemplateSettings.dataForms">
-                <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.formId.toString()">
+                <div v-for="frm in template.entityTemplateSettings.dataForms" :key="frm.id.toString()">
                     <FormEntryTemplate :model="(frm as FormEntry)" class="form-field-border form-field red" />
                 </div>
             </draggable>
@@ -125,7 +152,10 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
                 <div class="col-2">
                     Title
                 </div>
+                
                 <div class="col-10">
+                    <FormFieldSelectionDropdown :model="titleField" :option-source="formFieldSelectorSource" :forms="store.forms" />
+                
                 </div>
             </div>
             <div class="row">
@@ -133,7 +163,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
                     Description
                 </div>
                 <div class="col-10">
-                    <FormFieldSelectionDropdown :model="(descriptionField as FieldEntry)" :option-source="formFieldSelectorSource" :forms="(store.forms as FormTemplate[])" />
+                    <FormFieldSelectionDropdown :model="(descriptionField as FieldEntry)" :option-source="formFieldSelectorSource" :forms="store.forms" />
                 </div>
             </div>
              <div class="row">
@@ -146,7 +176,7 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
             </div>
         </div>
     </div>
-    <div class="alert alert-info" style="margin-top:2em;">{{template}}</div>
+  <!--  <div class="alert alert-info" style="margin-top:2em;">{{template}}</div> -->
 
    
 

@@ -14,5 +14,5 @@
 </script>
 
 <template setup>
-     <EntityTemplateBuilder :pinia-instance="getActivePinia()" />
+     <EntityTemplateBuilder api-root="https://localhost:5020/api/entity-templates" />
 </template>

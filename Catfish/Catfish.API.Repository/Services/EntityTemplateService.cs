@@ -64,8 +64,8 @@ namespace Catfish.API.Repository.Services
 
         private async Task<List<FormTemplate>> LoadAssociatedForms(EntityTemplate entityTemplate)
         {
-            var formIds = entityTemplate.EntityTemplateSettings?.DataForms.Select(form => form.FormId)
-                .Union(entityTemplate.EntityTemplateSettings.MetadataForms.Select(form => form.FormId))
+            var formIds = entityTemplate.EntityTemplateSettings?.DataForms.Select(form => form.Id)
+                .Union(entityTemplate.EntityTemplateSettings.MetadataForms.Select(form => form.Id))
                 .ToList();
 
             if (formIds != null && formIds.Any())

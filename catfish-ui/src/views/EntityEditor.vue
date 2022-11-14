@@ -14,5 +14,5 @@
 </script>
 
 <template setup>
-     <EntityEditor :pinia-instance="getActivePinia()" />
+     <EntityEditor api-root="https://localhost:5020/api/entities" />
 </template>
