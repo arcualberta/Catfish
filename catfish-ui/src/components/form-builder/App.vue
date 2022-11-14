@@ -12,7 +12,7 @@
     import '../../style.css'
 
     import { default as Form } from './components/Form.vue';
-import { useRoute } from "vue-router";
+    import { useRoute } from "vue-router";
 
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,

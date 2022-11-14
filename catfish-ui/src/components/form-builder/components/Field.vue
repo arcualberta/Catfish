@@ -155,7 +155,7 @@
 
 <style scope>
     .form-field:hover {
-        background-color: #F0F0F0;
+        background-color: #F0F0F0 !important;
     }
     .option-entry{
         margin-bottom: 15px;
