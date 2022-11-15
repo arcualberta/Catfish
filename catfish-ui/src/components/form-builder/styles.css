@@ -1,3 +1,43 @@
 .control button, .toolbar button {
     margin: 0.2rem;
 }
+.option-values {
+    background-color: lightgray;
+    border-style: solid;
+    border-radius: 3px;
+    border-color: black;
+    border-width: 1px;
+    margin-right: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.text-field-label {
+    margin-left: 0px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 20px;
+    min-width: 30px;
+}
+
+.text-area-label {
+    margin-left: 50px;
+    font-weight: bold;
+}
+.form-field-border {
+    border: 1px solid;
+    padding: 30px 16px;
+    border-radius: 16px;
+    min-height: 100px;
+    margin-bottom: 10px;
+}
+
+.display-options {
+    margin-left: 147px;
+}
+
+.option-field {
+    margin-left: 210px;
+    margin-top: -25px;
+    margin-bottom: 30px;
+}
