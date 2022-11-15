@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { computed, onMounted, ref, watch } from 'vue'
+    import { computed, onActivated, onMounted, onUpdated, ref, watch } from 'vue'
     import { useEntityTemplateBuilderStore } from './store';
     import { AppletAttribute } from '@/components/shared/props'
     import { default as FormEntryTemplate } from './components/FormEntry.vue';
@@ -17,14 +17,13 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
         apiRoot?: string |null,
-      //  templateId?: Guid | null
-       //piniaInstance: Pinia
+     
     }>();
 
     const store = useEntityTemplateBuilderStore();
     
     if(props.apiRoot){
-       // console.log("api root from props: " + props.apiRoot);
+      
         store.setApiRoot(props.apiRoot);
     }
 
@@ -51,13 +50,9 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     let btnClasses="btn btn-primary";
     const route = useRoute()
     const templateId = route.params.id as unknown as Guid
-   // if(props.templateId)
-   //      templateId = props.templateId as Guid;
-
-    const isNewTemplate=ref(true);
+  
     if(templateId){
-       isNewTemplate.value=false;
-      // console.log("not a new template load existing template")
+      
        store.loadTemplate(templateId);
     }
     watch(() => titleField?.value?.formId, newVal => {
@@ -78,13 +73,11 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
         if (template.value) {
             if (template.value.id?.toString() !== Guid.EMPTY){
                 store.loadTemplate(template.value.id as Guid)
-                 isNewTemplate.value=false;
-                //  console.log("on mounted : not a new template load existing template")
-                //router.push(`/edit-entity-template/${template.value.id}`)
+               
             }
         }
     });
-
+    
 </script>
 
 <template>

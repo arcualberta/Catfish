@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed, watch } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import { Guid } from "guid-typescript";
     import { FieldEntry, FormTemplate } from '../../form-models';
     import { FormEntry } from '@/components/shared';
@@ -47,10 +47,10 @@
             });
         return options;
     });
-
-    watch(() => props.model.formId, _ => {
-        props.model.fieldId = Guid.EMPTY as unknown as Guid;
-    })
+    
+   // watch(() => props.model.formId, _ => {
+   //     props.model.fieldId = Guid.EMPTY as unknown as Guid;
+   // })
 
 </script>
 
