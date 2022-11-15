@@ -1,5 +1,10 @@
 
-export enum eState { Unpublished = "Unpublished", Published = "Published", Archived = "Archived", Deleted = "Deleted" }
+export enum eState { 
+    Draft = "Draft", 
+    Active = "Active", 
+    Archived = "Archived",  
+    Inactive="Inactive",
+    Deleted = "Deleted" }
 
 export enum eEntityType 
 {

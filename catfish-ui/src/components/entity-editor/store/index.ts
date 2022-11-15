@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { EntityData, Relationship, TemplateEntry, EntitySearchResult } from '../models';
 import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
-import { eEntityType, eSearchTarget } from '@/components/shared/constants';
+import { eEntityType, eSearchTarget, eState } from '@/components/shared/constants';
 import { createFormData } from '@/components/shared/form-helpers'
 import { FormData as FormDataModel } from '@/components/shared/form-models'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
@@ -55,7 +55,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 created: new Date(),
                 updated: new Date(),
                 title: "",
-                description: ""
+                description: "",
+                state: eState.Active
               
             }
         },

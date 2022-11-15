@@ -5,6 +5,7 @@ import { Field, FieldType, OptionFieldType, TextCollection, Option } from '../..
 import { createOption, createTextCollection, isOptionField, cloneTextCollection } from '../../shared/form-helpers'
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
+import { eState } from '@/components/shared/constants';
 
 export const useFormBuilderStore = defineStore('FormBuilderStore', {
     state: () => ({
@@ -19,7 +20,8 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                 id: Guid.EMPTY as unknown as Guid,
                 name: "",
                 description: "",
-                fields: [] as Field[]
+                fields: [] as Field[],
+                state: eState.Draft
             };
         },
         loadForm(id: Guid) {

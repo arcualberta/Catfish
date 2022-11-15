@@ -1,5 +1,5 @@
 import { Guid } from "guid-typescript"
-import { eEntityType } from "../../shared/constants";
+import { eEntityType, eState } from "../../shared/constants";
 import { FormData } from "../../shared/form-models";
 import { EntityEntry, ListEntry } from '@/components/shared'
 
@@ -14,7 +14,8 @@ export interface EntityData{
     created: Date,
     updated?: Date | null,
     title: string,
-    description: string | null
+    description: string | null,
+    state: eState
 }
 
 export interface TemplateEntry extends ListEntry {
