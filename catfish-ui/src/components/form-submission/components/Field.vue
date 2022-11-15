@@ -29,17 +29,14 @@ import { Guid } from 'guid-typescript';
     const isMonolingualTextInputField = formHelper.isMonolingualTextInputField(props.model)
 //
     const isAttachmentField = props.model.type === FieldType.AttachmentField ? true: false;
-    const dropzoneFile=ref("");
     const fieldElementId=props.model.id.toString();
     
 
     const drop=(e: any) => {
-        dropzoneFile.value= e.dataTransfer.files[0];
         store.putFile(e.dataTransfer.files as FileList, props.model.id);
     };
 
     const selectedFile = (fieldId: string) => {
-        dropzoneFile.value = document.getElementById(fieldId)?.files[0];
         const inputElement = document.getElementById(fieldId) as HTMLInputElement;
         store.putFile(inputElement?.files as FileList, props.model.id);
     }
@@ -73,7 +70,6 @@ import { Guid } from 'guid-typescript';
                 <InfoSection :model="model" v-if="model.type === FieldType.InfoSection" />
                 <div v-if="isAttachmentField">
                   <AttachmentField :model="model" :elementId="fieldElementId" @drop="drop" @change="selectedFile(fieldElementId)" />
-                  <span class="dropzoneFiles">Selected File: {{dropzoneFile.name}}</span>
                 </div>
             </b-col>
         </b-row>
