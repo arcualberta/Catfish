@@ -47,10 +47,22 @@
             });
         return options;
     });
-    
-   // watch(() => props.model.formId, _ => {
-   //     props.model.fieldId = Guid.EMPTY as unknown as Guid;
-   // })
+
+    watch(() => props.optionSource, newSource => {
+        let matchFound = false;
+        newSource.forEach(source => {
+            if(source.formGroup.filter(formEntry => formEntry.id === props.model.formId).length > 0){
+                matchFound = true;
+            }
+        })
+
+        if(!matchFound){
+            console.log("Resetting fields ", newSource)
+            props.model.formId = Guid.EMPTY as unknown as Guid;
+            props.model.fieldId = Guid.EMPTY as unknown as Guid;
+
+        }
+    }, {deep:true})
 
 </script>
 
