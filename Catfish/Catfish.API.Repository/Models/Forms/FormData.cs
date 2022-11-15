@@ -37,5 +37,7 @@
             get => SerializedFieldData == null ? null : JsonConvert.DeserializeObject<List<object>>(SerializedFieldData);
             set => SerializedFieldData = value == null ? null : JsonConvert.SerializeObject(value);
         }
+
+        public eState State { get; set; }
     }
 }

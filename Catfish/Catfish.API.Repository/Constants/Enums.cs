@@ -1,10 +1,11 @@
 ﻿namespace Catfish.API.Repository.Constants
 {
     public enum eState 
-    { 
-        Published,
-        UnPublished,
-        Archived,
+    {
+        Draft = 0, 
+        Active, 
+        Archived, 
+        Inactive, 
         Deleted
     }
 

@@ -106,7 +106,7 @@ namespace Catfish.API.Repository.Controllers
 
         // DELETE: api/Forms/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteForm(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (_context.Forms == null)
             {
@@ -118,10 +118,11 @@ namespace Catfish.API.Repository.Controllers
                 return NotFound();
             }
 
-            _context.Forms.Remove(form);
+            form.Status = eState.Deleted;
+            _context.Entry(form).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         private bool FormExists(Guid id)

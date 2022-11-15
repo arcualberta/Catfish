@@ -59,6 +59,20 @@ namespace Catfish.API.Repository.Services
             return HttpStatusCode.OK;
         }
 
+        public async Task<HttpStatusCode> ChangeStatus(EntityTemplate entityTemplate, eState state)
+        {
+            //Loading the entity from the database
+            EntityTemplate? dbEntityTemplate = await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(et => et.Id == entityTemplate.Id);
+            if (dbEntityTemplate == null)
+                return HttpStatusCode.NotFound;
+
+            dbEntityTemplate.State = state;
+            dbEntityTemplate.Updated = DateTime.Now;
+           
+
+            return HttpStatusCode.OK;
+        }
+
 
         #region Private Methods
 

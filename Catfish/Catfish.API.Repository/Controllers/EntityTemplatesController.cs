@@ -94,10 +94,25 @@ namespace Catfish.API.Repository.Controllers
 
         // DELETE api/<FormSubmissionController>/5
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            if (_context.EntityTemplates == null)
+            {
+                return NotFound();
+            }
+            var entityTemplate = await _context.EntityTemplates.FindAsync(id);
+            if (entityTemplate == null)
+            {
+                return NotFound();
+            }
+
+            entityTemplate.State = eState.Deleted;
+            _context.Entry(entityTemplate).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
+
 
         #region Private methods
         private bool EntityTemplateExists(Guid id)

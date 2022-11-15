@@ -15,7 +15,7 @@ namespace Catfish.API.Repository.Models.Forms
         /// <summary>
         /// Status of the form.
         /// </summary>
-        public eStatus Status { get; set; }
+        public eState Status { get; set; }
 
         /// <summary>
         /// Form name.

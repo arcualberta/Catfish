@@ -113,10 +113,25 @@ namespace Catfish.API.Repository.Controllers
 
        // DELETE api/<EntitiesController>/5
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            if (_context.Entities == null)
+            {
+                return NotFound();
+            }
+            var item = await _context.Entities.Where(it => it.Id == id && it.EntityType == eEntityType.Item).FirstOrDefaultAsync();
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            item.State = eState.Deleted;
+            _context.Entry(item).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
+
 
         [HttpGet("{contentType}/{fileName}")]
         public IActionResult? GetFileAttachment(string contentType, string fileName)
