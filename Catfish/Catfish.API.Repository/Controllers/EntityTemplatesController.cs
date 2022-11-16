@@ -112,7 +112,26 @@ namespace Catfish.API.Repository.Controllers
 
             return Ok();
         }
+        [HttpPost("change-state/{id}")]
+        public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
+        {
+            if (_context.EntityTemplates == null)
+            {
+                return NotFound();
+            }
+            var entityTemplate = await _context.EntityTemplates.FindAsync(id);
+            if (entityTemplate == null)
+            {
+                return NotFound();
+            }
 
+            entityTemplate.State =newState;
+            _context.Entry(entityTemplate).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
+        }
 
         #region Private methods
         private bool EntityTemplateExists(Guid id)

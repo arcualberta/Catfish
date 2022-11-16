@@ -124,7 +124,26 @@ namespace Catfish.API.Repository.Controllers
 
             return Ok();
         }
+        [HttpPost("change-state/{id}")]
+        public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
+        {
+            if (_context.Forms == null)
+            {
+                return NotFound();
+            }
+            var form = await _context.Forms.Where(it => it.Id == id).FirstOrDefaultAsync();
+            if (form == null)
+            {
+                return NotFound();
+            }
 
+            form.State = newState;
+            _context.Entry(form).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
+        }
         private bool FormExists(Guid id)
         {
             return (_context.Forms?.Any(e => e.Id == id)).GetValueOrDefault();
