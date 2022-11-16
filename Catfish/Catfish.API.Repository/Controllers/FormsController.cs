@@ -22,7 +22,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            return await _context.Forms.Select(form => new FormEntry() { Id = form.Id, Name = form.Name?? form.Id.ToString() }).ToListAsync();
+            return await _context.Forms.Where(form=>form.Status != eState.Deleted).Select(form => new FormEntry() { Id = form.Id, Name = form.Name?? form.Id.ToString() }).ToListAsync();
         }
 
         // GET: api/Forms/5

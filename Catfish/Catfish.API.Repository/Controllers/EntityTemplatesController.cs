@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository.Interfaces;
+using System.Linq;
 using System.Net;
 
 
@@ -29,7 +30,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            return await _context.EntityTemplates!.Select(te => new TemplateEntry() { Id = te.Id, Name = te.Name ?? te.Id.ToString() }).ToListAsync();
+            return await _context.EntityTemplates!.Where(et=>et.State != eState.Deleted).Select(te => new TemplateEntry() { Id = te.Id, Name = te.Name ?? te.Id.ToString() }).ToListAsync();
             
         }
 

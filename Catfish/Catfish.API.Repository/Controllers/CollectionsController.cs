@@ -31,7 +31,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            return await _context.Entities.Where(col=>col.EntityType == eEntityType.Collection).Select(col => new EntityEntry() { Id = col.Id, Name = col.Title ?? col.Id.ToString() }).ToListAsync();
+            return await _context.Entities.Where(col=>col.EntityType == eEntityType.Collection && col.State != eState.Deleted).Select(col => new EntityEntry() { Id = col.Id, Name = col.Title ?? col.Id.ToString() }).ToListAsync();
 
         }
 

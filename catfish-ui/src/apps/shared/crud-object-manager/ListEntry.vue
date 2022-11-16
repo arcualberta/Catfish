@@ -13,12 +13,14 @@ const props = defineProps<{
 const detailUrl ="/read/" + props.entry.id;
 const updateUrl ="/update/" + props.entry.id;
 const deleteUrl = "/delete/" + props.entry.id;
+const changeStateUrl="/change-state/" + props.entry.id
 </script>
 
 <template>
     <div class="row entryRow">
-    <router-link :to="detailUrl" class="col-8">{{entry.name}}</router-link>
+    <router-link :to="detailUrl" class="col-6">{{entry.name}}</router-link>
     <router-link :to="updateUrl" class="col-2">Update</router-link>
+    <a href="#" class="col-2">Change State</a>
    <router-link :to="deleteUrl" class="col-2">Delete</router-link>
    </div>
    
