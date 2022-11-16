@@ -137,7 +137,7 @@ namespace Catfish.API.Repository.Controllers
                 return NotFound();
             }
 
-            form.State = newState;
+            form.Status = newState;
             _context.Entry(form).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
