@@ -76,9 +76,8 @@
                         Delete Confirmation.
                     </template>
                     <template v-slot:body>
-                        Do you want to delete this Item?.
+                        Do you want to delete this Item?
                     </template>
-
                     <template v-slot:footer>
                         <button type="button"
                                 class="ok-btn"
