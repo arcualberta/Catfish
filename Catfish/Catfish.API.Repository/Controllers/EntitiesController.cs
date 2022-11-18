@@ -158,5 +158,25 @@ namespace Catfish.API.Repository.Controllers
             }
             return null;
         }
+        [HttpPost("change-state/{id}")]
+        public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
+        {
+            if (_context.Entities == null)
+            {
+                return NotFound();
+            }
+            var entity = await _context.Entities.Where(it => it.Id == id).FirstOrDefaultAsync();
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            entity.State = newState;
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
+        }
     }
 }

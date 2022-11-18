@@ -31,7 +31,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            return await _context.Entities.Where(item=>item.EntityType == eEntityType.Item).Select(item => new EntityEntry() { Id = item.Id, Name = item.Title ?? item.Id.ToString() }).ToListAsync();
+            return await _context.Entities.Where(item=>item.EntityType == eEntityType.Item && item.State != eState.Deleted).Select(item => new EntityEntry() { Id = item.Id, Name = item.Title ?? item.Id.ToString() }).ToListAsync();
 
         }
 
@@ -148,6 +148,27 @@ namespace Catfish.API.Repository.Controllers
                 return File(data, contentType, originalFileName);
             }
             return null;
+        }
+
+        [HttpPost("change-state/{id}")]
+        public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
+        {
+            if (_context.Entities == null)
+            {
+                return NotFound();
+            }
+            var item = await _context.Entities.Where(it => it.Id == id && it.EntityType == eEntityType.Item).FirstOrDefaultAsync();
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            item.State = newState;
+            _context.Entry(item).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
         }
     }
 }
