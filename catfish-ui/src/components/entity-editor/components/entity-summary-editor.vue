@@ -70,29 +70,7 @@
                         <span v-else>{{entityTemplate?.name}}</span>
                     </div>
                 </div>
-                <button @click="TogglePopup()" >Modal Test</button>
-                <ConfirmPopUp v-if="popupTrigger" :popupTrigger="true">
-                    <template v-slot:header>
-                        Delete Confirmation.
-                    </template>
-                    <template v-slot:body>
-                        Do you want to delete this Item?
-                    </template>
-                    <template v-slot:footer>
-                        <button type="button"
-                                class="ok-btn"
-                                @click="TogglePopup()"
-                                aria-label="Close modal">
-                            Delete
-                        </button>
-                        <button type="button"
-                                class="cancel-btn"
-                                @click="TogglePopup()"
-                                aria-label="Close modal">
-                            Cancel
-                        </button>
-                    </template>
-                </ConfirmPopUp>
+                
                 <!-- <div class="row mt-2">
                      <div class="col-sm-2">
                          <label>Entity Title:</label>
