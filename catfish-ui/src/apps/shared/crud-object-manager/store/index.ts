@@ -9,6 +9,7 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
         entries: {} as ListEntry[] | null
     }),
     actions: {
+
         loadEntries(apiUrl: string) {
             const api = `${apiUrl}`
             fetch(api, {
@@ -18,6 +19,21 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
                 .then(data => {
                     this.entries = data as ListEntry[];
                 })
+                .catch((error) => {
+                    console.error('Listing entities API Error:', error);
+                });
+        },  
+        deleteObject(apiUrl: string) {
+            const api = `${apiUrl}`
+            console.log('api', api)
+            fetch(api, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Sucessfully deleted')
+                    }
+                 })
                 .catch((error) => {
                     console.error('Listing entities API Error:', error);
                 });

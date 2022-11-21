@@ -1,12 +1,19 @@
 <script lang="ts" setup>
-
+import { Guid } from 'guid-typescript';
 import { ListEntry } from '@/components/shared';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { default as config } from "@/appsettings";
+import { default as ConfirmPopUp } from '../../../components/shared/components/pop-up/ConfirmPopUp.vue';
+import { useCRUDManagerStore } from './store'
 
+const popupTrigger = ref(false);
 const props = defineProps<{
     entry: ListEntry 
 }>()
+
+const store = useCRUDManagerStore();
+const TogglePopup = () => (popupTrigger.value = !popupTrigger.value);
+    const deleteEntry = (apiUrl: string) => (store.deleteObject(apiUrl));
 
 //API ROOT/read/{entry.id}
 //
@@ -18,11 +25,33 @@ const changeStateUrl="/change-state/" + props.entry.id
 
 <template>
     <div class="row entryRow">
-    <router-link :to="detailUrl" class="col-6">{{entry.name}}</router-link>
-    <router-link :to="updateUrl" class="col-2">Update</router-link>
-    <a href="#" class="col-2">Change State</a>
-   <router-link :to="deleteUrl" class="col-2">Delete</router-link>
-   </div>
+        <router-link :to="detailUrl" class="col-6">{{entry.name}}</router-link>
+        <router-link :to="updateUrl" class="col-2">Update</router-link>
+        <a href="#" class="col-2">Change State</a>
+        <a @click="TogglePopup()" class="col-2">Delete</a>
+            <ConfirmPopUp v-if="popupTrigger" :popupTrigger="true">
+                <template v-slot:header style="color: #db2424;">
+                    Delete Confirmation.
+                </template>
+                <template v-slot:body>
+                    Do you want to delete this Item?
+                </template>
+                <template v-slot:footer>
+                    <button type="button"
+                            class="ok-btn"
+                            @click="deleteEntry('https://localhost:5020/api/items/delete/'+ props.entry.id)"
+                            aria-label="Close modal">
+                        Delete
+                    </button>
+                    <button type="button"
+                            class="cancel-btn"
+                            @click="TogglePopup()"
+                            aria-label="Close modal">
+                        Cancel
+                    </button>
+                </template>
+            </ConfirmPopUp>
+    </div>
    
 </template>
 <style scoped>
