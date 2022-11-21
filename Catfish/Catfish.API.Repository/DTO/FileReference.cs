@@ -3,15 +3,15 @@
     public class FileReference
     {
         public  Guid Id {get;set;}
-        string FileName { get; set; }
-        string OriginalFileName { get; set; }
-        string Thumbnail { get; set; }
-        string ContentType { get; set; }
-        int Size { get; set; }
-        DateTime Created { get; set; }
-        DateTime Updated { get; set; }
-    
-        Guid FormDataId { get; set; }
-        Guid FieldId { get; set; }
+        public string FileName { get; set; }
+        public string OriginalFileName { get; set; }
+        public string Thumbnail { get; set; }
+        public string ContentType { get; set; }
+        public int Size { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
+
+        public Guid FormDataId { get; set; }
+        public Guid FieldId { get; set; }
     }
 }

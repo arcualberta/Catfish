@@ -7,6 +7,6 @@
     /**
      * List of Text values encapsulated in this Text Collecton object.
      * */
-        public Text[] Values { get; set; }
+        public Text[] Values { get;set; }
     }
 }

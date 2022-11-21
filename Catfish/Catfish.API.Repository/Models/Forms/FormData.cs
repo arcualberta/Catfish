@@ -32,9 +32,9 @@
         /// List of field data objects associated with the form-data object.
         /// </summary>
         [NotMapped]
-        public IList<object>? FieldData
+        public IList<FieldData>? FieldData
         {
-            get => SerializedFieldData == null ? null : JsonConvert.DeserializeObject<List<object>>(SerializedFieldData);
+            get => SerializedFieldData == null ? null : JsonConvert.DeserializeObject<List<FieldData>>(SerializedFieldData);
             set => SerializedFieldData = value == null ? null : JsonConvert.SerializeObject(value);
         }
 
