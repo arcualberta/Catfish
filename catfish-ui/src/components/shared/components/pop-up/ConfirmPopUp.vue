@@ -2,7 +2,6 @@
     const props = defineProps<{
         popupTrigger: boolean,
     }>();
-
 </script>
 
 <template>
@@ -12,10 +11,6 @@
                 <header class="modal-header">
                     <slot name="header">
                     </slot>
-                    <button type="button"
-                            class="btn-close"
-                            @click="popupTrigger=false">x
-                    </button>
                 </header>
                 <section class="modal-body">
                     <slot name="body">
@@ -36,12 +31,10 @@
     .fade-leave-active {
         transition: opacity 0.3s;
     }
-
     .fade-enter,
     .fade-leave-to {
         opacity: 0;
     }
-
     .popup-modal {
         background-color: rgba(0, 0, 0, 0.5);
         position: fixed;
@@ -54,7 +47,6 @@
         align-items: center;
         z-index: 1;
     }
-
     .window {
         background: #fff;
         border-radius: 5px;
@@ -69,45 +61,17 @@
         padding: 15px;
         display: flex;
     }
-
     .modal-header {
         position: relative;
         border-bottom: 1px solid #eeeeee;
         justify-content: space-between;
+        font-weight: bold;
+        font-size: 16px;
+        color: #168C86;
     }
     .modal-body {
         position: relative;
         padding: 20px 10px;
     }
-
-    .btn-close {
-        position: absolute;
-        top: 0;
-        right: 0;
-        border: none;
-        font-size: 20px;
-        padding: 10px;
-        cursor: pointer;
-        font-weight: bold;
-        color: #db2424;
-        background: transparent;
-    }
-    .ok-btn {
-        color: red;
-        text-decoration: underline;
-        line-height: 2.5rem;
-        cursor: pointer;
-    }
-
-    .cancel-btn {
-        padding: 0.5em 1em;
-        background-color: #d5eae7;
-        color: #35907f;
-        border: 2px solid #0ec5a4;
-        border-radius: 5px;
-        font-weight: bold;
-        font-size: 16px;
-        text-transform: uppercase;
-        cursor: pointer;
-    }
+    
 </style>

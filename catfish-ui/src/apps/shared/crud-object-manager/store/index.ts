@@ -1,12 +1,13 @@
 import { Guid } from 'guid-typescript';
 import { defineStore } from 'pinia';
-
+import { TransientMessageModel } from '../../../../components/shared/components/transient-message/models'
 import { default as config } from "@/appsettings";
 import { ListEntry } from '@/components/shared';
 
 export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
     state: () => ({
-        entries: {} as ListEntry[] | null
+        entries: {} as ListEntry[] | null,
+        transientMessageModel: {} as TransientMessageModel,
     }),
     actions: {
 
@@ -31,10 +32,30 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
             })
                 .then(response => {
                     if (response.ok) {
-                        console.log('Sucessfully deleted')
+                        this.transientMessageModel.message = "The form saved successfully"
+                        this.transientMessageModel.messageClass = "success"
+                    }
+                    else {
+                        this.transientMessageModel.messageClass = "danger"
+                        switch (response.status) {
+                            case 400:
+                                this.transientMessageModel.message = "Bad request. Failed to save the form";
+                                break;
+                            case 404:
+                                this.transientMessageModel.message = "Item not found";
+                                break;
+                            case 500:
+                                this.transientMessageModel.message = "An internal server error occurred. Failed to save the form"
+                                break;
+                            default:
+                                this.transientMessageModel.message = "Unknown error occured. Failed to save the form"
+                                break;
+                        }
                     }
                  })
                 .catch((error) => {
+                    this.transientMessageModel.message = "Unknown error occurred"
+                    this.transientMessageModel.messageClass = "danger"
                     console.error('Listing entities API Error:', error);
                 });
         },  
