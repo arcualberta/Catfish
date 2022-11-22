@@ -22,4 +22,12 @@
         TitleOrDescription
     }
 
+    public enum eTextType
+    {
+        ShortAnswer,
+        Paragraph,
+        RichText,
+        AttachmentField
+    }
+
 }

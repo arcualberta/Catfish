@@ -92,7 +92,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                         let fileName=fileKey+ "_" + file.name;
                         fld.fileReferences?.push({
                         
-                            id: Guid.create(),
+                            id: Guid.create().toString() as unknown as Guid,
                             fileName:fileName,
                             originalFileName: file.name,
                             thumbnail: "",
@@ -102,7 +102,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                             updated: new Date(),
         
                             //file: file,
-                            fieldId: fieldId
+                            fieldId: fieldId.toString() as unknown as Guid
                         })
                         
                     }

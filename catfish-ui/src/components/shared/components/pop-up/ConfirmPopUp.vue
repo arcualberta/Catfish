@@ -14,7 +14,7 @@
                     </slot>
                     <button type="button"
                             class="btn-close"
-                            @click="popupTrigger=false">
+                            @click="popupTrigger=false">x
                     </button>
                 </header>
                 <section class="modal-body">
@@ -73,7 +73,6 @@
     .modal-header {
         position: relative;
         border-bottom: 1px solid #eeeeee;
-        color: #4AAE9B;
         justify-content: space-between;
     }
     .modal-body {
@@ -81,7 +80,7 @@
         padding: 20px 10px;
     }
 
-    /*.btn-close {
+    .btn-close {
         position: absolute;
         top: 0;
         right: 0;
@@ -90,9 +89,9 @@
         padding: 10px;
         cursor: pointer;
         font-weight: bold;
-        color: #4AAE9B;
+        color: #db2424;
         background: transparent;
-    }*/
+    }
     .ok-btn {
         color: red;
         text-decoration: underline;

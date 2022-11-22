@@ -85,7 +85,7 @@ namespace Catfish.API.Repository.Controllers
                 await _context.SaveChangesAsync();
                return StatusCode((int)code);
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 //TODO: Log the error in error log
                 return StatusCode((int) HttpStatusCode.InternalServerError);
