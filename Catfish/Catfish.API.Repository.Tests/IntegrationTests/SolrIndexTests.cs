@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.API.Repository.Tests.IntegrationTests
 {
-    internal class SolrIndexTests
+    public class SolrIndexTests
     {
     }
 }

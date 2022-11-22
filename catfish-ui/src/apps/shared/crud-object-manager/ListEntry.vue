@@ -39,7 +39,7 @@ const changeStateUrl="/change-state/" + props.entry.id
                 <template v-slot:footer>
                     <button type="button"
                             class="ok-btn"
-                            @click="deleteEntry('https://localhost:5020/api/items/delete/'+ props.entry.id)"
+                            @click="deleteEntry('https://localhost:5020/api/items/'+ props.entry.id)"
                             aria-label="Close modal">
                         Delete
                     </button>
