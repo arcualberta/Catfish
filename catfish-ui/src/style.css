@@ -206,26 +206,74 @@
     color: #db2424;
     background: transparent;
 }
-.modal-confirm-btn {
-    padding: 0.5em 1em;
-    background-color: #FFBEB3;
+.modal-delete-btn {
+    background-color: #FFEDEB;
     color: #A52913;
-    border: 2px solid #C70039;
+    border: 1px solid #C70039;
     border-radius: 5px;
     font-weight: bold;
     font-size: 16px;
-    text-transform: uppercase;
     cursor: pointer;
+    line-height: 1.15385;
+    padding: 8px .8em;
 }
-
-.modal-cancel-btn {
-    padding: 0.5em 1em;
-    background-color: #d5eae7;
-    color: #35907f;
-    border: 2px solid #0ec5a4;
+    .modal-delete-btn:hover {
+        background-color: #FFBEB3;
+    }
+.modal-confirm-btn {
+    background-color: #DEFFE6;
+    color: #2BA84A;
+    border: 1px solid #2DA249;
     border-radius: 5px;
     font-weight: bold;
     font-size: 16px;
-    text-transform: uppercase;
     cursor: pointer;
+    line-height: 1.15385;
+    padding: 8px .8em;
+}
+    .modal-confirm-btn:hover {
+        background-color: #A6F0B8;
+    }
+
+    .modal-cancel-btn {
+        background-color: #e1ecf4;
+        border-radius: 5px;
+        border: 1px solid #7aa7c7;
+        box-shadow: rgba(255, 255, 255, .7) 0 1px 0 0 inset;
+        box-sizing: border-box;
+        color: #39739d;
+        cursor: pointer;
+        display: inline-block;
+        /*font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;*/
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1.15385;
+        margin: 0;
+        outline: none;
+        padding: 8px .8em;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: baseline;
+        white-space: nowrap;
+    }
+
+    .modal-cancel-btn:hover,
+    .modal-cancel-btn:focus {
+        background-color: #b3d3ea;
+        color: #2c5777;
+    }
+
+    .modal-cancel-btn:focus {
+        box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+    }
+
+    .modal-cancel-btn:active {
+        background-color: #a0c7e4;
+        box-shadow: none;
+        color: #2c5777;
+    }
 }

@@ -6,13 +6,15 @@ import { default as config } from "@/appsettings";
     import { default as ConfirmPopUp } from '../../../components/shared/components/pop-up/ConfirmPopUp.vue';
 import { useCRUDManagerStore } from './store'
 
-const popupTrigger = ref(false);
+    const popupTrigger = ref(false);
+    const changeStateTrigger = ref(false);
 const props = defineProps<{
     entry: ListEntry 
 }>()
 
 const store = useCRUDManagerStore();
-const TogglePopup = () => (popupTrigger.value = !popupTrigger.value);
+    const TogglePopup = () => (popupTrigger.value = !popupTrigger.value);
+    const ToggleChangeStatePopup = () => (changeStateTrigger.value = !changeStateTrigger.value);
     const deleteEntry = (apiUrl: string) => {
         store.deleteObject(apiUrl);
         popupTrigger.value = !popupTrigger.value;
@@ -31,7 +33,34 @@ const changeStateUrl="/change-state/" + props.entry.id
     <div class="row entryRow">
         <router-link :to="detailUrl" class="col-6">{{entry.name}}</router-link>
         <router-link :to="updateUrl" class="col-2">Update</router-link>
-        <a href="#" class="col-2">Change State</a>
+        <a @click="ToggleChangeStatePopup()" class="col-2 change-state-link">Change State</a>
+        <ConfirmPopUp v-if="changeStateTrigger" :popupTrigger="true">
+            <template v-slot:header>
+                Change State.
+                <button type="button"
+                        class="btn-close"
+                        @click="changeStateTrigger=false">
+                    x
+                </button>
+            </template>
+            <template v-slot:body>
+                Please select new State.
+            </template>
+            <template v-slot:footer>
+                <button type="button"
+                        class="modal-confirm-btn"
+                        @click="deleteEntry('https://localhost:5020/api/items/'+ props.entry.id)"
+                        aria-label="Close modal">
+                    Confirm
+                </button>
+                <button type="button"
+                        class="modal-cancel-btn"
+                        @click="ToggleChangeStatePopup()"
+                        aria-label="Close modal">
+                    Cancel
+                </button>
+            </template>
+        </ConfirmPopUp>
         <a @click="TogglePopup()" class="col-2 delete-link">Delete</a>
         <ConfirmPopUp v-if="popupTrigger" :popupTrigger="true">
             <template v-slot:header>
@@ -47,7 +76,7 @@ const changeStateUrl="/change-state/" + props.entry.id
             </template>
             <template v-slot:footer>
                 <button type="button"
-                        class="modal-confirm-btn"
+                        class="modal-delete-btn"
                         @click="deleteEntry('https://localhost:5020/api/items/'+ props.entry.id)"
                         aria-label="Close modal">
                     Delete
@@ -75,5 +104,13 @@ const changeStateUrl="/change-state/" + props.entry.id
         text-decoration:underline;
         cursor:pointer;
     }
+    .change-state-link {
+        color: #007eaa;
+    }
+
+        .change-state-link:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
     
 </style>
