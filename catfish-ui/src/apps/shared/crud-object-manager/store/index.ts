@@ -8,6 +8,7 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
     state: () => ({
         entries: {} as ListEntry[] | null,
         transientMessageModel: {} as TransientMessageModel,
+        apiRoot: null as string | null;
     }),
     actions: {
 

@@ -14,6 +14,8 @@ const props = defineProps<{
 }>()
 
     const store = useCRUDManagerStore();
+    const apiRoot = computed(() => store.apiRoot)
+    
     const stateList = () => eState;
     console.log('stateList', stateList);
     const TogglePopup = () => (popupTrigger.value = !popupTrigger.value);

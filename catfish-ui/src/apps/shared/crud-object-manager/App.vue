@@ -9,9 +9,10 @@ const props = defineProps<{
    
 }>()
 const store = useCRUDManagerStore();
-const apiUrl = computed(()=>props.apiRoot);
+const apiRoot = computed(()=>props.apiRoot);
  onMounted(() => {
-      store.loadEntries(apiUrl?.value as string);
+    store.apiRoot = apiRoot.value as string;
+      store.loadEntries(apiRoot?.value as string);
     });
 
 </script>
