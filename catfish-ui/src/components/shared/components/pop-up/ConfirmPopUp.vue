@@ -55,6 +55,7 @@
         margin-left: auto;
         margin-right: auto;
         padding: 1rem;
+        width: 300px;
     }
     .modal-header,
     .modal-footer {

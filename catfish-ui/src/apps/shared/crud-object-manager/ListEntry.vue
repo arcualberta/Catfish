@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Guid } from 'guid-typescript';
-import { ListEntry } from '@/components/shared';
+    import { ListEntry } from '@/components/shared';
+    import { eState } from '../../../components/shared/constants';
 import { computed, ref } from 'vue';
 import { default as config } from "@/appsettings";
     import { default as ConfirmPopUp } from '../../../components/shared/components/pop-up/ConfirmPopUp.vue';
@@ -12,7 +13,9 @@ const props = defineProps<{
     entry: ListEntry 
 }>()
 
-const store = useCRUDManagerStore();
+    const store = useCRUDManagerStore();
+    const stateList = () => eState;
+    console.log('stateList', stateList);
     const TogglePopup = () => (popupTrigger.value = !popupTrigger.value);
     const ToggleChangeStatePopup = () => (changeStateTrigger.value = !changeStateTrigger.value);
     const deleteEntry = (apiUrl: string) => {
@@ -45,6 +48,11 @@ const changeStateUrl="/change-state/" + props.entry.id
             </template>
             <template v-slot:body>
                 Please select new State.
+                <div class="col-sm-3">
+                    <select class="form-select">
+                        <option v-for="opt in stateList">{{opt}}</option>
+                    </select>
+                </div>
             </template>
             <template v-slot:footer>
                 <button type="button"
