@@ -14,6 +14,7 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
 
         loadEntries(apiUrl: string) {
             const api = `${apiUrl}`
+            console.log('LoadApi', api)
             fetch(api, {
                 method: 'GET'
             })

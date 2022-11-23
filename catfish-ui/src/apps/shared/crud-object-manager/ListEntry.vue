@@ -16,13 +16,15 @@ const props = defineProps<{
     const store = useCRUDManagerStore();
     const apiRoot = computed(() => store.apiRoot)
     
-    const stateList = () => eState;
+    const stateList = computed(() => eState);
     console.log('stateList', stateList);
     const TogglePopup = () => (popupTrigger.value = !popupTrigger.value);
     const ToggleChangeStatePopup = () => (changeStateTrigger.value = !changeStateTrigger.value);
     const deleteEntry = (apiUrl: string) => {
         store.deleteObject(apiUrl);
         popupTrigger.value = !popupTrigger.value;
+        store.loadEntries(apiRoot?.value as string);
+
     };
 
 //API ROOT/read/{entry.id}
@@ -37,7 +39,6 @@ const changeStateUrl="/change-state/" + props.entry.id
     
     <div class="row entryRow">
         <router-link :to="detailUrl" class="col-6">{{entry.name}}</router-link>
-        {{apiRoot}}
         <router-link :to="updateUrl" class="col-2">Update</router-link>
         <a @click="ToggleChangeStatePopup()" class="col-2 change-state-link">Change State</a>
         <ConfirmPopUp v-if="changeStateTrigger" :popupTrigger="true">
@@ -60,7 +61,7 @@ const changeStateUrl="/change-state/" + props.entry.id
             <template v-slot:footer>
                 <button type="button"
                         class="modal-confirm-btn"
-                        @click="deleteEntry('https://localhost:5020/api/items/'+ props.entry.id)"
+                        @click="deleteEntry(apiRoot + props.entry.id)"
                         aria-label="Close modal">
                     Confirm
                 </button>
@@ -88,7 +89,7 @@ const changeStateUrl="/change-state/" + props.entry.id
             <template v-slot:footer>
                 <button type="button"
                         class="modal-delete-btn"
-                        @click="deleteEntry('https://localhost:5020/api/items/'+ props.entry.id)"
+                        @click="deleteEntry(apiRoot + '/' + props.entry.id)"
                         aria-label="Close modal">
                     Delete
                 </button>
