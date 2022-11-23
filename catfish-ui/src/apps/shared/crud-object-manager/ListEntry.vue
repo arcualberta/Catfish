@@ -37,6 +37,7 @@ const changeStateUrl="/change-state/" + props.entry.id
     
     <div class="row entryRow">
         <router-link :to="detailUrl" class="col-6">{{entry.name}}</router-link>
+        {{apiRoot}}
         <router-link :to="updateUrl" class="col-2">Update</router-link>
         <a @click="ToggleChangeStatePopup()" class="col-2 change-state-link">Change State</a>
         <ConfirmPopUp v-if="changeStateTrigger" :popupTrigger="true">
