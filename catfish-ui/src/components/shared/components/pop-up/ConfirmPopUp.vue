@@ -5,7 +5,7 @@
 </script>
 
 <template>
-    <transition v-if="popupTrigger" name="fade">
+    <transition  name="fade">
         <div class="popup-modal" >
             <div class="window">
                 <header class="modal-header">

@@ -26,6 +26,12 @@ const props = defineProps<{
         store.loadEntries(apiRoot?.value as string);
 
     };
+    const changeStatus = (apiUrl: string, id:Guid, newStatus:  eState) => {
+        store.changeStatus(apiUrl, id, newStatus);
+        popupTrigger.value = !popupTrigger.value;
+        store.loadEntries(apiRoot?.value as string);
+
+    };
 
 //API ROOT/read/{entry.id}
 //
@@ -41,7 +47,7 @@ const changeStateUrl="/change-state/" + props.entry.id
         <router-link :to="detailUrl" class="col-6">{{entry.name}}</router-link>
         <router-link :to="updateUrl" class="col-2">Update</router-link>
         <a @click="ToggleChangeStatePopup()" class="col-2 change-state-link">Change State</a>
-        <ConfirmPopUp v-if="changeStateTrigger" :popupTrigger="true">
+        <ConfirmPopUp v-if="changeStateTrigger" >
             <template v-slot:header>
                 Change State.
                 <button type="button"
@@ -61,7 +67,7 @@ const changeStateUrl="/change-state/" + props.entry.id
             <template v-slot:footer>
                 <button type="button"
                         class="modal-confirm-btn"
-                        @click="deleteEntry(apiRoot + props.entry.id)"
+                        @click="changeStatus( apiRoot + '/change-state/' + props.entry.id,props.entry.id, stateList.Inactive)"
                         aria-label="Close modal">
                     Confirm
                 </button>
@@ -74,7 +80,7 @@ const changeStateUrl="/change-state/" + props.entry.id
             </template>
         </ConfirmPopUp>
         <a @click="TogglePopup()" class="col-2 delete-link">Delete</a>
-        <ConfirmPopUp v-if="popupTrigger" :popupTrigger="true">
+        <!--<ConfirmPopUp v-if="popupTrigger" >
             <template v-slot:header>
                 Delete Confirmation.
                 <button type="button"
@@ -100,7 +106,7 @@ const changeStateUrl="/change-state/" + props.entry.id
                     Cancel
                 </button>
             </template>
-        </ConfirmPopUp>
+        </ConfirmPopUp>-->
     </div>
 
 </template>
