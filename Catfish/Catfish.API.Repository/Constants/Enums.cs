@@ -1,5 +1,8 @@
-﻿namespace Catfish.API.Repository.Constants
+﻿using Newtonsoft.Json.Converters;
+
+namespace Catfish.API.Repository.Constants
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum eState 
     {
         Draft = 0, 

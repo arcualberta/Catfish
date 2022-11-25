@@ -7,7 +7,7 @@ import { default as config } from "@/appsettings";
     import { default as ConfirmPopUp } from '../../../components/shared/components/pop-up/ConfirmPopUp.vue';
 import { useCRUDManagerStore } from './store'
 
-    const popupTrigger = ref(false);
+    const deleteTrigger = ref(false);
     const changeStateTrigger = ref(false);
 const props = defineProps<{
     entry: ListEntry 
@@ -18,18 +18,16 @@ const props = defineProps<{
     
     const stateList = computed(() => eState);
     console.log('stateList', stateList);
-    const TogglePopup = () => (popupTrigger.value = !popupTrigger.value);
+    const ToggleDeletePopup = () => (deleteTrigger.value = !deleteTrigger.value);
     const ToggleChangeStatePopup = () => (changeStateTrigger.value = !changeStateTrigger.value);
-    const deleteEntry = (apiUrl: string) => {
-        store.deleteObject(apiUrl);
-        popupTrigger.value = !popupTrigger.value;
-        store.loadEntries(apiRoot?.value as string);
+    const deleteEntry = (apiUrl: string, id:Guid) => {
+        store.deleteObject(apiUrl, id);
+        deleteTrigger.value = !deleteTrigger.value;
 
     };
     const changeStatus = (apiUrl: string, id:Guid, newStatus:  eState) => {
         store.changeStatus(apiUrl, id, newStatus);
-        popupTrigger.value = !popupTrigger.value;
-        store.loadEntries(apiRoot?.value as string);
+        changeStateTrigger.value = !changeStateTrigger.value;
 
     };
 
@@ -58,7 +56,6 @@ const changeStateUrl="/change-state/" + props.entry.id
             </template>
             <template v-slot:body>
                 Please select new State.
-                {{props.entry.state}}
                 <div class="col-sm-3">
                     <select class="form-select" v-model="props.entry.state">
                         <option v-for="opt in stateList">{{opt}}</option>
@@ -80,8 +77,8 @@ const changeStateUrl="/change-state/" + props.entry.id
                 </button>
             </template>
         </ConfirmPopUp>
-        <a @click="TogglePopup()" class="col-2 delete-link">Delete</a>
-        <!--<ConfirmPopUp v-if="popupTrigger" >
+        <a @click="ToggleDeletePopup()" class="col-2 delete-link">Delete</a>
+        <ConfirmPopUp v-if="deleteTrigger" >
             <template v-slot:header>
                 Delete Confirmation.
                 <button type="button"
@@ -96,7 +93,7 @@ const changeStateUrl="/change-state/" + props.entry.id
             <template v-slot:footer>
                 <button type="button"
                         class="modal-delete-btn"
-                        @click="deleteEntry(apiRoot + '/' + props.entry.id)"
+                        @click="deleteEntry(apiRoot + '/' + props.entry.id, props.entry.id)"
                         aria-label="Close modal">
                     Delete
                 </button>
@@ -107,7 +104,7 @@ const changeStateUrl="/change-state/" + props.entry.id
                     Cancel
                 </button>
             </template>
-        </ConfirmPopUp>-->
+        </ConfirmPopUp>
     </div>
 
 </template>

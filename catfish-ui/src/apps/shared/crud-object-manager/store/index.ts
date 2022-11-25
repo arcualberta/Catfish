@@ -27,7 +27,7 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
                     console.error('Listing entities API Error:', error);
                 });
         },  
-        deleteObject(apiUrl: string) {
+        deleteObject(apiUrl: string, id: Guid) {
             const api = `${apiUrl}`
             console.log('api', api)
             fetch(api, {
@@ -35,6 +35,8 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
             })
                 .then(response => {
                     if (response.ok) {
+                        let index = this.entries!.findIndex(d => d.id === id); //find index in your array
+                        this.entries!.splice(index, 1);//remove element from array
                         this.transientMessageModel.message = "The form saved successfully"
                         this.transientMessageModel.messageClass = "success"
                         
