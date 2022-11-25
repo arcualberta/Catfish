@@ -58,8 +58,9 @@ const changeStateUrl="/change-state/" + props.entry.id
             </template>
             <template v-slot:body>
                 Please select new State.
+                {{props.entry.state}}
                 <div class="col-sm-3">
-                    <select class="form-select">
+                    <select class="form-select" v-model="props.entry.state">
                         <option v-for="opt in stateList">{{opt}}</option>
                     </select>
                 </div>
@@ -67,7 +68,7 @@ const changeStateUrl="/change-state/" + props.entry.id
             <template v-slot:footer>
                 <button type="button"
                         class="modal-confirm-btn"
-                        @click="changeStatus( apiRoot + '/change-state/' + props.entry.id,props.entry.id, stateList.Inactive)"
+                        @click="changeStatus( apiRoot + '/change-state/' + props.entry.id,props.entry.id, props.entry.state)"
                         aria-label="Close modal">
                     Confirm
                 </button>

@@ -1,4 +1,5 @@
 import { Guid } from "guid-typescript";
+import { eState } from "../constants";
 
 export interface ListEntry{
     /**
@@ -9,7 +10,13 @@ export interface ListEntry{
      /**
       * Entry name
       */
-     name: string;
+    name: string;
+
+    /**
+      * Entry name
+      */
+    state: eState;
+
  
 }
 
