@@ -21,7 +21,8 @@ namespace Catfish.API.Repository.Solr
             AddField("doc_type_ss", src.EntityType.ToString());
             AddField("created_dt", src.Created);
             AddField("updated_dt", src.Updated);
-
+            AddField("title_s", src.Title);
+            AddField("description_s", src.Description);
             //Root form instance ID
             /* 
              Guid? rootFormInstanceId = src.DataContainer?.FirstOrDefault(dc => dc.IsRoot)?.Id;
@@ -40,6 +41,7 @@ namespace Catfish.API.Repository.Solr
             {
                 foreach(var frmData in src.Data)
                 {
+                    
                     AddField("form_id_s", frmData.FormId);
                     AddField("form_state_s", frmData.State.ToString());
                     var fieldDataList = frmData.FieldData;
@@ -47,8 +49,38 @@ namespace Catfish.API.Repository.Solr
                     {
                         foreach (FieldData fd in fieldDataList)
                         {
-                            AddField("field_id_s", fd.FieldId);
-                            AddField("field_content_s", fd);
+                            string solrFieldName = string.Format("field_{0}_{1}_", frmData.FormId, fd.FieldId);
+
+                            if(fd.MonolingualTextValues?.Length > 0)
+                            {
+                                solrFieldName += "ts";
+                                foreach (Text text in fd.MonolingualTextValues)
+                                {
+                                    if (text != null)
+                                        AddField(solrFieldName, text.Value);
+                                }     
+                            }
+                            else if (fd.MultilingualTextValues?.Length > 0)
+                            {
+                                solrFieldName += "ts";
+                                foreach (TextCollection tc in fd.MultilingualTextValues)
+                                {
+                                    foreach(Text text in tc.Values)
+                                        AddField(solrFieldName, text.Value);
+                                }
+                            }
+                            else if(fd.SelectedOptionIds?.Length > 0)
+                            {
+                                solrFieldName += "is";
+                                foreach (var optId in fd.SelectedOptionIds)
+                                    AddField(solrFieldName, optId.ToString());
+                            }
+                            else if(fd.CustomOptionValues?.Length > 0)
+                            {
+                                solrFieldName += "ts";
+                                foreach(string val in fd.CustomOptionValues)
+                                    AddField(solrFieldName, val);
+                            }
                         }
                     }
                 }
@@ -56,6 +88,11 @@ namespace Catfish.API.Repository.Solr
            
 
             IndexAggregatedDataFields(src);
+        }
+
+        private FormTemplate getFormTemplate(Guid templateId)
+        {
+
         }
 
      /*   protected void AddContainerFields(string containerPrefix, FieldContainer container, bool indexFieldNames)
