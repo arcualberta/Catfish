@@ -37,6 +37,7 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
                     if (response.ok) {
                         this.transientMessageModel.message = "The form saved successfully"
                         this.transientMessageModel.messageClass = "success"
+                        
                     }
                     else {
                         this.transientMessageModel.messageClass = "danger"
@@ -67,7 +68,7 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
             const api = `${apiUrl}`
             console.log('api', api)
             fetch(api, {
-                body: newStatus,
+                body: JSON.stringify(newStatus),
                 method: 'POST',
                 headers: {
                     'encType': 'multipart/form-data',
