@@ -37,7 +37,7 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
                     if (response.ok) {
                         let index = this.entries!.findIndex(d => d.id === id); //find index in your array
                         this.entries!.splice(index, 1);//remove element from array
-                        this.transientMessageModel.message = "The form saved successfully"
+                        this.transientMessageModel.message = "The entity deleted successfully"
                         this.transientMessageModel.messageClass = "success"
                         
                     }
@@ -45,16 +45,16 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
                         this.transientMessageModel.messageClass = "danger"
                         switch (response.status) {
                             case 400:
-                                this.transientMessageModel.message = "Bad request. Failed to save the form";
+                                this.transientMessageModel.message = "Bad request. Failed to delete the entity";
                                 break;
                             case 404:
-                                this.transientMessageModel.message = "Item not found";
+                                this.transientMessageModel.message = "Entity not found";
                                 break;
                             case 500:
-                                this.transientMessageModel.message = "An internal server error occurred. Failed to save the form"
+                                this.transientMessageModel.message = "An internal server error occurred. Failed to delete the entity"
                                 break;
                             default:
-                                this.transientMessageModel.message = "Unknown error occured. Failed to save the form"
+                                this.transientMessageModel.message = "Unknown error occured. Failed to delete the entity"
                                 break;
                         }
                     }
@@ -79,23 +79,23 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
             })
                 .then(response => {
                     if (response.ok) {
-                        this.transientMessageModel.message = "The form status changed successfully"
+                        this.transientMessageModel.message = "The entity status changed successfully"
                         this.transientMessageModel.messageClass = "success"
                     }
                     else {
                         this.transientMessageModel.messageClass = "danger"
                         switch (response.status) {
                             case 400:
-                                this.transientMessageModel.message = "Bad request. Failed to save the form";
+                                this.transientMessageModel.message = "Bad request. Failed to change state from entity";
                                 break;
                             case 404:
-                                this.transientMessageModel.message = "Item not found";
+                                this.transientMessageModel.message = "Entity not found";
                                 break;
                             case 500:
-                                this.transientMessageModel.message = "An internal server error occurred. Failed to save the form"
+                                this.transientMessageModel.message = "An internal server error occurred. Failed to change state from entity"
                                 break;
                             default:
-                                this.transientMessageModel.message = "Unknown error occured. Failed to save the form"
+                                this.transientMessageModel.message = "Unknown error occured. Failed to change state from entity"
                                 break;
                         }
                     }
