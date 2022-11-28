@@ -90,10 +90,7 @@ namespace Catfish.API.Repository.Solr
             IndexAggregatedDataFields(src);
         }
 
-        private FormTemplate getFormTemplate(Guid templateId)
-        {
-
-        }
+      
 
      /*   protected void AddContainerFields(string containerPrefix, FieldContainer container, bool indexFieldNames)
         {
