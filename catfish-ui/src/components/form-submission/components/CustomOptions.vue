@@ -27,6 +27,8 @@
 </script>
 
 <template>
+<div  v-if="fieldData && fieldData.customOptionValues">
+    
     <div>
         <span class="custom-option" v-for="(_, index) in fieldData.customOptionValues" :key="index">
             <input type="text" v-model="fieldData.customOptionValues[index]" />
@@ -35,6 +37,7 @@
     </div>
     <div class="col-sm-2">
         <font-awesome-icon icon="fa-solid fa-circle-plus" @click="addValue()" class="fa-icon plus add-option" />
+    </div>
     </div>
     
 </template>
