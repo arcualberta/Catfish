@@ -83,7 +83,7 @@ const changeStateUrl="/change-state/" + props.entry.id
                 Delete Confirmation.
                 <button type="button"
                         class="btn-close"
-                        @click="popupTrigger=false">
+                        @click="deleteTrigger=false">
                     x
                 </button>
             </template>
@@ -99,7 +99,7 @@ const changeStateUrl="/change-state/" + props.entry.id
                 </button>
                 <button type="button"
                         class="modal-cancel-btn"
-                        @click="TogglePopup()"
+                        @click="ToggleDeletePopup()"
                         aria-label="Close modal">
                     Cancel
                 </button>
