@@ -32,5 +32,22 @@ namespace Catfish.API.Repository.Constants
         RichText,
         AttachmentField
     }
+    public enum FieldType
+    {
+        ShortAnswer,
+        Paragraph,
+        RichText,
+        Date,
+        DateTime,
+        Decimal,
+        Integer,
+        Email,
+        Checkboxes,
+        DataList,
+        RadioButtons,
+        DropDown,
+        InfoSection,
+        AttachmentField
+    }
 
 }

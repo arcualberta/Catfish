@@ -4,38 +4,24 @@ namespace Catfish.API.Repository.Solr
 {
     public class SolrDoc
     {
+        private readonly RepoDbContext _context;
         private XElement _root = new XElement("doc");
         public XElement Root => _root;
 
-        public SolrDoc()
+        public SolrDoc(RepoDbContext context)
         {
+            _context = context;
         }
         public SolrDoc(EntityData src, bool indexFieldNames)
         {
             AddId(src.Id);
             AddField("status_s", src.State.ToString());
-           // AddField("group_s", src.GroupId);
             AddField("template_s", src.TemplateId);
-           // AddField("collection_s", src.PrimaryCollectionId);
-           // AddField("doc_type_ss", typeof(Item).IsAssignableFrom(src.GetType()) ? "item" : "entity");
             AddField("doc_type_ss", src.EntityType.ToString());
             AddField("created_dt", src.Created);
             AddField("updated_dt", src.Updated);
             AddField("title_s", src.Title);
             AddField("description_s", src.Description);
-            //Root form instance ID
-            /* 
-             Guid? rootFormInstanceId = src.DataContainer?.FirstOrDefault(dc => dc.IsRoot)?.Id;
-             if (rootFormInstanceId.HasValue)
-                 AddField("root_form_instance_id_s", rootFormInstanceId.Value);
-
-             foreach (var child in src.MetadataSets)
-                 AddContainerFields("metadata", child, indexFieldNames);
-
-             foreach (var child in src.DataContainer)
-                 AddContainerFields("data", child, indexFieldNames);
-            */
-
 
             if ((src.Data?.Count) >= 1)
             {
@@ -44,20 +30,36 @@ namespace Catfish.API.Repository.Solr
                     
                     AddField("form_id_s", frmData.FormId);
                     AddField("form_state_s", frmData.State.ToString());
+                    FormTemplate form = _context!.Forms!.FirstOrDefault(f => f.Id == frmData.FormId);
                     var fieldDataList = frmData.FieldData;
                     if (fieldDataList != null)
                     {
                         foreach (FieldData fd in fieldDataList)
                         {
                             string solrFieldName = string.Format("field_{0}_{1}_", frmData.FormId, fd.FieldId);
-
-                            if(fd.MonolingualTextValues?.Length > 0)
+                            var field = form!.Fields.FirstOrDefault(fld => fld.id == fd.FieldId);
+                            if (fd.MonolingualTextValues?.Length > 0)
                             {
-                                //TODO: We have different types monolingual text fields.
-                                //We should index them under correct field types.
-                                //e.g. email address => "ss"; date => "dts", integers => "is"
-                                // decimals => "ds".
-                                solrFieldName += "ts";
+                                if (field.type == FieldType.Email)
+                                {
+                                    solrFieldName += "ss";
+                                }
+                                else if (field.type == FieldType.Date || field.type == FieldType.DateTime)
+                                {
+                                    solrFieldName += "dts"; 
+                                }
+                                else if (field.type == FieldType.Integer)
+                                {
+                                    solrFieldName += "is";
+                                }
+                                else if (field.type == FieldType.Decimal)
+                                {
+                                    solrFieldName += "ds";
+                                }
+                                else if (field.type == FieldType.ShortAnswer || field.type == FieldType.Paragraph || field.type == FieldType.RichText)
+                                {
+                                    solrFieldName += "ts";
+                                }
                                 foreach (Text text in fd.MonolingualTextValues)
                                 {
                                     if (text != null)

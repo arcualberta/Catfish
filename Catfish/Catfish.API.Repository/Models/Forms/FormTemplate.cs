@@ -47,7 +47,7 @@ namespace Catfish.API.Repository.Models.Forms
         /// List of fields associated with the form.
         /// </summary>
         [NotMapped]
-        public IList<object>? Fields 
+        public IList<Feild>? Fields 
         {
             get => SerializedFields == null ? null : JsonConvert.DeserializeObject<List<object>>(SerializedFields);
             set => SerializedFields = value == null ? null : JsonConvert.SerializeObject(value);
