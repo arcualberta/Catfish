@@ -8,19 +8,22 @@
     import { Guid } from 'guid-typescript'
     import { useEntityEditorStore } from '../components/entity-editor/store';
     import { EntityEditor } from '../components'
- 
+    import { default as config } from "@/appsettings";
+
     const route = useRoute()
-    const entityId = route.params.entityId as unknown as Guid
-    const store = useEntityEditorStore(getActivePinia());
+    const entityId = route.params.id as unknown as Guid
+    const store = useEntityEditorStore();
+    console.log("edit-entity entityid: " + entityId.toString())
     if(entityId)
         store.loadEntity(entityId)
        
+     const apiRoot= config.dataRepositoryApiRoot + "/api/entities";
 
 </script>
 
 <template>
     <h5>Edit Entity </h5>
-    <EntityEditor  :pinia-instance="getActivePinia()"   />
+    <EntityEditor  :api-root="apiRoot"    />
 </template>
 
 

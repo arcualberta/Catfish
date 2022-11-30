@@ -16,9 +16,11 @@
     import {default as AttachmentField} from './AttachmentField.vue'
 import { Guid } from 'guid-typescript';
 
-    const props = defineProps<{ model: Field,
-                                modelData?: FieldData | null,
-                                formId?: Guid | null}>();
+    const props = defineProps<{
+         model: Field,
+         modelData?: FieldData | null,
+    }>();
+
     const store = useFormSubmissionStore();
 
     const title = formHelper.getFieldTitle(props.model, store.lang)
@@ -27,21 +29,16 @@ import { Guid } from 'guid-typescript';
     const isMonolingualTextInputField = formHelper.isMonolingualTextInputField(props.model)
 //
     const isAttachmentField = props.model.type === FieldType.AttachmentField ? true: false;
-    const dropzoneFile=ref("");
     const fieldElementId=props.model.id.toString();
-    const frmId=computed(()=>props.formId);
     
-    const drop=(e: any)=>{
-            dropzoneFile.value= e.dataTransfer.files[0];
-           
-          store.attachFile(e.dataTransfer.files as FileList, props.model.id, props.formId);
+
+    const drop=(e: any) => {
+        store.putFile(e.dataTransfer.files as FileList, props.model.id);
     };
 
-    const selectedFile=(fieldId: string)=>{
-        dropzoneFile.value=document.getElementById(fieldId).files[0];
+    const selectedFile = (fieldId: string) => {
         const inputElement = document.getElementById(fieldId) as HTMLInputElement;
-        
-        store.attachFile(inputElement?.files as FileList, props.model.id, frmId.value);
+        store.putFile(inputElement?.files as FileList, props.model.id);
     }
 
   
@@ -71,12 +68,9 @@ import { Guid } from 'guid-typescript';
                 <MonolingualTextInput :model="model" :modelData="modelData" v-if="isMonolingualTextInputField" />
                 <!-- InfoSection  field types -->
                 <InfoSection :model="model" v-if="model.type === FieldType.InfoSection" />
-               <div v-if="isAttachmentField">
+                <div v-if="isAttachmentField">
                   <AttachmentField :model="model" :elementId="fieldElementId" @drop="drop" @change="selectedFile(fieldElementId)" />
-                  <span class="dropzoneFiles">Selected File: {{dropzoneFile.name}}</span>
-               
                 </div>
-               
             </b-col>
         </b-row>
         <br />

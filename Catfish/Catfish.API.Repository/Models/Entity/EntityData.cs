@@ -31,6 +31,8 @@ namespace Catfish.API.Repository.Models.Entities
         public string Title { get; set; }
         public string Description { get; set; }
 
+        public eState State { get; set; }
+
     }
 
 }

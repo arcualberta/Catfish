@@ -41,6 +41,9 @@ namespace Catfish.API.Repository.Migrations
                     b.Property<string>("SerializedData")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("TemplateId")
                         .HasColumnType("uniqueidentifier");
 
@@ -125,6 +128,9 @@ namespace Catfish.API.Repository.Migrations
 
                     b.Property<string>("SerializedFieldData")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");

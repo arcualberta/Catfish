@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed, watch } from "vue";
+    import { computed, onMounted, watch } from "vue";
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
     import { TransientMessageModel } from '../shared/components/transient-message/models'
@@ -9,23 +9,32 @@
     import { FieldType } from '../shared/form-models';
     import { AppletAttribute } from '../shared/props'
     import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
+    import '../../style.css'
 
     import { default as Form } from './components/Form.vue';
+    import { useRoute } from "vue-router";
 
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
-        piniaInstance: Pinia,
-        repositoryRoot: string,
-        formId?: Guid
+       // piniaInstance: Pinia,
+       // repositoryRoot: string,
+        formId?: Guid,
+        apiRoot: string | null
     }>();
 
-    const store = useFormBuilderStore(props.piniaInstance);
-
+    const store = useFormBuilderStore();
+    const route = useRoute()
+   
+    const formId = props.formId? props.formId : route.params.id as unknown as Guid;
+    if(props.apiRoot){
+        //console.log("api root from props: " + props.apiRoot);
+        store.setApiRoot(props.apiRoot);
+    }
     //const transientMessage = computed(() => store.transientMessageModel);
 
-    if (props.formId)
-        store.loadForm(props.formId)
+    if (formId)
+        store.loadForm(formId)
 
     //watch(() => store.transientMessage, async newMessage => {
     //    if (newMessage)
@@ -34,14 +43,14 @@
     //        }, 2000)
     //})
 
-    const newForm = () => {
-        store.form = {
-            id: Guid.EMPTY as unknown as Guid,
-            name: "",
-            description: "",
-            fields: [] as Field[]
-        };
-    }
+   // const newForm = () => {
+   //     store.form = {
+   //         id: Guid.EMPTY as unknown as Guid,
+   //         name: "",
+   //         description: "",
+   //         fields: [] as Field[]
+   //     };
+   // }
 
     const saveForm = () => store.saveForm()
 
@@ -69,20 +78,23 @@
         store.form!.fields.push(field);
     }
 
+    onMounted(()=>{
+        store.createNewForm();
+    });
+
 </script>
 <style scoped src="./styles.css"></style>
 
 <template>
-    <TransientMessage :model="store.transientMessageModel"></TransientMessage>
-    <!--<transition name="fade">
-        <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
-    </transition>-->
-    <h2>Form Builder</h2>
-    <Form v-if="store.form" :model="store.form" />
-    <div class="control">
-        <button type="button" class="btn btn-primary" :disabled="!disabled" @click="newForm">New Form</button>
+   <div class="control">
+     
         <button type="button" class="btn btn-success" :disabled="disabled" @click="saveForm">Save</button>
     </div>
+     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
+   
+   
+    <Form v-if="store.form" :model="store.form" />
+    <!--
     <div class="toolbar">
         <button :disabled="disabled" @click="newField(FieldType.ShortAnswer)">+ Short Answer</button>
         <button :disabled="disabled" @click="newField(FieldType.Paragraph)">+ Paragraph</button>
@@ -99,8 +111,9 @@
         <button :disabled="disabled" @click="newField(FieldType.InfoSection)">+ Info Section</button>
         <button :disabled="disabled" @click="newField(FieldType.AttachmentField)">+ Attachment Field</button>
     </div>
+    -->
     <hr />
-    <!--{{store.form}}-->
+   
 
 </template>
 

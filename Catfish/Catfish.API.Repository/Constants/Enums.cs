@@ -1,10 +1,14 @@
-﻿namespace Catfish.API.Repository.Constants
+﻿using Newtonsoft.Json.Converters;
+
+namespace Catfish.API.Repository.Constants
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum eState 
-    { 
-        Published,
-        UnPublished,
-        Archived,
+    {
+        Draft = 0, 
+        Active, 
+        Archived, 
+        Inactive, 
         Deleted
     }
 
@@ -19,6 +23,14 @@
         Title,
         Description,
         TitleOrDescription
+    }
+
+    public enum eTextType
+    {
+        ShortAnswer,
+        Paragraph,
+        RichText,
+        AttachmentField
     }
 
 }

@@ -14,7 +14,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         template: null as EntityTemplate | null,
         formEntries: [] as FormEntry[],
         transientMessageModel: {} as TransientMessageModel,
-        forms: [] as FormTemplate[]
+        forms: [] as FormTemplate[],
+        apiRoot: null as string |null
     }),
     actions: {
         newTemplate() {
@@ -24,7 +25,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 description: "Description about this new Entity Template",
                 created: new Date(),
                 updated: new Date(),
-                state: eState.Unpublished,
+                state: eState.Draft,
                 forms:[],
                 entityTemplateSettings: {
                     metadataForms: [],
@@ -36,8 +37,10 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             };
         },
         associateForm(formId: Guid) {
-            if (this.forms.findIndex(form => form.id === formId) < 0) {
-                const api = `${config.dataRepositoryApiRoot}/api/forms/${formId}`;
+            if (formId.toString() !== Guid.EMPTY && this.forms.findIndex(form => form.id === formId) < 0) {
+                //this.getApiRoot => https://localhost:40520/api/entity-temlates
+            let webRoot = "https://" + this.getApiRoot.split("/")[2];
+                const api = `${webRoot}/api/forms/${formId}`;
                // console.log("loading form: ", api);
 
                 fetch(api, {
@@ -53,7 +56,9 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             }
         },
         loadFormEntries() {
-            const api = `${config.dataRepositoryApiRoot}/api/forms`;
+            //this.getApiRoot => localhost:40520/api/entity-temlates
+            let webRoot = "https://" + this.getApiRoot.split("/")[2];
+            const api = `${webRoot}/api/forms`;
             console.log("loading forms: ", api);
 
             fetch(api, {
@@ -68,7 +73,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 });
         },
         loadTemplate(id: Guid) {
-            const api = `${config.dataRepositoryApiRoot}/api/entity-templates/${id}`;
+            const api = `${this.getApiRoot}/${id}`;
             console.log("loading entityTemplate: ", api);
 
             fetch(api, {
@@ -77,7 +82,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 .then(response => response.json())
                 .then(data => {
                     //console.log(data);
-                    this.template = data;
+                    this.template = data as EntityTemplate;
                 })
                 .catch((error) => {
                     console.error('Load Entity Template API Error:', error);
@@ -86,8 +91,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         saveTemplate(){
             //console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
-           
-            let api = config.dataRepositoryApiRoot + "/api/entity-templates";
+            
+            let api = this.getApiRoot;
             let method = "";
             if (newTemplate) {
                 console.log("Saving new template.");
@@ -111,7 +116,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             })
             .then(response => {
                 if (response.ok) {
-                    router.push(`/edit-entity-template/${this.template!.id}`)
+                    //router.push(`/edit-entity-template/${this.template!.id}`)
                     this.transientMessageModel.message = "The template saved successfully"
                     this.transientMessageModel.messageClass = "success"
                 }
@@ -153,6 +158,14 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 if (index >= 0)
                     this.template!.entityTemplateSettings.metadataForms!.splice(index, 1);
             }
+        },
+        setApiRoot(api: string){
+            this.apiRoot = api;
         }
-    },    
+    },
+    getters:{
+        getApiRoot(state){
+            return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/entity-templates";
+        }
+    }    
 });

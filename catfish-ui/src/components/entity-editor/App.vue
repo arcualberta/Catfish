@@ -14,20 +14,37 @@
     const props = defineProps<{
        // dataAttributes?: AppletAttribute | null,
         //queryParameters?: AppletAttribute | null,
-        piniaInstance: Pinia
+        //piniaInstance: Pinia
+        apiRoot?: string | null
     }>();
     const memberofValue = ref("Member of");
     const collectionValue = ref("Collections")
     const relationshipValue = ref("Relationship");
     const ItemValue = ref("Items")
-    const store = useEntityEditorStore(props.piniaInstance);
+    const store = useEntityEditorStore();
+    
+    //set apiRoot
+     
+    if(props.apiRoot){
+        //console.log("api root from props: " + props.apiRoot)
+        store.setApiRoot(props.apiRoot);
+    }
+
     const entityTemplate =  computed(() => store.entityTemplate);
     let selectedButton = ref("summary");
     
      const route = useRoute();
-    const entityId =route.params.entityId as unknown as Guid; 
+    const entityId =route.params.id as unknown as Guid; 
     onMounted(() => {
-        store.loadTemplates();
+
+        if(entityId){
+            console.log("entity Id: " + entityId.toString())
+            store.loadEntity(entityId);
+        }
+        else{
+            console.log("load empty template")
+            store.loadTemplates();
+        }
        
     });
 
@@ -52,13 +69,17 @@
     }
     
     const files =computed(()=>store.getFiles)
+
+     onMounted(() => {
+        createEntity();
+    });
 </script>
 
 <template>
-    <h3>Entity Editor</h3>
+    
      <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <div class="control">
-        <button @click="createEntity()" v-if="isNewEntity">New Entity</button>
+       <!-- <button @click="createEntity()" v-if="isNewEntity">New Entity</button> -->
         <button class="btn btn-success" @click="saveEntity()" >Save</button>
     </div>
     <div class="form-field-border">

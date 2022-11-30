@@ -8,19 +8,22 @@
     import { Guid } from 'guid-typescript'
     import { useEntityTemplateBuilderStore } from '../components/entity-template-builder/store';
     import { EntityTemplateBuilder } from '../components'
+    import { default as config } from "@/appsettings";
+
  
     const route = useRoute()
-    const templateId = route.params.templateId as unknown as Guid
-    const store = useEntityTemplateBuilderStore(getActivePinia());
+    const templateId = route.params.id as unknown as Guid
+    const store = useEntityTemplateBuilderStore();
     if(templateId)
         store.loadTemplate(templateId)
        
+    const apiRoot= config.dataRepositoryApiRoot + "/api/entity-templates";
 
 </script>
 
 <template>
     <h5>Edit Template </h5>
-    <EntityTemplateBuilder  :pinia-instance="getActivePinia()"   />
+    <EntityTemplateBuilder  :api-root="apiRoot" />
 </template>
 
 

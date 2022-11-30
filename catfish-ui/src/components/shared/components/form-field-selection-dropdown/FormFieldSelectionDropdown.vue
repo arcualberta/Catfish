@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed, watch } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import { Guid } from "guid-typescript";
     import { FieldEntry, FormTemplate } from '../../form-models';
     import { FormEntry } from '@/components/shared';
@@ -25,7 +25,7 @@
 
             group.formGroup.forEach(form => {
                 groupOpt.options.push({
-                    value: form.formId,
+                    value: form.id,
                     text: form.name
                 });
             });
@@ -48,9 +48,21 @@
         return options;
     });
 
-    watch(() => props.model.formId, _ => {
-        props.model.fieldId = Guid.EMPTY as unknown as Guid;
-    })
+    watch(() => props.optionSource, newSource => {
+        let matchFound = false;
+        newSource.forEach(source => {
+            if(source.formGroup.filter(formEntry => formEntry.id === props.model.formId).length > 0){
+                matchFound = true;
+            }
+        })
+
+        if(!matchFound){
+            console.log("Resetting fields ", newSource)
+            props.model.formId = Guid.EMPTY as unknown as Guid;
+            props.model.fieldId = Guid.EMPTY as unknown as Guid;
+
+        }
+    }, {deep:true})
 
 </script>
 

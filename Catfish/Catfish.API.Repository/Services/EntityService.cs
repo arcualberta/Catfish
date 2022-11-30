@@ -42,7 +42,7 @@ namespace Catfish.API.Repository.Services
             if (max != null && max > 0)
                 query =query.Take(max.Value);
 
-            return query.Select(e => new EntityEntry { Id = e.Id, Title = e.Title, Description = e.Description, Created = e.Created, Updated = e.Updated }).ToList();
+            return query.Select(e => new EntityEntry { Id = e.Id, Title = e.Title, Description = e.Description, State = e.State, Created = e.Created, Updated = e.Updated }).ToList();
         }
             public async Task<HttpStatusCode> AddEntity(EntityData entity, List<IFormFile> files, List<string> fileKeys)
         {

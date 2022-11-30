@@ -14,5 +14,5 @@
 </script>
 
 <template>
-    <FormBuilder :pinia-instance="getActivePinia()" repository-root="https://localhost:5020/" :form-id="formId" />
+    <FormBuilder  api-root="https://localhost:5020/api/forms" :form-id="formId" />
 </template>

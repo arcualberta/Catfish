@@ -1,3 +1,89 @@
 .control button, .toolbar button {
     margin: 0.2rem;
 }
+.option-values {
+    background-color: lightgray;
+    border-style: solid;
+    border-radius: 3px;
+    border-color: black;
+    border-width: 1px;
+    margin-right: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.text-field-label {
+    margin-left: 0px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 20px;
+    min-width: 30px;
+}
+
+.text-area-label {
+    margin-left: 50px;
+    font-weight: bold;
+}
+.form-field-border {
+    border: 1px solid;
+    padding: 30px 16px;
+    border-radius: 16px;
+    min-height: 100px;
+    margin-bottom: 10px;
+}
+
+.display-options {
+    margin-left: 147px;
+}
+
+.option-field {
+    margin-left: 210px;
+    margin-top: -25px;
+    margin-bottom: 30px;
+}
+
+/* insert field tool bar popup */
+*,
+ ::before,
+ ::after{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+ }
+
+ .tool-modal{
+    position: fixed;
+    top:0;
+    right: 0;
+    width:30%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: lightgrey;
+    z-index: 1;
+ }
+
+ .tool-modal-inner{
+    max-width: 100%;
+    margin-bottom: 2rem;
+
+ }
+
+ .tool-modal-content{
+    position: relative;
+    background-color: lightgrey;
+    border: 1px solid lightgrey;
+    background-clip:border-box;
+    border-radius: 0.3rem;
+    padding: 1rem;
+    margin-top: 2rem;
+ }
+
+ .tool-modal-content button{
+    margin: .5rem;
+    border: 1px solid rgb(244, 241, 241);
+    background-clip:border-box;
+    border-radius: 0.3rem;
+    padding: .7rem;
+    
+ }

@@ -4,6 +4,21 @@
     import { FormEntry } from '../../shared';
     import { useEntityTemplateBuilderStore } from '../store';
     import { SelectableOption } from '@/components/shared/components/form-field-selection-dropdown/models'
+    
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+/* import specific icons */
+import * as faIcons from '@fortawesome/free-solid-svg-icons'
+/* add icons to the library */
+library.add(faIcons.faCircleCheck)
+library.add(faIcons.faCircleXmark)
+library.add(faIcons.faPenToSquare)
+library.add(faIcons.faCirclePlus)
+library.add(faIcons.faQuestionCircle)
+library.add(faIcons.faThList)
+library.add(faIcons.faArrowLeft)
+
+    
     const props = defineProps<{
         model: FormEntry
     }>();
@@ -13,6 +28,7 @@
 </script>
 
 <template>
+   
     <b-row class="mb-2">
         <b-col class="col-sm-11">
             <b-row>
@@ -26,11 +42,11 @@
             <br />
             <b-row>
                 <b-col class="col-sm-2">
-                    <label :for="model.formId.toString()">Form:</label>
+                    <label :for="model.id.toString()">Form:</label>
                 </b-col>
                 <b-col class="col-sm-10">
-                    <select v-model="model.formId" :name="model.formId.toString()" class="form-select">
-                        <option v-for="entry in store.formEntries" :key="entry.formId.toString()" :value="entry.formId">{{entry.name}}</option>
+                    <select v-model="model.id" :name="model.id.toString()" class="form-select">
+                        <option v-for="entry in store.formEntries" :key="entry.id.toString()" :value="entry.id">{{entry.name}}</option>
                     </select>
                 </b-col>
             </b-row>

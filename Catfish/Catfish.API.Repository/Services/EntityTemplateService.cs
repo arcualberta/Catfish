@@ -59,13 +59,27 @@ namespace Catfish.API.Repository.Services
             return HttpStatusCode.OK;
         }
 
+        public async Task<HttpStatusCode> ChangeStatus(EntityTemplate entityTemplate, eState state)
+        {
+            //Loading the entity from the database
+            EntityTemplate? dbEntityTemplate = await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(et => et.Id == entityTemplate.Id);
+            if (dbEntityTemplate == null)
+                return HttpStatusCode.NotFound;
+
+            dbEntityTemplate.State = state;
+            dbEntityTemplate.Updated = DateTime.Now;
+           
+
+            return HttpStatusCode.OK;
+        }
+
 
         #region Private Methods
 
         private async Task<List<FormTemplate>> LoadAssociatedForms(EntityTemplate entityTemplate)
         {
-            var formIds = entityTemplate.EntityTemplateSettings?.DataForms.Select(form => form.FormId)
-                .Union(entityTemplate.EntityTemplateSettings.MetadataForms.Select(form => form.FormId))
+            var formIds = entityTemplate.EntityTemplateSettings?.DataForms.Select(form => form.Id)
+                .Union(entityTemplate.EntityTemplateSettings.MetadataForms.Select(form => form.Id))
                 .ToList();
 
             if (formIds != null && formIds.Any())

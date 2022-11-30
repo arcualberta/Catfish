@@ -4,6 +4,7 @@ import { default as config } from "@/appsettings";
 import { FormData } from '../../shared/form-models'
 import { createFormData } from '../../shared/form-helpers'
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
+import { eState } from '@/components/shared/constants';
 
 export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
     state: () => ({
@@ -68,6 +69,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             let method = "";
             if (newForm) {
                 method = "POST";
+                this.formData.state=eState.Draft;
             }
             else {
                 api = `${api}/${this.formData.id}`
@@ -134,6 +136,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 console.log("Saving new form.")
                 this.form.id = Guid.create().toString() as unknown as Guid;
                 method = "POST";
+                this.form.state = eState.Draft
             }
             else {
                 console.log("Updating existing form.")
@@ -184,18 +187,12 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         },
         addFile(file: File, fieldId: Guid){
             this.files?.push(file);
-            //fieldKeys will consist of "formId_fieldId"
-          //  let fKey: string=formId.toString() + "_" + fieldId.toString();
-          // this.fileKeys?.push(fKey);
-           this.fileKeys?.push(fieldId.toString());
-         
-           //add FileReference
-        } ,
-        attachFile(files: FileList, fieldId: Guid, formId: Guid){
+            this.fileKeys?.push(fieldId.toString());
+        },
+        putFile(files: FileList, fieldId: Guid){
             Array.from(files).forEach(file => { 
                 console.log("fieldId:" + fieldId )
                 this.addFile(file, fieldId);
-                //console.log("file:" + JSON.stringify(store.files))
             });
         },
        

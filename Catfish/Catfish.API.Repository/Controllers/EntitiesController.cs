@@ -54,7 +54,7 @@ namespace Catfish.API.Repository.Controllers
                 return await _context.Entities!.Include(e=>e.SubjectRelationships)
                                                .Include(e=>e.ObjectRelationships)
                                                .Include(e=>e.Template)
-                                               .FirstOrDefaultAsync(fd => fd.Id == id);
+                                               .FirstOrDefaultAsync(e => e.Id == id);
              else
                 return await _context.Entities!.FirstOrDefaultAsync(fd => fd.Id == id);
         }
@@ -85,7 +85,7 @@ namespace Catfish.API.Repository.Controllers
                 await _context.SaveChangesAsync();
                return StatusCode((int)code);
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 //TODO: Log the error in error log
                 return StatusCode((int) HttpStatusCode.InternalServerError);
@@ -123,9 +123,23 @@ namespace Catfish.API.Repository.Controllers
 
        // DELETE api/<EntitiesController>/5
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            if (_context.Entities == null)
+            {
+                return NotFound();
+            }
+            var entity = await _context.Entities.FindAsync(id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            entity.State = eState.Deleted;
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpGet("{contentType}/{fileName}")]
@@ -140,9 +154,29 @@ namespace Catfish.API.Repository.Controllers
             if (System.IO.File.Exists(pathName))
             {
                 var data = System.IO.File.ReadAllBytes(pathName);
-                return File(data, contentType, originalFileName);
+                 return File(data, contentType, originalFileName);
             }
             return null;
+        }
+        [HttpPost("change-state/{id}")]
+        public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
+        {
+            if (_context.Entities == null)
+            {
+                return NotFound();
+            }
+            var entity = await _context.Entities.Where(it => it.Id == id).FirstOrDefaultAsync();
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            entity.State = newState;
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
         }
     }
 }

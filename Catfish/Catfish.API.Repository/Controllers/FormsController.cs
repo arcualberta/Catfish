@@ -22,7 +22,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            return await _context.Forms.Select(form => new FormEntry() { FormId = form.Id, Name = form.Name?? form.Id.ToString() }).ToListAsync();
+            return await _context.Forms.Where(form=>form.Status != eState.Deleted).Select(form => new FormEntry() { Id = form.Id, Name = form.Name?? form.Id.ToString() }).ToListAsync();
         }
 
         // GET: api/Forms/5
@@ -106,7 +106,7 @@ namespace Catfish.API.Repository.Controllers
 
         // DELETE: api/Forms/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteForm(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (_context.Forms == null)
             {
@@ -118,12 +118,32 @@ namespace Catfish.API.Repository.Controllers
                 return NotFound();
             }
 
-            _context.Forms.Remove(form);
+            form.Status = eState.Deleted;
+            _context.Entry(form).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
+        [HttpPost("change-state/{id}")]
+        public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
+        {
+            if (_context.Forms == null)
+            {
+                return NotFound();
+            }
+            var form = await _context.Forms.Where(it => it.Id == id).FirstOrDefaultAsync();
+            if (form == null)
+            {
+                return NotFound();
+            }
 
+            form.Status = newState;
+            _context.Entry(form).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
+        }
         private bool FormExists(Guid id)
         {
             return (_context.Forms?.Any(e => e.Id == id)).GetValueOrDefault();

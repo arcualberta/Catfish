@@ -1,71 +1,3 @@
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-* {
-    -webkit-tap-highlight-color: transparent;
-}
-
-    *:focus {
-        outline: none;
-    }
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: baseline;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
-}
-
-button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
-    margin: 0.2rem;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:disabled:hover {
-  border-color: transparent;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
 
 .card {
   padding: 2em;
@@ -110,100 +42,8 @@ button:focus-visible {
     transition: opacity 3s;
 }
 
-.fade-enter, .fade-leave-to  .fade-leave-active below version 2.1.8  {
+.fade-enter, .fade-leave-to  .fade-leave-active{
     opacity: 0;
-}
-.form-title{
-    font-size:36px;
-    font-weight:bold;
-    
-}
-.text-field-title {
-    margin-top: 60px;
-}
-.opt-delete {
-    background-color: #FF0000;
-    border: none;
-    border-radius: 50%;
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    margin-left: 5px;
-    margin-top: 10px;
-    padding-right: 4px;
-    padding-left: 4px;
-    padding-bottom: 7px;
-    padding-top: 1px;
-    text-decoration: none;
-    display: inline;
-    font-size: 10px;
-    cursor: pointer;
-    height: 15px;
-    width: 15px;
-}
-
-.option-values {
-    background-color: lightgray;
-    border-style: solid;
-    border-radius: 3px;
-    border-color: black;
-    border-width: 1px;
-    margin-right: 5px;
-    margin-bottom: 15px;
-    padding: 5px;
-}
-.text-field-label {
-    margin-left: 0px;
-    font-weight: bold;
-    display: inline-block;
-    margin-top:20px;
-    min-width: 30px;
-}
-.text-area-label {
-    margin-left: 50px;
-    font-weight: bold;
-}
-.text-field {
-    width: 350px;
-    height: 30px;
-    margin-bottom: 30px;
-    margin-left: 40px;
-    margin-top: -25px;
-    display:block;
-}
-.text-area {
-    width: 350px;
-    vertical-align: middle;
-    margin-bottom: 10px;
-    margin-left: 70px;
-}
-.field-text-area {
-    width: 350px;
-    vertical-align: middle;
-    margin-bottom: 10px;
-    margin-left: 10px;
-}
-.option-field-text-area {
-    width: 350px;
-    vertical-align: middle;
-    margin-bottom: 10px;
-    margin-left: 70px;
-}
-.form-field-border {
-    border: 1px solid;
-    padding: 30px 16px;
-    border-radius: 16px;
-    min-height:100px;
-    margin-bottom:10px;
-}
-
-.display-options {
-    margin-left: 147px;
-}
-.option-field {
-    margin-left: 210px;
-    margin-top: -25px;
-    margin-bottom: 30px;
 }
 .fa-icon {
     margin: 5px 15px;
@@ -225,36 +65,6 @@ button:focus-visible {
         height: 25px;
         width: 25px;
     }
-.hovertext {
-    position: relative;
-    border-bottom: 1px dotted black;
-}
-
-    .hovertext:before {
-        content: attr(data-hover);
-        visibility: hidden;
-        opacity: 0;
-        width: 140px;
-        background-color: black;
-        color: #fff;
-        text-align: center;
-        border-radius: 5px;
-        padding: 5px 0;
-        transition: opacity 1s ease-in-out;
-        position: absolute;
-        z-index: 1;
-        left: 0;
-        /*top: 110%;*/
-    }
-
-    .hovertext:hover:before {
-        opacity: 1;
-        visibility: visible;
-    }
-.plus-button{
-    margin-left:350px;
-    margin-top:-105px;
-}
 .alert {
     padding: 0.75rem 1.25rem;
     margin-bottom: 1rem;
@@ -266,13 +76,6 @@ button:focus-visible {
     color: #0c5460;
     background-color: #d1ecf1;
     border-color: #bee5eb;
-}
-.multilingual-field {
-    display: inline-block;
-}
-.multilingual-field-delete {
-    float:right;
-    margin-top: -25px;
 }
 .toggle-button-cover {
     display: table-cell;
@@ -391,3 +194,86 @@ button:focus-visible {
 .btn-red {
     background-color: #FCD2C2;
 }
+.btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #db2424;
+    background: transparent;
+}
+.modal-delete-btn {
+    background-color: #FFEDEB;
+    color: #A52913;
+    border: 1px solid #C70039;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1.15385;
+    padding: 8px .8em;
+}
+    .modal-delete-btn:hover {
+        background-color: #FFBEB3;
+    }
+.modal-confirm-btn {
+    background-color: #DEFFE6;
+    color: #2BA84A;
+    border: 1px solid #2DA249;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1.15385;
+    padding: 8px .8em;
+}
+    .modal-confirm-btn:hover {
+        background-color: #A6F0B8;
+    }
+
+    .modal-cancel-btn {
+        background-color: #e1ecf4;
+        border-radius: 5px;
+        border: 1px solid #7aa7c7;
+        box-shadow: rgba(255, 255, 255, .7) 0 1px 0 0 inset;
+        box-sizing: border-box;
+        color: #39739d;
+        cursor: pointer;
+        display: inline-block;
+        /*font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;*/
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1.15385;
+        margin: 0;
+        outline: none;
+        padding: 8px .8em;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: baseline;
+        white-space: nowrap;
+    }
+
+    .modal-cancel-btn:hover,
+    .modal-cancel-btn:focus {
+        background-color: #b3d3ea;
+        color: #2c5777;
+    }
+
+    .modal-cancel-btn:focus {
+        box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+    }
+
+    .modal-cancel-btn:active {
+        background-color: #a0c7e4;
+        box-shadow: none;
+        color: #2c5777;
+    }
+
