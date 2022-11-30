@@ -12,8 +12,9 @@
 /**
  * Exporting the external Bootstrap Components
  */
-export {BootstrapVue3} from './external/bootstrap-vue-3/BootstrapVue'
-export {BootstrapVue3Icons} from './external/bootstrap-vue-3-icons/BootstrapVueIcons'
+export {BootstrapVue3} from 'bootstrap-vue-3'
+import IconsPlugin from 'bootstrap-vue-3'
+export {IconsPlugin}
 
 /**
  * Exporting Font Awesome librarty
