@@ -53,6 +53,10 @@ namespace Catfish.API.Repository.Solr
 
                             if(fd.MonolingualTextValues?.Length > 0)
                             {
+                                //TODO: We have different types monolingual text fields.
+                                //We should index them under correct field types.
+                                //e.g. email address => "ss"; date => "dts", integers => "is"
+                                // decimals => "ds".
                                 solrFieldName += "ts";
                                 foreach (Text text in fd.MonolingualTextValues)
                                 {
@@ -60,7 +64,8 @@ namespace Catfish.API.Repository.Solr
                                         AddField(solrFieldName, text.Value);
                                 }     
                             }
-                            else if (fd.MultilingualTextValues?.Length > 0)
+
+                            if (fd.MultilingualTextValues?.Length > 0)
                             {
                                 solrFieldName += "ts";
                                 foreach (TextCollection tc in fd.MultilingualTextValues)
@@ -69,15 +74,28 @@ namespace Catfish.API.Repository.Solr
                                         AddField(solrFieldName, text.Value);
                                 }
                             }
-                            else if(fd.SelectedOptionIds?.Length > 0)
+
+                            if(fd.SelectedOptionIds?.Length > 0)
                             {
-                                solrFieldName += "is";
+                                //TODO: 
+                                //Field type  should be _ss (i.e. multiple strings)
+                                //We should index the labels of the selected options.
+                                solrFieldName += "ss";
                                 foreach (var optId in fd.SelectedOptionIds)
                                     AddField(solrFieldName, optId.ToString());
+
+                                if (fd.ExtendedOptionValues?.Length > 0)
+                                {
+                                    foreach (ExtendedOptionValue extVal in fd.ExtendedOptionValues)
+                                        foreach (string val in extVal.Values)
+                                            AddField(solrFieldName, val);
+                                }
                             }
-                            else if(fd.CustomOptionValues?.Length > 0)
+                            
+                            if(fd.CustomOptionValues?.Length > 0)
                             {
-                                solrFieldName += "ts";
+                                if (!solrFieldName.EndsWith("ss"))
+                                    solrFieldName += "ss";
                                 foreach(string val in fd.CustomOptionValues)
                                     AddField(solrFieldName, val);
                             }
@@ -85,7 +103,6 @@ namespace Catfish.API.Repository.Solr
                     }
                 }
             }
-           
 
             IndexAggregatedDataFields(src);
         }

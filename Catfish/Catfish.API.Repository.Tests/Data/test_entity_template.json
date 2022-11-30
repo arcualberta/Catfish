@@ -1,0 +1,30 @@
+{
+   "MetadataForms":[
+      {
+         "IsRequired":true,
+         "Id":"1492520d-a082-272e-ade0-a9f7513d678f",
+         "Name":"Basic Metadtaa",
+         "State":"Draft"
+      }
+   ],
+   "DataForms":[
+      {
+         "IsRequired":true,
+         "Id":"5f792ac1-3284-1fa7-704b-437ff8ca8540",
+         "Name":"Primary Data",
+         "State":"Draft"
+      }
+   ],
+   "TitleField":{
+      "FormId":"1492520d-a082-272e-ade0-a9f7513d678f",
+      "FieldId":"980c2362-4e14-7dc4-c20a-a1d0a63747b2"
+   },
+   "DescriptionField":{
+      "FormId":"1492520d-a082-272e-ade0-a9f7513d678f",
+      "FieldId":"d50af197-dd30-56c5-aeb1-6a7386fc652d"
+   },
+   "MediaField":{
+      "FormId":"00000000-0000-0000-0000-000000000000",
+      "FieldId":"00000000-0000-0000-0000-000000000000"
+   }
+}
