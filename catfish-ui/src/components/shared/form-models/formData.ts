@@ -4,6 +4,7 @@
  * */
 
 import { Guid } from "guid-typescript"
+import { eState } from "../constants";
 
 import { FieldData } from './fieldData'
 
@@ -32,6 +33,9 @@ export interface FormData {
      * List of field-data objects belongs to this form-data object. Each field-data
      * instance holds data submitted for a field in the parent form.
      * */
-    fieldData: FieldData[]
+    fieldData: FieldData[];
+
+    state: eState
+
 
 }

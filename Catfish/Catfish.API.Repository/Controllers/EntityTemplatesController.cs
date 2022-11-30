@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository.Interfaces;
+using System.Linq;
 using System.Net;
 
 
@@ -29,7 +30,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            return await _context.EntityTemplates!.Select(te => new TemplateEntry() { Id = te.Id, Name = te.Name ?? te.Id.ToString() }).ToListAsync();
+            return await _context.EntityTemplates!.Where(et=>et.State != eState.Deleted).Select(te => new TemplateEntry() { Id = te.Id, Name = te.Name ?? te.Id.ToString() }).ToListAsync();
             
         }
 
@@ -94,9 +95,43 @@ namespace Catfish.API.Repository.Controllers
 
         // DELETE api/<FormSubmissionController>/5
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            if (_context.EntityTemplates == null)
+            {
+                return NotFound();
+            }
+            var entityTemplate = await _context.EntityTemplates.FindAsync(id);
+            if (entityTemplate == null)
+            {
+                return NotFound();
+            }
+
+            entityTemplate.State = eState.Deleted;
+            _context.Entry(entityTemplate).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        [HttpPost("change-state/{id}")]
+        public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
+        {
+            if (_context.EntityTemplates == null)
+            {
+                return NotFound();
+            }
+            var entityTemplate = await _context.EntityTemplates.FindAsync(id);
+            if (entityTemplate == null)
+            {
+                return NotFound();
+            }
+
+            entityTemplate.State =newState;
+            _context.Entry(entityTemplate).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
         }
 
         #region Private methods

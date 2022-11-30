@@ -87,16 +87,14 @@
 
 <template>
    <div class="control">
-       <!-- <button type="button" class="btn btn-primary" :disabled="!disabled" @click="newForm">New Form</button> -->
+     
         <button type="button" class="btn btn-success" :disabled="disabled" @click="saveForm">Save</button>
     </div>
      <TransientMessage :model="store.transientMessageModel"></TransientMessage>
-    <!--<transition name="fade">
-        <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
-    </transition>-->
+   
    
     <Form v-if="store.form" :model="store.form" />
-    
+    <!--
     <div class="toolbar">
         <button :disabled="disabled" @click="newField(FieldType.ShortAnswer)">+ Short Answer</button>
         <button :disabled="disabled" @click="newField(FieldType.Paragraph)">+ Paragraph</button>
@@ -113,8 +111,9 @@
         <button :disabled="disabled" @click="newField(FieldType.InfoSection)">+ Info Section</button>
         <button :disabled="disabled" @click="newField(FieldType.AttachmentField)">+ Attachment Field</button>
     </div>
+    -->
     <hr />
-    <!--{{store.form}}-->
+   
 
 </template>
 

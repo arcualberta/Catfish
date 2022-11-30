@@ -25,7 +25,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 description: "Description about this new Entity Template",
                 created: new Date(),
                 updated: new Date(),
-                state: eState.Unpublished,
+                state: eState.Draft,
                 forms:[],
                 entityTemplateSettings: {
                     metadataForms: [],
@@ -91,7 +91,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         saveTemplate(){
             //console.log("save form template: ", JSON.stringify(this.template));
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
-           
+            
             let api = this.getApiRoot;
             let method = "";
             if (newTemplate) {

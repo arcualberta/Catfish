@@ -1,4 +1,5 @@
 import { Guid } from "guid-typescript";
+import { eState } from "../constants";
 import { Field } from "./field";
 import { TextCollection } from "./textCollection";
 
@@ -25,7 +26,9 @@ export interface FormTemplate {
     /**
      * List of fields in this form.
      * */
-    fields: Field[]
+    fields: Field[],
+
+    state: eState
 
 }
 
