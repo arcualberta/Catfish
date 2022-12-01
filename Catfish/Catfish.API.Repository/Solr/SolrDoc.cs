@@ -37,29 +37,20 @@ namespace Catfish.API.Repository.Solr
                         foreach (FieldData fd in fieldDataList)
                         {
                             string solrFieldName = string.Format("field_{0}_{1}_", frmData.FormId, fd.FieldId);
-                            var field = form!.Fields.FirstOrDefault(fld => fld.id == fd.FieldId);
+                            var field = form!.Fields.FirstOrDefault(fld => fld.Id == fd.FieldId);
                             if (fd.MonolingualTextValues?.Length > 0)
                             {
-                                if (field.type == FieldType.Email)
-                                {
+                                if (field.Type == FieldType.Email)
                                     solrFieldName += "ss";
-                                }
-                                else if (field.type == FieldType.Date || field.type == FieldType.DateTime)
-                                {
+                                else if (field.Type == FieldType.Date || field?.Type == FieldType.DateTime)
                                     solrFieldName += "dts"; 
-                                }
-                                else if (field.type == FieldType.Integer)
-                                {
+                                else if (field.Type == FieldType.Integer)
                                     solrFieldName += "is";
-                                }
-                                else if (field.type == FieldType.Decimal)
-                                {
+                                else if (field.Type == FieldType.Decimal)
                                     solrFieldName += "ds";
-                                }
-                                else if (field.type == FieldType.ShortAnswer || field.type == FieldType.Paragraph || field.type == FieldType.RichText)
-                                {
+                                else if (field.Type == FieldType.ShortAnswer || field.Type == FieldType.Paragraph || field.Type == FieldType.RichText)
                                     solrFieldName += "ts";
-                                }
+
                                 foreach (Text text in fd.MonolingualTextValues)
                                 {
                                     if (text != null)
