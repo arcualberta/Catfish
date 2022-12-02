@@ -66,9 +66,9 @@ export interface Field {
  * Text input field types, including types applicable for multi-lingual text fields.
  * */
 export enum TextType {
-    ShortAnswer = "Short Answer",
+    ShortAnswer = "ShortAnswer",
     Paragraph = "Paragraph",
-    RichText = "Rich Text",
+    RichText = "RichText",
     AttachmentField="AttachmentField"
 }
 
@@ -89,9 +89,9 @@ export enum MonolingualFieldType {
  * */
 export enum OptionFieldType {
     Checkboxes = "Checkboxes",
-    DataList = "Data List",
-    RadioButtons = "Radio Buttons",
-    DropDown = "Drop Down"
+    DataList = "DataList",
+    RadioButtons = "RadioButtons",
+    DropDown = "DropDown"
 }
 
 /**
@@ -106,22 +106,22 @@ export enum InfoSectionType{
 
 
 export enum FieldType{
-    ShortAnswer = "Short Answer",
+    ShortAnswer = "ShortAnswer",
     Paragraph = "Paragraph",
-    RichText = "Rich Text",
+    RichText = "RichText",
 
     Date = "Date",
-    DateTime = "Date Time",
+    DateTime = "DateTime",
     Decimal = "Decimal",
     Integer = "Integer",
     Email = "Email",
 
     Checkboxes = "Checkboxes",
-    DataList = "Data List",
-    RadioButtons = "Radio Buttons",
-    DropDown = "Drop Down",
+    DataList = "DataList",
+    RadioButtons = "RadioButtons",
+    DropDown = "DropDown",
 
-    InfoSection = "Info Section",
+    InfoSection = "InfoSection",
 
     AttachmentField="AttachmentField"
 }
