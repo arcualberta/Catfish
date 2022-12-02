@@ -17,7 +17,8 @@ export const createTextCollection = (lang: string[] | string): TextCollection =>
 	languages.forEach(lang => {
 		textCollection.values.push({
 			id: Guid.create().toString() as unknown as Guid,
-			lang: lang
+			lang: lang,
+			value: ""
 		} as Text);
 	})
 	return textCollection;

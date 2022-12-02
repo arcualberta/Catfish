@@ -21,7 +21,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                 name: "",
                 description: "",
                 fields: [] as Field[],
-                state: eState.Draft
+                status: eState.Draft
             };
         },
         loadForm(id: Guid) {
@@ -52,7 +52,9 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
             if (newForm) {
                 console.log("Saving new form.")
                 this.form.id = Guid.create().toString() as unknown as Guid;
+                this.form.status= eState.Draft;
                 method = "POST";
+                console.log(JSON.stringify(this.form))
             }
             else {
                 console.log("Updating existing form.")
@@ -114,7 +116,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
     },
     getters:{
         getApiRoot(state){
-            return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/entity-templates";
+            return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/forms";
         }
     } 
 });

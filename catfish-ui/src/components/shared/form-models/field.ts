@@ -68,7 +68,7 @@ export interface Field {
 export enum TextType {
     ShortAnswer = "ShortAnswer",
     Paragraph = "Paragraph",
-    RichText = "Rich Text",
+    RichText = "RichText",
     AttachmentField="AttachmentField"
 }
 
