@@ -58,6 +58,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                 console.log("Updating existing form.")
                 api = `${api}/${this.form.id}`
                 method = "PUT";
+                console.log("form ", JSON.stringify(this.form))
             }
 
             fetch(api,

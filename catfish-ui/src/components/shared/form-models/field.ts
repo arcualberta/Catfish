@@ -66,7 +66,7 @@ export interface Field {
  * Text input field types, including types applicable for multi-lingual text fields.
  * */
 export enum TextType {
-    ShortAnswer = "Short Answer",
+    ShortAnswer = "ShortAnswer",
     Paragraph = "Paragraph",
     RichText = "Rich Text",
     AttachmentField="AttachmentField"
@@ -77,7 +77,7 @@ export enum TextType {
  * */
 export enum MonolingualFieldType {
     Date = "Date",
-    DateTime = "Date Time",
+    DateTime = "DateTime",
     Decimal = "Decimal",
     Integer = "Integer",
     Email = "Email"
@@ -89,16 +89,16 @@ export enum MonolingualFieldType {
  * */
 export enum OptionFieldType {
     Checkboxes = "Checkboxes",
-    DataList = "Data List",
-    RadioButtons = "Radio Buttons",
-    DropDown = "Drop Down"
+    DataList = "DataList",
+    RadioButtons = "RadioButtons",
+    DropDown = "DropDown"
 }
 
 /**
  * Field types that does not take any user input.
  * */
 export enum InfoSectionType{
-    InfoSection = "Info Section"
+    InfoSection = "InfoSection"
 }
 
 //export const FieldTypes = { ...TextType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
@@ -106,22 +106,22 @@ export enum InfoSectionType{
 
 
 export enum FieldType{
-    ShortAnswer = "Short Answer",
+    ShortAnswer = "ShortAnswer",
     Paragraph = "Paragraph",
-    RichText = "Rich Text",
+    RichText = "RichText",
 
     Date = "Date",
-    DateTime = "Date Time",
+    DateTime = "DateTime",
     Decimal = "Decimal",
     Integer = "Integer",
     Email = "Email",
 
     Checkboxes = "Checkboxes",
-    DataList = "Data List",
-    RadioButtons = "Radio Buttons",
-    DropDown = "Drop Down",
+    DataList = "DataList",
+    RadioButtons = "RadioButtons",
+    DropDown = "DropDown",
 
-    InfoSection = "Info Section",
+    InfoSection = "InfoSection",
 
     AttachmentField="AttachmentField"
 }
