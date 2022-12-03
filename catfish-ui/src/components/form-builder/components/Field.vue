@@ -49,13 +49,15 @@
         props.model.options?.splice(idx as number, 1)
     }
 
+    const getFieldTypeLabel = (fieldType: FieldType) => FieldType[fieldType].replace(/([a-z](?=[A-Z]))/g, '$1 ');
+
 //AttachmentFild
     const isAttachmentField = props.model.type === FieldType.AttachmentField ? true: false;
   
 </script>
 
 <template>
-    <h5>{{model.type}}</h5>
+    <h5>{{getFieldTypeLabel(model.type)}}</h5>
     <b-row >
         <b-col class="col-sm-2">
             <h6>Title:</h6>
