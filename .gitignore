@@ -174,3 +174,4 @@ NPM.UI.Lib/arcualberta-catfish-ui*.tgz
 appsettings.ts
 /Catfish/Catfish.Web/wwwroot/assets/applets
 .history
+Catfish/CatfishExtensions/Properties/launchSettings.json
