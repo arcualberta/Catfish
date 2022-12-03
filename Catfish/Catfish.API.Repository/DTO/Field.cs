@@ -16,10 +16,10 @@
 
         public int DecimalPoints { get; set; }
 
-        public Option[] options { get; set; }
+        public Option[]? options { get; set; }
 
         public bool AllowCustomOptionValues { get; set; }
 
-        public FileReference[] Files { get; set; }
+        public FileReference[]? Files { get; set; }
     }
 }

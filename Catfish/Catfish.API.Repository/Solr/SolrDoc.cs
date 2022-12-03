@@ -12,7 +12,7 @@ namespace Catfish.API.Repository.Solr
         {
             _context = context;
         }
-        public SolrDoc(EntityData src, bool indexFieldNames)
+        public SolrDoc(EntityData src,List<FormTemplate> forms, bool indexFieldNames)
         {
             AddId(src.Id);
             AddField("status_s", src.State.ToString());
@@ -30,21 +30,21 @@ namespace Catfish.API.Repository.Solr
                     
                     AddField("form_id_s", frmData.FormId);
                     AddField("form_state_s", frmData.State.ToString());
-                    FormTemplate form = _context!.Forms!.FirstOrDefault(f => f.Id == frmData.FormId);
+                    FormTemplate form = forms.FirstOrDefault(f => f.Id == frmData.FormId);
                     var fieldDataList = frmData.FieldData;
                     if (fieldDataList != null)
                     {
                         foreach (FieldData fd in fieldDataList)
                         {
                             string solrFieldName = string.Format("field_{0}_{1}_", frmData.FormId, fd.FieldId);
-                            var field = form!.Fields.FirstOrDefault(fld => fld.Id == fd.FieldId);
+                            var field = form?.Fields?.FirstOrDefault(fld => fld.Id == fd.FieldId);
                             if (fd.MonolingualTextValues?.Length > 0)
                             {
-                                if (field.Type == FieldType.Email)
+                                if (field!.Type == FieldType.Email)
                                     solrFieldName += "ss";
                                 else if (field.Type == FieldType.Date || field?.Type == FieldType.DateTime)
                                     solrFieldName += "dts"; 
-                                else if (field.Type == FieldType.Integer)
+                                else if (field!.Type == FieldType.Integer)
                                     solrFieldName += "is";
                                 else if (field.Type == FieldType.Decimal)
                                     solrFieldName += "ds";
@@ -74,9 +74,19 @@ namespace Catfish.API.Repository.Solr
                                 //Field type  should be _ss (i.e. multiple strings)
                                 //We should index the labels of the selected options.
                                 solrFieldName += "ss";
+                                
                                 foreach (var optId in fd.SelectedOptionIds)
-                                    AddField(solrFieldName, optId.ToString());
-
+                                {
+                                    foreach (var option in field!.options)
+                                    {
+                                        if(option.OptionText.Id == optId)
+                                        {
+                                            foreach(var value in option.OptionText.Values)
+                                                if(value.Value != null)
+                                                    AddField(solrFieldName, value.Value);
+                                        }
+                                    }
+                                }
                                 if (fd.ExtendedOptionValues?.Length > 0)
                                 {
                                     foreach (ExtendedOptionValue extVal in fd.ExtendedOptionValues)

@@ -28,7 +28,7 @@ export interface FormTemplate {
      * */
     fields: Field[],
 
-    state: eState
+    status: eState
 
 }
 

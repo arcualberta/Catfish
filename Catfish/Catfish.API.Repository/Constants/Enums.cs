@@ -32,6 +32,7 @@ namespace Catfish.API.Repository.Constants
         RichText,
         AttachmentField
     }
+
     public enum FieldType
     {
         ShortAnswer,
