@@ -28,7 +28,7 @@
             }
          ]
       },
-      "type":"ShortAnswer"
+      "type":0
    },
    {
       "id":"39f34d03-0d36-bef3-bf82-8c7401589fa3",
@@ -59,7 +59,7 @@
             }
          ]
       },
-      "type":"ShortAnswer"
+      "type":0
    },
    {
       "id":"afdd4a00-ca0d-8f83-48cf-58eac0d4e00b",
@@ -90,7 +90,7 @@
             }
          ]
       },
-      "type":"Paragraph"
+      "type":1
    },
    {
       "id":"2253eb4b-6cfe-45c7-e78d-7a07cb3ecb9f",
@@ -121,7 +121,7 @@
             }
          ]
       },
-      "type":"RichText"
+      "type":2
    },
    {
       "id":"425c6c97-f123-3eea-5947-9bda0b0fe7b3",
@@ -152,7 +152,7 @@
             }
          ]
       },
-      "type":"Date"
+      "type":3
    },
    {
       "id":"fec45b5c-5bd1-7b7a-8604-59cdb522a77e",
@@ -183,7 +183,7 @@
             }
          ]
       },
-      "type":"DateTime"
+      "type":4
    },
    {
       "id":"e678b085-64aa-c345-53d6-66ff91959509",
@@ -214,7 +214,7 @@
             }
          ]
       },
-      "type":"Decimal"
+      "type":6
    },
    {
       "id":"72e44501-7ed8-fa80-62f0-4f910554613e",
@@ -245,7 +245,7 @@
             }
          ]
       },
-      "type":"Integer"
+      "type":7
    },
    {
       "id":"e8f0551d-26f9-783a-458a-8a3e9e2fcbc1",
@@ -276,7 +276,7 @@
             }
          ]
       },
-      "type":"Email"
+      "type":8
    },
    {
       "id":"fb1d859e-bd42-d94a-7b49-874288a468c1",
@@ -307,7 +307,7 @@
             }
          ]
       },
-      "type":"Checkboxes",
+      "type":9,
       "options":[
          {
             "id":"cc53e5c1-47a6-e2ca-a303-b399a154910c",
@@ -377,7 +377,7 @@
             }
          ]
       },
-      "type":"DataList",
+      "type":10,
       "options":[
          {
             "id":"4d064f80-7991-98d9-9e58-fdff98b9bc5a",
@@ -428,7 +428,7 @@
             }
          ]
       },
-      "type":"RadioButtons",
+      "type":11,
       "options":[
          {
             "id":"18482c0c-cb1b-33f9-2e81-e824590cfd0d",
@@ -498,7 +498,7 @@
             }
          ]
       },
-      "type":"DropDown",
+      "type":12,
       "options":[
          {
             "id":"ebae31c5-b151-c46b-4992-f011f4aa0658",
@@ -569,6 +569,6 @@
             }
          ]
       },
-      "type":"InfoSection"
+      "type":13
    }
 ]
