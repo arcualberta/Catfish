@@ -276,9 +276,9 @@
             "FieldId":"fb1d859e-bd42-d94a-7b49-874288a468c1",
             "MultilingualTextValues":null,
             "MonolingualTextValues":null,
-            "SelectedOptionIds":[
-               
-            ],
+          "SelectedOptionIds": [
+            "cdc588d5-fb44-c78a-2e26-0872ca30cb6a"
+          ],
             "CustomOptionValues":null,
             "ExtendedOptionValues":null,
             "FileReferences":[
@@ -290,9 +290,9 @@
             "FieldId":"4e3bcb21-7a2c-2af9-decc-14cafe7c8b0a",
             "MultilingualTextValues":null,
             "MonolingualTextValues":null,
-            "SelectedOptionIds":[
-               
-            ],
+          "SelectedOptionIds": [
+            
+          ],
             "CustomOptionValues":null,
             "ExtendedOptionValues":null,
             "FileReferences":[
