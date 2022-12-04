@@ -4,13 +4,11 @@ namespace Catfish.API.Repository.Solr
 {
     public class SolrDoc
     {
-        private readonly RepoDbContext _context;
         private XElement _root = new XElement("doc");
         public XElement Root => _root;
 
-        public SolrDoc(RepoDbContext context)
+        public SolrDoc()
         {
-            _context = context;
         }
         public SolrDoc(EntityData src,List<FormTemplate> forms, bool indexFieldNames)
         {
