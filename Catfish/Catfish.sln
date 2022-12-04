@@ -20,7 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish.API.Repository.Tests", "Catfish.API.Repository.Tests\Catfish.API.Repository.Tests.csproj", "{AD0EAEDF-548D-42E8-9DA4-7D730A606B21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.API.Repository.Tests", "Catfish.API.Repository.Tests\Catfish.API.Repository.Tests.csproj", "{AD0EAEDF-548D-42E8-9DA4-7D730A606B21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessing", "DataProcessing\DataProcessing.csproj", "{52DB9D5C-96AF-4DF3-861E-01131F77343B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,10 @@ Global
 		{AD0EAEDF-548D-42E8-9DA4-7D730A606B21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD0EAEDF-548D-42E8-9DA4-7D730A606B21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD0EAEDF-548D-42E8-9DA4-7D730A606B21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52DB9D5C-96AF-4DF3-861E-01131F77343B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52DB9D5C-96AF-4DF3-861E-01131F77343B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52DB9D5C-96AF-4DF3-861E-01131F77343B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52DB9D5C-96AF-4DF3-861E-01131F77343B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

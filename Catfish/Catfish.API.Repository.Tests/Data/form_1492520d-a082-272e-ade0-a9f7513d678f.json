@@ -28,7 +28,7 @@
             }
          ]
       },
-      "type":"ShortAnswer"
+      "type":0
    },
    {
       "id":"d50af197-dd30-56c5-aeb1-6a7386fc652d",
@@ -59,6 +59,6 @@
             }
          ]
       },
-      "type":"Paragraph"
+      "type":1
    }
 ]
