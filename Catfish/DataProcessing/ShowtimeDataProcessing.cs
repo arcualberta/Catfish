@@ -23,14 +23,21 @@ namespace DataProcessing
         [Fact]
         public void IndexData()
         {
+            DateTime start = DateTime.Now;
+
             string srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
             Assert.True(Directory.Exists(srcFolderRoot));
-            string tmpFolder = "C:\\Projects\\Showtime Database\\tmp";
-            Directory.CreateDirectory(tmpFolder);
+            string outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+
+            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"processing-log-{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"error-log-{fileSuffix}.txt");
 
             int indexingBatchSize = 1000;
             List<SolrDoc> solrDocs = new List<SolrDoc>();
-
+            int totalShowtimeRecordCount = 0;
+            int totalIndexedRecordCount = 0;
             var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
             foreach (var batchFolder in srcBatcheFolders)
             {
@@ -39,14 +46,19 @@ namespace DataProcessing
                 foreach (var zipFile in zipFiles)
                 {
                     List<Movie> movies = new List<Movie>();
-                    List<Theatre> theatres = new List<Theatre>();
+                    List<Theater> theaters = new List<Theater>();
                     List<Showtime> showtimes = new List<Showtime>();
+
+                    File.AppendAllText(processingLogFile, $"Archive {zipFile}{Environment.NewLine}");
 
                     using (ZipArchive archive = ZipFile.OpenRead(zipFile))
                     {
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
-                            var extractFile = Path.Combine(tmpFolder, entry.Name);
+                            var extractFile = Path.Combine(outputFolder, entry.Name);
+                            if(File.Exists(extractFile))
+                                File.Delete(extractFile);
+
                             entry.ExtractToFile(extractFile);
 
                             XElement xml = XElement.Load(extractFile);
@@ -65,30 +77,48 @@ namespace DataProcessing
                             else if (xml.Name == "houses")
                             {
                                 //This is a theatres data set
-                                foreach (var child in xml.Elements("theatres"))
-                                    theatres.Add(new Theatre(child));
+                                foreach (var child in xml.Elements("theater"))
+                                    theaters.Add(new Theater(child));
                             }
 
                             File.Delete(extractFile);
 
                         } //End: foreach (ZipArchiveEntry entry in archive.Entries)
+
                     } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+
+                    totalShowtimeRecordCount += showtimes.Count;
+                    File.AppendAllText(processingLogFile, $"Movies: {movies.Count}, Theaters: {theaters.Count}, Showtimes: {showtimes.Count}{Environment.NewLine}");
 
                     //Creating solr docs
                     foreach (var showtime in showtimes)
                     {
-                        Theatre theatre = theatres.First(th => th.theater_id == showtime.theater_id);
-                        Movie movie = movies.First(mv => mv.movie_id == showtime.movie_id);
+                        Movie movie = movies.FirstOrDefault(mv => mv.movie_id == showtime.movie_id);
+                        Theater theater = theaters.FirstOrDefault(th => th.theater_id == showtime.theater_id);
 
                         SolrDoc doc = new SolrDoc();
                         doc.AddId(Guid.NewGuid());
 
-                        if (!string.IsNullOrEmpty(movie.title)) doc.AddField("title_t", movie.title);
-                        doc.AddField("genres_ts", movie.genres.ToArray());
+                        if (movie == null)
+                            File.AppendAllText(errorLogFile, $"Movie {showtime.movie_id} Not founnd in {zipFile}{Environment.NewLine}");
+                        else
+                        {
+                            //TODO:add the full list of movie fields
 
-                        //TODO: initialize the rest of the solr fields
+                            doc.AddField("title_t", movie.title!);
+                            doc.AddField("genres_ts", movie.genres.ToArray());
+                        }
+                        
 
 
+                        if (theater == null)
+                            File.AppendAllText(errorLogFile, $"Theater {showtime.theater_id} Not founnd in {zipFile}{Environment.NewLine}");
+                        else
+                        {
+                            //TODO: add the full list of theater fields
+                            doc.AddField("theater_name_t", theater.theater_name!);
+
+                        }
 
                         solrDocs.Add(doc);
 
@@ -98,12 +128,23 @@ namespace DataProcessing
 
 
                             //Clearning the bufffer
+                            totalIndexedRecordCount += solrDocs.Count;
                             solrDocs.Clear();
+
                         }
                     }
                 }
             }
 
+            if(solrDocs.Count > 0)
+            {
+                //TODO: Index this remaining batch of solr docs.
+
+                totalIndexedRecordCount += solrDocs.Count;
+
+            }
+
+            File.AppendAllText(processingLogFile, $"Total showtime records: {totalShowtimeRecordCount}, Successfully indexed: {totalIndexedRecordCount}, Total time: {(DateTime.Now - start).ToString("hh:mm:ss")}");
         }
     }
 
@@ -201,9 +242,9 @@ namespace DataProcessing
     }
 
     /**
-     * Theatre class
+     * Theater class
      */
-    public class Theatre: XmlDoc
+    public class Theater : XmlDoc
     {
         public int theater_id { get; set; }
         public string? theater_name { get; set; }
@@ -212,7 +253,7 @@ namespace DataProcessing
 
 
         public decimal? theater_lat { get; set; }
-        public Theatre(XElement xml): base(xml)
+        public Theater(XElement xml): base(xml)
         {
             theater_id = GetElementValueInt("theater_id", -1);
             theater_name = GetElementValueStr("theater_name");
