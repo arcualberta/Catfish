@@ -125,6 +125,34 @@ namespace DataProcessing
 
                             SolrDoc doc = new SolrDoc();
                             doc.AddId(Guid.NewGuid());
+                            //showtime properties
+                            doc.AddField("movie_id_i", showtime.movie_id);
+                            doc.AddField("theater_id_i", showtime.theater_id);
+                            doc.AddField("movie_name_t", showtime.movie_name!);
+                            if(showtime.show_date != null)
+                                doc.AddField("show_date_dt", showtime.show_date);
+                            if (showtime.showtimes != null && showtime.showtimes.Length > 0)
+                                doc.AddField("showtimes_ts", showtime.showtimes);
+
+                            if (showtime.showtime_minutes != null && showtime.showtime_minutes.Length > 0)
+                                doc.AddField("showtime_minutes_is", showtime.showtime_minutes);
+
+                            if (showtime.show_attributes != null && showtime.show_attributes.Length > 0)
+                                doc.AddField("show_attributes_ts", showtime.show_attributes);
+                            if (showtime.show_passes != null)
+                                doc.AddField("show_passes_t", showtime.show_passes);
+
+                            if (showtime.show_festival != null)
+                                doc.AddField("show_festival_t", showtime.show_festival);
+
+                            if (showtime.show_with != null)
+                                doc.AddField("show_with_t", showtime.show_with);
+
+                            if (showtime.show_sound != null)
+                                doc.AddField("show_sound_t", showtime.show_sound);
+
+                            if (showtime.show_comments != null && showtime.show_comments.Length > 0)
+                                doc.AddField("show_comments_ts", showtime.show_comments);
 
                             if (movie == null)
                                 File.AppendAllText(errorLogFile, $"Movie {showtime.movie_id} Not founnd in {zipFile}{Environment.NewLine}");
@@ -518,6 +546,7 @@ namespace DataProcessing
     {
 
         public int movie_id => GetElementValueInt("movie_id", -1);
+        public string? movie_name => GetElementValueStr("movie_name");
         public int theater_id => GetElementValueInt("theater_id", -1);
         public DateTime? show_date => GetElementAttDate("show_date", "date");
         public string[]? showtimes => GetElementValueStr("showtimes", ",");
