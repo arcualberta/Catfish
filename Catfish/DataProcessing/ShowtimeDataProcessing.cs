@@ -212,9 +212,12 @@ namespace DataProcessing
 
             }
 
-            File.AppendAllText(processingLogFile, $"Total showtime records: {totalShowtimeRecordCount}, Successfully indexed: {totalIndexedRecordCount}, Total time: {(DateTime.Now - start).ToString("hh:mm:ss")}");
+            var timelapse = (DateTime.Now - start).ToString();
+            string logText = "Total showtime records: " + totalShowtimeRecordCount + ", Successfully indexed: " + totalIndexedRecordCount + ", Total time:" +  timelapse;
+            //File.AppendAllText(processingLogFile, $"Total showtime records: {totalShowtimeRecordCount}, Successfully indexed: {totalIndexedRecordCount}, Total time: {(DateTime.Now - start).ToString("hh:mm:ss")}");
+            File.AppendAllText(processingLogFile,logText);
 
-          
+
         }
         private SolrDoc AddTheater(SolrDoc doc, Theater theater)
         {
