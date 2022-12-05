@@ -378,8 +378,8 @@ namespace DataProcessing
         public int theater_id => GetElementValueInt("theater_id", -1);
         public DateTime? show_date => GetElementAttDate("show_date", "date");
         public string[]? showtimes => GetElementValueStr("showtimes", ",");
-        public int[]? showrime_minutes { get; set; } = null;
-        public string? show_attributes => GetElementValueStr("show_attributes");
+        public int[]? showtime_minutes { get; set; } = null;
+        public string[]? show_attributes => GetElementValueStr("show_attributes", ",");
         public string? show_passes => GetElementValueStr("show_passes");
         public string? show_festival => GetElementValueStr("show_festival");
         public string? show_with => GetElementValueStr("show_with");
@@ -391,12 +391,12 @@ namespace DataProcessing
         {
             if(showtimes != null)
             {
-                showrime_minutes = new int[showtimes.Length];
+                showtime_minutes = new int[showtimes.Length];
                 int i = 0;
                 foreach (var showtime in showtimes)
                 {
                     var hhmm = showtime.Split(":").Select(s => int.Parse(s)).ToArray();
-                    showrime_minutes[i++] = hhmm[0] * 60 + hhmm[1];
+                    showtime_minutes[i++] = hhmm[0] * 60 + hhmm[1];
                 }
             }
         }
