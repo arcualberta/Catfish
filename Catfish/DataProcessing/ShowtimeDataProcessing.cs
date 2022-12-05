@@ -15,6 +15,20 @@ namespace DataProcessing
     public class ShowtimeDataProcessing
     {
         public readonly TestHelper _testHelper;
+        public int MAX_RECORDS = 1; //DEBUG ONLY -- set it to 0 or -1 to ignore it
+
+        //public class ShowtimeDataProcessingFixture: IDisposable
+        //{
+        //    public ShowtimeDataProcessingFixture()
+        //    {
+               
+        //    }
+
+        //    public void Dispose()
+        //    {
+        //        // ... clean up test data from the database ...
+        //    }
+        //}
         public ShowtimeDataProcessing()
         {
             _testHelper = new TestHelper();
@@ -39,6 +53,7 @@ namespace DataProcessing
             int totalShowtimeRecordCount = 0;
             int totalIndexedRecordCount = 0;
             var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
+            int batchCount = 0;
             foreach (var batchFolder in srcBatcheFolders)
             {
                 var batchName = batchFolder.Substring(batchFolder.LastIndexOf("\\") + 1);
@@ -149,8 +164,17 @@ namespace DataProcessing
                         {
                             File.AppendAllText(errorLogFile, $"EXCEPTION in showtime date {showtime.show_date}, movie {showtime.movie_id}, theater {showtime.theater_id}: {ex.Message}{Environment.NewLine}");
                         }
+
+                        
                     }
                 }
+
+                //DEBUG ONLY -- ONLY PROCESS SMALL NUMBER OF BATCH
+                batchCount++;
+
+                //DEBUG -- ONLY PROCESS SMALL AMOUNT OF DOCS
+                if ( MAX_RECORDS > 0 && batchCount >= MAX_RECORDS)
+                    break;
             }
 
             if(solrDocs.Count > 0)
@@ -162,6 +186,8 @@ namespace DataProcessing
             }
 
             File.AppendAllText(processingLogFile, $"Total showtime records: {totalShowtimeRecordCount}, Successfully indexed: {totalIndexedRecordCount}, Total time: {(DateTime.Now - start).ToString("hh:mm:ss")}");
+
+          
         }
     }
 
@@ -266,16 +292,77 @@ namespace DataProcessing
         public int theater_id { get; set; }
         public string? theater_name { get; set; }
         public string? theater_address { get; set; }
+        public string? theater_city { get; set; }
+        public string? theater_state { get; set; }
+        public string? theater_zip { get; set; }
+        public string? theater_phone { get; set; }
+        public string[]? theater_attributes { get; set; }
+        public string? theater_ticketing { get; set; }
+        public string? theater_closed_reason { get; set; }
+        public string? theater_area { get; set; }
+        public string? theater_location { get; set; }
+        public string? theater_market { get; set; }
+        public int? theater_screens { get; set; }
+        public string? theater_seating { get; set; }
+        public string? theater_adult { get; set; }
+        public string? theater_child { get; set; }
+        public string? theater_senior { get; set; }
+        public string? theater_country { get; set; }
+        public string? theater_url { get; set; }
+        public string? theater_chain_id { get; set; }
 
-
-
+        public string? theater_adult_bargain { get; set; }
+        public string? theater_senior_bargain { get; set; }
+        public string? theater_child_bargain { get; set; }
+        public string? theater_special_bargain { get; set; }
+        public string? theater_adult_super { get; set; }
+        public string? theater_senior_super { get; set; }
+        public string? theater_child_super { get; set; }
+        public string? theater_price_comment { get; set; }
+        public string? theater_extra { get; set; }
+        public string? theater_description { get; set; }
+        public string? theater_type { get; set; }
         public decimal? theater_lat { get; set; }
+        public decimal? theater_lon { get; set; }
         public Theater(XElement xml): base(xml)
         {
             theater_id = GetElementValueInt("theater_id", -1);
             theater_name = GetElementValueStr("theater_name");
             theater_address = GetElementValueStr("theater_address");
+            theater_city = GetElementValueStr("theater_city");
+            theater_state = GetElementValueStr("theater_state");
+            theater_zip = GetElementValueStr("theater_zip");
+            theater_phone = GetElementValueStr("theater_phone");
+            theater_attributes = GetElementValueStr("theater_attributes", ","); //NEED TO CONFIRM WHAT WAS AS SEPARATOR!!!!
 
+
+            theater_ticketing = GetElementValueStr("theater_ticketing");
+            theater_closed_reason = GetElementValueStr("theater_closed_reason");
+             theater_area = GetElementValueStr("theater_area");
+           theater_location= GetElementValueStr("theater_location");
+           theater_market = GetElementValueStr("theater_market");
+             theater_screens = GetElementValueInt("theater_screens", -1);
+            theater_seating = GetElementValueStr("theater_seating");
+        theater_adult = GetElementValueStr("theater_adult");
+        theater_child = GetElementValueStr("theater_child");
+        theater_senior = GetElementValueStr("theater_senior");
+          theater_country = GetElementValueStr("theater_country");
+        theater_url = GetElementValueStr("theater_url");
+        theater_chain_id = GetElementAttStr("theater_clain", "id");
+
+            theater_adult_bargain = GetElementValueStr("theater_adult_bargain");
+            theater_senior_bargain = GetElementValueStr("theater_senior_bargain");
+            theater_child_bargain = GetElementValueStr("theater_child_bargain");
+            theater_special_bargain = GetElementValueStr("theater_special_bargain");
+            theater_adult_super = GetElementValueStr("theater_adult_super");
+            theater_senior_super = GetElementValueStr("theater_senior_super");
+            theater_child_super = GetElementValueStr("theater_child_super");
+            theater_price_comment = GetElementValueStr("theater_price_comment");
+            theater_extra = GetElementValueStr("theater_extra");
+            theater_description = GetElementValueStr("theater_description");
+            theater_type = GetElementValueStr("theater_type");
+
+            theater_lon = GetElementValueDecimal("theater_lon");
 
             theater_lat = GetElementValueDecimal("theater_lat");
         }
