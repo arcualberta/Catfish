@@ -55,33 +55,41 @@ namespace DataProcessing
                     {
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
-                            var extractFile = Path.Combine(outputFolder, entry.Name);
-                            if(File.Exists(extractFile))
+                            try
+                            {
+
+                                var extractFile = Path.Combine(outputFolder, entry.Name);
+                                if (File.Exists(extractFile))
+                                    File.Delete(extractFile);
+
+                                entry.ExtractToFile(extractFile);
+
+                                XElement xml = XElement.Load(extractFile);
+                                if (xml.Name == "times")
+                                {
+                                    //This is a showtime data set
+                                    foreach (var child in xml.Elements("showtime"))
+                                        showtimes.Add(new Showtime(child));
+                                }
+                                else if (xml.Name == "movies")
+                                {
+                                    //This is a movies data set. 
+                                    foreach (var child in xml.Elements("movie"))
+                                        movies.Add(new Movie(child));
+                                }
+                                else if (xml.Name == "houses")
+                                {
+                                    //This is a theatres data set
+                                    foreach (var child in xml.Elements("theater"))
+                                        theaters.Add(new Theater(child));
+                                }
+
                                 File.Delete(extractFile);
-
-                            entry.ExtractToFile(extractFile);
-
-                            XElement xml = XElement.Load(extractFile);
-                            if (xml.Name == "times")
-                            {
-                                //This is a showtime data set
-                                foreach (var child in xml.Elements("showtime"))
-                                    showtimes.Add(new Showtime(child));
                             }
-                            else if (xml.Name == "movies")
+                            catch(Exception ex)
                             {
-                                //This is a movies data set. 
-                                foreach (var child in xml.Elements("movie"))
-                                    movies.Add(new Movie(child));
+                                File.AppendAllText(errorLogFile, $"EXCEPTION in {entry.Name}: {ex.Message}{Environment.NewLine}");
                             }
-                            else if (xml.Name == "houses")
-                            {
-                                //This is a theatres data set
-                                foreach (var child in xml.Elements("theater"))
-                                    theaters.Add(new Theater(child));
-                            }
-
-                            File.Delete(extractFile);
 
                         } //End: foreach (ZipArchiveEntry entry in archive.Entries)
 
@@ -93,44 +101,53 @@ namespace DataProcessing
                     //Creating solr docs
                     foreach (var showtime in showtimes)
                     {
-                        Movie movie = movies.FirstOrDefault(mv => mv.movie_id == showtime.movie_id);
-                        Theater theater = theaters.FirstOrDefault(th => th.theater_id == showtime.theater_id);
-
-                        SolrDoc doc = new SolrDoc();
-                        doc.AddId(Guid.NewGuid());
-
-                        if (movie == null)
-                            File.AppendAllText(errorLogFile, $"Movie {showtime.movie_id} Not founnd in {zipFile}{Environment.NewLine}");
-                        else
+                        try
                         {
-                            //TODO:add the full list of movie fields
 
-                            doc.AddField("title_t", movie.title!);
-                            doc.AddField("genres_ts", movie.genres.ToArray());
+
+                            Movie movie = movies.FirstOrDefault(mv => mv.movie_id == showtime.movie_id);
+                            Theater theater = theaters.FirstOrDefault(th => th.theater_id == showtime.theater_id);
+
+                            SolrDoc doc = new SolrDoc();
+                            doc.AddId(Guid.NewGuid());
+
+                            if (movie == null)
+                                File.AppendAllText(errorLogFile, $"Movie {showtime.movie_id} Not founnd in {zipFile}{Environment.NewLine}");
+                            else
+                            {
+                                //TODO:add the full list of movie fields
+
+                                doc.AddField("title_t", movie.title!);
+                                doc.AddField("genres_ts", movie.genres.ToArray());
+                            }
+
+
+
+                            if (theater == null)
+                                File.AppendAllText(errorLogFile, $"Theater {showtime.theater_id} Not founnd in {zipFile}{Environment.NewLine}");
+                            else
+                            {
+                                //TODO: add the full list of theater fields
+                                doc.AddField("theater_name_t", theater.theater_name!);
+
+                            }
+
+                            solrDocs.Add(doc);
+
+                            if (solrDocs.Count >= indexingBatchSize)
+                            {
+                                //TODO: call solr service to index the batch of docs
+
+
+                                //Clearning the bufffer
+                                totalIndexedRecordCount += solrDocs.Count;
+                                solrDocs.Clear();
+
+                            }
                         }
-                        
-
-
-                        if (theater == null)
-                            File.AppendAllText(errorLogFile, $"Theater {showtime.theater_id} Not founnd in {zipFile}{Environment.NewLine}");
-                        else
+                        catch(Exception ex)
                         {
-                            //TODO: add the full list of theater fields
-                            doc.AddField("theater_name_t", theater.theater_name!);
-
-                        }
-
-                        solrDocs.Add(doc);
-
-                        if (solrDocs.Count >= indexingBatchSize)
-                        {
-                            //TODO: call solr service to index the batch of docs
-
-
-                            //Clearning the bufffer
-                            totalIndexedRecordCount += solrDocs.Count;
-                            solrDocs.Clear();
-
+                            File.AppendAllText(errorLogFile, $"EXCEPTION in showtime date {showtime.show_date}, movie {showtime.movie_id}, theater {showtime.theater_id}: {ex.Message}{Environment.NewLine}");
                         }
                     }
                 }
