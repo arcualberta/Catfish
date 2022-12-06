@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository;
+using DataProcessing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
@@ -32,6 +33,13 @@ namespace Catfish.Test.Helpers
                 .UseSqlServer(dbConnectionString)
                 );
 
+            //Registering showtime DB Context
+            string showtimeConnectionString = configuration.GetConnectionString("showtime");
+            services.AddDbContext<ShowtimeDbContext>(options => options
+                .UseSqlServer(showtimeConnectionString)
+                );
+
+
             //Registering other services
 
             ////services.AddScoped<SolrService>();
@@ -44,6 +52,7 @@ namespace Catfish.Test.Helpers
         }
 
         public RepoDbContext Db => Seviceprovider.GetService<RepoDbContext>();
+        public ShowtimeDbContext ShowtimeDb => Seviceprovider.GetService<ShowtimeDbContext>();
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>();
 
     }

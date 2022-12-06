@@ -1,6 +1,8 @@
 ﻿using Catfish.API.Repository.Solr;
 using Catfish.Test.Helpers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;
@@ -9,19 +11,30 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Text.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataProcessing
 {
-    public class ShowtimeDataProcessing
+    [Collection("Database collection")]
+    public class ShowtimeDataProcessing : IClassFixture<TransactionalTestDatabaseFixture>
     {
+        public TransactionalTestDatabaseFixture _fixture { get; }
+
         public readonly TestHelper _testHelper;
         public int MAX_RECORDS = 1; //DEBUG ONLY -- set it to 0 or -1 to ignore it
+
+        public ShowtimeDataProcessing(TransactionalTestDatabaseFixture fixture)
+        {
+            _fixture = fixture;
+            _testHelper = new TestHelper();
+        }
 
         //public class ShowtimeDataProcessingFixture: IDisposable
         //{
         //    public ShowtimeDataProcessingFixture()
         //    {
-               
+
         //    }
 
         //    public void Dispose()
@@ -29,15 +42,130 @@ namespace DataProcessing
         //        // ... clean up test data from the database ...
         //    }
         //}
-        public ShowtimeDataProcessing()
+        //public ShowtimeDataProcessing()
+        //{
+        //    _testHelper = new TestHelper();
+        //}
+
+        [Fact]
+        public void CreateDbRecords()
         {
-            _testHelper = new TestHelper();
+            DateTime start = DateTime.Now;
+
+            //using var context = _fixture.CreateContext();
+            var context = _testHelper.ShowtimeDb;
+
+            string srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
+            Assert.True(Directory.Exists(srcFolderRoot));
+            string outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+
+            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"processing-log-{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"error-log-{fileSuffix}.txt");
+
+            var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
+
+            int batch = 0;
+            int? lastProcessedBatch = context.MovieRecords.Any() ? context.MovieRecords.Select(m => m.batch).Max() : null;
+
+            //deleteing the last batch processed since it might have been interrupted half-way through
+            if (lastProcessedBatch.HasValue)
+            {
+                context.MovieRecords.RemoveRange(context.MovieRecords.Where(rec => rec.batch == lastProcessedBatch));
+                context.TheaterRecords.RemoveRange(context.TheaterRecords.Where(rec => rec.batch == lastProcessedBatch));
+                context.ShowtimeRecords.RemoveRange(context.ShowtimeRecords.Where(rec => rec.batch == lastProcessedBatch));
+
+                context.SaveChanges();
+            }
+
+
+            foreach (var batchFolder in srcBatcheFolders)
+            {
+                ++batch;
+
+                if (lastProcessedBatch.HasValue && batch < lastProcessedBatch.Value)
+                    continue;
+
+                var batchName = batchFolder.Substring(batchFolder.LastIndexOf("\\") + 1);
+                var zipFiles = Directory.GetFiles(batchFolder);
+                foreach (var zipFile in zipFiles)
+                {
+
+                    File.AppendAllText(processingLogFile, $"Archive {zipFile}{Environment.NewLine}");
+                    int showtimeCount = 0, theaterCount = 0, movieCount = 0;
+
+                    using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                    {
+                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        {
+                            try
+                            {
+                                var extractFile = Path.Combine(outputFolder, entry.Name);
+                                if (File.Exists(extractFile))
+                                    File.Delete(extractFile);
+
+                                entry.ExtractToFile(extractFile);
+
+                                XElement xml = XElement.Load(extractFile);
+                                if (xml.Name == "times")
+                                {
+                                    //This is a showtime data set
+                                    foreach (var child in xml.Elements("showtime"))
+                                    {
+                                        Showtime showtime = new Showtime(child);
+                                        context.ShowtimeRecords.Add(new ShowtimeRecord() { batch = batch,  movie_id = showtime.movie_id, theater_id = showtime.theater_id, content = JsonSerializer.Serialize(showtime) });
+                                        ++showtimeCount;
+                                        //context.SaveChanges();
+                                    }
+                                }
+                                else if (xml.Name == "movies")
+                                {
+                                    //This is a movies data set. 
+                                    foreach (var child in xml.Elements("movie"))
+                                    {
+                                        Movie movie = new Movie(child);
+                                        context.MovieRecords.Add(new MovieRecord() { batch = batch, movie_id = movie.movie_id, content = JsonSerializer.Serialize(movie) });
+                                        ++movieCount;
+                                        //context.SaveChanges();
+                                    }
+                                }
+                                else if (xml.Name == "houses")
+                                {
+                                    //This is a theatres data set
+                                    foreach (var child in xml.Elements("theater"))
+                                    {
+                                        Theater theater = new Theater(child);
+                                        context.TheaterRecords.Add(new TheaterRecord() { batch = batch, theater_id = theater.theater_id, content = JsonSerializer.Serialize(theater) });
+                                        ++theaterCount;                                   
+                                        //context.SaveChanges();
+                                    }
+                                }
+
+                                File.AppendAllText(processingLogFile, $"    Movies: {movieCount}, Theaters: {theaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}{Environment.NewLine}");
+
+                                context.SaveChanges();
+                                File.Delete(extractFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                File.AppendAllText(errorLogFile, $"EXCEPTION in {entry.Name}: {ex.Message}{Environment.NewLine}");
+                            }
+
+                        } //End: foreach (ZipArchiveEntry entry in archive.Entries)
+
+                    } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                }
+            }
         }
 
         [Fact]
         public void IndexData()
         {
             DateTime start = DateTime.Now;
+
+            //using var context = _fixture.CreateContext();
+            var context = _testHelper.ShowtimeDb;
 
             string srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
             Assert.True(Directory.Exists(srcFolderRoot));
@@ -54,6 +182,8 @@ namespace DataProcessing
             int totalIndexedRecordCount = 0;
             var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
             int batchCount = 0;
+
+
             foreach (var batchFolder in srcBatcheFolders)
             {
                 var batchName = batchFolder.Substring(batchFolder.LastIndexOf("\\") + 1);
@@ -90,13 +220,22 @@ namespace DataProcessing
                                 {
                                     //This is a movies data set. 
                                     foreach (var child in xml.Elements("movie"))
-                                        movies.Add(new Movie(child));
+                                    {
+                                        Movie movie = new Movie(child);
+                                        context.MovieRecords.Add(new MovieRecord() { id = movie.movie_id, content = JsonSerializer.Serialize(movie)});
+                                        context.SaveChanges();
+                                    }
                                 }
                                 else if (xml.Name == "houses")
                                 {
                                     //This is a theatres data set
                                     foreach (var child in xml.Elements("theater"))
-                                        theaters.Add(new Theater(child));
+                                    {
+                                        Theater theater = new Theater(child);
+                                        context.TheaterRecords.Add(new TheaterRecord() { id = theater.theater_id, content = JsonSerializer.Serialize(theater) });
+                                        context.SaveChanges();
+
+                                    }
                                 }
 
                                 File.Delete(extractFile);
@@ -577,4 +716,100 @@ namespace DataProcessing
         }
 
     }
-}
+
+
+    public class MovieRecord
+    {
+        public int id { get; set; }
+        public int movie_id { get; set; }
+        public int batch { get; set; }
+        public string content { get; set; }
+    }
+    public class TheaterRecord
+    {
+        public int id { get; set; }
+        public int theater_id { get; set; }
+        public int batch { get; set; }
+        public string content { get; set; }
+    }
+
+    public class ShowtimeRecord
+    {
+        public int id { get; set; }
+        public int movie_id { get; set; }
+        public int theater_id { get; set; }
+        public int batch { get; set; }
+        public string content { get; set; }
+    }
+
+    public class ShowtimeDbContext : DbContext
+    {
+        public DbSet<MovieRecord> MovieRecords { get; set; }
+        public DbSet<TheaterRecord> TheaterRecords { get; set; }
+        public DbSet<ShowtimeRecord> ShowtimeRecords { get; set; }
+
+        public ShowtimeDbContext(DbContextOptions<ShowtimeDbContext> options)
+            : base(options)
+        {
+        }
+    }
+
+
+    public class TransactionalTestDatabaseFixture
+    {
+        private const string ConnectionString = @"Server=.\\;Database=showtime;User Id=showtime;Password=password;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+        public ShowtimeDbContext CreateContext()
+            => new ShowtimeDbContext(
+                new DbContextOptionsBuilder<ShowtimeDbContext>()
+                    .UseSqlServer(ConnectionString)
+                    .Options);
+
+        public TransactionalTestDatabaseFixture()
+        {
+            using var context = CreateContext();
+           // context.Database.EnsureDeleted();
+            //context.Database.EnsureCreated();
+
+            //Cleanup();
+        }
+
+        public void Cleanup()
+        {
+            using var context = CreateContext();
+
+            ////    context.AddRange(
+            ////        new Blog { Name = "Blog1", Url = "http://blog1.com" },
+            ////        new Blog { Name = "Blog2", Url = "http://blog2.com" });
+            ////    context.SaveChanges();
+        }
+    }
+
+        /*
+        public class DatabaseFixture : IDisposable
+        {
+            public DatabaseFixture()
+            {
+                Db = new SqlConnection("Server=.\\;Database=showtime;User Id=catfishd;Password=password;Trusted_Connection=True;MultipleActiveResultSets=true");
+
+                // ... initialize data in the test database ...
+            }
+
+            public void Dispose()
+            {
+                // ... clean up test data from the database ...
+            }
+
+            public SqlConnection Db { get; private set; }
+        }
+
+        [CollectionDefinition("Database collection")]
+        public class DatabaseCollection : ICollectionFixture<DatabaseFixture>
+        {
+            // This class has no code, and is never created. Its purpose is simply
+            // to be the place to apply [CollectionDefinition] and all the
+            // ICollectionFixture<> interfaces.
+        }
+
+        */
+    }
