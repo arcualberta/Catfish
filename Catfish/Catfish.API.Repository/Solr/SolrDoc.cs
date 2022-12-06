@@ -48,8 +48,9 @@ namespace Catfish.API.Repository.Solr
                                     solrFieldName += "is";
                                 else if (field.Type == FieldType.Decimal)
                                     solrFieldName += "ds";
-                                else if (field.Type == FieldType.ShortAnswer || field.Type == FieldType.Paragraph || field.Type == FieldType.RichText)
-                                    solrFieldName += "ts";
+                                //ISURU: The following field types are always multilingual, so there is no need to handle them in monolingual case.
+                                //else if (field.Type == FieldType.ShortAnswer || field.Type == FieldType.Paragraph || field.Type == FieldType.RichText)
+                                //    solrFieldName += "ts";
 
                                 foreach (Text text in fd.MonolingualTextValues)
                                 {
@@ -57,8 +58,7 @@ namespace Catfish.API.Repository.Solr
                                         AddField(solrFieldName, text.Value);
                                 }     
                             }
-
-                            if (fd.MultilingualTextValues?.Length > 0)
+                            else if (fd.MultilingualTextValues?.Length > 0)
                             {
                                 solrFieldName += "ts";
                                 foreach (TextCollection tc in fd.MultilingualTextValues)
@@ -67,8 +67,7 @@ namespace Catfish.API.Repository.Solr
                                         AddField(solrFieldName, text.Value);
                                 }
                             }
-
-                            if(fd.SelectedOptionIds?.Length > 0)
+                            else if(fd.SelectedOptionIds?.Length > 0)
                             {
                                 //TODO: 
                                 //Field type  should be _ss (i.e. multiple strings)
@@ -77,30 +76,41 @@ namespace Catfish.API.Repository.Solr
                                 
                                 foreach (var optId in fd.SelectedOptionIds)
                                 {
-                                    foreach (var option in field!.options)
-                                    {
-                                        if(option.OptionText.Id == optId)
-                                        {
-                                            foreach(var value in option.OptionText.Values)
-                                                if(value.Value != null)
-                                                    AddField(solrFieldName, value.Value);
-                                        }
-                                    }
+                                    //ISURU: We can use linq to avoid nested loop
+                                    //foreach (var option in field!.options)
+                                    //{
+                                    //    //if(option.OptionText.Id == optId)
+                                    //    if(option.Id == optId)
+                                    //    {
+                                    //        foreach(var value in option.OptionText.Values)
+                                    //            if(!string.IsNullOrEmpty(value.Value))
+                                    //                AddField(solrFieldName, value.Value);
+                                    //    }
+                                    //}
+
+                                    var selectedOption = field!.options!.FirstOrDefault(opt => opt.OptionText.Id == optId);
+                                    var selectedOptionLabelValues = selectedOption!.OptionText.Values.Select(txt => txt.Value);
+                                    AddField(solrFieldName, selectedOptionLabelValues.ToArray());
+
+                                    //If this selected option contains an extended values, we will index them also here
+                                    var extVals = fd.ExtendedOptionValues?.FirstOrDefault(ext => ext.OptionId == optId)?.Values;
+                                    if(extVals?.Length > 0)
+                                        AddField(solrFieldName, extVals); 
                                 }
-                                if (fd.ExtendedOptionValues?.Length > 0)
-                                {
-                                    foreach (ExtendedOptionValue extVal in fd.ExtendedOptionValues)
-                                        foreach (string val in extVal.Values)
-                                            AddField(solrFieldName, val);
-                                }
+
+                                //if (fd.ExtendedOptionValues?.Length > 0)
+                                //{
+                                //    foreach (ExtendedOptionValue extVal in fd.ExtendedOptionValues)
+                                //        foreach (string val in extVal.Values)
+                                //            AddField(solrFieldName, val);
+                                //}
                             }
                             
                             if(fd.CustomOptionValues?.Length > 0)
                             {
                                 if (!solrFieldName.EndsWith("ss"))
                                     solrFieldName += "ss";
-                                foreach(string val in fd.CustomOptionValues)
-                                    AddField(solrFieldName, val);
+                                AddField(solrFieldName, fd.CustomOptionValues);
                             }
                         }
                     }
@@ -323,6 +333,12 @@ namespace Catfish.API.Repository.Solr
         public void AddField(string name, object val)
         {
             _root.Add(NewField(name, val));
+        }
+
+        public void AddField(string name, object[] values)
+        {
+            foreach (object val in values)
+                _root.Add(NewField(name, val));
         }
 
         protected XElement NewField(string name, object value = null)

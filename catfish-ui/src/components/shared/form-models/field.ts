@@ -63,24 +63,48 @@ export interface Field {
 }
 
 /**
+ * Field Types
+ */
+export enum FieldType{
+    ShortAnswer,
+    Paragraph,
+    RichText,
+
+    Date,
+    DateTime,
+    Decimal,
+    Integer,
+    Email,
+
+    Checkboxes,
+    DataList,
+    RadioButtons,
+    DropDown,
+
+    InfoSection,
+
+    AttachmentField
+}
+
+/**
  * Text input field types, including types applicable for multi-lingual text fields.
  * */
 export enum TextType {
-    ShortAnswer = "ShortAnswer",
-    Paragraph = "Paragraph",
-    RichText = "RichText",
-    AttachmentField="AttachmentField"
+    ShortAnswer = FieldType.ShortAnswer,
+    Paragraph = FieldType.Paragraph,
+    RichText = FieldType.RichText,
+    AttachmentField = FieldType.AttachmentField
 }
 
 /**
  * Mono-lingual text field types.
  * */
 export enum MonolingualFieldType {
-    Date = "Date",
-    DateTime = "DateTime",
-    Decimal = "Decimal",
-    Integer = "Integer",
-    Email = "Email"
+    Date = FieldType.Date,
+    DateTime = FieldType.DateTime,
+    Decimal = FieldType.Decimal,
+    Integer = FieldType.Integer,
+    Email = FieldType.Email
     
 }
 
@@ -88,43 +112,19 @@ export enum MonolingualFieldType {
  * Option field types.
  * */
 export enum OptionFieldType {
-    Checkboxes = "Checkboxes",
-    DataList = "DataList",
-    RadioButtons = "RadioButtons",
-    DropDown = "DropDown"
+    Checkboxes = FieldType.Checkboxes,
+    DataList = FieldType.DataList,
+    RadioButtons = FieldType.RadioButtons,
+    DropDown = FieldType.DropDown
 }
 
 /**
  * Field types that does not take any user input.
  * */
 export enum InfoSectionType{
-    InfoSection = "InfoSection"
+    InfoSection = FieldType.InfoSection
 }
 
-//export const FieldTypes = { ...TextType, ...MonolingualFieldType, ...OptionFieldType, ...InfoSectionType };
-//export type FieldType = typeof FieldTypes;
-
-
-export enum FieldType{
-    ShortAnswer = "ShortAnswer",
-    Paragraph = "Paragraph",
-    RichText = "RichText",
-
-    Date = "Date",
-    DateTime = "DateTime",
-    Decimal = "Decimal",
-    Integer = "Integer",
-    Email = "Email",
-
-    Checkboxes = "Checkboxes",
-    DataList = "DataList",
-    RadioButtons = "RadioButtons",
-    DropDown = "DropDown",
-
-    InfoSection = "InfoSection",
-
-    AttachmentField="AttachmentField"
-}
 
 export interface FileReference {
     id: Guid;

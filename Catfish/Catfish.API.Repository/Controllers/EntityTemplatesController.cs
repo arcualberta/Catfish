@@ -30,8 +30,11 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            return await _context.EntityTemplates!.Where(et=>et.State != eState.Deleted).Select(te => new TemplateEntry() { Id = te.Id, Name = te.Name ?? te.Id.ToString() }).ToListAsync();
-            
+            return await _context.EntityTemplates!
+                .Where(et=>et.State != eState.Deleted)
+                .OrderBy(et => et.Name)
+                .Select(te => new TemplateEntry() { Id = te.Id, Name = te.Name ?? te.Id.ToString() })
+                .ToListAsync();
         }
 
         // GET: api/Forms/5
