@@ -1,5 +1,7 @@
-﻿using Catfish.API.Repository.Models.Entities;
+﻿using Catfish.API.Repository.Interfaces;
+using Catfish.API.Repository.Models.Entities;
 using Catfish.API.Repository.Models.Forms;
+using Catfish.API.Repository.Services;
 using Catfish.API.Repository.Solr;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,14 @@ namespace Catfish.API.Repository.Tests.UnitTests
 {
     public class SolrDocTests
     {
+        private SolrService _solr;
+
+        
+        public void Setup()
+        {
+            
+            _solr = new SolrService();
+        }
         [Fact]
         public void BuildSolrDoc()
         {
@@ -63,7 +73,7 @@ namespace Catfish.API.Repository.Tests.UnitTests
             form_02.Updated = new DateTime(2022, 11, 27);
             forms.Add(form_02);
             SolrDoc doc = new SolrDoc(entityData, forms, true);
-
+            _solr.Index(entityData, forms);
             int x = 10;
 
 
