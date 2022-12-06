@@ -3,6 +3,7 @@ using Catfish.API.Repository.Models.Entities;
 using Catfish.API.Repository.Models.Forms;
 using Catfish.API.Repository.Services;
 using Catfish.API.Repository.Solr;
+using Catfish.API.Repository.Tests.TestHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,19 +14,20 @@ namespace Catfish.API.Repository.Tests.UnitTests
 {
     public class SolrDocTests
     {
-        private SolrService _solr;
+        public readonly TestHelper _testHelper;
 
-        
-        public void Setup()
+        public SolrDocTests()
         {
-            
-            _solr = new SolrService();
+            _testHelper = new TestHelper();
         }
+
         [Fact]
         public void BuildSolrDoc()
         {
             //Load the contents of an entity and its template form example files and then
             //reconstruct the entity object manally for testing
+
+            ISolrService solr = _testHelper.Solr;
 
             string entitDataFile = @"..\..\..\Data\test_entity.json";
             string entitTemplateFile = @"..\..\..\Data\test_entity_template.json";
