@@ -67,10 +67,16 @@ namespace DataProcessing
             var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
 
             int batch = 0;
-            int? lastProcessedBatch = context.MovieRecords.Any() ? context.MovieRecords.Select(m => m.batch).Max() : null;
+            int movieLastProcessedBatch = context.MovieRecords.Any() ? context.MovieRecords.Select(m => m.batch).Max() : 0;
+            int theaterLastProcessedBatch = context.TheaterRecords.Any() ? context.TheaterRecords.Select(m => m.batch).Max() : 0;
+            int showtimeLastProcessedBatch = context.ShowtimeRecords.Any() ? context.ShowtimeRecords.Select(m => m.batch).Max() : 0;
+            int lastProcessedBatch = Math.Max(Math.Max(movieLastProcessedBatch, theaterLastProcessedBatch), showtimeLastProcessedBatch);
+
+            if (lastProcessedBatch == 12)
+                lastProcessedBatch = 13;
 
             //deleteing the last batch processed since it might have been interrupted half-way through
-            if (lastProcessedBatch.HasValue)
+            if (lastProcessedBatch > 0)
             {
                 context.MovieRecords.RemoveRange(context.MovieRecords.Where(rec => rec.batch == lastProcessedBatch));
                 context.TheaterRecords.RemoveRange(context.TheaterRecords.Where(rec => rec.batch == lastProcessedBatch));
@@ -79,12 +85,11 @@ namespace DataProcessing
                 context.SaveChanges();
             }
 
-
             foreach (var batchFolder in srcBatcheFolders)
             {
                 ++batch;
 
-                if (lastProcessedBatch.HasValue && batch < lastProcessedBatch.Value)
+                if (lastProcessedBatch>0 && batch < lastProcessedBatch)
                     continue;
 
                 var batchName = batchFolder.Substring(batchFolder.LastIndexOf("\\") + 1);
@@ -101,6 +106,9 @@ namespace DataProcessing
                         {
                             try
                             {
+                                //Skipping showtime files
+                                if (entry.Name.EndsWith("S.XML")) continue;
+
                                 var extractFile = Path.Combine(outputFolder, entry.Name);
                                 if (File.Exists(extractFile))
                                     File.Delete(extractFile);
