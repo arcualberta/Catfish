@@ -27,9 +27,10 @@ namespace Catfish.API.Repository.Solr
             {
                 foreach(var frmData in src.Data)
                 {
-                    
-                    AddField("form_id_s", frmData.FormId);
-                    AddField("form_state_s", frmData.State.ToString());
+
+                    //AddField("form_id_s", frmData.FormId);
+                    string solrFormState = string.Format("form_{0}_state_s", frmData.FormId);
+                    AddField(solrFormState, frmData.State.ToString());
                     FormTemplate form = forms.FirstOrDefault(f => f.Id == frmData.FormId);
                     var fieldDataList = frmData.FieldData;
                     if (fieldDataList != null)

@@ -29,7 +29,7 @@ namespace Catfish.API.Repository.Tests.TestHelpers
             services.AddSingleton(typeof(IConfiguration), configuration);
          
             //Registering application DB Context
-            string dbConnectionString = configuration.GetConnectionString("catfish");
+            string dbConnectionString = configuration.GetConnectionString("catfish3");
             services.AddDbContext<RepoDbContext>(options => options
                 .UseSqlServer(dbConnectionString)
                 );

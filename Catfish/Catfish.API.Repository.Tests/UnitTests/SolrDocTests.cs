@@ -75,7 +75,9 @@ namespace Catfish.API.Repository.Tests.UnitTests
             form_02.Updated = new DateTime(2022, 11, 27);
             forms.Add(form_02);
             SolrDoc doc = new SolrDoc(entityData, forms, true);
-            _solr.Index(entityData, forms);
+            List<SolrDoc> docs= new List<SolrDoc>();
+            docs.Add(doc);
+            solr.Index(docs);
             int x = 10;
 
 
