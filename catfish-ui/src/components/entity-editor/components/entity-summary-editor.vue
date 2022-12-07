@@ -106,7 +106,7 @@
                     <div>{{mediaFieldData?.fileReferences[0]?.originalFileName}}</div>
 
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4" v-if="store.mediaField">
                     <img src="#" />
                 </div>
             </fieldset>

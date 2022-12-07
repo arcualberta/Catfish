@@ -1,6 +1,9 @@
-﻿using Catfish.API.Repository.Models.Entities;
+﻿using Catfish.API.Repository.Interfaces;
+using Catfish.API.Repository.Models.Entities;
 using Catfish.API.Repository.Models.Forms;
+using Catfish.API.Repository.Services;
 using Catfish.API.Repository.Solr;
+using Catfish.API.Repository.Tests.TestHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +14,20 @@ namespace Catfish.API.Repository.Tests.UnitTests
 {
     public class SolrDocTests
     {
+        public readonly TestHelper _testHelper;
+
+        public SolrDocTests()
+        {
+            _testHelper = new TestHelper();
+        }
+
         [Fact]
         public void BuildSolrDoc()
         {
             //Load the contents of an entity and its template form example files and then
             //reconstruct the entity object manally for testing
+
+            ISolrService solr = _testHelper.Solr;
 
             string entitDataFile = @"..\..\..\Data\test_entity.json";
             string entitTemplateFile = @"..\..\..\Data\test_entity_template.json";
@@ -63,7 +75,9 @@ namespace Catfish.API.Repository.Tests.UnitTests
             form_02.Updated = new DateTime(2022, 11, 27);
             forms.Add(form_02);
             SolrDoc doc = new SolrDoc(entityData, forms, true);
-
+            List<SolrDoc> docs= new List<SolrDoc>();
+            docs.Add(doc);
+            solr.Index(docs);
             int x = 10;
 
 
