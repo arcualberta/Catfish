@@ -200,8 +200,8 @@ namespace DataProcessing
 
                         doc.AddId(Guid.NewGuid());
                         //showtime properties
-                        doc.AddField("movie_id_i", showtimeRecord.movie_id);
-                        doc.AddField("theater_id_i", showtimeRecord.theater_id);
+                        //doc.AddField("movie_id_is", showtimeRecord.movie_id);
+                        //doc.AddField("theater_id_is", showtimeRecord.theater_id);
                         doc.AddField("movie_name_t", showtime!.movie_name!);
                         if (showtime.show_date != null)
                             doc.AddField("show_date_dt", showtime.show_date);
