@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations.Schema;
+using Catfish.API.Repository.Interfaces;
 
 namespace DataProcessing
 {
@@ -30,22 +31,7 @@ namespace DataProcessing
             _testHelper = new TestHelper();
         }
 
-        //public class ShowtimeDataProcessingFixture: IDisposable
-        //{
-        //    public ShowtimeDataProcessingFixture()
-        //    {
-
-        //    }
-
-        //    public void Dispose()
-        //    {
-        //        // ... clean up test data from the database ...
-        //    }
-        //}
-        //public ShowtimeDataProcessing()
-        //{
-        //    _testHelper = new TestHelper();
-        //}
+       
 
         [Fact]
         public void CreateDbRecords()
@@ -72,8 +58,8 @@ namespace DataProcessing
             int showtimeLastProcessedBatch = context.ShowtimeRecords.Any() ? context.ShowtimeRecords.Select(m => m.batch).Max() : 0;
             int lastProcessedBatch = Math.Max(Math.Max(movieLastProcessedBatch, theaterLastProcessedBatch), showtimeLastProcessedBatch);
 
-            if (lastProcessedBatch == 12)
-                lastProcessedBatch = 13;
+          //  if (lastProcessedBatch == 12)
+          //      lastProcessedBatch = 13;
 
             //deleteing the last batch processed since it might have been interrupted half-way through
             if (lastProcessedBatch > 0)
@@ -88,6 +74,9 @@ namespace DataProcessing
             foreach (var batchFolder in srcBatcheFolders)
             {
                 ++batch;
+
+                //DEBUG ONLY  only run 1 batch!!
+                if (batch > 1) break;
 
                 if (lastProcessedBatch>0 && batch < lastProcessedBatch)
                     continue;
@@ -107,7 +96,7 @@ namespace DataProcessing
                             try
                             {
                                 //Skipping showtime files
-                                if (entry.Name.EndsWith("S.XML")) continue;
+                               // if (entry.Name.EndsWith("S.XML")) continue;
 
                                 var extractFile = Path.Combine(outputFolder, entry.Name);
                                 if (File.Exists(extractFile))
@@ -166,13 +155,146 @@ namespace DataProcessing
                 }
             }
         }
-
         [Fact]
         public void IndexData()
         {
             DateTime start = DateTime.Now;
 
-            //using var context = _fixture.CreateContext();
+
+            var context = _testHelper.ShowtimeDb;
+
+            // string srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
+            // Assert.True(Directory.Exists(srcFolderRoot));
+           string outputFolder = "C:\\Projects\\Showtime Database\\output";
+            // Directory.CreateDirectory(outputFolder);
+
+            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            //  string processingLogFile = Path.Combine(outputFolder, $"processing-log-{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"error-log-{fileSuffix}.txt");
+
+            int bufferSize = 10;// 10000;
+            List<SolrDoc> solrDocs = new List<SolrDoc>();
+            int totalShowtimeRecordCount = 0;
+            int totalIndexedRecordCount = 0;
+
+            // int batchCount = 0;
+           
+
+            List<ShowtimeRecord> ShowtimeRecords = new List<ShowtimeRecord>();
+            ShowtimeRecords = context!.ShowtimeRecords.ToList();
+
+            totalShowtimeRecordCount = ShowtimeRecords.Count;
+
+            //Creating solr docs
+            foreach (var showtimeRecord in ShowtimeRecords)
+            {
+                try
+                {
+                    Showtime showtime = JsonSerializer.Deserialize<Showtime>(showtimeRecord.content.ToString());
+
+                    MovieRecord movieRecord = context.MovieRecords.Where(m => m.movie_id == showtimeRecord.movie_id).FirstOrDefault();//movies.FirstOrDefault(mv => mv.movie_id == showtime.movie_id);
+                    Movie movie = JsonSerializer.Deserialize<Movie>(movieRecord!.content);
+
+                    TheaterRecord theaterRecord = context.TheaterRecords.Where(m => m.theater_id == showtimeRecord.theater_id).FirstOrDefault();
+                    Theater theater = JsonSerializer.Deserialize<Theater>(theaterRecord!.content);  //theaters.FirstOrDefault(th => th.theater_id == showtime.theater_id);
+
+                    SolrDoc doc = new SolrDoc();
+                   
+                    doc.AddId(Guid.NewGuid());
+                    //showtime properties
+                    doc.AddField("movie_id_i", showtimeRecord.movie_id);
+                    doc.AddField("theater_id_i", showtimeRecord.theater_id);
+                    doc.AddField("movie_name_t", showtime!.movie_name!);
+                    if (showtime.show_date != null)
+                        doc.AddField("show_date_dt", showtime.show_date);
+                    if (showtime.showtimes != null && showtime.showtimes.Length > 0)
+                        doc.AddField("showtimes_ts", showtime.showtimes);
+
+                    if (showtime.showtime_minutes != null && showtime.showtime_minutes.Length > 0)
+                        doc.AddField("showtime_minutes_is", showtime.showtime_minutes);
+
+                    if (showtime.show_attributes != null && showtime.show_attributes.Length > 0)
+                        doc.AddField("show_attributes_ts", showtime.show_attributes);
+                    if (showtime.show_passes != null)
+                        doc.AddField("show_passes_t", showtime.show_passes);
+
+                    if (showtime.show_festival != null)
+                        doc.AddField("show_festival_t", showtime.show_festival);
+
+                    if (showtime.show_with != null)
+                        doc.AddField("show_with_t", showtime.show_with);
+
+                    if (showtime.show_sound != null)
+                        doc.AddField("show_sound_t", showtime.show_sound);
+
+                    if (showtime.show_comments != null && showtime.show_comments.Length > 0)
+                        doc.AddField("show_comments_ts", showtime.show_comments);
+
+                    if (movie == null)
+                        File.AppendAllText(errorLogFile, $"Movie {showtime.movie_id} Not founnd in batch {showtimeRecord.batch}{Environment.NewLine}");
+                    else
+                    {
+                        
+                        doc = AddMovie(doc, movie);
+                    }
+
+
+
+                    if (theater == null)
+                        File.AppendAllText(errorLogFile, $"Theater {showtime.theater_id} Not founnd in batch {showtimeRecord.batch}{Environment.NewLine}");
+                    else
+                    {
+                        //TODO: add the full list of theater fields
+                        // doc.AddField("theater_name_t", theater.theater_name!);
+                        doc = AddTheater(doc, theater);
+                    }
+
+                    solrDocs.Add(doc);
+
+                    if (solrDocs.Count >= bufferSize)
+                    {
+                        //TODO: call solr service to index the batch of docs
+
+                        ISolrService solr = _testHelper.Solr;
+                        solr.Index(solrDocs);
+
+                        //Clearning the bufffer
+                        totalIndexedRecordCount += solrDocs.Count;
+                        solrDocs.Clear();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText(errorLogFile, $"EXCEPTION in showtime id {showtimeRecord.id}, movie {showtimeRecord.movie_id}, theater {showtimeRecord.theater_id}: {ex.Message}{Environment.NewLine}");
+                }
+
+
+
+                if (solrDocs.Count > 0)
+                {
+                    //TODO: Index this remaining batch of solr docs.
+
+                    totalIndexedRecordCount += solrDocs.Count;
+
+                }
+            }//end of each ShowTimeRecord foun in db
+
+
+            
+      
+
+           // var timelapse = (DateTime.Now - start).ToString();
+           // string logText = "Total showtime records: " + totalShowtimeRecordCount + ", Successfully indexed: " + totalIndexedRecordCount + ", Total time:" + timelapse;
+           //   File.AppendAllText(processingLogFile, logText);
+
+        }
+
+      /*  public void IndexData-Old()
+        {
+            DateTime start = DateTime.Now;
+
+           
             var context = _testHelper.ShowtimeDb;
 
             string srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
@@ -190,7 +312,6 @@ namespace DataProcessing
             int totalIndexedRecordCount = 0;
             var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
             int batchCount = 0;
-
 
             foreach (var batchFolder in srcBatcheFolders)
             {
@@ -366,6 +487,7 @@ namespace DataProcessing
 
 
         }
+      */
         private SolrDoc AddTheater(SolrDoc doc, Theater theater)
         {
             doc.AddField("theater_name_t", theater.theater_name!);
@@ -695,6 +817,19 @@ namespace DataProcessing
     public class Showtime: XmlDoc
     {
 
+        public int movie_id { get; set; }
+        public string? movie_name { get; set; }
+        public int theater_id { get; set; }
+        public DateTime? show_date { get; set; }
+        public string[]? showtimes { get; set; }
+        public int[]? showtime_minutes { get; set; } = null;
+        public string[]? show_attributes { get; set; }
+        public string? show_passes { get; set; }
+        public string? show_festival { get; set; }
+        public string? show_with { get; set; }
+        public string? show_sound { get; set; }
+        public string[]? show_comments { get; set; }
+        /*
         public int movie_id => GetElementValueInt("movie_id", -1);
         public string? movie_name => GetElementValueStr("movie_name");
         public int theater_id => GetElementValueInt("theater_id", -1);
@@ -707,10 +842,23 @@ namespace DataProcessing
         public string? show_with => GetElementValueStr("show_with");
         public string? show_sound => GetElementValueStr("show_sound");
         public string[]? show_comments => GetElementValueStr("show_comments", ";");
-
+        */
 
         public Showtime(XElement xml) : base(xml)
         {
+            movie_id = GetElementValueInt("movie_id", -1);
+            movie_name = GetElementValueStr("movie_name");
+            theater_id = GetElementValueInt("theater_id", -1);
+            show_date = GetElementAttDate("show_date", "date");
+            showtimes = GetElementValueStr("showtimes", ",");
+            showtime_minutes= null;
+            show_attributes = GetElementValueStr("show_attributes", ",");
+            show_passes = GetElementValueStr("show_passes");
+            show_festival = GetElementValueStr("show_festival");
+            show_with = GetElementValueStr("show_with");
+            show_sound = GetElementValueStr("show_sound");
+            show_comments = GetElementValueStr("show_comments", ";");
+
             if(showtimes != null)
             {
                 showtime_minutes = new int[showtimes.Length];

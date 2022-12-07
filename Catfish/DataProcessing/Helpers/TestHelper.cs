@@ -1,4 +1,6 @@
 ﻿using Catfish.API.Repository;
+using Catfish.API.Repository.Services;
+using Catfish.API.Repository.Interfaces;
 using DataProcessing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +43,8 @@ namespace Catfish.Test.Helpers
 
 
             //Registering other services
+            //Registering other services
+            services.AddScoped<ISolrService, SolrService>();
 
             ////services.AddScoped<SolrService>();
             // Solr services
@@ -49,11 +53,15 @@ namespace Catfish.Test.Helpers
             //Creating a service provider and assigning it to the member variable so that it can be used by 
             //test methods.
             Seviceprovider = services.BuildServiceProvider();
+
+          
+            
         }
 
         public RepoDbContext Db => Seviceprovider.GetService<RepoDbContext>();
         public ShowtimeDbContext ShowtimeDb => Seviceprovider.GetService<ShowtimeDbContext>();
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>();
+        public ISolrService Solr => Seviceprovider.GetService<ISolrService>();
 
     }
 }
