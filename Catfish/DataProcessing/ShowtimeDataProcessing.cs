@@ -159,7 +159,8 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            int batchSize = 1;
+            int batchSize = 100;
+            int maxBatchesToProcess = 1;
 
             var context = _testHelper.ShowtimeDb;
 
@@ -172,16 +173,18 @@ namespace DataProcessing
 
             List<SolrDoc> solrDocs = new List<SolrDoc>();
             int offset = 0;
+            int currentBatch = 0;
             while(true)
             {
                 var ShowtimeRecords = context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
 
-                if(!ShowtimeRecords.Any())
+                if(!ShowtimeRecords.Any() || currentBatch >= maxBatchesToProcess)
                     break; //while(true)
 
                 File.AppendAllText(processingLogFile, $"Processing records {offset + 1} - {offset + ShowtimeRecords.Count} {Environment.NewLine}");
 
                 offset += ShowtimeRecords.Count;
+                ++currentBatch;
 
                 //Creating solr docs
                 foreach (var showtimeRecord in ShowtimeRecords)
