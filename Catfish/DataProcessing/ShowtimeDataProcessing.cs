@@ -155,12 +155,12 @@ namespace DataProcessing
                     } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
 
                     //Mark that the current zip file is done processing
-                    context.TrackingKeys.Add(new TrackingKey() { entry_key = zipFile });
+                    context.TrackingKeys.Add(new TrackingKey() { entry_key = zipfile_key });
                     context.SaveChanges();
                 }
 
                 //Mark that the current batch is done processing
-                context.TrackingKeys.Add(new TrackingKey() { entry_key = batchFolder });
+                context.TrackingKeys.Add(new TrackingKey() { entry_key = folder_key });
                 context.SaveChanges();
 
             }//End: foreach (var batchFolder in srcBatcheFolders)
