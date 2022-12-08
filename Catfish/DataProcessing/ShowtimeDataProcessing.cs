@@ -37,10 +37,11 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            bool skipShowtimeRecords = false;
-            bool skipMovieRecords = false;
-            bool skipTheaterRecords = false;
-            int maxShowtimeBatchesToProcess = int.MaxValue;
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
+                maxBatchesToProcess = int.MaxValue;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxShowtimeBatchesToProcess")?.Value, out int maxShowtimeBatchesToProcess))
+                maxShowtimeBatchesToProcess = int.MaxValue;
             
             var context = _testHelper.ShowtimeDb;
 
@@ -62,6 +63,9 @@ namespace DataProcessing
             {
                 ++batch;
 
+                if(maxBatchesToProcess < batch)
+                    break;
+
                 string folder_key = batchFolder.Substring(srcFolderRoot.Length + 1);
                 if (tracking_keys.Contains(folder_key))
                     continue;
@@ -82,13 +86,7 @@ namespace DataProcessing
                         {
                             try
                             {
-                               if ((skipShowtimeRecords || maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML")) 
-                                    continue;
-
-                                if (skipMovieRecords && entry.Name.EndsWith("I.XML"))
-                                    continue;
-
-                                if (skipTheaterRecords && entry.Name.EndsWith("T.XML"))
+                               if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML")) 
                                     continue;
 
                                 var entry_key = $"{zipfile_key}\\{entry.Name}";
@@ -170,8 +168,11 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            int batchSize = 500;
-            int maxBatchesToProcess = int.MaxValue;
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:IndexBatchSize")?.Value, out int batchSize))
+                batchSize = 1000;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
+                maxBatchesToProcess = int.MaxValue;
 
             var context = _testHelper.ShowtimeDb;
 
