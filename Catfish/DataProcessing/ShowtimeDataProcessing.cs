@@ -37,7 +37,7 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            bool skipShowtimeRecords = true;
+            bool skipShowtimeRecords = false;
             bool skipMovieRecords = false;
             bool skipTheaterRecords = false;
             int maxShowtimeBatchesToProcess = 5;// int.MaxValue;
@@ -145,8 +145,6 @@ namespace DataProcessing
                                     }
                                 }
 
-                                File.AppendAllText(processingLogFile, $"    Movies: {movieCount}, Theaters: {theaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}{Environment.NewLine}");
-
                                 context.SaveChanges();
                                 File.Delete(extractFile);
                             }
@@ -156,6 +154,9 @@ namespace DataProcessing
                             }
 
                         } //End: foreach (ZipArchiveEntry entry in archive.Entries)
+
+                        File.AppendAllText(processingLogFile, $"    Movies: {movieCount}, Theaters: {theaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}{Environment.NewLine}");
+
 
                     } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
                 }
@@ -208,7 +209,8 @@ namespace DataProcessing
 
                         SolrDoc doc = new SolrDoc();
 
-                        var showtime_id = $"{showtime!.movie_id}-{showtime!.theater_id}-{showtime!.show_date.ToString("yyyyMMdd")}";
+                        string showtime_id_date_str = (showtime!.show_date != null) ? showtime!.show_date.Value.ToString("yyyyMMdd") : Guid.NewGuid().ToString();
+                        var showtime_id = $"{showtime!.movie_id}-{showtime!.theater_id}-{showtime_id_date_str}";
                         doc.AddId(showtime_id);
 
                         //showtime properties
@@ -454,9 +456,12 @@ namespace DataProcessing
             return vals != null ? vals : new List<string>();
         }
         public string? GetElementAttStr(XElement parent, string elementName, string attName) => GetChildElement(parent, elementName)?.Attribute(attName)?.Value;
-        public DateTime GetElementAttDateYYYYDDMM(XElement parent, string elementName, string attName)
+        public DateTime? GetElementAttDateYYYYDDMM(XElement parent, string elementName, string attName)
         {
             var datestr = GetElementAttStr(parent, elementName, attName);
+            if (string.IsNullOrEmpty(datestr))
+                return null;
+
             return new DateTime(int.Parse(datestr!.Substring(0, 4)), int.Parse(datestr!.Substring(4, 2)), int.Parse(datestr!.Substring(6, 2)));
         }
     }
@@ -622,7 +627,7 @@ namespace DataProcessing
         public int movie_id { get; set; }
         public string? movie_name { get; set; }
         public int theater_id { get; set; }
-        public DateTime show_date { get; set; }
+        public DateTime? show_date { get; set; }
         public string[]? showtimes { get; set; }
         public int[]? showtime_minutes { get; set; } = null;
         public string[]? show_attributes { get; set; }
@@ -639,17 +644,41 @@ namespace DataProcessing
             movie_id = GetElementValueInt(xml, "movie_id", -1);
             movie_name = GetElementValueStr(xml, "movie_name");
             theater_id = GetElementValueInt(xml, "theater_id", -1);
+
+            //Most of the time show-date is defined in a date attribute of a chiled element called show_date
             show_date = GetElementAttDateYYYYDDMM(xml, "show_date", "date");
 
+            if(!show_date.HasValue)
+            {
+                //some times, the show date is defined as the element value 
+                var dateStr = GetElementValueStr(xml, "show_date");
+                if (!string.IsNullOrEmpty(dateStr))
+                {
+                    if (DateTime.TryParse(dateStr, out DateTime d))
+                        show_date = d;
+                    else
+                        throw new Exception($"Date string {dateStr} cannot be parsed as a DateTime object");
+                }
+            }
+            
+            //Most of the time, the showtimes element is encapsulated in the show_date element
             XElement show_date_element = GetChildElement(xml, "show_date");
             showtimes = GetElementValueStr(show_date_element, "showtimes", ",");
+            if(showtimes == null || showtimes?.Length == 0)
+            {
+                //sometime, the showtimes element is directly in the main showtime element
+                showtimes = GetElementValueStr(xml, "showtimes", ",");
+            }
 
             var showTimeMunitesList = new List<int>();
-            foreach(var st in showtimes!)
+            if (showtimes != null)
             {
-                var hhmm = st.Split(":", StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x.Trim('.'))).ToArray();
-                if (hhmm?.Length > 0)
-                    showTimeMunitesList.Add(hhmm[0] * 60 + hhmm[1]);
+                foreach (var st in showtimes!)
+                {
+                    var hhmm = st.Split(":", StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x.Trim('.').Trim(','))).ToArray();
+                    if (hhmm?.Length > 0)
+                        showTimeMunitesList.Add(hhmm[0] * 60 + hhmm[1]);
+                }
             }
             showtime_minutes= showTimeMunitesList.ToArray();
 
@@ -685,7 +714,7 @@ namespace DataProcessing
         public int id { get; set; }
         public int movie_id { get; set; }
         public int theater_id { get; set; }
-        public DateTime show_date { get; set; }
+        public DateTime? show_date { get; set; }
         public int batch { get; set; }
         public string content { get; set; }
     }
