@@ -37,10 +37,10 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            bool skipShowtimeRecords = false;
+            bool skipShowtimeRecords = true;
             bool skipMovieRecords = false;
             bool skipTheaterRecords = false;
-            int maxShowtimeBatchesToProcess = 1;// int.MaxValue;
+            int maxShowtimeBatchesToProcess = 5;// int.MaxValue;
             
             var context = _testHelper.ShowtimeDb;
 
@@ -519,11 +519,14 @@ namespace DataProcessing
             intl_country = GetElementAttStr(xml, "intl", "country");
 
             XElement intl = GetChildElement(xml, "intl");
-            intl_name = GetElementValueStr(intl, "intl_name");
-            intl_cert = GetElementValueStr(intl, "intl_cert");
-            intl_advisory = GetElementValueStr(intl, "intl_advisory");
-            intl_release = GetElementValueDateTime(intl, "intl_release");
-            intl_poster = GetElementValueStr(intl, "intl_poster");
+            if (intl != null)
+            {
+                intl_name = GetElementValueStr(intl, "intl_name");
+                intl_cert = GetElementValueStr(intl, "intl_cert");
+                intl_advisory = GetElementValueStr(intl, "intl_advisory");
+                intl_release = GetElementValueDateTime(intl, "intl_release");
+                intl_poster = GetElementValueStr(intl, "intl_poster");
+            }
         }
     }
 
