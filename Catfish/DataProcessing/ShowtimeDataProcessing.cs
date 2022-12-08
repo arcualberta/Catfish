@@ -40,7 +40,7 @@ namespace DataProcessing
             bool skipShowtimeRecords = false;
             bool skipMovieRecords = false;
             bool skipTheaterRecords = false;
-            int maxShowtimeBatchesToProcess = 5;// int.MaxValue;
+            int maxShowtimeBatchesToProcess = int.MaxValue;
             
             var context = _testHelper.ShowtimeDb;
 
