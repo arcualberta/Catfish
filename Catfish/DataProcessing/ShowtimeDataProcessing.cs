@@ -37,7 +37,11 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            //using var context = _fixture.CreateContext();
+            bool skipShowtimeRecords = false;
+            bool skipMovieRecords = false;
+            bool skipTheaterRecords = false;
+            int maxShowtimeBatchesToProcess = 1;// int.MaxValue;
+            
             var context = _testHelper.ShowtimeDb;
 
             string srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
@@ -74,9 +78,6 @@ namespace DataProcessing
             {
                 ++batch;
 
-                //DEBUG ONLY  only run 1 batch!!
-                if (batch > 1) break;
-
                 if (lastProcessedBatch > 0 && batch < lastProcessedBatch)
                     continue;
 
@@ -94,8 +95,14 @@ namespace DataProcessing
                         {
                             try
                             {
-                                //Skipping showtime files
-                               // if (entry.Name.EndsWith("S.XML")) continue;
+                               if ((skipShowtimeRecords || maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML")) 
+                                    continue;
+
+                                if (skipMovieRecords && entry.Name.EndsWith("I.XML"))
+                                    continue;
+
+                                if (skipTheaterRecords && entry.Name.EndsWith("T.XML"))
+                                    continue;
 
                                 var extractFile = Path.Combine(outputFolder, entry.Name);
                                 if (File.Exists(extractFile))
