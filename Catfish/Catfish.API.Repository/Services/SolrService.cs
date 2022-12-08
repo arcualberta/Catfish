@@ -26,37 +26,32 @@ namespace Catfish.API.Repository.Services
             _indexFieldNames = false;
             _ = bool.TryParse(_config.GetSection("SolarConfiguration:IndexFieldNames").Value, out _indexFieldNames);
         }
-        public void Index(EntityData entity, List<FormTemplate> forms)
+        public async Task Index(EntityData entity, List<FormTemplate> forms)
         {
             SolrDoc doc = new SolrDoc(entity, forms, _indexFieldNames);
-            AddUpdateAsync(doc);
+            await AddUpdateAsync(doc);
         }
-        public void AddUpdateAsync(SolrDoc doc)
+        public async Task AddUpdateAsync(SolrDoc doc)
         {
             XElement payload = new XElement("add");
             payload.Add(doc.Root);
 
-            _ = AddUpdateAsync(payload);
+            await AddUpdateAsync(payload);
         }
-        public void Commit()
-        {
-            _ = CommitAsync();
-        }
-
         
-        public void Index(IList<EntityData> entities, List<FormTemplate> forms)
+        public async Task Index(IList<EntityData> entities, List<FormTemplate> forms)
         {
             var docs = entities.Select(entity => new SolrDoc(entity, forms, _indexFieldNames)).ToList();
-            Index(docs);
+            await Index(docs);
         }
 
-        public void Index(List<SolrDoc> docs)
+        public async Task Index(List<SolrDoc> docs)
         {
             XElement payload = new XElement("add");
             foreach (var doc in docs)
                 payload.Add(doc.Root);
 
-            _ = AddUpdateAsync(payload); 
+            await AddUpdateAsync(payload); 
         }
 
         public async Task AddUpdateAsync(XElement payload)
@@ -72,8 +67,6 @@ namespace Catfish.API.Repository.Services
 
         public async Task CommitAsync()
         {
-            return;
-
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
             using var client = new HttpClient();

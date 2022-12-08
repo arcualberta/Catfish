@@ -329,6 +329,56 @@ namespace Catfish.API.Repository.Solr
             _root.Add(NewField("id", id.ToString()));
         }
 
+        public void AddId(string id)
+        {
+            _root.Add(NewField("id", id));
+        }
+
+        public void AddField(string name, int val)
+        {
+            _root.Add(NewField(name, val));
+        }
+
+        public void AddField(string name, int[] values)
+        {
+            foreach (object val in values)
+                _root.Add(NewField(name, val));
+        }
+
+        public void AddField(string name, decimal val)
+        {
+            _root.Add(NewField(name, val));
+        }
+
+        public void AddField(string name, decimal[] values)
+        {
+            foreach (object val in values)
+                _root.Add(NewField(name, val));
+        }
+
+        public void AddField(string name, string val)
+        {
+            _root.Add(NewField(name, val));
+        }
+
+        public void AddField(string name, string[] values)
+        {
+            foreach (object val in values)
+                _root.Add(NewField(name, val));
+        }
+
+        public void AddField(string name, DateTime val)
+        {
+            _root.Add(NewField(name, val));
+        }
+
+        public void AddField(string name, DateTime[] values)
+        {
+            foreach (object val in values)
+                _root.Add(NewField(name, val));
+        }
+
+
         public void AddField(string name, object val)
         {
             _root.Add(NewField(name, val));
