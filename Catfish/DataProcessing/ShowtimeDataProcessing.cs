@@ -56,35 +56,22 @@ namespace DataProcessing
             var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
 
             int batch = 0;
-            int movieLastProcessedBatch = context.MovieRecords.Any() ? context.MovieRecords.Select(m => m.batch).Max() : 0;
-            int theaterLastProcessedBatch = context.TheaterRecords.Any() ? context.TheaterRecords.Select(m => m.batch).Max() : 0;
-            int showtimeLastProcessedBatch = context.ShowtimeRecords.Any() ? context.ShowtimeRecords.Select(m => m.batch).Max() : 0;
-            int lastProcessedBatch = Math.Max(Math.Max(movieLastProcessedBatch, theaterLastProcessedBatch), showtimeLastProcessedBatch);
 
-            //  if (lastProcessedBatch == 12)
-            //      lastProcessedBatch = 13;
-
-            //deleteing the last batch processed since it might have been interrupted half-way through
-            if (lastProcessedBatch > 0)
-            {
-                context.MovieRecords.RemoveRange(context.MovieRecords.Where(rec => rec.batch == lastProcessedBatch));
-                context.TheaterRecords.RemoveRange(context.TheaterRecords.Where(rec => rec.batch == lastProcessedBatch));
-                context.ShowtimeRecords.RemoveRange(context.ShowtimeRecords.Where(rec => rec.batch == lastProcessedBatch));
-
-                context.SaveChanges();
-            }
-
+            var tracking_keys = context.TrackingKeys.Select(record => record.entry_key).ToList();
             foreach (var batchFolder in srcBatcheFolders)
             {
                 ++batch;
 
-                if (lastProcessedBatch > 0 && batch < lastProcessedBatch)
+                string folder_key = batchFolder.Substring(srcFolderRoot.Length + 1);
+                if (tracking_keys.Contains(folder_key))
                     continue;
 
-                var batchName = batchFolder.Substring(batchFolder.LastIndexOf("\\") + 1);
                 var zipFiles = Directory.GetFiles(batchFolder);
                 foreach (var zipFile in zipFiles)
                 {
+                    string zipfile_key = zipFile.Substring(srcFolderRoot.Length + 1);
+                    if (tracking_keys.Contains(zipfile_key))
+                        continue;
 
                     File.AppendAllText(processingLogFile, $"Archive {zipFile}{Environment.NewLine}");
                     int showtimeCount = 0, theaterCount = 0, movieCount = 0;
@@ -102,6 +89,10 @@ namespace DataProcessing
                                     continue;
 
                                 if (skipTheaterRecords && entry.Name.EndsWith("T.XML"))
+                                    continue;
+
+                                var entry_key = $"{zipfile_key}\\{entry.Name}";
+                                if (tracking_keys.Contains(entry_key))
                                     continue;
 
                                 var extractFile = Path.Combine(outputFolder, entry.Name);
@@ -145,6 +136,9 @@ namespace DataProcessing
                                     }
                                 }
 
+                                //Mark that current entry is done processing
+                                context.TrackingKeys.Add(new TrackingKey() { entry_key = entry_key });
+
                                 context.SaveChanges();
                                 File.Delete(extractFile);
                             }
@@ -159,8 +153,17 @@ namespace DataProcessing
 
 
                     } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+
+                    //Mark that the current zip file is done processing
+                    context.TrackingKeys.Add(new TrackingKey() { entry_key = zipFile });
+                    context.SaveChanges();
                 }
-            }
+
+                //Mark that the current batch is done processing
+                context.TrackingKeys.Add(new TrackingKey() { entry_key = batchFolder });
+                context.SaveChanges();
+
+            }//End: foreach (var batchFolder in srcBatcheFolders)
         }
         [Fact]
         public void IndexData()
@@ -719,11 +722,18 @@ namespace DataProcessing
         public string content { get; set; }
     }
 
+    public class TrackingKey
+    {
+        public int id { get; set; }
+        public string entry_key { get; set; }
+    }
+
     public class ShowtimeDbContext : DbContext
     {
         public DbSet<MovieRecord> MovieRecords { get; set; }
         public DbSet<TheaterRecord> TheaterRecords { get; set; }
         public DbSet<ShowtimeRecord> ShowtimeRecords { get; set; }
+        public DbSet<TrackingKey> TrackingKeys { get; set; }
 
         public ShowtimeDbContext(DbContextOptions<ShowtimeDbContext> options)
             : base(options)
