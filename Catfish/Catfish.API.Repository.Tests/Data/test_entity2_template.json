@@ -1,0 +1,30 @@
+{
+  "MetadataForms": [
+    {
+      "IsRequired": true,
+      "Id": "95fc71a0-3363-fdee-9802-e0cabc98607a",
+      "Name": "DataForm",
+      "State": "Draft"
+    }
+  ],
+  "DataForms": [
+    {
+      "IsRequired": true,
+      "Id": "861fba83-c3ab-62aa-2177-2d579ac5bd02",
+      "Name": "MetadataForm",
+      "State": "Draft"
+    }
+  ],
+  "TitleField": {
+    "FormId": "95fc71a0-3363-fdee-9802-e0cabc98607a",
+    "FieldId": "16c475b8-1c15-6282-cdfa-55ea77599892"
+  },
+  "DescriptionField": {
+    "FormId": "95fc71a0-3363-fdee-9802-e0cabc98607a",
+    "FieldId": "8d22704e-76d6-ff28-69d4-58a9ee4b129a"
+  },
+  "MediaField": {
+    "FormId": "00000000-0000-0000-0000-000000000000",
+    "FieldId": "00000000-0000-0000-0000-000000000000"
+  }
+}

@@ -1,0 +1,178 @@
+[
+  {
+    "Type": 0,
+    "Id": "16c475b8-1c15-6282-cdfa-55ea77599892",
+    "Title": {
+      "Id": "829312e0-b3bf-1d1d-ad4e-fe2089906ee5",
+      "Values": [
+        {
+          "Id": "52906da3-2135-851a-7571-ba4111145368",
+          "Value": "Name",
+          "TextType": 0,
+          "Lang": "en"
+        },
+        {
+          "Id": "54be3e12-bee1-a50f-7898-1d97607c6fed",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "fr"
+        }
+      ]
+    },
+    "Description": {
+      "Id": "8946a747-adb4-23f0-7756-acaf5ea46fa2",
+      "Values": [
+        {
+          "Id": "52d73b3f-70d0-479b-0ce0-55140d408a4d",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "en"
+        },
+        {
+          "Id": "0b3a757d-e73d-d976-7b7c-49d1df6b6608",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "fr"
+        }
+      ]
+    },
+    "IsRequired": false,
+    "IsMultiValued": false,
+    "DecimalPoints": 0,
+    "options": null,
+    "AllowCustomOptionValues": false,
+    "Files": null
+  },
+  {
+    "Type": 1,
+    "Id": "8d22704e-76d6-ff28-69d4-58a9ee4b129a",
+    "Title": {
+      "Id": "432fd8c5-13e6-6afc-94cb-e3e72e61a7df",
+      "Values": [
+        {
+          "Id": "cc648a21-54b5-fb4a-f18c-853c13c5582f",
+          "Value": "Address",
+          "TextType": 0,
+          "Lang": "en"
+        },
+        {
+          "Id": "79d0b9c3-ee2f-bf5c-e06e-a2f2e3793e1d",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "fr"
+        }
+      ]
+    },
+    "Description": {
+      "Id": "99bcb79d-258f-7d82-697e-201c373d6a6c",
+      "Values": [
+        {
+          "Id": "de7ceb96-581e-dd5d-f00a-039d6b480811",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "en"
+        },
+        {
+          "Id": "f2ce9296-bf30-16b1-e4bc-994270c1175a",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "fr"
+        }
+      ]
+    },
+    "IsRequired": false,
+    "IsMultiValued": false,
+    "DecimalPoints": 0,
+    "options": null,
+    "AllowCustomOptionValues": false,
+    "Files": null
+  },
+  {
+    "Type": 3,
+    "Id": "bb619b0a-3fd1-ff40-efc4-e1ba99ad2618",
+    "Title": {
+      "Id": "29064a78-1a51-62e3-85b0-8c6595ada86d",
+      "Values": [
+        {
+          "Id": "3fdc4cbe-8ebe-b414-6bcc-0a4490234e31",
+          "Value": "Date of Birth",
+          "TextType": 0,
+          "Lang": "en"
+        },
+        {
+          "Id": "435cc143-d62e-6f09-992d-2ca725e9ea01",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "fr"
+        }
+      ]
+    },
+    "Description": {
+      "Id": "4d828cdf-800d-0ec0-8e19-026dbb9c18b9",
+      "Values": [
+        {
+          "Id": "a08e221f-d69b-b77f-0ffd-fe6ee846fb73",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "en"
+        },
+        {
+          "Id": "83a69ff6-ecc8-19f1-eddf-396db8a01708",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "fr"
+        }
+      ]
+    },
+    "IsRequired": false,
+    "IsMultiValued": false,
+    "DecimalPoints": 0,
+    "options": null,
+    "AllowCustomOptionValues": false,
+    "Files": null
+  },
+  {
+    "Type": 7,
+    "Id": "e8496293-a1a5-2696-6cdb-0129099b66c9",
+    "Title": {
+      "Id": "fa4d477d-551e-70e6-6371-b2f5cb328905",
+      "Values": [
+        {
+          "Id": "149ab181-18fd-9a26-e5b3-5f15b04b365b",
+          "Value": "Email",
+          "TextType": 0,
+          "Lang": "en"
+        },
+        {
+          "Id": "1b934136-33d8-5d0d-42b1-4072b5579a3d",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "fr"
+        }
+      ]
+    },
+    "Description": {
+      "Id": "cff5d647-b260-49da-d552-d1dec6a91b1f",
+      "Values": [
+        {
+          "Id": "0ace1f8e-735f-0718-012b-958e58ed8863",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "en"
+        },
+        {
+          "Id": "c07ddaab-b192-6b48-d774-fb49cd12a82f",
+          "Value": "",
+          "TextType": 0,
+          "Lang": "fr"
+        }
+      ]
+    },
+    "IsRequired": false,
+    "IsMultiValued": false,
+    "DecimalPoints": 0,
+    "options": null,
+    "AllowCustomOptionValues": false,
+    "Files": null
+  }
+]
