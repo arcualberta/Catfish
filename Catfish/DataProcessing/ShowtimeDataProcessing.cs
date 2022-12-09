@@ -166,7 +166,7 @@ namespace DataProcessing
         [Fact]
         public void IndexData()
         {
-            int? startShowtimeId = 20667301 + 160000;
+            int? startShowtimeId = 25727300;
             bool skipShowtimesWithMissingMoviesOrTheaters = true;
 
             DateTime start = DateTime.Now;
@@ -237,6 +237,9 @@ namespace DataProcessing
                                         ShowtimeRecords.RemoveAll(m => m.movie_id == showtimeRecord.movie_id);
                                         continue;
                                     }
+
+                                    if (missingMovieRecords.Count > 5000)
+                                        missingMovieRecords.RemoveRange(0, 2500);
                                 }
                                 else
                                     movie = JsonSerializer.Deserialize<Movie>(movieRecord!.content);
@@ -262,6 +265,10 @@ namespace DataProcessing
                                         ShowtimeRecords.RemoveAll(m => m.theater_id == showtimeRecord.theater_id);
                                         continue;
                                     }
+
+                                    if (missingTheaterRecords.Count > 5000)
+                                        missingTheaterRecords.RemoveRange(0, 2500);
+
                                 }
                                 else
                                     theater = JsonSerializer.Deserialize<Theater>(theaterRecord!.content);
