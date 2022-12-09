@@ -166,7 +166,6 @@ namespace DataProcessing
         [Fact]
         public void IndexData()
         {
-            int? startShowtimeId = 25727300;
             bool skipShowtimesWithMissingMoviesOrTheaters = true;
 
             DateTime start = DateTime.Now;
@@ -176,6 +175,9 @@ namespace DataProcessing
 
             if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
                 maxBatchesToProcess = int.MaxValue;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:StartupShowtimeIdForIndexing")?.Value, out int startShowtimeId))
+                startShowtimeId = 0;
 
             var context = _testHelper.ShowtimeDb;
 
@@ -191,8 +193,8 @@ namespace DataProcessing
             int currentBatch = 0;
             while (true)
             {
-                var ShowtimeRecords = startShowtimeId.HasValue 
-                    ? context!.ShowtimeRecords.Where(s => s.id >= startShowtimeId.Value).Skip(offset).Take(batchSize).ToList()
+                var ShowtimeRecords = startShowtimeId > 0 
+                    ? context!.ShowtimeRecords.Where(s => s.id >= startShowtimeId).Skip(offset).Take(batchSize).ToList()
                     : context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
 
                 if (!ShowtimeRecords.Any() || currentBatch >= maxBatchesToProcess)
