@@ -19,3 +19,13 @@ export enum eSearchTarget
     Description="Description",
     TitleOrDescription="TitleOrDescription"
 }
+
+export enum eFieldType{
+    Text="Text",
+    Date = "Date",
+    Number = "Number",
+    Checkbox = "Checkbox",
+    Email="Email",
+    DropDown="DropDown",
+    Radio="Radio"
+}
