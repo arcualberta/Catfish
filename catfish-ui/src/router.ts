@@ -63,6 +63,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'editEntityEditor',
         component: () => import('./views/EntityEditor.vue')
     },
+    {
+        path: '/solr-search-panel/',
+        name: 'solrSearchPanel',
+        component: () => import('./views/SolrSearchPanel.vue')
+    },
 ]
 
 const router = createRouter({
