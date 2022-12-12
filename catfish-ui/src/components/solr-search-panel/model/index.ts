@@ -4,7 +4,8 @@ import { eFieldType } from "../../shared/constants";
 export interface SearchFieldDefinition{
     name: string,
     label: string,
-    type: eFieldType
+    type: eFieldType,
+    options: string[]
 }
 
 /* solr model from previous version -- we might or might not need them */
