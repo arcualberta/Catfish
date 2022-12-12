@@ -4,7 +4,7 @@ namespace Catfish.API.Repository.Solr
 {
     public class SearchResult
     {
-        public List<ResultEntry> ResultEntries { get; set; }
+        public List<SolrResultEntry> ResultEntries { get; set; }
 
         public int Offset { get; set; }
 
@@ -30,14 +30,14 @@ namespace Catfish.API.Repository.Solr
             var highlightsContainer = resp.Elements("lst")
                 .FirstOrDefault(el => el.Attribute("name").Value == "highlighting");
 
-            ResultEntries = new List<ResultEntry>();
+            ResultEntries = new List<SolrResultEntry>();
             foreach (var doc in result.Elements("doc"))
             {
                 try
                 {
 
                     //create a new entry for the doc (Item)
-                    ResultEntry resultEntry = new ResultEntry(doc);
+                    SolrResultEntry resultEntry = new SolrResultEntry(doc);
                     ResultEntries.Add(resultEntry);
 
                     //Setting field highlights
