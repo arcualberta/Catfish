@@ -2,9 +2,9 @@
 import { eFieldType } from "../../shared/constants";
 
 export interface SearchFieldDefinition{
-    fieldName: string,
-    fieldLabel: string,
-    fieldType: eFieldType
+    name: string,
+    label: string,
+    type: eFieldType
 }
 
 /* solr model from previous version -- we might or might not need them */

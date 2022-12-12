@@ -1,13 +1,16 @@
-export enum FieldType {
-    Text = "Text",
-    Date = "Date",
-    Number = "Number",
-    Checkbox = "Checkbox",
-    Email = "Email",
-    DropDown = "DropDown",
-    Radio = "Radio"
-}
-export enum SearchResultFieldMapping {
+import { eFieldType } from '../shared/constants'
+import {SearchFieldDefinition} from './model'
+
+export const SolrFields:SearchFieldDefinition[] = [
+    { name: "Mmovie_name_t", label: "Movie name", type: eFieldType.Text },
+    { name: "show_date_dt", label: "Show daye", type: eFieldType.Date },
+    { name: "showtimes_ts", label: "Show time (HH:mm)", type: eFieldType.Text },
+];
+
+
+
+/*
+{
     MovieName = "movie_name_t",
     SHOWTIMEDATE = "show_date_dt",
     SHOWTIMES = "showtimes_ts",
@@ -45,3 +48,4 @@ export enum SearchResultFieldMapping {
     THEATERCOUNTRY = "theater_country_t",
     THEATERURL = "theater_url_t"
 }
+*/
