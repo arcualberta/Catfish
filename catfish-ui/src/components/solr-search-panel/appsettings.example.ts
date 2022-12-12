@@ -5,6 +5,7 @@ export const SolrFields:SearchFieldDefinition[] = [
     { name: "Mmovie_name_t", label: "Movie name", type: eFieldType.Text },
     { name: "show_date_dt", label: "Show daye", type: eFieldType.Date },
     { name: "showtimes_ts", label: "Show time (HH:mm)", type: eFieldType.Text },
+    { name: "show_passes_ss", label: "Show passes", type: eFieldType.Radio, options:["YES", "NO"]},
 ];
 
 
@@ -15,8 +16,8 @@ export const SolrFields:SearchFieldDefinition[] = [
     SHOWTIMEDATE = "show_date_dt",
     SHOWTIMES = "showtimes_ts",
     SHOWTIMEMINUTES = "showtime_minutes_is",
-    SHOWPASSES = "show_passes_t",
-    SHOWFESTIVAL = "show_festival_t",
+    SHOWPASSES = "show_passes_ss",
+    SHOWFESTIVAL = "show_festival_ss",
     SHOWCOMMENTS = "show_comments_ts",
     TITLE = "title_t",
     GENRES = "genres_ts",
