@@ -21,11 +21,12 @@ export enum eSearchTarget
 }
 
 export enum eFieldType{
-    Text="Text",
-    Date = "Date",
-    Number = "Number",
-    Checkbox = "Checkbox",
-    Email="Email",
-    DropDown="DropDown",
-    Radio="Radio"
+    Text,
+    Date,
+    Integer,
+    Decimal,
+    Email,
+    Checkbox,
+    DropDown,
+    Radio
 }
