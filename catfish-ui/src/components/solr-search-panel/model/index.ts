@@ -5,7 +5,7 @@ export interface SearchFieldDefinition{
     name: string,
     label: string,
     type: eFieldType,
-    options: string[] //This field will carry the option values for fields of type dropdown, checkbox, or radio button.
+    options: string[]
 }
 
 /* solr model from previous version -- we might or might not need them */
