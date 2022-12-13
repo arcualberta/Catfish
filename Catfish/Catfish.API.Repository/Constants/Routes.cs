@@ -28,5 +28,9 @@
         {
             public const string Root = "api/collections";
         }
+        internal static class SolrSearch
+        {
+            public const string Root = "api/solr-search";
+        }
     }
 }

@@ -5,11 +5,11 @@ namespace Catfish.API.Repository.Solr
     public class ResultEntry
     {
         public Guid Id { get; set; }
-        public Guid TemplateId { get; set; }
-        public Guid RootFormInstaceId { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime Updated { get; set; }
-        public Guid StatusId { get; set; }
+       // public Guid TemplateId { get; set; }
+       // public Guid RootFormInstaceId { get; set; }
+       // public DateTime Created { get; set; }
+       // public DateTime Updated { get; set; }
+       // public Guid StatusId { get; set; }
         public List<ResultEntryField> Fields { get; set; } = new List<ResultEntryField>();
 
         public ResultEntry(XElement doc)
@@ -22,7 +22,7 @@ namespace Catfish.API.Repository.Solr
             Id = string.IsNullOrEmpty(valStr) ? Guid.Empty : Guid.Parse(valStr);
 
             //set the status ID
-            valStr = doc.Elements("str")
+          /*  valStr = doc.Elements("str")
                 .Where(ele => ele.Attribute("name").Value == "status_s")
                 .Select(ele => ele.Value)
                 .FirstOrDefault();
@@ -81,6 +81,7 @@ namespace Catfish.API.Repository.Solr
                     arr.Attribute("name").Value.StartsWith("_"))
                 .Select(arr => new ResultEntryField(arr, fieldNameDictionary))
                 .ToList();
+          */
         }
 
         public void SetFieldHighlights(XElement highlights)
