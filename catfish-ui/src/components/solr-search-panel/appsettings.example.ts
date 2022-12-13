@@ -1,9 +1,9 @@
 import { eFieldType } from '../shared/constants'
-import {SearchFieldDefinition} from './model'
+import {SearchFieldDefinition} from './models'
 
 export const SolrFields:SearchFieldDefinition[] = [
     { name: "Mmovie_name_t", label: "Movie name", type: eFieldType.Text, options: [] },
-    { name: "show_date_dt", label: "Show daye", type: eFieldType.Date, options: [] },
+    { name: "show_date_dt", label: "Show date", type: eFieldType.Date, options: [] },
     { name: "showtimes_ts", label: "Show time (HH:mm)", type: eFieldType.Text, options: [] },
     { name: "showtime_minutes_is", label: "Show minutes", type: eFieldType.Integer, options: [] },
     { name: "show_passes_t", label: "Show passes", type: eFieldType.Radio, options:["Y", "N"]},
