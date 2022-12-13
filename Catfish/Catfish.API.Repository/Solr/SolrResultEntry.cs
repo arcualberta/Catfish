@@ -12,11 +12,11 @@ namespace Catfish.API.Repository.Solr
         public SolrResultEntry(XElement doc)
         {
             //set the item ID
-            string valStr = doc.Elements("str")
-                .Where(ele => ele.Attribute("name").Value == "id")
-                .Select(ele => ele.Value)
-                .FirstOrDefault();
-            Id = string.IsNullOrEmpty(valStr) ? "" : valStr;
+            //string valStr = doc.Elements("str")
+            //    .Where(ele => ele.Attribute("name").Value == "id")
+            //    .Select(ele => ele.Value)
+            //    .FirstOrDefault();
+            //Id = string.IsNullOrEmpty(valStr) ? "" : valStr;
 
             string versionStr = doc.Elements("long")
                 .Where(ele => ele.Attribute("name").Value == "version")
@@ -44,9 +44,14 @@ namespace Catfish.API.Repository.Solr
             foreach(XElement el in elements)
             {
                 string nodeName = el.Attribute("name").Value;
-                if (nodeName == "id") //skip the id
-                    continue;
                 string nodeValue = el.Value;
+                if (nodeName == "id")
+                {
+                    Id = nodeValue;
+                    continue;
+                } 
+                    
+               
                 Data.Add(new KeyValuePair<string, object>(nodeName, nodeValue));
             }
         }
@@ -115,14 +120,15 @@ namespace Catfish.API.Repository.Solr
             {
                 var fieldKey = highlightFieldEntry.Attribute("name").Value;
 
-                if (!(fieldKey.StartsWith("data_") || fieldKey.StartsWith("metadata_")))
-                    continue;
+              //  if (!(fieldKey.StartsWith("data_") || fieldKey.StartsWith("metadata_")))
+              //      continue;
 
                 string[] fieldKeyParts = fieldKey.Split("_");
                 var containerType = SearchFieldConstraint.Str2Scope(fieldKeyParts[0]);
                 var containerId = Guid.Parse(fieldKeyParts[1]);
                 var feildId = Guid.Parse(fieldKeyParts[2]);
 
+                //????
                // var field = Fields.Where(f => f.Scope == containerType && f.ContainerId == containerId && f.FieldId == feildId).FirstOrDefault();
                // field.SetHighlights(highlightFieldEntry)
             }
