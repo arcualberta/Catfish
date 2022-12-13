@@ -21,7 +21,7 @@ export enum eSearchTarget
 }
 
 export enum eFieldType{
-    Text,
+    Text = 1,
     Date,
     Integer,
     Decimal,
