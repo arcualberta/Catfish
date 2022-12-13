@@ -17,7 +17,8 @@ namespace Catfish.API.Repository.Solr
 
         //private readonly ErrorLog _errorLog;
 
-        public SearchResult(string response)
+        public SearchResult() { }
+        public void InitFromXml(string response)
         {
             //_errorLog = errorLog;
 
@@ -52,6 +53,11 @@ namespace Catfish.API.Repository.Solr
                     //_errorLog.Log(new Error(ex));
                 }
             }
+        }
+
+        public void InitFromJson(string response)
+        {
+            //_errorLog = errorLog;
         }
     }
 }

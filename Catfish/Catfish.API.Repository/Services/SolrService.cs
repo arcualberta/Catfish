@@ -10,7 +10,6 @@ namespace Catfish.API.Repository.Services
         protected readonly IConfiguration _config;
         private readonly string _solrCoreUrl;
         //private readonly ErrorLog _errorLog;
-        private SearchResult _result;
         private readonly bool _indexFieldNames;
         public SolrService()
         {
@@ -75,7 +74,7 @@ namespace Catfish.API.Repository.Services
             httpResponse.EnsureSuccessStatusCode();
         }
 
-        public SearchResult Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1)
+        public async Task<SearchResult> Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1)
         {
             string query = "doc_type_ss:item";
 
@@ -90,11 +89,9 @@ namespace Catfish.API.Repository.Services
                 query = string.Format("({0}) AND doc_type_ss:item", query);
             }
 
-            _result = null;
-            var task = ExecuteSearchQuery(query, start, maxRows, maxHighlightsPerEntry);
-            task.Wait(60000);//Wait for a maximum of 1 minute
-            return _result;
+            return await ExecuteSearch(query, start, maxRows, maxHighlightsPerEntry);
         }
+
         /// <summary>
         /// Executes a given valid solr query.
         /// </summary>Advanced search
@@ -103,7 +100,7 @@ namespace Catfish.API.Repository.Services
         /// <param name="maxRows"></param>
         /// <param name="maxHighlightsPerEntry"></param>
         /// <returns></returns>
-        public SearchResult Search(SearchFieldConstraint[] constraints, int start, int maxRows, int maxHighlightsPerEntry = 1)
+        public async Task<SearchResult> Search(SearchFieldConstraint[] constraints, int start, int maxRows, int maxHighlightsPerEntry = 1)
         {
             List<string> queryParams = new List<string>();
             foreach (var constraint in constraints)
@@ -120,25 +117,7 @@ namespace Catfish.API.Repository.Services
             queryParams.Add("doc_type_ss:item");
             string query = string.Join(" AND ", queryParams);
 
-            _result = null;
-            var task = ExecuteSearchQuery(query, start, maxRows, maxHighlightsPerEntry);
-            task.Wait(60000);//Wait for a maximum of 1 minute
-            return _result;
-        }
-        /// <summary>
-        /// Executes a given valid solr query.
-        /// </summary>
-        /// <param name="query"></param>
-        /// <param name="start"></param>
-        /// <param name="max"></param>
-        /// <param name="maxHiglightSnippets"></param>
-        /// <returns></returns>
-        public SearchResult ExecuteSearch(string query, int start, int max, int maxHiglightSnippets)
-        {
-            _result = null;
-            var task = ExecuteSearchQuery(query, start, max, maxHiglightSnippets);
-            task.Wait(60000);//Wait for a maximum of 1 minute
-            return _result;
+            return await ExecuteSearch(query, start, maxRows, maxHighlightsPerEntry);
         }
 
         /// <summary>
@@ -149,47 +128,41 @@ namespace Catfish.API.Repository.Services
         /// <param name="max"></param>
         /// <param name="maxHiglightSnippets"></param>
         /// <returns></returns>
-        public async Task ExecuteSearchQuery(string query, int start, int max, int maxHiglightSnippets)
+        public async Task<SearchResult> ExecuteSearch(string query, int start, int max, int maxHiglightSnippets, bool useSolrJson =true)
         {
-            try
+            string qUrl = _solrCoreUrl + "/select?hl=on";
+            var parameters = new Dictionary<string, string>();
+            parameters["q"] = query;
+            parameters["start"] = start.ToString();
+            parameters["rows"] = max.ToString();
+            parameters["hl.fl"] = "*";
+            parameters["hl.snippets"] = maxHiglightSnippets.ToString();
+
+            if (useSolrJson)
             {
-                string qUrl = _solrCoreUrl + "/select?hl=on";
-                var parameters = new Dictionary<string, string>();
-                parameters["q"] = query;
-                parameters["start"] = start.ToString();
-                parameters["rows"] = max.ToString();
-                parameters["hl.fl"] = "*";
-                parameters["hl.snippets"] = maxHiglightSnippets.ToString();
+
+            }
+            else
+            {
                 parameters["wt"] = "xml";
 
-                var httpClient = new HttpClient();
-                var postResponse = await httpClient.PostAsync(new Uri(qUrl), new FormUrlEncodedContent(parameters));
-                postResponse.EnsureSuccessStatusCode();
-                var postContents = await postResponse.Content.ReadAsStringAsync();
-
-                _result = new SearchResult(postContents);
-                _result.ItemsPerPage = max;
-
-                /*
-                string queryUri = _solrCoreUrl + "/select?hl=on&q=" + query +
-                  string.Format("&start={0}&rows={1}&hl.fl=*&hl.snippets={2}&wt=xml", start, max, maxHiglightSnippets);
-
-                //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
-                using var client = new HttpClient();
-                using var httpResponse = await client.GetAsync(new Uri(queryUri)).ConfigureAwait(false);
-
-                httpResponse.EnsureSuccessStatusCode();
-
-                string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                _result = new SearchResult(response, _errorLog);
-                _result.ItemsPerPage = max;
-                */
             }
-            catch (Exception ex)
-            {
-               // _errorLog.Log(new Error(ex));
-            }
+
+            var httpClient = new HttpClient();
+            var postResponse = await httpClient.PostAsync(new Uri(qUrl), new FormUrlEncodedContent(parameters));
+            postResponse.EnsureSuccessStatusCode();
+            var postContents = await postResponse.Content.ReadAsStringAsync();
+
+            SearchResult result = new SearchResult();
+            if (useSolrJson)
+                result.InitFromJson(postContents);
+            else
+                result.InitFromXml(postContents);
+
+            result.ItemsPerPage = max;
+            return result;
         }
+
         protected string[] GetFieldNames(string[] acceptedFieldPrefixes = null)
         {
             string queryUri = _solrCoreUrl + "/select?q=*:*&wt=csv&rows=0&facet";
