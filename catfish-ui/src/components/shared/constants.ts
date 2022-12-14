@@ -31,11 +31,11 @@ export enum eFieldType{
     Radio
 }
 export enum eFieldConstraint {
-    Contains,
-    Equals,
-    NotEquals,
-    GreaterThan,
-    GreaterThanOrEqual,
-    LessThan,
-    LessThanOrEqual
+    Contains ="Contains",
+    Equals ="Equals",
+    NotEquals ="NotEquals",
+    GreaterThan = "GreaterThan",
+    GreaterThanOrEqual = "GreaterThanOrEqual",
+    LessThan = "LessThan",
+    LessThanOrEqual = "LessThanOrEqual"
 }
