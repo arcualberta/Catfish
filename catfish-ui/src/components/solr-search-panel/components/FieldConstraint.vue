@@ -5,11 +5,12 @@
     import { eFieldType, eFieldConstraint } from '../../shared/constants'
 
     const props = defineProps<{
-        searchFields: SearchFieldDefinition[]
+        searchFields: SearchFieldDefinition[],
+        value: string[] 
     }>();
 
-    const fieldType = ref(eFieldType.Text);
-    const readOnly = computed(()=>fieldType.value > 0);
+    const field = ref(null as null | SearchFieldDefinition ) ;
+    const readOnly = computed(() => field.value && field.value.type >  0);
 
 
     //watch(() => fieldType.value, async newValue => {
@@ -28,8 +29,8 @@
 
         </b-col>
         <b-col class="col-sm-3">
-            <select class="form-select" v-model="fieldType">
-                <option v-for="opt in searchFields" :value="opt.type">{{opt.label}}</option>
+            <select class="form-select" v-model="field">
+                <option v-for="opt in searchFields" :value="opt">{{opt.label}}</option>
             </select>
         </b-col>
         <b-col class="col-sm-3">
@@ -38,28 +39,31 @@
             </select>
         </b-col>
         <b-col class="col-sm-3">
-            <div v-if="fieldType === 1">
+            <div v-if="field?.type === eFieldType.Text">
                 <b-form-input type="text"></b-form-input>
             </div>
-            <div v-else-if="fieldType === 2">
+            <div v-else-if="field?.type === 2">
                 <b-form-input type="date"></b-form-input>
             </div>
-            <div v-else-if="fieldType === 3">
+            <div v-else-if="field?.type === 3">
                 <b-form-input type="number" step='1'></b-form-input>
             </div>
-            <div v-else-if="fieldType === 4">
+            <div v-else-if="field?.type === 4">
                 <b-form-input type="number" :step='Math.pow(10, -decPoints)'></b-form-input>
             </div>
-            <div v-else-if="fieldType === 5">
+            <div v-else-if="field?.type === 5">
                 <b-form-input type="email"></b-form-input>
+            </div>
+            <div v-else-if="field?.type === 8">
+                <span v-for="opt in field.options">
+                    <input type="radio" />{{opt}}
+                </span>
             </div>
             <div v-else>
                 <b-form-input type="text" readonly="readonly"></b-form-input>
             </div>
 
-            <!--<div v-else-if="textType === FieldType.Paragraph">
-            <b-form-textarea v-model="model.value" rows="3" max-rows="6"></b-form-textarea>
-        </div>-->
+
         </b-col>
 
     </b-row>
