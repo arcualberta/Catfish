@@ -57,7 +57,26 @@ namespace Catfish.API.Repository.Solr
 
         public void InitFromJson(string response)
         {
-            //_errorLog = errorLog;
-        }
+            ResultEntries = new List<SolrResultEntry>();
+
+            Newtonsoft.Json.Linq.JObject jspnResp = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(response);
+            foreach(Newtonsoft.Json.Linq.JToken child in jspnResp.Children())
+            {
+                if(child.Path == "response")
+                {
+                    var numFound = ((Newtonsoft.Json.Linq.JProperty)child).Value["numFound"].Value<string>;
+                    TotalMatches = Convert.ToInt32(numFound.Target.ToString());
+
+                    var childTokens = ((Newtonsoft.Json.Linq.JProperty)child).Value["docs"].Children();
+                    foreach(var token in childTokens)
+                    {
+                        SolrResultEntry resultEntry = new SolrResultEntry(token);
+                        ResultEntries.Add(resultEntry);
+                    }
+                }
+                
+            }
+           
+         }
     }
 }

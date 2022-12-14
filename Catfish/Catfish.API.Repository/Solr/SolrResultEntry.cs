@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
 
 namespace Catfish.API.Repository.Solr
 {
@@ -8,8 +9,22 @@ namespace Catfish.API.Repository.Solr
       
         public List<KeyValuePair<string, object>> Data { get; set; } = new List<KeyValuePair<string, object>>();
         public long Version { get; set; }
+        public SolrResultEntry(JToken token)
+        {
+            string strToken = token.ToString();
+            //Data = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(strToken);
 
-        public SolrResultEntry(XElement doc)
+            foreach (JProperty item in token.Children())
+            {
+                if(item.Name == "id")
+                { Id = item.Value.ToString();
+                    continue;
+                }
+                Data.Add(new KeyValuePair<string, object>(item.Name, item.Value));
+            }
+        }
+
+            public SolrResultEntry(XElement doc)
         {
             //set the item ID
             //string valStr = doc.Elements("str")
@@ -62,7 +77,7 @@ namespace Catfish.API.Repository.Solr
                 string nodeName = el.Attribute("name").Value;
                
 
-                if(nodeName.Contains("_ts"))
+                if(nodeName.EndsWith("_ts") || nodeName.EndsWith("_ss"))
                 {
                     List<string> values = new List<string>();
                     foreach(XElement node in el.Nodes())
@@ -72,7 +87,7 @@ namespace Catfish.API.Repository.Solr
                     }
                     Data.Add(new KeyValuePair<string, object>(nodeName,values));
                 }
-                else if(nodeName.Contains("_is"))
+                else if(nodeName.EndsWith("_is"))
                 {
                     List<int> intValues = new List<int>();
                     foreach (XElement node in el.Nodes())
@@ -82,7 +97,27 @@ namespace Catfish.API.Repository.Solr
                     }
                     Data.Add(new KeyValuePair<string, object>(nodeName, intValues));
                 }
-               
+                else if (nodeName.EndsWith("_ds"))
+                {
+                    List<double> doubleValues = new List<double>();
+                    foreach (XElement node in el.Nodes())
+                    {
+                        doubleValues.Add(Convert.ToDouble(node.Value));
+
+                    }
+                    Data.Add(new KeyValuePair<string, object>(nodeName, doubleValues));
+                }
+                else if (nodeName.EndsWith("_dts"))
+                {
+                    List<DateTime> dtValues = new List<DateTime>();
+                    foreach (XElement node in el.Nodes())
+                    {
+                        dtValues.Add(DateTime.Parse(node.Value));
+
+                    }
+                    Data.Add(new KeyValuePair<string, object>(nodeName, dtValues));
+                }
+
             }
         }
 

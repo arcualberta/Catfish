@@ -140,7 +140,7 @@ namespace Catfish.API.Repository.Services
 
             if (useSolrJson)
             {
-
+                parameters["wt"] = "json";
             }
             else
             {
@@ -155,7 +155,10 @@ namespace Catfish.API.Repository.Services
 
             SearchResult result = new SearchResult();
             if (useSolrJson)
+            {
+               
                 result.InitFromJson(postContents);
+            }
             else
                 result.InitFromXml(postContents);
 
