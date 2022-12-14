@@ -1,10 +1,13 @@
+const splitCamelCase = (val: string): string => val.replace(/([a-z](?=[A-Z]))/g, '$1 ');
 
 export enum eState { 
     Draft = "Draft", 
     Active = "Active", 
     Archived = "Archived",  
     Inactive="Inactive",
-    Deleted = "Deleted" }
+    Deleted = "Deleted" 
+}
+export const getStateLabel = (val: eState): string => splitCamelCase(eState[val])
 
 export enum eEntityType 
 {
@@ -12,6 +15,7 @@ export enum eEntityType
     Collection="Collection",
     Unknown="Unknown"
 }
+export const getEntityTypeLabel = (val: eEntityType): string => splitCamelCase(eEntityType[val])
 
 export enum eSearchTarget 
 {
@@ -19,6 +23,7 @@ export enum eSearchTarget
     Description="Description",
     TitleOrDescription="TitleOrDescription"
 }
+export const getSearchTargetLabel = (val: eSearchTarget): string => splitCamelCase(eSearchTarget[val])
 
 export enum eFieldType{
     Text = 1,
@@ -30,12 +35,15 @@ export enum eFieldType{
     DropDown,
     Radio
 }
+export const getFieldTypeLabel = (val: eFieldType): string => splitCamelCase(eFieldType[val])
+
 export enum eFieldConstraint {
-    Contains ="Contains",
-    Equals ="Equals",
-    NotEquals ="NotEquals",
-    GreaterThan = "GreaterThan",
-    GreaterThanOrEqual = "GreaterThanOrEqual",
-    LessThan = "LessThan",
-    LessThanOrEqual = "LessThanOrEqual"
+    Contains,
+    Equals,
+    NotEquals,
+    GreaterThan,
+    GreaterThanOrEqual,
+    LessThan,
+    LessThanOrEqual
 }
+export const getFieldConstraintLabel = (val: eFieldConstraint): string => splitCamelCase(eFieldConstraint[val])
