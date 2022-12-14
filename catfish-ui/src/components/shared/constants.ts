@@ -1,5 +1,6 @@
 const splitCamelCase = (val: string): string => val.replace(/([a-z](?=[A-Z]))/g, '$1 ');
 
+
 export enum eState { 
     Draft = "Draft", 
     Active = "Active", 
@@ -38,7 +39,7 @@ export enum eFieldType{
 export const getFieldTypeLabel = (val: eFieldType): string => splitCamelCase(eFieldType[val])
 
 export enum eFieldConstraint {
-    Contains,
+    Contains = 1,
     Equals,
     NotEquals,
     GreaterThan,
@@ -47,3 +48,4 @@ export enum eFieldConstraint {
     LessThanOrEqual
 }
 export const getFieldConstraintLabel = (val: eFieldConstraint): string => splitCamelCase(eFieldConstraint[val])
+export const eFieldConstraintValues: eFieldConstraint[] = Object.keys(eFieldConstraint).filter(key => typeof eFieldConstraint[key as any] === 'number').map(key => eFieldConstraint[key as any] as unknown as eFieldConstraint)

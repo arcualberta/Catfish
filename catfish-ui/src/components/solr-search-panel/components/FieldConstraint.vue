@@ -3,6 +3,7 @@
     import { SearchFieldDefinition } from '../models'
     import { computed, ref } from 'vue';
     import { eFieldType, eFieldConstraint } from '../../shared/constants'
+    import { getFieldConstraintLabel, eFieldConstraintValues } from '@/components/shared/constants'
 
     const props = defineProps<{
         searchFields: SearchFieldDefinition[],
@@ -12,18 +13,9 @@
     const field = ref(null as null | SearchFieldDefinition ) ;
     const readOnly = computed(() => field.value && field.value.type >  0);
 
-
-    //watch(() => fieldType.value, async newValue => {
-    //    if (newMessage)
-    //        setTimeout(() => {
-    //            props.model.message = null;
-    //        }, 2000)
-    //})
     </script>
 <template>
-    Field Selector
-
-    {{fieldType}}
+    Field Selector <br />
     <b-row>
         <b-col class="col-sm-3">
 
@@ -35,7 +27,7 @@
         </b-col>
         <b-col class="col-sm-3">
             <select class="form-select" >
-                <option v-for="con in eFieldConstraint" :value="con">{{con}}</option>
+                <option v-for="con in eFieldConstraintValues" :value="con">{{getFieldConstraintLabel(con)}}</option>
             </select>
         </b-col>
         <b-col class="col-sm-3">
