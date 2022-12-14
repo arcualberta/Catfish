@@ -2,7 +2,7 @@
     import { Pinia } from 'pinia'
     import { SearchFieldDefinition } from '../models'
     import { computed, ref } from 'vue';
-    import { eFieldType } from '../../shared/constants'
+    import { eFieldType, eFieldConstraint } from '../../shared/constants'
 
     const props = defineProps<{
         searchFields: SearchFieldDefinition[]
@@ -24,10 +24,20 @@
 
     {{fieldType}}
     <b-row>
-        <b-col class="col-sm-4">
+        <b-col class="col-sm-3">
 
         </b-col>
-        <b-col class="col-sm-4">
+        <b-col class="col-sm-3">
+            <select class="form-select" v-model="fieldType">
+                <option v-for="opt in searchFields" :value="opt.type">{{opt.label}}</option>
+            </select>
+        </b-col>
+        <b-col class="col-sm-3">
+            <select class="form-select" >
+                <option v-for="con in eFieldConstraint" :value="con">{{con}}</option>
+            </select>
+        </b-col>
+        <b-col class="col-sm-3">
             <div v-if="fieldType === 1">
                 <b-form-input type="text"></b-form-input>
             </div>
@@ -44,18 +54,14 @@
                 <b-form-input type="email"></b-form-input>
             </div>
             <div v-else>
-                <b-form-input type="text" readonly="readonly" ></b-form-input>
+                <b-form-input type="text" readonly="readonly"></b-form-input>
             </div>
 
             <!--<div v-else-if="textType === FieldType.Paragraph">
-        <b-form-textarea v-model="model.value" rows="3" max-rows="6"></b-form-textarea>
-    </div>-->
+            <b-form-textarea v-model="model.value" rows="3" max-rows="6"></b-form-textarea>
+        </div>-->
         </b-col>
-        <b-col class="col-sm-4">
-            <select class="form-select" v-model="fieldType">
-                <option v-for="opt in searchFields" :value="opt.type">{{opt.label}}</option>
-            </select>
-        </b-col>
+
     </b-row>
 
 </template>

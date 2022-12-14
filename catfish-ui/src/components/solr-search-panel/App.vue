@@ -1,10 +1,10 @@
 <script setup lang="ts">
-    import { default as FieldSelector } from './components/FieldSelector.vue'
+    import { default as FieldConstraint } from './components/FieldConstraint.vue'
     import { SolrFields } from './appsettings';
     </script>
 <template>
     Solr search
-    <FieldSelector :searchFields="SolrFields"></FieldSelector>
+    <FieldConstraint :searchFields="SolrFields"></FieldConstraint>
 
 </template>
 

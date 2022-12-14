@@ -30,3 +30,12 @@ export enum eFieldType{
     DropDown,
     Radio
 }
+export enum eFieldConstraint {
+    Contains,
+    Equals,
+    NotEquals,
+    GreaterThan,
+    GreaterThanOrEqual,
+    LessThan,
+    LessThanOrEqual
+}
