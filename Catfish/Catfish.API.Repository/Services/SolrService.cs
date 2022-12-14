@@ -11,6 +11,9 @@ namespace Catfish.API.Repository.Services
         private readonly string _solrCoreUrl;
         //private readonly ErrorLog _errorLog;
         private readonly bool _indexFieldNames;
+        private static readonly HttpClient _httpClient = new HttpClient();
+
+
         public SolrService()
         {
 
@@ -58,8 +61,7 @@ namespace Catfish.API.Repository.Services
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
             using var content = new StringContent(payload.ToString(SaveOptions.DisableFormatting), Encoding.UTF8, "text/xml");
-            using var client = new HttpClient();
-            using var httpResponse = await client.PostAsync(uri, content).ConfigureAwait(false);
+            using var httpResponse = await _httpClient.PostAsync(uri, content).ConfigureAwait(false);
 
             httpResponse.EnsureSuccessStatusCode();
         }
@@ -68,8 +70,7 @@ namespace Catfish.API.Repository.Services
         {
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
-            using var client = new HttpClient();
-            using var httpResponse = await client.GetAsync(uri).ConfigureAwait(false);
+            using var httpResponse = await _httpClient.GetAsync(uri).ConfigureAwait(false);
 
             httpResponse.EnsureSuccessStatusCode();
         }
@@ -148,17 +149,13 @@ namespace Catfish.API.Repository.Services
 
             }
 
-            var httpClient = new HttpClient();
-            var postResponse = await httpClient.PostAsync(new Uri(qUrl), new FormUrlEncodedContent(parameters));
+            var postResponse = await _httpClient.PostAsync(new Uri(qUrl), new FormUrlEncodedContent(parameters));
             postResponse.EnsureSuccessStatusCode();
             var postContents = await postResponse.Content.ReadAsStringAsync();
 
             SearchResult result = new SearchResult();
             if (useSolrJson)
-            {
-               
                 result.InitFromJson(postContents);
-            }
             else
                 result.InitFromXml(postContents);
 
@@ -173,9 +170,8 @@ namespace Catfish.API.Repository.Services
                 acceptedFieldPrefixes = new string[] { "data", "metadata" };
 
             //hl=on&q=apple&hl.fl=manu&fl=id,name,manu,cat
-            using var client = new HttpClient();
             string[] fieldNames = null;
-            using (var task = client.GetAsync(new Uri(queryUri)))
+            using (var task = _httpClient.GetAsync(new Uri(queryUri)))
             {
                 task.Wait(60000);
                 var task2 = task.Result.Content.ReadAsStringAsync();
