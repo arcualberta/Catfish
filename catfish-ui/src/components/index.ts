@@ -27,7 +27,7 @@ export { default as EntityEditor } from './entity-editor/App.vue'
 export { useEntityEditorStore } from './entity-editor/store'
 
 
-/* Entity Editor component */
+/* Solr Search Panel component */
 export { default as SolrSearchPanel } from './solr-search-panel/App.vue'
 export { useSolrSearchStore } from './solr-search-panel/store'
 
