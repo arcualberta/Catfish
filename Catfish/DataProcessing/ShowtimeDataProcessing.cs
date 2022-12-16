@@ -123,11 +123,12 @@ namespace DataProcessing
                                         if (dbMovie != null)
                                         {
                                             dbMovie.Merge(movie);
+                                            ++dbMovie.instances;
                                             ++updatedMovieCount;
                                         }
                                         else
                                         {
-                                            context.MovieRecords.Add(new MovieRecord() { batch = batch, movie_id = movie.movie_id, content = JsonSerializer.Serialize(movie) });
+                                            context.MovieRecords.Add(new MovieRecord() { batch = batch, instances = 1, movie_id = movie.movie_id, content = JsonSerializer.Serialize(movie) });
                                             ++newMovieCount;
                                         }
                                         //context.SaveChanges();
@@ -145,11 +146,12 @@ namespace DataProcessing
                                         if (dbTheater != null)
                                         {
                                             dbTheater.Merge(theater);
+                                            ++dbTheater.instances;
                                             ++updatedTheaterCount;
                                         }
                                         else
                                         {
-                                            context.TheaterRecords.Add(new TheaterRecord() { batch = batch, theater_id = theater.theater_id, content = JsonSerializer.Serialize(theater) });
+                                            context.TheaterRecords.Add(new TheaterRecord() { batch = batch, instances = 1, theater_id = theater.theater_id, content = JsonSerializer.Serialize(theater) });
                                             ++newTheaterCount;
                                         }
                                         //context.SaveChanges();
@@ -859,6 +861,7 @@ namespace DataProcessing
         public int id { get; set; }
         public int movie_id { get; set; }
         public int batch { get; set; }
+        public int instances { get; set; }
         public string content { get; set; }
 
         public void Merge(Movie src)
@@ -873,6 +876,7 @@ namespace DataProcessing
         public int id { get; set; }
         public int theater_id { get; set; }
         public int batch { get; set; }
+        public int instances { get; set; }
         public string content { get; set; }
 
         public void Merge(Theater src)
