@@ -41,7 +41,7 @@
                 <b-form-input type="number" step='1'></b-form-input>
             </div>
             <div v-else-if="field?.type === 4">
-                <b-form-input type="number" :step='Math.pow(10, -decPoints)'></b-form-input>
+                <b-form-input type="number" :step='Math.pow(10, 2)'></b-form-input>
             </div>
             <div v-else-if="field?.type === 5">
                 <b-form-input type="email"></b-form-input>
@@ -52,7 +52,7 @@
                 </span>
             </div>
             <div v-else>
-                <b-form-input type="text" readonly="readonly"></b-form-input>
+                <b-form-input type="text" readonly></b-form-input>
             </div>
 
 

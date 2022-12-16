@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { default as FieldConstraint } from './components/FieldConstraint.vue'
+    import { default as FieldExpression } from './components/FieldExpression.vue'
     import { SolrFields } from './appsettings';
 import { useSolrSearchStore } from './store';
 
@@ -10,8 +10,7 @@ import { useSolrSearchStore } from './store';
     </script>
 <template>
     Solr search
-    <FieldConstraint :searchFields="SolrFields"></FieldConstraint>
-
+   <FieldExpression :searchFields="SolrFields" :value="[]"></FieldExpression>
     <button @click="query">Query</button>
     <div>
         Query time: {{store.queryTime}} seconds<br /><br />
