@@ -81,7 +81,6 @@ namespace DataProcessing
                     var zipFiles = Directory.GetFiles(batchFolder);
                     foreach (var zipFile in zipFiles)
                     {
-
                         string zipfile_key = zipFile.Substring(srcFolderRoot.Length + 1);
                         if (batchContext.TrackingKeys.Where(record => record.entry_key == zipfile_key).Any())
                             continue;
@@ -179,21 +178,18 @@ namespace DataProcessing
                                     {
                                         File.AppendAllText(errorLogFile, $"EXCEPTION in {entry.Name}: {ex.Message}{Environment.NewLine}");
                                     }
-                                }
+                                } //End: using (var entryContext = new ShowtimeDbContext(dbOptions))
 
                             } //End: foreach (ZipArchiveEntry entry in archive.Entries)
 
-                            archive.Dispose();
-
                             File.AppendAllText(processingLogFile, $"    New Movies: {newMovieCount}, Updated Movies: {updatedMovieCount}, New Theaters: {newTheaterCount}, Updated Theaters: {updatedTheaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}{Environment.NewLine}");
-
 
                         } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
 
                         //Mark that the current zip file is done processing
                         batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = zipfile_key });
                         batchContext.SaveChanges();
-                    }
+                    } //End: foreach (var zipFile in zipFiles)
 
                     //Mark that the current batch is done processing
                     batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = folder_key });
