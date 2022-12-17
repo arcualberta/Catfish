@@ -40,7 +40,13 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            bool productionRun = true;
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:IsProductionRun")?.Value, out bool productionRun))
+                productionRun = true;
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipProcessedFoldersAndZipFiles")?.Value, out bool skippProcessedFoldersAndZipFiles))
+                skippProcessedFoldersAndZipFiles = true;
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:ContextTimeoutInMinutes")?.Value, out int contextTimeoutInMinutes))
+                contextTimeoutInMinutes = 3;
+
 
             if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
                 maxBatchesToProcess = int.MaxValue;
@@ -74,6 +80,9 @@ namespace DataProcessing
                 {
                     try
                     {
+                        int? timeout1 = batchContext.Database.GetCommandTimeout();
+                        batchContext.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
+                        File.AppendAllText(processingLogFile, $"    Changed DB Timeout from: {(timeout1.HasValue ? timeout1.Value : "NULL")} to {(contextTimeoutInMinutes * 60)} seconds{Environment.NewLine}{Environment.NewLine}");
 
                         ++batch;
 
@@ -81,7 +90,7 @@ namespace DataProcessing
                             break;
 
                         string folder_key = batchFolder.Substring(srcFolderRoot.Length + 1);
-                        if (batchContext.TrackingKeys.Where(record => record.entry_key == folder_key).Any())
+                        if (skippProcessedFoldersAndZipFiles && batchContext.TrackingKeys.Where(record => record.entry_key == folder_key).Any())
                             continue;
 
                         var zipFiles = Directory.GetFiles(batchFolder);
@@ -90,7 +99,7 @@ namespace DataProcessing
                             try
                             {
                                 string zipfile_key = zipFile.Substring(srcFolderRoot.Length + 1);
-                                if (batchContext.TrackingKeys.Where(record => record.entry_key == zipfile_key).Any())
+                                if (skippProcessedFoldersAndZipFiles && batchContext.TrackingKeys.Where(record => record.entry_key == zipfile_key).Any())
                                     continue;
 
                                 File.AppendAllText(processingLogFile, $"Archive {zipFile}{Environment.NewLine}");
@@ -104,6 +113,8 @@ namespace DataProcessing
                                         {
                                             try
                                             {
+                                                entryContext.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
+
                                                 if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
                                                     continue;
 
