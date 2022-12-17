@@ -72,139 +72,154 @@ namespace DataProcessing
             {
                 using (var batchContext = new ShowtimeDbContext(dbOptions))
                 {
-                    ++batch;
-
-                    if (maxBatchesToProcess < batch)
-                        break;
-
-                    string folder_key = batchFolder.Substring(srcFolderRoot.Length + 1);
-                    if (batchContext.TrackingKeys.Where(record => record.entry_key == folder_key).Any())
-                        continue;
-
-                    var zipFiles = Directory.GetFiles(batchFolder);
-                    foreach (var zipFile in zipFiles)
+                    try
                     {
-                        string zipfile_key = zipFile.Substring(srcFolderRoot.Length + 1);
-                        if (batchContext.TrackingKeys.Where(record => record.entry_key == zipfile_key).Any())
+
+                        ++batch;
+
+                        if (maxBatchesToProcess < batch)
+                            break;
+
+                        string folder_key = batchFolder.Substring(srcFolderRoot.Length + 1);
+                        if (batchContext.TrackingKeys.Where(record => record.entry_key == folder_key).Any())
                             continue;
 
-                        File.AppendAllText(processingLogFile, $"Archive {zipFile}{Environment.NewLine}");
-                        int showtimeCount = 0, newTheaterCount = 0, updatedTheaterCount = 0, newMovieCount = 0, updatedMovieCount = 0;
-
-                        using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                        var zipFiles = Directory.GetFiles(batchFolder);
+                        foreach (var zipFile in zipFiles)
                         {
-                            foreach (ZipArchiveEntry entry in archive.Entries)
+                            try
                             {
-                                using (var entryContext = new ShowtimeDbContext(dbOptions))
+                                string zipfile_key = zipFile.Substring(srcFolderRoot.Length + 1);
+                                if (batchContext.TrackingKeys.Where(record => record.entry_key == zipfile_key).Any())
+                                    continue;
+
+                                File.AppendAllText(processingLogFile, $"Archive {zipFile}{Environment.NewLine}");
+                                int showtimeCount = 0, newTheaterCount = 0, updatedTheaterCount = 0, newMovieCount = 0, updatedMovieCount = 0;
+
+                                using (ZipArchive archive = ZipFile.OpenRead(zipFile))
                                 {
-                                    try
+                                    foreach (ZipArchiveEntry entry in archive.Entries)
                                     {
-                                        if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
-                                            continue;
-
-                                        var entry_key = $"{zipfile_key}\\{entry.Name}";
-                                        if (entryContext.TrackingKeys.Where(record => record.entry_key == entry_key).Any())
-                                            continue;
-
-                                        var extractFile = Path.Combine(outputFolder, entry.Name);
-                                        if (File.Exists(extractFile))
-                                            File.Delete(extractFile);
-
-                                        entry.ExtractToFile(extractFile);
-
-                                        XElement xml = XElement.Load(extractFile);
-                                        if (xml.Name == "times")
+                                        using (var entryContext = new ShowtimeDbContext(dbOptions))
                                         {
-                                            //This is a showtime data set
-                                            foreach (var child in xml.Elements("showtime"))
+                                            try
                                             {
-                                                Showtime showtime = new Showtime(child);
+                                                if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
+                                                    continue;
+
+                                                var entry_key = $"{zipfile_key}\\{entry.Name}";
+                                                if (entryContext.TrackingKeys.Where(record => record.entry_key == entry_key).Any())
+                                                    continue;
+
+                                                var extractFile = Path.Combine(outputFolder, entry.Name);
+                                                if (File.Exists(extractFile))
+                                                    File.Delete(extractFile);
+
+                                                entry.ExtractToFile(extractFile);
+
+                                                XElement xml = XElement.Load(extractFile);
+                                                if (xml.Name == "times")
+                                                {
+                                                    //This is a showtime data set
+                                                    foreach (var child in xml.Elements("showtime"))
+                                                    {
+                                                        Showtime showtime = new Showtime(child);
+                                                        if (productionRun)
+                                                            entryContext.ShowtimeRecords.Add(new ShowtimeRecord() { batch = batch, movie_id = showtime.movie_id, theater_id = showtime.theater_id, show_date = showtime.show_date, content = JsonSerializer.Serialize(showtime) });
+                                                        ++showtimeCount;
+                                                        //context.SaveChanges();
+                                                    }
+                                                }
+                                                else if (xml.Name == "movies")
+                                                {
+                                                    //This is a movies data set. 
+                                                    foreach (var child in xml.Elements("movie"))
+                                                    {
+                                                        Movie movie = new Movie(child);
+
+                                                        //Checking if such a move record already exist in the database
+                                                        MovieRecord dbMovie = entryContext.MovieRecords.FirstOrDefault(m => m.movie_id == movie.movie_id);
+                                                        if (dbMovie != null)
+                                                        {
+                                                            dbMovie.Merge(movie);
+                                                            ++dbMovie.instances;
+                                                            ++updatedMovieCount;
+                                                        }
+                                                        else
+                                                        {
+                                                            if (productionRun)
+                                                                entryContext.MovieRecords.Add(new MovieRecord() { batch = batch, instances = 1, movie_id = movie.movie_id, content = JsonSerializer.Serialize(movie) });
+                                                            ++newMovieCount;
+                                                        }
+                                                        //context.SaveChanges();
+                                                    }
+                                                }
+                                                else if (xml.Name == "houses")
+                                                {
+                                                    //This is a theatres data set
+                                                    foreach (var child in xml.Elements("theater"))
+                                                    {
+                                                        Theater theater = new Theater(child);
+
+                                                        //Checking if such a theater record already exist in the database
+                                                        TheaterRecord dbTheater = entryContext.TheaterRecords.FirstOrDefault(t => t.theater_id == theater.theater_id);
+                                                        if (dbTheater != null)
+                                                        {
+                                                            dbTheater.Merge(theater);
+                                                            ++dbTheater.instances;
+                                                            ++updatedTheaterCount;
+                                                        }
+                                                        else
+                                                        {
+                                                            if (productionRun)
+                                                                entryContext.TheaterRecords.Add(new TheaterRecord() { batch = batch, instances = 1, theater_id = theater.theater_id, content = JsonSerializer.Serialize(theater) });
+                                                            ++newTheaterCount;
+                                                        }
+                                                        //context.SaveChanges();
+                                                    }
+                                                }
+
+                                                //Mark that current entry is done processing
+                                                entryContext.TrackingKeys.Add(new TrackingKey() { entry_key = entry_key });
+
                                                 if (productionRun)
-                                                    entryContext.ShowtimeRecords.Add(new ShowtimeRecord() { batch = batch, movie_id = showtime.movie_id, theater_id = showtime.theater_id, show_date = showtime.show_date, content = JsonSerializer.Serialize(showtime) });
-                                                ++showtimeCount;
-                                                //context.SaveChanges();
+                                                    entryContext.SaveChanges();
+                                                File.Delete(extractFile);
                                             }
-                                        }
-                                        else if (xml.Name == "movies")
-                                        {
-                                            //This is a movies data set. 
-                                            foreach (var child in xml.Elements("movie"))
+                                            catch (Exception ex)
                                             {
-                                                Movie movie = new Movie(child);
-
-                                                //Checking if such a move record already exist in the database
-                                                MovieRecord dbMovie = entryContext.MovieRecords.FirstOrDefault(m => m.movie_id == movie.movie_id);
-                                                if (dbMovie != null)
-                                                {
-                                                    dbMovie.Merge(movie);
-                                                    ++dbMovie.instances;
-                                                    ++updatedMovieCount;
-                                                }
-                                                else
-                                                {
-                                                    if (productionRun)
-                                                        entryContext.MovieRecords.Add(new MovieRecord() { batch = batch, instances = 1, movie_id = movie.movie_id, content = JsonSerializer.Serialize(movie) });
-                                                    ++newMovieCount;
-                                                }
-                                                //context.SaveChanges();
+                                                File.AppendAllText(errorLogFile, $"EXCEPTION in {entry.Name}: {ex.Message}{Environment.NewLine}");
                                             }
-                                        }
-                                        else if (xml.Name == "houses")
-                                        {
-                                            //This is a theatres data set
-                                            foreach (var child in xml.Elements("theater"))
-                                            {
-                                                Theater theater = new Theater(child);
+                                        } //End: using (var entryContext = new ShowtimeDbContext(dbOptions))
+                                        GC.Collect();
 
-                                                //Checking if such a theater record already exist in the database
-                                                TheaterRecord dbTheater = entryContext.TheaterRecords.FirstOrDefault(t => t.theater_id == theater.theater_id);
-                                                if (dbTheater != null)
-                                                {
-                                                    dbTheater.Merge(theater);
-                                                    ++dbTheater.instances;
-                                                    ++updatedTheaterCount;
-                                                }
-                                                else
-                                                {
-                                                    if (productionRun)
-                                                        entryContext.TheaterRecords.Add(new TheaterRecord() { batch = batch, instances = 1, theater_id = theater.theater_id, content = JsonSerializer.Serialize(theater) });
-                                                    ++newTheaterCount;
-                                                }
-                                                //context.SaveChanges();
-                                            }
-                                        }
+                                    } //End: foreach (ZipArchiveEntry entry in archive.Entries)
 
-                                        //Mark that current entry is done processing
-                                        entryContext.TrackingKeys.Add(new TrackingKey() { entry_key = entry_key });
+                                    File.AppendAllText(processingLogFile, $"    New Movies: {newMovieCount}, Updated Movies: {updatedMovieCount}, New Theaters: {newTheaterCount}, Updated Theaters: {updatedTheaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}{Environment.NewLine}");
 
-                                        if (productionRun)
-                                            entryContext.SaveChanges();
-                                        File.Delete(extractFile);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        File.AppendAllText(errorLogFile, $"EXCEPTION in {entry.Name}: {ex.Message}{Environment.NewLine}");
-                                    }
-                                } //End: using (var entryContext = new ShowtimeDbContext(dbOptions))
-                                GC.Collect();
+                                } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
 
-                            } //End: foreach (ZipArchiveEntry entry in archive.Entries)
+                                //Mark that the current zip file is done processing
+                                batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = zipfile_key });
+                                if (productionRun)
+                                    batchContext.SaveChanges();
+                            }
+                            catch (Exception ex)
+                            {
+                                File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
+                            }
+                        } //End: foreach (var zipFile in zipFiles)
 
-                            File.AppendAllText(processingLogFile, $"    New Movies: {newMovieCount}, Updated Movies: {updatedMovieCount}, New Theaters: {newTheaterCount}, Updated Theaters: {updatedTheaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}{Environment.NewLine}");
-
-                        } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
-
-                        //Mark that the current zip file is done processing
-                        batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = zipfile_key });
+                        //Mark that the current batch is done processing
+                        batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = folder_key });
                         if (productionRun)
                             batchContext.SaveChanges();
-                    } //End: foreach (var zipFile in zipFiles)
-
-                    //Mark that the current batch is done processing
-                    batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = folder_key });
-                    if (productionRun)
-                        batchContext.SaveChanges();
-                } //End:  using (var batchContext = new ShowtimeDbContext(dbOptions))
+                    }
+                    catch(Exception ex)
+                    {
+                        File.AppendAllText(errorLogFile, $"EXCEPTION in {batchFolder}: {ex.Message}{Environment.NewLine}");
+                    }
+                } //End: using (var batchContext = new ShowtimeDbContext(dbOptions))
                 GC.Collect();
 
             }//End: foreach (var batchFolder in srcBatcheFolders)
