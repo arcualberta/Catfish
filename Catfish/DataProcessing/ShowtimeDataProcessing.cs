@@ -40,6 +40,8 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
+            bool productionRun = false;
+
             if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
                 maxBatchesToProcess = int.MaxValue;
 
@@ -53,9 +55,10 @@ namespace DataProcessing
             string outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
+            string logFilePrefix = productionRun ? "" : "dry-run-";
             string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string processingLogFile = Path.Combine(outputFolder, $"processing-log-{fileSuffix}.txt");
-            string errorLogFile = Path.Combine(outputFolder, $"error-log-{fileSuffix}.txt");
+            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}processing - log-{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}error-log-{fileSuffix}.txt");
 
             var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
 
@@ -171,7 +174,8 @@ namespace DataProcessing
                                         //Mark that current entry is done processing
                                         entryContext.TrackingKeys.Add(new TrackingKey() { entry_key = entry_key });
 
-                                        entryContext.SaveChanges();
+                                        if (productionRun)
+                                            entryContext.SaveChanges();
                                         File.Delete(extractFile);
                                     }
                                     catch (Exception ex)
@@ -188,12 +192,14 @@ namespace DataProcessing
 
                         //Mark that the current zip file is done processing
                         batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = zipfile_key });
-                        batchContext.SaveChanges();
+                        if (productionRun)
+                            batchContext.SaveChanges();
                     } //End: foreach (var zipFile in zipFiles)
 
                     //Mark that the current batch is done processing
                     batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = folder_key });
-                    batchContext.SaveChanges();
+                    if (productionRun)
+                        batchContext.SaveChanges();
                 }
 
             }//End: foreach (var batchFolder in srcBatcheFolders)
