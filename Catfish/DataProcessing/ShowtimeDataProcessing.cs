@@ -40,7 +40,7 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            bool productionRun = false;
+            bool productionRun = true;
 
             if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
                 maxBatchesToProcess = int.MaxValue;
@@ -119,7 +119,8 @@ namespace DataProcessing
                                             foreach (var child in xml.Elements("showtime"))
                                             {
                                                 Showtime showtime = new Showtime(child);
-                                                entryContext.ShowtimeRecords.Add(new ShowtimeRecord() { batch = batch, movie_id = showtime.movie_id, theater_id = showtime.theater_id, show_date = showtime.show_date, content = JsonSerializer.Serialize(showtime) });
+                                                if (productionRun)
+                                                    entryContext.ShowtimeRecords.Add(new ShowtimeRecord() { batch = batch, movie_id = showtime.movie_id, theater_id = showtime.theater_id, show_date = showtime.show_date, content = JsonSerializer.Serialize(showtime) });
                                                 ++showtimeCount;
                                                 //context.SaveChanges();
                                             }
@@ -141,7 +142,8 @@ namespace DataProcessing
                                                 }
                                                 else
                                                 {
-                                                    entryContext.MovieRecords.Add(new MovieRecord() { batch = batch, instances = 1, movie_id = movie.movie_id, content = JsonSerializer.Serialize(movie) });
+                                                    if (productionRun)
+                                                        entryContext.MovieRecords.Add(new MovieRecord() { batch = batch, instances = 1, movie_id = movie.movie_id, content = JsonSerializer.Serialize(movie) });
                                                     ++newMovieCount;
                                                 }
                                                 //context.SaveChanges();
@@ -164,7 +166,8 @@ namespace DataProcessing
                                                 }
                                                 else
                                                 {
-                                                    entryContext.TheaterRecords.Add(new TheaterRecord() { batch = batch, instances = 1, theater_id = theater.theater_id, content = JsonSerializer.Serialize(theater) });
+                                                    if (productionRun)
+                                                        entryContext.TheaterRecords.Add(new TheaterRecord() { batch = batch, instances = 1, theater_id = theater.theater_id, content = JsonSerializer.Serialize(theater) });
                                                     ++newTheaterCount;
                                                 }
                                                 //context.SaveChanges();
@@ -183,6 +186,7 @@ namespace DataProcessing
                                         File.AppendAllText(errorLogFile, $"EXCEPTION in {entry.Name}: {ex.Message}{Environment.NewLine}");
                                     }
                                 } //End: using (var entryContext = new ShowtimeDbContext(dbOptions))
+                                GC.Collect();
 
                             } //End: foreach (ZipArchiveEntry entry in archive.Entries)
 
@@ -200,7 +204,8 @@ namespace DataProcessing
                     batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = folder_key });
                     if (productionRun)
                         batchContext.SaveChanges();
-                }
+                } //End:  using (var batchContext = new ShowtimeDbContext(dbOptions))
+                GC.Collect();
 
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
