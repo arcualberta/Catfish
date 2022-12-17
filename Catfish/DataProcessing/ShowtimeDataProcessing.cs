@@ -14,6 +14,9 @@ using System.Xml.Linq;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.API.Repository.Interfaces;
+using Microsoft.Extensions.Options;
+using System.Security.Cryptography.Xml;
+using System.Configuration;
 
 namespace DataProcessing
 {
@@ -59,9 +62,12 @@ namespace DataProcessing
             int batch = 0;
 
             //var tracking_keys = context.TrackingKeys.Select(record => record.entry_key).ToList();
+            var optBuilder = new DbContextOptionsBuilder<ShowtimeDbContext>();
+            optBuilder.UseSqlServer(_testHelper.ShowtimeConnectionString);
+            var dbOptions = optBuilder.Options;
             foreach (var batchFolder in srcBatcheFolders)
             {
-                using (var context = new TestHelper().ShowtimeDb)
+                using (var context = new ShowtimeDbContext(dbOptions))
                 {
                     ++batch;
 

@@ -61,6 +61,7 @@ namespace Catfish.Test.Helpers
         public RepoDbContext Db => Seviceprovider.GetService<RepoDbContext>();
         public ShowtimeDbContext ShowtimeDb => Seviceprovider.GetService<ShowtimeDbContext>();
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>();
+        public string ShowtimeConnectionString => Configuration.GetConnectionString("showtime");
         public ISolrService Solr => Seviceprovider.GetService<ISolrService>();
 
     }
