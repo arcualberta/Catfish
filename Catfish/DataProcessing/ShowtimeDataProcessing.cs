@@ -347,8 +347,9 @@ namespace DataProcessing
                 using (var context = _testHelper.CreateNewShowtimeDbContext())
                 {
                     context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
-                    int min_id = context.ShowtimeRecords.OrderBy(st => st.id).First().id;
-                    offset = startShowtimeId - min_id;
+                    var firstRecord = context.ShowtimeRecords.FirstOrDefault();
+                    int min_id = firstRecord == null ? 0 : firstRecord.id;
+                    offset = startShowtimeId > min_id ? startShowtimeId - min_id : 0;
                 }
             }
 
@@ -386,7 +387,7 @@ namespace DataProcessing
                             {
                                 showtime = JsonSerializer.Deserialize<Showtime>(showtimeRecord.content.ToString());
 
-                                if (!showtimeRecord.movie_error)
+                                if (!showtimeRecord.movie_error.HasValue || !showtimeRecord.movie_error.Value)
                                 {
                                     if (movie?.movie_id == showtime!.movie_id)
                                     {
@@ -406,7 +407,7 @@ namespace DataProcessing
                                     }
                                 }
 
-                                if (!showtimeRecord.theater_error)
+                                if (!showtimeRecord.theater_error.HasValue || !showtimeRecord.theater_error.Value)
                                 {
                                     if (theater?.theater_id == showtime!.theater_id)
                                     {
@@ -522,7 +523,7 @@ namespace DataProcessing
                     {
                         var showtimeRecord = ShowtimeRecords[i];
 
-                        if (showtimeRecord.movie_error || showtimeRecord.theater_error)
+                        if (showtimeRecord.movie_error.HasValue && showtimeRecord.movie_error.Value || showtimeRecord.theater_error.HasValue && showtimeRecord.theater_error.Value)
                             continue;
 
                         try
@@ -1154,9 +1155,9 @@ namespace DataProcessing
         public int theater_id { get; set; }
         public DateTime? show_date { get; set; }
         public int batch { get; set; }
-        public bool movie_error { get; set; }
-        public bool theater_error { get; set; }
-        public bool is_validated { get; set; }
+        public bool? movie_error { get; set; }
+        public bool? theater_error { get; set; }
+        public bool? is_validated { get; set; }
         public string content { get; set; }
     }
 
