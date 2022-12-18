@@ -71,12 +71,9 @@ namespace DataProcessing
             int batch = 0;
 
             //var tracking_keys = context.TrackingKeys.Select(record => record.entry_key).ToList();
-            var optBuilder = new DbContextOptionsBuilder<ShowtimeDbContext>();
-            optBuilder.UseSqlServer(_testHelper.ShowtimeConnectionString);
-            var dbOptions = optBuilder.Options;
             foreach (var batchFolder in srcBatcheFolders)
             {
-                using (var batchContext = new ShowtimeDbContext(dbOptions))
+                using (var batchContext = _testHelper.CreateNewShowtimeDbContext())
                 {
                     try
                     {
@@ -109,7 +106,7 @@ namespace DataProcessing
                                 {
                                     foreach (ZipArchiveEntry entry in archive.Entries)
                                     {
-                                        using (var entryContext = new ShowtimeDbContext(dbOptions))
+                                        using (var entryContext = _testHelper.CreateNewShowtimeDbContext())
                                         {
                                             try
                                             {
@@ -136,7 +133,7 @@ namespace DataProcessing
                                                     {
                                                         Showtime showtime = new Showtime(child);
                                                         if (productionRun)
-                                                            entryContext.ShowtimeRecords.Add(new ShowtimeRecord() { batch = batch, movie_id = showtime.movie_id, theater_id = showtime.theater_id, show_date = showtime.show_date, content = JsonSerializer.Serialize(showtime) });
+                                                            entryContext.ShowtimeRecords.Add(new ShowtimeRecord() { batch = batch, movie_id = showtime.movie_id, theater_id = showtime.theater_id, show_date = showtime.show_date, movie_error = false, theater_error = false, is_validated = false, content = JsonSerializer.Serialize(showtime) });
                                                         ++showtimeCount;
                                                         //context.SaveChanges();
                                                     }
@@ -236,10 +233,51 @@ namespace DataProcessing
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
         [Fact]
+        public void ValidateShowtimeRecords()
+        {
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:IndexBatchSize")?.Value, out int batchSize))
+                batchSize = 1000;
+
+            int offset = 0;
+            while (true)
+            {
+                using(var context = _testHelper.CreateNewShowtimeDbContext())
+                {
+                    var showtimes = context.ShowtimeRecords.Where(st => !st.is_validated).Skip(offset).Take(batchSize).ToList();
+                    if (!showtimes.Any())
+                        break; //while(true)
+
+                    offset += batchSize;
+
+                    foreach(var movie_id in showtimes.Select(st => st.movie_id).Distinct())
+                    {
+                        var movie_exist = context.MovieRecords.Where(m => m.movie_id == movie_id).Any();
+                        var subset = showtimes.Where(st => st.movie_id == movie_id).ToList();
+                        for (int i = 0; i < subset.Count; i++)
+                            subset[i].movie_error = !movie_exist;
+                    }
+
+                    foreach (var theater_id in showtimes.Select(st => st.theater_id).Distinct())
+                    {
+                        var theater_exist = context.TheaterRecords.Where(m => m.theater_id == theater_id).Any();
+                        var subset = showtimes.Where(st => st.theater_id == theater_id).ToList();
+                        for (int i = 0; i < subset.Count; i++)
+                            subset[i].theater_error = !theater_exist;
+                    }
+
+                    for (int i = 0; i < showtimes.Count; i++)
+                        showtimes[i].is_validated = true;
+
+
+                        context.SaveChanges();
+                }
+                GC.Collect();
+            }
+        }
+
+        [Fact]
         public void IndexData()
         {
-            bool skipShowtimesWithMissingMoviesOrTheaters = true;
-
             DateTime start = DateTime.Now;
 
             if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:IndexBatchSize")?.Value, out int batchSize))
@@ -251,9 +289,8 @@ namespace DataProcessing
             if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:StartupShowtimeIdForIndexing")?.Value, out int startShowtimeId))
                 startShowtimeId = 0;
 
-            var context = _testHelper.ShowtimeDb;
 
-           string outputFolder = "C:\\Projects\\Showtime Database\\output";
+            string outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
             string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
@@ -265,122 +302,100 @@ namespace DataProcessing
             int currentBatch = 0;
             while (true)
             {
-                var ShowtimeRecords = startShowtimeId > 0 
-                    ? context!.ShowtimeRecords.Where(s => s.id >= startShowtimeId).Skip(offset).Take(batchSize).ToList()
-                    : context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
-
-                if (!ShowtimeRecords.Any() || currentBatch >= maxBatchesToProcess)
-                    break; //while(true)
-
-                File.AppendAllText(processingLogFile, $"Processing records {offset + 1} - {offset + ShowtimeRecords.Count} Showtime IDs from {ShowtimeRecords.First().id} to {ShowtimeRecords.Last().id} {Environment.NewLine}");
-
-                offset += ShowtimeRecords.Count;
-                ++currentBatch;
-
-                //Creating solr docs
-                List<int> missingMovieRecords = new List<int>();
-                List<int> missingTheaterRecords = new List<int>();
-                Movie movie = null;
-                Theater theater = null;
-                Showtime showtime = null;
-
-                //foreach (var showtimeRecord in ShowtimeRecords)
-                for (int i=0; i< ShowtimeRecords.Count; ++i)
+                using (var context = _testHelper.CreateNewShowtimeDbContext())
                 {
-                    var showtimeRecord = ShowtimeRecords[i];
-                    try
-                    {
-                        showtime = JsonSerializer.Deserialize<Showtime>(showtimeRecord.content.ToString());
+                    var ShowtimeRecords = startShowtimeId > 0
+                        ? context!.ShowtimeRecords.Where(s => s.id >= startShowtimeId).Skip(offset).Take(batchSize).ToList()
+                        : context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
 
-                        if(movie?.movie_id == showtime!.movie_id)
+                    if (!ShowtimeRecords.Any() || currentBatch >= maxBatchesToProcess)
+                        break; //while(true)
+
+                    File.AppendAllText(processingLogFile, $"Processing records {offset + 1} - {offset + ShowtimeRecords.Count} Showtime IDs from {ShowtimeRecords.First().id} to {ShowtimeRecords.Last().id} {Environment.NewLine}");
+
+                    offset += ShowtimeRecords.Count;
+                    ++currentBatch;
+
+                    //Creating solr docs
+                    Movie movie = null;
+                    Theater theater = null;
+                    Showtime showtime = null;
+
+                    for (int i = 0; i < ShowtimeRecords.Count; ++i)
+                    {
+                        var showtimeRecord = ShowtimeRecords[i];
+
+                        if (showtimeRecord.movie_error || showtimeRecord.theater_error)
+                            continue;
+
+                        try
                         {
-                            //Movie is already loaded in an immediate past iteration. Nothing to do here
-                        }
-                        else
-                        {
-                            if (!missingMovieRecords.Contains(showtime.movie_id))
+                            showtime = JsonSerializer.Deserialize<Showtime>(showtimeRecord.content.ToString());
+
+                            if (movie?.movie_id == showtime!.movie_id)
+                            {
+                                //Movie is already loaded in an immediate past iteration. Nothing to do here
+                            }
+                            else
                             {
                                 MovieRecord movieRecord = context.MovieRecords.FirstOrDefault(m => m.movie_id == showtimeRecord.movie_id);
                                 if (movieRecord == null)
                                 {
-                                    missingMovieRecords.Add(showtime.movie_id);
-                                    File.AppendAllText(errorLogFile, $"Movie not found for Showtime {showtimeRecord.id} <movie_id:{showtime.movie_id}, theater_id:{showtime.theater_id}, show_date:{showtime.show_date}> {Environment.NewLine}");
-
-                                    if (skipShowtimesWithMissingMoviesOrTheaters)
-                                    {
-                                        ShowtimeRecords.RemoveAll(m => m.movie_id == showtimeRecord.movie_id);
-                                        continue;
-                                    }
-
-                                    if (missingMovieRecords.Count > 5000)
-                                        missingMovieRecords.RemoveRange(0, 2500);
+                                    foreach (var rec in ShowtimeRecords.Where(sr => sr.movie_id == showtimeRecord.movie_id))
+                                        rec.movie_error = true;
                                 }
                                 else
                                     movie = JsonSerializer.Deserialize<Movie>(movieRecord!.content);
                             }
-                        }
 
-                        if (theater?.theater_id == showtime!.theater_id)
-                        {
-                            //Theater is already loaded in an immediate past iteration. Nothing to do here
-                        }
-                        else
-                        {
-                            if (!missingTheaterRecords.Contains(showtime.theater_id))
+                            if (theater?.theater_id == showtime!.theater_id)
+                            {
+                                //Theater is already loaded in an immediate past iteration. Nothing to do here
+                            }
+                            else
                             {
                                 TheaterRecord theaterRecord = context.TheaterRecords.FirstOrDefault(t => t.theater_id == showtimeRecord.theater_id);
                                 if (theaterRecord == null)
                                 {
-                                    missingTheaterRecords.Add(showtime.theater_id);
-                                    File.AppendAllText(errorLogFile, $"Theater not found for Showtime {showtimeRecord.id} <movie_id:{showtime.movie_id}, theater_id:{showtime.theater_id}, show_date:{showtime.show_date}> {Environment.NewLine}");
-
-                                    if (skipShowtimesWithMissingMoviesOrTheaters)
-                                    {
-                                        ShowtimeRecords.RemoveAll(m => m.theater_id == showtimeRecord.theater_id);
-                                        continue;
-                                    }
-
-                                    if (missingTheaterRecords.Count > 5000)
-                                        missingTheaterRecords.RemoveRange(0, 2500);
-
+                                    foreach (var rec in ShowtimeRecords.Where(sr => sr.theater_id == showtimeRecord.theater_id))
+                                        rec.theater_error = true;
                                 }
                                 else
                                     theater = JsonSerializer.Deserialize<Theater>(theaterRecord!.content);
                             }
+
+                            SolrDoc doc = new SolrDoc();
+
+                            AddShowtime(doc, showtime!);
+
+                            if (movie != null)
+                                AddMovie(doc, movie);
+
+
+                            if (theater != null)
+                                AddTheater(doc, theater);
+
+                            solrDocs.Add(doc);
+
                         }
-                        
-                        SolrDoc doc = new SolrDoc();
+                        catch (Exception ex)
+                        {
+                            File.AppendAllText(errorLogFile, $"EXCEPTION in Showtime {showtimeRecord.id} <movie_id:{showtime.movie_id}, theater_id:{showtime.theater_id}, show_date:{showtime.show_date}>: {ex.Message}{Environment.NewLine}");
+                        }
 
-                        AddShowtime(doc, showtime!);
+                    }//End: foreach (var showtimeRecord in ShowtimeRecords)
 
-                        if (movie != null)
-                            AddMovie(doc, movie);
-
-
-                        if (theater != null)
-                            AddTheater(doc, theater);
-
-                        solrDocs.Add(doc);
-
-                    }
-                    catch (Exception ex)
+                    //Call solr service to index the batch of docs
+                    ISolrService solr = _testHelper.Solr;
+                    if (solrDocs.Count > 0)
                     {
-                        File.AppendAllText(errorLogFile, $"EXCEPTION in Showtime {showtimeRecord.id} <movie_id:{showtime.movie_id}, theater_id:{showtime.theater_id}, show_date:{showtime.show_date}>: {ex.Message}{Environment.NewLine}");
+                        solr.Index(solrDocs).Wait();
+                        solr.CommitAsync().Wait();
+
+                        //Clearning the bufffer
+                        solrDocs.Clear();
                     }
-
-                }//End: foreach (var showtimeRecord in ShowtimeRecords)
-
-                //Call solr service to index the batch of docs
-                ISolrService solr = _testHelper.Solr;
-                if (solrDocs.Count > 0)
-                {
-                    solr.Index(solrDocs).Wait();
-                    solr.CommitAsync().Wait();
-
-                    //Clearning the bufffer
-                    solrDocs.Clear();
-                }
-
+                }//End: using (var batchContext = new ShowtimeDbContext(dbOptions))
             }//End: while(true)
 
 
@@ -942,6 +957,9 @@ namespace DataProcessing
         public int theater_id { get; set; }
         public DateTime? show_date { get; set; }
         public int batch { get; set; }
+        public bool movie_error { get; set; }
+        public bool theater_error { get; set; }
+        public bool is_validated { get; set; }
         public string content { get; set; }
     }
 

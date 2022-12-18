@@ -58,6 +58,16 @@ namespace Catfish.Test.Helpers
             
         }
 
+        public ShowtimeDbContext CreateNewShowtimeDbContext()
+        {
+            //var context = _testHelper.ShowtimeDb;
+            var optBuilder = new DbContextOptionsBuilder<ShowtimeDbContext>();
+            optBuilder.UseSqlServer(this.ShowtimeConnectionString);
+            var dbOptions = optBuilder.Options;
+            return new ShowtimeDbContext(dbOptions);
+
+        }
+
         public RepoDbContext Db => Seviceprovider.GetService<RepoDbContext>();
         public ShowtimeDbContext ShowtimeDb => Seviceprovider.GetService<ShowtimeDbContext>();
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>();
