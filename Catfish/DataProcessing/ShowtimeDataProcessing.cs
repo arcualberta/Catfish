@@ -261,9 +261,11 @@ namespace DataProcessing
             int total = 0;
             using (var context = _testHelper.CreateNewShowtimeDbContext())
             {
+                context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
                 total_validated = context.ShowtimeRecords.Where(st => st.is_validated).Count();
                 total = context.ShowtimeRecords.Count();
             }
+
             while (true)
             {
                 using(var context = _testHelper.CreateNewShowtimeDbContext())
@@ -271,7 +273,6 @@ namespace DataProcessing
                     string batchStr = "";
                     try
                     {
-                        int? timeout1 = context.Database.GetCommandTimeout();
                         context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
 
                         var showtimes = context.ShowtimeRecords.Where(st => !st.is_validated).Take(batchSize).ToList();
