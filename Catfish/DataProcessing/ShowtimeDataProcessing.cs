@@ -35,7 +35,8 @@ namespace DataProcessing
             _testHelper = new TestHelper();
         }
 
-        
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.CreateDbRecords
         [Fact/*(Skip = "Don't want to re-create the db records now")*/]
         public void CreateDbRecords()
         {
@@ -233,6 +234,8 @@ namespace DataProcessing
 
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.ValidateShowtimeRecords
         [Fact]
         public void ValidateShowtimeRecords()
         {
@@ -310,6 +313,7 @@ namespace DataProcessing
             }
         }
 
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexData
         [Fact]
         public void IndexData()
         {
