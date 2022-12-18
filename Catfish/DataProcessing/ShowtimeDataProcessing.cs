@@ -17,6 +17,7 @@ using Catfish.API.Repository.Interfaces;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography.Xml;
 using System.Configuration;
+using System.Collections;
 
 namespace DataProcessing
 {
@@ -235,41 +236,75 @@ namespace DataProcessing
         [Fact]
         public void ValidateShowtimeRecords()
         {
+            DateTime start = DateTime.Now;
+
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:IsProductionRun")?.Value, out bool productionRun))
+                productionRun = true;
+
             if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:IndexBatchSize")?.Value, out int batchSize))
                 batchSize = 1000;
 
-            int offset = 0;
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:ContextTimeoutInMinutes")?.Value, out int contextTimeoutInMinutes))
+                contextTimeoutInMinutes = 3;
+
+            string outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+            string logFilePrefix = productionRun ? "" : "dry-run-";
+            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}validation-log-{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}validation-error-log-{fileSuffix}.txt");
+
+            int total_validated = 0;
+            int total = 0;
+            using (var context = _testHelper.CreateNewShowtimeDbContext())
+            {
+                total_validated = context.ShowtimeRecords.Where(st => st.is_validated).Count();
+                total = context.ShowtimeRecords.Count();
+            }
             while (true)
             {
                 using(var context = _testHelper.CreateNewShowtimeDbContext())
                 {
-                    var showtimes = context.ShowtimeRecords.Where(st => !st.is_validated).Skip(offset).Take(batchSize).ToList();
-                    if (!showtimes.Any())
-                        break; //while(true)
-
-                    offset += batchSize;
-
-                    foreach(var movie_id in showtimes.Select(st => st.movie_id).Distinct())
+                    string batchStr = "";
+                    try
                     {
-                        var movie_exist = context.MovieRecords.Where(m => m.movie_id == movie_id).Any();
-                        var subset = showtimes.Where(st => st.movie_id == movie_id).ToList();
-                        for (int i = 0; i < subset.Count; i++)
-                            subset[i].movie_error = !movie_exist;
-                    }
+                        int? timeout1 = context.Database.GetCommandTimeout();
+                        context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
 
-                    foreach (var theater_id in showtimes.Select(st => st.theater_id).Distinct())
-                    {
-                        var theater_exist = context.TheaterRecords.Where(m => m.theater_id == theater_id).Any();
-                        var subset = showtimes.Where(st => st.theater_id == theater_id).ToList();
-                        for (int i = 0; i < subset.Count; i++)
-                            subset[i].theater_error = !theater_exist;
-                    }
+                        var showtimes = context.ShowtimeRecords.Where(st => !st.is_validated).Take(batchSize).ToList();
+                        if (!showtimes.Any())
+                            break; //while(true)
 
-                    for (int i = 0; i < showtimes.Count; i++)
-                        showtimes[i].is_validated = true;
+                        batchStr = $"{total_validated + 1} - {total_validated + showtimes.Count}";
+                        File.AppendAllText(processingLogFile, $"Processing: {batchStr}{Environment.NewLine}{Environment.NewLine}");
 
+                        total_validated += showtimes.Count;
+
+                        foreach (var movie_id in showtimes.Select(st => st.movie_id).Distinct())
+                        {
+                            var movie_error = context.MovieRecords.Where(m => m.movie_id == movie_id).Any() == false;
+                            var subset = showtimes.Where(st => st.movie_id == movie_id).ToList();
+                            for (int i = 0; i < subset.Count; i++)
+                                subset[i].movie_error = movie_error;
+                        }
+
+                        foreach (var theater_id in showtimes.Select(st => st.theater_id).Distinct())
+                        {
+                            var theater_error = context.TheaterRecords.Where(m => m.theater_id == theater_id).Any() == false;
+                            var subset = showtimes.Where(st => st.theater_id == theater_id).ToList();
+                            for (int i = 0; i < subset.Count; i++)
+                                subset[i].theater_error = theater_error;
+                        }
+
+                        for (int i = 0; i < showtimes.Count; i++)
+                            showtimes[i].is_validated = true;
 
                         context.SaveChanges();
+                    }
+                    catch(Exception ex)
+                    {
+                        File.AppendAllText(errorLogFile, $"EXCEPTION in batch {batchStr}: {ex.Message}{Environment.NewLine}");
+                    }
                 }
                 GC.Collect();
             }
