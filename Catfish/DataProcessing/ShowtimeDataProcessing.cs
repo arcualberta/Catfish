@@ -435,7 +435,7 @@ namespace DataProcessing
 
                                 SolrDoc doc = new SolrDoc();
 
-                                AddShowtime(doc, showtime!);
+                                AddShowtime(doc, showtime!, showtimeRecord.id);
 
                                 if (movie != null)
                                     AddMovie(doc, movie);
@@ -616,11 +616,14 @@ namespace DataProcessing
 
         ////////}
 
-        private void AddShowtime(SolrDoc doc, Showtime showtime)
+        private void AddShowtime(SolrDoc doc, Showtime showtime, int showtimeDbId)
         {
             string showtime_id_date_str = (showtime!.show_date != null) ? showtime!.show_date.Value.ToString("yyyyMMdd") : Guid.NewGuid().ToString();
             var showtime_id = $"{showtime!.movie_id}-{showtime!.theater_id}-{showtime_id_date_str}";
             doc.AddId(showtime_id);
+
+            //Adding showtime db id
+            doc.AddField("showtime_db_id_i", showtimeDbId);
 
             //showtime properties
             doc.AddField("movie_name_t", showtime!.movie_name!);
