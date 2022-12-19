@@ -372,7 +372,7 @@ namespace DataProcessing
                         ++currentBatch;
 
                         batchStr = $"{showtimes.First().id} - {showtimes.Last().id}";
-                        File.AppendAllText(processingLogFile, $"Processing records {batchStr} {Environment.NewLine}");
+                        File.AppendAllText(processingLogFile, $"Processing showtime records with id range {batchStr} {Environment.NewLine}");
 
                         //Creating solr docs
                         Movie movie = null;
