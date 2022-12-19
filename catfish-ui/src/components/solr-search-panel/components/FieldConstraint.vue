@@ -15,7 +15,7 @@
 
     </script>
 <template>
-    Field Selector <br />
+    Field Constraint <br />
     <b-row>
         <b-col class="col-sm-3">
 
