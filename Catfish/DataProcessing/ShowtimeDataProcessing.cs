@@ -356,14 +356,19 @@ namespace DataProcessing
             int currentBatch = 0;
             while (true)
             {
+                var connection_t0 = DateTime.Now;
                 using (var context = _testHelper.CreateNewShowtimeDbContext())
                 {
                     string batchStr = "";
                     context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
+                    var connection_t1 = DateTime.Now;
+                    string log_message = $"Connection setup time: {(connection_t1 - connection_t0).TotalSeconds} seconds.";
 
                     try
                     {
-                       var showtimes = context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
+                        var sql_t0 = DateTime.Now;
+                        var showtimes = context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
+                        var sql_t1 = DateTime.Now;
 
                         if (!showtimes.Any() || currentBatch >= maxBatchesToProcess)
                             break; //while(true)
@@ -372,7 +377,8 @@ namespace DataProcessing
                         ++currentBatch;
 
                         batchStr = $"{showtimes.First().id} - {showtimes.Last().id}";
-                        File.AppendAllText(processingLogFile, $"Processing showtime records with ids in the range {batchStr} {Environment.NewLine}");
+
+                        File.AppendAllText(processingLogFile, $"{log_message} Loaded showtime records with ids in the range {batchStr} in {(sql_t1-sql_t0).TotalSeconds} seconds.");
 
                         //Creating solr docs
                         Movie movie = null;
@@ -429,7 +435,7 @@ namespace DataProcessing
 
                                 SolrDoc doc = new SolrDoc();
 
-                                AddShowtime(doc, showtime!);
+                                AddShowtime(doc, showtime!, showtimeRecord.id);
 
                                 if (movie != null)
                                     AddMovie(doc, movie);
@@ -449,6 +455,9 @@ namespace DataProcessing
 
                         //Call solr service to index the batch of docs
                         ISolrService solr = _testHelper.Solr;
+
+                        File.AppendAllText(processingLogFile, $" Data processing time: {(DateTime.Now - sql_t1).TotalSeconds} seconds. Indexing {solrDocs.Count} records");
+                        var solr_t0 = DateTime.Now;
                         if (solrDocs.Count > 0)
                         {
                             solr.Index(solrDocs).Wait();
@@ -457,13 +466,18 @@ namespace DataProcessing
                             //Clearning the bufffer
                             solrDocs.Clear();
                         }
+                        var solr_t1 = DateTime.Now;
+                        File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.");
+                        
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         File.AppendAllText(errorLogFile, $"EXCEPTION in batch {batchStr}: {ex.Message}{Environment.NewLine}");
                     }
                 }//End: using (var context = _testHelper.CreateNewShowtimeDbContext())
-                GC.Collect();   
+                GC.Collect();
+                File.AppendAllText(processingLogFile, $" Batch execution time: {(DateTime.Now - connection_t0).TotalSeconds} seconds.{Environment.NewLine}");
+
             }//End: while(true)
 
 
@@ -602,11 +616,14 @@ namespace DataProcessing
 
         ////////}
 
-        private void AddShowtime(SolrDoc doc, Showtime showtime)
+        private void AddShowtime(SolrDoc doc, Showtime showtime, int showtimeDbId)
         {
             string showtime_id_date_str = (showtime!.show_date != null) ? showtime!.show_date.Value.ToString("yyyyMMdd") : Guid.NewGuid().ToString();
             var showtime_id = $"{showtime!.movie_id}-{showtime!.theater_id}-{showtime_id_date_str}";
             doc.AddId(showtime_id);
+
+            //Adding showtime db id
+            doc.AddField("showtime_db_id_i", showtimeDbId);
 
             //showtime properties
             doc.AddField("movie_name_t", showtime!.movie_name!);
