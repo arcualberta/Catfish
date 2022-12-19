@@ -363,7 +363,9 @@ namespace DataProcessing
 
                     try
                     {
-                       var showtimes = context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
+                        var sql_t0 = DateTime.Now;
+                        var showtimes = context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
+                        var sql_t1 = DateTime.Now;
 
                         if (!showtimes.Any() || currentBatch >= maxBatchesToProcess)
                             break; //while(true)
@@ -372,7 +374,7 @@ namespace DataProcessing
                         ++currentBatch;
 
                         batchStr = $"{showtimes.First().id} - {showtimes.Last().id}";
-                        File.AppendAllText(processingLogFile, $"Processing showtime records with ids in the range {batchStr} {Environment.NewLine}");
+                        File.AppendAllText(processingLogFile, $"Loaded showtime records with ids in the range {batchStr} in {(sql_t1-sql_t0).TotalSeconds} seconds. ");
 
                         //Creating solr docs
                         Movie movie = null;
@@ -449,6 +451,9 @@ namespace DataProcessing
 
                         //Call solr service to index the batch of docs
                         ISolrService solr = _testHelper.Solr;
+
+                        File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records ");
+                        var solr_t0 = DateTime.Now;
                         if (solrDocs.Count > 0)
                         {
                             solr.Index(solrDocs).Wait();
@@ -457,8 +462,11 @@ namespace DataProcessing
                             //Clearning the bufffer
                             solrDocs.Clear();
                         }
+                        var solr_t1 = DateTime.Now;
+                        File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.{Environment.NewLine}");
+
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         File.AppendAllText(errorLogFile, $"EXCEPTION in batch {batchStr}: {ex.Message}{Environment.NewLine}");
                     }
