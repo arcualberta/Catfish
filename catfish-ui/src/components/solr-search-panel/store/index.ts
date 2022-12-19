@@ -33,7 +33,9 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             .catch((error) => {
                 console.error('Load Entities API Error:', error);
             });
-        }
+        },createExpression(){
+            
+        },
        
     }
 });
