@@ -356,10 +356,13 @@ namespace DataProcessing
             int currentBatch = 0;
             while (true)
             {
+                var connection_t0 = DateTime.Now;
                 using (var context = _testHelper.CreateNewShowtimeDbContext())
                 {
                     string batchStr = "";
                     context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
+                    var connection_t1 = DateTime.Now;
+                    string log_message = $"Connection setup time: {(connection_t1 - connection_t0).TotalSeconds} seconds.";
 
                     try
                     {
@@ -374,7 +377,8 @@ namespace DataProcessing
                         ++currentBatch;
 
                         batchStr = $"{showtimes.First().id} - {showtimes.Last().id}";
-                        File.AppendAllText(processingLogFile, $"Loaded showtime records with ids in the range {batchStr} in {(sql_t1-sql_t0).TotalSeconds} seconds. ");
+
+                        File.AppendAllText(processingLogFile, $"{log_message} Loaded showtime records with ids in the range {batchStr} in {(sql_t1-sql_t0).TotalSeconds} seconds.");
 
                         //Creating solr docs
                         Movie movie = null;
@@ -452,7 +456,7 @@ namespace DataProcessing
                         //Call solr service to index the batch of docs
                         ISolrService solr = _testHelper.Solr;
 
-                        File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records ");
+                        File.AppendAllText(processingLogFile, $" Data processing time: {(DateTime.Now - sql_t1).TotalSeconds} seconds. Indexing {solrDocs.Count} records");
                         var solr_t0 = DateTime.Now;
                         if (solrDocs.Count > 0)
                         {
@@ -463,15 +467,17 @@ namespace DataProcessing
                             solrDocs.Clear();
                         }
                         var solr_t1 = DateTime.Now;
-                        File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.{Environment.NewLine}");
-
+                        File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.");
+                        
                     }
                     catch (Exception ex)
                     {
                         File.AppendAllText(errorLogFile, $"EXCEPTION in batch {batchStr}: {ex.Message}{Environment.NewLine}");
                     }
                 }//End: using (var context = _testHelper.CreateNewShowtimeDbContext())
-                GC.Collect();   
+                GC.Collect();
+                File.AppendAllText(processingLogFile, $" Batch execution time: {(DateTime.Now - connection_t0).TotalSeconds} seconds.{Environment.NewLine}");
+
             }//End: while(true)
 
 
