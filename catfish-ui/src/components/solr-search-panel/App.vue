@@ -10,7 +10,10 @@ import { useSolrSearchStore } from './store';
     </script>
 <template>
     Solr search
-   <FieldExpression :searchFields="SolrFields" :value="[]"></FieldExpression>
+    <div style="border-style: solid;border-color: green;">
+        <FieldExpression :searchFields="SolrFields" :value="[]"></FieldExpression>
+    </div>
+   
     <button @click="query">Query</button>
     <div>
         Query time: {{store.queryTime}} seconds<br /><br />
