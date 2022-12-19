@@ -337,8 +337,8 @@ namespace DataProcessing
             Directory.CreateDirectory(outputFolder);
 
             string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string processingLogFile = Path.Combine(outputFolder, $"indexing-log-{fileSuffix}.txt");
-            string errorLogFile = Path.Combine(outputFolder, $"indexing-error-log-{fileSuffix}.txt");
+            string processingLogFile = Path.Combine(outputFolder, $"index-data-log_{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"indexing-data-error-log_{fileSuffix}.txt");
 
             List<SolrDoc> solrDocs = new List<SolrDoc>();
             int offset = 0;
@@ -473,8 +473,7 @@ namespace DataProcessing
         }
 
 
-        [Fact]
-        public void IndexDataOld()
+        public void xxIndexDataOld()
         {
             DateTime start = DateTime.Now;
 
