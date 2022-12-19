@@ -473,134 +473,134 @@ namespace DataProcessing
         }
 
 
-        public void xxIndexDataOld()
-        {
-            DateTime start = DateTime.Now;
+        ////////public void xxIndexDataOld()
+        ////////{
+        ////////    DateTime start = DateTime.Now;
 
-            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:IndexBatchSize")?.Value, out int batchSize))
-                batchSize = 1000;
+        ////////    if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:IndexBatchSize")?.Value, out int batchSize))
+        ////////        batchSize = 1000;
 
-            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
-                maxBatchesToProcess = int.MaxValue;
+        ////////    if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
+        ////////        maxBatchesToProcess = int.MaxValue;
 
-            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:StartupShowtimeIdForIndexing")?.Value, out int startShowtimeId))
-                startShowtimeId = 0;
-
-
-            string outputFolder = "C:\\Projects\\Showtime Database\\output";
-            Directory.CreateDirectory(outputFolder);
-
-            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string processingLogFile = Path.Combine(outputFolder, $"indexing-log-{fileSuffix}.txt");
-            string errorLogFile = Path.Combine(outputFolder, $"indexing-error-log-{fileSuffix}.txt");
-
-            List<SolrDoc> solrDocs = new List<SolrDoc>();
-            int offset = 0;
-            int currentBatch = 0;
-            while (true)
-            {
-                using (var context = _testHelper.CreateNewShowtimeDbContext())
-                {
-                    var ShowtimeRecords = startShowtimeId > 0
-                        ? context!.ShowtimeRecords.Where(s => s.id >= startShowtimeId).Skip(offset).Take(batchSize).ToList()
-                        : context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
-
-                    if (!ShowtimeRecords.Any() || currentBatch >= maxBatchesToProcess)
-                        break; //while(true)
-
-                    File.AppendAllText(processingLogFile, $"Processing records {offset + 1} - {offset + ShowtimeRecords.Count} Showtime IDs from {ShowtimeRecords.First().id} to {ShowtimeRecords.Last().id} {Environment.NewLine}");
-
-                    offset += ShowtimeRecords.Count;
-                    ++currentBatch;
-
-                    //Creating solr docs
-                    Movie movie = null;
-                    Theater theater = null;
-                    Showtime showtime = null;
-
-                    for (int i = 0; i < ShowtimeRecords.Count; ++i)
-                    {
-                        var showtimeRecord = ShowtimeRecords[i];
-
-                        if (showtimeRecord.movie_error.HasValue && showtimeRecord.movie_error.Value || showtimeRecord.theater_error.HasValue && showtimeRecord.theater_error.Value)
-                            continue;
-
-                        try
-                        {
-                            showtime = JsonSerializer.Deserialize<Showtime>(showtimeRecord.content.ToString());
-
-                            if (movie?.movie_id == showtime!.movie_id)
-                            {
-                                //Movie is already loaded in an immediate past iteration. Nothing to do here
-                            }
-                            else
-                            {
-                                MovieRecord movieRecord = context.MovieRecords.FirstOrDefault(m => m.movie_id == showtimeRecord.movie_id);
-                                if (movieRecord == null)
-                                {
-                                    foreach (var rec in ShowtimeRecords.Where(sr => sr.movie_id == showtimeRecord.movie_id))
-                                        rec.movie_error = true;
-                                }
-                                else
-                                    movie = JsonSerializer.Deserialize<Movie>(movieRecord!.content);
-                            }
-
-                            if (theater?.theater_id == showtime!.theater_id)
-                            {
-                                //Theater is already loaded in an immediate past iteration. Nothing to do here
-                            }
-                            else
-                            {
-                                TheaterRecord theaterRecord = context.TheaterRecords.FirstOrDefault(t => t.theater_id == showtimeRecord.theater_id);
-                                if (theaterRecord == null)
-                                {
-                                    foreach (var rec in ShowtimeRecords.Where(sr => sr.theater_id == showtimeRecord.theater_id))
-                                        rec.theater_error = true;
-                                }
-                                else
-                                    theater = JsonSerializer.Deserialize<Theater>(theaterRecord!.content);
-                            }
-
-                            SolrDoc doc = new SolrDoc();
-
-                            AddShowtime(doc, showtime!);
-
-                            if (movie != null)
-                                AddMovie(doc, movie);
+        ////////    if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:StartupShowtimeIdForIndexing")?.Value, out int startShowtimeId))
+        ////////        startShowtimeId = 0;
 
 
-                            if (theater != null)
-                                AddTheater(doc, theater);
+        ////////    string outputFolder = "C:\\Projects\\Showtime Database\\output";
+        ////////    Directory.CreateDirectory(outputFolder);
 
-                            solrDocs.Add(doc);
+        ////////    string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+        ////////    string processingLogFile = Path.Combine(outputFolder, $"indexing-log-{fileSuffix}.txt");
+        ////////    string errorLogFile = Path.Combine(outputFolder, $"indexing-error-log-{fileSuffix}.txt");
 
-                        }
-                        catch (Exception ex)
-                        {
-                            File.AppendAllText(errorLogFile, $"EXCEPTION in Showtime {showtimeRecord.id} <movie_id:{showtime.movie_id}, theater_id:{showtime.theater_id}, show_date:{showtime.show_date}>: {ex.Message}{Environment.NewLine}");
-                        }
+        ////////    List<SolrDoc> solrDocs = new List<SolrDoc>();
+        ////////    int offset = 0;
+        ////////    int currentBatch = 0;
+        ////////    while (true)
+        ////////    {
+        ////////        using (var context = _testHelper.CreateNewShowtimeDbContext())
+        ////////        {
+        ////////            var ShowtimeRecords = startShowtimeId > 0
+        ////////                ? context!.ShowtimeRecords.Where(s => s.id >= startShowtimeId).Skip(offset).Take(batchSize).ToList()
+        ////////                : context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
 
-                    }//End: foreach (var showtimeRecord in ShowtimeRecords)
+        ////////            if (!ShowtimeRecords.Any() || currentBatch >= maxBatchesToProcess)
+        ////////                break; //while(true)
 
-                    //Call solr service to index the batch of docs
-                    ISolrService solr = _testHelper.Solr;
-                    if (solrDocs.Count > 0)
-                    {
-                        solr.Index(solrDocs).Wait();
-                        solr.CommitAsync().Wait();
+        ////////            File.AppendAllText(processingLogFile, $"Processing records {offset + 1} - {offset + ShowtimeRecords.Count} Showtime IDs from {ShowtimeRecords.First().id} to {ShowtimeRecords.Last().id} {Environment.NewLine}");
 
-                        //Clearning the bufffer
-                        solrDocs.Clear();
-                    }
-                }//End: using (var batchContext = new ShowtimeDbContext(dbOptions))
-            }//End: while(true)
+        ////////            offset += ShowtimeRecords.Count;
+        ////////            ++currentBatch;
+
+        ////////            //Creating solr docs
+        ////////            Movie movie = null;
+        ////////            Theater theater = null;
+        ////////            Showtime showtime = null;
+
+        ////////            for (int i = 0; i < ShowtimeRecords.Count; ++i)
+        ////////            {
+        ////////                var showtimeRecord = ShowtimeRecords[i];
+
+        ////////                if (showtimeRecord.movie_error.HasValue && showtimeRecord.movie_error.Value || showtimeRecord.theater_error.HasValue && showtimeRecord.theater_error.Value)
+        ////////                    continue;
+
+        ////////                try
+        ////////                {
+        ////////                    showtime = JsonSerializer.Deserialize<Showtime>(showtimeRecord.content.ToString());
+
+        ////////                    if (movie?.movie_id == showtime!.movie_id)
+        ////////                    {
+        ////////                        //Movie is already loaded in an immediate past iteration. Nothing to do here
+        ////////                    }
+        ////////                    else
+        ////////                    {
+        ////////                        MovieRecord movieRecord = context.MovieRecords.FirstOrDefault(m => m.movie_id == showtimeRecord.movie_id);
+        ////////                        if (movieRecord == null)
+        ////////                        {
+        ////////                            foreach (var rec in ShowtimeRecords.Where(sr => sr.movie_id == showtimeRecord.movie_id))
+        ////////                                rec.movie_error = true;
+        ////////                        }
+        ////////                        else
+        ////////                            movie = JsonSerializer.Deserialize<Movie>(movieRecord!.content);
+        ////////                    }
+
+        ////////                    if (theater?.theater_id == showtime!.theater_id)
+        ////////                    {
+        ////////                        //Theater is already loaded in an immediate past iteration. Nothing to do here
+        ////////                    }
+        ////////                    else
+        ////////                    {
+        ////////                        TheaterRecord theaterRecord = context.TheaterRecords.FirstOrDefault(t => t.theater_id == showtimeRecord.theater_id);
+        ////////                        if (theaterRecord == null)
+        ////////                        {
+        ////////                            foreach (var rec in ShowtimeRecords.Where(sr => sr.theater_id == showtimeRecord.theater_id))
+        ////////                                rec.theater_error = true;
+        ////////                        }
+        ////////                        else
+        ////////                            theater = JsonSerializer.Deserialize<Theater>(theaterRecord!.content);
+        ////////                    }
+
+        ////////                    SolrDoc doc = new SolrDoc();
+
+        ////////                    AddShowtime(doc, showtime!);
+
+        ////////                    if (movie != null)
+        ////////                        AddMovie(doc, movie);
 
 
-            var timelapse = (DateTime.Now - start).ToString();
-            string logText = $"Total indexing time: {timelapse}{Environment.NewLine}";
-            File.AppendAllText(processingLogFile, logText);
+        ////////                    if (theater != null)
+        ////////                        AddTheater(doc, theater);
 
-        }
+        ////////                    solrDocs.Add(doc);
+
+        ////////                }
+        ////////                catch (Exception ex)
+        ////////                {
+        ////////                    File.AppendAllText(errorLogFile, $"EXCEPTION in Showtime {showtimeRecord.id} <movie_id:{showtime.movie_id}, theater_id:{showtime.theater_id}, show_date:{showtime.show_date}>: {ex.Message}{Environment.NewLine}");
+        ////////                }
+
+        ////////            }//End: foreach (var showtimeRecord in ShowtimeRecords)
+
+        ////////            //Call solr service to index the batch of docs
+        ////////            ISolrService solr = _testHelper.Solr;
+        ////////            if (solrDocs.Count > 0)
+        ////////            {
+        ////////                solr.Index(solrDocs).Wait();
+        ////////                solr.CommitAsync().Wait();
+
+        ////////                //Clearning the bufffer
+        ////////                solrDocs.Clear();
+        ////////            }
+        ////////        }//End: using (var batchContext = new ShowtimeDbContext(dbOptions))
+        ////////    }//End: while(true)
+
+
+        ////////    var timelapse = (DateTime.Now - start).ToString();
+        ////////    string logText = $"Total indexing time: {timelapse}{Environment.NewLine}";
+        ////////    File.AppendAllText(processingLogFile, logText);
+
+        ////////}
 
         private void AddShowtime(SolrDoc doc, Showtime showtime)
         {
