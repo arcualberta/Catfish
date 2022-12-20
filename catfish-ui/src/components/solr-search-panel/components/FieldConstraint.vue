@@ -48,22 +48,22 @@ const selectedOption = computed({
             </select>
         </b-col>
         <b-col class="col-sm-5">
-            <div v-if="fieldValues.type === 1">
+            <div v-if="fieldValues.type === eFieldType.Text">
                 <b-form-input type="text" v-model="txtValue"></b-form-input>
             </div>
-            <div v-else-if="fieldValues.type === 2">
-                <b-form-input type="date"></b-form-input>
+            <div v-else-if="fieldValues.type === eFieldType.Date">
+                <b-form-input type="date" v-model="txtValue"></b-form-input>
             </div>
-            <div v-else-if="fieldValues.type === 3">
-                <b-form-input type="number" step='1'></b-form-input>
+            <div v-else-if="fieldValues.type === eFieldType.Integer">
+                <b-form-input type="number" step='1' v-model="txtValue"></b-form-input>
             </div>
-            <div v-else-if="fieldValues.type === 4">
-                <b-form-input type="number" :step='Math.pow(10, 2)'></b-form-input>
+            <div v-else-if="fieldValues.type === eFieldType.Decimal">
+                <b-form-input type="number" :step='Math.pow(10, 2)' v-model="txtValue"></b-form-input>
             </div>
-            <div v-else-if="fieldValues.type === 5">
-                <b-form-input type="email"></b-form-input>
+            <div v-else-if="fieldValues.type === eFieldType.Email">
+                <b-form-input type="email" v-model="txtValue"></b-form-input>
             </div>
-            <div v-else-if="fieldValues.type === 8">
+            <div v-else-if="fieldValues.type === eFieldType.Radio">
                 <span v-for="opt in fieldValues.options">
                     <input type="radio" :name="fieldName" v-model="txtValue" :value="(opt as unknown as string)"/>{{opt}}
                 </span>
