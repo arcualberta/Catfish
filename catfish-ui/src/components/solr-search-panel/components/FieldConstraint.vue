@@ -8,6 +8,7 @@ import { BRow, BCol, BFormInput } from 'bootstrap-vue-3';
 import { FieldConstraint } from '../models/FieldConstraint';
 import { useSolrSearchStore } from '../store';
 import { validate } from 'uuid';
+import { Guid } from 'guid-typescript';
 
 const props = defineProps<{
     model: FieldConstraint,
@@ -16,6 +17,7 @@ const props = defineProps<{
 
 const field = ref(null as null | SearchFieldDefinition ) ;
 //const readOnly = computed(() => field.value && field.value.type >  0);
+const fieldName = ref(`opt-${Guid.create() as unknown as string}`);
 
 const store = useSolrSearchStore();
 const searchFields = computed(() => store.searchFieldDefinitions)
@@ -27,11 +29,11 @@ const txtValue = computed({
         }
     })
 
- const fieldValues = computed(() => JSON.parse(JSON.stringify(props.model.field)) )  
-    const selectedOption = computed({
-        get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] as unknown as string : Guid.EMPTY as unknown as string ,
-        set: (opt) => props.model.value = [opt as unknown as string]
-    })
+const fieldValues = computed(() => JSON.parse(JSON.stringify(props.model.field)) )  
+const selectedOption = computed({
+    get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] as unknown as string : Guid.EMPTY as unknown as string ,
+    set: (opt) => props.model.value = [opt as unknown as string]
+})
 </script>
 <template>
     <b-row>
@@ -63,16 +65,14 @@ const txtValue = computed({
             </div>
             <div v-else-if="fieldValues.type === 8">
                 <span v-for="opt in fieldValues.options">
-                    <input type="radio" name="opt" :value="(opt as unknown as string)"/>{{opt}}
+                    <input type="radio" :name="fieldName" v-model="txtValue" :value="(opt as unknown as string)"/>{{opt}}
                 </span>
             </div>
             <div v-else>
                 <b-form-input type="text" v-model="txtValue"></b-form-input>
             </div>
 
-
         </b-col>
 
     </b-row>
-
 </template>
