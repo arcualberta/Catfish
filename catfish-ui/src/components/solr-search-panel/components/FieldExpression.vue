@@ -60,22 +60,25 @@ import { FieldConstraint } from '../models/FieldConstraint';
     </script>
 
 <template>
-    <div style="border: solid red 1px" class="row">
+    <div class="form-field-border row">
         <div class="col-md-1"></div>
-        <div v-if="model.expressionComponents?.length > 0" class="col-md-11" style="border:dashed green 1px;">
+        <div v-if="model.expressionComponents?.length > 0" class="col-md-11" >
             <FieldExpressionTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" />
             <FieldConstraintTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldConstraing" :model="model.expressionComponents[0] as unknown as FieldConstraint" />
         </div>
 
         <div v-for="(op, index) in model.operators" class="row">
             <div class="col-md-12">
-                <select>
+                <div class="col-md-1">
+                    <select class="form-select">
                     <option>AND</option>
                     <option>OR</option>
                 </select>
+                </div>
+                
             </div>
             <div class="col-md-1"></div>
-            <div class="col-md-11" style="border:dashed green 1px;">
+            <div class="col-md-11" >
                 <FieldExpressionTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[index+1] as unknown as FieldExpression)" />
                 <FieldConstraintTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldConstraing" :model="(model.expressionComponents[index+1] as FieldConstraint)" />
             </div>
@@ -115,3 +118,12 @@ import { FieldConstraint } from '../models/FieldConstraint';
         </div>
     </div>
 </template>
+<style scoped>
+   .form-field-border {
+    border: 1px solid;
+    padding: 30px 16px;
+    border-radius: 16px;
+    min-height: 100px;
+    margin-bottom: 10px;
+}
+</style>
