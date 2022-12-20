@@ -5,13 +5,16 @@
     import { useRoute } from 'vue-router'
     import { Guid } from 'guid-typescript'
    // import { useSolrSearchStore } from '../components/solr-search-panel/store';
-    import { SolrSearchPanel } from '../components'
-    import { default as config } from "@/appsettings";
+    import { SolrSearchPanel, useSolrSearchStore } from '../components'
+    import { default as config, solrFields } from "@/appsettings";
 
     const route = useRoute()
     const entityId = route.params.id as unknown as Guid
     
      const apiRoot= config.dataRepositoryApiRoot + "/api/solr";
+
+     const store = useSolrSearchStore();
+     store.searchFieldDefinitions = solrFields;
 
 </script>
 

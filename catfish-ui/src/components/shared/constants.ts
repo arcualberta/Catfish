@@ -50,3 +50,9 @@ export enum eFieldConstraint {
 }
 export const getFieldConstraintLabel = (val: eFieldConstraint): string => splitCamelCase(eFieldConstraint[val])
 export const eFieldConstraintValues: eFieldConstraint[] = Object.keys(eFieldConstraint).filter(key => typeof eFieldConstraint[key as any] === 'number').sort().map(key => eFieldConstraint[key as any] as unknown as eFieldConstraint)
+
+
+export enum eConstraintType{
+    FieldConstraing,
+    FieldExpression
+}

@@ -1,36 +1,39 @@
 <script setup lang="ts">
-    import { Pinia } from 'pinia'
-    import { SearchFieldDefinition } from '../models'
-    import { computed, ref } from 'vue';
-    import { eFieldType, eFieldConstraint } from '../../shared/constants'
-    import { getFieldConstraintLabel, eFieldConstraintValues } from '@/components/shared/constants'
+import { Pinia } from 'pinia'
+import { SearchFieldDefinition } from '../models'
+import { computed, ref } from 'vue';
+import { eFieldType, eFieldConstraint } from '../../shared/constants'
+import { getFieldConstraintLabel, eFieldConstraintValues } from '@/components/shared/constants'
+import { BRow, BCol, BFormInput } from 'bootstrap-vue-3';
+import { FieldConstraint } from '../models/FieldConstraint';
+import { useSolrSearchStore } from '../store';
 
-    const props = defineProps<{
-        searchFields: SearchFieldDefinition[],
-        value: string[] 
-    }>();
+const props = defineProps<{
+    model: FieldConstraint,
+    searchFields?: SearchFieldDefinition[]
+}>();
 
-    const field = ref(null as null | SearchFieldDefinition ) ;
-    const readOnly = computed(() => field.value && field.value.type >  0);
+const field = ref(null as null | SearchFieldDefinition ) ;
+const readOnly = computed(() => field.value && field.value.type >  0);
 
-    </script>
+const store = useSolrSearchStore();
+const searchFields = computed(() => store.searchFieldDefinitions)
+
+
+</script>
 <template>
-    Field Constraint <br />
     <b-row>
-        <b-col class="col-sm-3">
-
-        </b-col>
-        <b-col class="col-sm-3">
-            <select class="form-select" v-model="field">
+        <b-col class="col-sm-5">
+            <select class="form-select" v-model="model.field">
                 <option v-for="opt in searchFields" :value="opt">{{opt.label}}</option>
             </select>
         </b-col>
-        <b-col class="col-sm-3">
-            <select class="form-select" >
+        <b-col class="col-sm-2">
+            <select class="form-select" v-model="model.constraint">
                 <option v-for="con in eFieldConstraintValues" :value="con">{{getFieldConstraintLabel(con)}}</option>
             </select>
         </b-col>
-        <b-col class="col-sm-3">
+        <b-col class="col-sm-5">
             <div v-if="field?.type === eFieldType.Text">
                 <b-form-input type="text"></b-form-input>
             </div>

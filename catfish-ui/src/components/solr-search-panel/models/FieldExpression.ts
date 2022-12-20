@@ -1,4 +1,4 @@
-import { eFieldConstraint } from "@/components/shared/constants";
+import { eConstraintType, eFieldConstraint } from "@/components/shared/constants";
 import { FieldConstraint } from "./FieldConstraint";
 
 export type ConstraintType = FieldConstraint | FieldExpression;
@@ -10,16 +10,10 @@ export class FieldExpression {
     constructor() {
         this.expressionComponents = [];
         this.operators = [];
+        console.log('FieldExpression.constructor')
     }
 
-    addConstraint(constraint: ConstraintType, operator: eFieldConstraint | undefined){
-        if(this.expressionComponents.length > 0 && !operator)
-            throw "You must specify an operator";
-
-        this.expressionComponents.push(constraint);
-        if(operator)
-            this.operators.push(operator);
-    }
+    getType = () => eConstraintType.FieldExpression;
 
     buildQueryString(): string | null {
      

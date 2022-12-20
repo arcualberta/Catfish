@@ -1,8 +1,12 @@
 import { defineStore } from 'pinia';
+import { SearchFieldDefinition } from '../models';
+import { ConstraintType, FieldExpression } from '../models/FieldExpression';
 
 
 export const useSolrSearchStore = defineStore('SolrSearchStore', {
     state: () => ({
+        fieldExpression: {expressionComponents:[] as ConstraintType[], operators: []} as unknown as FieldExpression,
+        searchFieldDefinitions: [] as SearchFieldDefinition[],
         queryResult: null as null | object,
         queryStart: 0,
         queryTime: 0

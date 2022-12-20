@@ -1,16 +1,17 @@
-import { eFieldConstraint } from "@/components/shared/constants";
+import { eConstraintType, eFieldConstraint } from "@/components/shared/constants";
 
 export class FieldConstraint {
     field: string | null;
     constraint: eFieldConstraint | null;
     value: object | null;
 
-    constructor(field: string, constraint: eFieldConstraint, value: object) {
-        this.field = field;
-        this.constraint = constraint;
-        this.value = value;
+    constructor() {
+        this.field = "";
+        this.constraint = eFieldConstraint.Equals;
+        this.value = null;
     }
 
+    getType = () => eConstraintType.FieldConstraing;
 
     buildQueryString(): string | null {
 
