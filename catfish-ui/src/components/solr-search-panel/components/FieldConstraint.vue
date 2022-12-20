@@ -28,10 +28,10 @@ const txtValue = computed({
     })
 
  const fieldValues = computed(() => JSON.parse(JSON.stringify(props.model.field)) )  
-    //const selectedOptionId = computed({
-     //   get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] as unknown as string : Guid.EMPTY as unknown as string ,
-     //   set: optId => fieldData.value.selectedOptionIds = [optId as unknown as Guid]
-    //})
+    const selectedOption = computed({
+        get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] as unknown as string : Guid.EMPTY as unknown as string ,
+        set: (opt) => props.model.value = [opt as unknown as string]
+    })
 </script>
 <template>
     <b-row>
@@ -63,7 +63,7 @@ const txtValue = computed({
             </div>
             <div v-else-if="fieldValues.type === 8">
                 <span v-for="opt in fieldValues.options">
-                    <input type="radio" name="opt"/>{{opt}}
+                    <input type="radio" name="opt" :value="(opt as unknown as string)"/>{{opt}}
                 </span>
             </div>
             <div v-else>
