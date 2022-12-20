@@ -11,7 +11,7 @@ import { computed } from 'vue';
     </script>
 <template>
     Solr search
-    <div style="border: solid green 2px">
+    <div >
         <FieldExpression :model="expression"></FieldExpression>
     </div>
    
