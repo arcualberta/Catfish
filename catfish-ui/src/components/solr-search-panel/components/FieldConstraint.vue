@@ -7,6 +7,7 @@ import { getFieldConstraintLabel, eFieldConstraintValues } from '@/components/sh
 import { BRow, BCol, BFormInput } from 'bootstrap-vue-3';
 import { FieldConstraint } from '../models/FieldConstraint';
 import { useSolrSearchStore } from '../store';
+import { validate } from 'uuid';
 
 const props = defineProps<{
     model: FieldConstraint,
@@ -14,11 +15,17 @@ const props = defineProps<{
 }>();
 
 const field = ref(null as null | SearchFieldDefinition ) ;
-const readOnly = computed(() => field.value && field.value.type >  0);
+//const readOnly = computed(() => field.value && field.value.type >  0);
 
 const store = useSolrSearchStore();
 const searchFields = computed(() => store.searchFieldDefinitions)
 
+const txtValue = computed({
+        get: () => props.model.value as unknown as string,
+        set: (val) => {
+            props.model.value = val as unknown as object;
+        }
+    })
 
 </script>
 <template>
@@ -35,7 +42,7 @@ const searchFields = computed(() => store.searchFieldDefinitions)
         </b-col>
         <b-col class="col-sm-5">
             <div v-if="field?.type === eFieldType.Text">
-                <b-form-input type="text"></b-form-input>
+                <b-form-input type="text" v-model="txtValue"></b-form-input>
             </div>
             <div v-else-if="field?.type === 2">
                 <b-form-input type="date"></b-form-input>
@@ -55,7 +62,7 @@ const searchFields = computed(() => store.searchFieldDefinitions)
                 </span>
             </div>
             <div v-else>
-                <b-form-input type="text" readonly></b-form-input>
+                <b-form-input type="text" v-model="txtValue"></b-form-input>
             </div>
 
 
