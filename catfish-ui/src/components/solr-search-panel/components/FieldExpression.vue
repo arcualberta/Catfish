@@ -63,8 +63,8 @@ import { FieldConstraint } from '../models/FieldConstraint';
     <div class="form-field-border row">
         <div class="col-md-1"></div>
         <div v-if="model.expressionComponents?.length > 0" class="col-md-11" >
-            <FieldExpressionTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" />
-            <FieldConstraintTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldConstraing" :model="model.expressionComponents[0] as unknown as FieldConstraint" />
+            <FieldExpressionTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" /> 
+            <FieldConstraintTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldConstraing" :model="model.expressionComponents[0] as unknown as FieldConstraint" /> X
         </div>
 
         <div v-for="(op, index) in model.operators" class="row">
@@ -80,7 +80,7 @@ import { FieldConstraint } from '../models/FieldConstraint';
             <div class="col-md-1"></div>
             <div class="col-md-11" >
                 <FieldExpressionTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[index+1] as unknown as FieldExpression)" />
-                <FieldConstraintTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldConstraing" :model="(model.expressionComponents[index+1] as FieldConstraint)" />
+                <FieldConstraintTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldConstraing" :model="(model.expressionComponents[index+1] as FieldConstraint)" /> X
             </div>
         </div>
 

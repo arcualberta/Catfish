@@ -10,30 +10,35 @@ import { useSolrSearchStore } from '../store';
 import { validate } from 'uuid';
 import { Guid } from 'guid-typescript';
 
-const props = defineProps<{
-    model: FieldConstraint,
-    searchFields?: SearchFieldDefinition[]
-}>();
+    const props = defineProps<{
+        model: FieldConstraint,
+        searchFields?: SearchFieldDefinition[]
+    }>();
 
-const field = ref(null as null | SearchFieldDefinition ) ;
-//const readOnly = computed(() => field.value && field.value.type >  0);
-const fieldName = ref(`opt-${Guid.create() as unknown as string}`);
+    const field = ref(null as null | SearchFieldDefinition ) ;
+    //const readOnly = computed(() => field.value && field.value.type >  0);
+    const fieldName = ref(`opt-${Guid.create() as unknown as string}`);
 
-const store = useSolrSearchStore();
-const searchFields = computed(() => store.searchFieldDefinitions)
+    const store = useSolrSearchStore();
+    const searchFields = computed(() => store.searchFieldDefinitions)
 
-const txtValue = computed({
+    const txtValue = computed({
         get: () => props.model.value as unknown as string,
         set: (val) => {
             props.model.value = val as unknown as object;
         }
     })
 
+    const numValue = computed({
+        get: () => props.model.value as unknown as number,
+        set: (val) => {
+            props.model.value = Number(val) as unknown as object;
+        }
+    })
+
+
 const fieldValues = computed(() => JSON.parse(JSON.stringify(props.model.field)) )  
-const selectedOption = computed({
-    get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] as unknown as string : Guid.EMPTY as unknown as string ,
-    set: (opt) => props.model.value = [opt as unknown as string]
-})
+
 </script>
 <template>
     <b-row>
@@ -55,10 +60,10 @@ const selectedOption = computed({
                 <b-form-input type="date" v-model="txtValue"></b-form-input>
             </div>
             <div v-else-if="fieldValues.type === eFieldType.Integer">
-                <b-form-input type="number" step='1' v-model="txtValue"></b-form-input>
+                <b-form-input type="number" step='1' v-model="numValue"></b-form-input>
             </div>
             <div v-else-if="fieldValues.type === eFieldType.Decimal">
-                <b-form-input type="number" :step='Math.pow(10, 2)' v-model="txtValue"></b-form-input>
+                <b-form-input type="number" :step='Math.pow(10, 2)' v-model="numValue"></b-form-input>
             </div>
             <div v-else-if="fieldValues.type === eFieldType.Email">
                 <b-form-input type="email" v-model="txtValue"></b-form-input>
