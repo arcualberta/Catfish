@@ -88,7 +88,7 @@ import { FieldConstraint } from '../models/FieldConstraint';
             <font-awesome-icon icon="fa-solid fa-circle-plus" @click="togglePopup()" class="fa-icon plus" @class="m-2"/>
             <ConfirmPopUp v-if="popupTrigger" >
                 <template v-slot:header>
-                    Add a Search criteria.
+                    Add a search criteria.
                     <button type="button"
                             class="btn-close"
                             @click="popupTrigger=false">
@@ -125,5 +125,17 @@ import { FieldConstraint } from '../models/FieldConstraint';
     border-radius: 16px;
     min-height: 100px;
     margin-bottom: 10px;
+}
+.btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #db2424;
+    background: transparent;
 }
 </style>

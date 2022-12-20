@@ -27,6 +27,11 @@ const txtValue = computed({
         }
     })
 
+ const fieldValues = computed(() => JSON.parse(JSON.stringify(props.model.field)) )  
+    //const selectedOptionId = computed({
+     //   get: () => fieldData?.value?.selectedOptionIds && fieldData.value.selectedOptionIds.length > 0 ? fieldData.value.selectedOptionIds[0] as unknown as string : Guid.EMPTY as unknown as string ,
+     //   set: optId => fieldData.value.selectedOptionIds = [optId as unknown as Guid]
+    //})
 </script>
 <template>
     <b-row>
@@ -41,24 +46,24 @@ const txtValue = computed({
             </select>
         </b-col>
         <b-col class="col-sm-5">
-            <div v-if="field?.type === eFieldType.Text">
+            <div v-if="fieldValues.type === 1">
                 <b-form-input type="text" v-model="txtValue"></b-form-input>
             </div>
-            <div v-else-if="field?.type === 2">
+            <div v-else-if="fieldValues.type === 2">
                 <b-form-input type="date"></b-form-input>
             </div>
-            <div v-else-if="field?.type === 3">
+            <div v-else-if="fieldValues.type === 3">
                 <b-form-input type="number" step='1'></b-form-input>
             </div>
-            <div v-else-if="field?.type === 4">
+            <div v-else-if="fieldValues.type === 4">
                 <b-form-input type="number" :step='Math.pow(10, 2)'></b-form-input>
             </div>
-            <div v-else-if="field?.type === 5">
+            <div v-else-if="fieldValues.type === 5">
                 <b-form-input type="email"></b-form-input>
             </div>
-            <div v-else-if="field?.type === 8">
-                <span v-for="opt in field.options">
-                    <input type="radio" />{{opt}}
+            <div v-else-if="fieldValues.type === 8">
+                <span v-for="opt in fieldValues.options">
+                    <input type="radio" name="opt"/>{{opt}}
                 </span>
             </div>
             <div v-else>
