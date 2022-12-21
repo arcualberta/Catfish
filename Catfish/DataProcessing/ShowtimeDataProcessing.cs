@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Cryptography.Xml;
 using System.Configuration;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace DataProcessing
 {
@@ -33,6 +34,29 @@ namespace DataProcessing
         {
             _fixture = fixture;
             _testHelper = new TestHelper();
+        }
+
+        
+        [Fact]
+        public void MergeTest()
+        {
+            XmlDoc doc = new XmlDoc();
+
+            string sa = "String A";
+            string sb = "String B";
+            string sc = "String C";
+            string s1 = doc.MergeStrings(sa, sb, 2);
+            string s2 = doc.MergeStrings(s1, sc, 3);
+            string s3 = doc.MergeStrings(null, sb, 2);
+
+            List<string> aa = new List<string>() { "aa a" };
+            List<string> ab = new List<string>() { "ab a", "ab b" };
+            List<string> ac = new List<string>() { "ac a" };
+
+            var a1 = doc.MergeArrays(aa, ab, 2);
+            var a2 = doc.MergeArrays(a1, ac, 3);
+            var a3 = doc.MergeArrays(new List<string>(), ab, 2);
+
         }
 
 
@@ -152,7 +176,6 @@ namespace DataProcessing
                                                         if (dbMovie != null)
                                                         {
                                                             dbMovie.Merge(movie);
-                                                            ++dbMovie.instances;
                                                             ++updatedMovieCount;
                                                         }
                                                         else
@@ -176,7 +199,6 @@ namespace DataProcessing
                                                         if (dbTheater != null)
                                                         {
                                                             dbTheater.Merge(theater);
-                                                            ++dbTheater.instances;
                                                             ++updatedTheaterCount;
                                                         }
                                                         else
@@ -836,6 +858,24 @@ namespace DataProcessing
 
             return new DateTime(int.Parse(datestr!.Substring(0, 4)), int.Parse(datestr!.Substring(4, 2)), int.Parse(datestr!.Substring(6, 2)));
         }
+
+        public string? MergeStrings(string? str1, string? str2, int instance)
+        {
+            if (string.IsNullOrEmpty(str1))
+                return str2;
+            else if (string.IsNullOrEmpty(str2))
+                return str1;
+            else if (Regex.Replace(str1, @"\s+", "") != Regex.Replace(str2, @"\s+", "")) //compares excluding white spaces
+                return $"{str1} ||| {str2}";
+            else
+                return str1;
+        }
+
+        public List<string> MergeArrays(List<string> arr1, List<string> arr2, int instance)
+        {
+            //return arr1.Union(arr2.Select(str => $"#{instance}# {str}").ToList()).ToList();
+            return arr1.Union(arr2).ToList();
+        }
     }
 
     /**
@@ -906,34 +946,43 @@ namespace DataProcessing
             }
         }
 
-        public void Merge(Movie src)
+        public void Merge(Movie src, int instance)
         {
-            //Initializing any missing singular values and merging arrays
+            //Merging values
 
-            if (string.IsNullOrEmpty(title)) title = src.title;
-            if (src.pictures?.Count > 0) pictures = pictures.Union(src.pictures).ToList();
-            if (src.hipictures?.Count > 0) hipictures = hipictures.Union(src.hipictures).ToList();
-            if (string.IsNullOrEmpty(rating)) rating = src.rating;
-            if (string.IsNullOrEmpty(advisory)) advisory = src.advisory;
-            if (src.genres?.Count > 0) genres = genres.Union(src.genres).ToList();
-            if (src.casts?.Count > 0) casts = casts.Union(src.casts).ToList();
-            if (src.directors?.Count > 0) directors = directors.Union(src.directors).ToList();
+            title = MergeStrings(title, src.title, instance);
+
+            if (src.pictures?.Count > 0) pictures = MergeArrays(pictures, src.pictures, instance);
+            if (src.hipictures?.Count > 0) hipictures = MergeArrays(hipictures, src.hipictures, instance); // hipictures.Union(src.hipictures).ToList();
+
+            rating = MergeStrings(rating, src.rating, instance);
+            advisory = MergeStrings(advisory, src.advisory, instance);
+
+            if (src.genres?.Count > 0) genres = MergeArrays(genres, src.genres, instance);
+            if (src.casts?.Count > 0) casts = MergeArrays(casts, src.casts, instance);
+            if (src.directors?.Count > 0) directors = MergeArrays(directors, src.directors, instance);
             if (!release_date.HasValue) release_date = src.release_date;
-            if (string.IsNullOrEmpty(release_notes)) release_notes = src.release_notes;
-            if (string.IsNullOrEmpty(release_dvd)) release_dvd = src.release_dvd;
+
+            release_notes = MergeStrings(release_notes, src.release_notes, instance);
+            release_dvd = MergeStrings(release_dvd, src.release_dvd, instance);
+
             if (running_time < 0) running_time = src.running_time;
-            if (string.IsNullOrEmpty(official_site)) official_site = src.official_site;
-            if (src.distributors?.Count > 0) distributors = distributors.Union(src.distributors).ToList();
-            if (src.producers?.Count > 0) producers = producers.Union(src.producers).ToList();
-            if (src.writers?.Count > 0) writers = writers.Union(src.writers).ToList();
-            if (string.IsNullOrEmpty(synopsis)) synopsis = src.synopsis;
-            if (string.IsNullOrEmpty(lang)) lang = src.lang;
-            if (string.IsNullOrEmpty(intl_country)) intl_country = src.intl_country;
-            if (string.IsNullOrEmpty(intl_name)) intl_name = src.intl_name;
-            if (string.IsNullOrEmpty(intl_cert)) intl_cert = src.intl_cert;
-            if (string.IsNullOrEmpty(intl_advisory)) intl_advisory = src.intl_advisory;
+
+            official_site = MergeStrings(official_site, src.official_site, instance);
+
+            if (src.distributors?.Count > 0) distributors = MergeArrays(distributors, src.distributors, instance);
+            if (src.producers?.Count > 0) producers = MergeArrays(producers, src.producers, instance);
+            if (src.writers?.Count > 0) writers = MergeArrays(writers, src.writers, instance);
+
+            synopsis = MergeStrings(synopsis, src.synopsis, instance);
+            lang = MergeStrings(lang, src.lang, instance);
+            intl_country = MergeStrings(intl_country, src.intl_country, instance);
+            intl_name = MergeStrings(intl_name, src.intl_name, instance);
+            intl_cert = MergeStrings(intl_cert, src.intl_cert, instance);
+            intl_advisory = MergeStrings(intl_advisory, src.intl_advisory, instance);
+            intl_poster = MergeStrings(intl_poster, src.intl_poster, instance);
+
             if (!intl_release.HasValue) intl_release = src.intl_release;
-            if (string.IsNullOrEmpty(intl_poster)) intl_poster = src.intl_poster;
         }
     }
 
@@ -1019,39 +1068,42 @@ namespace DataProcessing
             theater_lat = GetElementValueDecimal(xml, "theater_lat");
         }
 
-        public void Merge(Theater src)
+        public void Merge(Theater src, int instance)
         {
-            if (string.IsNullOrEmpty(theater_name)) theater_name = src.theater_name;
-            if (string.IsNullOrEmpty(theater_address)) theater_address = src.theater_address;
-            if (string.IsNullOrEmpty(theater_city)) theater_city = src.theater_city;
-            if (string.IsNullOrEmpty(theater_state)) theater_state = src.theater_state;
-            if (string.IsNullOrEmpty(theater_zip)) theater_zip = src.theater_zip;
-            if (string.IsNullOrEmpty(theater_phone)) theater_phone = src.theater_phone;
-            if (string.IsNullOrEmpty(theater_attributes)) theater_attributes = src.theater_attributes;
-            if (string.IsNullOrEmpty(theater_ticketing)) theater_ticketing = src.theater_ticketing;
-            if (string.IsNullOrEmpty(theater_closed_reason)) theater_closed_reason = src.theater_closed_reason;
-            if (string.IsNullOrEmpty(theater_area)) theater_area = src.theater_area;
-            if (string.IsNullOrEmpty(theater_location)) theater_location = src.theater_location;
-            if (string.IsNullOrEmpty(theater_market)) theater_market = src.theater_market;
+            theater_name = MergeStrings(theater_name, src.theater_name, instance);
+            theater_address = MergeStrings(theater_address, src.theater_address, instance);
+            theater_city = MergeStrings(theater_city, src.theater_city, instance);
+            theater_state = MergeStrings(theater_state, src.theater_state, instance);
+            theater_zip = MergeStrings(theater_zip, src.theater_zip, instance);
+            theater_phone = MergeStrings(theater_phone, src.theater_phone, instance);
+            theater_attributes = MergeStrings(theater_attributes, src.theater_attributes, instance);
+            theater_ticketing = MergeStrings(theater_ticketing, src.theater_ticketing, instance);
+            theater_closed_reason = MergeStrings(theater_closed_reason, src.theater_closed_reason, instance);
+            theater_area = MergeStrings(theater_area, src.theater_area, instance);
+            theater_location = MergeStrings(theater_location, src.theater_location, instance);
+            theater_market = MergeStrings(theater_market, src.theater_market, instance);
+             
             if (!theater_screens.HasValue) theater_screens = src.theater_screens;
-            if (string.IsNullOrEmpty(theater_seating)) theater_seating = src.theater_seating;
-            if (string.IsNullOrEmpty(theater_adult)) theater_adult = src.theater_adult;
-            if (string.IsNullOrEmpty(theater_child)) theater_child = src.theater_child;
-            if (string.IsNullOrEmpty(theater_senior)) theater_senior = src.theater_senior;
-            if (string.IsNullOrEmpty(theater_country)) theater_country = src.theater_country;
-            if (string.IsNullOrEmpty(theater_url)) theater_url = src.theater_url;
-            if (string.IsNullOrEmpty(theater_chain_id)) theater_chain_id = src.theater_chain_id;
-            if (string.IsNullOrEmpty(theater_adult_bargain)) theater_adult_bargain = src.theater_adult_bargain;
-            if (string.IsNullOrEmpty(theater_senior_bargain)) theater_senior_bargain = src.theater_senior_bargain;
-            if (string.IsNullOrEmpty(theater_child_bargain)) theater_child_bargain = src.theater_child_bargain;
-            if (string.IsNullOrEmpty(theater_special_bargain)) theater_special_bargain = src.theater_special_bargain;
-            if (string.IsNullOrEmpty(theater_adult_super)) theater_adult_super = src.theater_adult_super;
-            if (string.IsNullOrEmpty(theater_senior_super)) theater_senior_super = src.theater_senior_super;
-            if (string.IsNullOrEmpty(theater_child_super)) theater_child_super = src.theater_child_super;
-            if (string.IsNullOrEmpty(theater_price_comment)) theater_price_comment = src.theater_price_comment;
-            if (string.IsNullOrEmpty(theater_extra)) theater_extra = src.theater_extra;
-            if (string.IsNullOrEmpty(theater_desc)) theater_desc = src.theater_desc;
-            if (string.IsNullOrEmpty(theater_type)) theater_type = src.theater_type;
+
+            theater_seating = MergeStrings(theater_seating, src.theater_seating, instance);
+            theater_adult = MergeStrings(theater_adult, src.theater_adult, instance);
+            theater_child = MergeStrings(theater_child, src.theater_child, instance);
+            theater_senior = MergeStrings(theater_senior, src.theater_senior, instance);
+            theater_country = MergeStrings(theater_country, src.theater_country, instance);
+            theater_url = MergeStrings(theater_url, src.theater_url, instance);
+            theater_chain_id = MergeStrings(theater_chain_id, src.theater_chain_id, instance);
+            theater_adult_bargain = MergeStrings(theater_adult_bargain, src.theater_adult_bargain, instance);
+            theater_senior_bargain = MergeStrings(theater_senior_bargain, src.theater_senior_bargain, instance);
+            theater_child_bargain = MergeStrings(theater_child_bargain, src.theater_child_bargain, instance);
+            theater_special_bargain = MergeStrings(theater_special_bargain, src.theater_special_bargain, instance);
+            theater_adult_super = MergeStrings(theater_adult_super, src.theater_adult_super, instance);
+            theater_senior_super = MergeStrings(theater_senior_super, src.theater_senior_super, instance);
+            theater_child_super = MergeStrings(theater_child_super, src.theater_child_super, instance);
+            theater_price_comment = MergeStrings(theater_price_comment, src.theater_price_comment, instance);
+            theater_extra = MergeStrings(theater_extra, src.theater_extra, instance);
+            theater_desc = MergeStrings(theater_desc, src.theater_desc, instance);
+            theater_type = MergeStrings(theater_type, src.theater_type, instance);
+
             if (!theater_lat.HasValue) theater_lat = src.theater_lat;
             if (!theater_lon.HasValue) theater_lon = src.theater_lon;
         }
@@ -1143,8 +1195,9 @@ namespace DataProcessing
 
         public void Merge(Movie src)
         {
+            ++instances;
             Movie myMovie = JsonSerializer.Deserialize<Movie>(content);
-            myMovie!.Merge(src);
+            myMovie!.Merge(src, instances);
             content = JsonSerializer.Serialize(myMovie);
         }
     }
@@ -1158,8 +1211,9 @@ namespace DataProcessing
 
         public void Merge(Theater src)
         {
+            ++instances;
             Theater myTheater = JsonSerializer.Deserialize<Theater>(content);
-            myTheater!.Merge(src);
+            myTheater!.Merge(src, instances);
             content = JsonSerializer.Serialize(myTheater);
         }
     }
