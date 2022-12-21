@@ -56,6 +56,11 @@ import { FieldConstraint } from '../models/FieldConstraint';
         if(props.model.expressionComponents.length > 1)
         props.model.operators.push(eFieldConstraint.Equals);
     }
+    const deleteComponent = (index: number) => {
+        props.model.expressionComponents?.splice(index, 1);
+        if(props.model.expressionComponents.length > 1)
+        props.model.operators?.splice(index-1, 1);
+    }
 
     </script>
 
@@ -64,7 +69,7 @@ import { FieldConstraint } from '../models/FieldConstraint';
         <div class="col-md-1"></div>
         <div v-if="model.expressionComponents?.length > 0" class="col-md-11" >
             <FieldExpressionTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" /> 
-            <FieldConstraintTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldConstraing" :model="model.expressionComponents[0] as unknown as FieldConstraint" /> X
+            <span>index0<FieldConstraintTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldConstraing" :model="(model.expressionComponents[0] as unknown as FieldConstraint)" /> <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(0)" class="fa-icon field-delete" /></span>
         </div>
 
         <div v-for="(op, index) in model.operators" class="row">
@@ -79,7 +84,7 @@ import { FieldConstraint } from '../models/FieldConstraint';
             <div class="col-md-1"></div>
             <div class="col-md-11" >
                 <FieldExpressionTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[index+1] as unknown as FieldExpression)" />
-                <FieldConstraintTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldConstraing" :model="(model.expressionComponents[index+1] as FieldConstraint)" /> X
+                <span>index{{index+1}}<FieldConstraintTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldConstraing" :model="(model.expressionComponents[index+1] as FieldConstraint)" /> <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(index+1)" class="fa-icon field-delete" /></span>
             </div>
         </div>
 
