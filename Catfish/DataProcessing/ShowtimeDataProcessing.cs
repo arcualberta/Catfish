@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Cryptography.Xml;
 using System.Configuration;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace DataProcessing
 {
@@ -860,19 +861,20 @@ namespace DataProcessing
 
         public string? MergeStrings(string? str1, string? str2, int instance)
         {
-            if (string.IsNullOrEmpty(str2))
-                return str1;
-
-            str2 = $"#{instance}# {str2}";
             if (string.IsNullOrEmpty(str1))
                 return str2;
+            else if (string.IsNullOrEmpty(str2))
+                return str1;
+            else if (Regex.Replace(str1, @"\s+", "") != Regex.Replace(str2, @"\s+", "")) //compares excluding white spaces
+                return $"{str1} ||| {str2}";
             else
-                return str1 + " " + str2;
+                return str1;
         }
 
         public List<string> MergeArrays(List<string> arr1, List<string> arr2, int instance)
         {
-            return arr1.Union(arr2.Select(str => $"#{instance}# {str}").ToList()).ToList();
+            //return arr1.Union(arr2.Select(str => $"#{instance}# {str}").ToList()).ToList();
+            return arr1.Union(arr2).ToList();
         }
     }
 
