@@ -842,7 +842,7 @@ namespace DataProcessing
             else if ((!string.IsNullOrEmpty(str2)) && str1.Trim() != str2.Trim())
                 return str1 + " ||| " + str2;
             else
-                return null;
+                return str1;
         }
     }
 

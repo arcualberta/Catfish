@@ -176,3 +176,5 @@ appsettings.ts
 .history
 Catfish/CatfishExtensions/Properties/launchSettings.json
 /catfish-ui/applets-0.0.0.tgz
+/Catfish/Catfish.API.Repository.Tests/Properties/launchSettings.json
+/Catfish/DataProcessing/Properties/launchSettings.json
