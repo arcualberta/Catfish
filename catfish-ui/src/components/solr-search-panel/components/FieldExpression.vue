@@ -3,7 +3,7 @@
     import { SearchFieldDefinition } from '../models'
     import { computed, ref } from 'vue';
     import { eFieldType, eFieldConstraint } from '../../shared/constants'
-    import { getFieldConstraintLabel, eFieldConstraintValues, eConstraintType } from '@/components/shared/constants'
+    import { getFieldConstraintLabel, eFieldConstraintValues, eConstraintType ,eOperatorValues, getOperatorLabel} from '@/components/shared/constants'
     import { default as FieldExpressionTemplate } from './FieldExpression.vue'
     import { default as FieldConstraintTemplate } from './FieldConstraint.vue'
     import { default as ConfirmPopUp } from '../../../components/shared/components/pop-up/ConfirmPopUp.vue';
@@ -70,10 +70,9 @@ import { FieldConstraint } from '../models/FieldConstraint';
         <div v-for="(op, index) in model.operators" class="row">
             <div class="col-md-12">
                 <div class="col-md-1">
-                    <select class="form-select">
-                    <option>AND</option>
-                    <option>OR</option>
-                </select>
+                    <select class="form-select" v-model="model.operators[index]">
+                        <option v-for="operator in eOperatorValues" :value="operator">{{getOperatorLabel(operator)}}</option>
+                    </select>
                 </div>
                 
             </div>
