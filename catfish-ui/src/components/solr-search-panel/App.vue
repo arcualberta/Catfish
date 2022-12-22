@@ -49,9 +49,9 @@
     Solr search
     <div v-if="uiMode === eUiMode.Default">
         <FieldExpression :model="expression"></FieldExpression>
-        <div class="mt-3 alert alert-info">
+       <!-- <div class="mt-3 alert alert-info">
             {{ store.fieldExpression }}
-        </div>
+        </div>-->
         <div class="mt-3 alert alert-success">
             {{ quertString }}
         </div>        

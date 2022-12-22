@@ -11,6 +11,27 @@
     /*text-align: center;*/
 }
 
+.truncate {
+    position: relative;
+    white-space: nowrap;
+    word-wrap: break-word;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    padding-right: 7px; 
+    /*max-height: 200px;;*/
+  }
+  .truncate:before {
+    content: "\"";
+  }
+  .truncate:after {
+    content: "\"";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
