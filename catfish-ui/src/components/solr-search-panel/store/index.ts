@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
 import { buildQueryString } from '../helpers';
 import { SearchFieldDefinition } from '../models';
-import { ConstraintType, FieldExpression } from '../models/FieldExpression';
+import { ConstraintType, createFieldExpression, FieldExpression } from '../models/FieldExpression';
 
 
 export const useSolrSearchStore = defineStore('SolrSearchStore', {
     state: () => ({
-        fieldExpression: {expressionComponents:[] as ConstraintType[], operators: []} as unknown as FieldExpression,
+        fieldExpression: createFieldExpression(),
         searchFieldDefinitions: [] as SearchFieldDefinition[],
         queryResult: null as null | object,
         queryStart: 0,
@@ -15,7 +15,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
     }),
     actions: {
         query(offset: number, max: number){
-            const userQueryStr = this.queryString;
+            const userQueryStr = buildQueryString(this.fieldExpression);
             const queryStr = userQueryStr ? userQueryStr : "*:*";
             const form = new FormData();
             form.append("query", queryStr);
@@ -39,10 +39,5 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 console.error('Load Entities API Error:', error);
             });
         }     
-    },
-    getters:{
-        queryString: (state) => {
-            return buildQueryString(state.fieldExpression)
-        },      
     }
 });

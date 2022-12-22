@@ -8,6 +8,10 @@ export interface SearchFieldDefinition{
     options: string[]
 }
 
+export enum eSolrBooleanOperators {
+    AND = "AND",
+    OR = "OR"
+}
 /* solr model from previous version -- we might or might not need them */
 
 /*

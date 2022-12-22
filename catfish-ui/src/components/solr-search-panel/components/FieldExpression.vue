@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { SearchFieldDefinition } from '../models'
+    import { SearchFieldDefinition, eSolrBooleanOperators} from '../models'
     import { computed, ref } from 'vue';
     import { eFieldType, eFieldConstraint } from '../../shared/constants'
     import { getFieldConstraintLabel, eFieldConstraintValues, eConstraintType } from '@/components/shared/constants'
@@ -56,7 +56,7 @@
 
         props.model.expressionComponents.push(component);
         if(props.model.expressionComponents.length > 1)
-        props.model.operators.push(eFieldConstraint.Equals);
+        props.model.operators.push(eSolrBooleanOperators.AND);
     }
 
     </script>

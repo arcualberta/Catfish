@@ -1,11 +1,12 @@
 import { eConstraintType, eFieldConstraint } from "@/components/shared/constants";
+import { eSolrBooleanOperators } from ".";
 import { FieldConstraint } from "./FieldConstraint";
 
 export type ConstraintType = FieldConstraint | FieldExpression;
 
 export interface FieldExpression {
     expressionComponents: ConstraintType[],
-    operators: eFieldConstraint[],
+    operators: eSolrBooleanOperators[],
     type: eConstraintType.FieldExpression
 }
 
