@@ -129,7 +129,7 @@ namespace Catfish.API.Repository.Services
         /// <param name="max"></param>
         /// <param name="maxHiglightSnippets"></param>
         /// <returns></returns>
-        public async Task<SearchResult> ExecuteSearch(string query, int start, int max, int maxHiglightSnippets, bool useSolrJson =true)
+        public async Task<SearchResult> ExecuteSearch(string query, int start, int max, int maxHiglightSnippets, bool useSolrJson = true)
         {
             string qUrl = _solrCoreUrl + "/select?hl=on";
             var parameters = new Dictionary<string, string>();

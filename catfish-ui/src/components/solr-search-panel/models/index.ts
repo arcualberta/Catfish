@@ -8,6 +8,28 @@ export interface SearchFieldDefinition{
     options: string[]
 }
 
+export enum eSolrBooleanOperators {
+    AND = "AND",
+    OR = "OR"
+}
+
+export enum eUiMode{
+    Default = 0,
+    Raw,
+    Curated
+}
+
+export interface SolrResultEntry{
+    id: string
+}
+
+export interface SearchResult {
+    totalMatches: number,
+    offset: number,
+    itemsPerPage: number,
+    resultEntries: SolrResultEntry[]
+}
+
 /* solr model from previous version -- we might or might not need them */
 
 /*

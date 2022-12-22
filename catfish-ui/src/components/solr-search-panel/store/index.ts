@@ -1,28 +1,35 @@
 import { defineStore } from 'pinia';
+import { buildQueryString } from '../helpers';
 import { SearchFieldDefinition } from '../models';
-import { ConstraintType, FieldExpression } from '../models/FieldExpression';
+import { ConstraintType, createFieldExpression, FieldExpression } from '../models/FieldExpression';
 
 
 export const useSolrSearchStore = defineStore('SolrSearchStore', {
     state: () => ({
-        fieldExpression: {expressionComponents:[] as ConstraintType[], operators: []} as unknown as FieldExpression,
+        fieldExpression: createFieldExpression(),
+        querySource: null as string | null,
+        activeQueryString: "",
         searchFieldDefinitions: [] as SearchFieldDefinition[],
-        queryResult: null as null | object,
+        queryResult: null as null | SearchResult,
+        offset: 0,
+        max: 100,
         queryStart: 0,
-        queryTime: 0
+        queryTime: 0,
+        queryApi: 'https://localhost:5020/api/solr-search'
     }),
     actions: {
-        query(){
-            const api = 'https://localhost:5020/api/solr-search'
+        query(query: string | null, offset: number, max: number){
+            this.offset = offset;
+            this.max = max;
 
-            const queryStr = "*:*";
+            this.activeQueryString = query && query.trim().length > 0 ? query : "*:*";
             const form = new FormData();
-            form.append("query", queryStr);
-            form.append("offset", Math.round(Math.random() * 100).toString())
-            form.append("max", "100");
+            form.append("query", this.activeQueryString);
+            form.append("offset", offset.toString())
+            form.append("max", max.toString());
 
             this.queryStart = new Date().getTime()
-            fetch(api, {
+            fetch(this.queryApi, {
                 method: 'POST',
                 body: form,
                 headers: {
@@ -37,9 +44,15 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             .catch((error) => {
                 console.error('Load Entities API Error:', error);
             });
-        },createExpression(){
-            
         },
-       
+        next(){
+            console.log("next")
+            this.query(this.activeQueryString, this.offset+this.max, this.max)
+        },
+        previous(){
+            console.log("previous")
+            const offset = this.offset < this.max ? 0 : this.offset - this.max;
+            this.query(this.activeQueryString, offset, this.max)
+        }   
     }
 });

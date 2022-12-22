@@ -52,7 +52,7 @@ export const eFieldConstraintValues: eFieldConstraint[] = Object.keys(eFieldCons
 
 
 export enum eConstraintType{
-    FieldConstraing,
+    FieldConstraint = 1,
     FieldExpression
 }
 export enum eOperators{

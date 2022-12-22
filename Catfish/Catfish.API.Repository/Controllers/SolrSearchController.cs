@@ -28,7 +28,7 @@ namespace Catfish.API.Repository.Controllers
             SearchResult solrSearchResult = null;
             try
             { 
-               solrSearchResult = await _solr.ExecuteSearch(query, offset, max, 10);
+               solrSearchResult = await _solr.ExecuteSearch(query, offset, max, 1, false);
             }
             catch (Exception ex)
             {

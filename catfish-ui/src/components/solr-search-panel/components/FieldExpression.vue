@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { SearchFieldDefinition } from '../models'
+    import { SearchFieldDefinition, eSolrBooleanOperators} from '../models'
     import { computed, ref } from 'vue';
     import { eFieldType, eFieldConstraint } from '../../shared/constants'
     import { getFieldConstraintLabel, eFieldConstraintValues, eConstraintType ,eOperatorValues, getOperatorLabel} from '@/components/shared/constants'
@@ -15,8 +15,10 @@
 
     /* import specific icons */
     import * as faIcons from '@fortawesome/free-solid-svg-icons'
-import { ConstraintType, FieldExpression } from '../models/FieldExpression';
-import { FieldConstraint } from '../models/FieldConstraint';
+    import { ConstraintType, createFieldExpression } from '../models/FieldExpression';
+    import type { FieldExpression } from '../models/FieldExpression';
+    import { createFieldConstraint } from '../models/FieldConstraint';
+    import type { FieldConstraint } from '../models/FieldConstraint';
 
     /* add icons to the library */
     library.add(faIcons.faCircleCheck)
@@ -37,12 +39,12 @@ import { FieldConstraint } from '../models/FieldConstraint';
     const togglePopup = () => (popupTrigger.value = !popupTrigger.value);
 
     const createConstraint = () => {
-        addComponent(new FieldConstraint())        
+        addComponent(createFieldConstraint())        
         popupTrigger.value = !popupTrigger.value
     };
 
     const createExpression = () => {
-        addComponent(new FieldExpression())
+        addComponent(createFieldExpression())
         popupTrigger.value = !popupTrigger.value
     };
 
@@ -54,7 +56,7 @@ import { FieldConstraint } from '../models/FieldConstraint';
 
         props.model.expressionComponents.push(component);
         if(props.model.expressionComponents.length > 1)
-        props.model.operators.push(eFieldConstraint.Equals);
+        props.model.operators.push(eSolrBooleanOperators.AND);
     }
     const deleteComponent = (index: number) => {
         props.model.expressionComponents?.splice(index, 1);
@@ -68,8 +70,9 @@ import { FieldConstraint } from '../models/FieldConstraint';
     <div class="form-field-border row">
         <div class="col-md-1"></div>
         <div v-if="model.expressionComponents?.length > 0" class="col-md-11" >
-            <FieldExpressionTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" /> 
-            <span>index0<FieldConstraintTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldConstraing" :model="(model.expressionComponents[0] as unknown as FieldConstraint)" /> <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(0)" class="fa-icon field-delete" /></span>
+            <FieldExpressionTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" /> 
+            <span>index0<FieldConstraintTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldConstraint" :model="model.expressionComponents[0] as unknown as FieldConstraint" /> <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(0)" class="fa-icon field-delete" /></span>
+
         </div>
 
         <div v-for="(op, index) in model.operators" class="row">
@@ -83,8 +86,10 @@ import { FieldConstraint } from '../models/FieldConstraint';
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-11" >
-                <FieldExpressionTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[index+1] as unknown as FieldExpression)" />
-                <span>index{{index+1}}<FieldConstraintTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldConstraing" :model="(model.expressionComponents[index+1] as FieldConstraint)" /> <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(index+1)" class="fa-icon field-delete" /></span>
+
+                <FieldExpressionTemplate v-if="model.expressionComponents[index+1].type === eConstraintType.FieldExpression" :model="(model.expressionComponents[index+1] as unknown as FieldExpression)" />
+                <span>index{{index+1}}<FieldConstraintTemplate v-if="model.expressionComponents[index+1].type === eConstraintType.FieldConstraint" :model="(model.expressionComponents[index+1] as FieldConstraint)" /> <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(index+1)" class="fa-icon field-delete" /></span>
+
             </div>
         </div>
 
