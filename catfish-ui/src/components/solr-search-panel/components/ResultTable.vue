@@ -21,7 +21,7 @@ import { faListDots } from '@fortawesome/free-solid-svg-icons';
             const flData = data.find((dt)=>{
                     return dt.key === fdkey
             }); 
-          return flData? flData.value: "";
+          return flData? flData.value.toString(): "";
     }
 
     
