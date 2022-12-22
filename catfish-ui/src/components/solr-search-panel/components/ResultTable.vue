@@ -1,6 +1,7 @@
 <script setup lang="ts">import { computed } from 'vue';
-import { SearchResult } from '../models';
+import { SearchResult, SolrFieldData } from '../models';
 import { useSolrSearchStore } from '../store';
+import { faListDots } from '@fortawesome/free-solid-svg-icons';
 
     const props = defineProps<{
         model: SearchResult
@@ -13,6 +14,17 @@ import { useSolrSearchStore } from '../store';
     const hasPrev = computed(() => first.value > 1)
     const hasNext = computed(() => last.value < props.model.totalMatches)
 
+    const fieldDefs = computed(()=>store.searchFieldDefinitions)
+
+    const getFieldValue=(data: SolrFieldData[], fdkey: string)=>{
+       
+            const flData = data.find((dt)=>{
+                    return dt.key === fdkey
+            });
+            
+          return flData? flData.value: "";
+    }
+
 </script>
 
 <template>
@@ -22,10 +34,20 @@ import { useSolrSearchStore } from '../store';
         <span v-if="hasNext" class="link" @click="store.next()">&gt;&gt;&gt;</span></div>
     <hr />
     <table>
+        <thead>
+        <tr>
+          <th v-for="fh in fieldDefs" :key="fh.name">{{fh.label}}</th>
+        </tr>
+        </thead>
         <tbody>
             <tr v-for="row in model.resultEntries">
-                <td>
-                    {{ JSON.stringify(row) }}
+                
+               <!-- <td v-for="fld in row.data" :key="fld.key">
+                     {{fld.value}}
+                </td>-->
+                <td v-for="fh in fieldDefs" :key="fh.name">
+                    
+                   {{getFieldValue(row.data, fh.name)}}
                 </td>
             </tr>
             </tbody>
