@@ -55,3 +55,9 @@ export enum eConstraintType{
     FieldConstraint = 1,
     FieldExpression
 }
+export enum eOperators{
+    OR = 1,
+    AND
+}
+export const eOperatorValues: eOperators[] = Object.keys(eOperators).filter(key => typeof eOperators[key as any] === 'number').sort().map(key => eOperators[key as any] as unknown as eOperators)
+export const getOperatorLabel = (val: eOperators): string => eOperators[val]
