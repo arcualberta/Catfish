@@ -59,6 +59,7 @@
         props.model.operators.push(eSolrBooleanOperators.AND);
     }
     const deleteComponent = (index: number) => {
+        console.log("expressionComponents", props.model.expressionComponents)
         props.model.expressionComponents?.splice(index, 1);
         if(props.model.expressionComponents.length > 1)
         props.model.operators?.splice(index-1, 1);
