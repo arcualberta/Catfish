@@ -461,7 +461,7 @@ namespace DataProcessing
 
                                 SolrDoc doc = new SolrDoc();
 
-                                AddShowtime(doc, showtime!, showtimeRecord.id, bseDbIdAsShowtimeIdId);
+                                AddShowtime(doc, showtime!, showtimeRecord.id, allowDuplicateShowtimeRecords);
 
                                 if (movie != null)
                                     AddMovie(doc, movie);
