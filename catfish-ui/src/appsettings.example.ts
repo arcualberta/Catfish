@@ -10,7 +10,7 @@ import { eFieldType } from '@/components/shared/constants'
 import {SearchFieldDefinition} from '@/components/solr-search-panel/models'
 
 export const solrFields:SearchFieldDefinition[] = [
-    { name: "Mmovie_name_t", label: "Movie name", type: eFieldType.Text, options: [] },
+    { name: "movie_name_t", label: "Movie name", type: eFieldType.Text, options: [] },
     { name: "show_date_dt", label: "Show date", type: eFieldType.Date, options: [] },
     { name: "showtimes_ts", label: "Show time (HH:mm)", type: eFieldType.Text, options: [] },
     { name: "showtime_minutes_is", label: "Show minutes", type: eFieldType.Integer, options: [] },

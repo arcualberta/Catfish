@@ -1,10 +1,24 @@
 <script setup lang="ts">
     import { default as FieldExpression } from './components/FieldExpression.vue'
-import { useSolrSearchStore } from './store';
-import { computed } from 'vue';
-import { buildQueryString } from './helpers';
+    import { useSolrSearchStore } from './store';
+    import { computed } from 'vue';
+    import { buildQueryString } from './helpers';
+    import { SearchFieldDefinition } from './models';
+
+    const props = defineProps<{
+        searchFields?: SearchFieldDefinition[],
+        queryApi?: string
+    }>();
 
     const store = useSolrSearchStore();
+    if(props.searchFields){
+        store.searchFieldDefinitions = props.searchFields;
+    }
+
+    if(props.queryApi){
+        store.queryApi = props.queryApi;
+    }
+
     const expression = computed(() => store.fieldExpression)
 
     const query = () => store.query(0, 100);
