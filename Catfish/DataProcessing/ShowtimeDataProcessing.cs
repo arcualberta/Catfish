@@ -355,6 +355,10 @@ namespace DataProcessing
             if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:ContextTimeoutInMinutes")?.Value, out int contextTimeoutInMinutes))
                 contextTimeoutInMinutes = 3;
 
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:AllowDuplicateShowtimeRecords")?.Value, out bool allowDuplicateShowtimeRecords))
+                allowDuplicateShowtimeRecords = false;
+
+
             string outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
@@ -457,7 +461,7 @@ namespace DataProcessing
 
                                 SolrDoc doc = new SolrDoc();
 
-                                AddShowtime(doc, showtime!, showtimeRecord.id);
+                                AddShowtime(doc, showtime!, showtimeRecord.id, bseDbIdAsShowtimeIdId);
 
                                 if (movie != null)
                                     AddMovie(doc, movie);
@@ -638,14 +642,21 @@ namespace DataProcessing
 
         ////////}
 
-        private void AddShowtime(SolrDoc doc, Showtime showtime, int showtimeDbId)
+        private void AddShowtime(SolrDoc doc, Showtime showtime, int showtimeDbId, bool allowDuplicateShowtimeRecords)
         {
             string showtime_id_date_str = (showtime!.show_date != null) ? showtime!.show_date.Value.ToString("yyyyMMdd") : Guid.NewGuid().ToString();
             var showtime_id = $"{showtime!.movie_id}-{showtime!.theater_id}-{showtime_id_date_str}";
-            doc.AddId(showtime_id);
 
-            //Adding showtime db id
-            doc.AddField("showtime_db_id_i", showtimeDbId);
+            if (allowDuplicateShowtimeRecords)
+            {
+                doc.AddId(showtimeDbId.ToString());
+                doc.AddField("showtime_id_s", showtime_id);
+            }
+            else
+            {
+                doc.AddId(showtime_id);
+                doc.AddField("showtime_db_id_i", showtimeDbId);
+            }
 
             //showtime properties
             doc.AddField("movie_name_t", showtime!.movie_name!);
