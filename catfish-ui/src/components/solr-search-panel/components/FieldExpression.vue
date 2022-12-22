@@ -15,8 +15,10 @@
 
     /* import specific icons */
     import * as faIcons from '@fortawesome/free-solid-svg-icons'
-import { ConstraintType, FieldExpression } from '../models/FieldExpression';
-import { FieldConstraint } from '../models/FieldConstraint';
+    import { ConstraintType, createFieldExpression } from '../models/FieldExpression';
+    import type { FieldExpression } from '../models/FieldExpression';
+    import { createFieldConstraint } from '../models/FieldConstraint';
+    import type { FieldConstraint } from '../models/FieldConstraint';
 
     /* add icons to the library */
     library.add(faIcons.faCircleCheck)
@@ -37,12 +39,12 @@ import { FieldConstraint } from '../models/FieldConstraint';
     const togglePopup = () => (popupTrigger.value = !popupTrigger.value);
 
     const createConstraint = () => {
-        addComponent(new FieldConstraint())        
+        addComponent(createFieldConstraint())        
         popupTrigger.value = !popupTrigger.value
     };
 
     const createExpression = () => {
-        addComponent(new FieldExpression())
+        addComponent(createFieldExpression())
         popupTrigger.value = !popupTrigger.value
     };
 
@@ -63,8 +65,8 @@ import { FieldConstraint } from '../models/FieldConstraint';
     <div class="form-field-border row">
         <div class="col-md-1"></div>
         <div v-if="model.expressionComponents?.length > 0" class="col-md-11" >
-            <FieldExpressionTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" /> 
-            <FieldConstraintTemplate v-if="model.expressionComponents[0].getType() === eConstraintType.FieldConstraing" :model="model.expressionComponents[0] as unknown as FieldConstraint" /> X
+            <FieldExpressionTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" /> 
+            <FieldConstraintTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldConstraint" :model="model.expressionComponents[0] as unknown as FieldConstraint" /> X
         </div>
 
         <div v-for="(op, index) in model.operators" class="row">
@@ -79,8 +81,8 @@ import { FieldConstraint } from '../models/FieldConstraint';
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-11" >
-                <FieldExpressionTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldExpression" :model="(model.expressionComponents[index+1] as unknown as FieldExpression)" />
-                <FieldConstraintTemplate v-if="model.expressionComponents[index+1].getType() === eConstraintType.FieldConstraing" :model="(model.expressionComponents[index+1] as FieldConstraint)" /> X
+                <FieldExpressionTemplate v-if="model.expressionComponents[index+1].type === eConstraintType.FieldExpression" :model="(model.expressionComponents[index+1] as unknown as FieldExpression)" />
+                <FieldConstraintTemplate v-if="model.expressionComponents[index+1].type === eConstraintType.FieldConstraint" :model="(model.expressionComponents[index+1] as FieldConstraint)" /> X
             </div>
         </div>
 

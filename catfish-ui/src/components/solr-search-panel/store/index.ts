@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { buildQueryString } from '../helpers';
 import { SearchFieldDefinition } from '../models';
 import { ConstraintType, FieldExpression } from '../models/FieldExpression';
 
@@ -9,20 +10,20 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         searchFieldDefinitions: [] as SearchFieldDefinition[],
         queryResult: null as null | object,
         queryStart: 0,
-        queryTime: 0
+        queryTime: 0,
+        queryApi: 'https://localhost:5020/api/solr-search'
     }),
     actions: {
-        query(){
-            const api = 'https://localhost:5020/api/solr-search'
-
-            const queryStr = "*:*";
+        query(offset: number, max: number){
+            const userQueryStr = this.queryString;
+            const queryStr = userQueryStr ? userQueryStr : "*:*";
             const form = new FormData();
             form.append("query", queryStr);
-            form.append("offset", Math.round(Math.random() * 100).toString())
-            form.append("max", "100");
+            form.append("offset", offset.toString())
+            form.append("max", max.toString());
 
             this.queryStart = new Date().getTime()
-            fetch(api, {
+            fetch(this.queryApi, {
                 method: 'POST',
                 body: form,
                 headers: {
@@ -37,9 +38,11 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             .catch((error) => {
                 console.error('Load Entities API Error:', error);
             });
-        },createExpression(){
-            
-        },
-       
+        }     
+    },
+    getters:{
+        queryString: (state) => {
+            return buildQueryString(state.fieldExpression)
+        },      
     }
 });
