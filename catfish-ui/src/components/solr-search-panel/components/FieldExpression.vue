@@ -1,9 +1,7 @@
 <script setup lang="ts">
-    import { Pinia } from 'pinia'
     import { SearchFieldDefinition, eSolrBooleanOperators} from '../models'
     import { computed, ref } from 'vue';
-    import { eFieldType, eFieldConstraint } from '../../shared/constants'
-    import { getFieldConstraintLabel, eFieldConstraintValues, eConstraintType } from '@/components/shared/constants'
+    import { eConstraintType } from '@/components/shared/constants'
     import { default as FieldExpressionTemplate } from './FieldExpression.vue'
     import { default as FieldConstraintTemplate } from './FieldConstraint.vue'
     import { default as ConfirmPopUp } from '../../../components/shared/components/pop-up/ConfirmPopUp.vue';
@@ -102,7 +100,7 @@
         </div>
 
         <div style="text-align:right">
-            <font-awesome-icon icon="fa-solid fa-circle-plus" @click="togglePopup()" class="fa-icon plus" @class="m-2"/>
+            <font-awesome-icon icon="fa-solid fa-circle-plus" @click="togglePopup()" class="fa-icon plus"/>
             <ConfirmPopUp v-if="popupTrigger" >
                 <template v-slot:header>
                     Add a search criteria.
