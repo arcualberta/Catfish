@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { buildQueryString } from '../helpers';
-import { SearchFieldDefinition } from '../models';
+import { SearchFieldDefinition, SearchResult } from '../models';
 import { ConstraintType, createFieldExpression, FieldExpression } from '../models/FieldExpression';
 
 

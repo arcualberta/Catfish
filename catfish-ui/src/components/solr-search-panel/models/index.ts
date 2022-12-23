@@ -21,8 +21,8 @@ export enum eUiMode{
 
 export interface SolrResultEntry{
     id: string
-    data: Record<string, SolrFieldData[]>[]
-    //data: Record<string, Object>[]
+    //data: Record<string, SolrFieldData[]>[]
+    data: Record<string, Object>[]
 }
 
 export interface SolrFieldData{

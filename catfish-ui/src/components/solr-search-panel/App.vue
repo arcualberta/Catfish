@@ -59,8 +59,6 @@
     <div v-if="uiMode === eUiMode.Raw">
         <textarea v-model="rawQuery" class="col-12"></textarea>
     </div>
-   
-    {{ store.fieldExpression }}
     <button @click="query">Query</button>
 
     <div class="mt-3 mb-3" v-if="store.queryResult">

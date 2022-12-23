@@ -1,4 +1,5 @@
 import { eConstraintType, eFieldConstraint } from "@/components/shared/constants";
+import { SearchFieldDefinition, SolrFieldData, SolrResultEntry } from "../models";
 import { FieldConstraint } from "../models/FieldConstraint";
 import { FieldExpression } from "../models/FieldExpression";
 
@@ -63,4 +64,44 @@ export function buildQueryString(model: FieldExpression | FieldConstraint): stri
             } 
         }
     }
+}
+
+export function toTableData(rows: SolrResultEntry[], fieldDefs: SearchFieldDefinition[]){
+    const items: Record<string, any>[] = [];
+
+    rows?.forEach((row) => {
+        const item: Record<string, any> = {}
+        fieldDefs?.forEach((def) => {
+            item[def.label.replaceAll(' ', '_')] = row.data.find(d => d.key === def.name)?.value
+        })
+        items.push(item);
+    })
+
+    return items;
+}
+
+export function downloadCSV(rows: SolrResultEntry[], fieldDefs: SearchFieldDefinition[]) {
+    let csv = '';
+    //header labels
+    fieldDefs.forEach(fldef => {
+        csv += fldef.label + ','
+    });
+
+    //Replacing the last comma and adding a new line at the end
+    csv = csv.replace(/,\s*$/, '') + '\n'
+
+     //data
+    rows.forEach((row: SolrResultEntry) => {
+        let csv_line = '';
+        fieldDefs.forEach(def => {
+            csv_line += row.data.find(d => d.key === def.name)?.value + ',';
+        });
+        csv += csv_line.replace(/,\s*$/, '') + '\n';
+    });
+ 
+    const anchor = document.createElement('a');
+    anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    anchor.target = '_blank';
+    anchor.download = 'search_results.csv';
+    anchor.click();
 }
