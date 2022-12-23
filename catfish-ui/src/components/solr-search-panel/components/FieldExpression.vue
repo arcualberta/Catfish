@@ -3,7 +3,7 @@
     import { SearchFieldDefinition, eSolrBooleanOperators} from '../models'
     import { computed, ref } from 'vue';
     import { eFieldType, eFieldConstraint } from '../../shared/constants'
-    import { getFieldConstraintLabel, eFieldConstraintValues, eConstraintType ,eOperatorValues, getOperatorLabel} from '@/components/shared/constants'
+    import { getFieldConstraintLabel, eFieldConstraintValues, eConstraintType } from '@/components/shared/constants'
     import { default as FieldExpressionTemplate } from './FieldExpression.vue'
     import { default as FieldConstraintTemplate } from './FieldConstraint.vue'
     import { default as ConfirmPopUp } from '../../../components/shared/components/pop-up/ConfirmPopUp.vue';
@@ -55,14 +55,20 @@
         }
 
         props.model.expressionComponents.push(component);
-        if(props.model.expressionComponents.length > 1)
-        props.model.operators.push(eSolrBooleanOperators.AND);
+        if(props.model.expressionComponents.length > 1){
+            props.model.operators.push(eSolrBooleanOperators.AND);
+        }
     }
     const deleteComponent = (index: number) => {
         console.log("expressionComponents", props.model.expressionComponents)
         props.model.expressionComponents?.splice(index, 1);
-        if(props.model.expressionComponents.length > 1)
-        props.model.operators?.splice(index-1, 1);
+
+        if(index > 0){
+            props.model.operators?.splice(index-1, 1);
+        }
+        else if(props.model.operators.length > 0){
+            props.model.operators?.splice(0, 1);
+        }
     }
 
     </script>
@@ -71,8 +77,9 @@
     <div class="form-field-border row">
         <div class="col-md-1"></div>
         <div v-if="model.expressionComponents?.length > 0" class="col-md-11" >
+            <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(0)" class="fa-icon field-delete" />
             <FieldExpressionTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" /> 
-            <span>index0<FieldConstraintTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldConstraint" :model="model.expressionComponents[0] as unknown as FieldConstraint" /> <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(0)" class="fa-icon field-delete" /></span>
+            <FieldConstraintTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldConstraint" :model="model.expressionComponents[0] as unknown as FieldConstraint" />
 
         </div>
 
@@ -80,16 +87,16 @@
             <div class="col-md-12">
                 <div class="col-md-1">
                     <select class="form-select" v-model="model.operators[index]">
-                        <option v-for="operator in eOperatorValues" :value="operator">{{getOperatorLabel(operator)}}</option>
+                        <option v-for="operator in eSolrBooleanOperators" :value="operator">{{operator}}</option>
                     </select>
                 </div>
                 
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-11" >
-
+                <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(index+1)" class="fa-icon field-delete" />
                 <FieldExpressionTemplate v-if="model.expressionComponents[index+1].type === eConstraintType.FieldExpression" :model="(model.expressionComponents[index+1] as unknown as FieldExpression)" />
-                <span>index{{index+1}}<FieldConstraintTemplate v-if="model.expressionComponents[index+1].type === eConstraintType.FieldConstraint" :model="(model.expressionComponents[index+1] as FieldConstraint)" /> <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(index+1)" class="fa-icon field-delete" /></span>
+                <FieldConstraintTemplate v-if="model.expressionComponents[index+1].type === eConstraintType.FieldConstraint" :model="(model.expressionComponents[index+1] as FieldConstraint)" />
 
             </div>
         </div>
@@ -147,5 +154,8 @@
     font-weight: bold;
     color: #db2424;
     background: transparent;
+}
+.field-delete{
+    height: 16px;
 }
 </style>
