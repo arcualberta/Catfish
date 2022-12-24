@@ -358,8 +358,8 @@ namespace DataProcessing
             if (!bool.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:AllowDuplicateShowtimeRecords")?.Value, out bool allowDuplicateShowtimeRecords))
                 allowDuplicateShowtimeRecords = false;
 
-            if (!bool.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:SaveSolrDocsInsteadOfPost")?.Value, out bool saveSolrDocsInsteadOfPost))
-                saveSolrDocsInsteadOfPost = false;
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:SaveSolrDocsInsteadOfPosting")?.Value, out bool saveSolrDocsInsteadOfPosting))
+                saveSolrDocsInsteadOfPosting = false;
 
             string outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
@@ -370,7 +370,7 @@ namespace DataProcessing
             string errorLogFile = Path.Combine(outputFolder, $"indexing-data-error{indexType}-log_{fileSuffix}.txt");
 
             string solrDocsFolder = null;
-            if (saveSolrDocsInsteadOfPost)
+            if (saveSolrDocsInsteadOfPosting)
             {
                 solrDocsFolder = Path.Combine(outputFolder, $"solr-docs{indexType}");
                 Directory.CreateDirectory(solrDocsFolder);
@@ -480,7 +480,7 @@ namespace DataProcessing
                                 if (theater != null)
                                     AddTheater(doc, theater);
 
-                                if (saveSolrDocsInsteadOfPost)
+                                if (saveSolrDocsInsteadOfPosting)
                                     doc.Root.Save(Path.Combine(solrDocsFolder!, $"{showtimeRecord.id}.xml"));
                                 else
                                     solrDocs.Add(doc);
