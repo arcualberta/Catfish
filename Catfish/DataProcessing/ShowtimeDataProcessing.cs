@@ -369,11 +369,13 @@ namespace DataProcessing
             string processingLogFile = Path.Combine(outputFolder, $"index-data-log{indexType}_{fileSuffix}.txt");
             string errorLogFile = Path.Combine(outputFolder, $"indexing-data-error{indexType}-log_{fileSuffix}.txt");
 
-            string solrDocsFolder = null;
+            string solrDocsFolderRelativePath = null;
+            string solrDocsFolderAbsolutePath = null;
             if (saveSolrDocsInsteadOfPosting)
             {
-                solrDocsFolder = Path.Combine(outputFolder, $"solr-docs{indexType}");
-                Directory.CreateDirectory(solrDocsFolder);
+                solrDocsFolderRelativePath = $"solr-docs{indexType}";
+                solrDocsFolderAbsolutePath = Path.Combine(outputFolder, solrDocsFolderRelativePath);
+                Directory.CreateDirectory(solrDocsFolderAbsolutePath);
             }
 
 
@@ -415,7 +417,7 @@ namespace DataProcessing
 
                         batchStr = $"{showtimes.First().id} - {showtimes.Last().id}";
 
-                        File.AppendAllText(processingLogFile, $"{log_message} Loaded showtime records with ids in the range {batchStr} in {(sql_t1-sql_t0).TotalSeconds} seconds.");
+                        File.AppendAllText(processingLogFile, $"{log_message} Loaded showtime records with ids in the range {batchStr} in {(sql_t1 - sql_t0).TotalSeconds} seconds.");
 
                         //Creating solr docs
                         Movie movie = null;
@@ -480,11 +482,7 @@ namespace DataProcessing
                                 if (theater != null)
                                     AddTheater(doc, theater);
 
-                                if (saveSolrDocsInsteadOfPosting)
-                                    doc.Root.Save(Path.Combine(solrDocsFolder!, $"{showtimeRecord.id}.xml"));
-                                else
-                                    solrDocs.Add(doc);
-
+                                solrDocs.Add(doc);
                             }
                             catch (Exception ex)
                             {
@@ -493,24 +491,47 @@ namespace DataProcessing
 
                         }//End: foreach (var showtimeRecord in ShowtimeRecords)
 
-                        //Call solr service to index the batch of docs
-                        ISolrService solr = _testHelper.Solr;
+                        
+                        string exportMessage = $"Data processing time: {(DateTime.Now - sql_t1).TotalSeconds} seconds. "
+                            + (saveSolrDocsInsteadOfPosting ? "Saving" : "Indexing") 
+                            + $" {solrDocs.Count} records";
 
-                        File.AppendAllText(processingLogFile, $" Data processing time: {(DateTime.Now - sql_t1).TotalSeconds} seconds.");
                         var solr_t0 = DateTime.Now;
                         if (solrDocs.Count > 0)
                         {
-                            File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records");
-                            solr.Index(solrDocs).Wait();
-                            solr.CommitAsync().Wait();
+                            if (saveSolrDocsInsteadOfPosting)
+                            {
+                                var solrDocsBatchFile = $"{showtimes[0].id}-{showtimes[showtimes.Count - 1].id}.xml";
+                                File.AppendAllText(processingLogFile, $" {exportMessage} to {solrDocsFolderRelativePath}\\{solrDocsBatchFile}");
 
-                            //Clearning the bufffer
-                            solrDocs.Clear();
+                                var outpout_file = Path.Combine(solrDocsFolderAbsolutePath!, solrDocsBatchFile);
+                                var output_stream = File.OpenWrite(outpout_file);
 
-                            var solr_t1 = DateTime.Now;
-                            File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.");
-                        }
+                                //Writing the wrapper opening element
+                                output_stream.Write(new UTF8Encoding(true).GetBytes("<batch>\n"));
+                                foreach(var doc in solrDocs)
+                                {
+                                    CancellationToken cancellationToken = new CancellationToken();
+                                    doc.Root.SaveAsync(output_stream, SaveOptions.None, cancellationToken);
+                                }
+                                output_stream.Write(new UTF8Encoding(true).GetBytes("</batch>"));
+                                output_stream.Close();
+                            }
+                            else
+                            {
+                                //Call solr service to index the batch of docs
+                                ISolrService solr = _testHelper.Solr;
 
+                                File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records");
+                                solr.Index(solrDocs).Wait();
+                                solr.CommitAsync().Wait();
+
+                                //Clearning the bufffer
+                                solrDocs.Clear();
+                            }
+                        }//End: if (solrDocs.Count > 0)
+                        var solr_t1 = DateTime.Now;
+                        File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.");
                     }
                     catch (Exception ex)
                     {
