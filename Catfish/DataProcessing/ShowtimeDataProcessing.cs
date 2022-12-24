@@ -508,7 +508,7 @@ namespace DataProcessing
                                 var output_stream = File.OpenWrite(outpout_file);
 
                                 //Writing the wrapper opening element
-                                output_stream.Write(new UTF8Encoding(true).GetBytes("<batch>\n"));
+                                output_stream.Write(new UTF8Encoding(true).GetBytes("<add>\n"));
 
                                 //Writing all solr docs
                                 foreach (var doc in solrDocs)
@@ -517,7 +517,7 @@ namespace DataProcessing
                                     output_stream.Write(new UTF8Encoding(true).GetBytes($"{xml}\n"));
                                 }
                                 //Writing the wrapper closing element
-                                output_stream.Write(new UTF8Encoding(true).GetBytes("</batch>"));
+                                output_stream.Write(new UTF8Encoding(true).GetBytes("</add>"));
                                 output_stream.Close();
                             }
                             else
