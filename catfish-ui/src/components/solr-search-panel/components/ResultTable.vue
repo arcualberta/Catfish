@@ -24,7 +24,7 @@ import {toTableData, downloadCSV} from '../helpers'
 
 <template>
     <div v-if="model.resultEntries.length > 0">
-        <button @click="downloadData()">Download CSV</button>
+        <button @click="downloadData()" class="btn btn-success">Download CSV</button>
     </div>
     <div class="mt-2">
         <span v-if="hasPrev" class="link" @click="store.previous()">&lt;&lt;&lt;</span>

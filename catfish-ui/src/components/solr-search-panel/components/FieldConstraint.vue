@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { Pinia } from 'pinia'
 import { SearchFieldDefinition } from '../models'
 import { computed, ref } from 'vue';
-import { eFieldType, eFieldConstraint } from '../../shared/constants'
+import { eFieldType, getFieldConstraintToolTip } from '../../shared/constants'
 import { getFieldConstraintLabel, eFieldConstraintValues } from '@/components/shared/constants'
 import { BRow, BCol, BFormInput } from 'bootstrap-vue-3';
 import { FieldConstraint } from '../models/FieldConstraint';
 import { useSolrSearchStore } from '../store';
-import { validate } from 'uuid';
 import { Guid } from 'guid-typescript';
 
     const props = defineProps<{
@@ -36,8 +34,9 @@ import { Guid } from 'guid-typescript';
         }
     })
 
+    const fieldType = computed(() => props.model.field?.type)
 
-const fieldType = computed(() => props.model.field?.type) 
+    const tooltip = computed(() => getFieldConstraintToolTip(props.model.constraint!))
 
 </script>
 <template>
@@ -48,7 +47,7 @@ const fieldType = computed(() => props.model.field?.type)
             </select>
         </b-col>
         <b-col class="col-sm-2">
-            <select class="form-select" v-model="model.constraint">
+            <select class="form-select" v-model="model.constraint" v-b-tooltip.hover :title="tooltip">
                 <option v-for="con in eFieldConstraintValues" :value="con">{{getFieldConstraintLabel(con)}}</option>
             </select>
         </b-col>
@@ -81,3 +80,9 @@ const fieldType = computed(() => props.model.field?.type)
 
     </b-row>
 </template>
+
+<style scoped>
+.form-select, input.form-control{
+    font-size: xx-small;
+}
+</style>

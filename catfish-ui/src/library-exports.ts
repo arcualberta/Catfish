@@ -28,4 +28,5 @@ library.add(faIcons.faCirclePlus)
 library.add(faIcons.faQuestionCircle)
 library.add(faIcons.faThList)
 library.add(faIcons.faArrowLeft)
+library.add(faIcons.faArrowUpRightFromSquare)
 export {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'

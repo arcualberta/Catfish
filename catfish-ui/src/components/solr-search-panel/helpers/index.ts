@@ -38,11 +38,12 @@ export function buildQueryString(model: FieldExpression | FieldConstraint): stri
             //No field has been selected, so ignore this field constraint.
             return null;
         }
-        else if(fieldConstraint.constraint === eFieldConstraint.Equals && (!fieldConstraint.value || (fieldConstraint.value.toString())?.length == 0)){
-            //Entries with the field value is not specified.
+        else if((fieldConstraint.constraint === eFieldConstraint.Equals || fieldConstraint.constraint === eFieldConstraint.Contains) 
+                && (!fieldConstraint.value || (fieldConstraint.value.toString())?.length == 0)){
+            //Limit the result to entries with value is not specified for the given field.
             return `-${fieldConstraint.field.name}:*`;
         }
-        else{
+        else if(fieldConstraint.value){
             //Enforce specified constraint on the field value
             switch(fieldConstraint.constraint){
                 case eFieldConstraint.Contains:
@@ -52,16 +53,19 @@ export function buildQueryString(model: FieldExpression | FieldConstraint): stri
                 case eFieldConstraint.NotEquals:
                     return `-${fieldConstraint.field.name}:"${fieldConstraint.value}"`;
                 case eFieldConstraint.GreaterThan:
-                    return `${fieldConstraint.field.name}:"{${fieldConstraint.value} TO *}"`;
+                    return `${fieldConstraint.field.name}:{${fieldConstraint.value} TO *}`;
                 case eFieldConstraint.GreaterThanOrEqual:
-                    return `${fieldConstraint.field.name}:"[${fieldConstraint.value} TO *]"`;
+                    return `${fieldConstraint.field.name}:[${fieldConstraint.value} TO *]`;
                 case eFieldConstraint.LessThan:
-                    return `${fieldConstraint.field.name}:"{* TO ${fieldConstraint.value}}"`;
+                    return `${fieldConstraint.field.name}:{* TO ${fieldConstraint.value}}`;
                 case eFieldConstraint.LessThanOrEqual:
-                    return `${fieldConstraint.field.name}:"[* TO ${fieldConstraint.value}]"`;
+                    return `${fieldConstraint.field.name}:[* TO ${fieldConstraint.value}]`;
                 default:
                     return null; //Unsupported field constraint
             } 
+        }
+        else {
+            return null; //Field is selecyted byt no value is specified, so ignore
         }
     }
 }

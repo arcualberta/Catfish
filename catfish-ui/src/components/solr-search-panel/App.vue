@@ -27,7 +27,11 @@
     const expression = computed(() => store.fieldExpression)
     const querySource = computed(() => store.querySource)
 
-    const quertString = computed(() => buildQueryString(store.fieldExpression))
+    const quertString = computed(() => {
+        const q = buildQueryString(store.fieldExpression)
+        return q ? q : "*:*"
+    })
+
     const rawQuery = ref("")
 
     const query = () => {
@@ -46,20 +50,20 @@
 
     </script>
 <template>
-    Solr search
-    <div v-if="uiMode === eUiMode.Default">
+    <div v-if="uiMode === eUiMode.Default" class="query-wrapper">
         <FieldExpression :model="expression"></FieldExpression>
-       <!-- <div class="mt-3 alert alert-info">
-            {{ store.fieldExpression }}
-        </div>-->
         <div class="mt-3 alert alert-success">
+            <div>
+                <b>Query String</b>
+                <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" class="fa-icon" />
+            </div>
             {{ quertString }}
         </div>        
     </div>
     <div v-if="uiMode === eUiMode.Raw">
         <textarea v-model="rawQuery" class="col-12"></textarea>
     </div>
-    <button @click="query">Query</button>
+    <button @click="query" class="btn btn-primary">Search</button>
 
     <div class="mt-3 mb-3" v-if="store.queryResult">
        <div class="mt-3">
@@ -70,3 +74,8 @@
     </div>
 </template>
 
+<style scoped>
+.query-wrapper{
+    margin-left: -15px;
+}
+</style>

@@ -73,12 +73,13 @@
 
 <template>
     <div class="form-field-border row">
-        <div class="col-md-1"></div>
-        <div v-if="model.expressionComponents?.length > 0" class="col-md-11" >
-            <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(0)" class="fa-icon field-delete" />
-            <FieldExpressionTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" /> 
-            <FieldConstraintTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldConstraint" :model="model.expressionComponents[0] as unknown as FieldConstraint" />
-
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div v-if="model.expressionComponents?.length > 0" class="col-md-11" >
+                <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(0)" class="fa-icon field-delete" />
+                <FieldExpressionTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldExpression" :model="(model.expressionComponents[0] as unknown as FieldExpression)" /> 
+                <FieldConstraintTemplate v-if="model.expressionComponents[0].type === eConstraintType.FieldConstraint" :model="model.expressionComponents[0] as unknown as FieldConstraint" />
+            </div>
         </div>
 
         <div v-for="(op, index) in model.operators" class="row">
@@ -133,6 +134,7 @@
         </div>
     </div>
 </template>
+
 <style scoped>
    .form-field-border {
     border: 1px solid;
@@ -155,5 +157,14 @@
 }
 .field-delete{
     height: 16px;
+}
+.form-field-border{
+    border-radius: 5px;
+    border-style: dashed;
+    margin-left:15px;
+    margin-right:0px;
+}
+.form-select{
+    font-size: xx-small;
 }
 </style>
