@@ -358,14 +358,24 @@ namespace DataProcessing
             if (!bool.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:AllowDuplicateShowtimeRecords")?.Value, out bool allowDuplicateShowtimeRecords))
                 allowDuplicateShowtimeRecords = false;
 
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:SaveSolrDocsInsteadOfPost")?.Value, out bool saveSolrDocsInsteadOfPost))
+                saveSolrDocsInsteadOfPost = false;
 
             string outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
-            string filePrefix = allowDuplicateShowtimeRecords ? "-with-duplicates" : "";
+            string indexType = allowDuplicateShowtimeRecords ? "-with-duplicates" : "";
             string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string processingLogFile = Path.Combine(outputFolder, $"index-data-log{filePrefix}_{fileSuffix}.txt");
-            string errorLogFile = Path.Combine(outputFolder, $"indexing-data-error{filePrefix}-log_{fileSuffix}.txt");
+            string processingLogFile = Path.Combine(outputFolder, $"index-data-log{indexType}_{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"indexing-data-error{indexType}-log_{fileSuffix}.txt");
+
+            string solrDocsFolder = null;
+            if (saveSolrDocsInsteadOfPost)
+            {
+                solrDocsFolder = Path.Combine(outputFolder, $"solr-docs{indexType}");
+                Directory.CreateDirectory(solrDocsFolder);
+            }
+
 
             List<SolrDoc> solrDocs = new List<SolrDoc>();
             int offset = 0;
@@ -470,7 +480,10 @@ namespace DataProcessing
                                 if (theater != null)
                                     AddTheater(doc, theater);
 
-                                solrDocs.Add(doc);
+                                if (saveSolrDocsInsteadOfPost)
+                                    doc.Root.Save(Path.Combine(solrDocsFolder!, $"{showtimeRecord.id}.xml"));
+                                else
+                                    solrDocs.Add(doc);
 
                             }
                             catch (Exception ex)
