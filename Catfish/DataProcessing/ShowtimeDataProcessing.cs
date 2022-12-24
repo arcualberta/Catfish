@@ -511,9 +511,11 @@ namespace DataProcessing
                                 output_stream.Write(new UTF8Encoding(true).GetBytes("<batch>\n"));
 
                                 //Writing all solr docs
-                                foreach(var doc in solrDocs)
-                                    doc.Root.Save(output_stream, SaveOptions.None);
-
+                                foreach (var doc in solrDocs)
+                                {
+                                    var xml = doc.Root.ToString();
+                                    output_stream.Write(new UTF8Encoding(true).GetBytes($"{xml}\n"));
+                                }
                                 //Writing the wrapper closing element
                                 output_stream.Write(new UTF8Encoding(true).GetBytes("</batch>"));
                                 output_stream.Close();
@@ -526,11 +528,13 @@ namespace DataProcessing
                                 File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records");
                                 solr.Index(solrDocs).Wait();
                                 solr.CommitAsync().Wait();
-
-                                //Clearning the bufffer
-                                solrDocs.Clear();
                             }
+
+                            //Clearning the bufffer
+                            solrDocs.Clear();
+
                         }//End: if (solrDocs.Count > 0)
+
                         var solr_t1 = DateTime.Now;
                         File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.");
                     }
