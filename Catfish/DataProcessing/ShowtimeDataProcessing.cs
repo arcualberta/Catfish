@@ -362,9 +362,10 @@ namespace DataProcessing
             string outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
+            string filePrefix = allowDuplicateShowtimeRecords ? "-with-duplicates" : "";
             string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string processingLogFile = Path.Combine(outputFolder, $"index-data-log_{fileSuffix}.txt");
-            string errorLogFile = Path.Combine(outputFolder, $"indexing-data-error-log_{fileSuffix}.txt");
+            string processingLogFile = Path.Combine(outputFolder, $"index-data-log{filePrefix}_{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"indexing-data-error{filePrefix}-log_{fileSuffix}.txt");
 
             List<SolrDoc> solrDocs = new List<SolrDoc>();
             int offset = 0;
