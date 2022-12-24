@@ -496,19 +496,21 @@ namespace DataProcessing
                         //Call solr service to index the batch of docs
                         ISolrService solr = _testHelper.Solr;
 
-                        File.AppendAllText(processingLogFile, $" Data processing time: {(DateTime.Now - sql_t1).TotalSeconds} seconds. Indexing {solrDocs.Count} records");
+                        File.AppendAllText(processingLogFile, $" Data processing time: {(DateTime.Now - sql_t1).TotalSeconds} seconds.");
                         var solr_t0 = DateTime.Now;
                         if (solrDocs.Count > 0)
                         {
+                            File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records");
                             solr.Index(solrDocs).Wait();
                             solr.CommitAsync().Wait();
 
                             //Clearning the bufffer
                             solrDocs.Clear();
+
+                            var solr_t1 = DateTime.Now;
+                            File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.");
                         }
-                        var solr_t1 = DateTime.Now;
-                        File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.");
-                        
+
                     }
                     catch (Exception ex)
                     {
