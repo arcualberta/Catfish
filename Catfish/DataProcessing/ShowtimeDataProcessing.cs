@@ -509,11 +509,12 @@ namespace DataProcessing
 
                                 //Writing the wrapper opening element
                                 output_stream.Write(new UTF8Encoding(true).GetBytes("<batch>\n"));
+
+                                //Writing all solr docs
                                 foreach(var doc in solrDocs)
-                                {
-                                    CancellationToken cancellationToken = new CancellationToken();
-                                    doc.Root.SaveAsync(output_stream, SaveOptions.None, cancellationToken);
-                                }
+                                    doc.Root.Save(output_stream, SaveOptions.None);
+
+                                //Writing the wrapper closing element
                                 output_stream.Write(new UTF8Encoding(true).GetBytes("</batch>"));
                                 output_stream.Close();
                             }
