@@ -1,10 +1,13 @@
 <script setup lang="ts">
     import { default as FieldExpression } from './components/FieldExpression.vue'
     import { default as ResultTable } from './components/ResultTable.vue'
+    import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
     import { useSolrSearchStore } from './store';
     import { computed, ref } from 'vue';
     import { buildQueryString } from './helpers';
     import { eUiMode, SearchFieldDefinition } from './models';
+    import { copyToClipboard } from './helpers'
+    import { Guid } from 'guid-typescript';
 
     const props = defineProps<{
         searchFields?: SearchFieldDefinition[],
@@ -47,15 +50,25 @@
         }
     }
 
+    const copyButtonId = "copy" + Guid.create() as unknown as string
+    const toggleIconClass = () => {
+        document.getElementById(copyButtonId)?.toggleAttribute()
+    }
 
-    </script>
+</script>
 <template>
+    
     <div v-if="uiMode === eUiMode.Default" class="query-wrapper">
         <FieldExpression :model="expression"></FieldExpression>
         <div class="mt-3 alert alert-success">
             <div>
                 <b>Query String</b>
-                <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" class="fa-icon" />
+                <font-awesome-icon 
+                    :id = "copyButtonId"
+                    icon="fa-solid fa-copy" 
+                    class="fa-icon btn" 
+                    @click="copyToClipboard(quertString); toggleIconClass()"
+                    v-b-tooltip.hover :title="'Copy the query string to clipboard.'" />
             </div>
             {{ quertString }}
         </div>        
@@ -77,5 +90,13 @@
 <style scoped>
 .query-wrapper{
     margin-left: -15px;
+}
+.fa-icon.btn{
+    width:15px;
+    height:15px;
+    padding: 3px;
+}
+.copy-link:hover {
+    cursor: pointer;
 }
 </style>
