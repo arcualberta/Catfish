@@ -15,10 +15,12 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         max: 100,
         queryStart: 0,
         queryTime: 0,
-        queryApi: 'https://localhost:5020/api/solr-search'
+        queryApi: 'https://localhost:5020/api/solr-search',
+        isLoadig: false
     }),
     actions: {
         query(query: string | null, offset: number, max: number){
+            this.isLoadig = true;
             this.offset = offset;
             this.max = max;
 
@@ -40,9 +42,11 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             .then(data => {
                     this.queryResult = data;
                     this.queryTime = (new Date().getTime()- this.queryStart)/1000.0
+                    this.isLoadig = false;
             })
             .catch((error) => {
                 console.error('Load Entities API Error:', error);
+                this.isLoadig = false;
             });
         },
         next(){

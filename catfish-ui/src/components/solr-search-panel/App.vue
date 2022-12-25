@@ -50,11 +50,6 @@
         }
     }
 
-    const copyButtonId = "copy" + Guid.create() as unknown as string
-    const toggleIconClass = () => {
-        document.getElementById(copyButtonId)?.toggleAttribute()
-    }
-
 </script>
 <template>
     
@@ -64,10 +59,9 @@
             <div>
                 <b>Query String</b>
                 <font-awesome-icon 
-                    :id = "copyButtonId"
                     icon="fa-solid fa-copy" 
                     class="fa-icon btn" 
-                    @click="copyToClipboard(quertString); toggleIconClass()"
+                    @click="copyToClipboard(quertString)"
                     v-b-tooltip.hover :title="'Copy the query string to clipboard.'" />
             </div>
             {{ quertString }}
@@ -77,6 +71,10 @@
         <textarea v-model="rawQuery" class="col-12"></textarea>
     </div>
     <button @click="query" class="btn btn-primary">Search</button>
+
+    <div v-if="store.isLoadig" class="mt-2">
+        <b-spinner variant="primary" label="Spinning"></b-spinner>
+    </div>
 
     <div class="mt-3 mb-3" v-if="store.queryResult">
        <div class="mt-3">
@@ -99,4 +97,5 @@
 .copy-link:hover {
     cursor: pointer;
 }
+
 </style>
