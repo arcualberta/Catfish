@@ -361,7 +361,9 @@ namespace DataProcessing
             if (!bool.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:SaveSolrDocsInsteadOfPosting")?.Value, out bool saveSolrDocsInsteadOfPosting))
                 saveSolrDocsInsteadOfPosting = false;
 
-            string outputFolder = "C:\\Projects\\Showtime Database\\output";
+            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            if(string.IsNullOrEmpty(outputFolder))
+                outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
             string indexType = allowDuplicateShowtimeRecords ? "-with-duplicates" : "";
