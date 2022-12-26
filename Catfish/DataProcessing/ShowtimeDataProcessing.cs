@@ -547,6 +547,7 @@ namespace DataProcessing
                         solr.CommitAsync().Wait(600000); //10 minute timeout
 
                         context.TrackingKeys.Add(new TrackingKey() { entry_key = tracking_key });
+                        context.SaveChanges();
 
                         var t2 = DateTime.Now;
                         File.AppendAllText(processingLogFile, $" completed in {(t2-t1).TotalSeconds}. Total processing time {(t2-t0).TotalSeconds} seconds.{Environment.NewLine}");
