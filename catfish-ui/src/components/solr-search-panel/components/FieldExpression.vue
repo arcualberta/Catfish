@@ -85,7 +85,7 @@
         <div v-for="(op, index) in model.operators" class="row">
             <div class="col-md-12">
                 <div class="col-md-1">
-                    <select class="form-select" v-model="model.operators[index]">
+                    <select class="form-select" v-model="model.operators[index]" v-b-tooltip.hover :title="model.operators[index]">
                         <option v-for="operator in eSolrBooleanOperators" :value="operator">{{operator}}</option>
                     </select>
                 </div>

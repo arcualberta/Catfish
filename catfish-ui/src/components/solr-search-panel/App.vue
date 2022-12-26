@@ -1,13 +1,11 @@
 <script setup lang="ts">
     import { default as FieldExpression } from './components/FieldExpression.vue'
     import { default as ResultTable } from './components/ResultTable.vue'
-    import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
     import { useSolrSearchStore } from './store';
-    import { computed, ref } from 'vue';
+    import { computed, ref, watch } from 'vue';
     import { buildQueryString } from './helpers';
     import { eUiMode, SearchFieldDefinition } from './models';
     import { copyToClipboard } from './helpers'
-    import { Guid } from 'guid-typescript';
 
     const props = defineProps<{
         searchFields?: SearchFieldDefinition[],
@@ -24,8 +22,13 @@
         store.queryApi = props.queryApi;
     }
 
-    const uiMode = computed(() => props.uiMode ? props.uiMode : eUiMode.Default)
+    watch(() => props.queryApi, async newQueryApi => {
+        if(newQueryApi){
+            store.queryApi = newQueryApi;
+        }
+    })
 
+    const uiMode = computed(() => props.uiMode ? props.uiMode : eUiMode.Default)
 
     const expression = computed(() => store.fieldExpression)
     const querySource = computed(() => store.querySource)
@@ -35,18 +38,23 @@
         return q ? q : "*:*"
     })
 
-    const rawQuery = ref("")
+    const rawQuery = ref("*:*")
 
     const query = () => {
         store.queryResult = null;
 
         if(uiMode.value === eUiMode.Default){
             store.query(quertString.value, 0, 100)
-            store.querySource = "Default Query Result"
+            store.querySource = "Filter Result"
         }
         else if(uiMode.value === eUiMode.Raw){
-            store.query(rawQuery.value, 0, 100)
-            store.querySource = "Raw Query Result"
+            if(rawQuery.value && rawQuery.value.trim().length > 0){
+                store.query(rawQuery.value, 0, 100)
+                store.querySource = "Solr Query Result"
+            }
+            else{
+                alert("Please specify a query")
+            }
         }
     }
 
@@ -78,7 +86,7 @@
 
     <div class="mt-3 mb-3" v-if="store.queryResult">
        <div class="mt-3">
-            <h3>{{ querySource }}</h3>
+            <h4>{{ querySource }}</h4>
             Query time: {{store.queryTime}} seconds<br /><br />
             <ResultTable :model="store.queryResult" />
         </div>
