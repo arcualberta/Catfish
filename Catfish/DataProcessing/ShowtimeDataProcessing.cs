@@ -530,8 +530,8 @@ namespace DataProcessing
                                     ISolrService solr = _testHelper.Solr;
 
                                     File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records");
-                                    solr.Index(solrDocs).Wait();
-                                    solr.CommitAsync().Wait();
+                                    solr.Index(solrDocs).Wait(600000); //10 minute timeout
+                                    solr.CommitAsync().Wait(600000); //10 minute timeout
                                 }
                                 catch(Exception ex)
                                 {
