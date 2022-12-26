@@ -525,6 +525,8 @@ namespace DataProcessing
                     var tracking_key = preprocessedFileFolder.Substring(preprocessedFileFolder.LastIndexOf('\\') + 1) + "\\" + filename;
                     using (var context = _testHelper.CreateNewShowtimeDbContext())
                     {
+                        context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
+
                         if (context.TrackingKeys.FirstOrDefault(rec => rec.entry_key == tracking_key) != null)
                             continue; //The file has already been processed
 
