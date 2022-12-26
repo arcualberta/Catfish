@@ -36,7 +36,7 @@ namespace DataProcessing
             _testHelper = new TestHelper();
         }
 
-        
+
         [Fact]
         public void MergeTest()
         {
@@ -79,7 +79,7 @@ namespace DataProcessing
 
             if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxShowtimeBatchesToProcess")?.Value, out int maxShowtimeBatchesToProcess))
                 maxShowtimeBatchesToProcess = int.MaxValue;
-            
+
             //var context = _testHelper.ShowtimeDb;
 
             string srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
@@ -247,7 +247,7 @@ namespace DataProcessing
                         if (productionRun)
                             batchContext.SaveChanges();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         File.AppendAllText(errorLogFile, $"EXCEPTION in {batchFolder}: {ex.Message}{Environment.NewLine}");
                     }
@@ -257,85 +257,6 @@ namespace DataProcessing
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
 
-
-        //////CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.ValidateShowtimeRecords
-        ////[Fact]
-        ////public void ValidateShowtimeRecords()
-        ////{
-        ////    DateTime start = DateTime.Now;
-
-        ////    if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:IsProductionRun")?.Value, out bool productionRun))
-        ////        productionRun = true;
-
-        ////    if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:IndexBatchSize")?.Value, out int batchSize))
-        ////        batchSize = 1000;
-
-        ////    if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:ContextTimeoutInMinutes")?.Value, out int contextTimeoutInMinutes))
-        ////        contextTimeoutInMinutes = 3;
-
-        ////    string outputFolder = "C:\\Projects\\Showtime Database\\output";
-        ////    Directory.CreateDirectory(outputFolder);
-        ////    string logFilePrefix = productionRun ? "" : "dry-run-";
-        ////    string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
-        ////    string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}validation-log-{fileSuffix}.txt");
-        ////    string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}validation-error-log-{fileSuffix}.txt");
-
-        ////    int total_validated = 0;
-        ////    int total = 0;
-        ////    using (var context = _testHelper.CreateNewShowtimeDbContext())
-        ////    {
-        ////        context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
-        ////        total_validated = context.ShowtimeRecords.Where(st => st.is_validated).Count();
-        ////        total = context.ShowtimeRecords.Count();
-        ////    }
-
-        ////    while (true)
-        ////    {
-        ////        using(var context = _testHelper.CreateNewShowtimeDbContext())
-        ////        {
-        ////            string batchStr = "";
-        ////            try
-        ////            {
-        ////                context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
-
-        ////                var showtimes = context.ShowtimeRecords.Where(st => !st.is_validated).Take(batchSize).ToList();
-        ////                if (!showtimes.Any())
-        ////                    break; //while(true)
-
-        ////                batchStr = $"{total_validated + 1} - {total_validated + showtimes.Count}";
-        ////                File.AppendAllText(processingLogFile, $"Processing: {batchStr}{Environment.NewLine}{Environment.NewLine}");
-
-        ////                total_validated += showtimes.Count;
-
-        ////                foreach (var movie_id in showtimes.Select(st => st.movie_id).Distinct())
-        ////                {
-        ////                    var movie_error = context.MovieRecords.Where(m => m.movie_id == movie_id).Any() == false;
-        ////                    var subset = showtimes.Where(st => st.movie_id == movie_id).ToList();
-        ////                    for (int i = 0; i < subset.Count; i++)
-        ////                        subset[i].movie_error = movie_error;
-        ////                }
-
-        ////                foreach (var theater_id in showtimes.Select(st => st.theater_id).Distinct())
-        ////                {
-        ////                    var theater_error = context.TheaterRecords.Where(m => m.theater_id == theater_id).Any() == false;
-        ////                    var subset = showtimes.Where(st => st.theater_id == theater_id).ToList();
-        ////                    for (int i = 0; i < subset.Count; i++)
-        ////                        subset[i].theater_error = theater_error;
-        ////                }
-
-        ////                for (int i = 0; i < showtimes.Count; i++)
-        ////                    showtimes[i].is_validated = true;
-
-        ////                context.SaveChanges();
-        ////            }
-        ////            catch(Exception ex)
-        ////            {
-        ////                File.AppendAllText(errorLogFile, $"EXCEPTION in batch {batchStr}: {ex.Message}{Environment.NewLine}");
-        ////            }
-        ////        }
-        ////        GC.Collect();
-        ////    }
-        ////}
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexData
         [Fact]
@@ -365,7 +286,7 @@ namespace DataProcessing
                 saveSolrDocsInsteadOfPosting = false;
 
             string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
-            if(string.IsNullOrEmpty(outputFolder))
+            if (string.IsNullOrEmpty(outputFolder))
                 outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
@@ -386,7 +307,7 @@ namespace DataProcessing
 
             List<SolrDoc> solrDocs = new List<SolrDoc>();
             int offset = 0;
-            if(startShowtimeId > 0)
+            if (startShowtimeId > 0)
             {
                 using (var context = _testHelper.CreateNewShowtimeDbContext())
                 {
@@ -418,7 +339,7 @@ namespace DataProcessing
                         if (!showtimes.Any() || currentBatch >= maxBatchesToProcess)
                             break; //while(true)
 
-                        if(showtimes.Last().id > stopShowtimeId)
+                        if (showtimes.Last().id > stopShowtimeId)
                         {
                             var skip_set = showtimes.Where(st => st.id >= stopShowtimeId).ToList();
                             foreach (var st in skip_set)
@@ -505,9 +426,9 @@ namespace DataProcessing
 
                         }//End: foreach (var showtimeRecord in ShowtimeRecords)
 
-                        
+
                         string exportMessage = $"Data processing time: {(DateTime.Now - sql_t1).TotalSeconds} seconds. "
-                            + (saveSolrDocsInsteadOfPosting ? "Saving" : "Indexing") 
+                            + (saveSolrDocsInsteadOfPosting ? "Saving" : "Indexing")
                             + $" {solrDocs.Count} records";
 
                         var solr_t0 = DateTime.Now;
@@ -545,7 +466,7 @@ namespace DataProcessing
                                     solr.Index(solrDocs).Wait(600000); //10 minute timeout
                                     solr.CommitAsync().Wait(600000); //10 minute timeout
                                 }
-                                catch(Exception ex)
+                                catch (Exception ex)
                                 {
                                     File.AppendAllText(errorLogFile, $"EXCEPTION in posting to solr index in batch {batchStr}: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
                                 }
@@ -576,134 +497,68 @@ namespace DataProcessing
         }
 
 
-        ////////public void xxIndexDataOld()
-        ////////{
-        ////////    DateTime start = DateTime.Now;
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexPreprocessedData
+        [Fact]
+        public void IndexPreprocessedData()
+        {
+            DateTime start = DateTime.Now;
 
-        ////////    if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:IndexBatchSize")?.Value, out int batchSize))
-        ////////        batchSize = 1000;
+            string preprocessedFileFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:PreprocessedFileFolder")?.Value.TrimEnd('\\');
+            if (string.IsNullOrEmpty(preprocessedFileFolder) || !Directory.Exists(preprocessedFileFolder))
+                throw new Exception($"Preprocessed data folder does not exist: {preprocessedFileFolder}");
 
-        ////////    if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
-        ////////        maxBatchesToProcess = int.MaxValue;
+            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            if (string.IsNullOrEmpty(outputFolder))
+                outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
 
-        ////////    if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:StartupShowtimeIdForIndexing")?.Value, out int startShowtimeId))
-        ////////        startShowtimeId = 0;
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:ContextTimeoutInMinutes")?.Value, out int contextTimeoutInMinutes))
+                contextTimeoutInMinutes = 3;
 
+            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"preprocessed-data-index_{fileSuffix}-log.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"preprocessed-data-index_{fileSuffix}-errors.txt");
 
-        ////////    string outputFolder = "C:\\Projects\\Showtime Database\\output";
-        ////////    Directory.CreateDirectory(outputFolder);
+            //Loading data file names in the source folder
+            var srcFileNames = Directory.GetFiles(preprocessedFileFolder, "*.xml");
+            foreach(var absFileName in srcFileNames)
+            {
+                var filename = absFileName.Substring(absFileName.LastIndexOf("\\") + 1);
+                try
+                {
+                    var tracking_key = preprocessedFileFolder.Substring(preprocessedFileFolder.LastIndexOf('\\') + 1) + "\\" + filename;
+                    using (var context = _testHelper.CreateNewShowtimeDbContext())
+                    {
+                        if (context.TrackingKeys.FirstOrDefault(rec => rec.entry_key == tracking_key) != null)
+                            continue; //The file has already been processed
 
-        ////////    string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
-        ////////    string processingLogFile = Path.Combine(outputFolder, $"indexing-log-{fileSuffix}.txt");
-        ////////    string errorLogFile = Path.Combine(outputFolder, $"indexing-error-log-{fileSuffix}.txt");
+                        File.AppendAllText(processingLogFile, $" Loading in {filename}");
 
-        ////////    List<SolrDoc> solrDocs = new List<SolrDoc>();
-        ////////    int offset = 0;
-        ////////    int currentBatch = 0;
-        ////////    while (true)
-        ////////    {
-        ////////        using (var context = _testHelper.CreateNewShowtimeDbContext())
-        ////////        {
-        ////////            var ShowtimeRecords = startShowtimeId > 0
-        ////////                ? context!.ShowtimeRecords.Where(s => s.id >= startShowtimeId).Skip(offset).Take(batchSize).ToList()
-        ////////                : context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
+                        var t0 = DateTime.Now;
+                        XElement payload = XElement.Load(absFileName);
 
-        ////////            if (!ShowtimeRecords.Any() || currentBatch >= maxBatchesToProcess)
-        ////////                break; //while(true)
+                        var t1 = DateTime.Now;
+                        File.AppendAllText(processingLogFile, $" completed in {(t1 - t0).TotalSeconds}. Indexing {payload.Elements().Count()} records");
 
-        ////////            File.AppendAllText(processingLogFile, $"Processing records {offset + 1} - {offset + ShowtimeRecords.Count} Showtime IDs from {ShowtimeRecords.First().id} to {ShowtimeRecords.Last().id} {Environment.NewLine}");
+                        //Call solr service to index the batch of docs
+                        ISolrService solr = _testHelper.Solr;
 
-        ////////            offset += ShowtimeRecords.Count;
-        ////////            ++currentBatch;
+                        solr.AddUpdateAsync(payload).Wait(600000); //10 minute timeout
+                        solr.CommitAsync().Wait(600000); //10 minute timeout
 
-        ////////            //Creating solr docs
-        ////////            Movie movie = null;
-        ////////            Theater theater = null;
-        ////////            Showtime showtime = null;
+                        context.TrackingKeys.Add(new TrackingKey() { entry_key = tracking_key });
 
-        ////////            for (int i = 0; i < ShowtimeRecords.Count; ++i)
-        ////////            {
-        ////////                var showtimeRecord = ShowtimeRecords[i];
-
-        ////////                if (showtimeRecord.movie_error.HasValue && showtimeRecord.movie_error.Value || showtimeRecord.theater_error.HasValue && showtimeRecord.theater_error.Value)
-        ////////                    continue;
-
-        ////////                try
-        ////////                {
-        ////////                    showtime = JsonSerializer.Deserialize<Showtime>(showtimeRecord.content.ToString());
-
-        ////////                    if (movie?.movie_id == showtime!.movie_id)
-        ////////                    {
-        ////////                        //Movie is already loaded in an immediate past iteration. Nothing to do here
-        ////////                    }
-        ////////                    else
-        ////////                    {
-        ////////                        MovieRecord movieRecord = context.MovieRecords.FirstOrDefault(m => m.movie_id == showtimeRecord.movie_id);
-        ////////                        if (movieRecord == null)
-        ////////                        {
-        ////////                            foreach (var rec in ShowtimeRecords.Where(sr => sr.movie_id == showtimeRecord.movie_id))
-        ////////                                rec.movie_error = true;
-        ////////                        }
-        ////////                        else
-        ////////                            movie = JsonSerializer.Deserialize<Movie>(movieRecord!.content);
-        ////////                    }
-
-        ////////                    if (theater?.theater_id == showtime!.theater_id)
-        ////////                    {
-        ////////                        //Theater is already loaded in an immediate past iteration. Nothing to do here
-        ////////                    }
-        ////////                    else
-        ////////                    {
-        ////////                        TheaterRecord theaterRecord = context.TheaterRecords.FirstOrDefault(t => t.theater_id == showtimeRecord.theater_id);
-        ////////                        if (theaterRecord == null)
-        ////////                        {
-        ////////                            foreach (var rec in ShowtimeRecords.Where(sr => sr.theater_id == showtimeRecord.theater_id))
-        ////////                                rec.theater_error = true;
-        ////////                        }
-        ////////                        else
-        ////////                            theater = JsonSerializer.Deserialize<Theater>(theaterRecord!.content);
-        ////////                    }
-
-        ////////                    SolrDoc doc = new SolrDoc();
-
-        ////////                    AddShowtime(doc, showtime!);
-
-        ////////                    if (movie != null)
-        ////////                        AddMovie(doc, movie);
-
-
-        ////////                    if (theater != null)
-        ////////                        AddTheater(doc, theater);
-
-        ////////                    solrDocs.Add(doc);
-
-        ////////                }
-        ////////                catch (Exception ex)
-        ////////                {
-        ////////                    File.AppendAllText(errorLogFile, $"EXCEPTION in Showtime {showtimeRecord.id} <movie_id:{showtime.movie_id}, theater_id:{showtime.theater_id}, show_date:{showtime.show_date}>: {ex.Message}{Environment.NewLine}");
-        ////////                }
-
-        ////////            }//End: foreach (var showtimeRecord in ShowtimeRecords)
-
-        ////////            //Call solr service to index the batch of docs
-        ////////            ISolrService solr = _testHelper.Solr;
-        ////////            if (solrDocs.Count > 0)
-        ////////            {
-        ////////                solr.Index(solrDocs).Wait();
-        ////////                solr.CommitAsync().Wait();
-
-        ////////                //Clearning the bufffer
-        ////////                solrDocs.Clear();
-        ////////            }
-        ////////        }//End: using (var batchContext = new ShowtimeDbContext(dbOptions))
-        ////////    }//End: while(true)
-
-
-        ////////    var timelapse = (DateTime.Now - start).ToString();
-        ////////    string logText = $"Total indexing time: {timelapse}{Environment.NewLine}";
-        ////////    File.AppendAllText(processingLogFile, logText);
-
-        ////////}
+                        var t2 = DateTime.Now;
+                        File.AppendAllText(processingLogFile, $" completed in {(t2-t1).TotalSeconds}. Total processing time {(t2-t0).TotalSeconds} seconds.{Environment.NewLine}");
+                    }//End: using (var context = _testHelper.CreateNewShowtimeDbContext())
+                }
+                catch(Exception ex)
+                {
+                    File.AppendAllText(errorLogFile, $"EXCEPTION in processing {filename}: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
+                }
+                GC.Collect();
+            }//End: foreach(var absFileName in srcFileNames)
+        }
 
         private void AddShowtime(SolrDoc doc, Showtime showtime, int showtimeDbId, bool allowDuplicateShowtimeRecords)
         {
