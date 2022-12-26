@@ -58,9 +58,14 @@ namespace Catfish.API.Repository.Services
 
         public async Task AddUpdateAsync(XElement payload)
         {
+            await AddUpdateAsync(payload.ToString(SaveOptions.DisableFormatting));
+        }
+
+        public async Task AddUpdateAsync(string payloadXmlString)
+        {
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
-            using var content = new StringContent(payload.ToString(SaveOptions.DisableFormatting), Encoding.UTF8, "text/xml");
+            using var content = new StringContent(payloadXmlString, Encoding.UTF8, "text/xml");
             using var httpResponse = await _httpClient.PostAsync(uri, content).ConfigureAwait(false);
 
             httpResponse.EnsureSuccessStatusCode();

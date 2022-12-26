@@ -19,6 +19,7 @@ using System.Security.Cryptography.Xml;
 using System.Configuration;
 using System.Collections;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace DataProcessing
 {
@@ -511,9 +512,12 @@ namespace DataProcessing
             string processingLogFile = Path.Combine(outputFolder, $"preprocessed-data-index_{fileSuffix}-log.txt");
             string errorLogFile = Path.Combine(outputFolder, $"preprocessed-data-index_{fileSuffix}-errors.txt");
 
+            ISolrService solr = _testHelper.Solr;
+            int httpCallWaitTimeMilliseconds = 600000; //10 seconds
+
             //Loading data file names in the source folder
-            var srcFileNames = Directory.GetFiles(preprocessedFileFolder, "*.xml");
-            foreach(var absFileName in srcFileNames)
+            var srcFileNames = Directory.GetFiles(preprocessedFileFolder, "*.*");
+            foreach (var absFileName in srcFileNames)
             {
                 var filename = absFileName.Substring(absFileName.LastIndexOf("\\") + 1);
                 try
@@ -524,25 +528,46 @@ namespace DataProcessing
                         if (context.TrackingKeys.FirstOrDefault(rec => rec.entry_key == tracking_key) != null)
                             continue; //The file has already been processed
 
-                        File.AppendAllText(processingLogFile, $" Loading in {filename}");
+                        File.AppendAllText(processingLogFile, $" Processing {filename}");
 
                         var t0 = DateTime.Now;
-                        XElement payload = XElement.Load(absFileName);
-
-                        var t1 = DateTime.Now;
-                        File.AppendAllText(processingLogFile, $" completed in {(t1 - t0).TotalSeconds}. Indexing {payload.Elements().Count()} records");
-
-                        //Call solr service to index the batch of docs
-                        ISolrService solr = _testHelper.Solr;
-
-                        solr.AddUpdateAsync(payload).Wait(600000); //10 minute timeout
-                        solr.CommitAsync().Wait(600000); //10 minute timeout
+                       
+                        if (filename.EndsWith(".xml"))
+                        {
+                            string xmlPayloadStr = File.ReadAllText(absFileName);
+                            solr.AddUpdateAsync(xmlPayloadStr).Wait(httpCallWaitTimeMilliseconds);
+                            solr.CommitAsync().Wait(httpCallWaitTimeMilliseconds);
+                        }
+                        else if (filename.EndsWith(".zip"))
+                        {
+                            using (ZipArchive archive = ZipFile.OpenRead(absFileName))
+                            {
+                                foreach (ZipArchiveEntry entry in archive.Entries)
+                                {
+                                    if (entry.Name.EndsWith(".xml"))
+                                    {
+                                        Stream stream = entry.Open();
+                                        using(StreamReader sr = new StreamReader(stream))
+                                        {
+                                            var xmlPayloadStr = sr.ReadToEnd();
+                                            solr.AddUpdateAsync(xmlPayloadStr).Wait(httpCallWaitTimeMilliseconds);
+                                            solr.CommitAsync().Wait(httpCallWaitTimeMilliseconds);
+                                            sr.Close();
+                                        }
+                                        stream.Close();
+                                    }
+                                }
+                            }
+                        }
+                        else
+                            throw new Exception($"Don't know how to load data from the file {filename}{Environment.NewLine}");
 
                         context.TrackingKeys.Add(new TrackingKey() { entry_key = tracking_key });
                         context.SaveChanges();
 
-                        var t2 = DateTime.Now;
-                        File.AppendAllText(processingLogFile, $" completed in {(t2-t1).TotalSeconds} seconds. Total processing time {(t2-t0).TotalSeconds} seconds.{Environment.NewLine}");
+                        var t1 = DateTime.Now;
+                        File.AppendAllText(processingLogFile, $" completed in {(t1 - t0).TotalSeconds}.");
+
                     }//End: using (var context = _testHelper.CreateNewShowtimeDbContext())
                 }
                 catch(Exception ex)
