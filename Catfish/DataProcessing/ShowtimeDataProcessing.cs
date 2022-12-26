@@ -424,7 +424,7 @@ namespace DataProcessing
                                 File.AppendAllText(errorLogFile, $"EXCEPTION in Showtime {showtimeRecord.id} <movie_id:{showtimeRecord.movie_id}, theater_id:{showtimeRecord.theater_id}, show_date:{showtimeRecord.show_date}>: {ex.Message}{Environment.NewLine}");
                             }
 
-                        }//End: foreach (var showtimeRecord in ShowtimeRecords)
+                        }//End: for (int i = 0; i < showtimes.Count; ++i)
 
 
                         string exportMessage = $"Data processing time: {(DateTime.Now - sql_t1).TotalSeconds} seconds. "
@@ -436,24 +436,16 @@ namespace DataProcessing
                         {
                             if (saveSolrDocsInsteadOfPosting)
                             {
-                                var solrDocsBatchFile = $"{showtimes[0].id}-{showtimes[showtimes.Count - 1].id}.xml";
-                                File.AppendAllText(processingLogFile, $" {exportMessage} to {solrDocsFolderRelativePath}\\{solrDocsBatchFile}");
-
-                                var outpout_file = Path.Combine(solrDocsFolderAbsolutePath!, solrDocsBatchFile);
-                                var output_stream = File.OpenWrite(outpout_file);
-
-                                //Writing the wrapper opening element
-                                output_stream.Write(new UTF8Encoding(true).GetBytes("<add>\n"));
-
-                                //Writing all solr docs
-                                foreach (var doc in solrDocs)
+                                try
                                 {
-                                    var xml = doc.Root.ToString();
-                                    output_stream.Write(new UTF8Encoding(true).GetBytes($"{xml}\n"));
+                                    var solrDocsBatchFile = $"{showtimes[0].id}-{showtimes[showtimes.Count - 1].id}";
+                                    File.AppendAllText(processingLogFile, $" {exportMessage} to {solrDocsFolderRelativePath}\\{solrDocsBatchFile}.zip");
+                                    SaveToZipFile(solrDocs, solrDocsFolderAbsolutePath!, solrDocsBatchFile);
                                 }
-                                //Writing the wrapper closing element
-                                output_stream.Write(new UTF8Encoding(true).GetBytes("</add>"));
-                                output_stream.Close();
+                                catch(Exception ex)
+                                {
+                                    File.AppendAllText(errorLogFile, $"EXCEPTION in saving to zip file {batchStr}.zip: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
+                                }
                             }
                             else
                             {
@@ -559,6 +551,32 @@ namespace DataProcessing
                 }
                 GC.Collect();
             }//End: foreach(var absFileName in srcFileNames)
+        }
+
+        private void SaveToZipFile(List<SolrDoc> solrDocs, string outputFolder, string filename)
+        {
+            string zipfile = Path.Combine(outputFolder, $"{filename}.zip");
+            using (ZipArchive archive = ZipFile.Open(zipfile, ZipArchiveMode.Create))
+            {
+                ZipArchiveEntry entry = archive.CreateEntry($"{filename}.xml", CompressionLevel.Optimal);
+                var output_stream = entry.Open();
+
+                //Writing the wrapper opening element
+                output_stream.Write(new UTF8Encoding(true).GetBytes("<add>\n"));
+
+                //Writing all solr docs
+                foreach (var doc in solrDocs)
+                {
+                    var xml = doc.Root.ToString();
+                    output_stream.Write(new UTF8Encoding(true).GetBytes($"{xml}\n"));
+                }
+
+                //Writing the wrapper closing element
+                output_stream.Write(new UTF8Encoding(true).GetBytes("</add>"));
+
+                //Closing the stream
+                output_stream.Close();
+            }            
         }
 
         private void AddShowtime(SolrDoc doc, Showtime showtime, int showtimeDbId, bool allowDuplicateShowtimeRecords)
