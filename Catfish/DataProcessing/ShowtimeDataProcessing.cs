@@ -352,6 +352,9 @@ namespace DataProcessing
             if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:StartupShowtimeIdForIndexing")?.Value, out int startShowtimeId))
                 startShowtimeId = 0;
 
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:StopShowtimeIdForIndexing")?.Value, out int stopShowtimeId))
+                stopShowtimeId = int.MaxValue;
+
             if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:ContextTimeoutInMinutes")?.Value, out int contextTimeoutInMinutes))
                 contextTimeoutInMinutes = 3;
 
@@ -395,7 +398,8 @@ namespace DataProcessing
             }
 
             int currentBatch = 0;
-            while (true)
+            bool continue_processing = true;
+            while (continue_processing)
             {
                 var connection_t0 = DateTime.Now;
                 using (var context = _testHelper.CreateNewShowtimeDbContext())
@@ -413,6 +417,14 @@ namespace DataProcessing
 
                         if (!showtimes.Any() || currentBatch >= maxBatchesToProcess)
                             break; //while(true)
+
+                        if(showtimes.Last().id > stopShowtimeId)
+                        {
+                            var skip_set = showtimes.Where(st => st.id >= stopShowtimeId).ToList();
+                            foreach (var st in skip_set)
+                                showtimes.Remove(st);
+                            continue_processing = false;
+                        }
 
                         offset += showtimes.Count;
                         ++currentBatch;
