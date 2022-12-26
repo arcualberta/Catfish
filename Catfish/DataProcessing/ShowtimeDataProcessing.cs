@@ -524,12 +524,19 @@ namespace DataProcessing
                             }
                             else
                             {
-                                //Call solr service to index the batch of docs
-                                ISolrService solr = _testHelper.Solr;
+                                try
+                                {
+                                    //Call solr service to index the batch of docs
+                                    ISolrService solr = _testHelper.Solr;
 
-                                File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records");
-                                solr.Index(solrDocs).Wait();
-                                solr.CommitAsync().Wait();
+                                    File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records");
+                                    solr.Index(solrDocs).Wait();
+                                    solr.CommitAsync().Wait();
+                                }
+                                catch(Exception ex)
+                                {
+                                    File.AppendAllText(errorLogFile, $"EXCEPTION in posting to solr index in batch {batchStr}: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
+                                }
                             }
 
                             //Clearning the bufffer
