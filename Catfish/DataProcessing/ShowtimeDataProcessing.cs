@@ -550,7 +550,7 @@ namespace DataProcessing
                         context.SaveChanges();
 
                         var t2 = DateTime.Now;
-                        File.AppendAllText(processingLogFile, $" completed in {(t2-t1).TotalSeconds}. Total processing time {(t2-t0).TotalSeconds} seconds.{Environment.NewLine}");
+                        File.AppendAllText(processingLogFile, $" completed in {(t2-t1).TotalSeconds} seconds. Total processing time {(t2-t0).TotalSeconds} seconds.{Environment.NewLine}");
                     }//End: using (var context = _testHelper.CreateNewShowtimeDbContext())
                 }
                 catch(Exception ex)
