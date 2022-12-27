@@ -559,7 +559,7 @@ namespace DataProcessing
                     else
                         throw new Exception($"Don't know how to load data from the file {filename}{Environment.NewLine}");
 
-                    Directory.Move(absFileName, Path.Combine(postprocessedFileFolder, filename));
+                    File.Move(absFileName, Path.Combine(postprocessedFileFolder, filename));
 
                     var t1 = DateTime.Now;
                     File.AppendAllText(processingLogFile, $" completed in {(t1 - t0).TotalSeconds}.");
