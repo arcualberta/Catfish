@@ -515,6 +515,9 @@ namespace DataProcessing
             ISolrService solr = _testHelper.Solr;
             int httpCallWaitTimeMilliseconds = 600000; //10 seconds
 
+            string postprocessedFileFolder = preprocessedFileFolder + "-index-completed";
+            Directory.CreateDirectory(postprocessedFileFolder);
+
             //Loading data file names in the source folder
             var srcFileNames = Directory.GetFiles(preprocessedFileFolder, "*.*");
             foreach (var absFileName in srcFileNames)
@@ -522,57 +525,46 @@ namespace DataProcessing
                 var filename = absFileName.Substring(absFileName.LastIndexOf("\\") + 1);
                 try
                 {
-                    var tracking_key = preprocessedFileFolder.Substring(preprocessedFileFolder.LastIndexOf('\\') + 1) + "\\" + filename;
-                    using (var context = _testHelper.CreateNewShowtimeDbContext())
+                    File.AppendAllText(processingLogFile, $" Processing {filename}");
+
+                    var t0 = DateTime.Now;
+
+                    if (filename.EndsWith(".xml"))
                     {
-                        context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
-
-                        if (context.TrackingKeys.FirstOrDefault(rec => rec.entry_key == tracking_key) != null)
-                            continue; //The file has already been processed
-
-                        File.AppendAllText(processingLogFile, $" Processing {filename}");
-
-                        var t0 = DateTime.Now;
-                       
-                        if (filename.EndsWith(".xml"))
+                        string xmlPayloadStr = File.ReadAllText(absFileName);
+                        solr.AddUpdateAsync(xmlPayloadStr).Wait(httpCallWaitTimeMilliseconds);
+                        solr.CommitAsync().Wait(httpCallWaitTimeMilliseconds);
+                    }
+                    else if (filename.EndsWith(".zip"))
+                    {
+                        using (ZipArchive archive = ZipFile.OpenRead(absFileName))
                         {
-                            string xmlPayloadStr = File.ReadAllText(absFileName);
-                            solr.AddUpdateAsync(xmlPayloadStr).Wait(httpCallWaitTimeMilliseconds);
-                            solr.CommitAsync().Wait(httpCallWaitTimeMilliseconds);
-                        }
-                        else if (filename.EndsWith(".zip"))
-                        {
-                            using (ZipArchive archive = ZipFile.OpenRead(absFileName))
+                            foreach (ZipArchiveEntry entry in archive.Entries)
                             {
-                                foreach (ZipArchiveEntry entry in archive.Entries)
+                                if (entry.Name.EndsWith(".xml"))
                                 {
-                                    if (entry.Name.EndsWith(".xml"))
+                                    Stream stream = entry.Open();
+                                    using (StreamReader sr = new StreamReader(stream))
                                     {
-                                        Stream stream = entry.Open();
-                                        using(StreamReader sr = new StreamReader(stream))
-                                        {
-                                            var xmlPayloadStr = sr.ReadToEnd();
-                                            solr.AddUpdateAsync(xmlPayloadStr).Wait(httpCallWaitTimeMilliseconds);
-                                            solr.CommitAsync().Wait(httpCallWaitTimeMilliseconds);
-                                            sr.Close();
-                                        }
-                                        stream.Close();
+                                        var xmlPayloadStr = sr.ReadToEnd();
+                                        solr.AddUpdateAsync(xmlPayloadStr).Wait(httpCallWaitTimeMilliseconds);
+                                        solr.CommitAsync().Wait(httpCallWaitTimeMilliseconds);
+                                        sr.Close();
                                     }
+                                    stream.Close();
                                 }
                             }
                         }
-                        else
-                            throw new Exception($"Don't know how to load data from the file {filename}{Environment.NewLine}");
+                    }
+                    else
+                        throw new Exception($"Don't know how to load data from the file {filename}{Environment.NewLine}");
 
-                        context.TrackingKeys.Add(new TrackingKey() { entry_key = tracking_key });
-                        context.SaveChanges();
+                    Directory.Move(absFileName, Path.Combine(postprocessedFileFolder, filename));
 
-                        var t1 = DateTime.Now;
-                        File.AppendAllText(processingLogFile, $" completed in {(t1 - t0).TotalSeconds}.");
-
-                    }//End: using (var context = _testHelper.CreateNewShowtimeDbContext())
+                    var t1 = DateTime.Now;
+                    File.AppendAllText(processingLogFile, $" completed in {(t1 - t0).TotalSeconds}.");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     File.AppendAllText(errorLogFile, $"EXCEPTION in processing {filename}: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
                 }
