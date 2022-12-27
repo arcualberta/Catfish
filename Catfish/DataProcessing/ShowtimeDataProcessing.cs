@@ -562,7 +562,7 @@ namespace DataProcessing
                     File.Move(absFileName, Path.Combine(postprocessedFileFolder, filename));
 
                     var t1 = DateTime.Now;
-                    File.AppendAllText(processingLogFile, $" completed in {(t1 - t0).TotalSeconds}.");
+                    File.AppendAllText(processingLogFile, $" completed in {(t1 - t0).TotalSeconds}.{Environment.NewLine}");
                 }
                 catch (Exception ex)
                 {
