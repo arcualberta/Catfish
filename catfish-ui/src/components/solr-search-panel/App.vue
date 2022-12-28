@@ -4,12 +4,14 @@
     import { useSolrSearchStore } from './store';
     import { computed, ref, watch } from 'vue';
     import { buildQueryString } from './helpers';
-    import { eUiMode, SearchFieldDefinition } from './models';
+    import { eUiMode, SearchFieldDefinition, SolrEntryType } from './models';
     import { copyToClipboard } from './helpers'
 
     const props = defineProps<{
         searchFields?: SearchFieldDefinition[],
         resultFieldNames: string[],
+        entryTypeFieldName?: string,
+        entryTypeFieldOptions?: SolrEntryType[],
         queryApi?: string,
         uiMode?: eUiMode
     }>();
@@ -29,6 +31,8 @@
         }
     })
 
+    const selectedEntryType = ref(null as null | SolrEntryType)
+
     const uiMode = computed(() => props.uiMode ? props.uiMode : eUiMode.Default)
 
     const expression = computed(() => store.fieldExpression)
@@ -36,7 +40,22 @@
 
     const quertString = computed(() => {
         const q = buildQueryString(store.fieldExpression)
-        return q ? q : "*:*"
+        if(q){
+            if(props.entryTypeFieldName && selectedEntryType.value){
+                return `(${props.entryTypeFieldName}:${selectedEntryType.value.name}) AND (${q})`;
+            }
+            else{
+                return q;
+            }
+        }
+        else{
+            if(props.entryTypeFieldName && selectedEntryType.value){
+                return `${props.entryTypeFieldName}:${selectedEntryType.value.name}`;
+            }
+            else{
+                return '*:*';
+            }
+        }
     })
 
     const rawQuery = ref("*:*")
@@ -61,7 +80,13 @@
 
 </script>
 <template>
-    
+    <div v-if="entryTypeFieldName">
+        Entry Type:
+        <select v-model="selectedEntryType">
+            <option value="">ALL</option>
+            <option v-for="val in entryTypeFieldOptions" :value="val">{{val.label}}</option>
+        </select>
+    </div>
     <div v-if="uiMode === eUiMode.Default" class="query-wrapper">
         <FieldExpression :model="expression"></FieldExpression>
     </div>

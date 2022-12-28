@@ -8,6 +8,12 @@ export interface SearchFieldDefinition{
     options: string[]
 }
 
+export interface SolrEntryType {
+    name: string,
+    label: string,
+    entityType: number
+}
+
 export enum eSolrBooleanOperators {
     AND = "AND",
     OR = "OR"

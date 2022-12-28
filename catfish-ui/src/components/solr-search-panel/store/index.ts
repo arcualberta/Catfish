@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { buildQueryString } from '../helpers';
-import { SearchFieldDefinition, SearchResult } from '../models';
+import { SearchFieldDefinition, SearchResult, SolrEntryType } from '../models';
 import { ConstraintType, createFieldExpression, FieldExpression } from '../models/FieldExpression';
 
 
@@ -11,6 +11,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         activeQueryString: "",
         searchFieldDefinitions: [] as SearchFieldDefinition[],
         resultFieldNames: [] as string[],
+//        entryTypeFieldOptions: [] as SolrEntryType[],
+//        selectedEntryType: null as SolrEntryType | null,
         queryResult: null as null | SearchResult,
         offset: 0,
         max: 100,
@@ -26,6 +28,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             this.max = max;
 
             this.activeQueryString = query && query.trim().length > 0 ? query : "*:*";
+
             const form = new FormData();
             form.append("query", this.activeQueryString);
             form.append("offset", offset.toString())

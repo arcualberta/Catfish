@@ -96,7 +96,6 @@
                 <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteComponent(index+1)" class="fa-icon field-delete" />
                 <FieldExpressionTemplate v-if="model.expressionComponents[index+1].type === eConstraintType.FieldExpression" :model="(model.expressionComponents[index+1] as unknown as FieldExpression)" />
                 <FieldConstraintTemplate v-if="model.expressionComponents[index+1].type === eConstraintType.FieldConstraint" :model="(model.expressionComponents[index+1] as FieldConstraint)" />
-
             </div>
         </div>
 
