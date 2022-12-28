@@ -30,4 +30,8 @@ library.add(faIcons.faThList)
 library.add(faIcons.faArrowLeft)
 library.add(faIcons.faArrowUpRightFromSquare)
 library.add(faIcons.faCopy)
+library.add(faIcons.faArrowDown)
+library.add(faIcons.faChevronDown)
+library.add(faIcons.faChevronRight)
+library.add(faIcons.faChevronUp)
 export {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'

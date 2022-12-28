@@ -10,6 +10,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         querySource: null as string | null,
         activeQueryString: "",
         searchFieldDefinitions: [] as SearchFieldDefinition[],
+        resultFieldNames: [] as string[],
         queryResult: null as null | SearchResult,
         offset: 0,
         max: 100,
