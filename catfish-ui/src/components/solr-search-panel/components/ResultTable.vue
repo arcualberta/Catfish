@@ -16,7 +16,8 @@ import {toTableData, downloadCSV} from '../helpers'
     const hasNext = computed(() => last.value < props.model.totalMatches)
 
     const fieldDefs = computed(()=>store.searchFieldDefinitions)
-    const tableData = computed(() => toTableData(props.model.resultEntries, fieldDefs.value))
+    const requestedResultFieldNames = computed(()=>store.resultFieldNames)
+    const tableData = computed(() => toTableData(props.model.resultEntries, fieldDefs.value, requestedResultFieldNames.value))
 
     const downloadData = () => downloadCSV(props.model.resultEntries, fieldDefs.value)
 

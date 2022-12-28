@@ -70,12 +70,16 @@ export function buildQueryString(model: FieldExpression | FieldConstraint): stri
     }
 }
 
-export function toTableData(rows: SolrResultEntry[], fieldDefs: SearchFieldDefinition[]){
+export function toTableData(rows: SolrResultEntry[], fieldDefs: SearchFieldDefinition[], requestedResultFieldNames: string[]){
     const items: Record<string, any>[] = [];
+
+    const tableHeadingDefs = requestedResultFieldNames?.length > 0
+        ? fieldDefs.filter(fd => requestedResultFieldNames.indexOf(fd.name) >= 0)
+        : fieldDefs;
 
     rows?.forEach((row) => {
         const item: Record<string, any> = {}
-        fieldDefs?.forEach((def) => {
+        tableHeadingDefs?.forEach((def) => {
             item[def.label.replaceAll(' ', '_')] = row.data.find(d => d.key === def.name)?.value
         })
         items.push(item);

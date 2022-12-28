@@ -80,6 +80,15 @@
         <textarea v-model="rawQuery" class="col-12"></textarea>
     </div>
 
+    <div class="mb-3">
+        <b>Limit Display Fields</b>
+        <div class="row">
+            <div v-for="field in store.searchFieldDefinitions" :key="field.name" class="col-md-2 result-field-option">
+                <input type="checkbox" :value="field.name" v-model="store.resultFieldNames" /> {{field.label}}
+            </div>
+        </div>        
+    </div>    
+    <!--
     <div class="accordion pb-3" role="tablist">
         <b-card no-body class="mb-1">
             <b-card-header header-tag="header" class="p-0 card-header" role="tab">
@@ -100,8 +109,9 @@
                 </b-card-text>
                 </b-card-body>
             </b-collapse>
-    </b-card>
+        </b-card>
     </div>
+    -->
 
      
     <button @click="query" class="btn btn-primary">Search</button>
@@ -109,8 +119,6 @@
     <div v-if="store.isLoadig" class="mt-2">
         <b-spinner variant="primary" label="Spinning"></b-spinner>
     </div>
-
-    {{store.resultFieldNames}}
 
     <div class="mt-3 mb-3" v-if="store.queryResult">
        <div class="mt-3">
