@@ -11,8 +11,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         activeQueryString: "",
         searchFieldDefinitions: [] as SearchFieldDefinition[],
         resultFieldNames: [] as string[],
-//        entryTypeFieldOptions: [] as SolrEntryType[],
-//        selectedEntryType: null as SolrEntryType | null,
+        selectedEntryType: null as SolrEntryType | null,
         queryResult: null as null | SearchResult,
         offset: 0,
         max: 100,
@@ -62,5 +61,17 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             const offset = this.offset < this.max ? 0 : this.offset - this.max;
             this.query(this.activeQueryString, offset, this.max)
         }   
+    },
+    getters: {
+        activeFieldList: (state) => {
+            if(state.selectedEntryType){
+                return state.searchFieldDefinitions?.filter(fd => Array.isArray(fd.entryType) 
+                    ? (fd.entryType as number[]).includes(state.selectedEntryType!.entryType) 
+                    : (fd.entryType as number) === state.selectedEntryType!.entryType);
+            }
+            else{
+                return state.searchFieldDefinitions;
+            }            
+        }
     }
 });

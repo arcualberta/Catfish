@@ -967,7 +967,6 @@ namespace DataProcessing
                 doc.AddField("intl_release_dt", movie.intl_release.Value);
             if (!string.IsNullOrEmpty(movie.intl_poster))
                 doc.AddField("intl_poster_t", movie.intl_poster);
-      
         }
     }
 

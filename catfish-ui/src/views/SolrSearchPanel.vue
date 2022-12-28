@@ -4,11 +4,9 @@
 
     import { useRoute } from 'vue-router'
     import { Guid } from 'guid-typescript'
-   // import { useSolrSearchStore } from '../components/solr-search-panel/store';
     import { SolrSearchPanel, useSolrSearchStore } from '../components'
-    import { default as config, solrFields } from "@/appsettings";
-import { SolrEntryType } from '@/components/solr-search-panel/models';
-import { eEntityType } from '@/components/shared/constants';
+    import { default as config, eSolrEntryType, solrFields } from "@/appsettings";
+    import { SolrEntryType } from '@/components/solr-search-panel/models';
 
     const route = useRoute()
     const entityId = route.params.id as unknown as Guid
@@ -18,14 +16,14 @@ import { eEntityType } from '@/components/shared/constants';
      const store = useSolrSearchStore();
      store.searchFieldDefinitions = solrFields;
 
-     enum eSolrEntityType {
-        Movie = 1,
-        Theater,
-        Showtime
-    }
-     const resultFieldNames = [] as string[];
-     const entryTypeFieldName = "entry_type_s"; 
-     const entryTypeFieldOptions = [{name:"raw-movie", label:"Movies", entityType: eSolrEntityType.Movie}, {name:"raw-theater", label:"Theaters", entityType: eSolrEntityType.Theater}, {name:"raw-showtime", label:"Showtimes", entityType: eSolrEntityType.Showtime}] as SolrEntryType[];
+
+    const resultFieldNames = [] as string[];
+    const entryTypeFieldName = "entry_type_s"; 
+    const entryTypeFieldOptions = [
+        {name:"raw-movie", label:"Movies", entryType: eSolrEntryType.Movie}, 
+        {name:"raw-theater", label:"Theaters", entryType: eSolrEntryType.Theater}, 
+        {name:"raw-showtime", label:"Showtimes", entryType: eSolrEntryType.Showtime}
+    ] as SolrEntryType[];
 
 </script>
 

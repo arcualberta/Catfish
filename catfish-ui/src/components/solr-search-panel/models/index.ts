@@ -5,13 +5,14 @@ export interface SearchFieldDefinition{
     name: string,
     label: string,
     type: eFieldType,
-    options: string[]
+    options: string[],
+    entryType: number | number[]
 }
 
 export interface SolrEntryType {
     name: string,
     label: string,
-    entityType: number
+    entryType: number
 }
 
 export enum eSolrBooleanOperators {

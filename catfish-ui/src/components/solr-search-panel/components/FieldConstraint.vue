@@ -18,8 +18,19 @@ import { Guid } from 'guid-typescript';
     const fieldName = ref(`opt-${Guid.create() as unknown as string}`);
 
     const store = useSolrSearchStore();
-    const searchFields = computed(() => store.searchFieldDefinitions)
-
+    const activeFieldList = computed(() => store.activeFieldList)
+/*    
+    const searchFields = computed(() => {
+        if(store.selectedEntryType){
+            return store.searchFieldDefinitions?.filter(fd => Array.isArray(fd.entryType) 
+                ? (fd.entryType as number[]).includes(store.selectedEntryType!.entryType) 
+                : (fd.entryType as number) === store.selectedEntryType!.entryType);
+        }
+        else{
+            return store.searchFieldDefinitions;
+        }
+    })
+*/
     const txtValue = computed({
         get: () => props.model.value as unknown as string,
         set: (val) => {
@@ -43,7 +54,7 @@ import { Guid } from 'guid-typescript';
     <b-row>
         <b-col class="col-sm-5">
             <select class="form-select" v-model="model.field">
-                <option v-for="opt in searchFields" :value="opt">{{opt.label}}</option>
+                <option v-for="opt in activeFieldList" :value="opt">{{opt.label}}</option>
             </select>
         </b-col>
         <b-col class="col-sm-2">

@@ -31,8 +31,6 @@
         }
     })
 
-    const selectedEntryType = ref(null as null | SolrEntryType)
-
     const uiMode = computed(() => props.uiMode ? props.uiMode : eUiMode.Default)
 
     const expression = computed(() => store.fieldExpression)
@@ -41,16 +39,16 @@
     const quertString = computed(() => {
         const q = buildQueryString(store.fieldExpression)
         if(q){
-            if(props.entryTypeFieldName && selectedEntryType.value){
-                return `(${props.entryTypeFieldName}:${selectedEntryType.value.name}) AND (${q})`;
+            if(props.entryTypeFieldName && store.selectedEntryType){
+                return `(${props.entryTypeFieldName}:${store.selectedEntryType.name}) AND (${q})`;
             }
             else{
                 return q;
             }
         }
         else{
-            if(props.entryTypeFieldName && selectedEntryType.value){
-                return `${props.entryTypeFieldName}:${selectedEntryType.value.name}`;
+            if(props.entryTypeFieldName && store.selectedEntryType){
+                return `${props.entryTypeFieldName}:${store.selectedEntryType.name}`;
             }
             else{
                 return '*:*';
@@ -82,7 +80,7 @@
 <template>
     <div v-if="entryTypeFieldName">
         Entry Type:
-        <select v-model="selectedEntryType">
+        <select v-model="store.selectedEntryType">
             <option value="">ALL</option>
             <option v-for="val in entryTypeFieldOptions" :value="val">{{val.label}}</option>
         </select>
@@ -108,7 +106,7 @@
     <div class="mb-3">
         <b>Limit Display Fields</b>
         <div class="row">
-            <div v-for="field in store.searchFieldDefinitions" :key="field.name" class="col-md-2 result-field-option">
+            <div v-for="field in store.activeFieldList" :key="field.name" class="col-md-2 result-field-option">
                 <input type="checkbox" :value="field.name" v-model="store.resultFieldNames" /> {{field.label}}
             </div>
         </div>        
