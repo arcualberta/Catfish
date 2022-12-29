@@ -770,36 +770,21 @@ namespace DataProcessing
 
         private void AddShowtime(SolrDoc doc, Showtime showtime)
         {
-            //showtime properties
-            if (!string.IsNullOrEmpty(showtime.movie_name))
-                doc.AddField("movie_name_t", showtime.movie_name);
+            var showdate_str = showtime.show_date.HasValue ? showtime.show_date.Value.ToString("yyyy-MM-dd") : "yyyy-mm-dd";
+            doc.AddField("showtime_key_t", $"{showtime.movie_id}-{showtime.theater_id}-{showdate_str}");
 
-            if (showtime.show_date.HasValue)
-                doc.AddField("show_date_dt", showtime.show_date);
-
-            if (showtime.showtimes?.Length > 0)
-                doc.AddField("showtimes_ts", showtime.showtimes);
-
-            if (showtime.showtime_minutes?.Length > 0)
-                doc.AddField("showtime_minutes_is", showtime.showtime_minutes.ToArray());
-
-            if (showtime.show_attributes?.Length > 0)
-                doc.AddField("show_attributes_ts", showtime.show_attributes);
-
-            if (!string.IsNullOrEmpty(showtime.show_passes))
-                doc.AddField("show_passes_t", showtime.show_passes);
-
-            if (!string.IsNullOrEmpty(showtime.show_festival))
-                doc.AddField("show_festival_t", showtime.show_festival);
-
-            if (!string.IsNullOrEmpty(showtime.show_with))
-                doc.AddField("show_with_t", showtime.show_with);
-
-            if (!string.IsNullOrEmpty(showtime.show_sound))
-                doc.AddField("show_sound_t", showtime.show_sound);
-
-            if (showtime.show_comments?.Length > 0)
-                doc.AddField("show_comments_ts", showtime.show_comments);
+            doc.AddField("movie_id_i", showtime.movie_id);
+            doc.AddField("theater_id_i", showtime.theater_id);
+            doc.AddField("movie_name_t", showtime.movie_name);
+            doc.AddField("show_date_dt", showtime.show_date);
+            doc.AddField("showtimes_ts", showtime.showtimes);
+            doc.AddField("showtime_minutes_is", showtime.showtime_minutes);
+            doc.AddField("show_attributes_ts", showtime.show_attributes);
+            doc.AddField("show_passes_t", showtime.show_passes);
+            doc.AddField("show_festival_t", showtime.show_festival);
+            doc.AddField("show_with_t", showtime.show_with);
+            doc.AddField("show_sound_t", showtime.show_sound);
+            doc.AddField("show_comments_ts", showtime.show_comments);
         }
 
         private void AddShowtime(SolrDoc doc, Showtime showtime, int showtimeDbId, bool allowDuplicateShowtimeRecords)
@@ -823,151 +808,71 @@ namespace DataProcessing
 
         private void AddTheater(SolrDoc doc, Theater theater)
         {
-            doc.AddField("theater_name_t", theater.theater_name!);
             doc.AddField("theater_id_i", theater.theater_id);
-
-            if(!string.IsNullOrEmpty(theater.theater_address))
-                doc.AddField("theater_address_t", theater.theater_address);
-
-            if (!string.IsNullOrEmpty(theater.theater_city))
-                doc.AddField("theater_city_t", theater.theater_city);
-
-            if (!string.IsNullOrEmpty(theater.theater_state))
-                doc.AddField("theater_state_t", theater.theater_state);
-
-            if (!string.IsNullOrEmpty(theater.theater_zip))
-                doc.AddField("theater_zip_t", theater.theater_zip);
-
-            if (!string.IsNullOrEmpty(theater.theater_phone))
-                doc.AddField("theater_phone_t", theater.theater_phone);
-
-            if(theater.theater_attributes?.Length > 0)
-                doc.AddField("theater_attributes_ts", theater.theater_attributes.ToString());
-
-            if (!string.IsNullOrEmpty(theater.theater_ticketing))
-                doc.AddField("theater_ticketing_t", theater.theater_ticketing);
-
-            if (!string.IsNullOrEmpty(theater.theater_closed_reason))
-                doc.AddField("theater_closed_reason_t", theater.theater_closed_reason);
-
-            if (!string.IsNullOrEmpty(theater.theater_area))
-                doc.AddField("theater_area_t", theater.theater_area);
-
-            if (!string.IsNullOrEmpty(theater.theater_location))
-                doc.AddField("theater_location_t", theater.theater_location);
-
-            if (!string.IsNullOrEmpty(theater.theater_market))
-                doc.AddField("theater_market_t", theater.theater_market);
-
-            if (theater.theater_screens.HasValue)
-                doc.AddField("theater_screens_i", theater.theater_screens.Value);
-
-            if (!string.IsNullOrEmpty(theater.theater_seating))
-                doc.AddField("theater_seating_t", theater.theater_seating);
-
-            if (!string.IsNullOrEmpty(theater.theater_adult))
-                doc.AddField("theater_adult_t", theater.theater_adult);
-
-            if (!string.IsNullOrEmpty(theater.theater_child))
-                doc.AddField("theater_child_t", theater.theater_child);
-
-            if (!string.IsNullOrEmpty(theater.theater_senior))
-                doc.AddField("theater_senior_t", theater.theater_senior);
-
-            if (!string.IsNullOrEmpty(theater.theater_country))
-                doc.AddField("theater_country_t", theater.theater_country);
-
-            if (!string.IsNullOrEmpty(theater.theater_url))
-                doc.AddField("theater_url_t", theater.theater_url);
-
-            if (!string.IsNullOrEmpty(theater.theater_chain_id))
-                doc.AddField("theater_chain_id_t", theater.theater_chain_id);
-
-            if (!string.IsNullOrEmpty(theater.theater_adult_bargain))
-                doc.AddField("theater_adult_bargain_t", theater.theater_adult_bargain);
-
-            if (!string.IsNullOrEmpty(theater.theater_senior_bargain))
-                doc.AddField("theater_senior_bargain_t", theater.theater_senior_bargain);
-            if (!string.IsNullOrEmpty(theater.theater_child_bargain))
-                doc.AddField("theater_child_bargain_t", theater.theater_child_bargain); ;
-            if (!string.IsNullOrEmpty(theater.theater_special_bargain))
-                doc.AddField("theater_special_bargain_t", theater.theater_special_bargain);
-
-            if (!string.IsNullOrEmpty(theater.theater_adult_super))
-                doc.AddField("theater_adult_super_t", theater.theater_adult_super);
-
-            if (!string.IsNullOrEmpty(theater.theater_senior_super))
-                doc.AddField("theater_senior_super_t", theater.theater_senior_super);
-            if (!string.IsNullOrEmpty(theater.theater_child_super))
-                doc.AddField("theater_child_super_t", theater.theater_child_super);
-            if (!string.IsNullOrEmpty(theater.theater_price_comment))
-                doc.AddField("theater_price_comment_t", theater.theater_price_comment);
-            if (!string.IsNullOrEmpty(theater.theater_extra))
-                doc.AddField("theater_extra_t", theater.theater_extra);
-            if (!string.IsNullOrEmpty(theater.theater_desc))
-                doc.AddField("theater_desc_t", theater.theater_desc);
-            if (!string.IsNullOrEmpty(theater.theater_type))
-                doc.AddField("theater_type_t", theater.theater_type);
-            if (theater.theater_lat.HasValue)
-                doc.AddField("theater_lat_d", theater.theater_lat.Value);
-            if (theater.theater_lon.HasValue)
-                doc.AddField("theater_lon_d", theater.theater_lon.Value);
-
+            doc.AddField("theater_name_t", theater.theater_name!);
+            doc.AddField("theater_address_t", theater.theater_address);
+            doc.AddField("theater_city_t", theater.theater_city);
+            doc.AddField("theater_state_t", theater.theater_state);
+            doc.AddField("theater_zip_t", theater.theater_zip);
+            doc.AddField("theater_phone_t", theater.theater_phone);
+            doc.AddField("theater_attributes_t", theater.theater_attributes);
+            doc.AddField("theater_ticketing_t", theater.theater_ticketing);
+            doc.AddField("theater_closed_reason_t", theater.theater_closed_reason);
+            doc.AddField("theater_area_t", theater.theater_area);
+            doc.AddField("theater_location_t", theater.theater_location);
+            doc.AddField("theater_market_t", theater.theater_market);
+            doc.AddField("theater_screens_i", theater.theater_screens);
+            doc.AddField("theater_seating_t", theater.theater_seating);
+            doc.AddField("theater_adult_t", theater.theater_adult);
+            doc.AddField("theater_child_t", theater.theater_child);
+            doc.AddField("theater_senior_t", theater.theater_senior);
+            doc.AddField("theater_country_s", theater.theater_country);
+            doc.AddField("theater_url_t", theater.theater_url);
+            doc.AddField("theater_chain_id_t", theater.theater_chain_id);
+            doc.AddField("theater_adult_bargain_t", theater.theater_adult_bargain);
+            doc.AddField("theater_senior_bargain_t", theater.theater_senior_bargain);
+            doc.AddField("theater_child_bargain_t", theater.theater_child_bargain);
+            doc.AddField("theater_special_bargain_t", theater.theater_special_bargain);
+            doc.AddField("theater_adult_super_t", theater.theater_adult_super);
+            doc.AddField("theater_senior_super_t", theater.theater_senior_super);
+            doc.AddField("theater_child_super_t", theater.theater_child_super);
+            doc.AddField("theater_price_comment_t", theater.theater_price_comment);
+            doc.AddField("theater_extra_t", theater.theater_extra);
+            doc.AddField("theater_desc_t", theater.theater_desc);
+            doc.AddField("theater_type_t", theater.theater_type);
+            doc.AddField("theater_lon_d", theater.theater_lon);
+            doc.AddField("theater_lat_d", theater.theater_lat);
         }
 
         private void AddMovie(SolrDoc doc, Movie movie)
         {
             doc.AddField("movie_id_i", movie.movie_id);
             doc.AddField("parent_id_i", movie.parent_id);
-            doc.AddField("title_t", movie.title!);
-            doc.AddField("genres_ts", movie.genres.ToArray());
+            doc.AddField("title_t", movie.title);
             doc.AddField("pictures_ts", movie.pictures.ToArray());
             doc.AddField("hipictures_ts", movie.hipictures.ToArray());
-            if (!string.IsNullOrEmpty(movie.rating))
-                doc.AddField("rating_t", movie.rating);
-
-            if (!string.IsNullOrEmpty(movie.advisory))
-                doc.AddField("advisory_t", movie.advisory);
-
+            doc.AddField("rating_t", movie.rating);
+            doc.AddField("advisory_t", movie.advisory);
+            doc.AddField("genres_ts", movie.genres.ToArray());
             doc.AddField("casts_ts", movie.casts.ToArray());
-
             doc.AddField("directors_ts", movie.directors.ToArray());
-
-            if(movie.release_date.HasValue)
-                doc.AddField("release_date_dt", val: movie.release_date.Value);
-            if(!string.IsNullOrEmpty(movie.release_notes))
-                doc.AddField("release_notes_t", movie.release_notes);
-
-            if (!string.IsNullOrEmpty(movie.release_dvd))
-                doc.AddField("release_dvd_t", movie.release_dvd);
-
+            doc.AddField("release_date_dt", movie.release_date);
+            doc.AddField("release_notes_t", movie.release_notes);
+            doc.AddField("release_dvd_t", movie.release_dvd);
             doc.AddField("running_time_i", movie.running_time);
-
-            if (!string.IsNullOrEmpty(movie.official_site))
-                doc.AddField("official_site_t", movie.official_site);
-
+            doc.AddField("official_site_s", movie.official_site);
             doc.AddField("distributors_ts", movie.distributors.ToArray());
             doc.AddField("producers_ts", movie.producers.ToArray());
             doc.AddField("writers_ts", movie.writers.ToArray());
-
-            if (!string.IsNullOrEmpty(movie.synopsis))
-                doc.AddField("synopsis_t", movie.synopsis);
-            if (!string.IsNullOrEmpty(movie.lang))
-                doc.AddField("lang_t", movie.lang);
-            if (!string.IsNullOrEmpty(movie.intl_name))
-                doc.AddField("intl_name_t", movie.intl_name);
-
-            if (!string.IsNullOrEmpty(movie.intl_country))
-                doc.AddField("intl_country_t", movie.intl_country);
-            if (!string.IsNullOrEmpty(movie.intl_cert))
-                doc.AddField("intl_cert_t", movie.intl_cert);
-            if (!string.IsNullOrEmpty(movie.intl_advisory))
-                doc.AddField("intl_advisory_t", movie.intl_advisory);
-            if (movie.intl_release.HasValue)
-                doc.AddField("intl_release_dt", movie.intl_release.Value);
-            if (!string.IsNullOrEmpty(movie.intl_poster))
-                doc.AddField("intl_poster_t", movie.intl_poster);
-        }
+            doc.AddField("synopsis_t", movie.synopsis);
+            doc.AddField("lang_s", movie.lang);
+            doc.AddField("intl_country_s", movie.intl_country);
+            doc.AddField("intl_name_t", movie.intl_name);
+            doc.AddField("intl_cert_t", movie.intl_cert);
+            doc.AddField("intl_advisory_t", movie.intl_advisory);
+            doc.AddField("intl_release_dt", movie.intl_release);
+            doc.AddField("intl_poster_t", movie.intl_poster);
+        }      
     }
 
     /**

@@ -119,118 +119,7 @@ namespace Catfish.API.Repository.Solr
             IndexAggregatedDataFields(src);
         }
 
-      
-
-     /*   protected void AddContainerFields(string containerPrefix, FieldContainer container, bool indexFieldNames)
-        {
-            //Backword compatibility fix: new items use MedataSet.TemplateId as the container ID part of the field name. However, this TemplateId
-            //was introduced recently and the items created prior to introducing this TemplateId uses MetadataSet.Id as the container ID. Therefore,
-            //in the statement below, we take the TemplateId as the container ID if it's defined but use the actual container's ID if the TemplateId
-            //is not defined. 
-            Guid? containerId = container.TemplateId != null ? container.TemplateId : container.Id;
-            string solrContainerNamePrefix = string.Format("{0}_{1}", containerPrefix, containerId);
-
-            foreach (var field in container.Fields)
-            {
-                string solrFieldName = string.Format("{0}_{1}", solrContainerNamePrefix, field.Id);
-                if (typeof(TextField).IsAssignableFrom(field.GetType()))
-                {
-                    solrFieldName += "_ts";
-                    foreach (var val in (field as TextField).Values)
-                        foreach (var txt in val.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
-                            AddField(solrFieldName, txt.Value);
-                }
-                else if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
-                {
-                    solrFieldName += field.SolrFieldType.ToString();
-                    foreach (var option in (field as OptionsField).Options.Where(op => op.Selected))
-                    {
-                        foreach (var txt in option.OptionText.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
-                            AddField(solrFieldName, txt.Value);
-
-                        if (option.ExtendedOption && option.ExtendedValues?.Length > 0)
-                            foreach (string val in option.ExtendedValues)
-                                if (!string.IsNullOrEmpty(val))
-                                    AddField(solrFieldName, val);
-                    }
-                }
-                else if (typeof(IntegerField).IsAssignableFrom(field.GetType()))
-                {
-                    solrFieldName += "_is";
-                    foreach (var txt in (field as IntegerField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
-                        AddField(solrFieldName, int.Parse(txt.Value));
-                }
-                else if (typeof(DecimalField).IsAssignableFrom(field.GetType()))
-                {
-                    solrFieldName += "_ds";
-                    foreach (var txt in (field as DecimalField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
-                        AddField(solrFieldName, decimal.Parse(txt.Value));
-                }
-                else if (typeof(DateField).IsAssignableFrom(field.GetType()))
-                {
-                    solrFieldName += "_dts";
-                    foreach (var txt in (field as DateField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
-                        AddField(solrFieldName, DateTime.Parse(txt.Value));
-                }
-                else if (typeof(MonolingualTextField).IsAssignableFrom(field.GetType()))
-                {
-                    solrFieldName += "_ss";
-                    foreach (var txt in (field as MonolingualTextField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
-                        AddField(solrFieldName, txt.Value);
-                }
-                else if (typeof(FieldContainerReference).IsAssignableFrom(field.GetType()))
-                {
-                    solrFieldName += "_ss";
-                    var refField = field as FieldContainerReference;
-                    var refType = refField.RefType == FieldContainerReference.eRefType.metadata ? "metadata" : "data";
-                    var val = string.Format("ref://{0}_{1}_", refType, refField.RefId);
-                    AddField(solrFieldName, val);
-                }
-                else if (typeof(AttachmentField).IsAssignableFrom(field.GetType()))
-                {
-                    var attachmentField = field as AttachmentField;
-                    if (attachmentField.Files.Count == 0)
-                        continue;
-
-                    var fileIds = attachmentField.Files.Select(file => file.Id).ToArray();
-                    foreach (var val in fileIds)
-                        AddField(string.Format("{0}_id_ss", solrFieldName), val);
-
-                    var originalFileNames = attachmentField.Files.Select(file => file.OriginalFileName).ToArray();
-                    foreach (var val in originalFileNames)
-                        AddField(string.Format("{0}_original_ss", solrFieldName), val);
-
-                    var fileNames = attachmentField.Files.Select(file => file.FileName).ToArray();
-                    foreach (var val in fileNames)
-                        AddField(string.Format("{0}_filename_ss", solrFieldName), val);
-
-                    var thumbnails = attachmentField.Files.Select(file => file.Thumbnail).ToArray();
-                    foreach (var val in thumbnails)
-                        AddField(string.Format("{0}_thumbnail_ss", solrFieldName), val);
-
-                    var sizes = attachmentField.Files.Select(file => file.Size).ToArray();
-                    foreach (var val in sizes)
-                        AddField(string.Format("{0}_size_is", solrFieldName), val);
-
-                    var createdTimestamps = attachmentField.Files.Select(file => file.Created).ToArray();
-                    foreach (var val in createdTimestamps)
-                        AddField(string.Format("{0}_created_dts", solrFieldName), val);
-
-                    var contentTypes = attachmentField.Files.Select(file => file.ContentType).ToArray();
-                    foreach (var val in contentTypes)
-                        AddField(string.Format("{0}_content-type_ss", solrFieldName), val);
-                }
-
-                //Adding the name of the field to the index.
-                if (indexFieldNames)
-                {
-                    string solrNameFieldName = string.Format("cf-fn_{0}_s", solrFieldName);
-                    AddField(solrNameFieldName, field.Name.GetConcatenatedContent(" / "));
-                }
-
-            }
-        }
-     */
+         
         protected void IndexAggregatedDataFields(EntityData src)
         {
             /*
@@ -287,43 +176,7 @@ namespace Catfish.API.Repository.Solr
             }
             */
         }
-        /*
-        protected List<string> GetFieldValueStrings(BaseField field)
-        {
-            if (field is TextField)
-            {
-                return (field as TextField).Values.SelectMany(val => val.Values).Select(txt => txt.Value).ToList();
-            }
-            else if (field is MonolingualTextField)
-            {
-                return (field as MonolingualTextField).Values.Select(txt => txt.Value).ToList();
-            }
-            else if (field is OptionsField)
-            {
-                OptionsField optionField = field as OptionsField;
-                List<string> selectedOptionValues = optionField.Options.Where(opt => opt.Selected).SelectMany(opt => opt.OptionText.Values).Select(txt => txt.Value).ToList();
-                var extendedOptionValues = optionField.Options.Where(opt => opt.Selected && opt.ExtendedOption).SelectMany(opt => opt.ExtendedValues);
-                selectedOptionValues.AddRange(extendedOptionValues);
-
-                return selectedOptionValues;
-            }
-
-            return new List<string>();
-        }
-
-        public override string ToString()
-        {
-            return _root == null ? null : _root.ToString();
-        }
-
-        public void AddField(TableField src)
-        {
-        }
-
-        public void AddField(CompositeField src)
-        {
-        }
-        */
+        
         public void AddId(Guid id)
         {
             _root.Add(NewField("id", id.ToString()));
@@ -334,63 +187,80 @@ namespace Catfish.API.Repository.Solr
             _root.Add(NewField("id", id));
         }
 
-        public void AddField(string name, int val)
+        public void AddField(string name, int? val)
         {
-            _root.Add(NewField(name, val));
-        }
-
-        public void AddField(string name, int[] values)
-        {
-            foreach (object val in values)
+            if (val.HasValue)
                 _root.Add(NewField(name, val));
         }
 
-        public void AddField(string name, decimal val)
+        public void AddField(string name, int[]? values)
         {
-            _root.Add(NewField(name, val));
+            if (values != null)
+            {
+                foreach (int val in values)
+                    _root.Add(NewField(name, val));
+            }
         }
 
-        public void AddField(string name, decimal[] values)
+        public void AddField(string name, decimal? val)
         {
-            foreach (object val in values)
+            if (val.HasValue)
+                _root.Add(NewField(name, val.Value));
+        }
+
+        public void AddField(string name, decimal[]? values)
+        {
+            if (values != null)
+            {
+                foreach (decimal val in values)
+                    _root.Add(NewField(name, val));
+            }
+        }
+
+        public void AddField(string name, string? val)
+        {
+            if (!string.IsNullOrEmpty(val))
                 _root.Add(NewField(name, val));
         }
 
-        public void AddField(string name, string val)
+        public void AddField(string name, string[]? values)
         {
-            _root.Add(NewField(name, val));
+            if (values != null)
+            {
+                foreach (string val in values)
+                    _root.Add(NewField(name, val));
+            }
         }
 
-        public void AddField(string name, string[] values)
+        public void AddField(string name, DateTime? val)
         {
-            foreach (object val in values)
+            if (val.HasValue)
                 _root.Add(NewField(name, val));
         }
 
-        public void AddField(string name, DateTime val)
+        public void AddField(string name, DateTime[]? values)
         {
-            _root.Add(NewField(name, val));
+            if (values != null)
+            {
+                foreach (DateTime val in values)
+                    _root.Add(NewField(name, val));
+            }
         }
 
-        public void AddField(string name, DateTime[] values)
+
+        public void AddField(string name, Guid? val)
         {
-            foreach (object val in values)
+            if (val.HasValue)
                 _root.Add(NewField(name, val));
         }
 
+        //public void AddField(string name, object[] values)
+        //{
+        //    foreach (object val in values)
+        //        _root.Add(NewField(name, val));
+        //}
 
-        public void AddField(string name, object val)
-        {
-            _root.Add(NewField(name, val));
-        }
-
-        public void AddField(string name, object[] values)
-        {
-            foreach (object val in values)
-                _root.Add(NewField(name, val));
-        }
-
-        protected XElement NewField(string name, object value = null)
+        protected XElement NewField(string name, object? value = null)
         {
             XElement field = new XElement("field");
             field.SetAttributeValue("name", name);
