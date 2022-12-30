@@ -80,6 +80,7 @@ namespace Catfish.API.Repository.Services
             httpResponse.EnsureSuccessStatusCode();
         }
 
+        
         public async Task<SearchResult> Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1)
         {
             string query = "doc_type_ss:item";
@@ -95,8 +96,9 @@ namespace Catfish.API.Repository.Services
                 query = string.Format("({0}) AND doc_type_ss:item", query);
             }
 
-            return await ExecuteSearch(query, start, maxRows, maxHighlightsPerEntry);
+            return await ExecuteSearch(query, start, maxRows, null, null, null, maxHighlightsPerEntry);
         }
+       
 
         /// <summary>
         /// Executes a given valid solr query.
@@ -123,7 +125,7 @@ namespace Catfish.API.Repository.Services
             queryParams.Add("doc_type_ss:item");
             string query = string.Join(" AND ", queryParams);
 
-            return await ExecuteSearch(query, start, maxRows, maxHighlightsPerEntry);
+            return await ExecuteSearch(query, start, maxRows, null, null, null, maxHighlightsPerEntry);
         }
 
         /// <summary>
@@ -134,25 +136,27 @@ namespace Catfish.API.Repository.Services
         /// <param name="max"></param>
         /// <param name="maxHiglightSnippets"></param>
         /// <returns></returns>
-        public async Task<SearchResult> ExecuteSearch(string query, int start, int max, int maxHiglightSnippets, bool useSolrJson = true)
+        public async Task<SearchResult> ExecuteSearch(
+            string query,
+            int start,
+            int max,
+            string? filterQuery = null,
+            string? sortBy = null,
+            string? fieldList = null,
+            int maxHiglightSnippets = 1,
+            bool useSolrJson = false)
         {
             string qUrl = _solrCoreUrl + "/select?hl=on";
             var parameters = new Dictionary<string, string>();
             parameters["q"] = query;
             parameters["start"] = start.ToString();
             parameters["rows"] = max.ToString();
+            if (!string.IsNullOrEmpty(filterQuery)) parameters["fq"] = filterQuery;
+            if (!string.IsNullOrEmpty(sortBy)) parameters["sort"] = sortBy;
+            if (!string.IsNullOrEmpty(fieldList)) parameters["fl"] = fieldList;
             parameters["hl.fl"] = "*";
             parameters["hl.snippets"] = maxHiglightSnippets.ToString();
-
-            if (useSolrJson)
-            {
-                parameters["wt"] = "json";
-            }
-            else
-            {
-                parameters["wt"] = "xml";
-
-            }
+            parameters["wt"] = useSolrJson ? "json" : "xml";
 
             var postResponse = await _httpClient.PostAsync(new Uri(qUrl), new FormUrlEncodedContent(parameters));
             postResponse.EnsureSuccessStatusCode();

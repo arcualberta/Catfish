@@ -23,12 +23,19 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<SolrSearchController>
         [HttpPost]
-        public async Task<SearchResult> Post([FromForm] string query, [FromForm] int offset = 0, [FromForm] int max = 100)
+        public async Task<SearchResult> Post(
+            [FromForm] string query, 
+            [FromForm] int offset = 0, 
+            [FromForm] int max = 100,
+            string? filterQuery = null,
+            string? sortBy = null,
+            string? fieldList = null,
+            int maxHiglightSnippets = 1)
         {
             SearchResult solrSearchResult = null;
             try
             { 
-               solrSearchResult = await _solr.ExecuteSearch(query, offset, max, 1, false);
+               solrSearchResult = await _solr.ExecuteSearch(query, offset, max, filterQuery, sortBy, fieldList, maxHiglightSnippets);
             }
             catch (Exception ex)
             {

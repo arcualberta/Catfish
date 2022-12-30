@@ -42,8 +42,8 @@ namespace Catfish.API.Repository.Solr
                     ResultEntries.Add(resultEntry);
 
                     //Setting field highlights
-                    var highlightFieldList = highlightsContainer.Elements("lst")
-                        .FirstOrDefault(ele => ele.Attribute("name").Value == resultEntry.Id.ToString());
+                    var highlightFieldList = highlightsContainer?.Elements("lst")
+                        ?.FirstOrDefault(ele => ele?.Attribute("name")?.Value == resultEntry?.Id?.ToString());
 
                     if (highlightFieldList != null)
                         resultEntry.SetFieldHighlights(highlightFieldList);

@@ -429,6 +429,102 @@ namespace DataProcessing
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
 
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.DuplicateCheck
+        [Fact]
+
+        public void DuplicateCheck()
+        {
+            DateTime start = DateTime.Now;
+     
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:DuplicateCheckBatchSize")?.Value, out int batchSize))
+                batchSize = int.MaxValue;
+
+            string entryType = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:DuplicateCheckEntryType")?.Value;
+            Assert.False(string.IsNullOrWhiteSpace(entryType), "ShowtimeDbIngesionSettings:DuplicateCheckEntryType should be specified.");
+
+            string identifierField = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:DuplicateCheckIdentifierField")?.Value;
+            Assert.False(string.IsNullOrWhiteSpace(identifierField), "ShowtimeDbIngesionSettings:DuplicateCheckIdentifierField should be specified.");
+
+            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            if (string.IsNullOrEmpty(outputFolder))
+                outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+
+            string startTimeStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string filePrefix = $"duplicate-check-{entryType}s-{startTimeStr}";
+            string processingLogFile = Path.Combine(outputFolder, $"{filePrefix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{filePrefix}-errors.txt");
+            string duplicateOutputFile = Path.Combine(outputFolder, $"{filePrefix}-results.txt");
+           
+            var solrService = _testHelper.Solr;
+            int taskWaitTimeoutMilliseconds = 60000;//10 minutes
+            int batch = 0;
+            int totalEntryCount = int.MaxValue;
+            int offset = 0;
+            string query = $"entry_type_s:{entryType}";
+            string sortBy = $"{identifierField} asc";
+            int totalProcessed = 0;
+            int totalDuplicatesFound = 0;
+            int uniqueDuplicateCount = 0;
+            while (offset < totalEntryCount)
+            {
+                //We will be attempting to detect duplicate entries by comparing the identifierField value
+                //in a given entry with the value of the same field in the next entry after retrieving the items
+                //by identifierField. Therefore, we need to retrieve at least one extra entry than the specified batchSize
+                var effectiveBatchLength = batchSize + 1;
+
+                var task = solrService.ExecuteSearch(query, offset, effectiveBatchLength, null, sortBy, identifierField);
+                if (!task.Wait(taskWaitTimeoutMilliseconds))
+                {
+                    File.AppendAllText(errorLogFile, $"Query loading timed out at batch {batch} (offset {offset}).{Environment.NewLine}");
+                    continue; //while(offset < totalEntryCount)
+                }
+                SearchResult queryResult = task.Result;
+                if (queryResult.TotalMatches < totalEntryCount)
+                    totalEntryCount = queryResult.TotalMatches;
+
+                //Iterate though 
+                int duplicateCountInBatch = 0;
+                string lastDuplicateIdentifierValue = null;
+                for (int i= 0; i < queryResult.ResultEntries.Count-1; ++i)
+                {
+                    try
+                    {
+                        var currentIdentifierValue = queryResult.ResultEntries[i].Data.Where(d => d.Key == identifierField).Select(d => d.Value).First().ToString();
+                        var nextIdentifierValue = queryResult.ResultEntries[i + 1].Data.Where(d => d.Key == identifierField).Select(d => d.Value).First().ToString();
+
+                        if (currentIdentifierValue == nextIdentifierValue)
+                        {
+                            //We have found a duplicate
+                            ++duplicateCountInBatch;
+                            ++totalDuplicatesFound;
+
+                            //If this is a new duplicate record that was not previously reported, record it.
+                            if(lastDuplicateIdentifierValue != currentIdentifierValue)
+                            {
+                                ++uniqueDuplicateCount;
+                                File.AppendAllText(duplicateOutputFile, $"{currentIdentifierValue}{Environment.NewLine}");
+                                lastDuplicateIdentifierValue = currentIdentifierValue;
+                            }
+                        }
+                        ++totalProcessed;
+                    }
+                    catch(Exception ex)
+                    {
+                        File.AppendAllText(errorLogFile, $"Error in batch {batch} > entry {i}:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
+                    }
+                }
+                File.AppendAllText(processingLogFile, $"Completed batch {batch}. Offset {offset}. Retrieved {queryResult.ResultEntries.Count} records. Found {duplicateCountInBatch} duplicates.{Environment.NewLine}");
+
+                if (queryResult.ResultEntries.Count < batchSize)
+                    break; //while(offset < totalEntryCount)
+
+                offset = offset + batchSize;
+                ++batch;
+            }
+            File.AppendAllText(processingLogFile, $"{Environment.NewLine}Processing completed in {(DateTime.Now - start).ToString()}.{Environment.NewLine}\tSuccessfully processed {totalProcessed + 1} entries.{Environment.NewLine}\tFound a total of {totalDuplicatesFound} duplicates of {uniqueDuplicateCount} records.{Environment.NewLine}");
+        }
+
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexData
         [Fact]
         public void IndexData()

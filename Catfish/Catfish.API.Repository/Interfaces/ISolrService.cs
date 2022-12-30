@@ -13,6 +13,14 @@ namespace Catfish.API.Repository.Interfaces
         public Task CommitAsync();
         public Task<SearchResult> Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1);
         public Task<SearchResult> Search(SearchFieldConstraint[] constraints, int start, int maxRows, int maxHighlightsPerEntry = 1);
-        public Task<SearchResult> ExecuteSearch(string query, int start, int max, int maxHiglightSnippets, bool useSolrJson = true);
+        public Task<SearchResult> ExecuteSearch(
+            string query, 
+            int start, 
+            int max, 
+            string? filterQuery = null, 
+            string? sortBy = null, 
+            string? fieldList = null,
+            int maxHiglightSnippets = 1, 
+            bool useSolrJson = false);
     }
 }
