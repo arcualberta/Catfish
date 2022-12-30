@@ -431,7 +431,6 @@ namespace DataProcessing
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.DuplicateCheck
         [Fact]
-
         public void DuplicateCheck()
         {
             DateTime start = DateTime.Now;
