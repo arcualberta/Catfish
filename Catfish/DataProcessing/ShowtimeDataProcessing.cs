@@ -570,7 +570,7 @@ namespace DataProcessing
             Directory.CreateDirectory(outputFolder);
 
             string startTimeStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string filePrefix = $"duplicate-check-{entryType}s_{offset}-to-{maxCount}_{startTimeStr}";
+            string filePrefix = $"duplicate-check-{entryType}s_{offset}-to-{offset+maxCount}_{startTimeStr}";
             string processingLogFile = Path.Combine(outputFolder, $"{filePrefix}.txt");
             string errorLogFile = Path.Combine(outputFolder, $"{filePrefix}-errors.txt");
             string duplicateOutputFile = Path.Combine(outputFolder, $"{filePrefix}-results.txt");
