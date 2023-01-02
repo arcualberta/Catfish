@@ -20,6 +20,10 @@ using System.Configuration;
 using System.Collections;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.SignalR.Protocol;
+using NuGet.Packaging.Signing;
+using Catfish.API.Repository.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Globalization;
 
 namespace DataProcessing
 {
@@ -522,6 +526,98 @@ namespace DataProcessing
                 ++batch;
             }
             File.AppendAllText(processingLogFile, $"{Environment.NewLine}Processing completed in {(DateTime.Now - start).ToString()}.{Environment.NewLine}\tSuccessfully processed {totalProcessed + 1} entries.{Environment.NewLine}\tFound a total of {totalDuplicatesFound} duplicates of {uniqueDuplicateCount} records.{Environment.NewLine}");
+        }
+
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.DuplicateCheck2
+        [Fact]
+        public void DuplicateCheck2()
+        {
+            //Finding the total number of entries to be processed
+            string entryType = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:DuplicateCheckEntryType")?.Value;
+            Assert.False(string.IsNullOrWhiteSpace(entryType), "ShowtimeDbIngesionSettings:DuplicateCheckEntryType should be specified.");
+            var task = _testHelper.Solr.ExecuteSearch($"entry_type_s:{entryType}", 0, 1);
+            task.Wait();
+            int totalCount = task.Result.TotalMatches;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out int maxParallelProcesses))
+                maxParallelProcesses = 5;
+
+            int range = (int) Math.Ceiling(totalCount / (double)maxParallelProcesses);
+
+            List<int> offsets = new List<int>();
+            for(int i = 0; i < maxParallelProcesses; ++i)
+                offsets.Add(i * range);
+
+            //DetectDuplicates(entryType, 0, range).Wait();
+            var tasks = offsets.Select(x => DetectDuplicates(entryType, x, range));
+            Task.WhenAll(tasks).Wait();
+        }
+
+        private async Task DetectDuplicates(string entryType, int offset, int maxCount)
+        {
+            DateTime start = DateTime.Now;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:DuplicateCheckBatchSize")?.Value, out int batchSize))
+                batchSize = int.MaxValue;
+
+            string identifierField = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:DuplicateCheckIdentifierField")?.Value;
+            Assert.False(string.IsNullOrWhiteSpace(identifierField), "ShowtimeDbIngesionSettings:DuplicateCheckIdentifierField should be specified.");
+
+            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            if (string.IsNullOrEmpty(outputFolder))
+                outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+
+            string startTimeStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string filePrefix = $"duplicate-check-{entryType}s_{offset}-to-{maxCount}_{startTimeStr}";
+            string processingLogFile = Path.Combine(outputFolder, $"{filePrefix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{filePrefix}-errors.txt");
+            string duplicateOutputFile = Path.Combine(outputFolder, $"{filePrefix}-results.txt");
+
+            var solrService = _testHelper.Solr;
+            string query = $"entry_type_s:{entryType}";
+            int totalProcessed = 0;
+            int totalDuplicatesFound = 0;
+            int maxOffset = offset + maxCount;
+            while (offset < maxOffset)
+            {
+                int numEntriesToRetrieve = ((offset + batchSize) < maxOffset) ? batchSize : (maxOffset - offset);
+
+                SearchResult queryResult = await solrService.ExecuteSearch(query, offset, numEntriesToRetrieve, null, null, identifierField);
+                if (queryResult.ResultEntries.Count == 0)
+                    break; // while (offset < maxOffset)
+
+                //Iterate though query results
+                int duplicateCountInBatch = 0;
+                string identifierFieldValue = "";
+                foreach (var entry in queryResult.ResultEntries)
+                {
+                    try
+                    {
+                        identifierFieldValue = entry.Data.Where(d => d.Key == identifierField).Select(d => d.Value).First().ToString();
+                        string matchedIdentifierSearchQuery = $"{query} AND {identifierField}:\"{identifierFieldValue}\"";
+                        SearchResult matchedIdentifierSearchResult = await solrService.ExecuteSearch(matchedIdentifierSearchQuery, offset, 2, null, null, identifierField);
+                        if (matchedIdentifierSearchResult.ResultEntries.Count > 1)
+                        {
+                            //We have found a duplicate
+                            ++duplicateCountInBatch;
+                            ++totalDuplicatesFound;
+                            File.AppendAllText(duplicateOutputFile, $"{identifierFieldValue}{Environment.NewLine}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        File.AppendAllText(errorLogFile, $"Error in the entry.{identifierField} = {identifierFieldValue}.{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
+                    }
+                    ++totalProcessed;
+                }
+                File.AppendAllText(processingLogFile, $"Completed batch of offset from {offset} to {offset + numEntriesToRetrieve}. Retrieved {queryResult.ResultEntries.Count} records. Found {duplicateCountInBatch} duplicates.{Environment.NewLine}");
+
+
+                offset = offset + batchSize;
+            }
+            File.AppendAllText(processingLogFile, $"{Environment.NewLine}Processing completed in {(DateTime.Now - start).ToString()}.{Environment.NewLine}\tSuccessfully processed {totalProcessed + 1} entries.{Environment.NewLine}\tFound a total of {totalDuplicatesFound} duplicates.{Environment.NewLine}");
         }
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexData
