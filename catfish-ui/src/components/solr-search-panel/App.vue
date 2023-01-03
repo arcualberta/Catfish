@@ -76,6 +76,9 @@
         }
     }
 
+const visible=ref(false);
+
+
 </script>
 <template>
     <div v-if="entryTypeFieldName">
@@ -113,18 +116,19 @@
         </div>        
 -->    
     </div>
+    
     <div class="accordion pb-3" role="tablist">
         <b-card no-body class="mb-1">
             <b-card-header header-tag="header" class="p-0 card-header" role="tab">
-                <b-button block v-b-toggle.accordion-3 variant="success">
+                <b-button block data-bs-target="accordion-3" data-bs-toggle="visible" variant="success" @click="visible = !visible">
                     Result Columns
-                    <font-awesome-icon  icon="fa-chevron-down" class="fa-icon down-arrow" />
-                    <font-awesome-icon  icon="fa-chevron-up" class="fa-icon up-arrow" />
+                    <font-awesome-icon  icon="fa-chevron-down" class="fa-icon down-arrow" v-if="!visible" />
+                    <font-awesome-icon  icon="fa-chevron-up" class="fa-icon up-arrow" v-if="visible" />
                 </b-button>
             </b-card-header>
-            <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
+            <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel" :class="!visible? '' : 'show'">
                 <b-card-body>
-                <b-card-text>
+                <b-card-text> 
                     <div class="row">
                         <div v-for="field in store.searchFieldDefinitions" :key="field.name" class="col-md-3 result-field-option">
                             <input type="checkbox" :value="field.name" v-model="store.resultFieldNames" /> {{field.label}}
