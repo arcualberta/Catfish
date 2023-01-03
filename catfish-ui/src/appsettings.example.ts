@@ -16,6 +16,7 @@ export enum eShowtimeEntryType {
     Showtime
 }
 
+
 export const solrFields:SearchFieldDefinition[] = [
     { name: "movie_id_i", label: "Movie ID", type: eFieldType.Integer, options: [], entryType: [eShowtimeEntryType.Movie, eShowtimeEntryType.Showtime] },
     { name: "parent_id_i", label: "Parent ID", type: eFieldType.Integer, options: [], entryType: eShowtimeEntryType.Movie },
