@@ -5,7 +5,7 @@
     import { useRoute } from 'vue-router'
     import { Guid } from 'guid-typescript'
     import { SolrSearchPanel, useSolrSearchStore } from '../components'
-    import { default as config, eSolrEntryType, solrFields } from "@/appsettings";
+    import { default as config, eShowtimeEntryType, solrFields } from "@/appsettings";
     import { SolrEntryType } from '@/components/solr-search-panel/models';
 
     const route = useRoute()
@@ -20,9 +20,9 @@
     const resultFieldNames = [] as string[];
     const entryTypeFieldName = "entry_type_s"; 
     const entryTypeFieldOptions = [
-        {name:"raw-movie", label:"Movies", entryType: eSolrEntryType.Movie}, 
-        {name:"raw-theater", label:"Theaters", entryType: eSolrEntryType.Theater}, 
-        {name:"raw-showtime", label:"Showtimes", entryType: eSolrEntryType.Showtime}
+        {name:"raw-movie", label:"Movies", entryType: eShowtimeEntryType.Movie}, 
+        {name:"raw-theater", label:"Theaters", entryType: eShowtimeEntryType.Theater}, 
+        {name:"raw-showtime", label:"Showtimes", entryType: eShowtimeEntryType.Showtime}
     ] as SolrEntryType[];
 
 </script>
