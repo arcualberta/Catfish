@@ -105,13 +105,14 @@
 
     <div class="mb-3">
         <b>Limit Display Fields</b>
+<!--        
         <div class="row">
             <div v-for="field in store.activeFieldList" :key="field.name" class="col-md-2 result-field-option">
                 <input type="checkbox" :value="field.name" v-model="store.resultFieldNames" /> {{field.label}}
             </div>
         </div>        
-    </div>    
-    <!--
+-->    
+    </div>
     <div class="accordion pb-3" role="tablist">
         <b-card no-body class="mb-1">
             <b-card-header header-tag="header" class="p-0 card-header" role="tab">
@@ -134,7 +135,7 @@
             </b-collapse>
         </b-card>
     </div>
-    -->
+    
 
      
     <button @click="query" class="btn btn-primary">Search</button>
