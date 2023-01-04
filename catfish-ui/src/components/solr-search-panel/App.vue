@@ -32,6 +32,16 @@
         }
     })
 
+    watch(() => props.uiMode, async newUiMode => {
+        if(newUiMode === eUiMode.Raw){
+            store.selectedEntryTypeBackup = store.selectedEntryType;
+            store.selectedEntryType = null;
+        }
+        else{
+            store.selectedEntryType = store.selectedEntryTypeBackup;
+        }
+    }) 
+
     const uiMode = computed(() => props.uiMode ? props.uiMode : eUiMode.Default)
 
     const expression = computed(() => store.fieldExpression)
