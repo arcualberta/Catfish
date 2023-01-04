@@ -69,19 +69,21 @@
 
     const rawQuery = ref("*:*")
 
+    const pageSize = ref(100);
+
     const selectedEntryType = computed(() => store.selectedEntryType ? store.selectedEntryType.label : "All Entry Tyoes")
 
     const query = computed(() => {
         store.queryResult = null;
 
         if(uiMode.value === eUiMode.Default){
-            store.query(quertString.value, 0, 100)
+            store.query(quertString.value, 0, Number(pageSize.value))
             const resultEntryTypes = store.selectedEntryType ? store.selectedEntryType.label : "All Entry Types"
             store.querySource = `Filter Result (${resultEntryTypes})`
         }
         else if(uiMode.value === eUiMode.Raw){
             if(rawQuery.value && rawQuery.value.trim().length > 0){
-                store.query(rawQuery.value, 0, 100)
+                store.query(rawQuery.value, 0, Number(pageSize.value))
                 store.querySource = "Solr Query Result"
             }
             else{
@@ -95,12 +97,23 @@ const visible=ref(false);
 
 </script>
 <template>
-    <div v-if="entryTypeFieldName" class="mb-2">
-        Entry Type:
-        <select v-model="store.selectedEntryType">
-            <option value="">ALL</option>
-            <option v-for="val in entryTypeFieldOptions" :value="val">{{val.label}}</option>
-        </select>
+    <div class="mb-2">
+        <span v-if="entryTypeFieldName">
+            Entry Type:
+            <select v-model="store.selectedEntryType">
+                <option value="">ALL</option>
+                <option v-for="val in entryTypeFieldOptions" :value="val">{{val.label}}</option>
+            </select>
+            &nbsp;&nbsp;&nbsp;
+        </span>
+        Page Size: 
+        <select v-model="pageSize" class="page-size-dropdown">
+            <option value="50">50</option>
+            <option value="100" selected>100</option>
+            <option value="250">250</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+        </select> 
     </div>
     <div v-if="uiMode === eUiMode.Default" class="query-wrapper">
         <FieldExpression :model="expression"></FieldExpression>
@@ -148,8 +161,6 @@ const visible=ref(false);
         </b-card>
     </div>
     
-
-     
     <button @click="query" class="btn btn-primary">Search</button>
 
     <div v-if="store.isLoadig" class="mt-2">
