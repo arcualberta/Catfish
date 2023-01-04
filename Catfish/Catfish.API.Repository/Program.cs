@@ -22,10 +22,13 @@ builder.AddCatfishExtensions();
 builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 builder.Services.AddScoped<IEntityService, EntityService>();
 
+builder.Services.AddScoped<ISolrService, SolrService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

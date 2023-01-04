@@ -15,6 +15,7 @@
     <button class="home-link" @click="navigateTo('/google-calendar')">Google Calendar</button>
     <button class="home-link" @click="navigateTo('/entity-template-builder')">Entity Template Builder</button>
      <button class="home-link" @click="navigateTo('/entity-editor')">Entity Editor</button>
+     <button class="home-link" @click="navigateTo('/solr-search-panel')">Solr Search</button>
 </template>
 
 <style scoped>

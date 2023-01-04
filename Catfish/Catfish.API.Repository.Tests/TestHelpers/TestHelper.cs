@@ -1,13 +1,12 @@
 ﻿using Catfish.API.Repository;
-using Catfish.API.Repository.Services;
 using Catfish.API.Repository.Interfaces;
-using DataProcessing;
+using Catfish.API.Repository.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Catfish.Test.Helpers
+namespace Catfish.API.Repository.Tests.TestHelpers
 {
     public class TestHelper
     {
@@ -35,14 +34,6 @@ namespace Catfish.Test.Helpers
                 .UseSqlServer(dbConnectionString)
                 );
 
-            //Registering showtime DB Context
-            string showtimeConnectionString = configuration.GetConnectionString("showtime");
-            services.AddDbContext<ShowtimeDbContext>(options => options
-                .UseSqlServer(showtimeConnectionString)
-                );
-
-
-            //Registering other services
             //Registering other services
             services.AddScoped<ISolrService, SolrService>();
 
@@ -53,25 +44,10 @@ namespace Catfish.Test.Helpers
             //Creating a service provider and assigning it to the member variable so that it can be used by 
             //test methods.
             Seviceprovider = services.BuildServiceProvider();
-
-          
-            
-        }
-
-        public ShowtimeDbContext CreateNewShowtimeDbContext()
-        {
-            //var context = _testHelper.ShowtimeDb;
-            var optBuilder = new DbContextOptionsBuilder<ShowtimeDbContext>();
-            optBuilder.UseSqlServer(this.ShowtimeConnectionString);
-            var dbOptions = optBuilder.Options;
-            return new ShowtimeDbContext(dbOptions);
-
         }
 
         public RepoDbContext Db => Seviceprovider.GetService<RepoDbContext>();
-        public ShowtimeDbContext ShowtimeDb => Seviceprovider.GetService<ShowtimeDbContext>();
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>();
-        public string ShowtimeConnectionString => Configuration.GetConnectionString("showtime");
         public ISolrService Solr => Seviceprovider.GetService<ISolrService>();
 
     }
