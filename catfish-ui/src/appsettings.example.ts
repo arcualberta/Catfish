@@ -18,6 +18,8 @@ export enum eShowtimeEntryType {
 
 
 export const solrFields:SearchFieldDefinition[] = [
+    { name: "entry_type_s", label: "Entry Type", type: eFieldType.Text, options: [], entryType: [eShowtimeEntryType.Movie, eShowtimeEntryType.Theater, eShowtimeEntryType.Showtime]},
+    { name: "entry_src_s", label: "Source", type: eFieldType.Text, options: [], entryType: [eShowtimeEntryType.Movie, eShowtimeEntryType.Theater, eShowtimeEntryType.Showtime]},
     { name: "movie_id_i", label: "Movie ID", type: eFieldType.Integer, options: [], entryType: [eShowtimeEntryType.Movie, eShowtimeEntryType.Showtime] },
     { name: "parent_id_i", label: "Parent ID", type: eFieldType.Integer, options: [], entryType: eShowtimeEntryType.Movie },
     { name: "title_t", label: "Title", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Movie },
@@ -32,7 +34,7 @@ export const solrFields:SearchFieldDefinition[] = [
     { name: "release_notes_t", label: "Release Notes", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Movie },
     { name: "release_dvd_t", label: "Release DVD", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Movie },
     { name: "running_time_i", label: "Running Time", type: eFieldType.Integer, options: [], entryType: eShowtimeEntryType.Movie },
-    { name: "official_site_s", label: "Official Site", type: eFieldType.Integer, options: [], entryType: eShowtimeEntryType.Movie },
+    { name: "official_site_s", label: "Official Site", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Movie },
     { name: "distributors_ts", label: "Distributes", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Movie },
     { name: "producers_ts", label: "Producers", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Movie },
     { name: "writers_ts", label: "Writers", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Movie },
@@ -46,6 +48,7 @@ export const solrFields:SearchFieldDefinition[] = [
     { name: "intl_poster_t", label: "International poster", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Movie },
 
 
+    { name: "showtime_key_t", label: "Showtime composite ID", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Showtime },
     { name: "movie_name_t", label: "Movie name", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Showtime },
     { name: "show_date_dt", label: "Show date", type: eFieldType.Date, options: [], entryType: eShowtimeEntryType.Showtime },
     { name: "showtimes_ts", label: "Show time (HH:mm)", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Showtime },
@@ -58,7 +61,7 @@ export const solrFields:SearchFieldDefinition[] = [
     { name: "show_comments_ts", label: "Show comments", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Showtime },
 
     
-    { name: "theater_id_i", label: "Movie ID", type: eFieldType.Integer, options: [], entryType: [eShowtimeEntryType.Theater, eShowtimeEntryType.Showtime] },
+    { name: "theater_id_i", label: "Theater ID", type: eFieldType.Integer, options: [], entryType: [eShowtimeEntryType.Theater, eShowtimeEntryType.Showtime] },
     { name: "theater_name_t", label: "Theater name", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Theater },
     { name: "theater_address_t", label: "Theater address", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Theater },
     { name: "theater_city_t", label: "Theater city", type: eFieldType.Text, options: [], entryType: eShowtimeEntryType.Theater },

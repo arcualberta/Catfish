@@ -65,13 +65,18 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
     getters: {
         activeFieldList: (state) => {
             if(state.selectedEntryType){
-                return state.searchFieldDefinitions?.filter(fd => Array.isArray(fd.entryType) 
+                const selected = state.searchFieldDefinitions?.filter(fd => Array.isArray(fd.entryType) 
                     ? (fd.entryType as number[]).includes(state.selectedEntryType!.entryType) 
                     : (fd.entryType as number) === state.selectedEntryType!.entryType);
+
+                return selected.sort((a, b) => a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1);
             }
             else{
-                return state.searchFieldDefinitions;
+                return state.searchFieldDefinitions.sort((a, b) => a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1);
             }            
+        },
+        activeSelectedResultFieldNames: (state) => {
+            return state.resultFieldNames.filter(fieldName => state.activeFieldList.filter(fd => fd.name == fieldName)?.length > 0)
         }
     }
 });

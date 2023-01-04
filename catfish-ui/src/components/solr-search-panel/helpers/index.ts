@@ -41,7 +41,8 @@ export function buildQueryString(model: FieldExpression | FieldConstraint): stri
         else if((fieldConstraint.constraint === eFieldConstraint.Equals || fieldConstraint.constraint === eFieldConstraint.Contains) 
                 && (!fieldConstraint.value || (fieldConstraint.value.toString())?.length == 0)){
             //Limit the result to entries with value is not specified for the given field.
-            return `-${fieldConstraint.field.name}:*`;
+            //return `-${fieldConstraint.field.name}:*`;
+            return `*:* NOT ${fieldConstraint.field.name}:*`
         }
         else if(fieldConstraint.value){
             //Enforce specified constraint on the field value
@@ -74,8 +75,12 @@ export function toTableData(rows: SolrResultEntry[], fieldDefs: SearchFieldDefin
     const items: Record<string, any>[] = [];
 
     const tableHeadingDefs = requestedResultFieldNames?.length > 0
-        ? fieldDefs.filter(fd => requestedResultFieldNames.indexOf(fd.name) >= 0)
+        ? requestedResultFieldNames.map(name => fieldDefs.filter(fd => fd.name === name)[0]) //fieldDefs.filter(fd => requestedResultFieldNames.indexOf(fd.name) >= 0)
         : fieldDefs;
+
+//    const tableHeadingDefs = requestedResultFieldNames?.length > 0
+//        ? requestedResultFieldNames.map(label => fieldDefs.find(fd => fd.label === label)); // fieldDefs.filter(fd => requestedResultFieldNames.indexOf(fd.name) >= 0)
+//        : fieldDefs;
 
     rows?.forEach((row) => {
         const item: Record<string, any> = {}

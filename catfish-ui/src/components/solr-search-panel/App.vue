@@ -6,6 +6,7 @@
     import { buildQueryString } from './helpers';
     import { eUiMode, SearchFieldDefinition, SolrEntryType } from './models';
     import { copyToClipboard } from './helpers'
+    import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
     const props = defineProps<{
         searchFields?: SearchFieldDefinition[],
@@ -58,12 +59,15 @@
 
     const rawQuery = ref("*:*")
 
-    const query = () => {
+    const selectedEntryType = computed(() => store.selectedEntryType ? store.selectedEntryType.label : "All Entry Tyoes")
+
+    const query = computed(() => {
         store.queryResult = null;
 
         if(uiMode.value === eUiMode.Default){
             store.query(quertString.value, 0, 100)
-            store.querySource = "Filter Result"
+            const resultEntryTypes = store.selectedEntryType ? store.selectedEntryType.label : "All Entry Types"
+            store.querySource = `Filter Result (${resultEntryTypes})`
         }
         else if(uiMode.value === eUiMode.Raw){
             if(rawQuery.value && rawQuery.value.trim().length > 0){
@@ -74,14 +78,14 @@
                 alert("Please specify a query")
             }
         }
-    }
+    })
 
 const visible=ref(false);
 
 
 </script>
 <template>
-    <div v-if="entryTypeFieldName">
+    <div v-if="entryTypeFieldName" class="mb-2">
         Entry Type:
         <select v-model="store.selectedEntryType">
             <option value="">ALL</option>
@@ -106,17 +110,6 @@ const visible=ref(false);
         <textarea v-model="rawQuery" class="col-12"></textarea>
     </div>
 
-    <div class="mb-3">
-        <b>Limit Display Fields</b>
-<!--        
-        <div class="row">
-            <div v-for="field in store.activeFieldList" :key="field.name" class="col-md-2 result-field-option">
-                <input type="checkbox" :value="field.name" v-model="store.resultFieldNames" /> {{field.label}}
-            </div>
-        </div>        
--->    
-    </div>
-    
     <div class="accordion pb-3" role="tablist">
         <b-card no-body class="mb-1">
             <b-card-header header-tag="header" class="p-0 card-header" role="tab">
@@ -130,11 +123,16 @@ const visible=ref(false);
                 <b-card-body>
                 <b-card-text> 
                     <div class="row">
-                        <div v-for="field in store.searchFieldDefinitions" :key="field.name" class="col-md-3 result-field-option">
+                        <div v-for="field in store.activeFieldList" :key="field.name" class="col-md-3 result-field-option">
                             <input type="checkbox" :value="field.name" v-model="store.resultFieldNames" /> {{field.label}}
                         </div>
                     </div>
                 </b-card-text>
+                <div>
+                    <draggable class="dragArea list-group" :list="store.resultFieldNames">
+                        <b-button v-for="fieldName in store.activeSelectedResultFieldNames" :key="fieldName" class="column-handle">{{ store.activeFieldList.find( fd => fd.name === fieldName)?.label }}</b-button>
+                    </draggable>
+                </div>
                 </b-card-body>
             </b-collapse>
         </b-card>
@@ -185,14 +183,16 @@ const visible=ref(false);
 .btn[aria-expanded="true"] .down-arrow{
     display: none;
 }
-/*
-.result-field-option{
 
-}*/
-/*
-.collapsed > .when-opened,
-    :not(.collapsed) > .when-closed {
-        display: none;
-    }
-*/
+.column-handle {
+  border: solid 1px;
+  margin-right: 5px;
+}
+
+.dragArea.list-group {
+    overflow-x: scroll;
+    overflow: auto;
+    flex-direction: row;
+}
+
 </style>
