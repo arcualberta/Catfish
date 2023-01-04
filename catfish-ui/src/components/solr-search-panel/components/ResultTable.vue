@@ -29,7 +29,7 @@ import {toTableData, downloadCSV} from '../helpers'
     </div>
     <div class="mt-2">
         <span v-if="hasPrev" class="link" @click="store.previous()">&lt;&lt;&lt;</span>
-        {{ first }} to {{ last }} of {{ model.totalMatches }}
+        {{ first.toLocaleString("en-US") }} to {{ last.toLocaleString("en-US") }} of {{ model.totalMatches.toLocaleString("en-US") }}
         <span v-if="hasNext" class="link" @click="store.next()">&gt;&gt;&gt;</span></div>
     <hr />
 
