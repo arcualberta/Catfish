@@ -73,7 +73,7 @@
 
     const selectedEntryType = computed(() => store.selectedEntryType ? store.selectedEntryType.label : "All Entry Tyoes")
 
-    const query = computed(() => {
+    function query() {
         store.queryResult = null;
 
         if(uiMode.value === eUiMode.Default){
@@ -90,7 +90,7 @@
                 alert("Please specify a query")
             }
         }
-    })
+    }
 
 const visible=ref(false);
 
@@ -161,7 +161,7 @@ const visible=ref(false);
         </b-card>
     </div>
     
-    <button @click="query" class="btn btn-primary">Search</button>
+    <button @click="query" class="btn btn-danger">Search</button>
 
     <div v-if="store.isLoadig" class="mt-2">
         <b-spinner variant="primary" label="Spinning"></b-spinner>
