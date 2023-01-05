@@ -1,5 +1,8 @@
 ﻿
 
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+
 namespace CatfishExtensions.Services
 {
     public class GoogleIdentity : IGoogleIdentity
@@ -64,6 +67,65 @@ namespace CatfishExtensions.Services
             return new LoginResult() { Success = false };
         }
 
+        public string GenerateJSonWebToken(LoginResult userInfo)
+        {
+            if(userInfo == null)
+            {
+                return string.Empty;
+            }
+
+            string userData = string.Empty; //???
+            DateTime expiredAt = DateTime.Now.AddDays(1);
+            return GetuserToken(userInfo.Name, userInfo.GlobalRoles, userData, expiredAt);
+
+            
+            
+        }
+        private string GetuserToken(string userName, IList<string> userRoles, string userData, DateTime expiresAt)
+        {
+            var authClaims = new List<Claim>
+            {
+                new Claim("username", userName),
+                new Claim("userdata", userData),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            foreach (var userRole in userRoles)
+                authClaims.Add(new Claim("roles", userRole));
+            
+
+            return GetSignedToken(authClaims, expiresAt);
+        }
+        private string GetSignedToken(List<Claim> authClaims, DateTime expiresAt)
+        {
+            RSA rsa = RSA.Create();
+
+            rsa.ImportRSAPrivateKey( // Convert the loaded key from base64 to bytes.
+                source: Convert.FromBase64String(GetPrivateKey()), // Use the private key to sign tokens
+                bytesRead: out int _); // Discard the out variable 
+
+            var signingCredentials = new SigningCredentials(
+                key: new RsaSecurityKey(rsa),
+                algorithm: SecurityAlgorithms.RsaSha256 // Important to use RSA version of the SHA algo 
+            );
+
+            DateTime jwtDate = DateTime.Now;
+            var issuer = _configuration.GetSection("Google:Identity:Issuer").Value;
+            var audience = _configuration.GetSection("Google:ClientId").Value;
+
+            var token = new JwtSecurityToken(
+                audience: audience,
+                issuer: issuer,
+                claims: authClaims,
+                notBefore: DateTime.Now,
+                expires: expiresAt,
+                signingCredentials: signingCredentials
+            );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+        }
+
         #endregion
 
         #region Private Methods
@@ -81,6 +143,11 @@ namespace CatfishExtensions.Services
             var wrapper = JsonSerializer.Deserialize<KeyWrapper>(jwkPublicKeyStrings, options);
 
             return wrapper == null ? new JsonWebKey[0] : wrapper.keys;
+        }
+
+        private string GetPrivateKey()
+        {
+           return  _configuration.GetSection("Google:Identity:rsa_privateKey").Value;
         }
         #endregion
     }
