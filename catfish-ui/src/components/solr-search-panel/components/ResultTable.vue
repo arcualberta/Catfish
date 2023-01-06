@@ -19,13 +19,41 @@ import {toTableData, downloadCSV} from '../helpers'
     //const requestedResultFieldNames = computed(()=>store.activeSelectedResultFieldNames)
     const tableData = computed(() => toTableData(props.model.resultEntries, fieldDefs.value, store.activeSelectedResultFieldNames))
 
-    const downloadData = () => downloadCSV(props.model.resultEntries, fieldDefs.value)
-
+    //const downloadData = () => downloadCSV(props.model.resultEntries, fieldDefs.value)
+    const getFieldValue=(data: SolrFieldData[], fdkey: string)=>{
+       
+            const flData = data.find((dt)=>{
+                    return dt.key === fdkey
+            }); 
+          return flData? flData.value: "";
+    }
+    const downloadCSVData= () => {
+    let csv = '';
+    //header labels
+    fieldDefs.value.forEach(fldef => {
+        csv += fldef.label
+    });
+     //data
+    props.model.resultEntries.forEach((row: SolrResultEntry) => {
+          
+            fieldDefs.value.forEach(fldef => {
+                    
+                    csv += getFieldValue(row.data, fldef.name) + ","
+            });
+            csv += "\n";
+    });
+ 
+    const anchor = document.createElement('a');
+    anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    anchor.target = '_blank';
+    anchor.download = 'showtimesSearchResult.csv';
+    anchor.click();
+}
 </script>
 
 <template>
     <div v-if="model.resultEntries.length > 0" class="download-panel">
-        <button @click="downloadData()" class="btn btn-success">Download CSV</button>
+        <button @click="downloadCSVData()" class="btn btn-success">Download CSV</button>
     </div>
     <div class="mt-2">
         <span v-if="hasPrev" class="link" @click="store.previous()">&lt;&lt;&lt;</span>
