@@ -7,17 +7,20 @@ namespace CatfishWebExtensions.Services
         private readonly Piranha.AspNetCore.Identity.IDb _db;
         private readonly IConfiguration _configuration;
         private readonly RoleManager<Role> _roleManager;
+        private readonly CatfishExtensions.Interfaces.IGoogleIdentity _googleIdentity;
       
         public CatfishUserManager(
-            UserManager<User> userManager, 
-            RoleManager<Role> roleManager, 
-            Piranha.AspNetCore.Identity.IDb db, 
-            IConfiguration configuration)
+            UserManager<User> userManager,
+            RoleManager<Role> roleManager,
+            Piranha.AspNetCore.Identity.IDb db,
+            IConfiguration configuration,
+            IGoogleIdentity googleIdentity)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _db = db;
             _configuration = configuration;
+            _googleIdentity = googleIdentity;
         }
 
         #region Public Methods
@@ -62,6 +65,22 @@ namespace CatfishWebExtensions.Services
             var roels = await _userManager.GetRolesAsync(user);
             return roels;
         }
+        public async Task<string> GetUserJwtLoginTokenAsync(string userName, bool isAuthenticated)
+        {
+            User user = await _userManager.FindByNameAsync(userName);
+
+
+            LoginResult userLoginResult = new LoginResult();
+            userLoginResult.Success = isAuthenticated;
+            userLoginResult.Name = userName;
+            userLoginResult.Email = user.Email;
+            var usrRoles = await _userManager.GetRolesAsync(user);
+            userLoginResult.GlobalRoles = usrRoles;
+
+            var jwt = _googleIdentity.GenerateJSonWebToken(userLoginResult);
+            return jwt;
+            
+        }
 
         #endregion
 
@@ -86,7 +105,8 @@ namespace CatfishWebExtensions.Services
 
             return role;
         }
-
         #endregion
+       
+       
     }
 }

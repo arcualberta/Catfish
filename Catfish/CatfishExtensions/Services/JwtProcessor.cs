@@ -1,5 +1,7 @@
 ﻿
 
+using System.Security.Claims;
+
 namespace CatfishExtensions.Services
 {
     public class JwtProcessor : IJwtProcessor
@@ -14,5 +16,5 @@ namespace CatfishExtensions.Services
             return validatedToken as JwtSecurityToken;
         }
 
-    }
+	}
 }
