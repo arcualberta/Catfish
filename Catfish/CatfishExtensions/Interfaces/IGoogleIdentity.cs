@@ -4,5 +4,7 @@
     {
         public Task<LoginResult> GetUserLoginResult(string jwt);
         public string GenerateJSonWebToken(LoginResult userInfo);
+
+        
     }
 }

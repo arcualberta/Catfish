@@ -5,6 +5,8 @@
 @inject Piranha.AspNetCore.Services.IApplicationService _webApp
 @inject CatfishWebExtensions.Interfaces.IAssetRegistry _assetRegistry;
 @inject IConfiguration _configuration;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
+@inject CatfishWebExtensions.Interfaces.ICatfishUserManager _usrManager;
 
 <noscript>
     <strong>We're sorry but Vue Applets don't work without JavaScript enabled. Please enable it to continue.</strong>
@@ -27,10 +29,20 @@
 
     _assetRegistry.RegisterScript("assets/public/vendors/vuerouter/vuerouter.global.js");
 
-   // _assetRegistry.RegisterStylesheet("assets/css/style.min.css");
-     _assetRegistry.RegisterStylesheet("assets/applets/style.css");
+    // _assetRegistry.RegisterStylesheet("assets/css/style.min.css");
+    _assetRegistry.RegisterStylesheet("assets/applets/style.css");
 
     var repositoryMicroserviceApiRoot = _configuration.GetSection("SiteConfig:RepositoryMicroServiceUrl").Value?.TrimEnd('/');
+
+    //January 06 2023 -- get current login user
+    // step 1
+    string currUserName = _httpContextAccessor.HttpContext.User.Identity.Name;
+    //step 2 -- get thejwt login token from webExternsion method
+    // AsyncCallback CatfihUserNamanegr get userjwtLogin token 
+    var jwt = await _usrManager.GetUserJwtLoginTokenAsync(currUserName, _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated);
+
+    Console.WriteLine(jwt);
+
 
 }
 
@@ -49,6 +61,7 @@
     }
     dataAttributes.Add("SiteUrl", ConfigHelper.SiteUrl);
     dataAttributes.Add("RepositoryMicroserviceUrl", repositoryMicroserviceApiRoot);
+    dataAttributes.Add("UserJwtToken", jwt);
 
 }
 

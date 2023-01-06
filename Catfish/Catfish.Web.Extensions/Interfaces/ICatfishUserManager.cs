@@ -7,5 +7,7 @@ namespace CatfishWebExtensions.Interfaces
     {
         public Task<User> GetUser(LoginResult externalLoginResult);
         public Task<IList<string>> GetGlobalRoles(User user);
+
+        public Task<string> GetUserJwtLoginTokenAsync(string userName, bool isAuthenticated);
     }
 }

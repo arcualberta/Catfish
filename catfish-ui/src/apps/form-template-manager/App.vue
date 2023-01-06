@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { AppletAttribute } from '@/components/shared/props';
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import {default as CrudObjectManager} from '../shared/crud-object-manager/App.vue'
 
 import {FormBuilder} from '../../components'
@@ -14,13 +14,14 @@ const props = defineProps<{
 }>()
 
 const apiRoot = computed(() => (props.dataAttributes ? props.dataAttributes["RepositoryMicroserviceUrl"] : "") + "/api/forms");
-
-   // const route = useRoute();
-   // const formId = route.params.id as unknown as Guid;
+const _dataAttributes = toRef(props, 'dataAttributes')
+const userJwtToken = _dataAttributes && _dataAttributes?.value? (_dataAttributes.value["UserJwtToken"] as string) : null;
+    
 
 </script>
 
 <template>
+   
     <CrudObjectManager :api-root="apiRoot">
         <template #object-type>Form Template</template>      
        <!-- <template #list-entry-delegate>List Entry</template>-->
@@ -29,4 +30,5 @@ const apiRoot = computed(() => (props.dataAttributes ? props.dataAttributes["Rep
         <template #update-delegate><form-builder :api-root="apiRoot" /></template>
         <template #delete-delegate>Delete</template>
     </CrudObjectManager>
+    <div>{{userJwtToken}}</div>
 </template>
