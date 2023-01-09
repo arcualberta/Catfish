@@ -30,6 +30,11 @@
 				type: String,
 				required: false,
 				default: "text"
+			},
+			tinyMceKey: {
+				type: String,
+				required: false,
+                default:"0ohehg73era56wydy5kyws6ouf25550ogy2sifi1j41hk65l"
             }
         },
 		components: {
@@ -61,7 +66,7 @@
 </script>
 
 <template>
-	<Editor v-if="isRichText" apiKey="0ohehg73era56wydy5kyws6ouf25550ogy2sifi1j41hk65l" v-model="content" placeholder="add multiple lines" />
+	<Editor v-if="isRichText" apiKey="tinyMceKey" v-model="content" placeholder="add multiple lines" />
 	<textarea v-else-if="isMultiline" v-model="content" />
 	<div v-else>
 		<input v-if="field === 'text'" type="text" v-model="content" />
