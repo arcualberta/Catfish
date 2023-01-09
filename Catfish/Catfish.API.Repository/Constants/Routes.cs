@@ -32,5 +32,9 @@
         {
             public const string Root = "api/solr-search";
         }
+        internal static class Workflow
+        {
+            public const string Root = "api/workflow";
+        }
     }
 }
