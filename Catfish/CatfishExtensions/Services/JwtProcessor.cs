@@ -1,11 +1,18 @@
 ﻿
 
+using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 
 namespace CatfishExtensions.Services
 {
     public class JwtProcessor : IJwtProcessor
     {
+        private readonly IConfiguration _configuration;
+        public JwtProcessor(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public JwtSecurityToken ReadToken(string jwt) 
             => (new JwtSecurityTokenHandler()).ReadJwtToken(jwt);
         
@@ -16,5 +23,16 @@ namespace CatfishExtensions.Services
             return validatedToken as JwtSecurityToken;
         }
 
-	}
+        public string CreateUserToken(string username, IList<string> roles, string userData, DateTime expiresAt)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string CreateToken(List<Claim> claims, DateTime expiresAt)
+        {
+            throw new NotImplementedException();
+        }
+
+
+    }
 }
