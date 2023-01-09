@@ -8,19 +8,22 @@ namespace CatfishWebExtensions.Services
         private readonly IConfiguration _configuration;
         private readonly RoleManager<Role> _roleManager;
         private readonly CatfishExtensions.Interfaces.IGoogleIdentity _googleIdentity;
+        private readonly IJwtProcessor _jwtProcessor;
       
         public CatfishUserManager(
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
             Piranha.AspNetCore.Identity.IDb db,
             IConfiguration configuration,
-            IGoogleIdentity googleIdentity)
+            IGoogleIdentity googleIdentity,
+            IJwtProcessor jwtProcessor)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _db = db;
             _configuration = configuration;
             _googleIdentity = googleIdentity;
+            _jwtProcessor = jwtProcessor;
         }
 
         #region Public Methods
@@ -77,7 +80,7 @@ namespace CatfishWebExtensions.Services
             var usrRoles = await _userManager.GetRolesAsync(user);
             userLoginResult.GlobalRoles = usrRoles;
 
-            var jwt = _googleIdentity.GenerateJSonWebToken(userLoginResult);
+            var jwt = _jwtProcessor.GenerateJSonWebToken(userLoginResult);
             return jwt;
             
         }
