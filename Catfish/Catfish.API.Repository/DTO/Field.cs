@@ -21,5 +21,7 @@
         public bool AllowCustomOptionValues { get; set; }
 
         public FileReference[]? Files { get; set; }
+
+        public Field[]? Fields { get; set; }
     }
 }
