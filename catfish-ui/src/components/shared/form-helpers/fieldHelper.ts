@@ -1,7 +1,7 @@
 import AttachmentField from "@/components/form-submission/components/AttachmentField.vue";
 import { Guid } from "guid-typescript"
 
-import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, FormData, FormTemplate } from "../form-models";
+import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, FormData, FormTemplate, CompositeFieldType } from "../form-models";
 import { getTextValue, createTextCollection, createText } from './textHelper'
 
 /**
@@ -104,3 +104,5 @@ export const createFormData = (form: FormTemplate, lang: string | string[]): For
 
     return formData
 }
+
+export const isCompositeField = (field: Field): boolean => Object.values(CompositeFieldType).map(x => x as unknown as string).includes(field.type as unknown as string);

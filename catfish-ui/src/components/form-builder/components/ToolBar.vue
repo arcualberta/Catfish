@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { Field, FieldType } from '@/components/shared/form-models';
+import { Field, FieldType, FormTemplate } from '@/components/shared/form-models';
 import {storeToRefs} from 'pinia'
 import { Guid } from 'guid-typescript';
 import { useFormBuilderStore } from '../store';
 import { createTextCollection, isOptionField, isTextInputField, createOption } from '../../shared/form-helpers'
+import { isCompositeField } from '@/components/shared/form-helpers/fieldHelper';
   
 const props = defineProps<{
         open: boolean,
@@ -33,8 +34,13 @@ const newField = (fieldType: FieldType) => {
         if (isOptionField(field)) {
             field.options = []
         }
+
+        if(isCompositeField(field)){
+            field.fields= [] as Field[]
+        }
        // store.form!.fields.push(field);
-       store.form!.fields.splice(props.index, 0, field);
+       store.activeContainer?.fields.splice(props.index, 0, field);
+     
     }
 
 
@@ -64,6 +70,7 @@ const newField = (fieldType: FieldType) => {
         <button  @click="newField(FieldType.DropDown);$emit('close')">Drop Down</button>
         <button  @click="newField(FieldType.InfoSection);$emit('close')">Info Section</button>
         <button  @click="newField(FieldType.AttachmentField);$emit('close')">Attachment Field</button>
+        <button  @click="newField(FieldType.CompositeField);$emit('close')">Composite Field</button>
         
      </div>
      </div>

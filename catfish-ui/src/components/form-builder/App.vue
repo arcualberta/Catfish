@@ -36,22 +36,7 @@
     if (formId)
         store.loadForm(formId)
 
-    //watch(() => store.transientMessage, async newMessage => {
-    //    if (newMessage)
-    //        setTimeout(() => {
-    //            store.transientMessage = null;
-    //        }, 2000)
-    //})
-
-   // const newForm = () => {
-   //     store.form = {
-   //         id: Guid.EMPTY as unknown as Guid,
-   //         name: "",
-   //         description: "",
-   //         fields: [] as Field[]
-   //     };
-   // }
-
+    
     const saveForm = () => store.saveForm()
 
     const disabled = computed(() => store.form ? false : true)
