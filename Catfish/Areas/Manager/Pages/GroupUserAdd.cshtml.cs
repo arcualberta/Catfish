@@ -25,7 +25,7 @@ namespace Catfish.Areas.Manager.Pages
         public readonly IdentitySQLServerDb _piranhaDb;
         private readonly UserManager<User> _userManager;
         private readonly ICatfishAppConfiguration _catfishConfig;
-       
+
 
         [BindProperty]
         public GroupRole GroupRole { get; set; }
@@ -46,7 +46,7 @@ namespace Catfish.Areas.Manager.Pages
             _piranhaDb = pdb;
             _userManager = userManager;
             _catfishConfig = catfishConfig;
-           
+
         }
 
         public async Task OnGetAsync(Guid id)
@@ -77,15 +77,17 @@ namespace Catfish.Areas.Manager.Pages
                         userEditModel.User = _user;
 
 
-                        userEditModel.Password = new string(uemail.Reverse().ToArray()); 
+                        userEditModel.Password = new string(uemail.Reverse().ToArray());
                         userEditModel.PasswordConfirm = new string(uemail.Reverse().ToArray());
-                        await _userManager.SetUserNameAsync(_user,uemail);
+                        await _userManager.SetUserNameAsync(_user, uemail);
                         await _userManager.SetEmailAsync(_user, uemail);
-                        await _userManager.CreateAsync(_user, userEditModel.Password); 
+                        await _userManager.CreateAsync(_user, userEditModel.Password);
                         string roleName = _catfishConfig.GetDefaultUserRole();
-                        Role role = _piranhaDb.Roles.Where(r => r.Name == roleName).FirstOrDefault();
+                        Role role = _piranhaDb.Roles.Where(r => r.Id == GroupRole.RoleId).FirstOrDefault();
 
+                        //bool existingGroupRole = _appDb.UserGroupRoles.Where(ugr => ugr.GroupRoleId == GroupRole.Id && ugr.UserId == _user.Id).Any();
                         userEditModel.Roles.Add(role);
+                        userEditModel.SelectedRoles.Add(role.Name);
                         var result = userEditModel.Save(_userManager);
 
                         if (result.Result.Succeeded)
@@ -100,19 +102,41 @@ namespace Catfish.Areas.Manager.Pages
                         if (!_srv.CheckUserGroupRole(GroupRole.Id))
                         {
                             User _user = await _userManager.FindByNameAsync(uemail);
-                            _srv.AddUserGroupRole(_user.Id, GroupRole.Id);
+                            Role role = _piranhaDb.Roles.Where(r => r.Id == GroupRole.RoleId).FirstOrDefault();
+
+                            UserEditModel userEditModel = new UserEditModel();
+                            userEditModel.User = _user;
+                            userEditModel.Password = _user.PasswordHash;
+                            userEditModel.PasswordConfirm = _user.PasswordHash;
+                            List<Guid> roleIds = _piranhaDb.UserRoles.Where(ur => ur.UserId == _user.Id).Select(ur => ur.RoleId).ToList();
+                            foreach (var roleId in roleIds)
+                            {
+                                Role roleDetails = _piranhaDb.Roles.Where(r => r.Id == roleId).FirstOrDefault();
+                                userEditModel.Roles.Add(roleDetails);
+                                userEditModel.SelectedRoles.Add(roleDetails.Name);
+                            }
+                            userEditModel.Roles.Add(role);
+                            userEditModel.SelectedRoles.Add(role.Name);
+                            var result = userEditModel.Save(_userManager);
+
+                            if (result.Result.Succeeded)
+                            {
+                                _srv.AddUserGroupRole(_user.Id, GroupRole.Id);
+
+                            }
+                            //_srv.AddUserGroupRole(_user.Id, GroupRole.Id);
                         }
 
                     }
-                   
+
 
                 }
             }
 
-         
+
             _appDb.SaveChanges();
-            return RedirectToPage("GroupEdit", "Manager", new { id=GroupRole.GroupId });
-            
+            return RedirectToPage("GroupEdit", "Manager", new { id = GroupRole.GroupId });
+
         }
     }
 }

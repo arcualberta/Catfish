@@ -15,6 +15,7 @@ namespace Catfish.Core.Models
 {
     public class EntityTemplate : Entity
     {
+        public static readonly string FieldAggregatorMetadataSetInternalName = "FieldAggregator";
         public string TargetType { get; set; }
         public string TemplateName { get; set; }
 
@@ -70,9 +71,18 @@ namespace Catfish.Core.Models
         }
 
         public EntityTemplate()
+            : base()
         {
-            Initialize(false);
+            ////Initialize(false);
         }
+
+        public EntityTemplate(XElement data)
+            : base(data)
+        {
+        }
+
+
+
         public override void Initialize(bool regenerateId)
         {
             base.Initialize(regenerateId);
@@ -119,7 +129,12 @@ namespace Catfish.Core.Models
 
             //Cloning non-template type metadata sets
             foreach (var ms in MetadataSets.Where(m => m.IsTemplate == false))
-                model.MetadataSets.Add(new MetadataSet(new XElement(ms.Data)));
+            {
+                MetadataSet clone = new MetadataSet(new XElement(ms.Data));
+                clone.TemplateId = ms.Id;
+                clone.Id = Guid.NewGuid();
+                model.MetadataSets.Add(clone);
+            }
 
             //NOTE: we do not need to clone the data items from the template because the data items are
             //added to the instantiated entity when it's used later in the application. The entity template
@@ -169,5 +184,22 @@ namespace Catfish.Core.Models
             }
             return report as T;
         }
+
+        public MetadataSet GetFieldAggregatorMetadataSet(bool createIfNotExist = false)
+        {
+            MetadataSet aggregatorMetadataSet = MetadataSets.FirstOrDefault(ms => ms.IsTemplate && ms.InternalName == "FieldAggregator");
+            if (aggregatorMetadataSet == null && createIfNotExist)
+            {
+                aggregatorMetadataSet = new MetadataSet() 
+                { 
+                    InternalName = FieldAggregatorMetadataSetInternalName,
+                    IsTemplate = true
+                };
+                MetadataSets.Add(aggregatorMetadataSet);
+            }
+            return aggregatorMetadataSet;
+        }
+
+
     }
 }

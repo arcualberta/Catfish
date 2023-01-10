@@ -163,14 +163,14 @@ namespace Catfish.Core.Models.Contents.Workflow
         public bool IsAuthorizedByEmailField(Entity entity, string userEmail)
         {
             var stateId = entity.StatusId;
-            StateRef stateRef = States.Where(st => st.RefId == stateId).FirstOrDefault();
+            StateRef stateRef = States.FirstOrDefault(st => st.RefId == stateId);
 
             if (stateRef == null)
-                throw new Exception(string.Format("Requested state does not exist within the GetAction."));
+                return false;
 
             foreach(var fieldRef in stateRef.AuthorizedEmailFields)
             {
-                var dataItem = entity.DataContainer.Where(di => di.TemplateId == fieldRef.DataItemId).FirstOrDefault();
+                var dataItem = entity.DataContainer.FirstOrDefault(di => di.TemplateId == fieldRef.FieldContainerId);
                 if (dataItem != null)
                 {
                     var emailFieldVals = dataItem.Fields

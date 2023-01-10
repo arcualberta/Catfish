@@ -1,4 +1,5 @@
-﻿@*
+﻿@using Catfish.Core.Helpers
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @inject Piranha.IApi _piranhaApi;
@@ -6,7 +7,7 @@
 
     var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
 
-
+    var siteRoot = ConfigHelper.SiteUrl;
 }
 <link href="~/assets/css/public/custom.css" rel="stylesheet" />
 
@@ -30,16 +31,17 @@
                         </div>
                         <div class="signinout">
                             @{ if (!User.Identity.IsAuthenticated)
-                                {
-                                  <button id="btnSignIn" onclick="window.location.href = '/login'; return false;" class="btn btn-default"><span class="fa fa-sign-in "> Sign In</span></button>
+                                        {
+                                            string here = "";
+                                  <button id="btnSignIn" onclick="window.location.href = '@siteRoot/login'; return false;" class="btn btn-default"><span class="fa fa-sign-in-alt"> Sign In</span></button>
                                 }
                                 else
                                 {
                                     if (User.IsInRole("SysAdmin"))
                                     {
-                                        <button class="btn btn-default" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                        <button class="btn btn-default" onclick="window.location.href='@siteRoot/manager'"><span class="fa fa-table"> Dashboard</span></button>
                                     }
-                                    <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-default"><span class="fa fa-sign-out"> Sign Out</span></button>
+                                    <button id="btnSignOut" onclick="signOut('@siteRoot'); return false;" class="btn btn-default"><span class="fa fa-sign-out-alt"> Sign Out</span></button>
                                 }
                             }
                         </div>

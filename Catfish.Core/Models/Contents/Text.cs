@@ -61,7 +61,7 @@ namespace Catfish.Core.Models.Contents
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? DateValue
         {
-            get => string.IsNullOrEmpty(Data.Value) ? DateTime.Today : DateTime.Parse(Data.Value);
+            get => string.IsNullOrEmpty(Data.Value) || Data.Value.StartsWith("0001") ? null as DateTime? : DateTime.Parse(Data.Value);
             set => Data.Value = value.HasValue ? value.Value.ToString() : "";
         }
 

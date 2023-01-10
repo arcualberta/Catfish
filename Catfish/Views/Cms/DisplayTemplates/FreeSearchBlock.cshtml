@@ -1,14 +1,6 @@
 ﻿@model Catfish.Models.Blocks.FreeSearchBlock
-
-@using Catfish.Services;
-
-@using Microsoft.AspNetCore.Mvc;
-@using Microsoft.AspNetCore.Mvc.RazorPages;
-
-@using Catfish.Core.Models.Contents.Fields
 @using Catfish.Core.Models.Solr;
-@using Catfish.Core.Services.Solr;
-@using Catfish.Pages;
+
 
 
 @{
@@ -19,7 +11,7 @@
 <!-- TODO: Make the following a search form -->
 <form id="freeSearchBlockForm" method="post" action="/api/solr/freetext">
     <input type="text" name="searchTerm" id="freeSearchBlockTerm" />
-    <input id="freeSearchBlockButton" type="submit" value="Submit" />
+    <input id="freeSearchBlockButton" type="submit" value="Submit" onclick="executeSearch(event)" />
 </form>
 
 <div id="freeSearchBlockResults">

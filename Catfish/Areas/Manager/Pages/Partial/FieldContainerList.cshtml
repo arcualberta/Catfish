@@ -31,20 +31,20 @@
             </div>
         </div>
 
-        <div>Api URL: @Model.ApiRoot</div>
-
-        <ol>
-            @foreach (var entry in ViewData["data"] as List<Catfish.Core.Models.Contents.FieldContainer>)
+        <div class="container float-left ml-3">
+            @foreach (var entry in Model.Entries)
             {
                 var detailsUrl = Model.DetailsPage + entry.Id;
                 var editUrl = Model.EditPage + entry.Id;
-                <li>
-                    <a href="@detailsUrl">@entry.Id</a>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="@editUrl">Edit</a>
-                </li>
+                <div class="row m-1 p-2 bg-white">
+                    <div class="col-10">@entry.Name</div>
+                    <div class="row col-2">
+                        <div class="col-6 text-center"><a href="@detailsUrl">View</a></div>
+                        <div class="col-6 text-center"><a href="@editUrl">Edit</a></div>
+                    </div>
+                </div>
             }
-        </ol>
+        </div>
     </div>
 
 

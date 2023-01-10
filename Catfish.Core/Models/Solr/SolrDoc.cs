@@ -18,25 +18,43 @@ namespace Catfish.Core.Models.Solr
         public SolrDoc()
         {
         }
-        public SolrDoc(Entity src)
+        public SolrDoc(Entity src, bool indexFieldNames)
         {
             AddId(src.Id);
             AddField("status_s", src.StatusId);
+            AddField("group_s", src.GroupId);
             AddField("template_s", src.TemplateId);
+            AddField("collection_s", src.PrimaryCollectionId);
             AddField("doc_type_ss", typeof(Item).IsAssignableFrom(src.GetType()) ? "item" : "entity");
+            AddField("created_dt", src.Created);
+            AddField("updated_dt", src.Updated);
+
+            //Root form instance ID
+            Guid? rootFormInstanceId = src.DataContainer?.FirstOrDefault(dc => dc.IsRoot)?.Id;
+            if(rootFormInstanceId.HasValue)
+                AddField("root_form_instance_id_s", rootFormInstanceId.Value);
 
             foreach (var child in src.MetadataSets)
-                AddContainerFields("metadata", child);
+                AddContainerFields("metadata", child, indexFieldNames);
 
             foreach (var child in src.DataContainer)
-                AddContainerFields("data", child);
+                AddContainerFields("data", child, indexFieldNames);
+
+            IndexAggregatedDataFields(src);
         }
 
-        protected void AddContainerFields(string containerPrefix, FieldContainer container)
+        protected void AddContainerFields(string containerPrefix, FieldContainer container, bool indexFieldNames)
         {
-            foreach(var field in container.Fields)
+            //Backword compatibility fix: new items use MedataSet.TemplateId as the container ID part of the field name. However, this TemplateId
+            //was introduced recently and the items created prior to introducing this TemplateId uses MetadataSet.Id as the container ID. Therefore,
+            //in the statement below, we take the TemplateId as the container ID if it's defined but use the actual container's ID if the TemplateId
+            //is not defined. 
+            Guid? containerId = container.TemplateId != null ? container.TemplateId : container.Id;
+            string solrContainerNamePrefix = string.Format("{0}_{1}", containerPrefix, containerId);
+
+            foreach (var field in container.Fields)
             {
-                string solrFieldName = string.Format("{0}_{1}_{2}", containerPrefix, container.Id, field.Id);
+                string solrFieldName = string.Format("{0}_{1}", solrContainerNamePrefix, field.Id);
                 if (typeof(TextField).IsAssignableFrom(field.GetType()))
                 {
                     solrFieldName += "_ts";
@@ -46,10 +64,17 @@ namespace Catfish.Core.Models.Solr
                 }
                 else if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
                 {
-                    solrFieldName += "_ts";
+                    solrFieldName += field.SolrFieldType.ToString();
                     foreach (var option in (field as OptionsField).Options.Where(op => op.Selected))
+                    {
                         foreach (var txt in option.OptionText.Values.Where(t => !string.IsNullOrEmpty(t.Value)))
                             AddField(solrFieldName, txt.Value);
+
+                        if (option.ExtendedOption && option.ExtendedValues?.Length > 0)
+                            foreach (string val in option.ExtendedValues)
+                                if (!string.IsNullOrEmpty(val))
+                                    AddField(solrFieldName, val);
+                    }
                 }
                 else if (typeof(IntegerField).IsAssignableFrom(field.GetType()))
                 {
@@ -75,8 +100,135 @@ namespace Catfish.Core.Models.Solr
                     foreach (var txt in (field as MonolingualTextField).Values.Where(txt => !string.IsNullOrEmpty(txt.Value)))
                         AddField(solrFieldName, txt.Value);
                 }
+                else if (typeof(FieldContainerReference).IsAssignableFrom(field.GetType()))
+                {
+                    solrFieldName += "_ss";
+                    var refField = field as FieldContainerReference;
+                    var refType = refField.RefType == FieldContainerReference.eRefType.metadata ? "metadata" : "data";
+                    var val = string.Format("ref://{0}_{1}_", refType, refField.RefId);
+                    AddField(solrFieldName, val);
+                }
+                else if (typeof(AttachmentField).IsAssignableFrom(field.GetType()))
+                {
+                    var attachmentField = field as AttachmentField;
+                    if (attachmentField.Files.Count == 0)
+                        continue;
+
+                    var fileIds = attachmentField.Files.Select(file => file.Id).ToArray();
+                    foreach (var val in fileIds)
+                        AddField(string.Format("{0}_id_ss", solrFieldName), val);
+
+                    var originalFileNames = attachmentField.Files.Select(file => file.OriginalFileName).ToArray();
+                    foreach (var val in originalFileNames)
+                        AddField(string.Format("{0}_original_ss", solrFieldName), val);
+
+                    var fileNames = attachmentField.Files.Select(file => file.FileName).ToArray();
+                    foreach (var val in fileNames)
+                        AddField(string.Format("{0}_filename_ss", solrFieldName), val);
+
+                    var thumbnails = attachmentField.Files.Select(file => file.Thumbnail).ToArray();
+                    foreach (var val in thumbnails)
+                        AddField(string.Format("{0}_thumbnail_ss", solrFieldName), val);
+
+                    var sizes = attachmentField.Files.Select(file => file.Size).ToArray();
+                    foreach (var val in sizes)
+                        AddField(string.Format("{0}_size_is", solrFieldName), val);
+
+                    var createdTimestamps = attachmentField.Files.Select(file => file.Created).ToArray();
+                    foreach (var val in createdTimestamps)
+                        AddField(string.Format("{0}_created_dts", solrFieldName), val);
+
+                    var contentTypes = attachmentField.Files.Select(file => file.ContentType).ToArray();
+                    foreach (var val in contentTypes)
+                        AddField(string.Format("{0}_content-type_ss", solrFieldName), val);
+                }
+
+                //Adding the name of the field to the index.
+                if (indexFieldNames)
+                {
+                    string solrNameFieldName = string.Format("cf-fn_{0}_s", solrFieldName);
+                    AddField(solrNameFieldName, field.Name.GetConcatenatedContent(" / "));
+                }
 
             }
+        }
+
+        protected void IndexAggregatedDataFields(Entity src)
+        {
+            MetadataSet aggregator = src.Template.GetFieldAggregatorMetadataSet();
+            if (aggregator != null)
+            {
+                foreach (AggregateField field in aggregator.Fields)
+                {
+                    string solrFieldName = field.GetName();
+                    if(field.ContentType == AggregateField.eContetType.text)
+                        solrFieldName = solrFieldName  + "_ts";
+                    else if (field.ContentType == AggregateField.eContetType.str)
+                        solrFieldName = solrFieldName + "_ss";
+
+                    List<string> values = new List<string>();
+                    foreach (var fieldReference in field.Sources)
+                    {
+                        FieldContainer container;
+                        switch (fieldReference.SourceType)
+                        {
+                            case Contents.Workflow.FieldReference.eSourceType.Data:
+                                container = src.DataContainer.FirstOrDefault(dc => dc.TemplateId == fieldReference.FieldContainerId);
+                                break;
+                            case Contents.Workflow.FieldReference.eSourceType.Metadata:
+                                container = src.MetadataSets.FirstOrDefault(dc => dc.TemplateId == fieldReference.FieldContainerId);
+                                break;
+                            default:
+                                throw new Exception(String.Format("SolrDoc.IndexAggregatedDataFields: Unknown Source Type '{0}'", fieldReference.SourceType.ToString()));
+                        }
+
+                        if(container != null)
+                        {
+                            var vals = GetFieldValueStrings(container.Fields.FirstOrDefault(f => f.Id == fieldReference.FieldId));
+
+                            if (!string.IsNullOrEmpty(fieldReference.ValueDelimiter))
+                                vals = vals.SelectMany(val => val.Split(fieldReference.ValueDelimiter, StringSplitOptions.RemoveEmptyEntries))
+                                    .Select(str => str.Trim())
+                                    .Where(str => !string.IsNullOrEmpty(str))
+                                    .ToList();
+
+                            values.AddRange(vals.Where(v => !string.IsNullOrEmpty(v)));
+                        }
+                    }
+
+                    //Converting each entry in values so that the entry will starts with an upper-case letter and will
+                    //contain all other letters in lower case and then selecting the unique set of values
+                    values = values.Select(v => v[0].ToString().ToUpper() + v.Substring(1).ToLower())
+                        .Distinct()
+                        .ToList();
+
+                    foreach(var val in values)
+                        AddField(solrFieldName, val);
+                }
+            }
+        }
+
+        protected List<string> GetFieldValueStrings(BaseField field)
+        {
+            if(field is TextField)
+            {
+                return (field as TextField).Values.SelectMany(val => val.Values).Select(txt => txt.Value).ToList();
+            }
+            else if(field is MonolingualTextField)
+            {
+                return (field as MonolingualTextField).Values.Select(txt => txt.Value).ToList();
+            }
+            else if (field is OptionsField)
+            {
+                OptionsField optionField = field as OptionsField;
+                List<string> selectedOptionValues = optionField.Options.Where(opt => opt.Selected).SelectMany(opt => opt.OptionText.Values).Select(txt => txt.Value).ToList();
+                var extendedOptionValues = optionField.Options.Where(opt => opt.Selected && opt.ExtendedOption).SelectMany(opt => opt.ExtendedValues);
+                selectedOptionValues.AddRange(extendedOptionValues);
+
+                return selectedOptionValues;
+            }
+
+            return new List<string>();
         }
 
         public override string ToString()

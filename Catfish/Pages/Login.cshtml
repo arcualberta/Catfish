@@ -6,67 +6,98 @@
 
     ViewBag.Title = "Login";
     bool allowGoogleLogin = _catfishAppConfig.IsAllowGoogleLogin();
-    string AllowDomains = _catfishAppConfig.GetAllowDomain();
+   // string AllowDomains = _catfishAppConfig.GetAllowDomain();
     string DeniedMessage = _catfishAppConfig.GetUnauthorizedLoginMessage();
     bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
-    var q = _httpContextAccessor.HttpContext.Request.Query;
-    string ret = q.Keys.Contains("ret") ? q["ret"].ToString() : "/";
+    //var q = _httpContextAccessor.HttpContext.Request.Query;
+    //string ret = q.Keys.Contains("ret") ? q["ret"].ToString() : "/";
+    string externalLoginDivClass = enabledLocalLogin ? "col-md" : "col-md-12";
+
+    Layout = "..\\Views\\Shared\\_Layout";
 }
 
 
 <div class="container">
-    <article>
-
-        @if (enabledLocalLogin)
+    <div class="row">
+        @if (TempData["SuccessMessage"] != null && TempData["SuccessMessage"].ToString().Length > 0)
         {
-            <h2>@ViewBag.Title</h2>
-            <div class="row">
-                <div class="col-sm-4">
-                    <form method="post">
-                        @Html.AntiForgeryToken()
-                        <div class="form-group">
-                            <label>User name</label>
-                            @*<input type="text" name="Username" class="form-control" />*@
-                            @Html.TextBoxFor(m => m.Username, null, new { @class = "form-control" })
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            @*<input type="password" name="Password" class="form-control" />*@
-                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                        </div>
-                        <button class="btn btn-success">Login</button>
-                    </form>
-
-                </div>
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
             </div>
         }
-    </article>
-    @Html.AntiForgeryToken()
-    @if (allowGoogleLogin)
-    {
-        <div class="grid_4 box login">
-            <div id="socialLoginDiv">
-                <h2>Login With: </h2>
+        <article class="col-md-6">
+
+            @if (enabledLocalLogin)
+            {
+                <h2>Local Account Login</h2>
                 <hr />
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <form method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <label>User name</label>
+                                @*<input type="text" name="Username" class="form-control" />*@
+                                @Html.TextBoxFor(m => m.Username, null, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                @*<input type="password" name="Password" class="form-control" />*@
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            </div>
+                            <button class="btn btn-success">Login</button>
+                        </form>
+                        <div style="margin-top:20px;">
+                            <a href="./forgotPassword">Forgot Password?</a>
+                        </div>
+                        <div style="margin-bottom:20px;">
+                            <a href="./changepassword">Change my password</a>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                        {
+                            <div class="alert alert-danger">
+                                @Model.ErrorMessage
+                            </div>
+                        }
+                    </div>
 
+                </div>
+            }
+        </article>
+        @Html.AntiForgeryToken()
+        @if (allowGoogleLogin)
+        {<article class="@externalLoginDivClass">
+                <div class="grid_6 box login">
+                    <div id="socialLoginDiv">
+                        <h2>External Login </h2>
+                        <hr />
+                        @*<div class="g-signin2" data-onsuccess="onSignIn"></div>*@
+                        @*//asp-action="ExternalLogin" asp-controller="Account"*@
+                        <form asp-page-handler="externalLogin" method="post" asp-route-returnUrl="@Model.GetReturnUrl()">
+                            @foreach (var provider in Model.ExternalLogins)
+                            {
+                                <input type="submit" class=" btn-primary goggleLoginBtn fa fa-google btn" value="@provider.Name" title="Login using your @provider.DisplayName account" />
+                            }
+                        </form>
 
-            </div>
-        </div>
-        <div class="alert alert-warning alert-dismissible allowDomain" style="visibility: hidden; text-align:center;">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>Warning!</strong> @DeniedMessage
-        </div>
-    }
+                    </div>
+                </div>
+                <div class="alert alert-warning alert-dismissible allowDomain" style="visibility: hidden; text-align:center;">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Warning!</strong> @DeniedMessage
+                </div>
+            </article>
+        }
+    </div>
 </div>
 
 
-<script>
-   var allowDomains = ('@AllowDomains').split(',');
-     var allowed = true;
+@*<script>
+  // var allowDomains = ('atsign AllowDomains').split(',');
+ //    var allowed = true;
 
 
- function onSignIn(googleUser) {
+ /* function onSignIn(googleUser) {
        var profile = googleUser.getBasicProfile();
 
      //May 11 2020 --check if user's email is allow -- for example -- restricted to uofa user only --
@@ -81,11 +112,11 @@
 
 
      if (!allowed) {
-         //.css("visibility", "visible");
+       
          $(".allowDomain").css("visibility", "visible");
          var auth2 = gapi.auth2.getAuthInstance();
          auth2.signOut().then(function () {
-             //console.log('User signed out.');
+             
              auth2.disconnect();
          });
          auth2.disconnect();
@@ -94,7 +125,7 @@
          $(".allowDomain").css("visibility", "hidden");
          var auth2 = gapi.auth2.getAuthInstance();
          if (auth2.isSignedIn) {
-          @*@Model.catfishUser.Login = profile.getEmail();*@
+         
              var user = new Object();
              user.Login = profile.getEmail();
              user.Password = profile.getId();
@@ -112,10 +143,10 @@
                          $('input:hidden[name="__RequestVerificationToken"]').val()
                  }
              }).done(function (result) {
-                 window.location.href = "@ret";
+                 window.location.href = " 'atsign' ret" 
              });
          }
      }
-}
+} */
 
-</script>
+</script>*@

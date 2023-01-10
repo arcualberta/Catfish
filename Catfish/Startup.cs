@@ -1,4 +1,7 @@
-﻿using Catfish.Areas.Manager.Access;
+﻿using Catfish.Areas.Applets.Authorization;
+using Catfish.Areas.Applets.Models.Blocks;
+using Catfish.Areas.Applets.Services;
+using Catfish.Areas.Manager.Access;
 using Catfish.Core.Authorization.Handlers;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models;
@@ -9,6 +12,7 @@ using Catfish.Core.Services.Solr;
 using Catfish.Helper;
 using Catfish.ModelBinders;
 using Catfish.Models.Blocks;
+using Catfish.Models.Blocks.TileGrid;
 using Catfish.Models.Fields;
 using Catfish.Models.SiteTypes;
 using Catfish.Services;
@@ -31,6 +35,7 @@ using Piranha.Manager.Editor;
 using Piranha.Services;
 using SolrNet;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -68,10 +73,24 @@ namespace Catfish
         {
             string sqlConnectionString = Configuration.GetConnectionString("catfish");
 
+            //Configuring  session
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+
             //localization need to be called before MVC() or other service that need it
             services.AddLocalization(options =>
              options.ResourcesPath = "Resources"
            );
+            services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+            {
+                options.ValueCountLimit = int.MaxValue; //MR July 14 2021 -- to increase the form count limit -- default=1024
+            });
 
             //-- add MVC service
             services.AddMvc()
@@ -86,7 +105,6 @@ namespace Catfish
                 options.UseManager();
                 options.UseTinyMCE();
                 options.UseMemoryCache();
-
                 options.AddRazorRuntimeCompilation = true; //MR: Feb 11, 2020  -- Enabled run time compiler for razor, so don't need to recompile when update the view
             });
 
@@ -97,8 +115,22 @@ namespace Catfish
                 options.UseSqlServer(sqlConnectionString));
 
             services.AddRazorPages()
-                .AddPiranhaManagerOptions();
+                .AddPiranhaManagerOptions()
+                .AddRazorOptions(options =>
+                {
+                        //options.AreaPageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                        //options.AreaViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
 
+                        //options.PageViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                        //options.ViewLocationExpanders.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                        //options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+                    });
+
+
+            //services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions>(options =>
+            //{
+            //    options.ViewLocationFormats.Add("/Areas/Applets/BlockViews/{0}.cshtml");
+            //});
 
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
@@ -122,7 +154,20 @@ namespace Catfish
 
             services.AddRazorPages()
                 .AddPiranhaManagerOptions()
-                .AddMvcOptions(options => options.ModelBinderProviders.Insert(0, new FormFieldModelBinderProvider()));
+                .AddMvcOptions(options => options.ModelBinderProviders.Insert(0, new FormFieldModelBinderProvider()))
+                .AddRazorOptions(options => options.ViewLocationFormats.Add("/Areas/Applets/Views/Blocks/{0}.cshtml"))
+                .AddRazorOptions(options => options.ViewLocationFormats.Add("/Areas/Applets/Views/PagePartials/{0}.cshtml"));
+
+            //MR -- July 29 2021 -- add google Oauth login
+            services.AddAuthentication()
+            .AddGoogle(options =>
+            {
+                IConfigurationSection googleAuthNSection =
+                    Configuration.GetSection("GoogleExternalLogin");
+
+                options.ClientId = googleAuthNSection["Catfish2Oauth-ClientId"];
+                options.ClientSecret = googleAuthNSection["Catfish2Oauth-ClientSecret"];
+            });
 
             services.AddPiranhaApplication();
             services.AddPiranhaFileStorage();
@@ -158,6 +203,9 @@ namespace Catfish
             services.AddScoped<IJobService, JobService>();
             services.AddSingleton<IAppService, AppService>();
             services.AddSingleton<IBlockHelper, BlockHelper>();
+            services.AddScoped<IAssetRegistry, AssetRegistry>();
+            services.AddScoped<IItemAppletService, ItemAppletService>();
+            services.AddScoped<IItemTemplateAppletService, ItemTemplateAppletService>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
@@ -169,7 +217,7 @@ namespace Catfish
             services.AddScoped<IPageIndexingService, PageIndexingService>();
             services.AddScoped<ISolrService, SolrService>();
             services.AddScoped<ISolrBatchService, SolrBatchService>();
-
+            services.AddScoped<IItemAuthorizationHelper, ItemAuthorizationHelper>();
 
             //Configure policy claims
             CatfishSecurity.BuildAllPolicies(services);
@@ -178,13 +226,17 @@ namespace Catfish
             services.AddScoped<IAuthorizationHelper, AuthorizationHelper>();
             services.AddScoped<IAuthorizationHandler, EntityTemplateAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, GroupAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, ItemAuthorizationHandler>();
             //services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationCrudHandler>();
+
+            services.AddScoped<IBackupService, BackupService>();
+
             // Add custom policies
             services.AddAuthorization(o =>
             {
-                // Read secured posts
-                o.AddPolicy("ReadSecurePages", policy =>
-                {
+                    // Read secured posts
+                    o.AddPolicy("ReadSecurePages", policy =>
+                        {
                     policy.RequireClaim("ReadSecurePages", "ReadSecurePages");
                 });
             });
@@ -201,12 +253,28 @@ namespace Catfish
                 options.LogPath = "~/log";
                 options.CheckPermissionAction = context => context.User.IsInRole("SysAdmin");
             });
+
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CatfishApiPolicy",
+                                builder =>
+                                {
+                                    builder.AllowAnyOrigin()
+                                           .AllowAnyHeader()
+                                           .AllowAnyMethod();
+                                });
+            });
+
+            //MR - April 13 2022 -- initialize IConfiguration object in static ConfigHelper class
+            ConfigHelper.Initialize(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApi api)
         {
-            if (env.IsDevelopment())
+            var enableRemoteErrors = Configuration.GetSection("SiteConfig:RemoteErrors").Get<bool>();
+            if (env.IsDevelopment() || enableRemoteErrors)
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -242,35 +310,17 @@ namespace Catfish
                 }
             });
 
-
-            // Middleware setup
-            //use localization
-            // var supportedCulture = new[]
-            //{
-            //     new CultureInfo("en"),
-            //     new CultureInfo("rus")
-
-            // };
-            // var requestLocalizationOptios = new RequestLocalizationOptions
-            // {
-            //     DefaultRequestCulture = new RequestCulture("en"),
-            //     //for formating like date, currency,etc
-            //     SupportedCultures = supportedCulture,
-            //     //UI string -- resources that we provided
-            //     SupportedUICultures = supportedCulture
-
-            // };
-            // app.UseRequestLocalization(requestLocalizationOptios);
-
             app.UsePiranha();
+
             //MR Feb 7 2020 -- add classic MVC routing
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
                  .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
+                .AddType(typeof(Models.ItemPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
-               
+
                 .Build()
                 .DeleteOrphans();
 
@@ -292,6 +342,8 @@ namespace Catfish
 
             app.UseRouting();
 
+            app.UseCors();
+
             // app.UseIntegratedPiranha();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -299,14 +351,21 @@ namespace Catfish
             app.UsePiranhaManager();
             app.UsePiranhaTinyMCE();
 
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
 
                 endpoints.MapDefaultControllerRoute();
 
                 endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
                 endpoints.MapPiranhaManager();
             });
@@ -315,12 +374,23 @@ namespace Catfish
 
             //add to manager menu item
             AddManagerMenus();
-
-            //Register Piranha Custom Components 
             RegisterCustomFields();
-            RegisterCustomBlocks();
-            RegisterCustomScripts();
             RegisterCustomStyles();
+
+            //Register Piranha Custom Blocks 
+            RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Production").GetChildren());
+            if (env.IsDevelopment())
+            {
+                RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Development").GetChildren());
+                RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Experimental").GetChildren());
+            }
+			else
+			{
+                RegisterCustomBlocks(Configuration.GetSection("BlockConfig:Obsolete").GetChildren());
+            }
+
+            //Registering other custom scripts
+            RegisterCustomScripts();
 
             //Performing Catfish system initialization
             using (var scope = app.ApplicationServices.CreateScope())
@@ -358,69 +428,110 @@ namespace Catfish
             Piranha.App.MediaTypes.Documents.Add(".doc", "application/msword", false);
             Piranha.App.MediaTypes.Documents.Add(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingm", false);
         }
-        private static void RegisterCustomScripts()
+		private static void RegisterCustomScripts()
+		{
+			App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
+			App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
+			App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
+
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
+
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block-vue.js");
+
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
+
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/form.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
+			//    //App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/dist/editItemBundle.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
+
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/process-page.js");
+
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
+
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
+			//    //App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
+
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
+
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/vue-single-list-item.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/card-block-vue.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/news-feed-block-vue.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/tile-grid.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/keyword-search.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/carousel.js");
+			//    App.Modules.Manager().Scripts.Add("~/assets/js/item-template-editor.js");
+		}
+
+        private void RegisterCustomBlocks(IEnumerable<IConfigurationSection> blockConfigList)
         {
-            //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
-
-            //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block-vue.js");
-
-            App.Modules.Manager().Scripts.Add("~/assets/js/advance-search-block.js");
-
-            App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/form.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
-            //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/editItemBundle.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
-
-            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/process-page.js");
-
-            //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
-
-            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
-
-            App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
-
-            App.Modules.Manager().Scripts.Add("~/assets/js/workflow-editor.js");
-
+            foreach (var blockConfig in blockConfigList)
+                RegisterCustomBlock(blockConfig);
         }
-        private static void RegisterCustomBlocks()
+        private void RegisterCustomBlock(IConfigurationSection blockConfig)
         {
-            //Register custom Block
-            App.Blocks.Register<EmbedBlock>();
-            App.Blocks.Register<CalendarBlock>();
-            //App.Blocks.Register<CalendarEventListBlock>();
-            App.Blocks.Register<JavascriptBlock>();
-            App.Blocks.Register<CssBlock>();
-            App.Blocks.Register<ContactFormBlock>();
-            App.Blocks.Register<NavigationBlock>();
-            App.Blocks.Register<SubmissionEntryPointList>();
-            App.Blocks.Register<FreeSearchBlock>();
-            App.Blocks.Register<SubmissionForm>();
-            App.Blocks.Register<ItemListBlock>();
-            App.Blocks.Register<ExtendedImageBlock>();
-            App.Blocks.Register<ExtendedGalleryBlock>();
-            App.Blocks.Register<ControlledVocabularySearchBlock>();
-            App.Blocks.Register<VueList>();
-            App.Blocks.Register<VueCarousel>();
-            App.Blocks.Register<ExtendedColumnBlock>();
-            App.Blocks.Register<AdvanceSearchBlock>();
+            var typeStr = blockConfig.GetSection("Type").Value;
+            var t = Type.GetType(typeStr);
+            if (t == null)
+                throw new Exception(string.Format("Could not find the \"type\" for {0}. Did you specify the fully qualified type correctly in appsettings?", typeStr));
+
+            var inst = (Activator.CreateInstance(t) as ICatfishBlock);
+            if (inst != null)
+            {
+                inst.RegisterBlock();
+
+                var js = blockConfig.GetSection("Script").Value;
+                if (!string.IsNullOrEmpty(js))
+                    App.Modules.Manager().Scripts.Add(js);
+            }
+            else
+                throw new Exception(string.Format("{0} does not implement the ICatfishBlock interface", typeStr));
         }
+
+        //private void RegisterCustomBlocks()
+        //{
+        //    //Register custom Block
+        //    App.Blocks.Register<EmbedBlock>();
+        //    App.Blocks.Register<CalendarBlock>();
+        //    App.Blocks.Register<JavascriptBlock>();
+        //    App.Blocks.Register<CssBlock>();
+        //    App.Blocks.Register<ContactFormBlock>();
+        //    App.Blocks.Register<NavigationBlock>();
+        //    App.Blocks.Register<SubmissionEntryPointList>();
+        //    App.Blocks.Register<FreeSearchBlock>();
+        //    App.Blocks.Register<SubmissionForm>();
+        //    App.Blocks.Register<ItemListBlock>();
+        //    App.Blocks.Register<ExtendedImageBlock>();
+        //    App.Blocks.Register<ExtendedGalleryBlock>();
+        //    App.Blocks.Register<ControlledVocabularySearchBlock>();
+        //    App.Blocks.Register<VueList>();
+        //    App.Blocks.Register<VueCarousel>();
+        //    App.Blocks.Register<ExtendedColumnBlock>();
+        //    App.Blocks.Register<AdvanceSearchBlock>();
+        //    App.Blocks.Register<SingleListItem>();
+        //    App.Blocks.Register<ListDisplayBlock>();
+        //    App.Blocks.Register<CardBlock>();
+        //    App.Blocks.Register<NewsFeedBlock>();
+        //    App.Blocks.Register<TileGrid>();
+        //    App.Blocks.Register<KeywordSearch>();
+        //    App.Blocks.Register < Carousel>();
+        //    App.Blocks.Register<ItemTemplateEditor>();
+        //    App.Blocks.Register<ItemEditor>();
+        //}
         private static void RegisterCustomStyles()
         {
             App.Modules.Get<Piranha.Manager.Module>()
@@ -455,6 +566,7 @@ namespace Catfish
         private static void AddPartialViews()
         {
             //App.Modules.Manager().Partials.Add("Partial/_EntityTypeListAddEntityType");
+           
         }
 
         private static void AddManagerMenus()
@@ -462,12 +574,12 @@ namespace Catfish
             int groupId = 1;
 
             //Entities group
-            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Entities").FirstOrDefault() == null)
+            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Data").FirstOrDefault() == null)
             {
                 Piranha.Manager.Menu.Items.Insert(groupId++, new MenuItem
                 {
-                    InternalId = "Entities",
-                    Name = "Entities",
+                    InternalId = "Data",
+                    Name = "Data",
                     Policy = AppSecurity.AccessEntities,
                     Css = "fas fa-object-group"
 
@@ -488,6 +600,7 @@ namespace Catfish
 
 
             var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Content").FirstOrDefault();
+            menubar.Name = "Web";
             menubar.Items.Insert(menubar.Items.Count, new MenuItem
             {
                 InternalId = "CustomStyles",
@@ -534,7 +647,7 @@ namespace Catfish
             ///
             /// Entities Group Content Menus
             ///
-            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault();
+            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Data").FirstOrDefault();
             idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem

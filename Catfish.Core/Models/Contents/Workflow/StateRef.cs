@@ -13,6 +13,11 @@ namespace Catfish.Core.Models.Contents.Workflow
         public XmlModelList<RoleReference> AuthorizedRoles { get; set; }
         public XmlModelList<EmailDomain> AuthorizedDomains { get; set; }
         public XmlModelList<FieldReference> AuthorizedEmailFields { get; set; }
+        public bool IsPublic
+        {
+            get => GetAttribute("is-public", false);
+            set => SetAttribute("is-public", value);
+        }
 
         public StateRef(XElement data)
             : base(data)
@@ -86,10 +91,10 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         public StateRef AddAuthorizedUserByEmailField(Guid dataItemId, Guid emailFieldId)
         {
-            if (AuthorizedEmailFields.Where(fr => fr.DataItemId == dataItemId && fr.FieldId == emailFieldId).Any())
+            if (AuthorizedEmailFields.Where(fr => fr.FieldContainerId == dataItemId && fr.FieldId == emailFieldId).Any())
                 throw new Exception(string.Format("Authorization is already granted."));
 
-            FieldReference fr = new FieldReference() { DataItemId = dataItemId, FieldId = emailFieldId };
+            FieldReference fr = new FieldReference() { FieldContainerId = dataItemId, FieldId = emailFieldId };
             AuthorizedEmailFields.Add(fr);
 
             return this;

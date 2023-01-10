@@ -210,12 +210,57 @@ namespace Catfish.Services
             EntityTemplate template = GetTemplate(templateId);
             MetadataSet ms = template.MetadataSets.Where(m => m.Id == metadatasetId).FirstOrDefault();
 
-            //XmlModel xml = new XmlModel(template.MetadataSets);
-            //XElement element = xml.GetElement(Workflow.TagName, false);// false -- don't cretae if not existed'
-            //Workflow workflow = new Workflow(element);
-
             return ms.Fields;
 
         }
+        /// <summary>
+        /// MR: Sept 22 2021 - Get all the Field in the Data-Item (root) in the Item Template
+        /// </summary>
+        /// <param name="templateId">Item Template Id</param>
+        /// <returns></returns>
+        public FieldList GetTemplateDataItemFields(Guid? templateId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+
+            var dataItem = template.GetRootDataItem(false);
+            
+            return dataItem.Fields; 
+
+        }
+        /// <summary>
+        /// This method will retrieve the form (dataItem) fields for a given itemTemplat and Form(DataItem) Ids
+        /// </summary>
+        /// <param name="templateId">Item Template Id</param>
+        /// <param name="dataItemId">Selected Form Id</param>
+        /// <returns></returns>
+        public FieldList GetTemplateDataItemFields(Guid? templateId, Guid? dataItemId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+
+            var dataItem = template.GetDataItem(dataItemId.Value);
+
+            return dataItem.Fields;
+
+        }
+        /// <summary>
+        /// Get Entity template statuses or states
+        /// </summary>
+        /// <param name="entityTemplateId">template Id</param>
+        /// <returns></returns>
+        public IList<SystemStatus> GetSystemStatuses(Guid entityTemplateId)
+        {
+            try
+            {
+                List<SystemStatus> sysStatuses = _db.SystemStatuses
+                    .Where(ss => ss.EntityTemplateId == entityTemplateId).ToList();
+                return sysStatuses;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
     }
 }

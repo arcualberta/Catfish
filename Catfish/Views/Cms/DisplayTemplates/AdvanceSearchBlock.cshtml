@@ -10,7 +10,17 @@
 
     var fields = _entityTemplateService.GetTemplateMetadataSetFields(entityTemplateId, metadatasetId).ToArray();
     Array.Sort(fields, delegate (BaseField x, BaseField y) { return x.GetName().CompareTo(y.GetName()); });
+
+    string[] selectedFields = Model.GetSelectedFieldList();
+
+    string renderingType = Model.SelectedRenderingType.Value;
+
+
 }
+<script>
+    var moreFieldList = @Html.Raw(Json.Serialize(selectedFields))
+    
+</script>
 
 <div class="container container-fluid advanced-search">
     <h2>Search</h2>
@@ -22,12 +32,12 @@
                 <div class="row search-mode">
                     <input type="radio" class="searchMode" name="searchMode" value="simple" checked
                            onclick="$('#simpleSearch').show(); $('#advancedSearch').hide();"
-                           onchange="$('.searchResults').hide()"/> 
+                           onchange="$('.searchResults').hide()" />
                     <span class="searchMode">Simple</span>
 
-                    <input type="radio" class="searchMode" name="searchMode" value="advanced" 
+                    <input type="radio" class="searchMode" name="searchMode" value="advanced"
                            onclick="$('#simpleSearch').hide(); $('#advancedSearch').show();"
-                           onchange="$('.searchResults').hide()"/>
+                           onchange="$('.searchResults').hide()" />
                     <span class="searchMode">Advanced</span>
                 </div>
                 <div class="row col-md-12" id="simpleSearch">
@@ -44,11 +54,11 @@
                                    class="form-control advanceSearchInput"
                                    id="@field.Id" />
                             @*<input type="text"
-                        class="form-control advanceSearchInput"
-                        id="@field.Id"
-                        placeholder="@field.Name.ConcatenatedContent"
-                        data-toggle="tooltip"
-                        title="@field.Name.ConcatenatedContent" />*@
+                                class="form-control advanceSearchInput"
+                                id="@field.Id"
+                                placeholder="@field.Name.ConcatenatedContent"
+                                data-toggle="tooltip"
+                                title="@field.Name.ConcatenatedContent" />*@
                         </div>
                     }
                 </div>
@@ -63,40 +73,100 @@
                     <div>
                         <label>Item per Page</label>
                         <input type="text" id="advanceSearchItemPerPage" placeholder="25" style="width:50px;margin-right:25px;" />
-                        <input type="submit" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', 0); return false;" />
+                        <input type="submit" id="advanceSearchSubmitBtn" value="Search" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', 0, '@renderingType'); return false;" />
                     </div>
                 </div>
             }
         </div>
         <div class="searchResults" style="display:none">
             <h3>Results</h3>
-            
-            
+            <input type="hidden" id="maxWords" value="@Model.MaxWords.Value" />
+
             <div class="pageLinks">
                 <input type="hidden" id="previousPageOffset" value="0" />
                 <input type="hidden" id="nextPageOffset" value="25" />
-                <input id="prevPageBtn" type="submit" value="<< Previous" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#previousPageOffset').val()); return false;" />
+                <input id="prevPageBtn" type="submit" value="<< Previous" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#previousPageOffset').val(), '@renderingType'); return false;" />
                 <label id="currentPageInfo" style="width:250px; text-align:center"></label>
-                <input id="nextPageBtn" type="submit" value="Next >>" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#nextPageOffset').val()); return false;" />
-                
-                <span style="margin-left:100px;">
-                    <label>Row Height: </label> 
+                <input id="nextPageBtn" type="submit" value="Next >>" onclick=" advanceSearch('@metadatasetId', 'advanceSearchScope', 'advanceSearchInput', $('#nextPageOffset').val(),'@renderingType'); return false;" />
+
+                <span style="margin-left:100px;" class="row-height-ctrl">
+                    <label>Row Height: </label>
                     <input type="number" id="max-row-height" value="10" style="width:75px;" onchange="resizeRowHeight($(this).val());" />
                 </span>
             </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        @for (int i = 0; i < fields.Length; ++i)
-                        {
-                            <th scope="col" id="@fields[i].Id" data-col="@i">@fields[i].Name.ConcatenatedContent</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
 
+            @*TODO:
+                If the "result format" is set to t"table" in the block's settings, then show the following table skeleton.
+                Otherwise, if it is set to "Slip", show the basic encloure for a list of slips
+                Show the following table if the "result format" is set to "table" in the block's settings.
+                Please also pass on the result-rendering type to the search function.
+            *@
+            @if (renderingType.Equals("Tabular"))
+            {
+                <table class="table" id="tabularRendering">
+                    <thead>
+                        <tr>
+                            @for (int i = 0; i < fields.Length; ++i)
+                            {
+                                <th scope="col" id="@fields[i].Id" data-col="@i">@fields[i].Name.ConcatenatedContent</th>
+                            }
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                @*Creating a slip template.*@
+                @*TODO specify the field IDs in the block configuration*@
+                // resounding culture -- prod server
+                @* var titleFieldId =   "293dc836-901f-421a-9e02-64f333086db9";
+                    var descriptionFieldId = "567dd7ae-2c58-4791-8800-d4312a91c912";
+                    var keywordFieldId = "77383740-4080-4570-b35e-3bde57580da5";*@
+
+                //local test
+                var titleFieldId = Model.SelectedTitleFieldId.Value; //  "d2fc4a65-84d9-47c3-800e-cf2cce27303d";
+                var descriptionFieldId = Model.SelectedBodyFieldId.Value; //"1fa5da8c-7995-4c6e-afc3-476b2ab2e1ca";
+                var keywordFieldId = Model.SelectedFooterFieldId.Value; //"dce5c801-77e8-4f7e-a6f7-70beeb5a8d85";
+                var subTitleId1 = Model.SelectedFirstSubTitleFieldId.Value;
+                var subTitleId2 = Model.SelectedSecondSubTitleFieldId.Value;
+                var titleLinkId = Model.SelectedUrlFieldId.Value;
+                var thumbnailFieldId = Model.SelectedThumbnailFieldId.Value; //not yet specified in the schema
+
+                @*Hidden Slip Template*@
+                <div id='slipTemplate' class='slipEntry' style='display:none'>
+                    <a href="#" data-field-link="@titleLinkId"><h3 class="title" data-field-id="@titleFieldId"></h3></a>
+                    <div class="subTitle"><span data-field-id="@subTitleId1"></span> <span> - </span> <span data-field-id="@subTitleId2"></span></div>
+                    <div class="row entryContentContainer">
+                        <div class="col-md-10 entryContent">
+                            <div class="entryDescription" data-field-id="@descriptionFieldId">
+
+                            </div>
+                            @*  ==== Redirect to different Page ============
+                                <div class="entryDetailLink"><a href="#" data-details-view-link><b>More</b></a></div>*@
+
+                        <a class="entryDetailLink stretched-link text-info collapsed" data-toggle="collapse" role="button" aria-expanded="false" data-target="#entryDetails_@titleFieldId">
+
+                            <!--You can put any valid html inside these!-->
+                            <span class="if-collapsed" style="cursor:pointer;"><b>More</b></span>
+                            <span class="if-not-collapsed" style="cursor:pointer;"><b>Less</b></span>
+                        </a>
+                            <div id="entryDetails_@titleFieldId" class="entryDetails collapse multi-collapse " data-details></div>
+
+
+                            <br/>
+                            <div class="entryTags"><b>Tags:</b> <span data-field-id="@keywordFieldId" data-val-separator=","></span></div>
+                        </div>
+                        <div class="col-md-2 entryImg" data-field-id="@thumbnailFieldId" data-thumbnail="true"></div>
+                    </div>
+                </div>
+
+                <div id="slipRendering"></div>
+            }
         </div>
     </div>
 </div>

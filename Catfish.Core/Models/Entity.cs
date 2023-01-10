@@ -126,10 +126,20 @@ namespace Catfish.Core.Models
 
 
         public Entity()
+            :this(null)
+        {
+            ////SubjectRelationships = new List<Relationship>();
+            ////ObjectRelationships = new List<Relationship>();
+
+            ////Initialize(false);
+        }
+
+        public Entity(XElement data)
         {
             SubjectRelationships = new List<Relationship>();
             ObjectRelationships = new List<Relationship>();
 
+            Data = data;
             Initialize(false);
         }
 
@@ -271,15 +281,21 @@ namespace Catfish.Core.Models
         }
 
 
-        public Entity AddAuditEntry(Guid? userId, Guid statusFrom, Guid statusTo, string action)
+        public Entity AddAuditEntry(Guid? userId, FieldContainer content, Guid statusFrom, Guid statusTo, string action)
         {
-            AuditTrail.Add(new AuditEntry()
+            AuditEntry entry = new AuditEntry()
             {
                 UserId = userId,
                 StatusFrom = statusFrom,
                 StatusTo = statusTo,
                 Action = action
-            }) ;
+
+            };
+            entry.Content.Add(content);
+            AuditTrail.Add(entry);
+
+            
+            
             return this;
         }
 

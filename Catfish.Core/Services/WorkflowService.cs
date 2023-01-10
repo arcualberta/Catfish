@@ -5,6 +5,7 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using ElmahCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Piranha;
@@ -34,7 +35,6 @@ namespace Catfish.Core.Services
         public readonly IHttpContextAccessor _httpContextAccessor;
         private Item mItem;
         private readonly IAuthorizationService _auth;
-
         public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, IAuthorizationService auth, ErrorLog errorLog)
         {
             _db = db;
@@ -159,9 +159,17 @@ namespace Catfish.Core.Services
             throw new NotImplementedException();
         }
 
-        
+        /// <summary>
+        /// This method will return list of status which related to a entity template.
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        public List<SystemStatus> GetTemplateStatus(Guid templateId)
+        {
+            return _db.SystemStatuses.Where(ss => ss.EntityTemplateId == templateId && ss.Status != "").OrderBy(ss=>ss.Status).ToList();
+        }
 
-        
+
 
         public SystemStatus GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
         {
@@ -357,7 +365,7 @@ namespace Catfish.Core.Services
             }
         }
 
-        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId)
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid? statusId)
         {
             try
             {
@@ -737,5 +745,29 @@ namespace Catfish.Core.Services
                 return false;
             }
         }
+
+        public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid entityTemplateId)
+        {
+            EntityTemplate entityTemplate = _db.EntityTemplates.Where(et => et.Id == entityTemplateId).FirstOrDefault();
+            return entityTemplate;
+        }
+
+        public Guid GetSubmitStateMappingId(Guid templateId)
+        {
+            EntityTemplate entityTemplate = _db.EntityTemplates.Where(et => et.Id == templateId).FirstOrDefault();
+            var emptyStateId = entityTemplate.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
+            var postActions = entityTemplate.Workflow.Actions.Where(a => a.Function == "Instantiate").Select(a=>a.PostActions).FirstOrDefault();
+            foreach(var postAction in postActions)
+            {
+                if (postAction.ButtonLabel.Equals("Submit"))
+                    return postAction.StateMappings.Select(sm =>sm.Id).FirstOrDefault();
+            }
+            return Guid.Empty;
+        }
+
+        //public EntityTemplate GetEntityTemplateByEntityTemplateId(Guid? templateId)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

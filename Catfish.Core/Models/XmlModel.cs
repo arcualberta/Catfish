@@ -257,7 +257,8 @@ namespace Catfish.Core.Models
 
             return (att == null || string.IsNullOrEmpty(att.Value))
                 ? defaultValue
-                : att.Value.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                : JsonConvert.DeserializeObject<string[]>(att.Value);
+                //: att.Value.Split(",", StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void SetAttribute(string attName, string[] attValue)
@@ -265,7 +266,8 @@ namespace Catfish.Core.Models
             if (attValue == null)
                 Data.SetAttributeValue(attName, "");
             else
-                Data.SetAttributeValue(attName, string.Join(",", attValue));
+                Data.SetAttributeValue(attName, JsonConvert.SerializeObject(attValue));
+                //Data.SetAttributeValue(attName, string.Join(",", attValue));
         }
 
         public T GetAttribute<T>(string attName, T defaultValue) where T : Enum
@@ -274,5 +276,9 @@ namespace Catfish.Core.Models
             return att == null ? defaultValue : (T) Enum.Parse(typeof(T), att.Value) ;
         }
 
+        public void SetAttribute<T>(string attName, T defaultValue) where T : Enum
+        {
+            Data.SetAttributeValue(attName, defaultValue);
+        }
     }
 }

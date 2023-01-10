@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Contents.Fields;
+﻿using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,7 +17,29 @@ namespace Catfish.Core.Models.Contents
       
         [NotMapped]
         public MultilingualDescription Description { get; protected set; }
-        
+
+        public Guid? TemplateId
+        {
+            get => GetAttribute("template-id", null as Guid?);
+            set => Data.SetAttributeValue("template-id", value);
+        }
+
+        public Guid? ParentId
+        {
+            get => GetAttribute("parent-id", null as Guid?);
+            set => Data.SetAttributeValue("parent-id", value);
+        }
+
+        [NotMapped]
+        public string InternalName
+        {
+            get => GetAttribute("internal-name", null as string);
+            set => SetAttribute("internal-name", value);
+        }
+
+        [NotMapped]
+        public FieldContainerList ChildFieldContainers { get; protected set; }
+
         public FieldContainer(string tagName) : base(tagName) 
         { 
             Initialize(eGuidOption.Ignore); 
@@ -32,6 +55,7 @@ namespace Catfish.Core.Models.Contents
 
             Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
             Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
+            ChildFieldContainers = new FieldContainerList(GetElement("child-field-containers", true));
         }
 
         public string GetName(string lang)
@@ -45,7 +69,7 @@ namespace Catfish.Core.Models.Contents
             }
         }
 
-        public void SetName(string containerName, string lang)
+        public void SetName(string containerName, string lang = null)
         {
             Name.SetContent(containerName, lang);
         }
@@ -56,7 +80,7 @@ namespace Catfish.Core.Models.Contents
             return val != null ? val.Value : null;
         }
 
-        public void SetDescription(string containerDescription, string lang)
+        public void SetDescription(string containerDescription, string lang = null)
         {
             Description.SetContent(containerDescription, lang);
         }

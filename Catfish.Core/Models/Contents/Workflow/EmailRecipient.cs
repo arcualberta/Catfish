@@ -13,7 +13,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         public string Email
         {
-            get => Data.Attribute(EmailAtt).Value;
+            get => Data.Attribute(EmailAtt)?.Value;
             set => Data.SetAttributeValue(EmailAtt, value);
         }
         public Guid? MetadataSetId

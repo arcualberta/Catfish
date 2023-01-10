@@ -3,6 +3,7 @@ using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Workflow;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -48,7 +49,18 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("ref-id", value);
         }
 
-        
+        public bool IsListEntryTitle
+        {
+            get => GetAttribute("list-entry-title", false);
+            set => SetAttribute("list-entry-title", value);
+        }
+
+        public bool IsListEntryDescription
+        {
+            get => GetAttribute("list-entry-desc", false);
+            set => SetAttribute("list-entry-desc", value);
+        }
+
         ///Request to exclude the user-input field from rendering. However, the remaining
         ///properties such as ID and model-type will be rendered.
         public bool Exclude
@@ -56,6 +68,7 @@ namespace Catfish.Core.Models.Contents.Fields
             get => GetAttribute("exlude", false);
             set { SetAttribute("exlude", value); }
         }
+
         public MultilingualName Name { get; protected set; }
 
         public MultilingualDescription Description { get; protected set; }
@@ -154,6 +167,14 @@ namespace Catfish.Core.Models.Contents.Fields
             set => Data.SetAttributeValue("value-css", value);
         }
         public BaseField SetFieldValueCssClass(string value) { FieldValueCssClass = value; return this; }
+
+        public eSolrFieldType SolrFieldType
+        {
+            get => GetAttribute<eSolrFieldType>("solr-type", eSolrFieldType._ts);
+            set { SetAttribute("solr-type", value); }
+        }
+        public BaseField SetSolrFieldType(eSolrFieldType value) { SolrFieldType = value; return this; }
+
 
         /// <summary>
         /// char[] delimiterChars = { ' ', ',', '.', ':', '\t' };

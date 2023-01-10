@@ -25,19 +25,22 @@ namespace Catfish.Core.Services
 
         public List<string> GetUserRoles();
 
+        public List<SystemStatus> GetTemplateStatus(Guid templateId);
+
         public EntityTemplate GetTemplate();
 
         public SystemStatus GetStatus(Guid templateId, string status, bool createIfNotExist);
 
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
         
-        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId);
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid? statusId);
 
         public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang);
 
         public string GetLoggedUserEmail();
 
         User GetLoggedUser();
+        //EntityTemplate GetEntityTemplateByEntityTemplateId(Guid? templateId);
 
         /// <summary>
         /// Returns the list of Groups where the specified user is associated with a role that has 
@@ -54,7 +57,8 @@ namespace Catfish.Core.Services
         GetAction GetGetActionByPostActionID(EntityTemplate entityTemplate, Guid postActionId);
         List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid statusId, Guid postActionId);
         Mapping GetStateMappingByStateMappingId(EntityTemplate entityTemplate, Guid stateMappingId);
-
+        EntityTemplate GetEntityTemplateByEntityTemplateId(Guid entityTemplateId);
         bool UpdateItemTemplateSchema(Guid id, string SchemaXml, out string successMessage);
+        Guid GetSubmitStateMappingId(Guid templateId);
     }
 }

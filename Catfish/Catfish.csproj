@@ -8,6 +8,36 @@
   <UserSecretsId>fb287c84-b0b6-46e0-893a-86f23d79c05e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Areas\Applets\applets\**" />
+    <Compile Remove="Areas\Applets\Models\PageComponents\**" />
+    <Compile Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
+    <Compile Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
+    <Compile Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
+    <Compile Remove="Areas\Applets\Views\PagePartials\**" />
+    <Compile Remove="wwwroot\applet-root\**" />
+    <Content Remove="Areas\Applets\applets\**" />
+    <Content Remove="Areas\Applets\Models\PageComponents\**" />
+    <Content Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
+    <Content Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
+    <Content Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
+    <Content Remove="Areas\Applets\Views\PagePartials\**" />
+    <Content Remove="wwwroot\applet-root\**" />
+    <EmbeddedResource Remove="Areas\Applets\applets\**" />
+    <EmbeddedResource Remove="Areas\Applets\Models\PageComponents\**" />
+    <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
+    <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
+    <EmbeddedResource Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
+    <EmbeddedResource Remove="Areas\Applets\Views\PagePartials\**" />
+    <EmbeddedResource Remove="wwwroot\applet-root\**" />
+    <None Remove="Areas\Applets\applets\**" />
+    <None Remove="Areas\Applets\Models\PageComponents\**" />
+    <None Remove="Areas\Applets\UI\src\lib-components\child-form-submission\components\**" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-editor\models\**" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-editor\store\**" />
+    <None Remove="Areas\Applets\Views\PagePartials\**" />
+    <None Remove="wwwroot\applet-root\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="Controllers\SetupController.cs" />
     <Compile Remove="Models\BlogArchive.cs" />
     <Compile Remove="Models\BlogPost.cs" />
@@ -17,14 +47,64 @@
   <ItemGroup>
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\models\keywords.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\actions.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\client-cache.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\getters.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\defs\state - Copy.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\index.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\mutations.ts" />
+    <Content Remove="wwwroot\Vue\tile-grid\src\store\state.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Areas\Applets\UI.Lib\src\lib-components\search\solrQuery.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\actions.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\mutations.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-details\store\state.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\components\fieldComponent.vue" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\components\imageCarousel.vue" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\components\imageGallery.vue" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\componentField.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\componentLayout.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\fieldLayout.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\itemLayout.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\itemTemplate.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-layout\models\staticText.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\fieldContainer.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-template-editor\models\textModels.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\item-viewer\models\item.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\keyword-search\router.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\report\store\actions.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\report\store\mutations.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\report\store\state.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\shared\components\display\ImgDiv.vue" />
+    <None Remove="Areas\Applets\UI\src\lib-components\shared\functions\useDebouncedRef.ts" />
+    <None Remove="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
+    <None Remove="Areas\Applets\UI\src\manager-js\card.js" />
+    <None Remove="Areas\Applets\UI\src\manager-js\form-submission.js" />
+    <None Remove="Areas\Applets\UI\src\manager-js\item-layout.js" />
+    <None Remove="Areas\Applets\UI\src\manager-js\report.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Applets\UI\src\manager-js\item-layout.js" />
+    <Content Include="Areas\Applets\UI\src\manager-js\report.js" />
+    <Content Include="Areas\Applets\UI\src\manager-js\form-submission.js" />
+    <Content Include="Areas\Applets\UI\src\manager-js\child-form-submission.js" />
+    <Content Include="Areas\Applets\UI\src\manager-js\card.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Applets\UI\src\manager-js\item-viewer.js" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ElmahCore" Version="1.2.5" />
     <PackageReference Include="ElmahCore.Sql" Version="1.2.5" />
-    <PackageReference Include="Google.Apis" Version="1.46.0" />
+    <PackageReference Include="Google.Apis" Version="1.51.0" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.46.0.2001" />
     <PackageReference Include="jQuery" Version="3.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
@@ -38,7 +118,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Piranha" Version="8.3.0" />
     <PackageReference Include="Piranha.AspNetCore" Version="8.3.0" />
@@ -51,6 +131,8 @@
     <PackageReference Include="Piranha.Manager" Version="8.3.1" />
     <PackageReference Include="Piranha.Manager.TinyMCE" Version="8.3.0" />
     <PackageReference Include="Piranha.WebApi" Version="8.3.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,9 +149,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Manager\assets\img\" />
+    <Folder Include="Areas\Applets\Models\Blocks\CarouselModels\" />
+    <Folder Include="Areas\Applets\Models\Blocks\ItemEditorModels\" />
+    <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\components\" />
+    <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\models\" />
+    <Folder Include="Areas\Applets\UI\dist\types\lib-components\item-editor\store\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\entity-manager\components\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\entity-manager\models\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\item-editor\components\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\item-viewer\models\" />
+    <Folder Include="Areas\Applets\UI\src\lib-components\item-viewer\store\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
+    <Folder Include="Models\FormBuilder\" />
+    <Folder Include="wwwroot\assets\js\vue3\" />
     <Folder Include="wwwroot\assets\js\vendor\" />
+    <Folder Include="wwwroot\Vue\FormBuilder\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -77,6 +171,67 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="Areas\Applets\UI.Lib\src\lib-components\search\solrQuery.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\actions.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\mutations.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-details\store\state.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\components\imageGallery.vue">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\components\imageCarousel.vue">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\components\fieldComponent.vue" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\componentField.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\componentLayout.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\fieldLayout.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\staticText.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\itemLayout.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-layout\models\itemTemplate.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\models\item.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\item-template-editor\models\itemTemplate.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\keyword-search\router.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\actions.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\mutations.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\report\store\state.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\components\display\cms\ImgDiv.vue" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\functions\useDebouncedRef.ts" />
+    <TypeScriptCompile Include="Areas\Applets\UI\src\lib-components\shared\models\cmsModels.ts" />
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\client-cache.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\keywords.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\getters.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\actions.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\models\index.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\index.ts" />
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\mutations.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\shims-vuex.d.ts" />
+    <TypeScriptCompile Include="wwwroot\Vue\tile-grid\src\store\defs\state.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.example.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
     <Content Update="Views\Cms\DisplayTemplates\ControlledVocabularySearchBlock.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
@@ -93,11 +248,15 @@
     </Content>
   </ItemGroup>
 
+  <PropertyGroup>
+    <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
     <TypeScriptModuleKind />
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptCompileOnSaveEnabled>False</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
     <TypeScriptOutFile />

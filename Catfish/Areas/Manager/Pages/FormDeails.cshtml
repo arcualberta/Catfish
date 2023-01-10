@@ -3,4 +3,10 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<partial name="partial/FieldContainerDetails" />
+@*<partial name="partial/FieldContainerDetails" />*@
+
+@{ 
+    var dataItem = (Model.Model as Catfish.Core.Models.Contents.Form).ToDataItem();
+}
+
+@Html.EditorFor(model => dataItem, "Catfish.Core.Models.Contents.Data.DataItem")

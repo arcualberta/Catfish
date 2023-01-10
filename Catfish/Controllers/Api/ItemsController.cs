@@ -171,70 +171,72 @@ namespace Catfish.Controllers.Api
                     {
                         foreach (Item item in itemList)
                         {
-                            XElement bodyRow = new XElement("tr");
-                            tbody.Add(bodyRow);
+                            var task = _dotnetAuthorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read });
+                            task.Wait();
 
-                            //TODO: check if the currently logged in user to perform the following actions
-                            bool viewPermitted = true;
-                            string viewLink = viewPermitted ? string.Format("<a href='/items/{0}' class='fa fa-eye' target='_blank'></a>", item.Id) : "";
-                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", viewLink)));
+                            if (task.Result.Succeeded) {
+                                XElement bodyRow = new XElement("tr");
+                                tbody.Add(bodyRow);
 
-                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
+                                //TODO: check if the currently logged in user to perform the following actions
+                                bool viewPermitted = true;
+                                string viewLink = viewPermitted ? string.Format("<a href='/items/{0}' class='fa fa-eye' target='_blank'></a>", item.Id) : "";
+                                bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", viewLink)));
 
-                            DataItem dataItem = item.GetRootDataItem(false);
+                                bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
 
-                            // List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
-                            List<string> fieldValues = dataItem.GetConcatenatedFieldValues(selectedFieldGuids, " |");
+                                DataItem dataItem = item.GetRootDataItem(false);
 
-                            //if composite field involved -- get the value from associated item??
+                                // List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
+                                List<string> fieldValues = dataItem.GetConcatenatedFieldValues(selectedFieldGuids, " |");
 
-                            foreach (var val in fieldValues) //MR: These are just regular Field
-                            {
-                                //Replacing "&" characters with " and ";
-                                var sanitizedVal = val.Replace("&", " and ");
-                                bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
-                            }
+                                //if composite field involved -- get the value from associated item??
 
-                            //MR: March 15 2021: -- get composite field values if any define in the Report
-                            var compositeFields = item.DataContainer.Where(d => d.Fields.Any(f => f.GetType() == typeof(CompositeField) && ((CompositeField)f).Children.Count >= 1)).ToList();
-
-                            foreach (var cf in compositeFields)
-                            {
-
-                                foreach (var f in cf.Fields)
+                                foreach (var val in fieldValues) //MR: These are just regular Field
                                 {
-                                    if (typeof(CompositeField).IsAssignableFrom(f.GetType()))
-                                    {
-                                        foreach (var c in (f as CompositeField).Children)
-                                        {
-                                            List<string> cfFieldValues = c.GetConcatenatedFieldValues(selectedCompositeFieldGuids, " |");
-                                            foreach (var val in cfFieldValues) //MR: These are just regular Field
-                                            {
-                                                //Replacing "&" characters with " and ";
-                                                var sanitizedVal = val.Replace("&", " and ");
-                                                bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
-                                            }
+                                    //Replacing "&" characters with " and ";
+                                    var sanitizedVal = val.Replace("&", " and ");
+                                    bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
+                                }
 
+                                //MR: March 15 2021: -- get composite field values if any define in the Report
+                                var compositeFields = item.DataContainer.Where(d => d.Fields.Any(f => f.GetType() == typeof(CompositeField) && ((CompositeField)f).Children.Count >= 1)).ToList();
+
+                                foreach (var cf in compositeFields)
+                                {
+
+                                    foreach (var f in cf.Fields)
+                                    {
+                                        if (typeof(CompositeField).IsAssignableFrom(f.GetType()))
+                                        {
+                                            foreach (var c in (f as CompositeField).Children)
+                                            {
+                                                List<string> cfFieldValues = c.GetConcatenatedFieldValues(selectedCompositeFieldGuids, " |");
+                                                foreach (var val in cfFieldValues) //MR: These are just regular Field
+                                                {
+                                                    //Replacing "&" characters with " and ";
+                                                    var sanitizedVal = val.Replace("&", " and ");
+                                                    bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
+                                                }
+
+                                            }
                                         }
                                     }
                                 }
+
+                                int statusIdx = statusIds.IndexOf(item.StatusId);
+                                string status;
+                                if (statusIdx < 0)
+                                {
+                                    status = _submissionService.GetStatus(item.StatusId).NormalizedStatus;
+                                    statusIds.Add(item.StatusId);
+                                    statusVals.Add(status);
+                                }
+                                else
+                                    status = statusVals[statusIdx];
+
+                                bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", status)));
                             }
-
-
-
-
-                            int statusIdx = statusIds.IndexOf(item.StatusId);
-                            string status;
-                            if (statusIdx < 0)
-                            {
-                                status = _submissionService.GetStatus(item.StatusId).NormalizedStatus;
-                                statusIds.Add(item.StatusId);
-                                statusVals.Add(status);
-                            }
-                            else
-                                status = statusVals[statusIdx];
-
-                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", status)));
                         }
                     }
                 }
@@ -251,6 +253,7 @@ namespace Catfish.Controllers.Api
      
         // POST api/<ItemController>
         [Route("SubmitForm")]
+        [Authorize]
         [HttpPost]
         public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] Guid stateId, [FromForm] Guid postActionId, [FromForm] string fileNames=null)
         {
@@ -258,16 +261,25 @@ namespace Catfish.Controllers.Api
             try
             {
                 Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, stateId, actionButton);
-                _appDb.Items.Add(newItem);
-                _appDb.SaveChanges();
 
-                bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
+                //The user needs Read permission to view this item both in the item-details form and as a list entry
+                var task = _dotnetAuthorizationService.AuthorizeAsync(User, newItem, new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate });
+                task.Wait();
 
-                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem, postActionId);
+                if (task.Result.Succeeded)
+                {
+                    _appDb.Items.Add(newItem);
+                    _appDb.SaveChanges();
 
+                    bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
+
+                    bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem, postActionId);
+
+
+                    result.Success = true;
+                    result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, newItem.Id);
+                }
                 
-                result.Success = true;
-                result.Message = _submissionService.SetSuccessMessage(entityTemplateId, postActionId, newItem.Id);
                 //if (actionButton == "Save")
                 //    result.Message = "Form saved successfully.";
                 //else if (actionButton == "Submit")
@@ -524,5 +536,136 @@ namespace Catfish.Controllers.Api
 
             return NotFound();
         }
+
+        [HttpGet("getMetadatasetFields/{templateId}/{metadatasetId}")]
+        public List<SelectListItem> GetMetadatasetFields(string templateId, string metadatasetId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+           
+                if (!string.IsNullOrEmpty(templateId) && !string.IsNullOrEmpty(metadatasetId))
+                {
+                var fields = _entityTemplateService.GetTemplateMetadataSetFields(Guid.Parse(templateId), Guid.Parse(metadatasetId));
+
+                    foreach (BaseField field in fields)
+                    {
+                        result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString()});
+
+                    }
+                }
+           
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+
+        [HttpGet("getItemtemplateFields/{templateId}")]
+        public List<SelectListItem> GetItemTemplateFields(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                var fields = _entityTemplateService.GetTemplateDataItemFields(Guid.Parse(templateId));
+
+
+                foreach (BaseField field in fields)
+                {
+                    if (!string.IsNullOrEmpty(field.GetName()))
+                    {
+                        result.Add(new SelectListItem { Text = field.GetName(), Value = field.Id.ToString() });
+                    }
+
+                }
+            }
+
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+
+       
+        [HttpGet("getCollectionList")]
+        public List<SelectListItem> GetCollectionList()
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+
+           
+                var collections = _submissionService.GetCollectionList();
+
+
+                foreach (var c in collections)
+                {
+                    if (!string.IsNullOrEmpty(c.ConcatenatedName))
+                    {
+                        result.Add(new SelectListItem { Text = c.ConcatenatedName, Value = c.Id.ToString() });
+                    }
+
+                }
+            
+
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+
+        /// <summary>
+        ///  Oct 06 2021: This method wil retrieve all the metadatasets that attached to this Template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemtemplateMetadataSets/{templateId}")]
+        public List<SelectListItem> GetItemtemplateMetadataSets(string templateId)
+        {
+            List<SelectListItem> result = new List<SelectListItem>();
+
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                var metadatasets = _entityTemplateService.GetTemplateMetadataSets(Guid.Parse(templateId));
+
+
+                foreach (var md in metadatasets)
+                {
+                    var mdname = md.GetName("en");
+                    if (!string.IsNullOrEmpty(mdname))
+                    {
+                        result.Add(new SelectListItem { Text = mdname, Value = md.Id.ToString() });
+                    }
+
+                }
+            }
+
+
+            result = result.OrderBy(li => li.Text).ToList();
+            return result;
+        }
+
+        /// <summary>
+        ///  Oct 06 2021: This method wil retrieve all the metadatasets that attached to this Template
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
+        [HttpGet("getItemtemplateStatuses/{templateId}")]
+        public List<SelectListItem>  GetItemtemplateStatuses(string templateId)
+        {
+
+            List<SelectListItem> result = new List<SelectListItem>();
+            if (!string.IsNullOrEmpty(templateId))
+            {
+                var statuses = (List<SystemStatus>)_entityTemplateService.GetSystemStatuses(Guid.Parse(templateId));
+
+                foreach (var st in statuses)
+                {
+                    result.Add(new SelectListItem { Text = st.Status, Value = st.Id.ToString() });
+                }
+
+            }
+            return result;
+        }
+
+
     }
+
 }

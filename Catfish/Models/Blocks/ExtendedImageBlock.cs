@@ -1,4 +1,5 @@
-﻿using Piranha.Extend;
+﻿using Piranha;
+using Piranha.Extend;
 using Piranha.Extend.Blocks;
 using Piranha.Extend.Fields;
 using System;
@@ -9,9 +10,11 @@ using System.Threading.Tasks;
 namespace Catfish.Models.Blocks
 {
     // Category = "Media", Icon = "fas fa-image",
-    [BlockType(Name = "Extended Image",  Component = "extended-image-block")]
-    public class ExtendedImageBlock : Block
+    [BlockType(Name = "Extended Image",  Component = "extended-image-block", IsUnlisted = true)]
+    public class ExtendedImageBlock : Block, ICatfishBlock
     {
+        public void RegisterBlock() => App.Blocks.Register<ExtendedImageBlock>();
+
         /// <summary>
         /// Gets/sets the image body.
         /// </summary>

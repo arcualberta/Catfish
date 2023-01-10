@@ -13,5 +13,6 @@ namespace Catfish.Areas.Manager.Pages
         public string ApiRoot { get; set; }
         public string ModelLabel { get; set; }
         public FieldContainer Model { get; set; }
+        public Guid? FieldContainerId { get; set; }
     }
 }

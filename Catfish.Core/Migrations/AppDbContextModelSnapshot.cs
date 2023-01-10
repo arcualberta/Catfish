@@ -86,6 +86,12 @@ namespace Catfish.Core.Migrations
                     b.Property<string>("FormName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TemplateId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("datetime2");
 
@@ -303,6 +309,11 @@ namespace Catfish.Core.Migrations
                 {
                     b.HasBaseType("Catfish.Core.Models.Entity");
 
+                    b.Property<Guid?>("GroupTemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("GroupTemplateId");
+
                     b.ToTable("Catfish_Entities");
 
                     b.HasDiscriminator().HasValue("Collection");
@@ -414,6 +425,13 @@ namespace Catfish.Core.Migrations
                         .HasForeignKey("GroupRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.Collection", b =>
+                {
+                    b.HasOne("Catfish.Core.Models.GroupTemplate", null)
+                        .WithMany("Collections")
+                        .HasForeignKey("GroupTemplateId");
                 });
 #pragma warning restore 612, 618
         }

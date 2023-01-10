@@ -3,14 +3,16 @@ using Piranha.Extend;
 using Piranha.Extend.Fields;
 using Piranha.AttributeBuilder;
 using Piranha.Models;
-
+using Piranha;
 
 namespace Catfish.Models.Blocks
 {
     [BlockType(Name = "Embed Block", Category = "Content", Component = "embed-block",  Icon = "fas fa-code")]
-    public class EmbedBlock : Block
+    public class EmbedBlock : Block, ICatfishBlock
     {
-       // public TextField Source { get; set; }
+        public void RegisterBlock() => App.Blocks.Register<EmbedBlock>();
+
+        // public TextField Source { get; set; }
         public TextField Embed { get; set; }
 
 
@@ -31,6 +33,5 @@ namespace Catfish.Models.Blocks
             }
             return "";
         }
-       
     }
 }

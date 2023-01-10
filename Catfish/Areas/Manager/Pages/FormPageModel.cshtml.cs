@@ -19,6 +19,8 @@ namespace Catfish.Areas.Manager.Pages
         public void OnGet(Guid id)
         {
             Model = _db.Forms.Where(x => x.Id == id).FirstOrDefault();
+            if (Model != null)
+                Model.Initialize(XmlModel.eGuidOption.Ignore);
         }
     }
 }

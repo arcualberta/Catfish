@@ -6,77 +6,126 @@
     var sitemap = WebApp.Site.Sitemap;
     var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
     bool displaySubMenu = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.EnabledSubMenu == null) ? false : currentSite.FooterContents.EnabledSubMenu.Value;
+    bool displayMegaMenu = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.EnabledMegaMenu == null) ? false : currentSite.FooterContents.EnabledMegaMenu.Value;
 }
 
 @{
     void subMenu(SitemapItem item)
     {
 
-        <li class="nav-item dropdown @(item.Id == WebApp.PageId ? "active" : "")">
-            <a class="dropdown-toggle" id="navbarDropdownMenuLink_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                @item.MenuTitle
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_@item.Id">
+    <li class="nav-item dropdown @(item.Id == WebApp.PageId ? "active" : "")">
+        <a class="dropdown-toggle" id="navbarDropdownMenuLink_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            @item.MenuTitle
+        </a>
+       
+        @if (displayMegaMenu && item.Items.Count > 0)
+        {
 
-                @foreach (var subItm in item.Items)
+            megaMenu(item);
+        }
+        else
+        {
+            @:<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_@item.Id">
+                foreach (var subItm in item.Items)
                 {
                     if (!subItm.IsHidden)
                     {
                         if (subItm.Items.Count == 0)
                         {
-                        @*<li><a class="dropdown-item" href="/sub-page-1"> Sub Page 1</a></li>*@
-                        <li><a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a></li>
+                            @*<li><a class="dropdown-item" href="/sub-page-1"> Sub Page 1</a></li>*@
+                            <li><a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a></li>
                         }
                         else
                         {
-                        <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">@subItm.MenuTitle</a>
-                            <ul class="submenu dropdown-menu">
+                            <li class="dropdown-submenu dropdown">
+                                <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="true">@subItm.MenuTitle</a>
+                                <ul class="dropdown-menu">
 
-                                @foreach (var subitm2 in subItm.Items)
-                                {
-                                    if (subitm2.Items.Count == 0)
+                                    @foreach (var subitm2 in subItm.Items)
                                     {
+                                        if (subitm2.Items.Count == 0)
+                                        {
 
-                                        <li><a class="dropdown-item" href="@subitm2.Permalink">@subitm2.MenuTitle</a></li>
+                                            <li><a class="dropdown-item" href="@subitm2.Permalink">@subitm2.MenuTitle</a></li>
+                                        }
+                                        else
+                                        {
+                                            subMenu2(subitm2);
+                                        }
+
+
                                     }
-                                    else { subMenu2(subitm2); }
-
-
-                                }
-                            </ul>
-                        </li>
+                                </ul>
+                            </li>
 
                         }
                     }
 
 
                 }
+            @:</ul>
+        }
 
 
-            </ul>
-        </li>
+    </li>
 
     }
 
     void subMenu2(SitemapItem subItm)
     {
-        <li class="dropdown-submenu">
-            <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">@subItm.MenuTitle</a>
-            <ul class="submenu dropdown-menu">
+        <li class="dropdown-submenu dropdown">
+            <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="true">@subItm.MenuTitle</a>
+            <ul class="dropdown-menu">
 
                 @foreach (var subitm2 in subItm.Items)
                 {
-                   
-                        if (subitm2.Items.Count == 0 && !subitm2.IsHidden)
-                        {
-                           <li><a class="dropdown-item" href="@subitm2.Permalink">@subitm2.MenuTitle</a></li>
-                        }
-                        else { subMenu(subitm2); }
+
+                    if (subitm2.Items.Count == 0 && !subitm2.IsHidden)
+                    {
+                        <li><a class="dropdown-item" href="@subitm2.Permalink">@subitm2.MenuTitle</a></li>
+                    }
+                    else { subMenu(subitm2); }
                 }
             </ul>
         </li>
     }
+
+    void megaMenu(SitemapItem item)
+    {
+        @:<div class="dropdown-content">
+         @:<div class="d-md-flex align-items-start justify-content-start row">
+
+        foreach(var subitm in item.Items) {
+               <div class="column">
+                   @if (subitm.Items.Count > 0)
+                   {
+                       <div class="dropdown-header">@subitm.MenuTitle</div>
+                       <div class="dropdown-divider"></div>
+
+                       @foreach (var subitm2 in subitm.Items)
+                       {
+
+                           if (subitm2.Items.Count == 0 && !subitm2.IsHidden)
+                           {
+
+                               <a class="dropdown-item" href="@subitm2.Permalink">@subitm2.MenuTitle</a>
+                           }
+
+                       }
+                   }
+                   else
+                   {
+                       <a class="dropdown-item" href="@subitm.Permalink">@subitm.MenuTitle</a>
+                   }
+
+
+               </div>
+            }
+    
+        @:</div></div>
+           
+    }
+
 }
 
 
@@ -93,9 +142,9 @@
             {
                 if (!item.IsHidden)
                 {
-  
-                    if (item.Items.Count == 0 || displaySubMenu == false)
-                    { 
+
+                    if (item.Items.Count == 0 || (displaySubMenu == false && displayMegaMenu == false))
+                    {
                         <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink"><span>@item.MenuTitle</span></a>
                     }
                     else
@@ -118,7 +167,7 @@
         {
             if (!item.IsHidden)
             {
-                if (item.Items.Count == 0 || displaySubMenu == false)
+                if (item.Items.Count == 0 || (displaySubMenu == false && displayMegaMenu == false))
                 {
                     <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
                         <a href="@item.Permalink">@item.MenuTitle</a>

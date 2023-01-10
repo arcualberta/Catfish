@@ -14,10 +14,16 @@ namespace Catfish.Models.SiteTypes
 
         [Region(Title = "Categories", Display = RegionDisplayMode.Setting)]
         public TextField Categories { get; set; }
+
         [Region(Title = "Header", Display = RegionDisplayMode.Setting)]
         public Header HeaderContents { get; set; }
+
         [Region(Title = "Footer", Display = RegionDisplayMode.Setting)]
         public Footer FooterContents { get; set; }
+
+        [Region(Title = "Restrictions", Display = RegionDisplayMode.Setting)]
+        public Restrictions Restrictions { get; set; }
+
 
         public CatfishWebsite()
         {

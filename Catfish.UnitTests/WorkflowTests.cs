@@ -1829,7 +1829,7 @@ namespace Catfish.UnitTests
 
             //Full width text area
             inspectionForm.CreateField<TextArea>("This is field with a long field name displayed at full width", lang, false, false)
-                .SetSize(10, 60)
+                .SetSize(10, 60, false)
                 .SetFieldLabelCssClass("col-md-12")
                 .SetFieldValueCssClass("col-md-12");
 

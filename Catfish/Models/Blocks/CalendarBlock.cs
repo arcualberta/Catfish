@@ -16,6 +16,16 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using Google.Apis.Util.Store;
+using Piranha;
+
+
+/*
+    Please Note:
+    This block will not show up/run properly without the file
+    catfish2-0-GoogleCalendarServiceAccount.json
+    present in the project. This file is in the gitignore and is not tracked.
+    It helps to configure the Google Calendar access, so make sure you have it!
+*/
 
 namespace Catfish.Models.Blocks
 {
@@ -38,9 +48,10 @@ namespace Catfish.Models.Blocks
     }
 
     [BlockType(Name = "Calendar Block", Category = "Content", Component = "calendar-block-vue", Icon = "fas fa-calendar-alt")] //calendar-block
-    public class CalendarBlock : VueComponent
+    public class CalendarBlock : VueComponent, ICatfishBlock
     {
-       
+        public void RegisterBlock() => App.Blocks.Register<CalendarBlock>();
+
         public TextField CalendarId { get; set; }
         public NumberField DaysRangePast { get; set; }
         public NumberField DaysRangeFuture { get; set; }

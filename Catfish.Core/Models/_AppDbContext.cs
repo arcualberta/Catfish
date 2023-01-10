@@ -53,12 +53,12 @@ namespace Catfish.Core.Models
                     }
                 }
 
-                if (typeof(Entity).IsAssignableFrom(entry.Entity.GetType()))
+                if (typeof(Item).IsAssignableFrom(entry.Entity.GetType()))
                 {
                     if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
                     {
                         (entry.Entity as Entity).Updated = DateTime.Now;
-                        if (Configuration.GetSection("IndexItemsOnSave").Value == "true")
+                        if (Configuration.GetSection("SolarConfiguration:IndexItemsOnSave").Value == "True")
                         {
                             _indexingService.Index(entry.Entity as Item);
                             indexUpdated = true;

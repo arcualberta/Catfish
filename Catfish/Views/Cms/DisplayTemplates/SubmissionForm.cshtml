@@ -15,6 +15,7 @@
 @inject Catfish.Core.Services.IWorkflowService _workflowService;
 @inject Catfish.Services.IAppService _appService;
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
+@inject Catfish.Core.Models.AppDbContext _appDb;
 
 @{
     bool useVueForms = _catfishAppConfig.GetValue("SiteConfig:UseVueForms", false);
@@ -53,86 +54,115 @@
 
 }
 @{
-    bool authorizationSuccessful = (await _authorizationService.AuthorizeAsync(User, template,
-        new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate }))
-       .Succeeded;
+	bool authorizationSuccessful = (await _authorizationService.AuthorizeAsync(User, template,
+		new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate }))
+	   .Succeeded;
 
-    List<Group> groups = null;
-    if (authorizationSuccessful)
-    {
-        if (Model.LinkToGroup.Value)
-        {
-            //Select the list of groups where
-            //  (a) the template is associated with, and
-            //  (b) the user is holding a role that is authorized to "instantiate" the template
-            groups = _workflowService.GetApplicableGroups(User, TemplateOperations.Instantiate, template, null);
+	List<Group> groups = null;
+	if (User.IsInRole("SysAdmin"))
+	{
+		//Select all groups where the template is associated with
+		groups = _appDb.GroupTemplates.Where(gt => gt.EntityTemplateId == template.Id).Select(gt => gt.Group).ToList();
+	}
+	else
+	{
+		//Select the list of groups where
+		//  (a) the template is associated with, and
+		//  (b) the user is holding a role that is authorized to "instantiate" the template
+		groups = _workflowService.GetApplicableGroups(User, TemplateOperations.Instantiate, template, null);
+	}
 
-            //If the user does not belong to any such groups above, the user is not authorized to instantiate
-            //an entity from the template (in otherwords, the user is not authorized to submit the form.
-            authorizationSuccessful &= groups.Count > 0;
-        }
-    }
+	Guid? targetGroupId = null as Guid?;
+	if (Model.UserMustSelectGroup.Value == false && !string.IsNullOrEmpty(Model.SelectedGroupId.Value))
+	{
+		//Make sure the specified group is within the list of groups that are associated with the template
+		//and has instantiate permission to the user
 
-    if (authorizationSuccessful)
-    {
+		targetGroupId = Guid.Parse(Model.SelectedGroupId.Value);
+		authorizationSuccessful = groups.Any(gr => gr.Id == targetGroupId);
+	}
+
+	////if (authorizationSuccessful)
+	////{
+	////	if (Model.UserMustSelectGroup.Value && !User.IsInRole("SysAdmin"))
+	////	{
+	////		//Select the list of groups where
+	////		//  (a) the template is associated with, and
+	////		//  (b) the user is holding a role that is authorized to "instantiate" the template
+	////		groups = _workflowService.GetApplicableGroups(User, TemplateOperations.Instantiate, template, null);
+
+	////		//If the user does not belong to any such groups above, the user is not authorized to instantiate
+	////		//an entity from the template (in otherwords, the user is not authorized to submit the form.
+	////		authorizationSuccessful &= groups.Count > 0;
+	////	}
+	////}
+
+	if (authorizationSuccessful)
+	{
         <div class="submission-form-block @Model.CssClass.Value">
-            <form id="submissionForm_@suffix" 
-                  method="post" 
-                  action="@formPostUrl" 
-                  enctype="multipart/form-data" 
-                  class="data-item-form"
-                  data-template-id="@Item.TemplateId">
-                <input data-val="true" data-val-required="The TemplateId field is required."
-                       id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
-                       value="@entityTemplateId">
-                <input data-val="true" data-val-required="The CollectionId field is required."
-                       id="collectionId_@suffix" name="collectionId" type="hidden"
-                       value="@collectionId">
-                <input data-val="true" data-val-required="The Function field is required."
-                       id="function" name="function" type="hidden"
-                       value="@function">
-                <input data-val="true" data-val-required="The Group field is required."
-                       id="group" name="group" type="hidden"
-                       value="@group">
+			<form id="submissionForm_@suffix"
+				  method="post"
+				  action="@formPostUrl"
+				  enctype="multipart/form-data"
+				  class="data-item-form"
+				  data-template-id="@Item.TemplateId">
+				<input data-val="true" data-val-required="The TemplateId field is required."
+					   id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
+					   value="@entityTemplateId">
+				<input data-val="true" data-val-required="The CollectionId field is required."
+					   id="collectionId_@suffix" name="collectionId" type="hidden"
+					   value="@collectionId">
+				<input data-val="true" data-val-required="The Function field is required."
+					   id="function" name="function" type="hidden"
+					   value="@function">
+				<input data-val="true" data-val-required="The Group field is required."
+					   id="group" name="group" type="hidden"
+					   value="@group">
 
-                @if (groups != null)
-                {
-                    string groupLabelLabel = string.IsNullOrWhiteSpace(Model.GroupSelectorLabel.Value) ? "Group" : Model.GroupSelectorLabel.Value;
+				@if (Model.UserMustSelectGroup.Value)
+				{
+					string groupLabelLabel = string.IsNullOrWhiteSpace(Model.GroupSelectorLabel.Value) ? "Group" : Model.GroupSelectorLabel.Value;
 
-                    //Displaying a drop-down menu to select the group.
-                    <div class="row field-row group-selector">
-                        <div class="col-md-3 control field-label">@groupLabelLabel:<sup style="color:red">*</sup></div>
-                        <div class="col-md-9 field-value">
-                            <select id="groupId" name="groupId" data-val-required="Please identify the group." required>
-                                <option value="">Please select </option>
-                                @foreach (var gr in groups)
-                                {
-                                    <option value="@gr.Id">@gr.Name</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                }
+					//Displaying a drop-down menu to select the group.
+					<div class="row field-row group-selector">
+						<div class="col-md-4 control field-label">@groupLabelLabel:<sup style="color:red">*</sup></div>
+						<div class="col-md-8 field-value">
+							<select id="groupId" name="groupId" data-val-required="Please identify the group." required>
+								<option value="">Please select </option>
+								@foreach (var gr in groups)
+								{
+									<option value="@gr.Id">@gr.Name</option>
+								}
+							</select>
+						</div>
+					</div>
+				}
+				else if(targetGroupId.HasValue)
+				{
+					<input data-val="true" data-val-required="The Group field is required."
+						   id="groupId" name="groupId" type="hidden"
+						   value="@targetGroupId.Value">
+				}
 
-                @*Render the editor for template for the root-data item of the template*@
-                @if (useVueForms)
-                {
-                    @Html.EditorFor(model => Item, "VueDataItem")
-                }
-                else
-                {
-                    @Html.EditorFor(model => Item, Item.GetType().ToString())
-                }
+				@*Render the editor for template for the root-data item of the template*@
+				@if (useVueForms)
+				{
+					@Html.EditorFor(model => Item, "VueDataItem")
+				}
+				else
+				{
+					@Html.EditorFor(model => Item, Item.GetType().ToString(), new ViewDataDictionary(ViewData) { { "template", template } })
+				}
 
-                <partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml"
-                         model="postActions"
-                         view-data='@new ViewDataDictionary(ViewData) {
+				<partial name="~/Views/Shared/Partial/_ItemFormButtonPanel.cshtml"
+						 model="postActions"
+						 view-data='@new ViewDataDictionary(ViewData) {
                             { "suffix", suffix},
                             { "successMessage", successMessage},
                             { "currentStateId", emptyStateId },
                             { "submitCallFunction", "submitWorkflowForm"},
                             {"submissionFormNamePrefix", "submissionForm" } }' />
-            </form>
+			</form>
             @*<div id="submission-result-message_@suffix"></div>*@
         </div>
         <div id="submission-result-message_@suffix"></div>

@@ -8,11 +8,20 @@ namespace Catfish.Core.Models.Contents.Workflow
     public class FieldReference : XmlModel
     {
         public static readonly string TagName = "field-ref";
+        public enum eSourceType { Data, Metadata }
 
-        public Guid? DataItemId
+        public Guid? FieldContainerId
         {
-            get => GetAttribute("data-item-id", null as Guid?);
-            set => SetAttribute("data-item-id", value);
+            get
+            {
+                var id = GetAttribute("field-container-id", null as Guid?);
+                if (id != null)
+                    return id;
+                else
+                    return GetAttribute("data-item-id", null as Guid?); //Keeping backward compatibility
+            }
+
+            set => SetAttribute("field-container-id", value);
         }
 
         public Guid? FieldId
@@ -21,6 +30,18 @@ namespace Catfish.Core.Models.Contents.Workflow
             set => SetAttribute("field-id", value);
         }
 
+        public eSourceType SourceType
+        {
+            get => GetAttribute<eSourceType>("source-type", eSourceType.Data);
+            set => SetAttribute("source-type", value);
+        }
+
+        public string ValueDelimiter
+        {
+            get => GetAttribute("value-delimiter", null as string);
+            set => SetAttribute("value-delimiter", value);
+
+        }
         public FieldReference(XElement data)
             : base(data)
         {
@@ -35,7 +56,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         public FieldReference SetValue(Guid dataItemId, Guid fieldId)
         {
-            DataItemId = dataItemId;
+            FieldContainerId = dataItemId;
             FieldId = fieldId;
             return this;
         }

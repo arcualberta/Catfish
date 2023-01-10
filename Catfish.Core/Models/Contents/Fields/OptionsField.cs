@@ -11,7 +11,7 @@ namespace Catfish.Core.Models.Contents.Fields
         public static readonly string OptionContainerTag = "options";
         public static readonly string OptionTag = "option";
 
-        public Guid[] SelectedOptionGuids { get; set; }
+        public Guid[] SelectedOptionGuids => Options.Where(opt => opt.Selected).Select(opt => opt.Id).ToArray();
         public OptionsField() { }
         public OptionsField(XElement data) : base(data) { }
         public OptionsField(string name, string desc, string lang = null) : base(name, desc, lang) { }
@@ -59,6 +59,15 @@ namespace Catfish.Core.Models.Contents.Fields
             Options.Add(opt);
         }
 
+        public void AddOption(string optionText, Guid newOptGuid,  string langs)
+        {
+            Option opt = new Option();      
+            opt.SetOptionText(optionText, langs);
+            opt.Id = newOptGuid;
+
+            Options.Add(opt);
+        }
+
         public void UpdateOptions(string[] optionText, string lang)
         {
             for (int i = 0; i < optionText.Length; ++i)
@@ -93,13 +102,18 @@ namespace Catfish.Core.Models.Contents.Fields
             if (src == null)
                 throw new Exception("The source field is null or is not an OptionsField");
 
-            var selections = src.SelectedOptionGuids == null ? new Guid[0] : src.SelectedOptionGuids;
-            int i = 0;
+            //var selections = src.SelectedOptionGuids == null ? new Guid[0] : src.SelectedOptionGuids;
+            //int i = 0;
             foreach (var dstOption in Options)
             {
-                dstOption.Selected = selections.Contains(dstOption.Id);
-                Options[i].Selected = selections.Contains(dstOption.Id);
-                i++;
+                //dstOption.Selected = selections.Contains(dstOption.Id);
+                //Options[i].Selected = selections.Contains(dstOption.Id);
+                //i++;
+
+                var srcOption = src.Options.FirstOrDefault(opt => opt.Id == dstOption.Id);
+                dstOption.Selected = srcOption.Selected;
+                dstOption.ExtendedOption = srcOption.ExtendedOption;
+                dstOption.ExtendedValues = srcOption.ExtendedValues;
             }
         }
 
@@ -120,7 +134,17 @@ namespace Catfish.Core.Models.Contents.Fields
 
         public IEnumerable<Text> GetValues(string lang = null)
         {
-            throw new NotImplementedException();
+            List<Text> ret = new List<Text>();
+            var selectedOptions = Options.Where(op => op.Selected);
+            foreach (var op in selectedOptions)
+			{
+                if (!string.IsNullOrEmpty(lang))
+                    ret.Add(op.OptionText.Values.FirstOrDefault(txt => txt.Language == lang));
+                else
+                    ret.AddRange(op.OptionText.Values);
+            }
+
+            return ret;
         }
 
         public string GetValues(string separator, string lang = null)
@@ -153,6 +177,20 @@ namespace Catfish.Core.Models.Contents.Fields
                         option.Selected = srcOption.Selected;
                 }
             }
+        }
+
+        public bool RemoveOption(Guid optionId)
+        {
+            try
+            {
+                Option optionToRemove = Options.Where(o => o.Id == optionId).FirstOrDefault();
+                Options.Remove(optionToRemove);
+                return true;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            return false;
         }
 
         public string[] GetSelectedOptionTexts()

@@ -1,4 +1,5 @@
-﻿using Piranha.Extend;
+﻿using Piranha;
+using Piranha.Extend;
 using Piranha.Extend.Blocks;
 using Piranha.Extend.Fields;
 using System;
@@ -11,9 +12,9 @@ namespace Catfish.Models.Blocks
 {
     [BlockGroupType(Name = "ExtendedColumn", Category = "Media", Icon = "fas fa-images")]
     [BlockItemType(Type = typeof(HtmlBlock))]
-    public class ExtendedColumnBlock : BlockGroup
+    public class ExtendedColumnBlock : BlockGroup, ICatfishBlock
     {
-
+        public void RegisterBlock() => App.Blocks.Register<ExtendedColumnBlock>();
 
         //This could be better, Id like to have it so it only shows the possible row options (limit to # items)
         public enum NumRows

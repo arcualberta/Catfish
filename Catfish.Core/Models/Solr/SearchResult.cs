@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ElmahCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,11 @@ namespace Catfish.Core.Models.Solr
 
         public int ItemsPerPage { get; set; }
 
-
-        public SearchResult(string response)
+        private readonly ErrorLog _errorLog;
+        public SearchResult(string response, ErrorLog errorLog)
         {
+            _errorLog = errorLog;
+
             XElement resp = XElement.Parse(response);
 
             var result = resp.Element("result");
@@ -29,23 +32,29 @@ namespace Catfish.Core.Models.Solr
             Offset = int.Parse(result.Attribute("start").Value);
 
             var highlightsContainer = resp.Elements("lst")
-                .Where(el => el.Attribute("name").Value == "highlighting")
-                .FirstOrDefault();
+                .FirstOrDefault(el => el.Attribute("name").Value == "highlighting");
 
             ResultEntries = new List<ResultEntry>();
             foreach (var doc in result.Elements("doc"))
             {
-                //create a new entry for the doc (Item)
-                ResultEntry resultEntry = new ResultEntry(doc);
-                ResultEntries.Add(resultEntry);
+                try
+                {
 
-                //Setting field highlights
-                var highlightFieldList = highlightsContainer.Elements("lst")
-                    .Where(ele => ele.Attribute("name").Value == resultEntry.Id.ToString())
-                    .FirstOrDefault();
+                    //create a new entry for the doc (Item)
+                    ResultEntry resultEntry = new ResultEntry(doc);
+                    ResultEntries.Add(resultEntry);
 
-                if (highlightFieldList != null)
-                    resultEntry.SetFieldHighlights(highlightFieldList);
+                    //Setting field highlights
+                    var highlightFieldList = highlightsContainer.Elements("lst")
+                        .FirstOrDefault(ele => ele.Attribute("name").Value == resultEntry.Id.ToString());
+
+                    if (highlightFieldList != null)
+                        resultEntry.SetFieldHighlights(highlightFieldList);
+                }
+                catch (Exception ex)
+                {
+                    _errorLog.Log(new Error(ex));
+                }
             }
         }
 

@@ -1,0 +1,26 @@
+﻿@model Catfish.Areas.Applets.Models.Blocks.Report
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Catfish.Core.Services.IWorkflowService _workflowService;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+
+@{
+	var settings = new JsonSerializerSettings()
+	{
+		ContractResolver = new CamelCasePropertyNamesContractResolver()
+	};
+	var statusValues = JsonConvert.SerializeObject(_workflowService.GetTemplateStatus(Guid.Parse(Model.SelectedItemTemplateId.Value)), settings);
+
+	var viewData = new ViewDataDictionary(this.ViewData)
+{
+		{ "data-template-id", Model.SelectedItemTemplateId.Value },
+		{ "data-group-id", Model.SelectedGroupId.Value },
+		{ "data-collection-id", Model.SelectedCollectionId.Value },
+		{ "data-selected-fields", Model.SelectedFieldList.Value},
+		{ "data-detailed-url", Model.DetailedViewUrl.Value },
+		{ "data-status", statusValues }
+	};
+}
+
+<partial name="Shared/_AppletLoader" view-data="@viewData" />
+

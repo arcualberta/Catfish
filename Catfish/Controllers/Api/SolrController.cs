@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models.Solr;
+using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
 using Catfish.Services;
 using ElmahCore;
@@ -19,12 +20,14 @@ namespace Catfish.Api.Controllers
     {
         private readonly IQueryService QueryService;
         private readonly IPageIndexingService _pageIndexingService;
-        public SolrController(IQueryService queryService, IPageIndexingService pageIndexingService)
+        private readonly ISolrBatchService _solrBatchService;
+        public SolrController(IQueryService queryService, IPageIndexingService pageIndexingService, ISolrBatchService solrBatchService)
         {
             QueryService = queryService;
             _pageIndexingService = pageIndexingService;
+            _solrBatchService = solrBatchService;
         }
-
+        [HttpGet]
         [Route("freetext")]
         public IList<SolrEntry> FreeText([FromForm] string searchTerm)
         {
@@ -88,6 +91,27 @@ namespace Catfish.Api.Controllers
         public void IndexSite([FromForm] Guid siteId, [FromForm] string siteTypeId)
         {
             _pageIndexingService.IndexSite(siteId, siteTypeId);
+            _solrBatchService.IndexItems(true);
         }
+
+
+        [HttpGet]
+        [Route("executefreetext/{searchTerm}")]
+        public IList<SolrEntry> ExecuteFreeText(string searchTerm)
+        {
+            try
+            {
+                var parameters = new SearchParameters();
+                parameters.FreeSearch = searchTerm;
+                IList<SolrEntry> result = QueryService.FreeSearch(parameters);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                HttpContext.Request.HttpContext.RiseError(ex);
+                return new List<SolrEntry>();
+            }
+        }
+
     }
 }
