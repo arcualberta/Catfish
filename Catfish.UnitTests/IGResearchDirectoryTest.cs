@@ -1140,7 +1140,7 @@ Any public disclosures of information from the directory will be in aggregate fo
         public List<RowData> ReadGoogleSheet()
         {
             //https://docs.google.com/spreadsheets/d/e/2PACX-1vSPTFgPPcCiCngUPXFE8PdsOgxg7Xybq91voXFxHMFd4JpjUIZGLj7U_piRJZV4WZx3YEW31Pln7XV4/pubhtml => this is my own copy
-            String spreadsheetId = "1x6CeEfZiZcGxtnmkoluaZ6GjUhSmutf5GjwjI6dMOyw"; // "1m -oYJH-15DbqhE31dznAldB-gz75BJu1XAV5p5WJwxo";//==>google sheet Id
+            String spreadsheetId = "*****GOOGLESHEETID*************"; // "1m -oYJH-15DbqhE31dznAldB-gz75BJu1XAV5p5WJwxo";//==>google sheet Id
             String ranges = "A1:AC"; // "A2:AC";// read from col A to AI, starting 2rd row
 
             SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
