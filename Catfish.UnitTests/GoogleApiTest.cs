@@ -86,7 +86,7 @@ namespace Catfish.UnitTests
         public void UpdateGoogleSheetCell()
         {
             Google.Apis.Sheets.v4.SheetsService service = GetAuthorizeGoogleAppForSheetsService("../../Catfish.UnitTests", "../../client_secret_googledriveapi_desktop.json");
-            string sheetId = "1H6bRriStvrViCoc2grVR8j041H5yngqz-yWaHk2lKxo";
+            string sheetId = "*********REPLACEGOOGLESHEETID*************";//"1H6bRriStvrViCoc2grVR8j041H5yngqz-yWaHk2lKxo";
            
             String range = "Sheet1!B2";  // update cell B2 
             ValueRange valueRange = new ValueRange();
@@ -176,7 +176,7 @@ namespace Catfish.UnitTests
 
         public List<RowData> ReadGoogleSheet()
         {
-            String spreadsheetId = "1YFS3QXGpNUtakBRXxsFmqqTYMYNv8bL-XbzZ3n6LRsI";//==>google sheet Id
+            String spreadsheetId =  "*********REPLACEGOOGLESHEETID*************"; //"1YFS3QXGpNUtakBRXxsFmqqTYMYNv8bL-XbzZ3n6LRsI";//==>google sheet Id
             String ranges = "A2:Y";// read from col A to Y, starting 2nd row
 
             SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
