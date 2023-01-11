@@ -304,7 +304,7 @@ namespace Catfish.UnitTests
 
         public List<RowData>  ReadGoogleSheet()
         {
-            String spreadsheetId = "1YFS3QXGpNUtakBRXxsFmqqTYMYNv8bL-XbzZ3n6LRsI";//==>google sheet Id
+            String spreadsheetId = "*****GOOGLESHEETID*******";//==>google sheet Id
             String ranges = "A2:Z";// read from col A to Z, starting 2nd row
 
             SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
