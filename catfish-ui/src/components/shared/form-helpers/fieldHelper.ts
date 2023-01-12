@@ -29,6 +29,7 @@ export const isMonolingualTextInputField = (field: Field): boolean => Object.val
 export const isTextInputField = (field: Field): boolean => Object.values(MonolingualFieldType).map(x => x as unknown as string).includes(field.type as unknown as string);
 
 export const isAttachmentField = (field: Field): boolean => Object.values(AttachmentField).map(x => x as unknown as string).includes(field.type as unknown as string);
+
 /**
  * Returns the title of a field as a string. If multiple values are specified, only returns the first value.
  * @param field: input field
@@ -86,6 +87,17 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
     }
     else if (isMonolingualTextInputField(field)) {
         fieldData.monolingualTextValues = [createText(null)]
+    }
+    else if (isCompositeField(field)) {
+        fieldData.compositeFieldData=[] as FieldData[];
+        field.fields?.forEach((fld)=>{
+            let fldData = {
+                id: Guid.create().toString() as unknown as Guid,
+                fieldId: fld.id
+            } as FieldData;
+            fieldData.compositeFieldData?.push(fldData);
+        });
+        
     }
 
     return fieldData

@@ -14,6 +14,7 @@
     import { default as TextCollection } from './TextCollection.vue'
     import { default as InfoSection } from './InfoSection.vue'
     import {default as AttachmentField} from './AttachmentField.vue'
+    import {default as CompositeField} from './CompositeField.vue'
 import { Guid } from 'guid-typescript';
 
     const props = defineProps<{
@@ -29,6 +30,9 @@ import { Guid } from 'guid-typescript';
     const isMonolingualTextInputField = formHelper.isMonolingualTextInputField(props.model)
 //
     const isAttachmentField = props.model.type === FieldType.AttachmentField ? true: false;
+    
+    const isCompositeField = props.model.type === FieldType.CompositeField ? true: false;
+    
     const fieldElementId=props.model.id.toString();
     
 
@@ -45,6 +49,7 @@ import { Guid } from 'guid-typescript';
 </script>
 
 <template>
+
     <b-container>
         <!-- print field name and discription-->
         <b-row>
@@ -70,6 +75,10 @@ import { Guid } from 'guid-typescript';
                 <InfoSection :model="model" v-if="model.type === FieldType.InfoSection" />
                 <div v-if="isAttachmentField">
                   <AttachmentField :model="model" :elementId="fieldElementId" @drop="drop" @change="selectedFile(fieldElementId)" />
+                </div>
+
+                <div v-if="isCompositeField">
+                  <CompositeField :model="model" :modelData="modelData" />
                 </div>
             </b-col>
         </b-row>

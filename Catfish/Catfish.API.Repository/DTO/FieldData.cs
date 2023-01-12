@@ -44,5 +44,7 @@
 
         /* storing attachment files if any */
         public FileReference[]? FileReferences { get; set; } = Array.Empty<FileReference>();
+
+        public FieldData[]? CompositeFieldData { get; set; } = null;
     }
 }
