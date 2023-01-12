@@ -90,17 +90,22 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
     }
     else if (isCompositeField(field)) {
         fieldData.compositeFieldData=[] as FieldData[];
-        field.fields?.forEach((fld)=>{
-            let fldData = {
-                id: Guid.create().toString() as unknown as Guid,
-                fieldId: fld.id
-            } as FieldData;
+         //createCompositeFieldData(field, lang);
+         field.fields?.forEach((fld)=>{
+            let fldData = createCompositeFieldData(fld, lang);
             fieldData.compositeFieldData?.push(fldData);
-        });
-        
+         });
     }
 
     return fieldData
+}
+
+export const createCompositeFieldData=(field: Field, lang: string[] | string):FieldData=>
+{
+    if(!lang)
+        lang="en"
+        
+    return createFieldData(field,lang);
 }
 export const createFormData = (form: FormTemplate, lang: string | string[]): FormData => {
     const formData = {

@@ -17,11 +17,12 @@ const compositeModelData = computed(()=> props.modelData?.compositeFieldData);
 <template>
 
     <div class="lightGrayBorder compositeField">
-    <h5>Children Fields -- form submission </h5>
-    <div> {{JSON.stringify(model)}} -- {{model.type}}</div>
-    <div v-for="(field) in model.fields" :key="field.id"> 
-        <div>{{field.type}}</div>
-        <FieldComponent :model="field" :modelData="compositeModelData?.filter(md=>md.fieldId == field.id)" />
+   
+    <div v-for="(field, idx) in model.fields" :key="field.id"> 
+      
+        <FieldComponent :model="field" :modelData="compositeModelData![idx]" />
+       
+       
     </div>
 
     </div>
@@ -44,26 +45,6 @@ const compositeModelData = computed(()=> props.modelData?.compositeFieldData);
     width: 100%;
    }
 
-/*.insertFieldBtn:before{
-  content:" ";
-  display: block;
-  height: 1px;
-  width: 45%;
-  position: absolute;
-  top: 56%;
-  left: 30px;
-  background: lightgrey;
-}
-.insertFieldBtn:after{
-  content:" ";
-  display: block;
-  height: 1px;
-  width: 45%;
-  position: absolute;
-  top: 56%;
-  right: 30px;
-  background: lightgrey;
-}*/
 
 .fontSize2em{
     font-size: 2rem;
