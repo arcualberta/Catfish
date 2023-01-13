@@ -1,4 +1,6 @@
 ﻿
+using Catfish.API.Repository.Models.Workflow;
+
 namespace Catfish.API.Repository
 {
     public class RepoDbContext : DbContext
@@ -51,6 +53,8 @@ namespace Catfish.API.Repository
         public DbSet<EntityTemplate>? EntityTemplates { get; set; }
         //public DbSet<Collection>? Collections { get; set; }
         public DbSet<Relationship>? Relationships { get; set; }
+        public DbSet<Trigger> Triggers { get; set; }
+        public DbSet<Workflow> Workflows { get; set; }
 
     }
 }

@@ -1,13 +1,16 @@
 
 <script setup lang="ts">
     import { ref } from 'vue'
+    import {storeToRefs} from 'pinia'
     import { Guid } from "guid-typescript";
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
     import { Field, TextCollection as TextCollectionModel, FieldType, TextType, MonolingualFieldType, Option } from '../../shared/form-models';
-    import { isOptionField, createTextCollection, createOption, cloneTextCollection, isTextInputField, cloneOption } from '../../shared/form-helpers'
+    import { isOptionField, createTextCollection, createOption, cloneTextCollection, isTextInputField, cloneOption, isCompositeField } from '../../shared/form-helpers'
     import { default as TextCollection } from './TextCollection.vue'
+    
     import { default as Opt } from './Option.vue'
+    import {default as CompositeField} from "./CompositeField.vue"
     import { useFormBuilderStore } from '../store'
 
 /* import the fontawesome core */
@@ -33,6 +36,7 @@
     const isAnOptionField = isOptionField(props.model);
 
     const store = useFormBuilderStore();
+    const {activeContainer} = storeToRefs(store);
     const newOptionModel = ref(createOption(store.lang, cloneTextCollection(createTextCollection(store.lang) as TextCollectionModel)));
 
     const addOption = () => {
@@ -53,7 +57,9 @@
 
 //AttachmentFild
     const isAttachmentField = props.model.type === FieldType.AttachmentField ? true: false;
-  
+    const isComositeField = props.model.type === FieldType.CompositeField ? true: false;
+   
+
 </script>
 
 <template>
@@ -134,6 +140,15 @@
         </div>
 
     </div>
+    <div class="row" v-if="isCompositeField(model)">
+        <div class="col-sm-2">
+            <h6>Children</h6>
+        </div>
+        <div class="col-sm-10">
+           <composite-field :model="model" />
+        </div>
+        <br/><br/><br/>
+    </div>
     <div class="row">
         <div class="col-sm-2">
             <h6>Required Field:</h6>
@@ -169,7 +184,6 @@
             </div>
         </div>
     </div>
-
     
 </template>
 

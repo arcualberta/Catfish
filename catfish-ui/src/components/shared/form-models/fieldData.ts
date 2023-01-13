@@ -51,6 +51,9 @@ export interface FieldData {
     /* storing attachment files if any */
     fileReferences: FileReference[] | null
 
+    /* to store children Fields in Composite field */
+    compositeFieldData: FieldData[] | null
+
 }
 
 export interface ExtendedOptionValue {

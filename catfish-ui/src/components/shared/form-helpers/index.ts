@@ -20,5 +20,6 @@ export {
     getFieldTitle,
     getFieldDescription,
     createFieldData,
-    createFormData
+    createFormData,
+    isCompositeField
 } from './fieldHelper'

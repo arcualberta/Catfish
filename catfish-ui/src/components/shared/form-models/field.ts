@@ -60,6 +60,9 @@ export interface Field {
     /* Files attachment*/
     files: FileReference[] | null;
 
+    /* any child fields, example if this is a composite field */
+    fields: Field[] | null;
+
 }
 
 /**
@@ -83,7 +86,9 @@ export enum FieldType{
 
     InfoSection,
 
-    AttachmentField
+    AttachmentField,
+
+    CompositeField
 }
 
 /**
@@ -141,4 +146,6 @@ export interface FileReference {
 }
 
 
-
+export enum CompositeFieldType{
+    CompositeField= FieldType.CompositeField
+}

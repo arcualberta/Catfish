@@ -1,5 +1,8 @@
 ﻿
 
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+
 namespace CatfishExtensions.Services
 {
     public class GoogleIdentity : IGoogleIdentity
@@ -82,6 +85,13 @@ namespace CatfishExtensions.Services
 
             return wrapper == null ? new JsonWebKey[0] : wrapper.keys;
         }
+
+        private string GetPrivateKey()
+        {
+           return  _configuration.GetSection("Google:Identity:rsa_privateKey").Value;
+        }
+
+       
         #endregion
     }
 

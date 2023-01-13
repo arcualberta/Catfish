@@ -1,7 +1,7 @@
 import AttachmentField from "@/components/form-submission/components/AttachmentField.vue";
 import { Guid } from "guid-typescript"
 
-import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, FormData, FormTemplate } from "../form-models";
+import { Field, OptionFieldType, TextType, MonolingualFieldType, FieldData, FormData, FormTemplate, CompositeFieldType } from "../form-models";
 import { getTextValue, createTextCollection, createText } from './textHelper'
 
 /**
@@ -29,6 +29,7 @@ export const isMonolingualTextInputField = (field: Field): boolean => Object.val
 export const isTextInputField = (field: Field): boolean => Object.values(MonolingualFieldType).map(x => x as unknown as string).includes(field.type as unknown as string);
 
 export const isAttachmentField = (field: Field): boolean => Object.values(AttachmentField).map(x => x as unknown as string).includes(field.type as unknown as string);
+
 /**
  * Returns the title of a field as a string. If multiple values are specified, only returns the first value.
  * @param field: input field
@@ -87,8 +88,24 @@ export const createFieldData = (field: Field, lang: string[] | string): FieldDat
     else if (isMonolingualTextInputField(field)) {
         fieldData.monolingualTextValues = [createText(null)]
     }
+    else if (isCompositeField(field)) {
+        fieldData.compositeFieldData=[] as FieldData[];
+         //createCompositeFieldData(field, lang);
+         field.fields?.forEach((fld)=>{
+            let fldData = createCompositeFieldData(fld, lang);
+            fieldData.compositeFieldData?.push(fldData);
+         });
+    }
 
     return fieldData
+}
+
+export const createCompositeFieldData=(field: Field, lang: string[] | string):FieldData=>
+{
+    if(!lang)
+        lang="en"
+        
+    return createFieldData(field,lang);
 }
 export const createFormData = (form: FormTemplate, lang: string | string[]): FormData => {
     const formData = {
@@ -104,3 +121,5 @@ export const createFormData = (form: FormTemplate, lang: string | string[]): For
 
     return formData
 }
+
+export const isCompositeField = (field: Field): boolean => Object.values(CompositeFieldType).map(x => x as unknown as string).includes(field.type as unknown as string);

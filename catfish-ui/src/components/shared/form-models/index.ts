@@ -2,7 +2,7 @@
 export type { FormTemplate, FieldEntry } from './formTemplate';
 
 export type { Field } from './field';
-export { TextType, MonolingualFieldType, OptionFieldType, InfoSectionType, FieldType } from './field';
+export { TextType, MonolingualFieldType, OptionFieldType, InfoSectionType, FieldType, CompositeFieldType } from './field';
 
 export type { Option } from './option';
 

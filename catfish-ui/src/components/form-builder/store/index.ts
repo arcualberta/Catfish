@@ -12,7 +12,8 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
         lang: ["en", "fr"],
         form: null as FormTemplate | null,
         transientMessageModel: {} as TransientMessageModel,
-        apiRoot: null as string |null
+        apiRoot: null as string |null,
+        activeContainer: null as FormTemplate | null as Field | null
     }),
     actions: {
         createNewForm(){
