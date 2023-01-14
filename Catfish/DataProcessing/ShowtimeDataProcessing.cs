@@ -341,14 +341,28 @@ namespace DataProcessing
                             {
                                 foreach (ZipArchiveEntry entry in archive.Entries)
                                 {
-                                    if(skipMovies && entry.Name.EndsWith("I.XML"))
-                                        continue;
+                                    if (folder_key == "0_backfill")
+                                    {
+                                        if (skipMovies && entry.Name.EndsWith("IMOVIES.XML"))
+                                            continue;
 
-                                    if (skipTheaters && entry.Name.EndsWith("T.XML"))
-                                        continue;
+                                        if (skipTheaters && entry.Name.EndsWith("THEATER.XML"))
+                                            continue;
 
-                                    if (skipShowtimes && entry.Name.EndsWith("S.XML"))
-                                        continue;
+                                        if (skipShowtimes && entry.Name.EndsWith("SCREENS.XML"))
+                                            continue;
+                                    }
+                                    else
+                                    {
+                                        if (skipMovies && entry.Name.EndsWith("I.XML"))
+                                            continue;
+
+                                        if (skipTheaters && entry.Name.EndsWith("T.XML"))
+                                            continue;
+
+                                        if (skipShowtimes && entry.Name.EndsWith("S.XML"))
+                                            continue;
+                                    }
 
                                     if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
                                         continue;
