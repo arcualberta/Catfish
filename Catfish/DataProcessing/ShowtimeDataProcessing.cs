@@ -343,24 +343,24 @@ namespace DataProcessing
                                 {
                                     if (folder_key == "0_backfill")
                                     {
-                                        if (skipMovies && entry.Name.EndsWith("IMOVIES.XML"))
+                                        if (skipMovies && entry.Name.ToUpper().EndsWith("IMOVIES.XML"))
                                             continue;
 
-                                        if (skipTheaters && entry.Name.EndsWith("THEATER.XML"))
+                                        if (skipTheaters && entry.Name.ToUpper().EndsWith("THEATER.XML"))
                                             continue;
 
-                                        if (skipShowtimes && entry.Name.EndsWith("SCREENS.XML"))
+                                        if (skipShowtimes && entry.Name.ToUpper().EndsWith("SCREENS.XML"))
                                             continue;
                                     }
                                     else
                                     {
-                                        if (skipMovies && entry.Name.EndsWith("I.XML"))
+                                        if (skipMovies && entry.Name.ToUpper().EndsWith("I.XML"))
                                             continue;
 
-                                        if (skipTheaters && entry.Name.EndsWith("T.XML"))
+                                        if (skipTheaters && entry.Name.ToUpper().EndsWith("T.XML"))
                                             continue;
 
-                                        if (skipShowtimes && entry.Name.EndsWith("S.XML"))
+                                        if (skipShowtimes && entry.Name.ToUpper().EndsWith("S.XML"))
                                             continue;
                                     }
 
