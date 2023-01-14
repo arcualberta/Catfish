@@ -433,6 +433,294 @@ namespace DataProcessing
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
 
+/*
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexRawEntries
+        [Fact]
+        public void IndexFlattenedShowtimesEntries()
+        {
+            DateTime start = DateTime.Now;
+
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipProcessedFoldersAndZipFiles")?.Value, out bool skippProcessedFoldersAndZipFiles))
+                skippProcessedFoldersAndZipFiles = true;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
+                maxBatchesToProcess = int.MaxValue;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxShowtimeBatchesToProcess")?.Value, out int maxShowtimeBatchesToProcess))
+                maxShowtimeBatchesToProcess = int.MaxValue;
+
+            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            if (string.IsNullOrEmpty(outputFolder))
+                outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+
+            string srcFolderRoot = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
+            if (string.IsNullOrEmpty(srcFolderRoot))
+                outputFolder = "C:\\Projects\\Showtime Database\\cinema-source.com";
+            Assert.True(Directory.Exists(srcFolderRoot));
+
+            string logFilePrefix = "raw-";
+            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}processing-{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}processing-{fileSuffix}-errors.txt");
+
+            string trackingFile = Path.Combine(outputFolder, "tracking-keys.txt");
+            if (!File.Exists(trackingFile))
+                File.Create(trackingFile).Close();
+            string[] trackingKeys = File.ReadAllLines(trackingFile);
+
+            var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
+
+            var solrService = _testHelper.Solr;
+            int taskWaitTimeoutMilliseconds = 60000;//10 minutes
+            int batch = 0;
+            foreach (var batchFolder in srcBatcheFolders)
+            {
+                try
+                {
+                    if (maxBatchesToProcess < batch)
+                        break;
+                    ++batch;
+
+                    string folder_key = batchFolder.Substring(srcFolderRoot.Length + 1);
+                    if (skippProcessedFoldersAndZipFiles && trackingKeys.Contains(folder_key))
+                        continue;
+
+                    var zipFiles = Directory.GetFiles(batchFolder);
+                    List<SolrDoc> solrDocs = new List<SolrDoc>();
+                    foreach (var zipFile in zipFiles)
+                    {
+                        List<Movie> moviesInZipFile = new List<Movie>();
+                        List<Theater> theatersInZipFile = new List<Theater>();
+
+                        try
+                        {
+                            string zipfile_key = zipFile.Substring(srcFolderRoot.Length + 1);
+                            if (skippProcessedFoldersAndZipFiles && trackingKeys.Contains(zipfile_key))
+                                continue;
+
+                            File.AppendAllText(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
+                            int movieCount = 0, theaterCount = 0, showtimeCount = 0;
+
+                            using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                            {
+                                if (zipFile.ToLower().EndsWith("_chn.zip"))
+                                {
+<<<<<<< Updated upstream
+                                    if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
+                                        continue;
+
+
+=======
+                                }
+                                else
+                                {
+                                    //Loading all movies from the zip file
+                                    string entryNameFilter = folder_key == "0_backfill" ? "IMOVIES.XML" : "I.XML";
+                                    foreach (ZipArchiveEntry entry in archive.Entries
+                                        .Where(en => en.Name.ToUpper().EndsWith(entryNameFilter)))
+                                    {
+                                        string entry_key = $"{zipfile_key}\\{entry.Name}";
+                                        if (trackingKeys.Contains(entry_key))
+                                            continue;
+                                        trackingKeys
+                                        string entryContent = ReadZipArchiveEntryContent(entry);
+                                        XElement xml = XElement.Parse(entryContent);
+
+                                        foreach (var child in xml.Elements())
+                                        {
+                                            string entryType = child.Name.ToString().ToLower();
+
+                                            if (entryType == "movie")
+                                                moviesInZipFile.Add(new Movie(child));
+                                            else
+                                                File.AppendAllText(errorLogFile, $"Expected a movie but found an {entryType} in {entry_key} {Environment.NewLine}");
+                                        }
+                                    }
+
+                                    //Loading all theaters from the zip file
+                                    entryNameFilter = folder_key == "0_backfill" ? "THEATER.XML" : "T.XML";
+                                    foreach (ZipArchiveEntry entry in archive.Entries
+                                        .Where(en => en.Name.ToUpper().EndsWith(entryNameFilter)))
+                                    {
+                                        string entry_key = $"{zipfile_key}\\{entry.Name}";
+                                        if (trackingKeys.Contains(entry_key))
+                                            continue;
+>>>>>>> Stashed changes
+                                    string entryContent = ReadZipArchiveEntryContent(entry);
+                                    XElement xml = XElement.Parse(entryContent);
+
+                                    foreach (var child in xml.Elements())
+                                    {
+                                        string entryType = child.Name.ToString().ToLower();
+
+                                        if (entryType == "theater")
+                                            theatersInZipFile.Add(new Theater(child));
+                                        else
+                                            File.AppendAllText(errorLogFile, $"Expected a theater but found an {entryType} in {entry_key} {Environment.NewLine}");
+                                    }
+                                }
+
+                                //Processing all showtime records
+                                entryNameFilter = folder_key == "0_backfill" ? "SCREENS.XML" : "S.XML";
+                                foreach (ZipArchiveEntry entry in archive.Entries
+                                    .Where(en => en.Name.ToUpper().EndsWith(entryNameFilter)))
+                                {
+                                    string entry_key = $"{zipfile_key}\\{entry.Name}";
+                                    if (trackingKeys.Contains(entry_key))
+                                        continue;
+
+                                    string entryContent = ReadZipArchiveEntryContent(entry);
+                                    XElement xml = XElement.Parse(entryContent);
+
+                                    foreach (var child in xml.Elements())
+                                    {
+                                        string entryType = child.Name.ToString().ToLower();
+
+                                        if (entryType == "showtime")
+                                            showtimesInZipFile.Add(new Showtime(child));
+                                        else
+                                            File.AppendAllText(errorLogFile, $"Expected a theater but found an {entryType} in {entry_key} {Environment.NewLine}");
+                                    }
+                                }
+
+                                foreach (ZipArchiveEntry entry in archive.Entries)
+                                {
+                                    if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
+                                        continue;
+
+                                    string entry_key = $"{zipfile_key}\\{entry.Name}";
+                                    if (trackingKeys.Contains(entry_key))
+                                        continue;
+
+                                    try
+                                    {
+                                        Stream stream = entry.Open();
+                                        string entryContent = null;
+                                        using (StreamReader reader = new StreamReader(stream))
+                                        {
+                                            entryContent = reader.ReadToEnd();
+                                            reader.Close();
+                                        }
+                                        stream.Close();
+
+                                        if (string.IsNullOrWhiteSpace(entryContent))
+                                        {
+                                            File.AppendAllText(errorLogFile, $"No data in {entry_key}");
+                                            continue; //foreach (ZipArchiveEntry entry in archive.Entries)
+                                        }
+
+                                        XElement xml = XElement.Parse(entryContent);
+                                        foreach (var child in xml.Elements())
+                                        {
+                                            string entryType = child.Name.ToString().ToLower();
+
+                                            if (entryType == "movie")
+                                            {
+                                                var movie = new Movie(child);
+                                                moviesInZipFile.Add(movie);
+                                            }
+
+                                            if (entryType == "theater")
+                                            {
+                                                var theater = new Theater(child);
+                                                moviesInZipFile.Add(theater);
+                                            }
+
+
+
+
+
+
+
+
+                                            SolrDoc solrDoc = new SolrDoc();
+                                            solrDocs.Add(solrDoc);
+
+                                            solrDoc.AddId(Guid.NewGuid().ToString());
+                                            solrDoc.AddField("entry_type_s", $"raw-{entryType}");
+                                            solrDoc.AddField("entry_src_s", entry_key);
+
+                                            if (entryType == "movie")
+                                            {
+                                                AddMovie(solrDoc, new Movie(child));
+                                                ++movieCount;
+                                            }
+                                            else if (entryType == "theater")
+                                            {
+                                                AddTheater(solrDoc, new Theater(child));
+                                                ++theaterCount;
+                                            }
+                                            else if (entryType == "showtime")
+                                            {
+                                                AddShowtime(solrDoc, new Showtime(child));
+                                                ++showtimeCount;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        File.AppendAllText(errorLogFile, $"EXCEPTION in {entry_key}: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
+                                    }
+
+                                    //Indexing the documents
+                                    if (solrService.Index(solrDocs).Wait(taskWaitTimeoutMilliseconds))
+                                    {
+                                        if (solrService.CommitAsync().Wait(taskWaitTimeoutMilliseconds))
+                                            File.AppendAllText(trackingFile, $"{entry_key}{Environment.NewLine}");
+                                        else
+                                            File.AppendAllText(errorLogFile, $"Commit timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
+
+
+                                    }
+                                    else
+                                        File.AppendAllText(errorLogFile, $"Indexing timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
+
+                                    solrDocs.Clear();
+                                    GC.Collect();
+                                } //End: foreach (ZipArchiveEntry entry in archive.Entries)
+                            }//End: processing none chn files 
+
+                        } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+
+                            //Mark that the current zip file is done processing
+                            File.AppendAllText(trackingFile, $"{zipfile_key}{Environment.NewLine}");
+
+                        File.AppendAllText(processingLogFile, $"    Movies: {movieCount}, Theaters: {theaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}");
+                    }
+                        catch (Exception ex)
+                {
+                    File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
+                }
+            } //End: foreach (var zipFile in zipFiles)
+
+            //Mark that the current batch is done processing
+            File.AppendAllText(trackingFile, $"{folder_key}{Environment.NewLine}");
+        }
+                catch (Exception ex)
+                {
+                    File.AppendAllText(errorLogFile, $"EXCEPTION in {batchFolder}: {ex.Message}{Environment.NewLine}");
+                }
+    //GC.Collect();
+
+}//End: foreach (var batchFolder in srcBatcheFolders)
+        }
+
+        private string ReadZipArchiveEntryContent(ZipArchiveEntry entry)
+{
+    Stream stream = entry.Open();
+    string entryContent = null;
+    using (StreamReader reader = new StreamReader(stream))
+    {
+        entryContent = reader.ReadToEnd();
+        reader.Close();
+    }
+    stream.Close();
+    return entryContent;
+}
+
+*/
+
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.DuplicateCheck
         [Fact]
         public void DuplicateCheck()
