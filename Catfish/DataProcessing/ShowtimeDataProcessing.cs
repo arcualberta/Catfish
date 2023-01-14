@@ -268,6 +268,15 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipMovies")?.Value, out bool skipMovies))
+                skipMovies = false;
+
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipTheaters")?.Value, out bool skipTheaters))
+                skipTheaters = false;
+
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipShowtimes")?.Value, out bool skipShowtimes))
+                skipShowtimes = false;
+
             if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipProcessedFoldersAndZipFiles")?.Value, out bool skippProcessedFoldersAndZipFiles))
                 skippProcessedFoldersAndZipFiles = true;
 
@@ -332,6 +341,15 @@ namespace DataProcessing
                             {
                                 foreach (ZipArchiveEntry entry in archive.Entries)
                                 {
+                                    if(skipMovies && entry.Name.EndsWith("I.XML"))
+                                        continue;
+
+                                    if (skipTheaters && entry.Name.EndsWith("T.XML"))
+                                        continue;
+
+                                    if (skipShowtimes && entry.Name.EndsWith("S.XML"))
+                                        continue;
+
                                     if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
                                         continue;
 
@@ -1080,12 +1098,26 @@ namespace DataProcessing
         public int GetElementValueInt(XElement parent, string elementName, int defaultValue) => GetElementValueInt(parent, elementName, out int n) ? n : defaultValue;
         public DateTime? GetElementValueDateTime(XElement parent, string elementName) => DateTime.TryParse(GetElementValueStr(parent, elementName), out DateTime val) ? val : null;
         public decimal? GetElementValueDecimal(XElement parent, string elementName) => decimal.TryParse(GetElementValueStr(parent, elementName), out decimal val) ? val : null;
-        public List<string> GetGrandChildElementValues(XElement parent, string childElementName, string grandChieldElementName)
+        public List<string> GetGrandChildElementValues(XElement parent, string childElementName, string grandChieldElementName, bool alsoIncludeDirectChildrenWithGrantChildElementName)
         {
             var vals = GetChildElement(parent, childElementName)?.Elements(grandChieldElementName)
                 .Where(grandchild => !string.IsNullOrEmpty(grandchild.Value))
                 .Select(grandchild => grandchild.Value).ToList();
 
+            if (alsoIncludeDirectChildrenWithGrantChildElementName)
+            {
+                var directVals = parent.Elements(grandChieldElementName)
+                    .Where(child => !string.IsNullOrEmpty(child.Value))
+                    .Select(child => child.Value).ToList();
+
+                if (directVals?.Count > 0)
+                {
+                    if (vals != null)
+                        vals = vals.Union(directVals).ToList();
+                    else
+                        vals = directVals;
+                }
+            }
             return vals != null ? vals : new List<string>();
         }
         public string? GetElementAttStr(XElement parent, string elementName, string attName) => GetChildElement(parent, elementName)?.Attribute(attName)?.Value;
@@ -1155,21 +1187,21 @@ namespace DataProcessing
             movie_id = GetElementValueInt(xml, "movie_id", -1);
             parent_id = GetElementValueInt(xml, "parent_id", -1);
             title = GetElementValueStr(xml, "title");
-            pictures = GetGrandChildElementValues(xml, "pictures", "photos");
-            hipictures = GetGrandChildElementValues(xml, "hipictures", "photos");
+            pictures = GetGrandChildElementValues(xml, "pictures", "photos", true);
+            hipictures = GetGrandChildElementValues(xml, "hipictures", "photos", true);
             rating = GetElementValueStr(xml, "rating");
             advisory = GetElementValueStr(xml, "advisory");
-            genres = GetGrandChildElementValues(xml, "genres", "genre");
-            casts = GetGrandChildElementValues(xml, "casts", "cast");
-            directors = GetGrandChildElementValues(xml, "directors", "director");
+            genres = GetGrandChildElementValues(xml, "genres", "genre", true);
+            casts = GetGrandChildElementValues(xml, "casts", "cast", true);
+            directors = GetGrandChildElementValues(xml, "directors", "director", true);
             release_date = GetElementValueDateTime(xml, "release_date");
             release_notes = GetElementValueStr(xml, "release_notes");
             release_dvd = GetElementValueStr(xml, "release_dvd");
             running_time = GetElementValueInt(xml, "running_time", -1);
             official_site = GetElementValueStr(xml, "official_site");
-            distributors = GetGrandChildElementValues(xml, "distributors", "distributor");
-            producers = GetGrandChildElementValues(xml, "producers", "producer");
-            writers = GetGrandChildElementValues(xml, "writers", "writer");
+            distributors = GetGrandChildElementValues(xml, "distributors", "distributor", true);
+            producers = GetGrandChildElementValues(xml, "producers", "producer", true);
+            writers = GetGrandChildElementValues(xml, "writers", "writer", true);
             synopsis = GetElementValueStr(xml, "synopsis");
             lang = GetElementValueStr(xml, "lang");
             intl_country = GetElementAttStr(xml, "intl", "country");
