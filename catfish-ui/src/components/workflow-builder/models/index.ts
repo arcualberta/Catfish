@@ -24,3 +24,9 @@ export interface SubmissionOption {
     preState: string | null;
     postState: string;
 }
+
+export interface WorkflowState {
+    id: Guid;
+    name: string;
+    description: string | null;
+}
