@@ -3,28 +3,38 @@
     import { useWorkflowBuilderStore } from '../store';
     import {storeToRefs} from 'pinia';
     import {default as ConfirmPopUp} from "../../shared/components/pop-up/ConfirmPopUp.vue"
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Guid } from 'guid-typescript';
 
 
-    const props = defineProps < { stateName: string,
-                  stateDescription: string | null} > ();
+   // const props = defineProps < { stateName: string,
+   //               stateDescription: string | null} > ();
     const store = useWorkflowBuilderStore();
 
     const {states}= storeToRefs(store);
     
 
     const isAddNewState = ref(false);
+    const stateName = ref("");
+    const stateDescription = ref("");
 
+    const disabled=computed(()=>stateName.value.length > 0? false : true);
     const addState = ()=>{
+    
+        let _name = stateName.value;
+        let _description = stateDescription.value;
         let newState= {
-            id:Guid.create(),
-            name :props.stateName,
-            description : props.stateDescription
+         id:Guid.create(),
+           name :_name,
+           description : _description
         } as WorkflowState;
         
         states.value?.push(newState);
         isAddNewState.value=false;
+       
+       
+       stateName.value="";
+       stateDescription.value="";
     
     }
    
@@ -55,7 +65,10 @@ import { Guid } from 'guid-typescript';
                 <template v-slot:body>
                     <b-row>
                         <div>Name : </div>
-                        <div><input type="text" v-model="stateName" /></div>
+                        <div>
+                            <input type="text" v-model="stateName" /> 
+                           
+                        </div>
                     </b-row>
                     <b-row>
                         <div>Description : </div>
@@ -65,7 +78,8 @@ import { Guid } from 'guid-typescript';
                 <template v-slot:footer>
                     <button type="button"
                             class="modal-cancel-btn" 
-                            @click="isAddNewState=false"        
+                            @click="isAddNewState=false"  
+                                 
                             aria-label="Close modal">
                         Cancel
                     </button>
@@ -74,9 +88,11 @@ import { Guid } from 'guid-typescript';
                             class="modal-confirm-btn"
                             style="margin-left:10px"
                            @click="addState()"
+                           :disabled="disabled" 
                             aria-label="Close modal">
                         Save
                     </button>
+                    <div>Save button disabled: {{disabled}} </div>
                 </template>
             </ConfirmPopUp>
 </template>
