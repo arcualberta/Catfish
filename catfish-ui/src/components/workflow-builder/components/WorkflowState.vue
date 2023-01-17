@@ -17,10 +17,9 @@ import { Guid } from 'guid-typescript';
     const isAddNewState = ref(false);
     const stateName = ref("");
     const stateDescription = ref("");
-
+   //  const requiredField = ref("hide");
     const disabled=computed(()=>stateName.value.length > 0? false : true);
     const addState = ()=>{
-    
         let _name = stateName.value;
         let _description = stateDescription.value;
         let newState= {
@@ -32,25 +31,41 @@ import { Guid } from 'guid-typescript';
         states.value?.push(newState);
         isAddNewState.value=false;
        
-       
+       //reset the input fields
        stateName.value="";
        stateDescription.value="";
-    
     }
-   
+   const removeState = (idx: number)=>{
+        states.value?.splice(idx, 1);
+   }
+ 
 </script>
 
 <template>
      <h5>Workflow States</h5>
-     <ul v-if="states && states.length > 0">
+     <div v-if="states && states.length > 0">
+      <b-row v-for="(state, idx) in states" :key="state.id">
+            <b-col class="col-sm-4">
+                <h6 >{{state.name}}</h6>
+            </b-col>
+            <b-col class="col-sm-6">
+            <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon"/>
+            <font-awesome-icon icon="fa-solid fa-circle-xmark" class="fa-icon" @click="removeState(idx)" />
+       
+            </b-col>
+        </b-row>
+        </div>
+     <!-- <ul v-if="states && states.length > 0">
         <li v-for="state in states" :key="state.id">
-        <span>{{state.name}}</span>
+        
+        <span class="">{{state.name}}</span>
         <span>
-            <font-awesome-icon icon="fa-solid fa-pen-circle" />
-            <font-awesome-icon icon="fa-solid fa-circle-xmark" />
+            <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon"/>
+            <font-awesome-icon icon="fa-solid fa-circle-xmark" class="fa-icon"/>
         </span>
+        </b-row>
         </li>
-   </ul>
+   </ul> -->
    <font-awesome-icon icon="fa-solid fa-circle-plus" @click="isAddNewState = !isAddNewSate"/>Add New State
 
     <ConfirmPopUp v-if="isAddNewState" >
@@ -67,7 +82,7 @@ import { Guid } from 'guid-typescript';
                         <div>Name : </div>
                         <div>
                             <input type="text" v-model="stateName" /> 
-                           
+                          <!--  <span :class="requiredField">* Name is required </span>-->
                         </div>
                     </b-row>
                     <b-row>
@@ -96,3 +111,12 @@ import { Guid } from 'guid-typescript';
                 </template>
             </ConfirmPopUp>
 </template>
+
+<style scoped>
+  .required{
+    color: red;
+  }
+  .hide{
+    display: none;
+  }
+</style>
