@@ -123,25 +123,25 @@
                     <b-row>
                         <div>Name : </div>
                         <div>
-                            <input type="text" v-model="templateName" /> 
+                            <b-form-input type="text" v-model="templateName" /> 
                           <!--  <span :class="requiredField">* Name is required </span>-->
                         </div>
                     </b-row>
                     <b-row>
                         <div>Description : </div>
-                        <div><textarea  v-model="templateDescription" row="2" col="50" ></textarea></div>
+                        <div><b-form-textarea  v-model="templateDescription" rows="2" ></b-form-textarea></div>
                     </b-row>
                     
                     <b-row>
                         <div>Subject : </div>
                         <div>
-                            <input type="text" v-model="templateSubject" /> 
+                            <b-form-input type="text" v-model="templateSubject" /> 
                           <!--  <span :class="requiredField">* Name is required </span>-->
                         </div>
                     </b-row>
                     <b-row>
                         <div>Body : </div>
-                        <div><textarea  v-model="templateBody" row="2" col="50" /></div>
+                        <div><b-form-textarea  v-model="templateBody" rows="2" ></b-form-textarea></div>
                     </b-row>
                 </template>
                 <template v-slot:footer>

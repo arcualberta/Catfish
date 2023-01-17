@@ -111,13 +111,13 @@
                     <b-row>
                         <div>Name : </div>
                         <div>
-                            <input type="text" v-model="stateName" /> 
+                            <b-form-input type="text" v-model="stateName" /> 
                           <!--  <span :class="requiredField">* Name is required </span>-->
                         </div>
                     </b-row>
                     <b-row>
                         <div>Description : </div>
-                        <div><input type="text" v-model="stateDescription" /></div>
+                        <div><b-form-textarea  v-model="stateDescription" rows="2" ></b-form-textarea></div>
                     </b-row>
                 </template>
                 <template v-slot:footer>
