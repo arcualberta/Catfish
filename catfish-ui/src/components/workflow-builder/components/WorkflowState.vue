@@ -3,8 +3,8 @@
     import { useWorkflowBuilderStore } from '../store';
     import {storeToRefs} from 'pinia';
     import {default as ConfirmPopUp} from "../../shared/components/pop-up/ConfirmPopUp.vue"
-import { computed, ref } from 'vue';
-import { Guid } from 'guid-typescript';
+    import { computed, ref } from 'vue';
+    import { Guid } from 'guid-typescript';
 
 
    // const props = defineProps < { stateName: string,
@@ -15,21 +15,39 @@ import { Guid } from 'guid-typescript';
     
 
     const isAddNewState = ref(false);
+    const isEditState = ref(false);
     const stateName = ref("");
     const stateDescription = ref("");
    //  const requiredField = ref("hide");
-    const disabled=computed(()=>stateName.value.length > 0? false : true);
-    const addState = ()=>{
+
+    const disabled=computed(()=> stateName.value?.length > 0? false : true);
+    let stateToEdit: WorkflowState=null; //temporary state before editing
+
+   const addState = ()=>{
         let _name = stateName.value;
         let _description = stateDescription.value;
-        let newState= {
-         id:Guid.create(),
-           name :_name,
-           description : _description
-        } as WorkflowState;
-        
-        states.value?.push(newState);
-        isAddNewState.value=false;
+        //console.log("add new: " + isAddNewState.value + " edit: " + isEditState.value)
+        if(isAddNewState.value){
+            let newState= {
+            id:Guid.create(),
+            name :_name,
+            description : _description
+            } as WorkflowState;
+            
+            states.value?.push(newState);
+             isAddNewState.value=false;
+        }else{
+            //edit existing one
+             states.value?.forEach((st)=>{
+               // console.log("curr state id: " + st.id + "prev state id " + stateToEdit.id)
+                if(st.id === stateToEdit[0].id){
+                    st.name= _name;
+                    st.description= _description;
+                }    
+             })
+             isEditState.value = false;
+        }
+      
        
        //reset the input fields
        stateName.value="";
@@ -38,7 +56,25 @@ import { Guid } from 'guid-typescript';
    const removeState = (idx: number)=>{
         states.value?.splice(idx, 1);
    }
- 
+     const editState = (idx: number)=>{
+        isEditState.value = true;
+        isAddNewState.value=false;
+        stateToEdit = states.value!.filter((st, index)=>{
+            if(idx===index)
+                return st as WorkflowState;
+        });
+       
+        stateName.value = stateToEdit[0].name;
+        stateDescription.value = stateToEdit[0].description as string;
+       
+   }
+
+   const openPopUp = ()=>{
+    if(stateName.value.length > 0)
+       isEditState.value=true;
+    else
+        isAddNewState.value=true;
+   }
 </script>
 
 <template>
@@ -49,31 +85,21 @@ import { Guid } from 'guid-typescript';
                 <h6 >{{state.name}}</h6>
             </b-col>
             <b-col class="col-sm-6">
-            <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon"/>
+            <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon" @click="editState(idx)" />
             <font-awesome-icon icon="fa-solid fa-circle-xmark" class="fa-icon" @click="removeState(idx)" />
        
             </b-col>
         </b-row>
         </div>
-     <!-- <ul v-if="states && states.length > 0">
-        <li v-for="state in states" :key="state.id">
-        
-        <span class="">{{state.name}}</span>
-        <span>
-            <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon"/>
-            <font-awesome-icon icon="fa-solid fa-circle-xmark" class="fa-icon"/>
-        </span>
-        </b-row>
-        </li>
-   </ul> -->
-   <font-awesome-icon icon="fa-solid fa-circle-plus" @click="isAddNewState = !isAddNewSate"/>Add New State
+   
+   <font-awesome-icon icon="fa-solid fa-circle-plus" @click="openPopUp()"/>Add New State
 
-    <ConfirmPopUp v-if="isAddNewState" >
+    <ConfirmPopUp v-if="isAddNewState || isEditState" >
                 <template v-slot:header>
                     Add New State
                     <button type="button"
                             class="btn-close"
-                            @click="isAddNewState=false">
+                            @click="isAddNewState=false; isEditState=false;">
                        
                     </button>
                 </template>
@@ -93,7 +119,7 @@ import { Guid } from 'guid-typescript';
                 <template v-slot:footer>
                     <button type="button"
                             class="modal-cancel-btn" 
-                            @click="isAddNewState=false"  
+                            @click="isAddNewState=false; isEditState=false;"  
                                  
                             aria-label="Close modal">
                         Cancel
