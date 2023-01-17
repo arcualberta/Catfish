@@ -78,7 +78,7 @@
 </script>
 
 <template>
-     <h5>Workflow States</h5>
+     <div class="header-style">Workflow States</div>
      <div v-if="states && states.length > 0">
       <b-row v-for="(state, idx) in states" :key="state.id">
             <b-col class="col-sm-4">
@@ -136,6 +136,7 @@
                     <div>Save button disabled: {{disabled}} </div>
                 </template>
             </ConfirmPopUp>
+
 </template>
 
 <style scoped>
