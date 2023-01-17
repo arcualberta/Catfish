@@ -30,3 +30,11 @@ export interface WorkflowState {
     name: string;
     description: string | null;
 }
+
+export interface EmailTemplate {
+    id: Guid;
+    name: string;
+    description: string | null;
+    emailSubject: string;
+    emailBody: string;
+}
