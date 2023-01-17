@@ -6,7 +6,7 @@
     import { useWorkflowBuilderStore } from './store';
     import { Workflow, WorkflowAction, FormSubmissionAction } from './models'
     import { default as WorkflowTemplate } from './components/Workflow.vue';
-    import {default as WorkflowState} from './components/WorkflowState.vue'
+    
 
     const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, workflowId?: Guid }>();
 
@@ -66,27 +66,11 @@
         <button type="button" class="btn btn-primary" :disabled="!disabled" @click="newWorkflow">New Workflow</button>
         <button type="button" class="btn btn-success" :disabled="disabled" @click="saveWorkflow">Save</button>
     </div>
-    <div class="toolbar">
-        <button :disabled="disabled" @click="newFormSubmissionAction()">+ Form Submission Action</button>
-        <!--
-        <button :disabled="disabled" @click="newField(FieldType.Paragraph)">+ Paragraph</button>
-        <button :disabled="disabled" @click="newField(FieldType.RichText)">+ Rich Text</button>
-        <button :disabled="disabled" @click="newField(FieldType.Date)">+ Date</button>
-        <button :disabled="disabled" @click="newField(FieldType.DateTime)">+ Date/Time</button>
-        <button :disabled="disabled" @click="newField(FieldType.Decimal)">+ Decimal</button>
-        <button :disabled="disabled" @click="newField(FieldType.Integer)">+ Integer</button>
-        <button :disabled="disabled" @click="newField(FieldType.Email)">+ Email</button>
-        <button :disabled="disabled" @click="newField(FieldType.Checkboxes)">+ Checkboxes</button>
-        <button :disabled="disabled" @click="newField(FieldType.DataList)">+ Data List</button>
-        <button :disabled="disabled" @click="newField(FieldType.RadioButtons)">+ Radio Buttons</button>
-        <button :disabled="disabled" @click="newField(FieldType.DropDown)">+ Drop Down</button>
-        <button :disabled="disabled" @click="newField(FieldType.InfoSection)">+ Info Section</button>
-        -->
-    </div>
+    
     <hr />
     <WorkflowTemplate v-if="store.workflow" :model="store.workflow" />
 
-    <workflow-state />
+    
 
 </template>
 
