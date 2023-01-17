@@ -6,6 +6,7 @@
     import { useWorkflowBuilderStore } from './store';
     import { Workflow, WorkflowAction, FormSubmissionAction } from './models'
     import { default as WorkflowTemplate } from './components/Workflow.vue';
+    import { default as WorkflowState } from './components/WorkflowState.vue';
     
 
     const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, workflowId?: Guid }>();
@@ -70,7 +71,7 @@
     <hr />
     <WorkflowTemplate v-if="store.workflow" :model="store.workflow" />
 
-    
+    <WorkflowState />
 
 </template>
 <style>
