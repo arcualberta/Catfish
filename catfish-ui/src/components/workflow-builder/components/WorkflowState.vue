@@ -50,8 +50,7 @@
       
        
        //reset the input fields
-       stateName.value="";
-       stateDescription.value="";
+       resetFields();
     }
    const removeState = (idx: number)=>{
         states.value?.splice(idx, 1);
@@ -74,6 +73,11 @@
        isEditState.value=true;
     else
         isAddNewState.value=true;
+   }
+
+   const resetFields=()=>{
+     stateName.value="";
+       stateDescription.value="";
    }
 </script>
 
@@ -99,7 +103,7 @@
                     Add New State
                     <button type="button"
                             class="btn-close"
-                            @click="isAddNewState=false; isEditState=false;">
+                            @click="isAddNewState=false; isEditState=false;resetFields()">
                        
                     </button>
                 </template>
@@ -119,7 +123,7 @@
                 <template v-slot:footer>
                     <button type="button"
                             class="modal-cancel-btn" 
-                            @click="isAddNewState=false; isEditState=false;"  
+                            @click="isAddNewState=false; isEditState=false;resetFields()"  
                                  
                             aria-label="Close modal">
                         Cancel
