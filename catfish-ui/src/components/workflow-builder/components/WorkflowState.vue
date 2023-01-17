@@ -41,7 +41,7 @@ import { Guid } from 'guid-typescript';
 </script>
 
 <template>
-     <h5>Workflow States</h5>
+     <div class="header-style">Workflow States</div>
      <ul v-if="states && states.length > 0">
         <li v-for="state in states" :key="state.id">
         <span>{{state.name}}</span>
@@ -96,3 +96,8 @@ import { Guid } from 'guid-typescript';
                 </template>
             </ConfirmPopUp>
 </template>
+<style>
+.header-style{
+    font-size: 24px;
+    font-family: "Architects Daughter";
+}</style>

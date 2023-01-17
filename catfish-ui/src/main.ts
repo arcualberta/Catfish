@@ -9,7 +9,7 @@ import BootstrapVue3 from 'bootstrap-vue-3'
 import IconsPlugin from 'bootstrap-vue-3'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
-
+import "@fontsource/architects-daughter"
 /* Import Google Login */
 import vue3GoogleLogin from 'vue3-google-login'
 
