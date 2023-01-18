@@ -13,7 +13,7 @@
 
 <template>
     <div>
-        <div class="header-style">Roles <font-awesome-icon icon="fa-solid fa-circle-plus" @click="ToggleAddRoles()"/></div>
+        <div class="header-style">Roles <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="ToggleAddRoles()"/></div>
         <ConfirmPopUp v-if="addRoles" >
             <template v-slot:header>
                 Create a Role.

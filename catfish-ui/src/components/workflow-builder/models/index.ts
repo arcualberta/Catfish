@@ -15,7 +15,6 @@ export interface FormSubmissionAction {
     name: string;
     description: string;
     formId: Guid;
-
 }
 
 export interface SubmissionOption {
@@ -35,4 +34,12 @@ export interface WorkflowRoles {
     id: Guid;
     name: string;
     description: string | null;
+}
+
+export interface EmailTemplate {
+    id: Guid;
+    name: string;
+    description: string | null;
+    emailSubject: string;
+    emailBody: string;
 }

@@ -69,8 +69,6 @@
     
     <hr />
     <WorkflowTemplate v-if="store.workflow" :model="store.workflow" />
-
-    
 </template>
 <style>
 .header-style{
@@ -99,5 +97,8 @@
     cursor: pointer;
     line-height: 1.15385;
     padding: 8px .8em;
+}
+.plus-btn{
+    background-color: #1ca5b8;
 }
 </style>
