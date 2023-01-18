@@ -4,7 +4,7 @@ export interface Workflow {
     id: Guid;
     name: string;
     description: string;
-    states: string[];
+    states: WorkflowState[];
     actions: WorkflowAction[];
 }
 
@@ -30,7 +30,7 @@ export interface WorkflowState {
     description: string | null;
 }
 
-export interface WorkflowRoles {
+export interface WorkflowRole {
     id: Guid;
     name: string;
     description: string | null;
