@@ -1,38 +1,41 @@
-﻿namespace Catfish.API.Repository.Models.Workflow
+﻿using Newtonsoft.Json.Linq;
+
+namespace Catfish.API.Repository.Models.Workflow
 {
     public class WorkflowDbRecord
     {
+        [NotMapped]
+        public Workflow Workflow { get; set; }
 
         public Guid Id
         {
-            get { return Id; } set { value = Workflow.Id; }
+            get => Workflow.Id;
+            set => Workflow.Id = value;
         }
-        public string Name { get; set; }
-        public string Description { get; set; }
-
-       
-        public string SerializedWorkflow { 
-            get; set;
+        public string Name {
+            get => Workflow.Name; 
+            set => Workflow.Name = value; 
+        }
+        public string Description
+        {
+            get => Workflow.Description;
+            set => Workflow.Description = value;
         }
 
-        [NotMapped]
-        public Workflow Workflow {
-            get => SerializedWorkflow == null ? null : JsonConvert.DeserializeObject<Workflow>(SerializedWorkflow);
-            set => SerializedWorkflow = value == null ? null : JsonConvert.SerializeObject(value);
+        public string SerializedWorkflow
+        { 
+            get => JsonConvert.SerializeObject(Workflow); 
+            set => Workflow = string.IsNullOrEmpty(value) ? new Workflow() : JsonConvert.DeserializeObject<Workflow>(value!)!; 
         }
 
         public WorkflowDbRecord()
         {
             Workflow = new Workflow();
-            SerializedWorkflow = System.Text.Json.JsonSerializer.Serialize(Workflow);
         }
 
-        public WorkflowDbRecord(Workflow _workflow)
+        public WorkflowDbRecord(Workflow workflow)
         {
-            Workflow = _workflow;
-            SerializedWorkflow = System.Text.Json.JsonSerializer.Serialize(Workflow);
+            Workflow = workflow;
         }
-
-
     }
 }

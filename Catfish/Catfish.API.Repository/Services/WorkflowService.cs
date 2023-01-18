@@ -16,14 +16,14 @@ namespace Catfish.API.Repository.Services
             _context = context;
         }
 
-        public async Task<WorkflowDbRecord> GetWorkflowDbRecord(Guid id)
+        public async Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id)
         {
             return await _context.Workflows.Where(w => w.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<Workflow> GetWorklow(Guid id)
+        public async Task<Workflow?> GetWorkFlow(Guid id)
         {
-            WorkflowDbRecord workflowRecord = _context.Workflows.Where(w => w.Id == id).FirstOrDefault();
+            WorkflowDbRecord workflowRecord = await _context.Workflows.Where(w => w.Id == id).FirstOrDefaultAsync();
 
             if (workflowRecord == null)
                 return null;
@@ -36,16 +36,8 @@ namespace Catfish.API.Repository.Services
 
         public async Task<List<Workflow>> GetWorkflows()
         {
-            List<WorkflowDbRecord> workflowRecords = _context.Workflows.ToList();
-
-            List<Workflow> workflows = new List<Workflow>();
-            foreach (var workflowRecord in workflowRecords)
-            {
-                Workflow wf = workflowRecord.Workflow;
-                workflows.Add(wf);
-            }
-
-            return workflows;
+            List<WorkflowDbRecord> workflowRecords = await _context.Workflows.ToListAsync();
+            return workflowRecords.Select(wr => wr.Workflow).ToList();
         }
     }
 }

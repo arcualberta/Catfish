@@ -37,7 +37,7 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            var workflow = await _workflorSrv.GetWorklow(id);
+            var workflow = await _workflorSrv.GetWorkFlow(id);
             if (workflow == null)
             {
                 return NotFound();

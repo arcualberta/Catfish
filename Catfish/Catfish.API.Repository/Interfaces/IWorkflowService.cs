@@ -7,8 +7,8 @@ namespace Catfish.API.Repository.Interfaces
     {
         
         public Task<List<Workflow>> GetWorkflows();
-        public Task<Workflow> GetWorklow(Guid id);
+        public Task<Workflow?> GetWorkFlow(Guid id);
 
-        public Task<WorkflowDbRecord> GetWorkflowDbRecord(Guid id);
+        public Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id);
     }
 }
