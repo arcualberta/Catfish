@@ -30,3 +30,9 @@ export interface WorkflowState {
     name: string;
     description: string | null;
 }
+
+export interface WorkflowRoles {
+    id: Guid;
+    name: string;
+    description: string | null;
+}

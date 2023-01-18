@@ -6,7 +6,6 @@
     import { useWorkflowBuilderStore } from './store';
     import { Workflow, WorkflowAction, FormSubmissionAction } from './models'
     import { default as WorkflowTemplate } from './components/Workflow.vue';
-    import { default as WorkflowState } from './components/WorkflowState.vue';
     
 
     const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, workflowId?: Guid }>();
@@ -71,11 +70,34 @@
     <hr />
     <WorkflowTemplate v-if="store.workflow" :model="store.workflow" />
 
-    <WorkflowState />
-
+    
 </template>
 <style>
 .header-style{
     font-size: 24px;
     font-family: "Architects Daughter";
-}</style>
+}
+.btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #db2424;
+    background: transparent;
+}
+.modal-add-btn{
+    background-color: #007bff;
+    color: #fdfdfd;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1.15385;
+    padding: 8px .8em;
+}
+</style>

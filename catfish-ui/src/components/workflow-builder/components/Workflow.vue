@@ -2,6 +2,7 @@
     import { Workflow } from '../models/'
     import TabNav from '@/components/shared/components/TabNav/TabNav.vue';
     import {default as WorkflowState} from './WorkflowState.vue'
+    import {default as WorkflowRoles} from './WorkflowRoles.vue'
     import { computed, ref } from 'vue';
 
     const props = defineProps < { model: Workflow } > ();
@@ -24,7 +25,7 @@
                 
     </template>
     <template v-slot:Roles>
-                Please select new Role.
+      <workflow-roles />
                 
     </template>
     <template v-slot:Templates>

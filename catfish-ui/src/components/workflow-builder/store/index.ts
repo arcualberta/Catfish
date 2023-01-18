@@ -2,14 +2,15 @@ import { defineStore } from 'pinia';
 
 import { Guid } from "guid-typescript";
 
-import { Workflow, WorkflowState } from '../models/'
+import { Workflow, WorkflowState, WorkflowRoles } from '../models/'
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
         workflow: null as Workflow | null,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
-        states: [] as WorkflowState[] | null
+        states: [] as WorkflowState[] | null,
+        roles: [] as WorkflowRoles[] | null
     }),
     actions: {
         loadWorkflow(id: Guid) {
