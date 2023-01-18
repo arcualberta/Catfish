@@ -17,7 +17,7 @@
       Please select new Action.
     </template>
     <template v-slot:States>
-      <workflow-state />
+      <workflow-state :model="model.states"/>
     </template>
     <template v-slot:Roles>
       <workflow-roles />

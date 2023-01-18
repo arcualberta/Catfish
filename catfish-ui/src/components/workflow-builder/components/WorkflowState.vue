@@ -3,151 +3,96 @@
     import { useWorkflowBuilderStore } from '../store';
     import {storeToRefs} from 'pinia';
     import {default as ConfirmPopUp} from "../../shared/components/pop-up/ConfirmPopUp.vue"
-    import { computed, ref } from 'vue';
+    import { computed, ref, watch } from 'vue';
     import { Guid } from 'guid-typescript';
 
-
-   // const props = defineProps < { stateName: string,
-   //               stateDescription: string | null} > ();
+    const props = defineProps < { model: WorkflowState } > ();
     const store = useWorkflowBuilderStore();
+    const stateName = props.model.name;
+    const stateDescription = props.model.description;
+    const addStates = ref(false);
+    const editMode = ref(false);
+    const ToggleAddStates = () => (addStates.value = !addStates.value);
+    let disabled = ref(true);
 
-    const {states}= storeToRefs(store);
-    
-
-    const isAddNewState = ref(false);
-    const isEditState = ref(false);
-    const stateName = ref("");
-    const stateDescription = ref("");
-   //  const requiredField = ref("hide");
-
-    const disabled=computed(()=> stateName.value?.length > 0? false : true);
-    let stateToEdit: WorkflowState=null; //temporary state before editing
-
-   const addState = ()=>{
-        let _name = stateName.value;
-        let _description = stateDescription.value;
-        //console.log("add new: " + isAddNewState.value + " edit: " + isEditState.value)
-        if(isAddNewState.value){
+    watch(() => props.model.name, async newValue => {
+        if (newValue.length>0)
+            disabled.value = false; 
+        else
+            disabled.value = true; 
+    })
+    const addState = ()=>{
+        if(editMode.value===false){
             let newState= {
-            id:Guid.create(),
-            name :_name,
-            description : _description
+                id:Guid.create(),
+                name :props.model.name,
+                description : props.model.description
             } as WorkflowState;
-            
-            states.value?.push(newState);
-             isAddNewState.value=false;
+        
+            store.states?.push(newState);
         }else{
-            //edit existing one
-             states.value?.forEach((st)=>{
-               // console.log("curr state id: " + st.id + "prev state id " + stateToEdit.id)
-                if(st.id === stateToEdit[0].id){
-                    st.name= _name;
-                    st.description= _description;
+            const idx = store.states?.findIndex(opt => opt.id == props.model.id)
+            store.states!.forEach((st)=> {
+                if(st.id === props.model.id){
+                    st.name= props.model.name;
+                    st.description= props.model.description;
                 }    
              })
-             isEditState.value = false;
+             editMode.value=false;
         }
-      
-       
-       //reset the input fields
-       resetFields();
+        
+        addStates.value=false;
+        props.model.name = ""
+        props.model.description = ""
     }
-   const removeState = (idx: number)=>{
-        states.value?.splice(idx, 1);
-   }
-     const editState = (idx: number)=>{
-        isEditState.value = true;
-        isAddNewState.value=false;
-        stateToEdit = states.value!.filter((st, index)=>{
-            if(idx===index)
-                return st as WorkflowState;
-        });
-       
-        stateName.value = stateToEdit[0].name;
-        stateDescription.value = stateToEdit[0].description as string;
-       
-   }
-
-   const openPopUp = ()=>{
-    if(stateName.value.length > 0)
-       isEditState.value=true;
-    else
-        isAddNewState.value=true;
-   }
-
-   const resetFields=()=>{
-     stateName.value="";
-       stateDescription.value="";
-   }
+    const deleteState = (stateId: Guid) => {
+        const idx = store.states?.findIndex(opt => opt.id == stateId)
+        store.states?.splice(idx as number, 1)
+    }
+    const editState = (stateId: Guid) => {
+        const stateValues = store.states?.filter(opt => opt.id == stateId) as unknown as WorkflowState
+        console.log('stateValues', stateValues)
+        props.model.name=stateValues[0].name
+        props.model.description = stateValues[0].description
+        props.model.id = stateValues[0].id
+        editMode.value = true
+        addStates.value = true
+        
+    }
 </script>
 
 <template>
-     <div class="header-style">Workflow States</div>
-     <div v-if="states && states.length > 0">
-      <b-row v-for="(state, idx) in states" :key="state.id">
-            <b-col class="col-sm-4">
-                <h6 >{{state.name}}</h6>
-            </b-col>
-            <b-col class="col-sm-6">
-            <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon" @click="editState(idx)" />
-            <font-awesome-icon icon="fa-solid fa-circle-xmark" class="fa-icon" @click="removeState(idx)" />
-       
-            </b-col>
-        </b-row>
+    {{ store.states }}
+    <div class="list-item">
+            <b-list-group>
+                <b-list-group-item v-for="state in store.states" :key="state.name">
+                    <span>{{state.name}}</span>
+                    <span style="display:inline">
+                        <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteState(state.id as Guid)"/>
+                        <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon" style="color: #2BB892; float: right;" @click="editState(state.id as Guid)" />
+                    </span>
+                </b-list-group-item>
+            </b-list-group>
         </div>
-   
-   <font-awesome-icon icon="fa-solid fa-circle-plus" @click="openPopUp()"/>Add New State
+     <div class="header-style">States <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="ToggleAddStates()"/></div>
 
-    <ConfirmPopUp v-if="isAddNewState || isEditState" >
+    <ConfirmPopUp v-if="addStates" >
                 <template v-slot:header>
-                    Add New State
-                    <button type="button"
-                            class="btn-close"
-                            @click="isAddNewState=false; isEditState=false;resetFields()">
-                       
-                    </button>
+                    Add a State.
+                    <button type="button" class="btn-close" @click="addStates=false">x</button>
                 </template>
                 <template v-slot:body>
-                    <b-row>
-                        <div>Name : </div>
-                        <div>
-                            <b-form-input type="text" v-model="stateName" /> 
-                          <!--  <span :class="requiredField">* Name is required </span>-->
-                        </div>
-                    </b-row>
-                    <b-row>
-                        <div>Description : </div>
-                        <div><b-form-textarea  v-model="stateDescription" rows="2" ></b-form-textarea></div>
-                    </b-row>
+                    <div >
+                    <b-input-group prepend="Name" class="mt-3">
+                        <b-form-input v-model="model.name" ></b-form-input>
+                    </b-input-group>
+                    <b-input-group prepend="Description" class="mt-3">
+                        <b-form-textarea v-model="(model.description as string)" rows="3" max-rows="6"></b-form-textarea>
+                    </b-input-group>
+                </div>
                 </template>
                 <template v-slot:footer>
-                    <button type="button"
-                            class="modal-cancel-btn" 
-                            @click="isAddNewState=false; isEditState=false;resetFields()"  
-                                 
-                            aria-label="Close modal">
-                        Cancel
-                    </button>
-                    
-                    <button type="button"
-                            class="modal-confirm-btn"
-                            style="margin-left:10px"
-                           @click="addState()"
-                           :disabled="disabled" 
-                            aria-label="Close modal">
-                        Save
-                    </button>
-                    <div>Save button disabled: {{disabled}} </div>
+                    <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addState">Add</button>
                 </template>
             </ConfirmPopUp>
-
 </template>
-
-<style scoped>
-  .required{
-    color: red;
-  }
-  .hide{
-    display: none;
-  }
-</style>

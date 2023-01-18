@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { WorkflowRoles } from '../models/'
+    import { WorkflowRole, TabNavigationDefinition} from '../models/'
     import { computed, ref,watch } from 'vue';
     import {default as ConfirmPopUp} from "../../shared/components/pop-up/ConfirmPopUp.vue"
     import { useWorkflowBuilderStore } from '../store';
@@ -25,7 +25,7 @@
             id:Guid.create(),
             name :_name,
             description : _description
-        } as WorkflowRoles;
+        } as WorkflowRole;
     
         store.roles?.push(newWorkflowRole);
         roleName.value = "";
