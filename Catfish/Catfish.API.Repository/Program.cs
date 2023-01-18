@@ -23,6 +23,7 @@ builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 builder.Services.AddScoped<IEntityService, EntityService>();
 
 builder.Services.AddScoped<ISolrService, SolrService>();
+builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 
 
 var app = builder.Build();
