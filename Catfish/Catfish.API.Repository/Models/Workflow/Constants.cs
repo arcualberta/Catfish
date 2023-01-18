@@ -5,4 +5,10 @@
         SendEmail,
         ChangeState
     }
+
+    public enum eButtonType
+    {
+        Button,
+        Link
+    }
 }
