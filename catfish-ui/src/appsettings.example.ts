@@ -9,6 +9,7 @@ export default {
 
 import { eFieldType } from '@/components/shared/constants'
 import {SearchFieldDefinition} from '@/components/solr-search-panel/models'
+import { TabNavigationDefinition } from './components/workflow-builder/models';
 
 export enum eShowtimeEntryType {
     Movie = 1,
@@ -96,4 +97,11 @@ export const solrFields:SearchFieldDefinition[] = [
     { name: "theater_lon_d", label: "Theater longitude", type: eFieldType.Decimal, options: [], entryType: eShowtimeEntryType.Theater },
     { name: "theater_lat_d", label: "Theater latitude", type: eFieldType.Decimal, options: [], entryType: eShowtimeEntryType.Theater },
 ];
-
+export const tabMenu:TabNavigationDefinition[] = [
+    { name: "Action", title: "Action"},
+    { name: "States", title: "States"},
+    { name: "Roles", title: "Roles"},
+    { name: "Templates", title: "Email Templates" },
+    { name: "Triggers", title: "Triggers"},
+    { name: "Pop-ups", title: "Popups"},
+];

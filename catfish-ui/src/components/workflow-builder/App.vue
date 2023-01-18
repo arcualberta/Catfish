@@ -6,7 +6,22 @@
     import { useWorkflowBuilderStore } from './store';
     import { Workflow, WorkflowAction, FormSubmissionAction } from './models'
     import { default as WorkflowTemplate } from './components/Workflow.vue';
-    
+    /* import the fontawesome core */
+    import { library } from '@fortawesome/fontawesome-svg-core'
+
+    /* import font awesome icon component */
+    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+    /* import specific icons */
+    import * as faIcons from '@fortawesome/free-solid-svg-icons'
+    /* add icons to the library */
+    library.add(faIcons.faCircleCheck)
+    library.add(faIcons.faCircleXmark)
+    library.add(faIcons.faPenToSquare)
+    library.add(faIcons.faCirclePlus)
+    library.add(faIcons.faQuestionCircle)
+    library.add(faIcons.faThList)
+    library.add(faIcons.faArrowLeft)
 
     const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, workflowId?: Guid }>();
 
@@ -72,6 +87,7 @@
 </template>
 <style>
 .header-style{
+    padding-top: 25px;
     font-size: 24px;
     font-family: "Architects Daughter";
 }
@@ -100,5 +116,9 @@
 }
 .plus-btn{
     background-color: #1ca5b8;
+}
+.list-item{
+padding-top: 40px;
+max-width: 40%;
 }
 </style>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-    import { Workflow } from '../models/'
+    import { Workflow, TabNavigationDefinition } from '../models/'
     import TabNav from '@/components/shared/components/TabNav/TabNav.vue';
     import {default as WorkflowState} from './WorkflowState.vue'
     import {default as WorkflowRoles} from './WorkflowRoles.vue'
     import { default as EmailTemplate } from './EmailTemplate.vue';
+    import { default as  tabMenu} from "@/appsettings";
     import { computed, ref } from 'vue';
 
     const props = defineProps < { model: Workflow } > ();

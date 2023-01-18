@@ -43,3 +43,7 @@ export interface EmailTemplate {
     emailSubject: string;
     emailBody: string;
 }
+export interface TabNavigationDefinition {
+    name: string;
+    title: string;
+}
