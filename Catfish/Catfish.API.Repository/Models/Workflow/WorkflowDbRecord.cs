@@ -37,5 +37,9 @@ namespace Catfish.API.Repository.Models.Workflow
         {
             Workflow = workflow;
         }
+
+        public Guid EntityTemplateId { get; set; }
+
+        public EntityTemplate EntityTemplate { get; set; }
     }
 }
