@@ -17,10 +17,10 @@
       Please select new Action.
     </template>
     <template v-slot:States>
-      <workflow-state :model="model.states"/>
+      <workflow-state />
     </template>
     <template v-slot:Roles>
-      <workflow-roles />
+      <workflow-roles :model="model" />
     </template>
     <template v-slot:Templates>
       <email-template />

@@ -5,13 +5,12 @@
     import { useWorkflowBuilderStore } from '../store';
     import { Guid } from 'guid-typescript';
 
+    const props = defineProps < { model: WorkflowRole } > ();
     const store = useWorkflowBuilderStore();
     const addRoles = ref(false);
-    const roleName = ref("");
-    const roleDescription = ref("");
     let disabled = ref(true);
     const ToggleAddRoles = () => (addRoles.value = !addRoles.value);
-    watch(() => roleName.value, async newValue => {
+    watch(() => props.model.name, async newValue => {
         if (newValue.length>0)
             disabled.value = false; 
         else
@@ -19,17 +18,15 @@
     })
 
     const addRole = ()=>{
-        let _name = roleName.value;
-        let _description = roleDescription.value;
         let newWorkflowRole= {
             id:Guid.create(),
-            name :_name,
-            description : _description
+            name :props.model.name,
+            description : props.model.description
         } as WorkflowRole;
     
         store.roles?.push(newWorkflowRole);
-        roleName.value = "";
-        roleDescription.value = "";
+        props.model.name = "";
+        props.model.description = "";
         addRoles.value = false;
     }
 </script>
@@ -55,10 +52,10 @@
             <template v-slot:body>
                 <div >
                     <b-input-group prepend="Name" class="mt-3">
-                        <b-form-input v-model="roleName" ></b-form-input>
+                        <b-form-input v-model="props.model.name" ></b-form-input>
                     </b-input-group>
                     <b-input-group prepend="Description" class="mt-3">
-                        <b-form-textarea v-model="roleDescription" rows="3" max-rows="6"></b-form-textarea>
+                        <b-form-textarea v-model="(props.model.description as string)" rows="3" max-rows="6"></b-form-textarea>
                     </b-input-group>
                 </div>
             </template>
