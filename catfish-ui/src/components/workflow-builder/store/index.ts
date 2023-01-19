@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 import { Guid } from "guid-typescript";
 import { EmailTemplate, Workflow, WorkflowState, WorkflowRoles} from '../models/'
+import { TemplateEntry } from '@/components/entity-editor/models';
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
         workflow: null as Workflow | null,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
+        entityTemplates: [] as TemplateEntry[],
 
         states: [] as WorkflowState[] | null,
         roles: [] as WorkflowRoles[] | null,
