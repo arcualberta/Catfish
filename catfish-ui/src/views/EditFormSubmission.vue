@@ -6,15 +6,17 @@
     import { getActivePinia } from 'pinia'
     import { useRoute } from 'vue-router'
     import { Guid } from 'guid-typescript'
-
+    import {default as config} from "@/appsettings";
     import { FormSubmission } from '../components'
 
     const route = useRoute()
     const submissionId = route.params.submissionId as unknown as Guid
+     const apiRoot= config.dataRepositoryApiRoot;
+
 
 </script>
 
 <template>
-    <FormSubmission v-if="submissionId" repository-root="https://localhost:5020/" :submission-id="submissionId" />
+    <FormSubmission v-if="submissionId" :repository-root="apiRoot" :submission-id="submissionId" />
     <div v-else class="alert alert-danger mt-5">Please append the submission ID to the URL.</div>
 </template>

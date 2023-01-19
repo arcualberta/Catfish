@@ -4,15 +4,16 @@
 
     import { getActivePinia } from 'pinia'
     import { useRoute } from 'vue-router'
-   
+   import {default as config} from "@/appsettings";
 
     import { EntityEditor } from  '../components'
 
     const route = useRoute()
-   
+     const apiRoot= config.dataRepositoryApiRoot + "/api/entities";
+
 
 </script>
 
 <template setup>
-     <EntityEditor api-root="https://localhost:5020/api/entities" />
+     <EntityEditor :api-root="apiRoot" />
 </template>
