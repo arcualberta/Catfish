@@ -88,5 +88,19 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                     console.error('Workflow Save API Error:', error)
                 });
         },
+        loadEntityTemplates() {
+            const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;//`https://localhost:5020/api/workflow/${id}`;
+            fetch(api, {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.entityTemplates = data;
+            })
+            .catch((error) => {
+                console.error('Load Entity Templates API Error:', error);
+            });
+
+        },
     }
 });
