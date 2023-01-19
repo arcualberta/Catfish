@@ -121,4 +121,8 @@
 padding-top: 40px;
 max-width: 40%;
 }
+.text-editor{
+    width: auto;
+    min-height: 240px;
+}
 </style>
