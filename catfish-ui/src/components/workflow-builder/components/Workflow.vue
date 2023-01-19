@@ -8,14 +8,16 @@
     import { computed, onMounted, ref } from 'vue';
     import {useWorkflowBuilderStore} from '../store'
 import { SelectableOption } from '@/components/shared/components/form-field-selection-dropdown/models';
+import { json } from 'stream/consumers';
 
     const props = defineProps < { model: Workflow } > ();
     const store = useWorkflowBuilderStore();
     onMounted(() => {
          //load entity templates
+         store.createNewWorkflow();
          store.loadEntityTemplates();
     });
-    const selectedTemplateId =ref(store.workflow?.entityTemplateId); 
+    
     const templateOptions=computed(()=>{
           const options = store.entityTemplates.map(template => {
                 return {
@@ -25,18 +27,19 @@ import { SelectableOption } from '@/components/shared/components/form-field-sele
             });
         return options;
     });
-
+ const workflow =computed(()=>store.workflow);
 </script>
 
 <template>
    <b-row>
      <h5 class="col-2">Entity Templates</h5>
       <div class="col-4">
-            <b-form-select v-model="selectedTemplateId" :options="templateOptions"></b-form-select>
-        selectedTemplateId: {{selectedTemplateId}}
+            <b-form-select v-model="workflow.entityTemplateId" :options="templateOptions"></b-form-select>
+       
       </div>
       
    </b-row>
+   <div>{{JSON.stringify(workflow)}}</div>
    <div>
   <TabNav :tabs="['Action', 'States', 'Roles', 'Templates', 'Triggers', 'Pop-ups']">
     <template v-slot:Action>
