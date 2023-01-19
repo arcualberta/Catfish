@@ -49,12 +49,12 @@
         background: #fff;
         border-radius: 5px;
         box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
-        max-width: 480px;
+        max-width: 960px;
         min-width: 480px;
         margin-left: auto;
         margin-right: auto;
         padding: 1rem;
-        width: 300px;
+        width: 960px;
     }
     .window-small {
         background: #fff;

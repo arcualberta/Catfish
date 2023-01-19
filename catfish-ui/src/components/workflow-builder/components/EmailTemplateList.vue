@@ -38,8 +38,18 @@
             } as EmailTemplate;
         
             store.emailTemplates?.push(newTemplate)
+        }else{
+            const idx = store.emailTemplates?.findIndex(emt => emt.id.toString() == templateId.value)
+            store.emailTemplates!.forEach((emt)=> {
+                if(emt.id.toString() === templateId.value){
+                    emt.name= templateName.value;
+                    emt.description= templateDescription.value;
+                    emt.emailSubject= templateSubject.value;
+                    emt.emailBody= templateBody.value;
+                }    
+             })
         }
-
+        resetFields();
         addTemplates.value = false;
     }
     const deleteTemplate = (templateId: Guid) => {
@@ -56,23 +66,27 @@
         addTemplates.value = true
     }
     const resetFields = ()=>{
+        templateId.value = "";
+        templateName.value = "";
+        templateDescription.value = "";
+        templateSubject.value = "";
+        templateBody.value = "";
     }
 </script>
 
 <template>
-    {{ store.emailTemplates }}
     <div class="list-item">
         <b-list-group>
             <b-list-group-item v-for="emailTemplate in store.emailTemplates" :key="emailTemplate.name">
                 <span>{{emailTemplate.name}}</span>
                 <span style="display:inline">
-                        <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteTemplate(emailTemplate.id as Guid)"/>
-                        <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon" style="color: #007bff; float: right;" @click="editTemplate(emailTemplate.id as Guid)" />
-                    </span>
+                    <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteTemplate(emailTemplate.id as Guid)"/>
+                    <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon" style="color: #007bff; float: right;" @click="editTemplate(emailTemplate.id as Guid)" />
+                </span>
             </b-list-group-item>
         </b-list-group>
     </div>
-    <div class="header-style">Email Templates <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="ToggleAddStates()"/></div>
+    <div class="header-style">Email Templates <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="resetFields();ToggleAddStates()"/></div>
      <ConfirmPopUp v-if="addTemplates" >
         <template v-slot:header>
             Add a State.

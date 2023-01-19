@@ -4,7 +4,7 @@
     import { Guid } from "guid-typescript";
 
     import { useWorkflowBuilderStore } from './store';
-    import { Workflow, WorkflowAction, FormSubmissionAction } from './models'
+    import { Workflow, WorkflowAction, FormSubmissionAction, WorkflowState } from './models'
     import { default as WorkflowTemplate } from './components/Workflow.vue';
     /* import the fontawesome core */
     import { library } from '@fortawesome/fontawesome-svg-core'
@@ -42,7 +42,8 @@
             id: Guid.EMPTY as unknown as Guid,
             name: "",
             description: "",
-            states: [] as string[]
+            states: [] as WorkflowState[],
+            actions: [] as WorkflowAction[]
         } as Workflow;
     }
 
@@ -122,7 +123,6 @@ padding-top: 40px;
 max-width: 40%;
 }
 .text-editor{
-    width: auto;
-    min-height: 240px;
+    width: 780;
 }
 </style>
