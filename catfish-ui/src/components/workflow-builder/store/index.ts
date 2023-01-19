@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { Guid } from "guid-typescript";
+import { default as config } from "@/appsettings";
 import { EmailTemplate, Workflow, WorkflowState, WorkflowRoles} from '../models/'
 import { TemplateEntry } from '@/components/entity-editor/models';
 
@@ -16,7 +17,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     }),
     actions: {
         loadWorkflow(id: Guid) {
-            const api = `https://localhost:5020/api/workflow/${id}`;
+            const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
                 method: 'GET'
             })
@@ -36,7 +37,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             }
 
             const newWorkflow = this.workflow?.id?.toString() === Guid.EMPTY;
-            let api = "https://localhost:5020/api/workflow";
+            let api = `${config.dataRepositoryApiRoot}/api/workflow`;
+            //let api = "https://localhost:5020/api/workflow";
             let method = "";
             if (newWorkflow) {
                 console.log("Saving new workflow.")
