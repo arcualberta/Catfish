@@ -5,29 +5,58 @@
     import { useWorkflowBuilderStore } from '../store';
     import { Guid } from 'guid-typescript';
 
-    const props = defineProps < { model: WorkflowRole } > ();
+    let roleId = ref("")
+    let roleName = ref("")
+    let roleDescription = ref("")
     const store = useWorkflowBuilderStore();
     const addRoles = ref(false);
     let disabled = ref(true);
     const ToggleAddRoles = () => (addRoles.value = !addRoles.value);
-    watch(() => props.model.name, async newValue => {
+    watch(() => roleName.value, async newValue => {
         if (newValue.length>0)
             disabled.value = false; 
         else
             disabled.value = true; 
     })
 
-    const addRole = ()=>{
-        let newWorkflowRole= {
-            id:Guid.create(),
-            name :props.model.name,
-            description : props.model.description
-        } as WorkflowRole;
+    const addRole = (id: string)=>{
+        if(id.length===0){
+            let newWorkflowRole= {
+                id:Guid.create(),
+                name :roleName.value,
+                description : roleDescription.value
+            } as WorkflowRole;
     
         store.roles?.push(newWorkflowRole);
-        props.model.name = "";
-        props.model.description = "";
+        }else{
+            const idx = store.roles?.findIndex(r => r.id.toString() == roleId.value)
+            store.roles!.forEach((rl)=> {
+                if(rl.id.toString() === roleId.value){
+                    rl.name= roleName.value;
+                    rl.description= roleDescription.value;
+                }    
+             })
+        }
+        
+        resetFields();
         addRoles.value = false;
+    }
+    const resetFields = ()=>{
+        roleId.value = "";
+        roleName.value = "";
+        roleDescription.value = "";
+    }
+
+    const deleteRole = (roleId: Guid) => {
+        const idx = store.roles?.findIndex(opt => opt.id == roleId)
+        store.roles?.splice(idx as number, 1)
+    }
+    const editRole = (editRoleId: Guid) => {
+        const roleValues = store.roles?.filter(opt => opt.id == editRoleId) as WorkflowRole[]
+        roleName.value=roleValues[0].name 
+        roleDescription.value = roleValues[0].description as string
+        roleId.value = roleValues[0].id.toString()
+        addRoles.value = true
     }
 </script>
 
@@ -38,12 +67,13 @@
                 <b-list-group-item v-for="role in store.roles" :key="role.name">
                     <span>{{role.name}}</span>
                     <span>
-                        <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;"/>
+                        <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRole(role.id as Guid)"/>
+                        <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon" style="color: #007bff; float: right;" @click="editRole(role.id as Guid)" />
                     </span>
                 </b-list-group-item>
             </b-list-group>
         </div>
-        <div class="header-style">Roles <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="ToggleAddRoles()"/></div>
+        <div class="header-style">Roles <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="resetFields();ToggleAddRoles()"/></div>
         <ConfirmPopUp v-if="addRoles" >
             <template v-slot:header>
                 Create a Role.
@@ -52,15 +82,15 @@
             <template v-slot:body>
                 <div >
                     <b-input-group prepend="Name" class="mt-3">
-                        <b-form-input v-model="props.model.name" ></b-form-input>
+                        <b-form-input v-model="roleName" ></b-form-input>
                     </b-input-group>
                     <b-input-group prepend="Description" class="mt-3">
-                        <b-form-textarea v-model="(props.model.description as string)" rows="3" max-rows="6"></b-form-textarea>
+                        <b-form-textarea v-model="(roleDescription as string)" rows="3" max-rows="6"></b-form-textarea>
                     </b-input-group>
                 </div>
             </template>
             <template v-slot:footer>
-                <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addRole">Add</button>
+                <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addRole(roleId)">Add</button>
             </template>
         </ConfirmPopUp>
     </div>

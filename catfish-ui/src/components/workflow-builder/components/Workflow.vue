@@ -20,7 +20,7 @@
       <workflow-state />
     </template>
     <template v-slot:Roles>
-      <workflow-roles :model="model" />
+      <workflow-roles />
     </template>
     <template v-slot:Templates>
       <email-template />

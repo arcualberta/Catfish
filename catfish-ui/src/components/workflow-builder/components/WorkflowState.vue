@@ -22,7 +22,6 @@
             disabled.value = true; 
     })
     const addState = (id:string)=>{
-        console.log("id",id)
         if(id.length === 0){
             let newState= {
                 id:Guid.create(),
@@ -41,8 +40,11 @@
              })
              editMode.value=false;
         }
-        
+        resetFields()
         addStates.value=false;
+        
+    }
+    const resetFields = ()=>{
         stateId.value = ""
         stateName.value = ""
         stateDescription.value = ""
@@ -74,7 +76,7 @@
                 </b-list-group-item>
             </b-list-group>
         </div>
-     <div class="header-style">States <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="ToggleAddStates()"/></div>
+     <div class="header-style">States <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="resetFields();ToggleAddStates()"/></div>
 
     <ConfirmPopUp v-if="addStates" >
                 <template v-slot:header>
