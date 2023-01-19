@@ -89,7 +89,7 @@
     <div class="header-style">Email Templates <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="resetFields();ToggleAddStates()"/></div>
      <ConfirmPopUp v-if="addTemplates" >
         <template v-slot:header>
-            Add a State.
+            Add an Email Template.
             <button type="button" class="btn-close" @click="addTemplates=false">x</button>
         </template>
         <template v-slot:body>
