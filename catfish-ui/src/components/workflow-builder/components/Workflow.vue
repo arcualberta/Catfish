@@ -14,7 +14,7 @@ import { json } from 'stream/consumers';
     const store = useWorkflowBuilderStore();
     onMounted(() => {
          //load entity templates
-         store.createNewWorkflow();
+        
          store.loadEntityTemplates();
     });
     

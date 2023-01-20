@@ -2,7 +2,7 @@
     import { computed, watch } from "vue";
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
-
+    import {useRoute} from 'vue-router'
     import { useWorkflowBuilderStore } from './store';
     import { Workflow, WorkflowAction, FormSubmissionAction, WorkflowState } from './models'
     import { default as WorkflowTemplate } from './components/Workflow.vue';
@@ -23,12 +23,17 @@
     library.add(faIcons.faThList)
     library.add(faIcons.faArrowLeft)
 
-    const props = defineProps<{ piniaInstance: Pinia, repositoryRoot: string, workflowId?: Guid }>();
+    const props = defineProps<{ piniaInstance: Pinia, 
+                                repositoryRoot: string, 
+                                workflowId?: Guid }>();
 
     const store = useWorkflowBuilderStore(props.piniaInstance);
-
-    if (props.workflowId)
-        store.loadWorkflow(props.workflowId)
+    const route = useRoute()
+   
+    const workflowId = props.workflowId? props.workflowId : route.params.id as unknown as Guid;
+  
+    if (workflowId)
+        store.loadWorkflow(workflowId)
 
     watch(() => store.transientMessage, async newMessage => {
         if (newMessage)
@@ -38,13 +43,14 @@
     })
 
     const newWorkflow = () => {
-        store.workflow = {
+        /*store.workflow = {
             id: Guid.EMPTY as unknown as Guid,
             name: "",
             description: "",
             states: [] as WorkflowState[],
             actions: [] as WorkflowAction[]
-        } as Workflow;
+        } as Workflow;*/
+        store.createNewWorkflow();
     }
 
     const saveWorkflow = () => store.saveWorkflow()
