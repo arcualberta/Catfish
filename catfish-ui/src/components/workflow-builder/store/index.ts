@@ -12,7 +12,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         entityTemplates: [] as TemplateEntry[],
 
         //states: [] as WorkflowState[] | null,
-        roles: [] as WorkflowRoles[] | null,
+        //roles: [] as WorkflowRoles[] | null,
         emailTemplates: [] as EmailTemplate[] | null
     }),
     actions: {
