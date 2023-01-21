@@ -17,6 +17,7 @@
     import type { FieldExpression } from '../models/FieldExpression';
     import { createFieldConstraint } from '../models/FieldConstraint';
     import type { FieldConstraint } from '../models/FieldConstraint';
+import { Console } from 'console';
 
     /* add icons to the library */
     library.add(faIcons.faCircleCheck)
@@ -45,7 +46,6 @@
         addComponent(createFieldExpression())
         popupTrigger.value = !popupTrigger.value
     };
-
     const addComponent = (component: ConstraintType) =>{
         if(!props.model.expressionComponents || !props.model.operators){
             props.model.expressionComponents = [];

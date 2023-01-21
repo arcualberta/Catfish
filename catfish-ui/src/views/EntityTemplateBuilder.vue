@@ -4,15 +4,16 @@
 
     import { getActivePinia } from 'pinia'
     import { useRoute } from 'vue-router'
-   
+   import {default as config} from "@/appsettings";
 
     import { EntityTemplateBuilder } from  '../components'
 
-    const route = useRoute()
-   
+    const route = useRoute();
+    const apiRoot= config.dataRepositoryApiRoot + "/api/entity-templates";
+
 
 </script>
 
 <template setup>
-     <EntityTemplateBuilder api-root="https://localhost:5020/api/entity-templates" />
+     <EntityTemplateBuilder :api-root="apiRoot" />
 </template>
