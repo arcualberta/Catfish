@@ -49,31 +49,48 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out int maxParallelProcess))
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
+
+            var tasks = sourceBatches.Select(x => IndexFlattenedShowtimesBatch(x, outputFolder, start));
+            Task.WhenAll(tasks).Wait();
+        }
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexMovies
+        [Fact]
+        public void IndexMovies()
+        {
+            DateTime start = DateTime.Now;
+
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
+
+            var tasks = sourceBatches.Select(x => IndexMoviesBatch(x, outputFolder, start));
+            Task.WhenAll(tasks).Wait();
+        }
+
+        private void PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches)
+        {
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out maxParallelProcess))
                 maxParallelProcess = 1;
 
-            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
             if (string.IsNullOrEmpty(outputFolder))
                 outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
-            string srcFolderRoot = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
+            srcFolderRoot = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
             if (string.IsNullOrEmpty(srcFolderRoot))
                 srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
             Assert.True(Directory.Exists(srcFolderRoot));
 
             var srcFolders = Directory.GetDirectories(srcFolderRoot);
-            List<string[]> sourceBatches = new List<string[]>();
+            sourceBatches = new List<string[]>();
             int batchSize = (int)Math.Ceiling((double)srcFolders.Length / maxParallelProcess);
             int offset = 0;
-            while(offset < srcFolders.Length)
+            while (offset < srcFolders.Length)
             {
                 sourceBatches.Add(srcFolders.Skip(offset).Take(batchSize).ToArray());
                 offset += batchSize;
             }
-
-            var tasks = sourceBatches.Select(x => IndexFlattenedShowtimesBatch(x, outputFolder, start));
-            Task.WhenAll(tasks).Wait();
         }
 
         private async Task IndexFlattenedShowtimesBatch(string[] folderList, string outputFolder, DateTime start)
@@ -88,7 +105,7 @@ namespace DataProcessing
             string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}.txt");
             string errorLogFile      = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
 
-            string trackingFile = Path.Combine(outputFolder, $"tracking-keys-{first}-{last}.txt");
+            string trackingFile = Path.Combine(outputFolder, $"{logFilePrefix}-tracking-keys.txt");
             if (!File.Exists(trackingFile))
                 File.Create(trackingFile).Close();
             string[] trackingKeys = File.ReadAllLines(trackingFile);
@@ -262,6 +279,123 @@ namespace DataProcessing
                 }
                 //GC.Collect();
                
+            }//End: foreach (var batchFolder in srcBatcheFolders)
+        }
+
+        private async Task IndexMoviesBatch(string[] folderList, string outputFolder, DateTime start)
+        {
+            int srcFolderPathCharacterLength = folderList[0].LastIndexOf("\\") + 1;
+            string first = folderList[0].Substring(srcFolderPathCharacterLength);
+            string last = folderList[folderList.Length - 1].Substring(srcFolderPathCharacterLength);
+
+            string logFilePrefix = $"movies-{first}-{last}";
+
+            string timestampStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
+
+            string trackingFile = Path.Combine(outputFolder, $"{logFilePrefix}-tracking-keys.txt");
+            if (!File.Exists(trackingFile))
+                File.Create(trackingFile).Close();
+            string[] trackingKeys = File.ReadAllLines(trackingFile);
+
+
+            var solrService = _testHelper.Solr;
+            foreach (var srcFolder in folderList)
+            {
+                string folder_key = srcFolder.Substring(srcFolderPathCharacterLength);
+                try
+                {
+                    if (trackingKeys.Contains(folder_key))
+                        continue;
+
+                    var zipFiles = Directory.GetFiles(srcFolder);
+                    bool folderProcessingSuccessful = true;
+                    foreach (var zipFile in zipFiles)
+                    {
+                        string zipfile_key = zipFile.Substring(srcFolderPathCharacterLength);
+
+                        try
+                        {
+                            if (trackingKeys.Contains(zipfile_key))
+                                continue;
+
+                            await File.AppendAllTextAsync(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
+                            bool zipFilerProcessingSuccessful = true;
+
+                            using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                            {
+                                List<ZipArchiveEntry> moviesArchiveEntries = null;
+
+                                if (folder_key == "0_backfill")
+                                    moviesArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("IMOVIES.XML")).ToList();
+                                else
+                                    moviesArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("I.XML")).ToList();
+
+                                //Loading movies
+                                foreach (var archiveEntry in moviesArchiveEntries)
+                                {
+                                    string entry_key = $"{zipfile_key}\\{archiveEntry.Name}";
+                                    if (trackingKeys.Contains(entry_key))
+                                        continue;
+
+                                    List<SolrDoc> solrDocs = new List<SolrDoc>();
+                                    try
+                                    {
+                                        XElement xml = LoadXmlFromZipEntry(archiveEntry);
+                                        foreach (var child in xml.Elements())
+                                        {
+                                            string entryType = child.Name.ToString().ToLower();
+                                            if (entryType == "movie")
+                                            {
+                                                SolrDoc solrDoc = new SolrDoc();
+                                                solrDocs.Add(solrDoc);
+
+                                                solrDoc.AddId(Guid.NewGuid().ToString());
+                                                solrDoc.AddField("entry_type_s", "movie");
+                                                solrDoc.AddField("entry_src_s", entry_key);
+                                                AddMovie(solrDoc, new Movie(child));
+                                            }
+                                        }
+
+                                        //Indexing the movies batch
+                                        await solrService.Index(solrDocs);
+                                        await solrService.CommitAsync();
+                                        await File.AppendAllTextAsync(trackingFile, $"{entry_key}{Environment.NewLine}");
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        zipFilerProcessingSuccessful = false;
+                                        folderProcessingSuccessful = false;
+                                        await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {archiveEntry.Name}: {ex.Message}{Environment.NewLine}");
+                                    }
+
+                                    solrDocs.Clear();
+                                    GC.Collect();
+                                }
+                            } //End: using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+
+                            if (zipFilerProcessingSuccessful)
+                                await File.AppendAllTextAsync(trackingFile, $"{zipfile_key}{Environment.NewLine}");
+                        }
+                        catch (Exception ex)
+                        {
+                            folderProcessingSuccessful = false;
+                            await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
+                        }
+
+                    } //End: foreach (var zipFile in zipFiles)
+
+                    if (folderProcessingSuccessful)
+                        await File.AppendAllTextAsync(trackingFile, $"{folder_key}{Environment.NewLine}");
+                }
+                catch (Exception ex)
+                {
+                    await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {folder_key}: {ex.Message}{Environment.NewLine}");
+                }
+                //GC.Collect();
+
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
 
