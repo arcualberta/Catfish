@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ShowtimeDataProcessing.Old.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="appsettings.test.example.json" />
     <None Remove="appsettings.test.json" />
   </ItemGroup>
