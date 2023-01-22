@@ -67,6 +67,30 @@ namespace DataProcessing
             Task.WhenAll(tasks).Wait();
         }
 
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexTheaters
+        [Fact]
+        public async void IndexTheaters()
+        {
+            DateTime start = DateTime.Now;
+
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
+
+            //Theaters shohuld NOT be processed in parallel since we want to skip duplicate theater records
+            //that appear across batches. Therefore, if the configureation specifies more than one parallel
+            //batch, we override it.
+            string[] sources = null;
+            if (maxParallelProcess > 1)
+            {
+                List<string> mergedSources = new List<string>();
+                sourceBatches.ForEach(src => mergedSources.AddRange(src));
+                sources = mergedSources.ToArray();
+            }
+            else
+                sources = sourceBatches[0];
+
+            await IndexTheatersBatch(sources, outputFolder, start);
+        }
+
         private void PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches)
         {
             if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out maxParallelProcess))
@@ -399,6 +423,147 @@ namespace DataProcessing
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
 
+        private async Task IndexTheatersBatch(string[] folderList, string outputFolder, DateTime start)
+        {
+            int srcFolderPathCharacterLength = folderList[0].LastIndexOf("\\") + 1;
+            string first = folderList[0].Substring(srcFolderPathCharacterLength);
+            string last = folderList[folderList.Length - 1].Substring(srcFolderPathCharacterLength);
+
+            string logFilePrefix = $"theaters-{first}-{last}";
+
+            string timestampStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
+
+            string trackingFile = Path.Combine(outputFolder, $"{logFilePrefix}-tracking-keys.txt");
+            if (!File.Exists(trackingFile))
+                File.Create(trackingFile).Close();
+            string[] trackingKeys = File.ReadAllLines(trackingFile);
+
+
+            //Theater ingestion will not be able to avoid duplicates in previosuly ingested theater batches.
+            //Therefore, put a warning in the error file if theaters are already found in the index
+            string query = "entry_type_s:theater";
+            SearchResult queryresult = await _testHelper.Solr.ExecuteSearch(query, 0, 1);
+            if (queryresult.TotalMatches > 0)
+                await File.WriteAllTextAsync(errorLogFile, $"WARNING: {queryresult.TotalMatches} theater records already found in the index. These entries will remain as duplicates.");
+
+
+            var solrService = _testHelper.Solr;
+            List<Theater> uniqueTheaters = new List<Theater>();
+            foreach (var srcFolder in folderList)
+            {
+                string folder_key = srcFolder.Substring(srcFolderPathCharacterLength);
+                try
+                {
+                    if (trackingKeys.Contains(folder_key))
+                        continue;
+
+                    var zipFiles = Directory.GetFiles(srcFolder);
+                    bool folderProcessingSuccessful = true;
+                    foreach (var zipFile in zipFiles)
+                    {
+                        string zipfile_key = zipFile.Substring(srcFolderPathCharacterLength);
+
+                        try
+                        {
+                            if (trackingKeys.Contains(zipfile_key))
+                                continue;
+
+                            await File.AppendAllTextAsync(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
+                            bool zipFilerProcessingSuccessful = true;
+
+                            using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                            {
+                                List<ZipArchiveEntry> theatersArchiveEntries = null;
+
+                                if (folder_key == "0_backfill")
+                                    theatersArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("THEATER.XML")).ToList();
+                                else
+                                    theatersArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("T.XML")).ToList();
+
+                                //Loading movies
+                                foreach (var archiveEntry in theatersArchiveEntries)
+                                {
+                                    string entry_key = $"{zipfile_key}\\{archiveEntry.Name}";
+                                    if (trackingKeys.Contains(entry_key))
+                                        continue;
+
+                                    List<SolrDoc> solrDocs = new List<SolrDoc>();
+                                    try
+                                    {
+                                        XElement xml = LoadXmlFromZipEntry(archiveEntry);
+                                        foreach (var child in xml.Elements())
+                                        {
+                                            string entryType = child.Name.ToString().ToLower();
+                                            if (entryType == "theater")
+                                            {
+                                                Theater theater = new Theater(child);
+
+                                                var matchingEntries = uniqueTheaters.Where(th => th.theater_id == theater.theater_id).ToList();
+                                                bool isNewTheater = true;
+                                                for (int i = 0; i < matchingEntries.Count && isNewTheater; i++)
+                                                    isNewTheater = !theater.IsSameAs(matchingEntries[i]);
+
+                                                if (isNewTheater)
+                                                {
+                                                    uniqueTheaters.Add(theater);
+
+                                                    SolrDoc solrDoc = new SolrDoc();
+                                                    solrDocs.Add(solrDoc);
+
+                                                    solrDoc.AddId(Guid.NewGuid().ToString());
+                                                    solrDoc.AddField("entry_type_s", "theater");
+                                                    solrDoc.AddField("entry_src_s", entry_key);
+                                                    solrDoc.AddField("entry_occurrence_i", uniqueTheaters.Count);
+                                                    AddTheater(solrDoc, theater);
+                                                }
+                                            }
+                                        }
+
+                                        //Indexing the theater batch
+                                        if (solrDocs.Count > 0)
+                                        {
+                                            await solrService.Index(solrDocs);
+                                            await solrService.CommitAsync();
+                                        }
+                                        await File.AppendAllTextAsync(trackingFile, $"{entry_key}{Environment.NewLine}");
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        zipFilerProcessingSuccessful = false;
+                                        folderProcessingSuccessful = false;
+                                        await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {archiveEntry.Name}: {ex.Message}{Environment.NewLine}");
+                                    }
+
+                                    solrDocs.Clear();
+                                    GC.Collect();
+                                }
+                            } //End: using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+
+                            if (zipFilerProcessingSuccessful)
+                                await File.AppendAllTextAsync(trackingFile, $"{zipfile_key}{Environment.NewLine}");
+                        }
+                        catch (Exception ex)
+                        {
+                            folderProcessingSuccessful = false;
+                            await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
+                        }
+
+                    } //End: foreach (var zipFile in zipFiles)
+
+                    if (folderProcessingSuccessful)
+                        await File.AppendAllTextAsync(trackingFile, $"{folder_key}{Environment.NewLine}");
+                }
+                catch (Exception ex)
+                {
+                    await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {folder_key}: {ex.Message}{Environment.NewLine}");
+                }
+                //GC.Collect();
+
+            }//End: foreach (var batchFolder in srcBatcheFolders)
+        }
 
         private XElement LoadXmlFromZipEntry(ZipArchiveEntry entry)
         {
@@ -1133,6 +1298,45 @@ namespace DataProcessing
             theater_lat = GetElementValueDecimal(xml, "theater_lat");
         }
 
+        public bool IsSameAs(Theater other)
+        {
+            return
+            theater_id == other.theater_id &&
+            theater_name == other.theater_name &&
+            theater_address == other.theater_address &&
+            theater_city == other.theater_city &&
+            theater_state == other.theater_state &&
+            theater_zip == other.theater_zip &&
+            theater_phone == other.theater_phone &&
+            theater_attributes == other.theater_attributes &&
+            theater_ticketing == other.theater_ticketing &&
+            theater_closed_reason == other.theater_closed_reason &&
+            theater_area == other.theater_area &&
+            theater_location == other.theater_location &&
+            theater_market == other.theater_market &&
+            theater_screens == other.theater_screens &&
+            theater_seating == other.theater_seating &&
+            theater_adult == other.theater_adult &&
+            theater_child == other.theater_child &&
+            theater_senior == other.theater_senior &&
+            theater_country == other.theater_country &&
+            theater_url == other.theater_url &&
+            theater_chain_id == other.theater_chain_id &&
+
+            theater_adult_bargain == other.theater_adult_bargain &&
+            theater_senior_bargain == other.theater_senior_bargain &&
+            theater_child_bargain == other.theater_child_bargain &&
+            theater_special_bargain == other.theater_special_bargain &&
+            theater_adult_super == other.theater_adult_super &&
+            theater_senior_super == other.theater_senior_super &&
+            theater_child_super == other.theater_child_super &&
+            theater_price_comment == other.theater_price_comment &&
+            theater_extra == other.theater_extra &&
+            theater_desc == other.theater_desc &&
+            theater_type == other.theater_type &&
+            theater_lon == other.theater_lon &&
+            theater_lat == other.theater_lat;
+        }
         public void Merge(Theater src, int instance)
         {
             theater_name = MergeStrings(theater_name, src.theater_name, instance);
