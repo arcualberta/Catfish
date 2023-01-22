@@ -1257,6 +1257,8 @@ namespace DataProcessing
             doc.AddField("theater_id_i", showtime.theater_id);
             doc.AddField("movie_name_t", showtime.movie_name);
             doc.AddField("show_date_dt", showtime.show_date);
+            if (showtime.showtimes != null)
+                doc.AddField("showtime_count_i", showtime.showtimes!.Length);
             doc.AddField("showtimes_ts", showtime.showtimes);
             doc.AddField("showtime_minutes_is", showtime.showtime_minutes);
             doc.AddField("show_attributes_ts", showtime.show_attributes);
