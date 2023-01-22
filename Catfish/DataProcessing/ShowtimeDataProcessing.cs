@@ -489,7 +489,7 @@ namespace DataProcessing
 
             var srcFolders = Directory.GetDirectories(srcFolderRoot);
             List<string[]> sourceBatches = new List<string[]>();
-            int batchSize = srcFolders.Length / maxParallelProcess;
+            int batchSize = (int)Math.Ceiling((double)srcFolders.Length / maxParallelProcess);
             int offset = 0;
             while(offset < srcFolders.Length)
             {
@@ -520,7 +520,6 @@ namespace DataProcessing
 
 
             var solrService = _testHelper.Solr;
-            int taskWaitTimeoutMilliseconds = 60000;//10 minutes
             foreach (var srcFolder in folderList)
             {
                 string folder_key = srcFolder.Substring(srcFolderPathCharacterLength);
@@ -543,7 +542,7 @@ namespace DataProcessing
                             if (trackingKeys.Contains(zipfile_key))
                                 continue;
 
-                            File.AppendAllText(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
+                            await File.AppendAllTextAsync(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
                             bool zipFilerProcessingSuccessful = true;
 
                             using (ZipArchive archive = ZipFile.OpenRead(zipFile))
@@ -582,7 +581,7 @@ namespace DataProcessing
                                     {
                                         zipFilerProcessingSuccessful = false;
                                         folderProcessingSuccessful = false;
-                                        File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {moviesArchiveEntry.Name}: {ex.Message}{Environment.NewLine}");
+                                        await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {moviesArchiveEntry.Name}: {ex.Message}{Environment.NewLine}");
                                     }
                                 }
 
@@ -603,7 +602,7 @@ namespace DataProcessing
                                     {
                                         zipFilerProcessingSuccessful = false;
                                         folderProcessingSuccessful = false;
-                                        File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {theatersArchiveEntry.Name}: {ex.Message}{Environment.NewLine}");
+                                        await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {theatersArchiveEntry.Name}: {ex.Message}{Environment.NewLine}");
                                     }
                                 }
 
@@ -627,11 +626,11 @@ namespace DataProcessing
 
                                                 var matchingMovies = movies.Where(m => m.movie_id == showtime.movie_id).ToList();
                                                 if (matchingMovies.Count == 0 || matchingMovies.Count > 1)
-                                                    File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {entry_key}: {matchingMovies.Count} movies found for movie_id {showtime.movie_id} {Environment.NewLine}");
+                                                    await File.AppendAllTextAsync(errorLogFile, $"{entry_key}: {matchingMovies.Count} movies found for movie_id {showtime.movie_id} {Environment.NewLine}");
 
                                                 var matchingTheaters = theaters.Where(t => t.theater_id == showtime.theater_id).ToList();
                                                 if (matchingTheaters.Count == 0 || matchingTheaters.Count > 1)
-                                                    File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {entry_key}: {matchingTheaters.Count} theaters found for theater_id {showtime.theater_id} {Environment.NewLine}");
+                                                    await File.AppendAllTextAsync(errorLogFile, $"{entry_key}: {matchingTheaters.Count} theaters found for theater_id {showtime.theater_id} {Environment.NewLine}");
 
                                                 SolrDoc solrDoc = new SolrDoc();
                                                 solrDocs.Add(solrDoc);
@@ -651,28 +650,15 @@ namespace DataProcessing
                                         } //End: foreach (var child in xml.Elements())
 
                                         //Indexing the showtimes batch
-                                        if (solrService.Index(solrDocs).Wait(taskWaitTimeoutMilliseconds))
-                                        {
-                                            if (solrService.CommitAsync().Wait(taskWaitTimeoutMilliseconds))
-                                                File.AppendAllText(trackingFile, $"{entry_key}{Environment.NewLine}");
-                                            else
-                                            {
-                                                zipFilerProcessingSuccessful = false;
-                                                folderProcessingSuccessful = false; File.AppendAllText(errorLogFile, $"Commit timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
-                                            }
-                                        }
-                                        else
-                                        {
-                                            zipFilerProcessingSuccessful = false;
-                                            folderProcessingSuccessful = false;
-                                            File.AppendAllText(errorLogFile, $"Indexing timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
-                                        }
+                                        await solrService.Index(solrDocs);
+                                        await solrService.CommitAsync();
+                                        await File.AppendAllTextAsync(trackingFile, $"{entry_key}{Environment.NewLine}");
                                     }
                                     catch (Exception ex)
                                     {
                                         zipFilerProcessingSuccessful = false;
                                         folderProcessingSuccessful = false;
-                                        File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {entry_key}: {ex.Message}{Environment.NewLine}");
+                                        await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {entry_key}: {ex.Message}{Environment.NewLine}");
                                     }
 
                                     solrDocs.Clear();
@@ -682,21 +668,22 @@ namespace DataProcessing
                             } //End: using (ZipArchive archive = ZipFile.OpenRead(zipFile))
 
                             if (zipFilerProcessingSuccessful)
-                                File.AppendAllText(trackingFile, $"{zipfile_key}{Environment.NewLine}");
+                                await File.AppendAllTextAsync(trackingFile, $"{zipfile_key}{Environment.NewLine}");
                         }
                         catch (Exception ex)
                         {
                             folderProcessingSuccessful = false;
+                            await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
                         }
 
                     } //End: foreach (var zipFile in zipFiles)
 
                     if (folderProcessingSuccessful)
-                        File.AppendAllText(trackingFile, $"{folder_key}{Environment.NewLine}");
+                        await File.AppendAllTextAsync(trackingFile, $"{folder_key}{Environment.NewLine}");
                 }
                 catch (Exception ex)
                 {
-                    File.AppendAllText(errorLogFile, $"EXCEPTION in {folder_key}: {ex.Message}{Environment.NewLine}");
+                    await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {folder_key}: {ex.Message}{Environment.NewLine}");
                 }
                 //GC.Collect();
                
