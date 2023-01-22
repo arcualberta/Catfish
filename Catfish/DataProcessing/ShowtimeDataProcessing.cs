@@ -523,9 +523,9 @@ namespace DataProcessing
             int taskWaitTimeoutMilliseconds = 60000;//10 minutes
             foreach (var srcFolder in folderList)
             {
+                string folder_key = srcFolder.Substring(srcFolderPathCharacterLength);
                 try
                 {
-                    string folder_key = srcFolder.Substring(srcFolderPathCharacterLength);
                     if (trackingKeys.Contains(folder_key))
                         continue;
 
@@ -544,203 +544,159 @@ namespace DataProcessing
                                 continue;
 
                             File.AppendAllText(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
+                            bool zipFilerProcessingSuccessful = true;
 
                             using (ZipArchive archive = ZipFile.OpenRead(zipFile))
                             {
-                                ZipArchiveEntry moviesArchiveEntry = null;
-                                ZipArchiveEntry theatersArchiveEntry = null;
+                                List<ZipArchiveEntry> moviesArchiveEntries = null;
+                                List<ZipArchiveEntry> theatersArchiveEntries = null;
+                                List<ZipArchiveEntry> showtimeArchiveEntries = null;
 
                                 if (folder_key == "0_backfill")
                                 {
-                                    moviesArchiveEntry = archive.Entries.FirstOrDefault(entry => entry.Name.ToUpper().EndsWith("IMOVIES.XML"));
-                                    theatersArchiveEntry = archive.Entries.FirstOrDefault(entry => entry.Name.ToUpper().EndsWith("THEATER.XML"));
+                                    moviesArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("IMOVIES.XML")).ToList();
+                                    theatersArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("THEATER.XML")).ToList();
+                                    showtimeArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("SCREENS.XML")).ToList();
                                 }
                                 else
                                 {
-                                    moviesArchiveEntry = archive.Entries.FirstOrDefault(entry => entry.Name.ToUpper().EndsWith("I.XML"));
-                                    theatersArchiveEntry = archive.Entries.FirstOrDefault(entry => entry.Name.ToUpper().EndsWith("T.XML"));
+                                    moviesArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("I.XML")).ToList();
+                                    theatersArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("T.XML")).ToList();
+                                    showtimeArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("S.XML")).ToList();
                                 }
 
                                 //Loading movies
-                                if(moviesArchiveEntry != null)
+                                foreach (var moviesArchiveEntry in moviesArchiveEntries)
                                 {
-                                    XElement xml = LoadXmlFromZipEntry(moviesArchiveEntry);
-                                    foreach (var child in xml.Elements())
+                                    try
                                     {
-                                        string entryType = child.Name.ToString().ToLower();
-                                        if (entryType == "movie")
-                                            movies.Add(new Movie(child));
+                                        XElement xml = LoadXmlFromZipEntry(moviesArchiveEntry);
+                                        foreach (var child in xml.Elements())
+                                        {
+                                            string entryType = child.Name.ToString().ToLower();
+                                            if (entryType == "movie")
+                                                movies.Add(new Movie(child));
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        zipFilerProcessingSuccessful = false;
+                                        folderProcessingSuccessful = false;
+                                        File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {moviesArchiveEntry.Name}: {ex.Message}{Environment.NewLine}");
                                     }
                                 }
 
                                 //Loading theaters
-                                if (theatersArchiveEntry != null)
+                                foreach (var theatersArchiveEntry in theatersArchiveEntries)
                                 {
-                                    XElement xml = LoadXmlFromZipEntry(theatersArchiveEntry);
-                                    foreach (var child in xml.Elements())
+                                    try
                                     {
-                                        string entryType = child.Name.ToString().ToLower();
-                                        if (entryType == "theater")
-                                            theaters.Add(new Theater(child));
+                                        XElement xml = LoadXmlFromZipEntry(theatersArchiveEntry);
+                                        foreach (var child in xml.Elements())
+                                        {
+                                            string entryType = child.Name.ToString().ToLower();
+                                            if (entryType == "theater")
+                                                theaters.Add(new Theater(child));
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        zipFilerProcessingSuccessful = false;
+                                        folderProcessingSuccessful = false;
+                                        File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {theatersArchiveEntry.Name}: {ex.Message}{Environment.NewLine}");
                                     }
                                 }
 
                                 //Iterating through showtime entries
+                                foreach (var showtimeArchiveEntry in showtimeArchiveEntries)
+                                {
+                                    string entry_key = $"{zipfile_key}\\{showtimeArchiveEntry.Name}";
+                                    if (trackingKeys.Contains(entry_key))
+                                        continue;
 
+                                    List<SolrDoc> solrDocs = new List<SolrDoc>();
+                                    try
+                                    {
+                                        XElement xml = LoadXmlFromZipEntry(showtimeArchiveEntry);
+                                        foreach (var child in xml.Elements())
+                                        {
+                                            string entryType = child.Name.ToString().ToLower();
+                                            if (entryType == "showtime")
+                                            {
+                                                var showtime = new Showtime(child);
 
-                                //string entry_key = $"{zipfile_key}\\{entry.Name}";
-                                //if (trackingKeys.Contains(entry_key))
-                                //    continue;
+                                                var matchingMovies = movies.Where(m => m.movie_id == showtime.movie_id).ToList();
+                                                if (matchingMovies.Count == 0 || matchingMovies.Count > 1)
+                                                    File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {entry_key}: {matchingMovies.Count} movies found for movie_id {showtime.movie_id} {Environment.NewLine}");
 
-                            }
+                                                var matchingTheaters = theaters.Where(t => t.theater_id == showtime.theater_id).ToList();
+                                                if (matchingTheaters.Count == 0 || matchingTheaters.Count > 1)
+                                                    File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {entry_key}: {matchingTheaters.Count} theaters found for theater_id {showtime.theater_id} {Environment.NewLine}");
 
-                            File.AppendAllText(trackingFile, $"{zipfile_key}{Environment.NewLine}");
+                                                SolrDoc solrDoc = new SolrDoc();
+                                                solrDocs.Add(solrDoc);
+
+                                                solrDoc.AddId(Guid.NewGuid().ToString());
+                                                solrDoc.AddField("entry_type_s", "showtime");
+                                                solrDoc.AddField("entry_src_s", entry_key);
+
+                                                AddShowtime(solrDoc, showtime);
+
+                                                if (matchingMovies.Any())
+                                                    AddMovie(solrDoc, matchingMovies.First(), true);
+
+                                                if(matchingTheaters.Any())
+                                                    AddTheater(solrDoc, matchingTheaters.First(), true);
+                                            }
+                                        } //End: foreach (var child in xml.Elements())
+
+                                        //Indexing the showtimes batch
+                                        if (solrService.Index(solrDocs).Wait(taskWaitTimeoutMilliseconds))
+                                        {
+                                            if (solrService.CommitAsync().Wait(taskWaitTimeoutMilliseconds))
+                                                File.AppendAllText(trackingFile, $"{entry_key}{Environment.NewLine}");
+                                            else
+                                            {
+                                                zipFilerProcessingSuccessful = false;
+                                                folderProcessingSuccessful = false; File.AppendAllText(errorLogFile, $"Commit timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            zipFilerProcessingSuccessful = false;
+                                            folderProcessingSuccessful = false;
+                                            File.AppendAllText(errorLogFile, $"Indexing timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        zipFilerProcessingSuccessful = false;
+                                        folderProcessingSuccessful = false;
+                                        File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile} > {entry_key}: {ex.Message}{Environment.NewLine}");
+                                    }
+
+                                    solrDocs.Clear();
+                                    GC.Collect();
+
+                                } //End: foreach (var showtimeArchiveEntry in showtimeArchiveEntries)
+                            } //End: using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+
+                            if (zipFilerProcessingSuccessful)
+                                File.AppendAllText(trackingFile, $"{zipfile_key}{Environment.NewLine}");
                         }
                         catch (Exception ex)
                         {
                             folderProcessingSuccessful = false;
                         }
 
-                    }
+                    } //End: foreach (var zipFile in zipFiles)
 
                     if (folderProcessingSuccessful)
                         File.AppendAllText(trackingFile, $"{folder_key}{Environment.NewLine}");
-
-                    /*
-
-
-                        var zipFiles = Directory.GetFiles(batchFolder);
-                        List<SolrDoc> solrDocs = new List<SolrDoc>();
-                        foreach (var zipFile in zipFiles)
-                        {
-                            try
-                            {
-                                File.AppendAllText(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
-                                int movieCount = 0, theaterCount = 0, showtimeCount = 0;
-
-                                using (ZipArchive archive = ZipFile.OpenRead(zipFile))
-                                {
-                                    foreach (ZipArchiveEntry entry in archive.Entries)
-                                    {
-                                        if (folder_key == "0_backfill")
-                                        {
-                                            if (skipMovies && entry.Name.ToUpper().EndsWith("IMOVIES.XML"))
-                                                continue;
-
-                                            if (skipTheaters && entry.Name.ToUpper().EndsWith("THEATER.XML"))
-                                                continue;
-
-                                            if (skipShowtimes && entry.Name.ToUpper().EndsWith("SCREENS.XML"))
-                                                continue;
-                                        }
-                                        else
-                                        {
-                                            if (skipMovies && entry.Name.ToUpper().EndsWith("I.XML"))
-                                                continue;
-
-                                            if (skipTheaters && entry.Name.ToUpper().EndsWith("T.XML"))
-                                                continue;
-
-                                            if (skipShowtimes && entry.Name.ToUpper().EndsWith("S.XML"))
-                                                continue;
-                                        }
-
-                                        if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
-                                            continue;
-
-                                        string entry_key = $"{zipfile_key}\\{entry.Name}";
-                                        if (trackingKeys.Contains(entry_key))
-                                            continue;
-
-                                        try
-                                        {
-                                            Stream stream = entry.Open();
-                                            string entryContent = null;
-                                            using (StreamReader reader = new StreamReader(stream))
-                                            {
-                                                entryContent = reader.ReadToEnd();
-                                                reader.Close();
-                                            }
-                                            stream.Close();
-
-                                            if (string.IsNullOrWhiteSpace(entryContent))
-                                            {
-                                                File.AppendAllText(errorLogFile, $"No data in {entry_key}");
-                                                continue; //foreach (ZipArchiveEntry entry in archive.Entries)
-                                            }
-
-                                            XElement xml = XElement.Parse(entryContent);
-                                            foreach (var child in xml.Elements())
-                                            {
-                                                string entryType = child.Name.ToString().ToLower();
-
-                                                SolrDoc solrDoc = new SolrDoc();
-                                                solrDocs.Add(solrDoc);
-
-                                                solrDoc.AddId(Guid.NewGuid().ToString());
-                                                solrDoc.AddField("entry_type_s", $"raw-{entryType}");
-                                                solrDoc.AddField("entry_src_s", entry_key);
-
-                                                if (entryType == "movie")
-                                                {
-                                                    AddMovie(solrDoc, new Movie(child));
-                                                    ++movieCount;
-                                                }
-                                                else if (entryType == "theater")
-                                                {
-                                                    AddTheater(solrDoc, new Theater(child));
-                                                    ++theaterCount;
-                                                }
-                                                else if (entryType == "showtime")
-                                                {
-                                                    AddShowtime(solrDoc, new Showtime(child));
-                                                    ++showtimeCount;
-                                                }
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            File.AppendAllText(errorLogFile, $"EXCEPTION in {entry_key}: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
-                                        }
-
-                                        //Indexing the documents
-                                        if (solrService.Index(solrDocs).Wait(taskWaitTimeoutMilliseconds))
-                                        {
-                                            if (solrService.CommitAsync().Wait(taskWaitTimeoutMilliseconds))
-                                                File.AppendAllText(trackingFile, $"{entry_key}{Environment.NewLine}");
-                                            else
-                                                File.AppendAllText(errorLogFile, $"Commit timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
-
-
-                                        }
-                                        else
-                                            File.AppendAllText(errorLogFile, $"Indexing timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
-
-                                        solrDocs.Clear();
-                                        GC.Collect();
-
-                                    } //End: foreach (ZipArchiveEntry entry in archive.Entries)
-
-                                } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
-
-                                //Mark that the current zip file is done processing
-                                File.AppendAllText(trackingFile, $"{zipfile_key}{Environment.NewLine}");
-
-                                File.AppendAllText(processingLogFile, $"    Movies: {movieCount}, Theaters: {theaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}");
-                            }
-                            catch (Exception ex)
-                            {
-                                File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
-                            }
-                        } //End: foreach (var zipFile in zipFiles)
-
-                        //Mark that the current batch is done processing
-                        File.AppendAllText(trackingFile, $"{folder_key}{Environment.NewLine}");
-                     */
                 }
                 catch (Exception ex)
                 {
-                    //File.AppendAllText(errorLogFile, $"EXCEPTION in {batchFolder}: {ex.Message}{Environment.NewLine}");
+                    File.AppendAllText(errorLogFile, $"EXCEPTION in {folder_key}: {ex.Message}{Environment.NewLine}");
                 }
                 //GC.Collect();
                
@@ -1330,9 +1286,10 @@ namespace DataProcessing
             AddShowtime(doc, showtime);
         }
 
-        private void AddTheater(SolrDoc doc, Theater theater)
+        private void AddTheater(SolrDoc doc, Theater theater, bool skipId = false)
         {
-            doc.AddField("theater_id_i", theater.theater_id);
+            if (!skipId)
+                doc.AddField("theater_id_i", theater.theater_id);
             doc.AddField("theater_name_t", theater.theater_name!);
             doc.AddField("theater_address_t", theater.theater_address);
             doc.AddField("theater_city_t", theater.theater_city);
@@ -1368,9 +1325,10 @@ namespace DataProcessing
             doc.AddField("theater_lat_d", theater.theater_lat);
         }
 
-        private void AddMovie(SolrDoc doc, Movie movie)
+        private void AddMovie(SolrDoc doc, Movie movie, bool skipId = false)
         {
-            doc.AddField("movie_id_i", movie.movie_id);
+            if (!skipId)
+                doc.AddField("movie_id_i", movie.movie_id);
             doc.AddField("parent_id_i", movie.parent_id);
             doc.AddField("title_t", movie.title);
             doc.AddField("pictures_ts", movie.pictures.ToArray());
