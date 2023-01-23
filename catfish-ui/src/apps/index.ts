@@ -15,7 +15,7 @@ export * as FormTemplateManager from './form-template-manager';
 export { default as GoogleCalendar } from './google-calendar/App.vue'
 export { useGoogleCalendarStore } from './google-calendar/store'
 
-/* workflow component */
+/* workflow Manager manager */
 export * as WorkflowBuilderManager from './workflow-builder-manager'
 
 
