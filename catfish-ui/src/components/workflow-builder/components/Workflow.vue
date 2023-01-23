@@ -3,7 +3,8 @@
     import TabNav from '@/components/shared/components/TabNav/TabNav.vue';
     import {default as WorkflowStates} from './WorkflowStateList.vue'
     import {default as WorkflowRoles} from './WorkflowRoleList.vue'
-    import { default as EmailTemplates } from './EmailTemplateList.vue';
+    import {default as WorkflowTriggers} from './WorkflowTriggerList.vue'
+    import { default as WorkflowEmailTemplates } from './EmailTemplateList.vue';
     import { default as  tabMenu} from "@/appsettings";
     import { computed, ref } from 'vue';
 
@@ -23,10 +24,10 @@
       <workflow-roles />
     </template>
     <template v-slot:Templates>
-      <email-templates />
+      <workflow-email-templates />
     </template>
     <template v-slot:Triggers>
-      Please select new Triggers.
+      <workflow-triggers />
     </template>
     <template v-slot:Pop-ups>
       Please select new Pop-ups.

@@ -79,3 +79,18 @@ export enum eConstraintType{
     FieldConstraint = 1,
     FieldExpression
 }
+export enum eEmailType{
+    To = 1,
+    Cc,
+    Bcc
+}
+export enum eTriggerType{
+    Email = 1
+}
+export enum eRecipientType{
+    Role = 1,
+    Owner,
+    FormField,
+    MetadataField,
+    Email
+}

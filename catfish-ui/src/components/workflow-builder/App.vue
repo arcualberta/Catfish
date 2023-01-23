@@ -122,6 +122,12 @@
 padding-top: 40px;
 max-width: 40%;
 }
+.list-recipient{
+max-width: 75%;
+}
+.title-recipient{
+padding-top: 20px;
+}
 .text-editor{
     width: 780;
 }

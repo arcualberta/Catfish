@@ -1,10 +1,10 @@
-import { Guid } from "guid-typescript";
-
+import { Guid } from "guid-typescript"
+import { eRecipientType, eTriggerType, eEmailType } from "../../../components/shared/constants"
 export interface Workflow {
     id: Guid;
     name: string;
     description: string;
-    states: WorkflowState[];
+    triggers: WorkflowTrigger[];
     actions: WorkflowAction[];
 }
 
@@ -42,6 +42,22 @@ export interface EmailTemplate {
     description: string | null;
     emailSubject: string;
     emailBody: string;
+}
+
+export interface Recipient {
+    id: Guid;
+    emailType: eEmailType;
+    recipienType:eRecipientType;
+    role: string | null;
+    email: string | null;
+}
+export interface WorkflowTrigger {
+    id: Guid;
+    type: eTriggerType;
+    name: string;
+    description: string | null;
+    templateId:Guid;
+    recipients:Recipient[]
 }
 export interface TabNavigationDefinition {
     name: string;

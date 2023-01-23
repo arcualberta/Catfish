@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { WorkflowRole, TabNavigationDefinition} from '../models/'
+    import { WorkflowRole, TabNavigationDefinition} from '../models'
     import { computed, ref,watch } from 'vue';
     import {default as ConfirmPopUp} from "../../shared/components/pop-up/ConfirmPopUp.vue"
     import { useWorkflowBuilderStore } from '../store';

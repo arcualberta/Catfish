@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { Guid } from "guid-typescript";
-import { EmailTemplate, Workflow, WorkflowState, WorkflowRoles} from '../models/'
+import { EmailTemplate, Workflow, WorkflowState, WorkflowRole, WorkflowTrigger, Recipient} from '../models/'
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -9,8 +9,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         transientMessageClass: null as string | null,
 
         states: [] as WorkflowState[] | null,
-        roles: [] as WorkflowRoles[] | null,
-        emailTemplates: [] as EmailTemplate[] | null
+        roles: [] as WorkflowRole[] | null,
+        emailTemplates: [] as EmailTemplate[] | null,
+        triggers: [] as WorkflowTrigger[] | null,
+        recipients:[] as Recipient[] | null
     }),
     actions: {
         loadWorkflow(id: Guid) {

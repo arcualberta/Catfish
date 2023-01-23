@@ -1,9 +1,8 @@
 <script setup lang="ts">
     import { WorkflowState } from '../models'
     import { useWorkflowBuilderStore } from '../store';
-    import {storeToRefs} from 'pinia';
-    import {default as ConfirmPopUp} from "../../shared/components/pop-up/ConfirmPopUp.vue"
-    import { computed, ref, watch } from 'vue';
+    import { default as ConfirmPopUp } from "../../shared/components/pop-up/ConfirmPopUp.vue"
+    import { ref, watch } from 'vue';
     import { Guid } from 'guid-typescript';
 
     let stateId = ref("")
