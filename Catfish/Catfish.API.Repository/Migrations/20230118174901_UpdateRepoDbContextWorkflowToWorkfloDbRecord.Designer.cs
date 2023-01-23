@@ -4,6 +4,7 @@ using Catfish.API.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catfish.API.Repository.Migrations
 {
     [DbContext(typeof(RepoDbContext))]
-    partial class RepoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230118174901_UpdateRepoDbContextWorkflowToWorkfloDbRecord")]
+    partial class UpdateRepoDbContextWorkflowToWorkfloDbRecord
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,9 +203,6 @@ namespace Catfish.API.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("EntityTemplateId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -213,8 +212,6 @@ namespace Catfish.API.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EntityTemplateId");
 
                     b.ToTable("CF_Repo_Workflows");
                 });
@@ -264,17 +261,6 @@ namespace Catfish.API.Repository.Migrations
                     b.Navigation("SubjectEntity");
                 });
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.WorkflowDbRecord", b =>
-                {
-                    b.HasOne("Catfish.API.Repository.Models.Entities.EntityTemplate", "EntityTemplate")
-                        .WithMany("Workflows")
-                        .HasForeignKey("EntityTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EntityTemplate");
-                });
-
             modelBuilder.Entity("EntityTemplateFormTemplate", b =>
                 {
                     b.HasOne("Catfish.API.Repository.Models.Entities.EntityTemplate", null)
@@ -295,11 +281,6 @@ namespace Catfish.API.Repository.Migrations
                     b.Navigation("ObjectRelationships");
 
                     b.Navigation("SubjectRelationships");
-                });
-
-            modelBuilder.Entity("Catfish.API.Repository.Models.Entities.EntityTemplate", b =>
-                {
-                    b.Navigation("Workflows");
                 });
 #pragma warning restore 612, 618
         }
