@@ -28,8 +28,8 @@
     const triggerTypes = computed(() => eTriggerType);
     const emailTypes = computed(() => eEmailType);
     const recipientTypes = computed(() => eRecipientType);
-    const emailTemplates = computed(() => store.emailTemplates);
-    const roleList = computed(() => store.roles);
+    const emailTemplates = computed(() => store.workflow?.emailTemplates);
+    const roleList = computed(() => store.workflow?.roles);
     let toRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.To) as Recipient[]);
     let ccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Cc) as Recipient[]);
     let bccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Bcc) as Recipient[]);
@@ -75,7 +75,7 @@
                 recipients : store.recipients
             } as WorkflowTrigger;
         
-            store.triggers?.push(newState);
+            store.workflow?.triggers?.push(newState);
             store.recipients=null;
             resetFields()
         }
@@ -119,7 +119,7 @@
 </script>
 
 <template>
-    {{ store.triggers }}
+    {{ store.workflow?.triggers }}
     <div v-if="showPannel" class="col-sm-6">
         <div class="alert alert-secondary" role="alert">
             <b-input-group prepend="Type" class="mt-3">

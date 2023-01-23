@@ -10,10 +10,6 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
         entityTemplates: [] as TemplateEntry[],
-        states: [] as WorkflowState[] | null,
-        roles: [] as WorkflowRole[] | null,
-        emailTemplates: [] as EmailTemplate[] | null,
-        triggers: [] as WorkflowTrigger[] | null,
         recipients:[] as Recipient[] | null
     }),
     actions: {
