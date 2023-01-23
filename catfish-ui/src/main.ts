@@ -9,7 +9,8 @@ import BootstrapVue3 from 'bootstrap-vue-3'
 import IconsPlugin from 'bootstrap-vue-3'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
-
+import "@fontsource/architects-daughter"
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 /* Import Google Login */
 import vue3GoogleLogin from 'vue3-google-login'
 
@@ -19,6 +20,9 @@ import vue3GoogleLogin from 'vue3-google-login'
  *  */
 import { FontAwesomeIcon } from './library-exports'
 
+import {default as config} from './appsettings'
+
+const googleClientId=config.googleLoginClientId;
 
 createApp(App)
     .component('font-awesome-icon', FontAwesomeIcon)
@@ -27,6 +31,7 @@ createApp(App)
     .use(BootstrapVue3) // Make BootstrapVue available throughout your project
     .use(IconsPlugin) // Optionally install the BootstrapVue icon components plugin
     .use(vue3GoogleLogin, {
-        clientId: '589183038778-u256nlels7v2443j3h1unvtp367f80s4.apps.googleusercontent.com'
+        //refer to https://docs.google.com/document/d/1N_y4aQupxPKPGh2eaxpOqCmc_75QionPp4U_MoY3gZQ/edit#heading=h.4zlex6l80fxx
+        clientId: googleClientId
     })
     .mount('#app')

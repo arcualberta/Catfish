@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { Guid } from 'guid-typescript';
+    import { Guid } from 'guid-typescript';
     import { ListEntry } from '@/components/shared';
     import { eState } from '../../../components/shared/constants';
-import { computed, ref } from 'vue';
-import { default as config } from "@/appsettings";
+    import { computed, ref } from 'vue';
+    import { default as config } from "@/appsettings";
     import { default as ConfirmPopUp } from '../../../components/shared/components/pop-up/ConfirmPopUp.vue';
-import { useCRUDManagerStore } from './store'
+    import { useCRUDManagerStore } from './store'
 
     const deleteTrigger = ref(false);
     const changeStateTrigger = ref(false);
-const props = defineProps<{
-    entry: ListEntry 
-}>()
+    const props = defineProps<{
+        entry: ListEntry 
+        }>()
 
     const store = useCRUDManagerStore();
     const apiRoot = computed(() => store.apiRoot)
@@ -31,12 +31,12 @@ const props = defineProps<{
 
     };
 
-//API ROOT/read/{entry.id}
-//
-const detailUrl ="/read/" + props.entry.id;
-const updateUrl ="/update/" + props.entry.id;
-const deleteUrl = "/delete/" + props.entry.id;
-const changeStateUrl="/change-state/" + props.entry.id
+    //API ROOT/read/{entry.id}
+    //
+    const detailUrl ="/read/" + props.entry.id;
+    const updateUrl ="/update/" + props.entry.id;
+    const deleteUrl = "/delete/" + props.entry.id;
+    const changeStateUrl="/change-state/" + props.entry.id
 </script>
 
 <template>

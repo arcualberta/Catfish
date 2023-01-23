@@ -28,7 +28,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
     }),
     actions: {
         loadTemplates() {
-            let webRoot = "https://" + this.getApiRoot.split("/")[2];
+            let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/`;
             //const api = `${config.dataRepositoryApiRoot}/api/entity-templates/`;
 
@@ -65,7 +65,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             if(templateId.toString() === Guid.EMPTY)
                 return;
 
-            let webRoot = "https://" + this.getApiRoot.split("/")[2];
+            let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/${templateId}`;
             console.log(api)
 
