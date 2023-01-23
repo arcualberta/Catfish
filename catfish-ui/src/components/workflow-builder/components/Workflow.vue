@@ -35,7 +35,7 @@ import { json } from 'stream/consumers';
    <b-row>
      <h5 class="col-2">Entity Templates</h5>
       <div class="col-4">
-            <b-form-select v-model="workflow.entityTemplateId" :options="templateOptions"></b-form-select>
+           <b-form-select v-model="workflow.entityTemplateId" :options="templateOptions"></b-form-select>
        
       </div>
       

@@ -1,14 +1,8 @@
 import { defineStore } from 'pinia';
 import { Guid } from "guid-typescript";
-<<<<<<< .mine
-import { EmailTemplate, Workflow, WorkflowState, WorkflowRole, WorkflowTrigger, Recipient} from '../models/'
-
-
-=======
 import { default as config } from "@/appsettings";
-import { EmailTemplate, Workflow, WorkflowState, WorkflowRole, WorkflowAction, WorkflowTrigger} from '../models/'
 import { TemplateEntry } from '@/components/entity-editor/models';
->>>>>>> .theirs
+import { Workflow, WorkflowState, WorkflowRole, EmailTemplate, WorkflowTrigger, WorkflowAction, Recipient } from '../models/'
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -16,34 +10,25 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
         entityTemplates: [] as TemplateEntry[],
-
-<<<<<<< .mine
         states: [] as WorkflowState[] | null,
         roles: [] as WorkflowRole[] | null,
         emailTemplates: [] as EmailTemplate[] | null,
         triggers: [] as WorkflowTrigger[] | null,
         recipients:[] as Recipient[] | null
-=======
-
-
-
-
-
->>>>>>> .theirs
     }),
     actions: {
-        createNewWorkflow(){
+        createNewWorkflow() {
             this.workflow = {
                 id: Guid.EMPTY as unknown as Guid,
                 name: "New Workflow Template",
                 description: "Description about this new Wotkflow Template",
                 states: [] as WorkflowState[],
-                roles:[] as WorkflowRole[],
-                emailTemplates:[] as EmailTemplate[],
-                actions:[] as WorkflowAction[],
-                triggers:[] as WorkflowTrigger[],
-                entityTemplateId:Guid.EMPTY as unknown as Guid,
-                popups: Object 
+                roles: [] as WorkflowRole[],
+                emailTemplates: [] as EmailTemplate[],
+                actions: [] as WorkflowAction[],
+                triggers: [] as WorkflowTrigger[],
+                entityTemplateId: Guid.EMPTY as unknown as Guid,
+                popups: Object
             }
         },
         loadWorkflow(id: Guid) {
@@ -123,13 +108,13 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             fetch(api, {
                 method: 'GET'
             })
-            .then(response => response.json())
-            .then(data => {
-                this.entityTemplates = data;
-            })
-            .catch((error) => {
-                console.error('Load Entity Templates API Error:', error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    this.entityTemplates = data;
+                })
+                .catch((error) => {
+                    console.error('Load Entity Templates API Error:', error);
+                });
 
         },
     }

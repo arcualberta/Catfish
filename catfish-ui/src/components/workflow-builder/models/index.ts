@@ -8,6 +8,7 @@ export interface Workflow {
     id: Guid;
     name: string;
     description: string;
+    states: WorkflowState[];
     actions: WorkflowAction[];
     entityTemplateId: Guid;
     triggers: WorkflowTrigger[];
