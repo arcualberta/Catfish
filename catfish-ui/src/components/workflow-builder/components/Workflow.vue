@@ -36,7 +36,7 @@
       Entity Template:
     </b-col>
     <b-col class="col-sm-8 header-style">
-      <b-form-select v-model="workflow.entityTemplateId" :options="templateOptions"></b-form-select>
+      <b-form-select v-model="workflow!.entityTemplateId" :options="templateOptions"></b-form-select>
     </b-col>
   </b-row>
   <div>{{JSON.stringify(workflow)}}</div>

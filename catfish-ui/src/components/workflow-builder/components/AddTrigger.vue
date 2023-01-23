@@ -6,9 +6,7 @@
     import { default as ConfirmPopUp } from "../../shared/components/pop-up/ConfirmPopUp.vue"
     import { Guid } from 'guid-typescript';
 
-    const props = defineProps < { visibility: boolean } > ();
     const store = useWorkflowBuilderStore();
-    let   showPannel = ref(props.visibility);
     const triggerId = ref("");
     const triggerType = ref("");
     const triggerName = ref("");
@@ -76,6 +74,7 @@
             } as WorkflowTrigger;
         
             store.workflow?.triggers?.push(newState);
+            store.showAddTrigger=false;
             store.recipients=null;
             resetFields()
         }
@@ -119,8 +118,7 @@
 </script>
 
 <template>
-    {{ store.workflow?.triggers }}
-    <div v-if="showPannel" class="col-sm-6">
+    <div v-if="store.showAddTrigger" class="col-sm-6">
         <div class="alert alert-secondary" role="alert">
             <b-input-group prepend="Type" class="mt-3">
                 <b-form-select v-model="triggerType" :options="triggerTypes"></b-form-select>
