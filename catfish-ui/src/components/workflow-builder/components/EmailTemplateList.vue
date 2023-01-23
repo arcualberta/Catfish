@@ -10,6 +10,7 @@
     
 
     const store = useWorkflowBuilderStore();
+    const emailTemplates = ref(store.workflow?.emailTemplates);
     const addTemplates = ref(false);
     const templateId = ref("");
     const templateName = ref("");
@@ -37,10 +38,10 @@
 
             } as EmailTemplate;
         
-            store.emailTemplates?.push(newTemplate)
+            emailTemplates.value?.push(newTemplate)
         }else{
-            const idx = store.emailTemplates?.findIndex(emt => emt.id.toString() == templateId.value)
-            store.emailTemplates!.forEach((emt)=> {
+            const idx = emailTemplates.value?.findIndex(emt => emt.id.toString() == templateId.value)
+            emailTemplates.value!.forEach((emt)=> {
                 if(emt.id.toString() === templateId.value){
                     emt.name= templateName.value;
                     emt.description= templateDescription.value;
@@ -53,11 +54,11 @@
         addTemplates.value = false;
     }
     const deleteTemplate = (templateId: Guid) => {
-        const idx = store.emailTemplates?.findIndex(tmp => tmp.id == templateId)
-        store.emailTemplates?.splice(idx as number, 1)
+        const idx =emailTemplates.value?.findIndex(tmp => tmp.id == templateId)
+        emailTemplates.value?.splice(idx as number, 1)
     }
     const editTemplate = (editTemplateId: Guid) => {
-        const templateValues = store.emailTemplates?.filter(tmp => tmp.id == editTemplateId) as EmailTemplate[]
+        const templateValues = emailTemplates.value?.filter(tmp => tmp.id == editTemplateId) as EmailTemplate[]
         templateName.value=templateValues[0].name 
         templateDescription.value = templateValues[0].description as string
         templateSubject.value = templateValues[0].emailSubject as string
@@ -77,7 +78,7 @@
 <template>
     <div class="list-item">
         <b-list-group>
-            <b-list-group-item v-for="emailTemplate in store.emailTemplates" :key="emailTemplate.name">
+            <b-list-group-item v-for="emailTemplate in emailTemplates" :key="emailTemplate.name">
                 <span>{{emailTemplate.name}}</span>
                 <span style="display:inline">
                     <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteTemplate(emailTemplate.id as Guid)"/>

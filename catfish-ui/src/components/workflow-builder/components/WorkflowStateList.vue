@@ -14,6 +14,8 @@
     const ToggleAddStates = () => (addStates.value = !addStates.value);
     let disabled = ref(true);
 
+    const states = ref(store.workflow?.states);
+
     watch(() => stateName.value, async newValue => {
         if (newValue.length>0)
             disabled.value = false; 
@@ -28,10 +30,11 @@
                 description : stateDescription.value
             } as WorkflowState;
         
-            store.states?.push(newState);
+            states.value?.push(newState);
         }else{
-            const idx = store.states?.findIndex(opt => opt.id.toString() == stateId.value)
-            store.states!.forEach((st)=> {
+            
+            const idx = states.value?.findIndex(opt => opt.id.toString() == stateId.value)
+            states.value!.forEach((st)=> {
                 if(st.id.toString() === stateId.value){
                     st.name= stateName.value;
                     st.description= stateDescription.value;
@@ -49,12 +52,12 @@
         stateDescription.value = ""
     }
     const deleteState = (stateId: Guid) => {
-        const idx = store.states?.findIndex(opt => opt.id == stateId)
-        store.states?.splice(idx as number, 1)
+        const idx = states.value?.findIndex(opt => opt.id == stateId)
+        states.value?.splice(idx as number, 1)
     }
     const editState = (editStateId: Guid) => {
         console.log("stateId",stateId)
-        const stateValues = store.states?.filter(opt => opt.id == editStateId) as WorkflowState[]
+        const stateValues = states.value?.filter(opt => opt.id == editStateId) as WorkflowState[]
         stateName.value=stateValues[0].name 
         stateDescription.value = stateValues[0].description as string
         stateId.value = stateValues[0].id.toString()
@@ -66,7 +69,7 @@
 <template>
     <div class="list-item">
             <b-list-group>
-                <b-list-group-item v-for="state in store.states" :key="state.name">
+                <b-list-group-item v-for="state in states" :key="state.name">
                     <span>{{state.name}}</span>
                     <span style="display:inline">
                         <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteState(state.id as Guid)"/>

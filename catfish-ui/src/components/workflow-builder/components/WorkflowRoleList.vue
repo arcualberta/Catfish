@@ -5,12 +5,14 @@
     import { useWorkflowBuilderStore } from '../store';
     import { Guid } from 'guid-typescript';
 
+    
     let roleId = ref("")
     let roleName = ref("")
     let roleDescription = ref("")
     const store = useWorkflowBuilderStore();
     const addRoles = ref(false);
     let disabled = ref(true);
+    const roles = ref(store.workflow?.roles);
     const ToggleAddRoles = () => (addRoles.value = !addRoles.value);
     watch(() => roleName.value, async newValue => {
         if (newValue.length>0)
@@ -27,10 +29,10 @@
                 description : roleDescription.value
             } as WorkflowRole;
     
-        store.roles?.push(newWorkflowRole);
+        roles.value?.push(newWorkflowRole);
         }else{
-            const idx = store.roles?.findIndex(r => r.id.toString() == roleId.value)
-            store.roles!.forEach((rl)=> {
+            const idx = roles.value?.findIndex(r => r.id.toString() == roleId.value)
+            roles.value!.forEach((rl)=> {
                 if(rl.id.toString() === roleId.value){
                     rl.name= roleName.value;
                     rl.description= roleDescription.value;
@@ -48,11 +50,11 @@
     }
 
     const deleteRole = (roleId: Guid) => {
-        const idx = store.roles?.findIndex(opt => opt.id == roleId)
-        store.roles?.splice(idx as number, 1)
+        const idx = roles.value?.findIndex(opt => opt.id == roleId)
+        roles.value?.splice(idx as number, 1)
     }
     const editRole = (editRoleId: Guid) => {
-        const roleValues = store.roles?.filter(opt => opt.id == editRoleId) as WorkflowRole[]
+        const roleValues = roles.value?.filter(opt => opt.id == editRoleId) as WorkflowRole[]
         roleName.value=roleValues[0].name 
         roleDescription.value = roleValues[0].description as string
         roleId.value = roleValues[0].id.toString()
@@ -64,7 +66,7 @@
     <div>
         <div class="list-item">
             <b-list-group>
-                <b-list-group-item v-for="role in store.roles" :key="role.name">
+                <b-list-group-item v-for="role in roles" :key="role.name">
                     <span>{{role.name}}</span>
                     <span>
                         <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRole(role.id as Guid)"/>
