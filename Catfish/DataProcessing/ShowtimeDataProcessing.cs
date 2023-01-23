@@ -88,7 +88,7 @@ namespace DataProcessing
             else
                 sources = sourceBatches[0];
 
-            IndexTheatersBatch(sources, outputFolder, start);
+            await IndexTheatersBatch(sources, outputFolder, start);
         }
 
         private void PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches)
