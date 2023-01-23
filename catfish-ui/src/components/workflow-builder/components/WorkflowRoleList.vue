@@ -87,7 +87,7 @@
                         <b-form-input v-model="roleName" ></b-form-input>
                     </b-input-group>
                     <b-input-group prepend="Description" class="mt-3">
-                        <b-form-textarea v-model="(roleDescription as string)" rows="3" max-rows="6"></b-form-textarea>
+                        <b-form-textarea v-model="roleDescription" rows="3" max-rows="6"></b-form-textarea>
                     </b-input-group>
                 </div>
             </template>
