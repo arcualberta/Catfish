@@ -43,78 +43,462 @@ namespace DataProcessing
             _testHelper = new TestHelper();
         }
 
+
+        [Fact]
+        public void MergeTest()
+        {
+            XmlDoc doc = new XmlDoc();
+
+            string sa = "String A";
+            string sb = "String B";
+            string sc = "String C";
+            string s1 = doc.MergeStrings(sa, sb, 2);
+            string s2 = doc.MergeStrings(s1, sc, 3);
+            string s3 = doc.MergeStrings(null, sb, 2);
+
+            List<string> aa = new List<string>() { "aa a" };
+            List<string> ab = new List<string>() { "ab a", "ab b" };
+            List<string> ac = new List<string>() { "ac a" };
+
+            var a1 = doc.MergeArrays(aa, ab, 2);
+            var a2 = doc.MergeArrays(a1, ac, 3);
+            var a3 = doc.MergeArrays(new List<string>(), ab, 2);
+
+        }
+
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.CreateDbRecords
+        [Fact]
+        public void CreateDbRecords()
+        {
+            DateTime start = DateTime.Now;
+
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:IsProductionRun")?.Value, out bool productionRun))
+                productionRun = true;
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipProcessedFoldersAndZipFiles")?.Value, out bool skippProcessedFoldersAndZipFiles))
+                skippProcessedFoldersAndZipFiles = true;
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:ContextTimeoutInMinutes")?.Value, out int contextTimeoutInMinutes))
+                contextTimeoutInMinutes = 3;
+
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
+                maxBatchesToProcess = int.MaxValue;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxShowtimeBatchesToProcess")?.Value, out int maxShowtimeBatchesToProcess))
+                maxShowtimeBatchesToProcess = int.MaxValue;
+
+            //var context = _testHelper.ShowtimeDb;
+
+            string srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
+            Assert.True(Directory.Exists(srcFolderRoot));
+            string outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+
+            string logFilePrefix = productionRun ? "" : "dry-run-";
+            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}processing - log-{fileSuffix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}error-log-{fileSuffix}.txt");
+
+            var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
+
+            int batch = 0;
+
+            //var tracking_keys = context.TrackingKeys.Select(record => record.entry_key).ToList();
+            foreach (var batchFolder in srcBatcheFolders)
+            {
+                using (var batchContext = _testHelper.CreateNewShowtimeDbContext())
+                {
+                    try
+                    {
+                        int? timeout1 = batchContext.Database.GetCommandTimeout();
+                        batchContext.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
+                        File.AppendAllText(processingLogFile, $"    Changed DB Timeout from: {(timeout1.HasValue ? timeout1.Value : "NULL")} to {(contextTimeoutInMinutes * 60)} seconds{Environment.NewLine}{Environment.NewLine}");
+
+                        ++batch;
+
+                        if (maxBatchesToProcess < batch)
+                            break;
+
+                        string folder_key = batchFolder.Substring(srcFolderRoot.Length + 1);
+                        if (skippProcessedFoldersAndZipFiles && batchContext.TrackingKeys.Where(record => record.entry_key == folder_key).Any())
+                            continue;
+
+                        var zipFiles = Directory.GetFiles(batchFolder);
+                        foreach (var zipFile in zipFiles)
+                        {
+                            try
+                            {
+                                string zipfile_key = zipFile.Substring(srcFolderRoot.Length + 1);
+                                if (skippProcessedFoldersAndZipFiles && batchContext.TrackingKeys.Where(record => record.entry_key == zipfile_key).Any())
+                                    continue;
+
+                                File.AppendAllText(processingLogFile, $"Archive {zipFile}{Environment.NewLine}");
+                                int showtimeCount = 0, newTheaterCount = 0, updatedTheaterCount = 0, newMovieCount = 0, updatedMovieCount = 0;
+
+                                using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                                {
+                                    foreach (ZipArchiveEntry entry in archive.Entries)
+                                    {
+                                        using (var entryContext = _testHelper.CreateNewShowtimeDbContext())
+                                        {
+                                            try
+                                            {
+                                                entryContext.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
+
+                                                if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
+                                                    continue;
+
+                                                var entry_key = $"{zipfile_key}\\{entry.Name}";
+                                                if (entryContext.TrackingKeys.Where(record => record.entry_key == entry_key).Any())
+                                                    continue;
+
+                                                var extractFile = Path.Combine(outputFolder, entry.Name);
+                                                if (File.Exists(extractFile))
+                                                    File.Delete(extractFile);
+
+                                                entry.ExtractToFile(extractFile);
+
+                                                XElement xml = XElement.Load(extractFile);
+                                                if (xml.Name == "times")
+                                                {
+                                                    //This is a showtime data set
+                                                    foreach (var child in xml.Elements("showtime"))
+                                                    {
+                                                        Showtime showtime = new Showtime(child);
+                                                        if (productionRun)
+                                                            entryContext.ShowtimeRecords.Add(new ShowtimeRecord() { batch = batch, movie_id = showtime.movie_id, theater_id = showtime.theater_id, show_date = showtime.show_date, movie_error = false, theater_error = false, is_validated = false, content = JsonSerializer.Serialize(showtime) });
+                                                        ++showtimeCount;
+                                                        //context.SaveChanges();
+                                                    }
+                                                }
+                                                else if (xml.Name == "movies")
+                                                {
+                                                    //This is a movies data set. 
+                                                    foreach (var child in xml.Elements("movie"))
+                                                    {
+                                                        Movie movie = new Movie(child);
+
+                                                        //Checking if such a move record already exist in the database
+                                                        MovieRecord dbMovie = entryContext.MovieRecords.FirstOrDefault(m => m.movie_id == movie.movie_id);
+                                                        if (dbMovie != null)
+                                                        {
+                                                            dbMovie.Merge(movie);
+                                                            ++updatedMovieCount;
+                                                        }
+                                                        else
+                                                        {
+                                                            if (productionRun)
+                                                                entryContext.MovieRecords.Add(new MovieRecord() { batch = batch, instances = 1, movie_id = movie.movie_id, content = JsonSerializer.Serialize(movie) });
+                                                            ++newMovieCount;
+                                                        }
+                                                        //context.SaveChanges();
+                                                    }
+                                                }
+                                                else if (xml.Name == "houses")
+                                                {
+                                                    //This is a theatres data set
+                                                    foreach (var child in xml.Elements("theater"))
+                                                    {
+                                                        Theater theater = new Theater(child);
+
+                                                        //Checking if such a theater record already exist in the database
+                                                        TheaterRecord dbTheater = entryContext.TheaterRecords.FirstOrDefault(t => t.theater_id == theater.theater_id);
+                                                        if (dbTheater != null)
+                                                        {
+                                                            dbTheater.Merge(theater);
+                                                            ++updatedTheaterCount;
+                                                        }
+                                                        else
+                                                        {
+                                                            if (productionRun)
+                                                                entryContext.TheaterRecords.Add(new TheaterRecord() { batch = batch, instances = 1, theater_id = theater.theater_id, content = JsonSerializer.Serialize(theater) });
+                                                            ++newTheaterCount;
+                                                        }
+                                                        //context.SaveChanges();
+                                                    }
+                                                }
+
+                                                //Mark that current entry is done processing
+                                                entryContext.TrackingKeys.Add(new TrackingKey() { entry_key = entry_key });
+
+                                                if (productionRun)
+                                                    entryContext.SaveChanges();
+                                                File.Delete(extractFile);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                File.AppendAllText(errorLogFile, $"EXCEPTION in {entry.Name}: {ex.Message}{Environment.NewLine}");
+                                            }
+                                        } //End: using (var entryContext = new ShowtimeDbContext(dbOptions))
+                                        GC.Collect();
+
+                                    } //End: foreach (ZipArchiveEntry entry in archive.Entries)
+
+                                    File.AppendAllText(processingLogFile, $"    New Movies: {newMovieCount}, Updated Movies: {updatedMovieCount}, New Theaters: {newTheaterCount}, Updated Theaters: {updatedTheaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}{Environment.NewLine}");
+
+                                } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+
+                                //Mark that the current zip file is done processing
+                                batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = zipfile_key });
+                                if (productionRun)
+                                    batchContext.SaveChanges();
+                            }
+                            catch (Exception ex)
+                            {
+                                File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
+                            }
+                        } //End: foreach (var zipFile in zipFiles)
+
+                        //Mark that the current batch is done processing
+                        batchContext.TrackingKeys.Add(new TrackingKey() { entry_key = folder_key });
+                        if (productionRun)
+                            batchContext.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        File.AppendAllText(errorLogFile, $"EXCEPTION in {batchFolder}: {ex.Message}{Environment.NewLine}");
+                    }
+                } //End: using (var batchContext = new ShowtimeDbContext(dbOptions))
+                GC.Collect();
+
+            }//End: foreach (var batchFolder in srcBatcheFolders)
+        }
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexRawEntries
+        [Fact]
+        public void IndexRawEntries()
+        {
+            DateTime start = DateTime.Now;
+
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipMovies")?.Value, out bool skipMovies))
+                skipMovies = false;
+
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipTheaters")?.Value, out bool skipTheaters))
+                skipTheaters = false;
+
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipShowtimes")?.Value, out bool skipShowtimes))
+                skipShowtimes = false;
+
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipProcessedFoldersAndZipFiles")?.Value, out bool skippProcessedFoldersAndZipFiles))
+                skippProcessedFoldersAndZipFiles = true;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
+                maxBatchesToProcess = int.MaxValue;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxShowtimeBatchesToProcess")?.Value, out int maxShowtimeBatchesToProcess))
+                maxShowtimeBatchesToProcess = int.MaxValue;
+
+            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            if (string.IsNullOrEmpty(outputFolder))
+                outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+
+            string srcFolderRoot = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
+            if (string.IsNullOrEmpty(srcFolderRoot))
+                outputFolder = "C:\\Projects\\Showtime Database\\cinema-source.com";
+            Assert.True(Directory.Exists(srcFolderRoot));
+
+            string logFilePrefix = "raw-";
+            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}processing-{fileSuffix}.txt");
+            string errorLogFile =      Path.Combine(outputFolder, $"{logFilePrefix}processing-{fileSuffix}-errors.txt");
+
+            string trackingFile = Path.Combine(outputFolder, "tracking-keys.txt");
+            if(!File.Exists(trackingFile))
+                File.Create(trackingFile).Close();
+            string[] trackingKeys = File.ReadAllLines(trackingFile);
+
+            var srcBatcheFolders = Directory.GetDirectories(srcFolderRoot);
+
+            var solrService = _testHelper.Solr;
+            int taskWaitTimeoutMilliseconds = 60000;//10 minutes
+            int batch = 0;
+            foreach (var batchFolder in srcBatcheFolders)
+            {
+                
+                try
+                {
+                    if (maxBatchesToProcess < batch)
+                        break;
+                    ++batch;
+
+                    string folder_key = batchFolder.Substring(srcFolderRoot.Length + 1);
+                    if (skippProcessedFoldersAndZipFiles && trackingKeys.Contains(folder_key))
+                        continue;
+
+                    var zipFiles = Directory.GetFiles(batchFolder);
+                    List<SolrDoc> solrDocs = new List<SolrDoc>();
+                    foreach (var zipFile in zipFiles)
+                    {
+                        try
+                        {
+                            string zipfile_key = zipFile.Substring(srcFolderRoot.Length + 1);
+                            if (skippProcessedFoldersAndZipFiles && trackingKeys.Contains(zipfile_key))
+                                continue;
+
+                            File.AppendAllText(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
+                            int movieCount = 0, theaterCount = 0, showtimeCount = 0;
+
+                            using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                            {
+                                foreach (ZipArchiveEntry entry in archive.Entries)
+                                {
+                                    if (folder_key == "0_backfill")
+                                    {
+                                        if (skipMovies && entry.Name.ToUpper().EndsWith("IMOVIES.XML"))
+                                            continue;
+
+                                        if (skipTheaters && entry.Name.ToUpper().EndsWith("THEATER.XML"))
+                                            continue;
+
+                                        if (skipShowtimes && entry.Name.ToUpper().EndsWith("SCREENS.XML"))
+                                            continue;
+                                    }
+                                    else
+                                    {
+                                        if (skipMovies && entry.Name.ToUpper().EndsWith("I.XML"))
+                                            continue;
+
+                                        if (skipTheaters && entry.Name.ToUpper().EndsWith("T.XML"))
+                                            continue;
+
+                                        if (skipShowtimes && entry.Name.ToUpper().EndsWith("S.XML"))
+                                            continue;
+                                    }
+
+                                    if ((maxShowtimeBatchesToProcess < batch) && entry.Name.EndsWith("S.XML"))
+                                        continue;
+
+                                    string entry_key = $"{zipfile_key}\\{entry.Name}";
+                                    if (trackingKeys.Contains(entry_key))
+                                        continue;
+
+                                    try
+                                    {
+                                        Stream stream = entry.Open();
+                                        string entryContent = null;
+                                        using (StreamReader reader = new StreamReader(stream))
+                                        {
+                                            entryContent = reader.ReadToEnd();
+                                            reader.Close();                                           
+                                        }
+                                        stream.Close();
+
+                                        if (string.IsNullOrWhiteSpace(entryContent))
+                                        {
+                                            File.AppendAllText(errorLogFile, $"No data in {entry_key}");
+                                            continue; //foreach (ZipArchiveEntry entry in archive.Entries)
+                                        }
+
+                                        XElement xml = XElement.Parse(entryContent);
+                                        foreach (var child in xml.Elements())
+                                        {
+                                            string entryType = child.Name.ToString().ToLower();
+
+                                            SolrDoc solrDoc = new SolrDoc();
+                                            solrDocs.Add(solrDoc);
+
+                                            solrDoc.AddId(Guid.NewGuid().ToString());
+                                            solrDoc.AddField("entry_type_s", $"raw-{entryType}");
+                                            solrDoc.AddField("entry_src_s", entry_key);
+
+                                            if(entryType == "movie")
+                                            {
+                                                AddMovie(solrDoc, new Movie(child));
+                                                ++movieCount;
+                                            }
+                                            else if (entryType == "theater")
+                                            {
+                                                AddTheater(solrDoc, new Theater(child));
+                                                ++theaterCount;
+                                            }
+                                            else if (entryType == "showtime")
+                                            {
+                                                AddShowtime(solrDoc, new Showtime(child));
+                                                ++showtimeCount;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        File.AppendAllText(errorLogFile, $"EXCEPTION in {entry_key}: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
+                                    }
+
+                                    //Indexing the documents
+                                    if(solrService.Index(solrDocs).Wait(taskWaitTimeoutMilliseconds))
+                                    {
+                                        if (solrService.CommitAsync().Wait(taskWaitTimeoutMilliseconds))
+                                            File.AppendAllText(trackingFile, $"{entry_key}{Environment.NewLine}");
+                                        else
+                                            File.AppendAllText(errorLogFile, $"Commit timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
+
+
+                                    }
+                                    else
+                                        File.AppendAllText(errorLogFile, $"Indexing timed out for {entry_key}.{Environment.NewLine}{Environment.NewLine}");
+
+                                    solrDocs.Clear();
+                                    GC.Collect();
+
+                                } //End: foreach (ZipArchiveEntry entry in archive.Entries)
+
+                            } //End:  using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                            
+                            //Mark that the current zip file is done processing
+                            File.AppendAllText(trackingFile, $"{zipfile_key}{Environment.NewLine}");
+
+                            File.AppendAllText(processingLogFile, $"    Movies: {movieCount}, Theaters: {theaterCount}, Showtimes: {showtimeCount}{Environment.NewLine}");
+                        }
+                        catch (Exception ex)
+                        {
+                            File.AppendAllText(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
+                        }
+                    } //End: foreach (var zipFile in zipFiles)
+
+                    //Mark that the current batch is done processing
+                    File.AppendAllText(trackingFile, $"{folder_key}{Environment.NewLine}");
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText(errorLogFile, $"EXCEPTION in {batchFolder}: {ex.Message}{Environment.NewLine}");
+                }
+                //GC.Collect();
+
+            }//End: foreach (var batchFolder in srcBatcheFolders)
+        }
+
+
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexFlattenedShowtimes
         [Fact]
         public void IndexFlattenedShowtimes()
         {
             DateTime start = DateTime.Now;
 
-            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
-
-            var tasks = sourceBatches.Select(x => IndexFlattenedShowtimesBatch(x, outputFolder, start));
-            Task.WhenAll(tasks).Wait();
-        }
-
-        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexMovies
-        [Fact]
-        public void IndexMovies()
-        {
-            DateTime start = DateTime.Now;
-
-            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
-
-            var tasks = sourceBatches.Select(x => IndexMoviesBatch(x, outputFolder, start));
-            Task.WhenAll(tasks).Wait();
-        }
-
-        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexTheaters
-        [Fact]
-        public async void IndexTheaters()
-        {
-            DateTime start = DateTime.Now;
-
-            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
-
-            //Theaters shohuld NOT be processed in parallel since we want to skip duplicate theater records
-            //that appear across batches. Therefore, if the configureation specifies more than one parallel
-            //batch, we override it.
-            string[] sources = null;
-            if (maxParallelProcess > 1)
-            {
-                List<string> mergedSources = new List<string>();
-                sourceBatches.ForEach(src => mergedSources.AddRange(src));
-                sources = mergedSources.ToArray();
-            }
-            else
-                sources = sourceBatches[0];
-
-            await IndexTheatersBatch(sources, outputFolder, start);
-        }
-
-        private void PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches)
-        {
-            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out maxParallelProcess))
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out int maxParallelProcess))
                 maxParallelProcess = 1;
 
-            outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
             if (string.IsNullOrEmpty(outputFolder))
                 outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
-            srcFolderRoot = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
+            string srcFolderRoot = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
             if (string.IsNullOrEmpty(srcFolderRoot))
                 srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
             Assert.True(Directory.Exists(srcFolderRoot));
 
             var srcFolders = Directory.GetDirectories(srcFolderRoot);
-            sourceBatches = new List<string[]>();
+            List<string[]> sourceBatches = new List<string[]>();
             int batchSize = (int)Math.Ceiling((double)srcFolders.Length / maxParallelProcess);
             int offset = 0;
-            while (offset < srcFolders.Length)
+            while(offset < srcFolders.Length)
             {
                 sourceBatches.Add(srcFolders.Skip(offset).Take(batchSize).ToArray());
                 offset += batchSize;
             }
+
+            var tasks = sourceBatches.Select(x => IndexFlattenedShowtimesBatch(x, outputFolder, start));
+            Task.WhenAll(tasks).Wait();
         }
 
         private async Task IndexFlattenedShowtimesBatch(string[] folderList, string outputFolder, DateTime start)
@@ -129,7 +513,7 @@ namespace DataProcessing
             string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}.txt");
             string errorLogFile      = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
 
-            string trackingFile = Path.Combine(outputFolder, $"{logFilePrefix}-tracking-keys.txt");
+            string trackingFile = Path.Combine(outputFolder, $"tracking-keys-{first}-{last}.txt");
             if (!File.Exists(trackingFile))
                 File.Create(trackingFile).Close();
             string[] trackingKeys = File.ReadAllLines(trackingFile);
@@ -306,265 +690,6 @@ namespace DataProcessing
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
 
-        private async Task IndexMoviesBatch(string[] folderList, string outputFolder, DateTime start)
-        {
-            int srcFolderPathCharacterLength = folderList[0].LastIndexOf("\\") + 1;
-            string first = folderList[0].Substring(srcFolderPathCharacterLength);
-            string last = folderList[folderList.Length - 1].Substring(srcFolderPathCharacterLength);
-
-            string logFilePrefix = $"movies-{first}-{last}";
-
-            string timestampStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}.txt");
-            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
-
-            string trackingFile = Path.Combine(outputFolder, $"{logFilePrefix}-tracking-keys.txt");
-            if (!File.Exists(trackingFile))
-                File.Create(trackingFile).Close();
-            string[] trackingKeys = File.ReadAllLines(trackingFile);
-
-
-            var solrService = _testHelper.Solr;
-            foreach (var srcFolder in folderList)
-            {
-                string folder_key = srcFolder.Substring(srcFolderPathCharacterLength);
-                try
-                {
-                    if (trackingKeys.Contains(folder_key))
-                        continue;
-
-                    var zipFiles = Directory.GetFiles(srcFolder);
-                    bool folderProcessingSuccessful = true;
-                    foreach (var zipFile in zipFiles)
-                    {
-                        string zipfile_key = zipFile.Substring(srcFolderPathCharacterLength);
-
-                        try
-                        {
-                            if (trackingKeys.Contains(zipfile_key))
-                                continue;
-
-                            await File.AppendAllTextAsync(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
-                            bool zipFilerProcessingSuccessful = true;
-
-                            using (ZipArchive archive = ZipFile.OpenRead(zipFile))
-                            {
-                                List<ZipArchiveEntry> moviesArchiveEntries = null;
-
-                                if (folder_key == "0_backfill")
-                                    moviesArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("IMOVIES.XML")).ToList();
-                                else
-                                    moviesArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("I.XML")).ToList();
-
-                                //Loading movies
-                                foreach (var archiveEntry in moviesArchiveEntries)
-                                {
-                                    string entry_key = $"{zipfile_key}\\{archiveEntry.Name}";
-                                    if (trackingKeys.Contains(entry_key))
-                                        continue;
-
-                                    List<SolrDoc> solrDocs = new List<SolrDoc>();
-                                    try
-                                    {
-                                        XElement xml = LoadXmlFromZipEntry(archiveEntry);
-                                        foreach (var child in xml.Elements())
-                                        {
-                                            string entryType = child.Name.ToString().ToLower();
-                                            if (entryType == "movie")
-                                            {
-                                                SolrDoc solrDoc = new SolrDoc();
-                                                solrDocs.Add(solrDoc);
-
-                                                solrDoc.AddId(Guid.NewGuid().ToString());
-                                                solrDoc.AddField("entry_type_s", "movie");
-                                                solrDoc.AddField("entry_src_s", entry_key);
-                                                AddMovie(solrDoc, new Movie(child));
-                                            }
-                                        }
-
-                                        //Indexing the movies batch
-                                        await solrService.Index(solrDocs);
-                                        await solrService.CommitAsync();
-                                        await File.AppendAllTextAsync(trackingFile, $"{entry_key}{Environment.NewLine}");
-
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        zipFilerProcessingSuccessful = false;
-                                        folderProcessingSuccessful = false;
-                                        await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {archiveEntry.Name}: {ex.Message}{Environment.NewLine}");
-                                    }
-
-                                    solrDocs.Clear();
-                                    GC.Collect();
-                                }
-                            } //End: using (ZipArchive archive = ZipFile.OpenRead(zipFile))
-
-                            if (zipFilerProcessingSuccessful)
-                                await File.AppendAllTextAsync(trackingFile, $"{zipfile_key}{Environment.NewLine}");
-                        }
-                        catch (Exception ex)
-                        {
-                            folderProcessingSuccessful = false;
-                            await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
-                        }
-
-                    } //End: foreach (var zipFile in zipFiles)
-
-                    if (folderProcessingSuccessful)
-                        await File.AppendAllTextAsync(trackingFile, $"{folder_key}{Environment.NewLine}");
-                }
-                catch (Exception ex)
-                {
-                    await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {folder_key}: {ex.Message}{Environment.NewLine}");
-                }
-                //GC.Collect();
-
-            }//End: foreach (var batchFolder in srcBatcheFolders)
-        }
-
-        private async Task IndexTheatersBatch(string[] folderList, string outputFolder, DateTime start)
-        {
-            int srcFolderPathCharacterLength = folderList[0].LastIndexOf("\\") + 1;
-            string first = folderList[0].Substring(srcFolderPathCharacterLength);
-            string last = folderList[folderList.Length - 1].Substring(srcFolderPathCharacterLength);
-
-            string logFilePrefix = $"theaters-{first}-{last}";
-
-            string timestampStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}.txt");
-            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
-
-            string trackingFile = Path.Combine(outputFolder, $"{logFilePrefix}-tracking-keys.txt");
-            if (!File.Exists(trackingFile))
-                File.Create(trackingFile).Close();
-            string[] trackingKeys = File.ReadAllLines(trackingFile);
-
-
-            //Theater ingestion will not be able to avoid duplicates in previosuly ingested theater batches.
-            //Therefore, put a warning in the error file if theaters are already found in the index
-            string query = "entry_type_s:theater";
-            SearchResult queryresult = await _testHelper.Solr.ExecuteSearch(query, 0, 1);
-            if (queryresult.TotalMatches > 0)
-                await File.WriteAllTextAsync(errorLogFile, $"WARNING: {queryresult.TotalMatches} theater records already found in the index. These entries will remain as duplicates.");
-
-
-            var solrService = _testHelper.Solr;
-            List<Theater> uniqueTheaters = new List<Theater>();
-            foreach (var srcFolder in folderList)
-            {
-                string folder_key = srcFolder.Substring(srcFolderPathCharacterLength);
-                try
-                {
-                    if (trackingKeys.Contains(folder_key))
-                        continue;
-
-                    var zipFiles = Directory.GetFiles(srcFolder);
-                    bool folderProcessingSuccessful = true;
-                    foreach (var zipFile in zipFiles)
-                    {
-                        string zipfile_key = zipFile.Substring(srcFolderPathCharacterLength);
-
-                        try
-                        {
-                            if (trackingKeys.Contains(zipfile_key))
-                                continue;
-
-                            await File.AppendAllTextAsync(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
-                            bool zipFilerProcessingSuccessful = true;
-
-                            using (ZipArchive archive = ZipFile.OpenRead(zipFile))
-                            {
-                                List<ZipArchiveEntry> theatersArchiveEntries = null;
-
-                                if (folder_key == "0_backfill")
-                                    theatersArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("THEATER.XML")).ToList();
-                                else
-                                    theatersArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("T.XML")).ToList();
-
-                                //Loading movies
-                                foreach (var archiveEntry in theatersArchiveEntries)
-                                {
-                                    string entry_key = $"{zipfile_key}\\{archiveEntry.Name}";
-                                    if (trackingKeys.Contains(entry_key))
-                                        continue;
-
-                                    List<SolrDoc> solrDocs = new List<SolrDoc>();
-                                    try
-                                    {
-                                        XElement xml = LoadXmlFromZipEntry(archiveEntry);
-                                        foreach (var child in xml.Elements())
-                                        {
-                                            string entryType = child.Name.ToString().ToLower();
-                                            if (entryType == "theater")
-                                            {
-                                                Theater theater = new Theater(child);
-
-                                                var matchingEntries = uniqueTheaters.Where(th => th.theater_id == theater.theater_id).ToList();
-                                                bool isNewTheater = true;
-                                                for (int i = 0; i < matchingEntries.Count && isNewTheater; i++)
-                                                    isNewTheater = !theater.IsSameAs(matchingEntries[i]);
-
-                                                if (isNewTheater)
-                                                {
-                                                    uniqueTheaters.Add(theater);
-
-                                                    SolrDoc solrDoc = new SolrDoc();
-                                                    solrDocs.Add(solrDoc);
-
-                                                    solrDoc.AddId(Guid.NewGuid().ToString());
-                                                    solrDoc.AddField("entry_type_s", "theater");
-                                                    solrDoc.AddField("entry_src_s", entry_key);
-                                                    solrDoc.AddField("entry_occurrence_i", uniqueTheaters.Count);
-                                                    AddTheater(solrDoc, theater);
-                                                }
-                                            }
-                                        }
-
-                                        //Indexing the theater batch
-                                        if (solrDocs.Count > 0)
-                                        {
-                                            int waitTimeTimeoutMills = 10 * 60 * 1000;
-                                            solrService.Index(solrDocs).Wait(waitTimeTimeoutMills);
-                                            solrService.CommitAsync().Wait(waitTimeTimeoutMills);
-                                        }
-                                        await File.AppendAllTextAsync(trackingFile, $"{entry_key}{Environment.NewLine}");
-
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        zipFilerProcessingSuccessful = false;
-                                        folderProcessingSuccessful = false;
-                                        await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {archiveEntry.Name}: {ex.Message}{Environment.NewLine}");
-                                    }
-
-                                    solrDocs.Clear();
-                                    GC.Collect();
-                                }
-                            } //End: using (ZipArchive archive = ZipFile.OpenRead(zipFile))
-
-                            if (zipFilerProcessingSuccessful)
-                                await File.AppendAllTextAsync(trackingFile, $"{zipfile_key}{Environment.NewLine}");
-                        }
-                        catch (Exception ex)
-                        {
-                            folderProcessingSuccessful = false;
-                            await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
-                        }
-
-                    } //End: foreach (var zipFile in zipFiles)
-
-                    if (folderProcessingSuccessful)
-                        await File.AppendAllTextAsync(trackingFile, $"{folder_key}{Environment.NewLine}");
-                }
-                catch (Exception ex)
-                {
-                    await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {folder_key}: {ex.Message}{Environment.NewLine}");
-                }
-                //GC.Collect();
-
-            }//End: foreach (var batchFolder in srcBatcheFolders)
-        }
 
         private XElement LoadXmlFromZipEntry(ZipArchiveEntry entry)
         {
@@ -582,6 +707,101 @@ namespace DataProcessing
 
             XElement xml = XElement.Parse(entryContent);
             return xml;
+        }
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.DuplicateCheck
+        [Fact]
+        public void DuplicateCheck()
+        {
+            DateTime start = DateTime.Now;
+     
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:DuplicateCheckBatchSize")?.Value, out int batchSize))
+                batchSize = int.MaxValue;
+
+            string entryType = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:DuplicateCheckEntryType")?.Value;
+            Assert.False(string.IsNullOrWhiteSpace(entryType), "ShowtimeDbIngesionSettings:DuplicateCheckEntryType should be specified.");
+
+            string identifierField = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:DuplicateCheckIdentifierField")?.Value;
+            Assert.False(string.IsNullOrWhiteSpace(identifierField), "ShowtimeDbIngesionSettings:DuplicateCheckIdentifierField should be specified.");
+
+            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            if (string.IsNullOrEmpty(outputFolder))
+                outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+
+            string startTimeStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string filePrefix = $"duplicate-check-{entryType}s-{startTimeStr}";
+            string processingLogFile = Path.Combine(outputFolder, $"{filePrefix}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{filePrefix}-errors.txt");
+            string duplicateOutputFile = Path.Combine(outputFolder, $"{filePrefix}-results.txt");
+           
+            var solrService = _testHelper.Solr;
+            int taskWaitTimeoutMilliseconds = 60000;//10 minutes
+            int batch = 0;
+            int totalEntryCount = int.MaxValue;
+            int offset = 0;
+            string query = $"entry_type_s:{entryType}";
+            string sortBy = $"{identifierField} asc";
+            int totalProcessed = 0;
+            int totalDuplicatesFound = 0;
+            int uniqueDuplicateCount = 0;
+            while (offset < totalEntryCount)
+            {
+                //We will be attempting to detect duplicate entries by comparing the identifierField value
+                //in a given entry with the value of the same field in the next entry after retrieving the items
+                //by identifierField. Therefore, we need to retrieve at least one extra entry than the specified batchSize
+                var effectiveBatchLength = batchSize + 1;
+
+                var task = solrService.ExecuteSearch(query, offset, effectiveBatchLength, null, sortBy, identifierField);
+                if (!task.Wait(taskWaitTimeoutMilliseconds))
+                {
+                    File.AppendAllText(errorLogFile, $"Query loading timed out at batch {batch} (offset {offset}).{Environment.NewLine}");
+                    continue; //while(offset < totalEntryCount)
+                }
+                SearchResult queryResult = task.Result;
+                if (queryResult.TotalMatches < totalEntryCount)
+                    totalEntryCount = queryResult.TotalMatches;
+
+                //Iterate though 
+                int duplicateCountInBatch = 0;
+                string lastDuplicateIdentifierValue = null;
+                for (int i= 0; i < queryResult.ResultEntries.Count-1; ++i)
+                {
+                    try
+                    {
+                        var currentIdentifierValue = queryResult.ResultEntries[i].Data.Where(d => d.Key == identifierField).Select(d => d.Value).First().ToString();
+                        var nextIdentifierValue = queryResult.ResultEntries[i + 1].Data.Where(d => d.Key == identifierField).Select(d => d.Value).First().ToString();
+
+                        if (currentIdentifierValue == nextIdentifierValue)
+                        {
+                            //We have found a duplicate
+                            ++duplicateCountInBatch;
+                            ++totalDuplicatesFound;
+
+                            //If this is a new duplicate record that was not previously reported, record it.
+                            if(lastDuplicateIdentifierValue != currentIdentifierValue)
+                            {
+                                ++uniqueDuplicateCount;
+                                File.AppendAllText(duplicateOutputFile, $"{currentIdentifierValue}{Environment.NewLine}");
+                                lastDuplicateIdentifierValue = currentIdentifierValue;
+                            }
+                        }
+                        ++totalProcessed;
+                    }
+                    catch(Exception ex)
+                    {
+                        File.AppendAllText(errorLogFile, $"Error in batch {batch} > entry {i}:{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
+                    }
+                }
+                File.AppendAllText(processingLogFile, $"Completed batch {batch}. Offset {offset}. Retrieved {queryResult.ResultEntries.Count} records. Found {duplicateCountInBatch} duplicates.{Environment.NewLine}");
+
+                if (queryResult.ResultEntries.Count < batchSize)
+                    break; //while(offset < totalEntryCount)
+
+                offset = offset + batchSize;
+                ++batch;
+            }
+            File.AppendAllText(processingLogFile, $"{Environment.NewLine}Processing completed in {(DateTime.Now - start).ToString()}.{Environment.NewLine}\tSuccessfully processed {totalProcessed + 1} entries.{Environment.NewLine}\tFound a total of {totalDuplicatesFound} duplicates of {uniqueDuplicateCount} records.{Environment.NewLine}");
         }
 
 
@@ -906,6 +1126,88 @@ namespace DataProcessing
             File.AppendAllText(processingLogFile, logText);
         }
 
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexPreprocessedData
+        [Fact]
+        public void IndexPreprocessedData()
+        {
+            DateTime start = DateTime.Now;
+
+            string preprocessedFileFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:PreprocessedFileFolder")?.Value.TrimEnd('\\');
+            if (string.IsNullOrEmpty(preprocessedFileFolder) || !Directory.Exists(preprocessedFileFolder))
+                throw new Exception($"Preprocessed data folder does not exist: {preprocessedFileFolder}");
+
+            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            if (string.IsNullOrEmpty(outputFolder))
+                outputFolder = "C:\\Projects\\Showtime Database\\output";
+            Directory.CreateDirectory(outputFolder);
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:ContextTimeoutInMinutes")?.Value, out int contextTimeoutInMinutes))
+                contextTimeoutInMinutes = 3;
+
+            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"preprocessed-data-index_{fileSuffix}-log.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"preprocessed-data-index_{fileSuffix}-errors.txt");
+
+            ISolrService solr = _testHelper.Solr;
+            int httpCallWaitTimeMilliseconds = 600000; //10 seconds
+
+            string postprocessedFileFolder = preprocessedFileFolder + "-index-completed";
+            Directory.CreateDirectory(postprocessedFileFolder);
+
+            //Loading data file names in the source folder
+            var srcFileNames = Directory.GetFiles(preprocessedFileFolder, "*.*");
+            foreach (var absFileName in srcFileNames)
+            {
+                var filename = absFileName.Substring(absFileName.LastIndexOf("\\") + 1);
+                try
+                {
+                    File.AppendAllText(processingLogFile, $" Processing {filename}");
+
+                    var t0 = DateTime.Now;
+
+                    if (filename.EndsWith(".xml"))
+                    {
+                        string xmlPayloadStr = File.ReadAllText(absFileName);
+                        solr.AddUpdateAsync(xmlPayloadStr).Wait(httpCallWaitTimeMilliseconds);
+                        solr.CommitAsync().Wait(httpCallWaitTimeMilliseconds);
+                    }
+                    else if (filename.EndsWith(".zip"))
+                    {
+                        using (ZipArchive archive = ZipFile.OpenRead(absFileName))
+                        {
+                            foreach (ZipArchiveEntry entry in archive.Entries)
+                            {
+                                if (entry.Name.EndsWith(".xml"))
+                                {
+                                    Stream stream = entry.Open();
+                                    using (StreamReader sr = new StreamReader(stream))
+                                    {
+                                        var xmlPayloadStr = sr.ReadToEnd();
+                                        solr.AddUpdateAsync(xmlPayloadStr).Wait(httpCallWaitTimeMilliseconds);
+                                        solr.CommitAsync().Wait(httpCallWaitTimeMilliseconds);
+                                        sr.Close();
+                                    }
+                                    stream.Close();
+                                }
+                            }
+                        }
+                    }
+                    else
+                        throw new Exception($"Don't know how to load data from the file {filename}{Environment.NewLine}");
+
+                    File.Move(absFileName, Path.Combine(postprocessedFileFolder, filename));
+
+                    var t1 = DateTime.Now;
+                    File.AppendAllText(processingLogFile, $" completed in {(t1 - t0).TotalSeconds}.{Environment.NewLine}");
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText(errorLogFile, $"EXCEPTION in processing {filename}: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
+                }
+                GC.Collect();
+            }//End: foreach(var absFileName in srcFileNames)
+        }
 
         private void SaveToZipFile(List<SolrDoc> solrDocs, string outputFolder, string filename)
         {
@@ -1299,45 +1601,6 @@ namespace DataProcessing
             theater_lat = GetElementValueDecimal(xml, "theater_lat");
         }
 
-        public bool IsSameAs(Theater other)
-        {
-            return
-            theater_id == other.theater_id &&
-            theater_name == other.theater_name &&
-            theater_address == other.theater_address &&
-            theater_city == other.theater_city &&
-            theater_state == other.theater_state &&
-            theater_zip == other.theater_zip &&
-            theater_phone == other.theater_phone &&
-            theater_attributes == other.theater_attributes &&
-            theater_ticketing == other.theater_ticketing &&
-            theater_closed_reason == other.theater_closed_reason &&
-            theater_area == other.theater_area &&
-            theater_location == other.theater_location &&
-            theater_market == other.theater_market &&
-            theater_screens == other.theater_screens &&
-            theater_seating == other.theater_seating &&
-            theater_adult == other.theater_adult &&
-            theater_child == other.theater_child &&
-            theater_senior == other.theater_senior &&
-            theater_country == other.theater_country &&
-            theater_url == other.theater_url &&
-            theater_chain_id == other.theater_chain_id &&
-
-            theater_adult_bargain == other.theater_adult_bargain &&
-            theater_senior_bargain == other.theater_senior_bargain &&
-            theater_child_bargain == other.theater_child_bargain &&
-            theater_special_bargain == other.theater_special_bargain &&
-            theater_adult_super == other.theater_adult_super &&
-            theater_senior_super == other.theater_senior_super &&
-            theater_child_super == other.theater_child_super &&
-            theater_price_comment == other.theater_price_comment &&
-            theater_extra == other.theater_extra &&
-            theater_desc == other.theater_desc &&
-            theater_type == other.theater_type &&
-            theater_lon == other.theater_lon &&
-            theater_lat == other.theater_lat;
-        }
         public void Merge(Theater src, int instance)
         {
             theater_name = MergeStrings(theater_name, src.theater_name, instance);
