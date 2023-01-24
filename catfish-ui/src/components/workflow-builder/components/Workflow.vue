@@ -5,6 +5,7 @@
     import {default as WorkflowRoles} from './WorkflowRoleList.vue'
     import {default as WorkflowTriggers} from './WorkflowTriggerList.vue'
     import { default as WorkflowEmailTemplates } from './EmailTemplateList.vue';
+    import { default as WorkflowPopups } from './WorkflowPopupList.vue';
     import { computed, onMounted, ref } from 'vue';
     import {useWorkflowBuilderStore} from '../store'
     import { SelectableOption } from '@/components/shared/components/form-field-selection-dropdown/models';
@@ -58,7 +59,7 @@
         <workflow-triggers />
       </template>
       <template v-slot:Pop-ups>
-        Please select new Pop-ups.
+        <workflow-popups />
       </template>
     </TabNav>
   </div>

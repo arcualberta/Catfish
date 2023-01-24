@@ -7,8 +7,8 @@
     const store = useWorkflowBuilderStore();
     const editMode = ref(false);
     const triggerId = ref("");
-    const ToggleAddStates = () => {
-        store.showAddTrigger = true;
+    const Toggle = () => {
+        store.showTriggerPanel = true;
     }
     const deleteTrigger = (triggerId: Guid) => {
         const idx =store.workflow?.triggers?.findIndex(tmp => tmp.id == triggerId)
@@ -17,7 +17,7 @@
     const editTrigger = (Id: Guid) => {
         editMode.value = true;
         triggerId.value = Id.toString();
-        store.showAddTrigger = true;
+        store.showTriggerPanel = true;
     }
 </script>
 
@@ -33,8 +33,8 @@
                 </b-list-group-item>
             </b-list-group>
         </div>
-    <div class="header-style">Triggers <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="ToggleAddStates()"/></div>
-    <div v-if="store.showAddTrigger">
+    <div class="header-style">Triggers <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="Toggle()"/></div>
+    <div v-if="store.showTriggerPanel">
         <AddTrigger :editMode="editMode" :editTriggerId="triggerId"/>
     </div>
     

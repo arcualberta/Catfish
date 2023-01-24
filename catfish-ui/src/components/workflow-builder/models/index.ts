@@ -14,7 +14,7 @@ export interface Workflow {
     triggers: WorkflowTrigger[];
     roles: WorkflowRole[];
     emailTemplates: EmailTemplate[];   
-    popups: object;   
+    popups: WorkflowPopup[];   
 }
 
 export type WorkflowAction = FormSubmissionAction;
@@ -75,19 +75,21 @@ export interface WorkflowTrigger {
     templateId:Guid;
     recipients:Recipient[]
 }
+export interface WorkflowPopup {
+    id: Guid;
+    title: string;
+    Message: string;
+    buttons:PopupButton[]
+}
+export interface PopupButton {
+    id: Guid;
+    text: string;
+    returnValue: boolean;
+}
 export interface TabNavigationDefinition {
     name: string;
     title: string;
 }
-
-export interface WorkflowTrigger
-{
-    id: Guid;
-    name: string;
-    description: string | null;
-    eTriggerType: eTriggerType;
-}
-
 export interface WorkflowPermission
 {
     id: Guid;
