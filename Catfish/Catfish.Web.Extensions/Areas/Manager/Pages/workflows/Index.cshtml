@@ -1,0 +1,29 @@
+﻿@page "~/manager/workflows"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewBag.Title = "Workflows";
+    ViewBag.MenuItem = "CatfishWebExtensionsWorkflows";
+}
+
+<div id="CatfishWebExtensions">
+    <div class="top">
+        <partial name="_Breadcrumb" model='new string[] { "Templates", "Workflows" }' />
+
+        <div class="container-fluid">
+            <div class="top-nav">
+                <button class="btn btn-icon btn-info">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn btn-labeled btn-primary">
+                    <i class="fas fa-plus"></i>Workflow
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    string appName = "WorkflowBuilderManager";
+}
+<partial name="_ManagerAppletLoader" model="@appName" />
