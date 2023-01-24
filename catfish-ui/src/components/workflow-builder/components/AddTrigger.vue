@@ -6,6 +6,8 @@
     import { default as ConfirmPopUp } from "../../shared/components/pop-up/ConfirmPopUp.vue"
     import { Guid } from 'guid-typescript';
 
+    const props = defineProps < { editMode: boolean,
+                                  editTriggerId: string } > ();
     const store = useWorkflowBuilderStore();
     const triggerId = ref("");
     const triggerType = ref("");
@@ -22,7 +24,7 @@
     const showEmail = ref(false);
     const showFormField = ref(false);
     const showMetadataField = ref(false);
-    let   disabled = ref(true);
+    let   editMode = ref(false);
     const triggerTypes = computed(() => eTriggerType);
     const emailTypes = computed(() => eEmailType);
     const recipientTypes = computed(() => eRecipientType);
@@ -32,6 +34,19 @@
     let ccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Cc) as Recipient[]);
     let bccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Bcc) as Recipient[]);
 
+    if(props.editMode){
+      
+        const triggerValues = store.workflow?.triggers?.filter(tr => tr.id.toString() == props.editTriggerId ) as WorkflowTrigger[];
+        triggerId.value=triggerValues[0].id.toString();
+        triggerType.value=triggerValues[0].type.toString();
+        triggerName.value =triggerValues[0].name;
+        triggerDescription.value = triggerValues[0].description as string
+        selectedEmailTemplate.value = triggerValues[0].templateId.toString()
+         //toRecipients = computed(() => store.workflow?.triggers?.filter(tr => tr.id.toString() == props.editTriggerId && tr.recipients.filter(r => r.emailType == eEmailType.To) ) )  as Recipient[]
+         //ccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Cc) as Recipient[]);
+         //bccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Bcc) as Recipient[]);
+    }
+    
     watch(() => reciepientType.value, async newValue => {
         if (newValue  === eRecipientType.Role.toString()){
             showRole.value = true;
