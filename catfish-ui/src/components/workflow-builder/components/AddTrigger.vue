@@ -12,6 +12,7 @@
     const triggerId = ref("");
     const triggerType = ref("");
     const triggerName = ref("");
+    const triggerRecipients = ref(store.recipients)
     const triggerDescription = ref("");
     const selectedEmailTemplate = ref("");
     const recipientId = ref("");
@@ -42,6 +43,8 @@
         triggerName.value =triggerValues[0].name;
         triggerDescription.value = triggerValues[0].description as string
         selectedEmailTemplate.value = triggerValues[0].templateId.toString()
+        triggerRecipients.value= triggerValues[0].recipients
+        //store.recipients?.push(triggerRecipients.value as unknown as Recipient[])
          //toRecipients = computed(() => store.workflow?.triggers?.filter(tr => tr.id.toString() == props.editTriggerId && tr.recipients.filter(r => r.emailType == eEmailType.To) ) )  as Recipient[]
          //ccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Cc) as Recipient[]);
          //bccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Bcc) as Recipient[]);
