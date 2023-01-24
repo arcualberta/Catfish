@@ -31,7 +31,7 @@ builder.Services.AddScoped<IEntityService, EntityService>();
 
 builder.Services.AddScoped<ISolrService, SolrService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
-
+builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
 
 var app = builder.Build();
 

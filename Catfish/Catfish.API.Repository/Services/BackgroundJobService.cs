@@ -23,16 +23,18 @@ namespace Catfish.API.Repository.Services
             for (int i=1; i<=200; i++)
             {
                 File.AppendAllText(logFile, $"writeline : {i}.{Environment.NewLine}");
+                Thread.Sleep(1000);
             }
 
             
         }
-
-        public void RunTestBackgroundJob()
+          
+        public string RunTestBackgroundJob()
         {
             var jobId = BackgroundJob.Enqueue(() => DummyTest());
 
             Console.WriteLine($"Hangfire is processing job id: {jobId}");
+            return jobId;
         }
     }
 }

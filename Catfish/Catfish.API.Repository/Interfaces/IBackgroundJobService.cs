@@ -3,5 +3,6 @@
     public interface IBackgroundJobService
     {
         public void  DummyTest();
+        public string RunTestBackgroundJob();
     }
 }
