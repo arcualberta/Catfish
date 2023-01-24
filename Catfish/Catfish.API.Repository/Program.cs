@@ -49,4 +49,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCatfishExtensions();
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    //Authorization = new[] { new MyAuthorizationFilter() }
+});
+
 app.Run();
