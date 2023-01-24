@@ -84,7 +84,7 @@ export interface WorkflowPopup {
 export interface PopupButton {
     id: Guid;
     text: string;
-    returnValue: boolean;
+    returnValue: string;
 }
 export interface TabNavigationDefinition {
     name: string;
