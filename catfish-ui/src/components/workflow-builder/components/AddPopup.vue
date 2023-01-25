@@ -1,10 +1,12 @@
 <script setup lang="ts">
-    import { ref, watch,computed } from 'vue';
-    import { eButtonReturnType } from "../../../components/shared/constants";
+    import { ref,computed } from 'vue'
+    import { eButtonReturnType } from "../../../components/shared/constants"
     import { default as ConfirmPopUp } from "../../shared/components/pop-up/ConfirmPopUp.vue"
     import { Guid } from 'guid-typescript';
-    import { useWorkflowBuilderStore } from '../store';
+    import { useWorkflowBuilderStore } from '../store'
     import { WorkflowPopup, PopupButton } from '../models'
+    import { QuillEditor } from '@vueup/vue-quill'
+    import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
     const store = useWorkflowBuilderStore();
     const props = defineProps < { editMode: boolean,
@@ -17,7 +19,6 @@
     const buttonText = ref("");
     const returnValue = ref("");
     const addButtons = ref(false);
-    const popupButtons = ref(store.popupButtons)
     const returnTypes = computed(() => eButtonReturnType);
     
     if(props.editMode){
@@ -93,7 +94,7 @@
                 <b-form-input v-model="popupTitle" ></b-form-input>
             </b-input-group>
             <b-input-group prepend="Message" class="mt-3">
-                <b-form-textarea v-model="popupMessage" rows="3" max-rows="6"></b-form-textarea>
+                <QuillEditor v-model:content="popupMessage" contentType="html" theme="snow"  class="text-editor"></QuillEditor>
             </b-input-group>
             <br>
             <b-list-group class="col-sm-6">
