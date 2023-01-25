@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import { Workflow} from '../models/'
     import TabNav from '@/components/shared/components/TabNav/TabNav.vue';
+    import {default as WorkflowActions} from './WorkflowActionList.vue'
     import {default as WorkflowStates} from './WorkflowStateList.vue'
     import {default as WorkflowRoles} from './WorkflowRoleList.vue'
     import {default as WorkflowTriggers} from './WorkflowTriggerList.vue'
@@ -41,9 +42,9 @@
     </b-col>
   </b-row>
   <div class="tab-view">
-    <TabNav :tabs="['Action', 'States', 'Roles', 'Templates', 'Triggers', 'Pop-ups']">
+    <TabNav :tabs="['States', 'Roles', 'Templates', 'Triggers', 'Pop-ups', 'Action']">
       <template v-slot:Action>
-        Please select new Action.
+        <workflow-actions />
       </template>
       <template v-slot:States>
         <workflow-states />
