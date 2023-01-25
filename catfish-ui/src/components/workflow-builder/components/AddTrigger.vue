@@ -97,9 +97,7 @@
             } as WorkflowTrigger;
         
             store.workflow?.triggers?.push(newState);
-            store.showTriggerPanel=false;
-            store.recipients=[];
-            resetFields()
+            
         }else{
             store.workflow?.triggers!.forEach((tr)=> {
                 if(tr.id.toString() === id){
@@ -110,9 +108,10 @@
                     tr.recipients = store.recipients as Recipient[]
                 }    
             })
-            store.showTriggerPanel=false;
-            store.recipients=[];
         }
+        store.showTriggerPanel=false;
+        store.recipients=[];
+        resetFields()
     }
     const resetFields =()=>{
         triggerType.value="";

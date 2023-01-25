@@ -8,7 +8,7 @@
 
     const store = useWorkflowBuilderStore();
     const props = defineProps < { editMode: boolean,
-                                    editTriggerId: string } > ();
+                                    editPopuoId: string } > ();
 
     const popupId = ref("");
     const popupTitle = ref("");
@@ -19,7 +19,22 @@
     const addButtons = ref(false);
     const popupButtons = ref(store.popupButtons)
     const returnTypes = computed(() => eButtonReturnType);
-
+    
+    if(props.editMode){
+      
+      const popupValues = store.workflow?.popups?.filter(p => p.id.toString() == props.editPopuoId ) as WorkflowPopup[];
+      popupId.value=popupValues[0].id.toString();
+      popupTitle.value=popupValues[0].title;
+      popupMessage.value =popupValues[0].Message;
+      popupValues[0].buttons!.forEach((btn)=> {
+          let newButton={
+          id:btn.id,
+          text: btn.text ,
+          returnValue: btn.returnValue
+          }  as PopupButton
+      store.popupButtons!.push(newButton);  
+      })
+  }
     const toggleButtons =()=>{
         addButtons.value= true;
     }
@@ -32,9 +47,18 @@
                 buttons: store.popupButtons
             } as WorkflowPopup
             store.workflow?.popups?.push(newPopup);
-            store.showPopupPanel = false;
-            resetPopup();
+        }else{
+            store.workflow?.popups!.forEach((p)=> {
+                if(p.id.toString() === id){
+                    p.title = popupTitle.value,
+                    p.Message = popupMessage.value,
+                    p.buttons = store.popupButtons as PopupButton[]
+                }    
+            })
         }
+        store.showPopupPanel = false;
+        store.popupButtons=[];
+        resetPopup();
     }
     const addButton =(id:string)=>{
         if(id.length === 0){

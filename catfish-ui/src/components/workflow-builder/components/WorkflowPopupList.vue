@@ -22,10 +22,9 @@
 </script>
 
 <template>
-    {{ store.showPopupPanel }}
     <div class="list-item">
             <b-list-group>
-                <b-list-group-item v-for="popup in store.workflow?.popups" :key="(popup.id .toString())">
+                <b-list-group-item v-for="popup in store.workflow?.popups" :key="(popup.id.toString())">
                     <span>{{popup.title}}</span>
                     <span style="display:inline">
                         <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteTrigger(popup.id as Guid)"/>
@@ -36,7 +35,7 @@
         </div>
     <div class="header-style">Pop-ups <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="Toggle()"/></div>
     <div v-if="store.showPopupPanel">
-        <AddPopup :editMode="editMode" :editTriggerId="popupId"/>
+        <AddPopup :editMode="editMode" :editPopuoId="popupId"/>
     </div>
     
 </template>
