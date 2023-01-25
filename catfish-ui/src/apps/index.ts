@@ -16,6 +16,6 @@ export { default as GoogleCalendar } from './google-calendar/App.vue'
 export { useGoogleCalendarStore } from './google-calendar/store'
 
 /* workflow Manager manager */
-/*export * as WorkflowBuilderManager from './workflow-builder-manager'*/
+export * as WorkflowBuilderManager from './workflow-builder-manager'
 
 
