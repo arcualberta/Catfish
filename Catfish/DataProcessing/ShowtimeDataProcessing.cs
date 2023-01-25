@@ -524,8 +524,9 @@ namespace DataProcessing
                                         //Indexing the theater batch
                                         if (solrDocs.Count > 0)
                                         {
-                                            await solrService.Index(solrDocs);
-                                            await solrService.CommitAsync();
+                                            int waitTimeTimeoutMills = 10 * 60 * 1000;
+                                            solrService.Index(solrDocs).Wait(waitTimeTimeoutMills);
+                                            solrService.CommitAsync().Wait(waitTimeTimeoutMills);
                                         }
                                         await File.AppendAllTextAsync(trackingFile, $"{entry_key}{Environment.NewLine}");
 

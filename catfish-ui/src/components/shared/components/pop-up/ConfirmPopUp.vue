@@ -54,7 +54,7 @@
         margin-left: auto;
         margin-right: auto;
         padding: 1rem;
-        width: 960px;
+        width: 300px;
     }
     .window-small {
         background: #fff;

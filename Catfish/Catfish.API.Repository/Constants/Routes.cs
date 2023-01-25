@@ -36,5 +36,9 @@
         {
             public const string Root = "api/workflow";
         }
+        internal static class BackgroundJob
+        {
+            public const string Root = "api/background-job";
+        }
     }
 }

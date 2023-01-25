@@ -133,6 +133,14 @@ namespace CatfishWebExtensions
                 //Policy = Permissions.CatfishWebExtensions,
                 Css = "fas fa-stroopwafel"
             });
+            group.Items.Add(new MenuItem
+            {
+                InternalId = "CatfishWebExtensionsWorkflows",
+                Name = "Workflows",
+                Route = "~/manager/workflows",
+                //Policy = Permissions.CatfishWebExtensions,
+                Css = "fas fa-project-diagram"
+            });
 
             //Removing the Settings group
             group = Menu.Items.FirstOrDefault(ite => ite.Name == "Settings");
