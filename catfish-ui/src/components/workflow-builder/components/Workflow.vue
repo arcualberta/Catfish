@@ -40,7 +40,6 @@
       <b-form-select v-model="workflow!.entityTemplateId" :options="templateOptions"></b-form-select>
     </b-col>
   </b-row>
-  <div>{{JSON.stringify(workflow)}}</div>
   <div>
     <TabNav :tabs="['Action', 'States', 'Roles', 'Templates', 'Triggers', 'Pop-ups']">
       <template v-slot:Action>
