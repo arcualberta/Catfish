@@ -19,6 +19,9 @@ namespace CatfishExtensions
             services.AddScoped<IJwtProcessor, JwtProcessor>();
             services.AddScoped<IGoogleIdentity, GoogleIdentity > ();
 
+            //MR Janu 26 2023
+           // builder = AddCatfishJwtAuthorization(builder, true);
+
             return builder;
         }
 
@@ -31,33 +34,39 @@ namespace CatfishExtensions
         {
             app.UseCors();
 
+            //MR Jan 26 2023
+         //   app =UseCatfishJwtAuthorization(app, true);
+
             return app;
         }
 
         public static WebApplicationBuilder AddCatfishJwtAuthorization(this WebApplicationBuilder builder, bool configureSwagger)
         {
             // Adding JWT Bearer authorization
-            builder.Services.AddSwaggerGen(options =>
+            if (configureSwagger)
             {
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                builder.Services.AddSwaggerGen(options =>
                 {
-                    Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
+                    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                    {
+                        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+                        In = ParameterLocation.Header,
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.ApiKey
+                    });
 
-                options.OperationFilter<SecurityRequirementsOperationFilter>();
-            });
+                    options.OperationFilter<SecurityRequirementsOperationFilter>();
+                });
+            }
 
             //JWT Extension
 
-            IConfiguration configuration = builder!.Configuration;
+            ConfigurationManager configuration = builder!.Configuration;
             //_configuration.GetSection("Google:Identity:rsa_privateKey").Value;
             string jwtValidAudience = configuration.GetSection("JwtConfig:Audience").Value;
             string jwtValidIssuer = configuration.GetSection("JwtConfig:Issuer").Value;
 
-            string jwtPublicKey = File.ReadAllText(configuration.GetSection("JwtConfig:RsaPublicKey").Value); //["JWT:Asymmetric:PublicKey"]) ;
+            string jwtPublicKey = configuration.GetSection("JwtConfig:RsaPublicKey").Value;//File.ReadAllText(configuration["JwtConfig:RsaPublicKey"]) ;
             if (jwtPublicKey.IndexOf("public key", StringComparison.OrdinalIgnoreCase) > 0)
                 jwtPublicKey = jwtPublicKey.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[1];
 
@@ -102,6 +111,17 @@ namespace CatfishExtensions
             builder.Services.AddAuthentication("Asymmetric");
 
             return builder;
+        }
+        public static WebApplication UseCatfishJwtAuthorization(this WebApplication app, bool useSwagger)
+        {
+            if (useSwagger)
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+            app.UseAuthentication();
+            app.UseAuthorization();
+            return app;
         }
 
     }

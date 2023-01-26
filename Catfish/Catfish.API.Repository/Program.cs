@@ -1,6 +1,7 @@
 using Catfish.API.Repository;
 using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Services;
+using CatfishExtensions;
 using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,10 @@ builder.Services.AddControllers()
     .AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//MR Jan 26 2023 -- commented out calling swagger 
+//we will try to call catfish.Extension builder.AddCatfishJwtAuthprization()
+//builder.Services.AddSwaggerGen();
+builder.AddCatfishJwtAuthorization(true);
 
 ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("catfish")));
@@ -24,6 +28,8 @@ builder.Services.AddHangfireServer();
 
 //Adding general Catfish extensions
 builder.AddCatfishExtensions();
+
+
 
 //Adding services specific to this project
 builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();
@@ -37,14 +43,17 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//MR Jan 26 2023 -- commented out UseAuthorization() 
+//we will call UseJwtAuthorization from CatfishExtension
+//app.UseAuthorization();
+app.UseCatfishJwtAuthorization(true);
 
 app.MapControllers();
 
