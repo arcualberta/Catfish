@@ -51,6 +51,7 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
+        [Authorize(Roles ="SysAdmin")]
         public async Task<IActionResult> Post([FromBody] EntityTemplate value)
         {
             try
