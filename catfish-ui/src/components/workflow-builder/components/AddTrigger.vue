@@ -12,6 +12,7 @@
     const triggerId = ref("");
     const triggerType = ref("");
     const triggerName = ref("");
+    const triggerRecipients = ref(store.recipients)
     const triggerDescription = ref("");
     const selectedEmailTemplate = ref("");
     const recipientId = ref("");
@@ -42,9 +43,16 @@
         triggerName.value =triggerValues[0].name;
         triggerDescription.value = triggerValues[0].description as string
         selectedEmailTemplate.value = triggerValues[0].templateId.toString()
-         //toRecipients = computed(() => store.workflow?.triggers?.filter(tr => tr.id.toString() == props.editTriggerId && tr.recipients.filter(r => r.emailType == eEmailType.To) ) )  as Recipient[]
-         //ccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Cc) as Recipient[]);
-         //bccRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.Bcc) as Recipient[]);
+        triggerValues[0].recipients!.forEach((rl)=> {
+            let newRecipient={
+            id:rl.id,
+            emailType: rl.emailType ,
+            recipienType: rl.recipienType,
+            role:rl.role,
+            email:rl.email
+            }  as Recipient
+        store.recipients!.push(newRecipient);  
+        })
     }
     
     watch(() => reciepientType.value, async newValue => {
@@ -89,11 +97,22 @@
             } as WorkflowTrigger;
         
             store.workflow?.triggers?.push(newState);
-            store.showAddTrigger=false;
-            store.recipients=null;
-            resetFields()
+            
+        }else{
+            store.workflow?.triggers!.forEach((tr)=> {
+                if(tr.id.toString() === id){
+                    tr.type = triggerType.value as unknown as eTriggerType,
+                    tr.name= triggerName.value,
+                    tr.description= triggerDescription.value,
+                    tr.templateId = selectedEmailTemplate.value as unknown as Guid,
+                    tr.recipients = store.recipients as Recipient[]
+                }    
+            })
         }
-        }
+        store.showTriggerPanel=false;
+        store.recipients=[];
+        resetFields()
+    }
     const resetFields =()=>{
         triggerType.value="";
         triggerName.value = "";
@@ -133,7 +152,7 @@
 </script>
 
 <template>
-    <div v-if="store.showAddTrigger" class="col-sm-6">
+    <div v-if="store.showTriggerPanel" class="col-sm-6">
         <div class="alert alert-secondary" role="alert">
             <b-input-group prepend="Type" class="mt-3">
                 <b-form-select v-model="triggerType" :options="triggerTypes"></b-form-select>
@@ -149,6 +168,7 @@
                     <option v-for="opt in emailTemplates" >{{opt.name}}</option>
                 </select>
             </b-input-group>
+            {{ store.recipients }}
             <div class="title-recipient"><h5>To</h5></div>
             <div class="list-recipient">
                 <b-list-group>

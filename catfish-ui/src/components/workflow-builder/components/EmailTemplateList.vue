@@ -104,7 +104,7 @@
                     <b-form-input v-model="templateSubject" ></b-form-input>
                 </b-input-group>
                 <b-input-group prepend="Email Body" class="mt-3">
-                    <QuillEditor v-model="templateBody" theme="snow"  class="text-editor"></QuillEditor>
+                    <QuillEditor v-model:content="templateBody" contentType="html" theme="snow"  class="text-editor"></QuillEditor>
                 </b-input-group>
             </div>
         </template>

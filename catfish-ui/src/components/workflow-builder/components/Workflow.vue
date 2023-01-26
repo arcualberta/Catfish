@@ -1,10 +1,12 @@
 <script setup lang="ts">
     import { Workflow} from '../models/'
     import TabNav from '@/components/shared/components/TabNav/TabNav.vue';
+    import {default as WorkflowActions} from './WorkflowActionList.vue'
     import {default as WorkflowStates} from './WorkflowStateList.vue'
     import {default as WorkflowRoles} from './WorkflowRoleList.vue'
     import {default as WorkflowTriggers} from './WorkflowTriggerList.vue'
     import { default as WorkflowEmailTemplates } from './EmailTemplateList.vue';
+    import { default as WorkflowPopups } from './WorkflowPopupList.vue';
     import { computed, onMounted, ref } from 'vue';
     import {useWorkflowBuilderStore} from '../store'
     import { SelectableOption } from '@/components/shared/components/form-field-selection-dropdown/models';
@@ -39,11 +41,10 @@
       <b-form-select v-model="workflow!.entityTemplateId" :options="templateOptions"></b-form-select>
     </b-col>
   </b-row>
-  <div>{{JSON.stringify(workflow)}}</div>
-  <div>
-    <TabNav :tabs="['Action', 'States', 'Roles', 'Templates', 'Triggers', 'Pop-ups']">
+  <div class="tab-view">
+    <TabNav :tabs="['States', 'Roles', 'Templates', 'Triggers', 'Pop-ups', 'Action']">
       <template v-slot:Action>
-        Please select new Action.
+        <workflow-actions />
       </template>
       <template v-slot:States>
         <workflow-states />
@@ -58,7 +59,7 @@
         <workflow-triggers />
       </template>
       <template v-slot:Pop-ups>
-        Please select new Pop-ups.
+        <workflow-popups />
       </template>
     </TabNav>
   </div>
