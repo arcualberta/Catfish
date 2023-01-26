@@ -140,4 +140,7 @@ padding-top: 20px;
 .tab-view{
     padding-top: 40px;
 }
+.panel-delete{
+    padding-bottom: 20px;
+}
 </style>

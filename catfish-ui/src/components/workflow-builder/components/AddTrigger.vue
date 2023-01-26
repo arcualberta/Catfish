@@ -144,7 +144,11 @@
         const idx = store.recipients?.findIndex(opt => opt.id.toString() == id)
         store.recipients?.splice(idx as number, 1)
     }
-    
+    const deletePanel =()=>{
+        store.showTriggerPanel=false;
+        store.recipients=[];
+        resetFields()
+    }
 
     const ToggleAddRecipients = () => (addRecipients.value = !addRecipients.value)
         
@@ -154,6 +158,9 @@
 <template>
     <div v-if="store.showTriggerPanel" class="col-sm-6">
         <div class="alert alert-secondary" role="alert">
+            <div class="panel-delete">
+                <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deletePanel()"/>
+            </div>
             <b-input-group prepend="Type" class="mt-3">
                 <b-form-select v-model="triggerType" :options="triggerTypes"></b-form-select>
             </b-input-group>

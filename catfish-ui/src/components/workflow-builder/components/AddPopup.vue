@@ -80,16 +80,25 @@
     const resetPopup =()=>{
         popupTitle.value="";
         popupMessage.value = "";
+        resetButtons();
     }
     const resetButtons =()=>{
         buttonText.value="";
         returnValue.value = "";
+    }
+    const deletePanel =()=>{
+        store.showPopupPanel = false;
+        store.popupButtons=[];
+        resetPopup();
     }
 </script>
 
 <template>
     <div v-if="store.showPopupPanel" class="col-sm-6">
         <div class="alert alert-secondary" role="alert">
+            <div class="panel-delete">
+                <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deletePanel()"/>
+            </div>
             <b-input-group prepend="Title" class="mt-3">
                 <b-form-input v-model="popupTitle" ></b-form-input>
             </b-input-group>
@@ -108,7 +117,7 @@
             <div class="header-style">Buttons <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="resetButtons();toggleButtons()"/></div>
            <ConfirmPopUp v-if="addButtons" >
                 <template v-slot:header>
-                    Add a Recipient.
+                    Add a Button.
                     <button type="button" class="btn-close" @click="addButtons=false">x</button>
                 </template>
                 <template v-slot:body>
@@ -116,7 +125,7 @@
                     <b-input-group prepend="Text" class="mt-3">
                         <b-form-input v-model="buttonText" ></b-form-input>
                     </b-input-group>
-                    <b-input-group prepend="Recipient Type" class="mt-3">
+                    <b-input-group prepend="Return Value" class="mt-3">
                         <b-form-select v-model="returnValue" :options="returnTypes"></b-form-select>
                     </b-input-group>
                 </div>
