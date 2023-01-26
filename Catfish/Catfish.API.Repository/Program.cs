@@ -1,8 +1,10 @@
 using Catfish.API.Repository;
 using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Services;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 
@@ -15,6 +17,11 @@ builder.Services.AddSwaggerGen();
 ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("catfish")));
 
+
+// MR Jan 24 2023: Hangfire
+builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("catfish")));
+builder.Services.AddHangfireServer();
+
 //Adding general Catfish extensions
 builder.AddCatfishExtensions();
 
@@ -24,7 +31,7 @@ builder.Services.AddScoped<IEntityService, EntityService>();
 
 builder.Services.AddScoped<ISolrService, SolrService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
-
+builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
 
 var app = builder.Build();
 
@@ -42,4 +49,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCatfishExtensions();
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    //Authorization = new[] { new MyAuthorizationFilter() }
+});
+
 app.Run();

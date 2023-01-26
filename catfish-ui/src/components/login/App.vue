@@ -4,9 +4,10 @@
     import { useLoginStore } from './store'
     import { GoogleIdentityResult } from './models'
 
-    const props = defineProps<{ piniaInstance: Pinia, authorizationRoot: string}>();
+    const props = defineProps<{ //piniaInstance: Pinia, 
+                             authorizationRoot: string}>();
 
-    const authorizationStore = useLoginStore(props.piniaInstance);
+    const authorizationStore = useLoginStore();
 
     onMounted(() => {
         authorizationStore.authorizationApiRoot = props.authorizationRoot;

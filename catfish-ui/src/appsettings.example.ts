@@ -4,6 +4,7 @@ export default {
     maxEvents: 10,
     initialView: 'dayGridMonth',
     googleLoginClientId:"Use dev credentials from https://docs.google.com/document/d/1N_y4aQupxPKPGh2eaxpOqCmc_75QionPp4U_MoY3gZQ/edit",
+    authorizationApiRoot:"https://localhost:5010/",
     dataRepositoryApiRoot: "https://localhost:5020"
 }
 

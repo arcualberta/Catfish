@@ -4,7 +4,7 @@
     import { watch } from 'vue'
     import { getActivePinia } from 'pinia'
     import { useRouter } from 'vue-router'
-
+    import {default as config} from '@/appsettings'
     import { Login } from '../components'
     import { useLoginStore } from '../components/login/store';
 
@@ -15,10 +15,12 @@
         console.log('watch(() => authorizationStore.loginResult, async newResult => ')
         if (newResult?.success)
             router.push("/");
-    })
+    });
+
+    const apiRoot = config.authorizationApiRoot;
 
 </script>
 
 <template>
-    <Login :pinia-instance="getActivePinia()" authorization-root="https://localhost:5010/" />
+    <Login  :authorization-root="apiRoot" />
 </template>
