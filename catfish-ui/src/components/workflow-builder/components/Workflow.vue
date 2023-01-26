@@ -33,6 +33,15 @@
 </script>
 
 <template>
+  <div class="col-sm-6">
+    <b-input-group prepend="Name" class="mt-3">
+      <b-form-input v-model="model.name" ></b-form-input>
+    </b-input-group>
+    <b-input-group prepend="Description" class="mt-3">
+      <b-form-textarea v-model="model.description" rows="3" max-rows="6"></b-form-textarea>
+    </b-input-group>
+  </div>
+  
   <b-row class="col-sm-6">
     <b-col class="col-sm-4 header-style">
       Entity Template:

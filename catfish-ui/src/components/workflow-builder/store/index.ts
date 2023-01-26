@@ -19,8 +19,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         createNewWorkflow() {
             this.workflow = {
                 id: Guid.EMPTY as unknown as Guid,
-                name: "New Workflow Template",
-                description: "Description about this new Wotkflow Template",
+                name: "",
+                description: "",
                 states: [] as WorkflowState[],
                 roles: [] as WorkflowRole[],
                 emailTemplates: [] as EmailTemplate[],
