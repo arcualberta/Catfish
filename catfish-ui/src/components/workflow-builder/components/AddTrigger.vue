@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import { ref, watch,computed } from 'vue';
-    import { eEmailType, eTriggerType ,eRecipientType} from "../../../components/shared/constants";
+    import { eEmailType, eTriggerType ,eRecipientType, eRecipientTypeValues, getRecipientTypeLabel, getTriggerTypeLabel, 
+            eTriggerTypeValues, eEmailTypeValues, getEmailTypeLabel} from "../../../components/shared/constants";
     import { useWorkflowBuilderStore } from '../store';
     import { WorkflowTrigger, Recipient } from '../models'
     import { default as ConfirmPopUp } from "../../shared/components/pop-up/ConfirmPopUp.vue"
@@ -12,7 +13,6 @@
     const triggerId = ref("");
     const triggerType = ref("");
     const triggerName = ref("");
-    const triggerRecipients = ref(store.recipients)
     const triggerDescription = ref("");
     const selectedEmailTemplate = ref("");
     const recipientId = ref("");
@@ -25,7 +25,6 @@
     const showEmail = ref(false);
     const showFormField = ref(false);
     const showMetadataField = ref(false);
-    let   editMode = ref(false);
     const triggerTypes = computed(() => eTriggerType);
     const emailTypes = computed(() => eEmailType);
     const recipientTypes = computed(() => eRecipientType);
@@ -56,28 +55,28 @@
     }
     
     watch(() => reciepientType.value, async newValue => {
-        if (newValue  === eRecipientType.Role.toString()){
+        if (newValue  == eRecipientType.Role.toString()){
             showRole.value = true;
             showEmail.value = false;
             showFormField.value = false;
             showMetadataField.value = false;
-        }else if (newValue === eRecipientType.Email.toString()){
+        }else if (newValue == eRecipientType.Email.toString()){
             showEmail.value = true; 
             showRole.value = false;
             showFormField.value = false;
             showMetadataField.value = false;
-        }else if (newValue === eRecipientType.FormField.toString()){
+        }else if (newValue == eRecipientType.FormField.toString()){
             showFormField.value = true;
             showRole.value = false; 
             showEmail.value = false;
             showMetadataField.value = false;
         }
-        else if (newValue === eRecipientType.MetadataField.toString()){
+        else if (newValue == eRecipientType.MetadataField.toString()){
             showMetadataField.value = true;
             showFormField.value = false;
             showRole.value = false; 
             showEmail.value = false;
-        }else if (newValue === eRecipientType.Owner.toString()){
+        }else if (newValue == eRecipientType.Owner.toString()){
             showMetadataField.value = false;
             showFormField.value = false;
             showRole.value = false; 
@@ -162,7 +161,9 @@
                 <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deletePanel()"/>
             </div>
             <b-input-group prepend="Type" class="mt-3">
-                <b-form-select v-model="triggerType" :options="triggerTypes"></b-form-select>
+                <select class="form-select" v-model="triggerType">
+                    <option v-for="con in eTriggerTypeValues" :value="con">{{getTriggerTypeLabel(con)}}</option>
+                </select>
             </b-input-group>
             <b-input-group prepend="Name" class="mt-3">
                 <b-form-input v-model="triggerName" ></b-form-input>
@@ -218,10 +219,14 @@
                 <template v-slot:body>
                 <div >
                     <b-input-group prepend="Email Type" class="mt-3">
-                        <b-form-select v-model="emailType" :options="emailTypes"></b-form-select>
+                        <select class="form-select" v-model="emailType">
+                            <option v-for="con in eEmailTypeValues" :value="con">{{getEmailTypeLabel(con)}}</option>
+                        </select>
                     </b-input-group>
                     <b-input-group prepend="Recipient Type" class="mt-3">
-                        <b-form-select v-model="reciepientType" :options="recipientTypes"></b-form-select>
+                        <select class="form-select" v-model="reciepientType">
+                            <option v-for="con in eRecipientTypeValues" :value="con">{{getRecipientTypeLabel(con)}}</option>
+                        </select>
                     </b-input-group>
 
                     <div v-if="showRole">

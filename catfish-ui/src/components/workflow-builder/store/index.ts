@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { Guid } from "guid-typescript";
 import { default as config } from "@/appsettings";
 import { TemplateEntry } from '@/components/entity-editor/models';
-import { Workflow, WorkflowState, WorkflowRole, EmailTemplate, WorkflowTrigger, WorkflowAction, Recipient, WorkflowPopup, PopupButton } from '../models/'
+import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, Recipient, WorkflowPopup, PopupButton, Button } from '../models/'
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -12,6 +12,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         entityTemplates: [] as TemplateEntry[],
         recipients:[] as Recipient[] | null,
         popupButtons:[] as PopupButton[] | null,
+        actionButtons:[] as Button[] | null,
+        showActionPanel: false as boolean,
         showTriggerPanel: false as boolean,
         showPopupPanel: false as boolean  
     }),
@@ -23,7 +25,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 description: "",
                 states: [] as WorkflowState[],
                 roles: [] as WorkflowRole[],
-                emailTemplates: [] as EmailTemplate[],
+                emailTemplates: [] as WorkflowEmailTemplate[],
                 actions: [] as WorkflowAction[],
                 triggers: [] as WorkflowTrigger[],
                 entityTemplateId: Guid.EMPTY as unknown as Guid,

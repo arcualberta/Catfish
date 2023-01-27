@@ -143,4 +143,8 @@ padding-top: 20px;
 .panel-delete{
     padding-bottom: 20px;
 }
+.trigger-add{
+    padding-left: 10px;
+    padding-top: 10px;
+}
 </style>

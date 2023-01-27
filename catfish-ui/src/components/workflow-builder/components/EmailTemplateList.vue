@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { EmailTemplate } from '../models'
+    import { WorkflowEmailTemplate } from '../models'
     import { useWorkflowBuilderStore } from '../store';
     import {default as ConfirmPopUp} from "../../shared/components/pop-up/ConfirmPopUp.vue"
     import { watch, ref } from 'vue';
@@ -35,7 +35,7 @@
                 emailSubject: templateSubject.value,
                 emailBody: templateBody.value
 
-            } as EmailTemplate;
+            } as WorkflowEmailTemplate;
         
             emailTemplates.value?.push(newTemplate)
         }else{
@@ -57,7 +57,7 @@
         emailTemplates.value?.splice(idx as number, 1)
     }
     const editTemplate = (editTemplateId: Guid) => {
-        const templateValues = emailTemplates.value?.filter(tmp => tmp.id == editTemplateId) as EmailTemplate[]
+        const templateValues = emailTemplates.value?.filter(tmp => tmp.id == editTemplateId) as WorkflowEmailTemplate[]
         templateName.value=templateValues[0].name 
         templateDescription.value = templateValues[0].description as string
         templateSubject.value = templateValues[0].emailSubject as string

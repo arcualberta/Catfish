@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { ref,computed } from 'vue'
-    import { eButtonReturnType } from "../../../components/shared/constants"
+    import { eButtonReturnType,eByttonReturnTypeValues, getButtonReturnTypeLabel } from "../../../components/shared/constants"
     import { default as ConfirmPopUp } from "../../shared/components/pop-up/ConfirmPopUp.vue"
     import { Guid } from 'guid-typescript';
     import { useWorkflowBuilderStore } from '../store'
@@ -126,7 +126,9 @@
                         <b-form-input v-model="buttonText" ></b-form-input>
                     </b-input-group>
                     <b-input-group prepend="Return Value" class="mt-3">
-                        <b-form-select v-model="returnValue" :options="returnTypes"></b-form-select>
+                        <select class="form-select" v-model="returnValue">
+                            <option v-for="button in eByttonReturnTypeValues" :value="button">{{getButtonReturnTypeLabel(button)}}</option>
+                        </select>
                     </b-input-group>
                 </div>
                 </template>
