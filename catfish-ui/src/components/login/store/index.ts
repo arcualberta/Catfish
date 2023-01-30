@@ -32,17 +32,13 @@ export const useLoginStore = defineStore('LoginStore', {
                 })
                 .then(response => response.text())
                 .then(data => {
-                   // if (data.success) {
+                   
                         this.jwtToken = data as string;
                         //this.loginResult = data as LoginResult;
                         this.loginResult =jwt_decode(data) as LoginResult;
                         this.loginResult.success=true;
-                        console.log(JSON.stringify(this.loginResult));
-                   // }
-                    //else {
-                    //    this.loginResult = data as LoginResult;
-                    //    console.error('User authorization not successful.');
-                   // }
+                        //console.log(JSON.stringify(this.loginResult));
+                  
                 })
                 .catch((error) => {
                     this.loginResult = {} as LoginResult;

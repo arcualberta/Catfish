@@ -13,6 +13,7 @@ import { getConcatenatedTitle, getConcatenatedDescription} from '@/components/sh
 
 import { useFormSubmissionStore } from '@/components/form-submission/store';
 import {useEntitySelectStore} from '../../shared/components/entity-selection-list/store'
+import { useLoginStore } from '@/components/login/store';
 
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
     state: () => ({
@@ -31,9 +32,16 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/`;
             //const api = `${config.dataRepositoryApiRoot}/api/entity-templates/`;
-
+            const loginStore = useLoginStore();
+            const jwtToken=loginStore.jwtToken;
+           // const header=new Headers();
+           // header.append('Authorization', "bearer " + jwtToken as string)
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                //mode: 'no-cors',
+                headers: {
+                    Authorization: "Bearer " + jwtToken as string
+                }
             })
                 .then(response => response.json())
                 .then(data => {

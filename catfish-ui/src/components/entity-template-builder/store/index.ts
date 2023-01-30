@@ -56,8 +56,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             }
         },
         loadFormEntries() {
-            //this.getApiRoot => localhost:40520/api/entity-temlates
-            let webRoot = config.dataRepositoryApiRoot//"https://" + this.getApiRoot.split("/")[2];
+           
+            let webRoot = config.dataRepositoryApiRoot;//"https://localhost:5020" 
             const api = `${webRoot}/api/forms`;
             console.log("loading forms: ", api);
 
