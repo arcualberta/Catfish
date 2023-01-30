@@ -12,14 +12,17 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         entityTemplates: [] as TemplateEntry[],
         recipients:[] as Recipient[] ,
         popupButtons:[] as PopupButton[],
-        actionButtons:[] as Button[],
-        authorization:[] as Authorization[],
         showActionPanel: false as boolean,
         showTriggerPanel: false as boolean,
         showPopupPanel: false as boolean  
     }),
     actions: {
         createNewWorkflow() {
+            let newState= {
+                id:Guid.create(),
+                name :"Empty State",
+                description : "This is initial state"
+            } as WorkflowState;
             this.workflow = {
                 id: Guid.EMPTY as unknown as Guid,
                 name: "",
@@ -32,6 +35,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 entityTemplateId: Guid.EMPTY as unknown as Guid,
                 popups: [] as WorkflowPopup[]
             }
+            this.workflow.states.push(newState);
         },
         loadWorkflow(id: Guid) {
             const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;//`https://localhost:5020/api/workflow/${id}`;

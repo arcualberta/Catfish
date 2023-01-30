@@ -4,7 +4,7 @@
     import { Guid } from "guid-typescript";
     import {useRoute} from 'vue-router'
     import { useWorkflowBuilderStore } from './store';
-    import { Workflow, WorkflowAction, FormSubmissionAction, WorkflowState } from './models'
+    import { Workflow } from './models'
     import { default as WorkflowTemplate } from './components/Workflow.vue';
     /* import the fontawesome core */
     import { library } from '@fortawesome/fontawesome-svg-core'
@@ -57,24 +57,7 @@
 
     const disabled = computed(() => store.workflow ? false : true)
 
-    const newFormSubmissionAction = () => {
-        if (!store.workflow) {
-            console.error('Cannot add action to null workflow');
-            return;
-        }
-
-        const action = {
-            id: Guid.create().toString() as unknown as Guid,
-            title: "",
-            description: "",
-            formId: Guid.createEmpty(),
-        } as unknown as FormSubmissionAction;
-
-        if (!store.workflow.actions)
-            store.workflow.actions = [action]
-        else
-            store.workflow.actions.push(action);
-    }
+    
 
 </script>
 <style scoped src="./styles.css"></style>
@@ -90,7 +73,7 @@
     </div>
     
     <hr />
-    <WorkflowTemplate v-if="store.workflow" :model="store.workflow" />
+    <WorkflowTemplate v-if="store.workflow" :model="(store.workflow as Workflow)" />
 </template>
 <style>
 .header-style{
@@ -146,5 +129,15 @@ padding-top: 20px;
 .trigger-add{
     padding-left: 10px;
     padding-top: 10px;
+}
+.content-style{
+    padding-top: 10px;
+    font-size: 18px;
+    font-family: "Architects Daughter";
+}
+.popup-list-item{
+padding-top: 10px;
+padding-bottom: 10px;
+max-width: 80%;
 }
 </style>

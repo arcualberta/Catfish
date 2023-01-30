@@ -59,7 +59,7 @@ export interface Authorization{
     id: Guid;
     currentState: Guid;
     authorizedBy: eAuthorizedBy;
-    authorizedRole: string | null;
+    authorizedRoleId: Guid | null;
     authorizedDomain: string | null;
     authorizedFormId: Guid | null;
     authorizedFeildId: Guid | null;

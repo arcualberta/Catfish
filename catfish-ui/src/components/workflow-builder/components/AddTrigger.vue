@@ -25,9 +25,6 @@
     const showEmail = ref(false);
     const showFormField = ref(false);
     const showMetadataField = ref(false);
-    const triggerTypes = computed(() => eTriggerType);
-    const emailTypes = computed(() => eEmailType);
-    const recipientTypes = computed(() => eRecipientType);
     const emailTemplates = computed(() => store.workflow?.emailTemplates);
     const roleList = computed(() => store.workflow?.roles);
     let toRecipients = computed(() => store.recipients?.filter(rec => rec.emailType == eEmailType.To) as Recipient[]);
