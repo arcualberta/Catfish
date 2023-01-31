@@ -106,7 +106,6 @@
         authorization.value = [];
     }
     const addButton = (id: Guid) => {
-        console.log("id value",id)
         if(id == Guid.EMPTY as unknown as Guid){
         let newButton = {
             id:Guid.create(),
@@ -119,7 +118,6 @@
         } as unknown as Button
         buttons.value?.push(newButton);
         }else{
-            console.log("edit value")
             buttons.value!.forEach((b)=> {
                 if(b.id === id){
                     b.type = buttonType.value as unknown as eButtonTypes,
@@ -162,7 +160,6 @@
         resetFields();
     }
     const addAuthorization = (id: Guid) => {
-        console.log("id ", id)
         if(id === Guid.EMPTY as unknown as Guid){
         let newAuth = {
             id:Guid.create(),
@@ -199,7 +196,6 @@
         resetAuthFields();
     }
     const deleteAuthorization =(id: Guid)=>{
-        console.log("delete auth")
         const idx = authorization.value?.findIndex(auth => auth.id == id)
         authorization.value?.splice(idx as number, 1)
     }
