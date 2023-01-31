@@ -40,7 +40,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 method: 'GET',
                 //mode: 'no-cors',
                 headers: {
-                    Authorization: "Bearer " + jwtToken as string
+                    'Authorization': `bearer ${jwtToken}`,
                 }
             })
                 .then(response => response.json())
@@ -99,18 +99,18 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                         this.updatedFileKeys?.push(fileKey);
                         let fileName=fileKey+ "_" + file.name;
                         fld.fileReferences?.push({
-                        
                             id: Guid.create().toString() as unknown as Guid,
-                            fileName:fileName,
+                            fileName: fileName,
                             originalFileName: file.name,
                             thumbnail: "",
                             contentType: file.type,
                             size: file.size,
                             created: new Date(),
                             updated: new Date(),
-        
+
                             //file: file,
-                            fieldId: fieldId.toString() as unknown as Guid
+                            fieldId: fieldId.toString() as unknown as Guid,
+                            formDataId: undefined
                         })
                         
                     }

@@ -53,6 +53,7 @@ app.UseHttpsRedirection();
 //MR Jan 26 2023 -- commented out UseAuthorization() 
 //we will call UseJwtAuthorization from CatfishExtension
 //app.UseAuthorization();
+app.UseCatfishExtensions();
 app.UseCatfishJwtAuthorization(true);
 
 app.MapControllers();

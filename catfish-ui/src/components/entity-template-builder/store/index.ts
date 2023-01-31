@@ -7,6 +7,7 @@ import router from '@/router';
 import { FieldEntry, FormTemplate } from '../../shared/form-models';
 import { FormEntry } from '../../shared';
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
+import { useLoginStore } from '@/components/login/store';
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
@@ -56,8 +57,8 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             }
         },
         loadFormEntries() {
-           
-            let webRoot = config.dataRepositoryApiRoot;//"https://localhost:5020" 
+            //this.getApiRoot => localhost:40520/api/entity-temlates
+            let webRoot = config.dataRepositoryApiRoot//"https://" + this.getApiRoot.split("/")[2];
             const api = `${webRoot}/api/forms`;
             console.log("loading forms: ", api);
 
@@ -106,12 +107,18 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 api = `${api}/${this.template?.id}`
                 method = "PUT";
             }
+
+            //Get the JWT token from the Login Store for now.
+            //We will need to add the 
+            const token = "" 
+
             fetch(api, {
                 body: JSON.stringify(this.template),
                 method: method,
                 headers: {
                         'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorizarization': `bearer ${token}`
                 },
             })
             .then(response => {
