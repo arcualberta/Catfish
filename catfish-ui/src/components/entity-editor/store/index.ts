@@ -13,6 +13,7 @@ import { getConcatenatedTitle, getConcatenatedDescription} from '@/components/sh
 
 import { useFormSubmissionStore } from '@/components/form-submission/store';
 import {useEntitySelectStore} from '../../shared/components/entity-selection-list/store'
+import { useLoginStore } from '@/components/login/store';
 
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
     state: () => ({
@@ -31,9 +32,16 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/`;
             //const api = `${config.dataRepositoryApiRoot}/api/entity-templates/`;
-
+            const loginStore = useLoginStore();
+            const jwtToken=loginStore.jwtToken;
+           // const header=new Headers();
+           // header.append('Authorization', "bearer " + jwtToken as string)
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                //mode: 'no-cors',
+                headers: {
+                    'Authorization': `bearer ${jwtToken}`,
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -91,18 +99,18 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                         this.updatedFileKeys?.push(fileKey);
                         let fileName=fileKey+ "_" + file.name;
                         fld.fileReferences?.push({
-                        
                             id: Guid.create().toString() as unknown as Guid,
-                            fileName:fileName,
+                            fileName: fileName,
                             originalFileName: file.name,
                             thumbnail: "",
                             contentType: file.type,
                             size: file.size,
                             created: new Date(),
                             updated: new Date(),
-        
+
                             //file: file,
-                            fieldId: fieldId.toString() as unknown as Guid
+                            fieldId: fieldId.toString() as unknown as Guid,
+                            formDataId: undefined
                         })
                         
                     }

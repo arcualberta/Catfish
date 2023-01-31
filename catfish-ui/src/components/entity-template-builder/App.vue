@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { Pinia } from 'pinia'
-    import { computed, onActivated, onMounted, onUpdated, ref, watch } from 'vue'
+    import { computed, onActivated, onMounted, onUpdated, ref, toRef, watch } from 'vue'
     import { useEntityTemplateBuilderStore } from './store';
     import { AppletAttribute } from '@/components/shared/props'
     import { default as FormEntryTemplate } from './components/FormEntry.vue';
@@ -11,8 +11,10 @@
     import { FormEntry } from '../shared';
     import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
     import { FormFieldSelectionDropdown } from '@/components/shared/components'
-import { FieldEntry, FormTemplate } from '../shared/form-models';
- 
+    import { FieldEntry, FormTemplate } from '../shared/form-models';
+    
+    //import {useLoginStore} from '../login/store'
+
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
@@ -21,9 +23,22 @@ import { FieldEntry, FormTemplate } from '../shared/form-models';
     }>();
 
     const store = useEntityTemplateBuilderStore();
+   // const authorizeStore = useLoginStore();
+
+   // const _dataAttributes = toRef(props, 'dataAttributes')
+   // const userJwtToken = _dataAttributes && _dataAttributes?.value? (_dataAttributes.value["UserJwtToken"] as string) : null;
     
+    //DEBUG
+   // console.log("token if sigin from piranha site:")
+    //console.log(userJwtToken);
+
+    //const jwtToken = authorizeStore.jwtToken;
+
+    //DEBUG
+    //console.log("token if sigin from vue login:")
+    //console.log(jwtToken);
+
     if(props.apiRoot){
-      
         store.setApiRoot(props.apiRoot);
     }
 

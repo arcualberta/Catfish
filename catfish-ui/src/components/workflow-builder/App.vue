@@ -137,4 +137,7 @@ padding-top: 20px;
 .text-editor{
     width: 780;
 }
+.tab-view{
+    padding-top: 40px;
+}
 </style>

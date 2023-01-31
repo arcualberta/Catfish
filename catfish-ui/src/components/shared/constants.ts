@@ -94,3 +94,7 @@ export enum eRecipientType{
     MetadataField,
     Email
 }
+export enum eButtonReturnType{
+    true = 1,
+    false
+}
