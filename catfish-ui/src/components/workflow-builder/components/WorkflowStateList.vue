@@ -5,39 +5,32 @@
     import { ref, watch } from 'vue';
     import { Guid } from 'guid-typescript';
 
-    let stateId = ref("")
-    let stateName = ref("")
-    let stateDescription = ref("")
+    let state = ref({} as unknown as WorkflowState)
     const store = useWorkflowBuilderStore();
     const addStates = ref(false);
     const editMode = ref(false);
     const ToggleAddStates = () => (addStates.value = !addStates.value);
     let disabled = ref(true);
 
-    const states = ref(store.workflow?.states);
-
-    watch(() => stateName.value, async newValue => {
+    watch(() => state.value.name, async newValue => {
         if (newValue.length>0)
             disabled.value = false; 
         else
             disabled.value = true; 
     })
-    const addState = (id:string)=>{
-        if(id.length === 0){
+    const addState = (id:Guid)=>{
+        if(id === Guid.EMPTY as unknown as Guid){
             let newState= {
-                id:Guid.create(),
-                name :stateName.value,
-                description : stateDescription.value
+                id: Guid.create(),
+                name :state.value.name,
+                description : state.value.description
             } as WorkflowState;
-        
-            states.value?.push(newState);
+            store.workflow?.states?.push(newState);
         }else{
-            
-            const idx = states.value?.findIndex(opt => opt.id.toString() == stateId.value)
-            states.value!.forEach((st)=> {
-                if(st.id.toString() === stateId.value){
-                    st.name= stateName.value;
-                    st.description= stateDescription.value;
+            store.workflow?.states!.forEach((st)=> {
+                if(st.id === state.value.id){
+                    st.name= state.value.name;
+                    st.description= state.value.description;
                 }    
              })
              editMode.value=false;
@@ -47,20 +40,19 @@
         
     }
     const resetFields = ()=>{
-        stateId.value = ""
-        stateName.value = ""
-        stateDescription.value = ""
+        state.value.id = Guid.EMPTY as unknown as Guid
+        state.value.name = ""
+        state.value.description = ""
     }
     const deleteState = (stateId: Guid) => {
-        const idx = states.value?.findIndex(opt => opt.id == stateId)
-        states.value?.splice(idx as number, 1)
+        const idx = store.workflow?.states?.findIndex(opt => opt.id == stateId)
+        store.workflow?.states?.splice(idx as number, 1)
     }
     const editState = (editStateId: Guid) => {
-        console.log("stateId",stateId)
-        const stateValues = states.value?.filter(opt => opt.id == editStateId) as WorkflowState[]
-        stateName.value=stateValues[0].name 
-        stateDescription.value = stateValues[0].description as string
-        stateId.value = stateValues[0].id.toString()
+        const stateValues = store.workflow?.states?.filter(opt => opt.id == editStateId) as WorkflowState[]
+        state.value.name = stateValues[0].name 
+        state.value.description = stateValues[0].description as string
+        state.value.id = stateValues[0].id
         editMode.value = true
         addStates.value = true
     }
@@ -69,7 +61,7 @@
 <template>
     <div class="list-item">
             <b-list-group>
-                <b-list-group-item v-for="state in states" :key="state.name">
+                <b-list-group-item v-for="state in store.workflow?.states" :key="state.name">
                     <span>{{state.name}}</span>
                     <span style="display:inline">
                         <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteState(state.id as Guid)"/>
@@ -88,15 +80,15 @@
         <template v-slot:body>
             <div >
             <b-input-group prepend="Name" class="mt-3">
-                <b-form-input v-model="stateName" ></b-form-input>
+                <b-form-input v-model="state.name" ></b-form-input>
             </b-input-group>
             <b-input-group prepend="Description" class="mt-3">
-                <b-form-textarea v-model="stateDescription" rows="3" max-rows="6"></b-form-textarea>
+                <b-form-textarea v-model="(state.description as string)" rows="3" max-rows="6"></b-form-textarea>
             </b-input-group>
         </div>
         </template>
         <template v-slot:footer>
-            <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addState(stateId)">Add</button>
+            <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addState(state.id as Guid)">Add</button>
         </template>
     </ConfirmPopUp>
 </template>

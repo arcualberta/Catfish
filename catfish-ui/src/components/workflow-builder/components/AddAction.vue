@@ -106,6 +106,7 @@
         authorization.value = [];
     }
     const addButton = (id: Guid) => {
+        console.log("id value",id)
         if(id == Guid.EMPTY as unknown as Guid){
         let newButton = {
             id:Guid.create(),
@@ -118,6 +119,7 @@
         } as unknown as Button
         buttons.value?.push(newButton);
         }else{
+            console.log("edit value")
             buttons.value!.forEach((b)=> {
                 if(b.id === id){
                     b.type = buttonType.value as unknown as eButtonTypes,
@@ -144,9 +146,20 @@
             authorizations: authorization.value
         } as unknown as WorkflowAction
         store.workflow?.actions?.push(newAction);
+        }else{
+            store.workflow?.actions!.forEach((a)=> {
+                if(a.id === id){
+                    a.name = actionName.value,
+                    a.description= actionDescription.value,
+                    a.formTemplate = formTemplateId.value,
+                    a.formView = formView.value,
+                    a.buttons = buttons.value,
+                    a.authorizations = authorization.value
+                }
+            })
+        }
         store.showActionPanel = false;
         resetFields();
-        }
     }
     const addAuthorization = (id: Guid) => {
         console.log("id ", id)
@@ -256,7 +269,6 @@
                     </b-list-group-item>
                 </b-list-group>
             </div>
-            {{ buttons }}
             <div class="content-style">Add Button <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="addButtons = true"/></div>
             <ConfirmPopUp v-if="addButtons" >
                 <template v-slot:header>

@@ -5,7 +5,7 @@
     import {default as WorkflowStates} from './WorkflowStateList.vue'
     import {default as WorkflowRoles} from './WorkflowRoleList.vue'
     import {default as WorkflowTriggers} from './WorkflowTriggerList.vue'
-    import { default as WorkflowEmailTemplates } from './EmailTemplateList.vue';
+    import { default as WorkflowEmailTemplates } from './WorkflowEmailTemplateList.vue';
     import { default as WorkflowPopups } from './WorkflowPopupList.vue';
     import { computed, onMounted, ref } from 'vue';
     import {useWorkflowBuilderStore} from '../store'
