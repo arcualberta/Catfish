@@ -69,7 +69,7 @@ export interface Authorization{
 export interface Button{
     id: Guid;
     type: eButtonTypes;
-    lable: string;
+    label: string;
     currentStateId: Guid;
     nextStateId: Guid;
     popupId: Guid | null;

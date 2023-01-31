@@ -133,7 +133,7 @@
                 </div>
                 </template>
                 <template v-slot:footer>
-                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addButton(buttonId)">Add recipient</button>
+                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addButton(buttonId)">Add button</button>
                 </template>
             </ConfirmPopUp>
             <div style="margin-left: 90%;">
