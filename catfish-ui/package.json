@@ -40,6 +40,7 @@
     "bootstrap-icons": "^1.9.1",
     "bootstrap-vue-3": "^0.2.6",
     "guid-typescript": "^1.0.9",
+    "jwt-decode": "^3.1.2",
     "pinia": "^2.0.16",
     "sortablejs": "^1.15.0",
     "vue": "^3.2.37",

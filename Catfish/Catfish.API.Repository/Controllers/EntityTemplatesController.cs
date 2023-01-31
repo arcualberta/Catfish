@@ -23,7 +23,7 @@ namespace Catfish.API.Repository.Controllers
         }
         // GET: api/<EntityTemplateController>
         [HttpGet]
-       
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<IEnumerable<TemplateEntry>>> Get()
         {
             if (_context.EntityTemplates == null)
@@ -51,6 +51,7 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
+      //  [Authorize(Roles ="SysAdmin")]
         public async Task<IActionResult> Post([FromBody] EntityTemplate value)
         {
             try
