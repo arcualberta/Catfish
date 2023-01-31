@@ -16,7 +16,6 @@ builder.Services.AddEndpointsApiExplorer();
 //MR Jan 26 2023 -- commented out calling swagger 
 //we will try to call catfish.Extension builder.AddCatfishJwtAuthprization()
 //builder.Services.AddSwaggerGen();
-builder.AddCatfishJwtAuthorization(true);
 
 ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("catfish")));
@@ -26,10 +25,8 @@ builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(con
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("catfish")));
 builder.Services.AddHangfireServer();
 
-//Adding general Catfish extensions
-builder.AddCatfishExtensions();
-
-
+//Adding Catfish extensions
+builder.AddCatfishExtensions(true, true);
 
 //Adding services specific to this project
 builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();
@@ -53,12 +50,9 @@ app.UseHttpsRedirection();
 //MR Jan 26 2023 -- commented out UseAuthorization() 
 //we will call UseJwtAuthorization from CatfishExtension
 //app.UseAuthorization();
-app.UseCatfishExtensions();
-app.UseCatfishJwtAuthorization(true);
+app.UseCatfishExtensions(true, true);
 
 app.MapControllers();
-
-app.UseCatfishExtensions();
 
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {

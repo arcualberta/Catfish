@@ -8,7 +8,7 @@ namespace CatfishExtensions
 {
     public static class CatfishExtensions
     {
-        public static WebApplicationBuilder AddCatfishExtensions(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder AddCatfishExtensions(this WebApplicationBuilder builder, bool configureSwagger, bool configureJwtAuthorization)
         {
             ConfigurationManager configuration = builder.Configuration;
             IServiceCollection services = builder.Services;
@@ -19,8 +19,33 @@ namespace CatfishExtensions
             services.AddScoped<IJwtProcessor, JwtProcessor>();
             services.AddScoped<IGoogleIdentity, GoogleIdentity > ();
 
-            //MR Janu 26 2023
-           // builder = AddCatfishJwtAuthorization(builder, true);
+            if (configureSwagger)
+            {
+                if (configureJwtAuthorization)
+                {
+                    builder.Services.AddSwaggerGen(options =>
+                    {
+                        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                        {
+                            Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+                            In = ParameterLocation.Header,
+                            Name = "Authorization",
+                            Type = SecuritySchemeType.ApiKey
+                        });
+
+                        options.OperationFilter<SecurityRequirementsOperationFilter>();
+                    });
+                }
+                else
+                {
+                    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+                    builder.Services.AddEndpointsApiExplorer();
+                    builder.Services.AddSwaggerGen();
+                }
+            }
+
+            if (configureJwtAuthorization)
+                AddJwtAuthorization(builder);
 
             return builder;
         }
@@ -30,36 +55,28 @@ namespace CatfishExtensions
         /// </summary>
         /// <param name="application">The current web application</param>
         /// <returns>The web application</returns>
-        public static WebApplication UseCatfishExtensions(this WebApplication app)
+        public static WebApplication UseCatfishExtensions(this WebApplication app, bool useSwagger, bool useJwtAuthorization)
         {
             app.UseCors();
 
-            //MR Jan 26 2023
-         //   app =UseCatfishJwtAuthorization(app, true);
+            if (useSwagger)
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
 
+            if(useJwtAuthorization)
+            {
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+            }
             return app;
         }
 
-        public static WebApplicationBuilder AddCatfishJwtAuthorization(this WebApplicationBuilder builder, bool configureSwagger)
+        private static void AddJwtAuthorization(WebApplicationBuilder builder)
         {
             // Adding JWT Bearer authorization
-            if (configureSwagger)
-            {
-                builder.Services.AddSwaggerGen(options =>
-                {
-                    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                    {
-                        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
-                        In = ParameterLocation.Header,
-                        Name = "Authorization",
-                        Type = SecuritySchemeType.ApiKey
-                    });
-
-                    options.OperationFilter<SecurityRequirementsOperationFilter>();
-                });
-            }
-
-            //JWT Extension
 
             ConfigurationManager configuration = builder!.Configuration;
             //_configuration.GetSection("Google:Identity:rsa_privateKey").Value;
@@ -93,7 +110,7 @@ namespace CatfishExtensions
 
                     options.IncludeErrorDetails = true; // <- great for debugging
 
-        // Configure the actual Bearer validation
+                    // Configure the actual Bearer validation
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         IssuerSigningKey = rsa,
@@ -110,18 +127,6 @@ namespace CatfishExtensions
             //Adding default authentication schema to be Asymmetric
             builder.Services.AddAuthentication("Asymmetric");
 
-            return builder;
-        }
-        public static WebApplication UseCatfishJwtAuthorization(this WebApplication app, bool useSwagger)
-        {
-            if (useSwagger)
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-            app.UseAuthentication();
-            app.UseAuthorization();
-            return app;
         }
 
     }
