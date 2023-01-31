@@ -140,4 +140,10 @@ padding-top: 10px;
 padding-bottom: 10px;
 max-width: 80%;
 }
+.accordion-button{
+    width: 30px;
+    height: 30px;
+    float: right;
+    background-color: green;
+}
 </style>
