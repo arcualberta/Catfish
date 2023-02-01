@@ -3,7 +3,7 @@ import { Guid } from "guid-typescript";
 
 import { LoginResult } from '../models';
 import jwt_decode from "jwt-decode";
-import {get, set, useStorage} from '@vueuse/core'
+
 import { computed } from 'vue';
 
 export const useLoginStore = defineStore('LoginStore', {
@@ -11,8 +11,11 @@ export const useLoginStore = defineStore('LoginStore', {
         authorizationApiRoot: null as string | null,
         loginResult: {
             get: ()=>{
+                if (localStorage.getItem("catfishLoginResult") === null) {
+                    return {} as LoginResult;
+                }
                 let loginResultStr = localStorage.getItem("catfishLoginResult")
-                return eval(loginResultStr as string);
+                return JSON.parse(loginResultStr as string);
             },
             set:(val: LoginResult)=> {
                 localStorage.setItem("catfishLoginResult", JSON.stringify(val))
@@ -47,17 +50,19 @@ export const useLoginStore = defineStore('LoginStore', {
                 .then(response => response.text())
                 .then(data => {
                    
-                        this.jwtToken = data as string;
+                       // this.jwtToken = data as string;
+                        this.jwtToken.set(data as string);
                         //this.loginResult = data as LoginResult;
                         let loginRes = jwt_decode(data) as LoginResult;
                         loginRes.success = true;
-                        this.loginResult = loginRes;
+                        this.loginResult.set(loginRes);
                         //this.loginResult.success=true;
                         //console.log(JSON.stringify(this.loginResult));
+                       window.location.href="/";
                   
                 })
                 .catch((error) => {
-                    this.loginResult = {} as LoginResult;
+                    this.loginResult.set({} as LoginResult);
                     console.error('User authorization failed: ', error)
                 });
         },
