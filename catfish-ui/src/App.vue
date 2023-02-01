@@ -1,20 +1,27 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
     // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-    import { computed } from 'vue';
+    import { computed, onMounted } from 'vue';
     import { useRouter } from 'vue-router'
     import { useLoginStore } from './components/login/store';
-
+    import jwt_decode from "jwt-decode";
     const router = useRouter();
 
     const authorizationStore = useLoginStore();
     const logout = () => {
         authorizationStore.loginResult = null;
-        authorizationStore.jwtToken = null;
+        localStorage.removeItem("catfishLoginResult")
+       
+       //localStorage.setItem("catfishJwtToken", "");
+       localStorage.removeItem("catfishJwtToken")
         router.push("/");
     }
 
-    const jwtToken = computed(()=>authorizationStore.jwtToken )
+   
+    const jwtToken = computed(()=> authorizationStore.jwtToken)
+    //localStorage.getItem("catfishJwtToken")
+    console.log("localstorage jwt: " + jwtToken.value)
+   
 </script>
 
 <template>
