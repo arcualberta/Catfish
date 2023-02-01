@@ -5,6 +5,7 @@ import { LoginResult } from '../models';
 import jwt_decode from "jwt-decode";
 
 import { computed } from 'vue';
+import router from '@/router';
 
 export const useLoginStore = defineStore('LoginStore', {
     state: () => ({
@@ -50,15 +51,15 @@ export const useLoginStore = defineStore('LoginStore', {
                 .then(response => response.text())
                 .then(data => {
                    
-                       // this.jwtToken = data as string;
+                       
                         this.jwtToken.set(data as string);
-                        //this.loginResult = data as LoginResult;
+                       
                         let loginRes = jwt_decode(data) as LoginResult;
                         loginRes.success = true;
                         this.loginResult.set(loginRes);
-                        //this.loginResult.success=true;
-                        //console.log(JSON.stringify(this.loginResult));
+                        
                        window.location.href="/";
+                      //router.push("/");
                   
                 })
                 .catch((error) => {

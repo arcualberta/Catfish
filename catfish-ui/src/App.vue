@@ -13,14 +13,17 @@
 
     const authorizationStore = useLoginStore();
 
-    const {jwtToken, loginResult} = storeToRefs(authorizationStore);
+    //const {jwtToken, loginResult} = storeToRefs(authorizationStore);
+    let loginRes =ref(authorizationStore.loginResult.get())
+    let jwtToken=ref(authorizationStore.jwtToken.get());
     const logout = () => {
        
         localStorage.removeItem("catfishLoginResult")
-       //authorizationStore.loginResult.set({} as LoginResult)
       
        localStorage.removeItem("catfishJwtToken")
        //authorizationStore.jwtToken.set("")
+       loginRes.value = authorizationStore.loginResult.get();
+       jwtToken.value = authorizationStore.jwtToken.get();
         router.push("/");
        // window.location.;
     }
@@ -28,22 +31,15 @@
    
    // const jwtToken = computed(()=> authorizationStore.jwtToken.get())
     
-    console.log("localstorage jwt: " + jwtToken.value.get())
+    console.log("localstorage jwt: " + jwtToken.value)
 
-   const loginRes =computed(()=> authorizationStore.loginResult.get())
+   //const loginRes =computed(()=> authorizationStore.loginResult.get())
     
-    console.log("localstorage loginRes: " + JSON.stringify(loginResult.value.get()))
+    console.log("localstorage loginRes: " + JSON.stringify(loginRes.value))
    
    console.log("sucess: " + loginRes.value?.success)
   
-   watch(() => loginRes.value, async newResult => {
-       // console.log('watch(() => authorizationStore.loginResult.get(), async newResult => ')
-        //loginRes.value = authorizationStore.loginResult.get();
-        if(newResult?.success){
-            console.log("sucess: " + newResult?.success)
-            router.push("/");
-        }
-    });
+  
 
 </script>
 
