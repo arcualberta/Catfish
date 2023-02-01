@@ -58,7 +58,7 @@
       buttons.value!.push(newButton);  
       });
       actuinValues[0].authorizations!.forEach((a)=> {
-          let newAuth={
+          let newAuth = {
           id: a.id,
           currentState: a.currentState,
           authorizedBy: a.authorizedBy,
@@ -72,11 +72,11 @@
       authorization.value!.push(newAuth);  
       })
   }
-    const getState = (stateId:Guid) => (store.workflow?.states.filter(st=>st.id==stateId)[0]?.name);
-    const getRole = (roleId:Guid) => (store.workflow?.roles.filter(r=>r.id==roleId)[0]?.name);
-    const getTrigger = (triggerId:Guid) => (store.workflow?.triggers.filter(tr=>tr.id==triggerId)[0]?.name);
-    const deletePanel = () => (store.showActionPanel=false);
-    const addTrigger = (id: Guid) => {if(id != Guid.EMPTY as unknown as Guid)triggerIds.value.push(id)};
+    const getState = (stateId : Guid) => (store.workflow?.states.filter(st => st.id == stateId)[0]?.name);
+    const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
+    const getTrigger = (triggerId : Guid) => (store.workflow?.triggers.filter(tr => tr.id == triggerId)[0]?.name);
+    const deletePanel = () => (store.showActionPanel = false);
+    const addTrigger = (id : Guid) => {if(id != Guid.EMPTY as unknown as Guid)triggerIds.value.push(id)};
     const resetAuthFields = () => {
         authStateId.value = Guid.EMPTY as unknown as Guid;
         authorizedBy.value = "";
@@ -110,7 +110,7 @@
         let newButton = {
             id:Guid.create(),
             type: buttonType.value,
-            lable: buttonLabel.value,
+            label: buttonLabel.value,
             currentStateId: currentStateId.value as unknown as Guid,
             nextStateId: nextStateId.value,
             popupId: popupId.value,

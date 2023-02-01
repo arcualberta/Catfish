@@ -144,6 +144,5 @@ max-width: 80%;
     width: 30px;
     height: 30px;
     float: right;
-    background-color: green;
 }
 </style>

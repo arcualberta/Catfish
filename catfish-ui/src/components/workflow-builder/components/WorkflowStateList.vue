@@ -60,16 +60,16 @@
 
 <template>
     <div class="list-item">
-            <b-list-group>
-                <b-list-group-item v-for="state in store.workflow?.states" :key="state.name">
-                    <span>{{state.name}}</span>
-                    <span style="display:inline">
-                        <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteState(state.id as Guid)"/>
-                        <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon" style="color: #007bff; float: right;" @click="editState(state.id as Guid)" />
-                    </span>
-                </b-list-group-item>
-            </b-list-group>
-        </div>
+        <b-list-group>
+            <b-list-group-item v-for="state in store.workflow?.states" :key="state.name">
+                <span>{{state.name}}</span>
+                <span style="display:inline">
+                    <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteState(state.id as Guid)"/>
+                    <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon" style="color: #007bff; float: right;" @click="editState(state.id as Guid)" />
+                </span>
+            </b-list-group-item>
+        </b-list-group>
+    </div>
      <div class="header-style">States <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="resetFields();ToggleAddStates()"/></div>
 
     <ConfirmPopUp v-if="addStates" >
