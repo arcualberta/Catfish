@@ -33,7 +33,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             const api = `${webRoot}/api/entity-templates/`;
             //const api = `${config.dataRepositoryApiRoot}/api/entity-templates/`;
             const loginStore = useLoginStore();
-            const jwtToken=loginStore.jwtToken;
+            const jwtToken=loginStore.jwtToken.get();
            // const header=new Headers();
            // header.append('Authorization', "bearer " + jwtToken as string)
             fetch(api, {
