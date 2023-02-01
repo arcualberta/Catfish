@@ -326,7 +326,6 @@
                         <span>{{ getState(auth.currentState as Guid) }}-</span><span>{{getRole(auth.authorizedRoleId as Guid)}}</span><span>{{auth.authorizedDomain}}</span><span v-if="auth.authorizedBy==eAuthorizedBy.Owner">Owner</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteAuthorization(auth.id as Guid)"/>
-                            <font-awesome-icon icon="fa-solid fa-pen-to-square"  class="fa-icon" style="color: #007bff; float: right;" @click="editAuth(auth.id as Guid)" />
                         </span>
                     </b-list-group-item>
                 </b-list-group>

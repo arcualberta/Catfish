@@ -145,4 +145,12 @@ max-width: 80%;
     height: 30px;
     float: right;
 }
+.one-space{
+    margin-right: 10px;
+}
+.accordion-header{
+    padding-top: 5px;
+    font-size: 18px;
+    font-family: "Architects Daughter";  
+}
 </style>
