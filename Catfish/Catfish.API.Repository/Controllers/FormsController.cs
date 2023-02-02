@@ -52,6 +52,7 @@ namespace Catfish.API.Repository.Controllers
         // PUT: api/Forms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> PutForm(Guid id, FormTemplate form)
         {
             if (id != form.Id)

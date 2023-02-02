@@ -86,6 +86,7 @@ namespace Catfish.API.Repository.Controllers
 
         // PUT api/<EntitiesController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Put(Guid id, [FromBody] EntityData value)
         {
             try

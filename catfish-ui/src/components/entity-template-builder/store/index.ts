@@ -127,13 +127,16 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             //We will need to add the 
             const token = "" 
             console.log("save entity teplae token " + this.jwtToken)
+            console.log("save entity template api " + api)
+            console.log("save entity method " + method)
+
             fetch(api, {
                 body: JSON.stringify(this.template),
                 method: method,
                 headers: {
                         'encType': 'multipart/form-data',
                         'Content-Type': 'application/json',
-                        //'Authorizarization': `bearer ${this.jwtToken}`
+                        'Authorizarization': `bearer ${this.jwtToken}`
                 },
             })
             .then(response => {
