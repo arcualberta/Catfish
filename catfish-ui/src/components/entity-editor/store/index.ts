@@ -31,11 +31,10 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         loadTemplates() {
             let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/`;
-            //const api = `${config.dataRepositoryApiRoot}/api/entity-templates/`;
+           
             const loginStore = useLoginStore();
             const jwtToken=loginStore.jwtToken.get();
-           // const header=new Headers();
-           // header.append('Authorization', "bearer " + jwtToken as string)
+           
             fetch(api, {
                 method: 'GET',
                 //mode: 'no-cors',

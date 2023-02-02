@@ -16,6 +16,7 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms
         [HttpGet]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<IEnumerable<FormEntry>>> Get()
         {
             if (_context.Forms == null)

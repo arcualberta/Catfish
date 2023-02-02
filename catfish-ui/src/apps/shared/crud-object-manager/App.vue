@@ -5,12 +5,18 @@ import { computed, onMounted } from 'vue';
 import {useCRUDManagerStore} from './store'
 
 const props = defineProps<{
-    apiRoot?: string
+    apiRoot?: string,
+    jwtToken?: string
    
 }>()
+
+ if(props.jwtToken && localStorage.getItem("catfishJwtToken") === null){
+        localStorage.setItem("catfishJwtToken", props.jwtToken)
+  }
 const store = useCRUDManagerStore();
 const apiRoot = computed(()=>props.apiRoot);
  onMounted(() => {
+   
     store.apiRoot = apiRoot.value as string;
       store.loadEntries(apiRoot?.value as string);
     });

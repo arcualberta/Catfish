@@ -12,10 +12,8 @@
     import { Guid } from 'guid-typescript';
     
     const props = defineProps<{
-       // dataAttributes?: AppletAttribute | null,
-        //queryParameters?: AppletAttribute | null,
-        //piniaInstance: Pinia
-        apiRoot?: string | null
+        apiRoot?: string | null,
+        jwtToken?: string | null
     }>();
     const memberofValue = ref("Member of");
     const collectionValue = ref("Collections")
@@ -30,19 +28,25 @@
         store.setApiRoot(props.apiRoot);
     }
 
+    //stored the jwt Token if existed
+    if(props.jwtToken && localStorage.getItem("catfishJwtToken") === null)
+    {
+        localStorage.setItem("catfishJwtToken", props.jwtToken);
+    }
+
     const entityTemplate =  computed(() => store.entityTemplate);
     let selectedButton = ref("summary");
     
-     const route = useRoute();
+    const route = useRoute();
     const entityId =route.params.id as unknown as Guid; 
     onMounted(() => {
 
         if(entityId){
-            console.log("entity Id: " + entityId.toString())
+            //console.log("entity Id: " + entityId.toString())
             store.loadEntity(entityId);
         }
         else{
-            console.log("load empty template")
+           // console.log("load empty template")
             store.loadTemplates();
         }
        
