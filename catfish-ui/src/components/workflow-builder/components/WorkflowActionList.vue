@@ -11,16 +11,16 @@
     const selectedButtons = ref([] as Guid[]);
     const actionId = ref(Guid.EMPTY as unknown as Guid);
     const Toggle = () => (store.showActionPanel = true)
-    const deleteAction = (id: Guid)=>{
+    const deleteAction = (id : Guid) => {
         const idx = store.workflow?.actions.findIndex(ac => ac.id == id)
         store.workflow?.actions.splice(idx as number, 1)
     }
-    const editAction = (Id: Guid) => {
+    const editAction = (Id : Guid) => {
         editMode.value = true;
         actionId.value = Id;
         store.showActionPanel = true;
     }
-    const setAccordion = (Id: Guid) => {
+    const setAccordion = (Id : Guid) => {
         if(selectedButtons.value.includes(Id)){
             const idx = selectedButtons.value.findIndex(sb => sb == Id)
             selectedButtons.value?.splice(idx as number, 1)

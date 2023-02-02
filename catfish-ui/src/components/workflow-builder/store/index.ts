@@ -10,7 +10,6 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
         entityTemplates: [] as TemplateEntry[],
-        recipients:[] as Recipient[] ,
         showActionPanel: false as boolean,
         showTriggerPanel: false as boolean,
         showPopupPanel: false as boolean  
