@@ -13,7 +13,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         recipients:[] as Recipient[] | null,
         popupButtons:[] as PopupButton[] | null,
         showTriggerPanel: false as boolean,
-        showPopupPanel: false as boolean  
+        showPopupPanel: false as boolean,
+        jwtToken: null as string | null 
     }),
     actions: {
         createNewWorkflow() {
@@ -116,5 +117,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 });
 
         },
+    },
+    getters:{
+        getJwtToken(state){
+            return state.jwtToken? state.jwtToken: localStorage.getItem("catfishJwtToken");
+        }
     }
 });

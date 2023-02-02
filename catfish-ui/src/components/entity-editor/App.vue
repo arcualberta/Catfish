@@ -29,9 +29,10 @@
     }
 
     //stored the jwt Token if existed
-    if(props.jwtToken && localStorage.getItem("catfishJwtToken") === null)
+    if(props.jwtToken )
     {
-        localStorage.setItem("catfishJwtToken", props.jwtToken);
+        //localStorage.setItem("catfishJwtToken", props.jwtToken);
+        store.jwtToken = props.jwtToken as string;
     }
 
     const entityTemplate =  computed(() => store.entityTemplate);

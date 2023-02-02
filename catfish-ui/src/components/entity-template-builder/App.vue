@@ -19,6 +19,7 @@
         dataAttributes?: AppletAttribute | null,
         queryParameters?: AppletAttribute | null,
         apiRoot?: string |null,
+        jwtToken?: string | null
      
     }>();
 
@@ -42,6 +43,11 @@
         store.setApiRoot(props.apiRoot);
     }
 
+    if(props.jwtToken)
+    {
+        //localStorage.setItem("catfishJwtToken", props.jwtToken);
+        store.jwtToken = props.jwtToken as string;
+    }
     const createTemplate = () => store.newTemplate();
 
     const template = computed(() => store.template);

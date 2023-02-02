@@ -25,7 +25,13 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         updatedFileKeys: [] as string[] | null,
         entitySearchResult: null as EntitySearchResult | null,
         storeId:(Guid.create()).toString(),
-        apiRoot: null as string | null
+        apiRoot: null as string | null,
+        jwtToken: {
+            get: () =>  localStorage.getItem("catfishJwtToken"),
+            set:(val: string) => {
+                localStorage.setItem("catfishJwtToken", val)
+            }
+        } as unknown as string
     }),
     actions: {
         loadTemplates() {
@@ -34,12 +40,12 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
            
            // const loginStore = useLoginStore();
            //const jwtToken=loginStore.jwtToken;
-           const jwtToken=localStorage.getItem("catfishJwtToken");
+           //const jwtToken=localStorage.getItem("catfishJwtToken");
             fetch(api, {
                 method: 'GET',
                 //mode: 'no-cors',
                 headers: {
-                    'Authorization': `bearer ${jwtToken}`,
+                    'Authorization': `bearer ${this.jwtToken}`,
                 }
             })
                 .then(response => response.json())
@@ -75,12 +81,12 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/${templateId}`;
             console.log(api)
-            const jwtToken=localStorage.getItem("catfishJwtToken");
+           // const jwtToken=localStorage.getItem("catfishJwtToken");
 
             fetch(api, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `bearer ${jwtToken}`,
+                    'Authorization': `bearer ${this.jwtToken}`,
                 }
             })
                 .then(response => response.json())
@@ -129,6 +135,9 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             this.entity!.description = getConcatenatedDescription(this.entity as EntityData, this.entityTemplate as EntityTemplate, ' | ')
             let api =  this.getApiRoot;//config.dataRepositoryApiRoot + "/api/entities";
             let method = "";
+
+           // const jwtToken=localStorage.getItem("catfishJwtToken");
+
             if (newEntity) {
                 console.log("Saving new entity.");
                 //console.log(JSON.stringify(this.entity));
@@ -175,8 +184,10 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 body: formData, //JSON.stringify(this.entity),
                 method: method,
                 headers: {
-                        'encType': 'multipart/form-data'
+                        'encType': 'multipart/form-data',
+                        'Authorization': `bearer ${this.jwtToken}`,
                 },
+                
             })
             .then(response => {
                 if (response.ok) {
@@ -217,12 +228,12 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         loadEntity(entityId: Guid) {
            // const api = `${config.dataRepositoryApiRoot}/api/entities/${entityId}`;
             const api=`${this.getApiRoot}/${entityId}`
-            const jwtToken=localStorage.getItem("catfishJwtToken");
+          //  const jwtToken=localStorage.getItem("catfishJwtToken");
 
             fetch(api, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `bearer ${jwtToken}`,
+                    'Authorization': `bearer ${this.jwtToken}`,
                 }
             })
                 .then(response => response.json())
@@ -299,5 +310,6 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         getApiRoot: (state) =>{
             return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/entities";
         }
+        
     }
 });

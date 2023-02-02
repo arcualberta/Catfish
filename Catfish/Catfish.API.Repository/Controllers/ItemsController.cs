@@ -52,6 +52,7 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Post([FromForm] string value, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
         {
             try

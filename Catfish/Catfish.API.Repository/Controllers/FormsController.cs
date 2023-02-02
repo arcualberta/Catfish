@@ -83,6 +83,7 @@ namespace Catfish.API.Repository.Controllers
         // POST: api/Forms
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<FormTemplate>> PostForm(FormTemplate form)
         {
             try
