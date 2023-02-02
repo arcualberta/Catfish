@@ -18,7 +18,7 @@
         else
             disabled.value = true; 
     })
-    const addState = (id:Guid)=>{
+    const addState = (id : Guid)=>{
         if(id === Guid.EMPTY as unknown as Guid){
             let newState= {
                 id: Guid.create(),
@@ -44,11 +44,11 @@
         state.value.name = ""
         state.value.description = ""
     }
-    const deleteState = (stateId: Guid) => {
+    const deleteState = (stateId : Guid) => {
         const idx = store.workflow?.states?.findIndex(opt => opt.id == stateId)
         store.workflow?.states?.splice(idx as number, 1)
     }
-    const editState = (editStateId: Guid) => {
+    const editState = (editStateId : Guid) => {
         const stateValues = store.workflow?.states?.filter(opt => opt.id == editStateId) as WorkflowState[]
         state.value.name = stateValues[0].name 
         state.value.description = stateValues[0].description as string

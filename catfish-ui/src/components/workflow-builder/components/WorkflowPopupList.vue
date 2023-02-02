@@ -6,17 +6,16 @@
     
     const store = useWorkflowBuilderStore();
     const editMode = ref(false);
-    const popupId = ref("");
-    const Toggle = () => {
-        store.showPopupPanel = true;
-    }
-    const deleteTrigger = (popupId: Guid) => {
-        const idx =store.workflow?.popups?.findIndex(pop => pop.id == popupId)
+    const popupId = ref(Guid.EMPTY as unknown as Guid);
+
+    const Toggle = () => (store.showPopupPanel = true)
+    const deleteTrigger = (popupId : Guid) => {
+        const idx = store.workflow?.popups?.findIndex(pop => pop.id == popupId)
         store.workflow?.popups?.splice(idx as number, 1)
     }
-    const editTrigger = (Id: Guid) => {
+    const editTrigger = (id : Guid) => {
         editMode.value = true;
-        popupId.value = Id.toString();
+        popupId.value = id;
         store.showPopupPanel = true;
     }
 </script>
@@ -35,7 +34,6 @@
         </div>
     <div class="header-style">Pop-ups <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="Toggle()"/></div>
     <div v-if="store.showPopupPanel">
-        <AddPopup :editMode="editMode" :editPopuoId="popupId"/>
+        <AddPopup :editMode="editMode" :editPopupId="(popupId as Guid)"/>
     </div>
-    
 </template>
