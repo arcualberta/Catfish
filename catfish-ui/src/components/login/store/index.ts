@@ -16,16 +16,18 @@ export const useLoginStore = defineStore('LoginStore', {
                     return {} as LoginResult;
                 }
                 let loginResultStr = localStorage.getItem("catfishLoginResult")
-                return JSON.parse(loginResultStr as string);
+                return JSON.parse(loginResultStr as string) as LoginResult;
             },
             set:(val: LoginResult)=> {
                 localStorage.setItem("catfishLoginResult", JSON.stringify(val))
             }
-        }, //null as LoginResult | null,
+        } as unknown as LoginResult,
         jwtToken: {
-            get: ()=>  localStorage.getItem("catfishJwtToken"),
-            set:(val: string)=> localStorage.setItem("catfishJwtToken", val)
-        }
+            get: () =>  localStorage.getItem("catfishJwtToken"),
+            set:(val: string) => {
+                localStorage.setItem("catfishJwtToken", val)
+            }
+        } as unknown as string
         
     }),
     actions: {
@@ -52,18 +54,19 @@ export const useLoginStore = defineStore('LoginStore', {
                 .then(data => {
                    
                        
-                        this.jwtToken.set(data as string);
+                        this.jwtToken = data as string;
                        
                         let loginRes = jwt_decode(data) as LoginResult;
                         loginRes.success = true;
-                        this.loginResult.set(loginRes);
+                        //this.loginResult.set(loginRes);
+                        this.loginResult = loginRes;
                         
-                       window.location.href="/";
-                      //router.push("/");
+                       //window.location.href="/";
+                      router.push("/");
                   
                 })
                 .catch((error) => {
-                    this.loginResult.set({} as LoginResult);
+                    this.loginResult = {} as LoginResult;
                     console.error('User authorization failed: ', error)
                 });
         },

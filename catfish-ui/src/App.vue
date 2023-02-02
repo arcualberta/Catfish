@@ -13,19 +13,13 @@
 
     const authorizationStore = useLoginStore();
 
-    //const {jwtToken, loginResult} = storeToRefs(authorizationStore);
-    let loginRes =ref(authorizationStore.loginResult.get())
-    let jwtToken=ref(authorizationStore.jwtToken.get());
+    let loginRes = computed(() => authorizationStore.loginResult)
+    let jwtToken = computed(() => authorizationStore.jwtToken);
     const logout = () => {
-       
-        localStorage.removeItem("catfishLoginResult")
-      
-       localStorage.removeItem("catfishJwtToken")
-       //authorizationStore.jwtToken.set("")
-       loginRes.value = authorizationStore.loginResult.get();
-       jwtToken.value = authorizationStore.jwtToken.get();
+        authorizationStore.loginResult = {} as LoginResult
+        authorizationStore.jwtToken = ""
+
         router.push("/");
-       // window.location.;
     }
 
    
