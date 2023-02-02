@@ -13,146 +13,133 @@
     const store = useWorkflowBuilderStore();
     const addButtons = ref(false);
     const addAuthorizations = ref(false);
-    const actionId = ref(Guid.EMPTY as unknown as Guid);
-    const actionName = ref("");
-    const actionDescription = ref("");
-    const formTemplateId = ref(Guid.EMPTY  as unknown as Guid);
-    const triggerTypes = computed(() => eTriggerType);
-    const formView = ref("");
-    const buttonId = ref(Guid.EMPTY as unknown as Guid);
-    const buttonType = ref("");
-    const buttonLabel = ref("");
-    const currentStateId = ref(Guid.EMPTY as unknown as Guid);
-    const nextStateId = ref(Guid.EMPTY  as unknown as Guid);
-    const popupId = ref(Guid.EMPTY  as unknown as Guid);
-    const selectedTriggerId = ref(Guid.EMPTY  as unknown as Guid);
-    const triggerIds = ref([] as Guid[]);
+    const action = ref({} as unknown as WorkflowAction);
+    const button = ref({} as unknown as Button);
+    const authorization = ref({} as Authorization);
     const buttons = ref([] as unknown as Button[]);
-    const authorization = ref([] as Authorization[]);
-    const authorizationId = ref(Guid.EMPTY  as unknown as Guid);
-    const authStateId = ref(Guid.EMPTY  as unknown as Guid);
-    const authorizedBy = ref("");
-    const authRoleId = ref(Guid.EMPTY  as unknown as Guid);
-    const authFormId = ref(Guid.EMPTY  as unknown as Guid);
-    const authFieldId = ref(Guid.EMPTY  as unknown as Guid);
-    const authMetadataFormId = ref(Guid.EMPTY  as unknown as Guid);
-    const authMetadataFieldId = ref(Guid.EMPTY as unknown as Guid);
-    const domain = ref("");
+    const authorizations = ref([] as Authorization[]);
+    const triggerTypes = computed(() => eTriggerType);
+    const selectedTriggerId = ref(Guid.EMPTY  as unknown as Guid);
+    
     if(props.editMode){
-      const actuinValues = store.workflow?.actions?.filter(a => a.id == props.editActionId ) as WorkflowAction[];
-      actionId.value=actuinValues[0].id;
-      actionName.value=actuinValues[0].name;
-      actionDescription.value=actuinValues[0].description as string;
-      formTemplateId.value =actuinValues[0].formTemplate;
-      formView.value = actuinValues[0].formView;
-      actuinValues[0].buttons!.forEach((b)=> {
-          let newButton={
-          id: b.id,
-          type: b.type,
-          label: b.label,
-          currentStateId: b.currentStateId,
-          nextStateId: b.nextStateId,
-          popupId: b.popupId,
-          triggers: b.triggers
+      const actuionValues = store.workflow?.actions?.filter(a => a.id == props.editActionId ) as WorkflowAction[];
+      action.value.id = actuionValues[0].id;
+      action.value.name = actuionValues[0].name;
+      action.value.description = actuionValues[0].description as string;
+      action.value.formTemplate = actuionValues[0].formTemplate;
+      action.value.formView = actuionValues[0].formView;
+      actuionValues[0].buttons!.forEach((b) => {
+          let newButton = {
+          id : b.id,
+          type : b.type,
+          label : b.label,
+          currentStateId : b.currentStateId,
+          nextStateId : b.nextStateId,
+          popupId : b.popupId, 
+          triggers : b.triggers
           }  as Button
       buttons.value!.push(newButton);  
       });
-      actuinValues[0].authorizations!.forEach((a)=> {
+      actuionValues[0].authorizations!.forEach((a) => {
           let newAuth = {
-          id: a.id,
-          currentState: a.currentState,
-          authorizedBy: a.authorizedBy,
-          authorizedRoleId: a.authorizedRoleId,
-          authorizedDomain: a.authorizedDomain,
-          authorizedFormId: a.authorizedFormId,
-          authorizedFeildId: a.authorizedFeildId,
-          authorizedMetadataFormId: a.authorizedMetadataFormId,
-          authorizedMetadataFeildId: a.authorizedMetadataFeildId
+          id : a.id,
+          currentState : a.currentState,
+          authorizedBy : a.authorizedBy,
+          authorizedRoleId : a.authorizedRoleId,
+          authorizedDomain : a.authorizedDomain,
+          authorizedFormId : a.authorizedFormId,
+          authorizedFeildId : a.authorizedFeildId,
+          authorizedMetadataFormId : a.authorizedMetadataFormId,
+          authorizedMetadataFeildId : a.authorizedMetadataFeildId
           }  as Authorization
-      authorization.value!.push(newAuth);  
+      authorizations.value!.push(newAuth);  
       })
-  }
+    }else{
+        authorization.value.id = Guid.EMPTY as unknown as Guid;
+        button.value.id = Guid.EMPTY as unknown as Guid;
+        button.value.triggers = [];
+    }
     const getState = (stateId : Guid) => (store.workflow?.states.filter(st => st.id == stateId)[0]?.name);
     const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
     const getTrigger = (triggerId : Guid) => (store.workflow?.triggers.filter(tr => tr.id == triggerId)[0]?.name);
     const deletePanel = () => (store.showActionPanel = false);
-    const addTrigger = (id : Guid) => {if(id != Guid.EMPTY as unknown as Guid)triggerIds.value.push(id)};
+    const addTrigger = (id : Guid) => {if(id != Guid.EMPTY as unknown as Guid)button.value.triggers.push(id)};
     const resetAuthFields = () => {
-        authStateId.value = Guid.EMPTY as unknown as Guid;
-        authorizedBy.value = "";
-        authRoleId.value = Guid.EMPTY as unknown as Guid;
-        authFormId.value = Guid.EMPTY as unknown as Guid;
-        authFieldId.value = Guid.EMPTY as unknown as Guid;
-        authMetadataFormId.value = Guid.EMPTY as unknown as Guid;
-        authMetadataFieldId.value = Guid.EMPTY as unknown as Guid;
-        domain.value = "";
+        authorization.value.id = Guid.EMPTY as unknown as Guid;
+        authorization.value.authorizedBy = eAuthorizedBy.Owner;
+        authorization.value.authorizedRoleId = Guid.EMPTY as unknown as Guid;
+        authorization.value.authorizedFormId = Guid.EMPTY as unknown as Guid;
+        authorization.value.authorizedFeildId = Guid.EMPTY as unknown as Guid;
+        authorization.value.authorizedMetadataFormId = Guid.EMPTY as unknown as Guid;
+        authorization.value.authorizedMetadataFeildId = Guid.EMPTY as unknown as Guid;
+        authorization.value.authorizedDomain = "";
     }
     const resetButtonFields = () => {
-        buttonId.value = Guid.EMPTY as unknown as Guid;
-        buttonType.value = "";
-        buttonLabel.value ="";
-        currentStateId.value = Guid.EMPTY as unknown as Guid;
-        nextStateId.value = Guid.EMPTY as unknown as Guid;
-        popupId.value = Guid.EMPTY as unknown as Guid;
+        button.value.id = Guid.EMPTY as unknown as Guid;
+        button.value.type = eButtonTypes.Button;
+        button.value.label =  "";
+        button.value.currentStateId = Guid.EMPTY as unknown as Guid;
+        button.value.nextStateId = Guid.EMPTY as unknown as Guid;
+        button.value.popupId = Guid.EMPTY as unknown as Guid;
         selectedTriggerId.value = Guid.EMPTY as unknown as Guid;
-        triggerIds.value = [];
+        button.value.triggers = [];
     }
     const resetFields = () => {
-        actionName.value = "";
-        actionDescription.value ="";
-        formTemplateId.value = Guid.EMPTY as unknown as Guid;
-        formView.value = "";
+        action.value.name = "";
+        action.value.description = "";
+        action.value.formTemplate = Guid.EMPTY as unknown as Guid;
+        action.value.formView = "";
         buttons.value = [];
-        authorization.value = [];
+        authorizations.value = [];
     }
-    const addButton = (id: Guid) => {
+    const addButton = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
         let newButton = {
-            id:Guid.create(),
-            type: buttonType.value,
-            label: buttonLabel.value,
-            currentStateId: currentStateId.value as unknown as Guid,
-            nextStateId: nextStateId.value,
-            popupId: popupId.value,
-            triggers:triggerIds.value
+            id : Guid.create(),
+            type : button.value.type,
+            label : button.value.label,
+            currentStateId : button.value.currentStateId,
+            nextStateId : button.value.nextStateId,
+            popupId : button.value.popupId,
+            triggers : button.value.triggers
         } as unknown as Button
         buttons.value?.push(newButton);
         }else{
-            buttons.value!.forEach((b)=> {
+            buttons.value!.forEach((b) => {
                 if(b.id === id){
-                    b.type = buttonType.value as unknown as eButtonTypes,
-                    b.label= buttonLabel.value,
-                    b.currentStateId = currentStateId.value as unknown as Guid,
-                    b.nextStateId = nextStateId.value as unknown as Guid,
-                    b.popupId = popupId.value as unknown as Guid,
-                    b.triggers = triggerIds.value
+                    b.type = button.value.type,
+                    b.label = button.value.label,
+                    b.currentStateId = button.value.currentStateId,
+                    b.nextStateId = button.value.nextStateId,
+                    b.popupId = button.value.popupId,
+                    b.triggers = button.value.triggers
                 }
             })
         }
         addButtons.value = false;
         resetButtonFields();
     }
-    const addAction = (id: Guid) => {
+    const addAction = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
         let newAction = {
-            id:Guid.create(),
-            name: actionName.value,
-            description: actionDescription.value,
-            formTemplate: formTemplateId.value,
-            formView: formView.value,
-            buttons: buttons.value,
-            authorizations: authorization.value
+            id : Guid.create(),
+            name : action.value.name,
+            description : action.value.description,
+            formTemplate : action.value.formTemplate,
+            formView : action.value.formView,
+            buttons : buttons.value,
+            authorizations : authorizations.value
         } as unknown as WorkflowAction
         store.workflow?.actions?.push(newAction);
         }else{
             store.workflow?.actions!.forEach((a)=> {
                 if(a.id === id){
-                    a.name = actionName.value,
-                    a.description= actionDescription.value,
-                    a.formTemplate = formTemplateId.value,
-                    a.formView = formView.value,
+                    a.name = action.value.name,
+                    a.description = action.value.description,
+                    a.formTemplate = action.value.formTemplate,
+                    a.formView = action.value.formView,
                     a.buttons = buttons.value,
-                    a.authorizations = authorization.value
+                    a.authorizations = authorizations.value
                 }
             })
         }
@@ -162,74 +149,46 @@
     const addAuthorization = (id: Guid) => {
         if(id === Guid.EMPTY as unknown as Guid){
         let newAuth = {
-            id:Guid.create(),
-            currentState: authStateId.value,
-            authorizedBy: authorizedBy.value,
-            authorizedRoleId: authRoleId.value,
-            authorizedDomain: domain.value,
-            authorizedFormId: authFormId.value,
-            authorizedFeildId: authFieldId.value,
-            authorizedMetadataFormId: authMetadataFormId,
-            authorizedMetadataFeildId: authMetadataFieldId
+            id : Guid.create(),
+            currentState : authorization.value.currentState,
+            authorizedBy : authorization.value.authorizedBy,
+            authorizedRoleId : authorization.value.authorizedRoleId,
+            authorizedDomain : authorization.value.authorizedDomain,
+            authorizedFormId : authorization.value.authorizedFormId,
+            authorizedFeildId : authorization.value.authorizedFeildId,
+            authorizedMetadataFormId : authorization.value.authorizedMetadataFormId,
+            authorizedMetadataFeildId : authorization.value.authorizedMetadataFeildId
             
         } as unknown as Authorization
-        authorization.value?.push(newAuth);
+        authorizations.value?.push(newAuth);
         }
-        else{
-            deleteAuthorization(id);
-            let newAuth = {
-            id: id,
-            currentState: authStateId.value,
-            authorizedBy: authorizedBy.value,
-            authorizedRoleId: authRoleId.value,
-            authorizedDomain: domain.value,
-            authorizedFormId: authFormId.value,
-            authorizedFeildId: authFieldId.value,
-            authorizedMetadataFormId: authMetadataFormId,
-            authorizedMetadataFeildId: authMetadataFieldId
-            
-        } as unknown as Authorization
-        authorization.value?.push(newAuth);
-        }
+        
         resetAuthFields();
         addAuthorizations.value = false;
         resetAuthFields();
     }
-    const deleteAuthorization =(id: Guid)=>{
-        const idx = authorization.value?.findIndex(auth => auth.id == id)
-        authorization.value?.splice(idx as number, 1)
+    const deleteAuthorization = (id : Guid) => {
+        const idx = authorizations.value?.findIndex(auth => auth.id == id)
+        authorizations.value?.splice(idx as number, 1)
     }
-    const deleteButton =(id: Guid)=>{
+    const deleteButton = (id : Guid) => {
         const idx = buttons.value?.findIndex(btn => btn.id == id)
         buttons.value?.splice(idx as number, 1)
     }
-    const deleteTrigger = (id: Guid)=>{
-        const idx = triggerIds.value.findIndex(tr => tr == id)
-        triggerIds.value?.splice(idx as number, 1)
+    const deleteTrigger = (id : Guid) => {
+        const idx = button.value.triggers.findIndex(tr => tr == id)
+        button.value.triggers?.splice(idx as number, 1)
     }
-    const editButton = (btnId: Guid) => {
+    const editButton = (btnId : Guid) => {
         const buttonValues = buttons.value?.filter(btn => btn.id == btnId) as Button[]
-        buttonId.value = buttonValues[0].id as unknown as Guid
-        buttonType.value=buttonValues[0].type as unknown as string
-        buttonLabel.value = buttonValues[0].label
-        currentStateId.value = buttonValues[0].currentStateId as unknown  as Guid
-        nextStateId.value = buttonValues[0].nextStateId as unknown as Guid
-        popupId.value = buttonValues[0].popupId as unknown as Guid
-        triggerIds.value = buttonValues[0].triggers
+        button.value.id = buttonValues[0].id
+        button.value.type = buttonValues[0].type 
+        button.value.label = buttonValues[0].label
+        button.value.currentStateId = buttonValues[0].currentStateId
+        button.value.nextStateId = buttonValues[0].nextStateId
+        button.value.popupId = buttonValues[0].popupId
+        button.value.triggers = buttonValues[0].triggers
         addButtons.value = true;
-    }
-    const editAuth = (authId: Guid) => {
-        const authValues = authorization.value?.filter(au => au.id == authId) as Authorization[]
-        authorizationId.value = authValues[0].id 
-        authStateId.value=authValues[0].currentState 
-        authorizedBy.value = authValues[0].authorizedBy as unknown as string
-        authRoleId.value = authValues[0].authorizedRoleId as unknown as Guid
-        domain.value = authValues[0].authorizedDomain as unknown as string
-        authFormId.value = authValues[0].authorizedFormId as unknown as Guid
-        authFieldId.value = authValues[0].authorizedFeildId as unknown as Guid
-        authMetadataFormId.value = authValues[0].authorizedMetadataFormId as unknown as Guid
-        authMetadataFieldId.value = authValues[0].authorizedMetadataFeildId as unknown as Guid
-        addAuthorizations.value = true;
     }
 </script>
 
@@ -240,18 +199,18 @@
                 <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deletePanel()"/>
             </div>
             <b-input-group prepend="Name" class="mt-3">
-                <b-form-input v-model="actionName" ></b-form-input>
+                <b-form-input v-model="action.name" ></b-form-input>
             </b-input-group>
             <b-input-group prepend="Description" class="mt-3">
-                <b-form-textarea v-model="actionDescription" rows="3" max-rows="6"></b-form-textarea>
+                <b-form-textarea v-model="(action.description as string)" rows="3" max-rows="6"></b-form-textarea>
             </b-input-group>
 
             <div class="header-style">Submission Forms</div>
             <b-input-group prepend="Form Template" class="mt-3">
-                <b-form-select v-model="formTemplateId" :options="triggerTypes"></b-form-select>
+                <b-form-select v-model="action.formTemplate" :options="triggerTypes"></b-form-select>
             </b-input-group>
             <b-input-group prepend="Form View" class="mt-3">
-                <b-form-select v-model="formView" :options="eFormView"></b-form-select>
+                <b-form-select v-model="action.formView" :options="eFormView"></b-form-select>
             </b-input-group>
             <div v-if="buttons.length > 0" class="header-style">Buttons</div>
             <div class="popup-list-item">
@@ -274,33 +233,33 @@
                 <template v-slot:body>
                 <div >
                     <b-input-group prepend="Button type" class="mt-3">
-                        <select class="form-select" v-model="buttonType">
+                        <select class="form-select" v-model="button.type">
                             <option v-for="button in eByttonTypeValues" :value="button">{{getButtonTypeLabel(button)}}</option>
                         </select>
                     </b-input-group>
                     <b-input-group prepend="Label" class="mt-3">
-                        <b-form-input v-model="buttonLabel" ></b-form-input>
+                        <b-form-input v-model="button.label" ></b-form-input>
                     </b-input-group>
                     <div class="content-style">Conditions</div>
                     <b-input-group prepend="For State" class="mt-3">
-                        <select class="form-select" v-model="currentStateId">
+                        <select class="form-select" v-model="button.currentStateId">
                             <option v-for="forState in store.workflow?.states" :value="forState.id">{{forState.name}}</option>
                         </select>
                     </b-input-group>
                     <b-input-group prepend="New State" class="mt-3">
-                        <select class="form-select" v-model="nextStateId">
+                        <select class="form-select" v-model="button.nextStateId">
                             <option v-for="nextState in store.workflow?.states" :value="nextState.id">{{nextState.name}}</option>
                         </select>
                     </b-input-group>
                     <b-input-group prepend="Pop-up" class="mt-3">
-                        <select class="form-select" v-model="popupId">
+                        <select class="form-select" v-model="button.popupId">
                             <option v-for="popup in store.workflow?.popups" :value="popup.id">{{popup.title}}</option>
                         </select>
                     </b-input-group>
                     <div class="content-style">Triggers</div>
                     <div class="popup-list-item">
                         <b-list-group>
-                            <b-list-group-item v-for="triggerId in triggerIds" :key="triggerId.toString()">
+                            <b-list-group-item v-for="triggerId in button.triggers" :key="triggerId.toString()">
                                 <span>{{getTrigger(triggerId as Guid)}}
                                     <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteTrigger(triggerId as Guid)"/>
                                 </span>
@@ -316,13 +275,13 @@
                 </div>
                 </template>
                 <template v-slot:footer>
-                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addButton(buttonId as Guid)">Add Button</button>
+                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addButton(button.id as Guid)">Add Button</button>
                 </template>
             </ConfirmPopUp>
-            <div v-if="authorization.length>0" class="header-style">Authorizations</div>
+            <div v-if="authorizations.length>0" class="header-style">Authorizations</div>
             <div class="popup-list-item">
                 <b-list-group>
-                    <b-list-group-item v-for="auth in authorization" :key="(auth.id as unknown as string)">
+                    <b-list-group-item v-for="auth in authorizations" :key="(auth.id as unknown as string)">
                         <span>{{ getState(auth.currentState as Guid) }}-</span><span>{{getRole(auth.authorizedRoleId as Guid)}}</span><span>{{auth.authorizedDomain}}</span><span v-if="auth.authorizedBy==eAuthorizedBy.Owner">Owner</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteAuthorization(auth.id as Guid)"/>
@@ -339,41 +298,41 @@
                 <template v-slot:body>
                 <div >
                     <b-input-group prepend="For state" class="mt-3">
-                        <select class="form-select" v-model="authStateId" >
+                        <select class="form-select" v-model="authorization.currentState" >
                             <option v-for="state in store.workflow?.states" :value="state.id">{{state.name}}</option>
                         </select>
                     </b-input-group>
                     <b-input-group prepend="Authorized By" class="mt-3">
-                        <select class="form-select" v-model="authorizedBy">
+                        <select class="form-select" v-model="authorization.authorizedBy">
                             <option v-for="auth in eAuthorizedByValues" :value="auth">{{getAuthorizedByLabel(auth)}}</option>
                         </select>
                     </b-input-group>
-                    <div v-if="authorizedBy==eAuthorizedBy.Role.toString()">
+                    <div v-if="authorization.authorizedBy == eAuthorizedBy.Role">
                         <b-input-group prepend="Role" class="mt-3">
-                        <select class="form-select" v-model="authRoleId">
+                        <select class="form-select" v-model="authorization.authorizedRoleId">
                             <option v-for="role in store.workflow?.roles" :value="role.id">{{role.name}}</option>
                         </select>
                     </b-input-group>
                     </div>
-                    <div v-if="authorizedBy==eAuthorizedBy.Domain.toString()">
+                    <div v-if="authorization.authorizedBy == eAuthorizedBy.Domain">
                         <b-input-group prepend="Domain" class="mt-3">
-                            <b-form-input v-model="domain" ></b-form-input>
+                            <b-form-input v-model="(authorization.authorizedDomain as string)" ></b-form-input>
                         </b-input-group>
                     </div>
-                    <div v-if="authorizedBy==eAuthorizedBy.FormField.toString()">
+                    <div v-if="authorization.authorizedBy == eAuthorizedBy.FormField">
                         Form Field
                     </div>
-                    <div v-if="authorizedBy==eAuthorizedBy.MetadataField.toString()">
+                    <div v-if="authorization.authorizedBy == eAuthorizedBy.MetadataField">
                         Metadata Form Field
                     </div>
                 </div>
                 </template>
                 <template v-slot:footer>
-                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addAuthorization(authorizationId as Guid)">Add Authorization</button>
+                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addAuthorization(authorization.id as Guid)">Add Authorization</button>
                 </template>
             </ConfirmPopUp>
             <div style="margin-left: 90%;">
-                <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addAction(actionId as Guid)">Add</button>
+                <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addAction(action.id as Guid)">Add</button>
             </div>
         </div>
     </div>
