@@ -32,6 +32,7 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<FormTemplate>> GetForm(Guid id)
         {
             if (_context.Forms == null)
@@ -111,6 +112,7 @@ namespace Catfish.API.Repository.Controllers
 
         // DELETE: api/Forms/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (_context.Forms == null)
@@ -130,6 +132,7 @@ namespace Catfish.API.Repository.Controllers
             return Ok();
         }
         [HttpPost("change-state/{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
         {
             if (_context.Forms == null)

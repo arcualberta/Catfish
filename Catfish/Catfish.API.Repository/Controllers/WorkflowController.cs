@@ -32,6 +32,7 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<Workflow>> GetWorkflow(Guid id)
         {
             if (_context.Workflows == null)
@@ -106,6 +107,7 @@ namespace Catfish.API.Repository.Controllers
 
         // DELETE: api/workflow/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (_context.Workflows == null)

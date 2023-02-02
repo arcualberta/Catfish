@@ -38,6 +38,7 @@ namespace Catfish.API.Repository.Controllers
         // GET: api/Forms/5
         //   GET api/<ItemsController>/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<EntityData> Get(Guid id, bool includeRelationship=true)
         {
              if(includeRelationship)
@@ -113,6 +114,7 @@ namespace Catfish.API.Repository.Controllers
 
        // DELETE api/<EntitiesController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (_context.Entities == null)
@@ -151,6 +153,7 @@ namespace Catfish.API.Repository.Controllers
         }
 
         [HttpPost("change-state/{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
         {
             if (_context.Entities == null)
