@@ -55,6 +55,7 @@
       authorizations.value!.push(newAuth);  
       })
     }else{
+        action.value.id = Guid.EMPTY as unknown as Guid;
         authorization.value.id = Guid.EMPTY as unknown as Guid;
         button.value.id = Guid.EMPTY as unknown as Guid;
         button.value.triggers = [];
@@ -207,7 +208,7 @@
 
             <div class="header-style">Submission Forms</div>
             <b-input-group prepend="Form Template" class="mt-3">
-                <b-form-select v-model="action.formTemplate" :options="triggerTypes"></b-form-select>
+                <b-form-select v-model="action.formTemplate" :options="eFormView"></b-form-select>
             </b-input-group>
             <b-input-group prepend="Form View" class="mt-3">
                 <b-form-select v-model="action.formView" :options="eFormView"></b-form-select>

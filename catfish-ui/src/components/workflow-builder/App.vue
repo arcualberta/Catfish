@@ -153,4 +153,7 @@ max-width: 80%;
     font-size: 18px;
     font-family: "Architects Daughter";  
 }
+.left-space{
+    margin-left: 60px;
+}
 </style>

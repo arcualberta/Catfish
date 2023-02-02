@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref, watch,computed } from 'vue';
+    import { ref, computed } from 'vue';
     import { eEmailType, eTriggerType ,eRecipientType, eRecipientTypeValues, getRecipientTypeLabel, getTriggerTypeLabel, 
             eTriggerTypeValues, eEmailTypeValues, getEmailTypeLabel} from "../../../components/shared/constants";
     import { useWorkflowBuilderStore } from '../store';
@@ -41,7 +41,7 @@
         trigger.value.id = Guid.EMPTY as unknown as Guid;
         recipient.value.id = Guid.EMPTY as unknown as Guid;
     }
-    const addTrigger = (id : Guid)=>{
+    const addTrigger = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
             let newTrigger = {
                 id : Guid.create(),
@@ -55,7 +55,7 @@
             store.workflow?.triggers?.push(newTrigger);
             
         }else{
-            store.workflow?.triggers!.forEach((tr)=> {
+            store.workflow?.triggers!.forEach((tr) => {
                 if(tr.id == id){
                     tr.type = trigger.value.type,
                     tr.name= trigger.value.name,

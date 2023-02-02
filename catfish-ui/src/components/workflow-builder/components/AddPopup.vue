@@ -18,7 +18,6 @@
     const addButtons = ref(false);
     
     if(props.editMode){
-      
       const popupValues = store.workflow?.popups?.filter(p => p.id == props.editPopupId ) as WorkflowPopup[];
       popup.value.id = popupValues[0].id;
       popup.value.title = popupValues[0].title;
