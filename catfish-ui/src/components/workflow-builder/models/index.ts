@@ -1,5 +1,5 @@
 
-import { eRecipientType, eTriggerType, eEmailType, eAuthorizedBy, eButtonTypes } from "../../../components/shared/constants"
+import { eRecipientType, eTriggerType, eEmailType, eAuthorizedBy, eButtonTypes, eFormView } from "../../../components/shared/constants"
 
 import { Guid } from "guid-typescript";
 
@@ -7,11 +7,11 @@ export interface Workflow {
     id: Guid;
     name: string;
     description: string;
-    states: WorkflowState[];
-    actions: WorkflowAction[];
     entityTemplateId: Guid;
-    triggers: WorkflowTrigger[];
+    actions: WorkflowAction[];
+    states: WorkflowState[];
     roles: WorkflowRole[];
+    triggers: WorkflowTrigger[];
     emailTemplates: WorkflowEmailTemplate[];   
     popups: WorkflowPopup[];   
 }
@@ -20,7 +20,7 @@ export interface WorkflowAction{
     name: string;
     description: string | null;
     formTemplate: Guid;
-    formView: string;
+    formView: eFormView;
     buttons: Button[];
     authorizations: Authorization[];
 }
@@ -57,7 +57,7 @@ export interface WorkflowPopup {
 }
 export interface Authorization{
     id: Guid;
-    currentState: Guid;
+    currentStateId: Guid;
     authorizedBy: eAuthorizedBy;
     authorizedRoleId: Guid | null;
     authorizedDomain: string | null;
@@ -79,7 +79,7 @@ export interface Recipient {
     id: Guid;
     emailType: eEmailType;
     recipienType:eRecipientType;
-    role: string | null;
+    roleId: Guid;
     email: string | null;
 }
 export interface PopupButton {

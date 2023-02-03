@@ -32,7 +32,7 @@
             id : rl.id,
             emailType : rl.emailType ,
             recipienType : rl.recipienType,
-            role : rl.role,
+            roleId : rl.roleId,
             email : rl.email
             }  as Recipient
         recipients.value!.push(newRecipient);  
@@ -79,7 +79,7 @@
     const resetRecipients = () => {
         recipient.value.emailType = eEmailType.To;
         recipient.value.recipienType = eRecipientType.Owner;
-        recipient.value.role = "";
+        recipient.value.roleId = Guid.EMPTY as unknown as Guid;
         recipient.value.email = "";
     }
     const addRecipient = (id : Guid)=>{
@@ -88,7 +88,7 @@
             id : Guid.create(),
             emailType : recipient.value.emailType,
             recipienType : recipient.value.recipienType,
-            role : recipient.value.role,
+            role : recipient.value.roleId,
             email : recipient.value.email
         } as unknown as Recipient
         recipients.value?.push(newRecipient);
@@ -137,7 +137,7 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in toRecipients" >
-                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{recipient.role}}</span><span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{recipient.roleId}}</span><span>{{recipient.email}}</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -148,7 +148,7 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in ccRecipients" >
-                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{recipient.role}}</span><span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{recipient.roleId}}</span><span>{{recipient.email}}</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -159,7 +159,7 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in bccRecipients" >
-                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{recipient.role}}</span><span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{recipient.roleId}}</span><span>{{recipient.email}}</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -187,8 +187,8 @@
 
                     <div v-if="recipient.recipienType == eRecipientType.Role">
                         <b-input-group prepend="Role" class="mt-3">
-                            <select class="form-select" v-model="recipient.role">
-                                <option v-for="role in roleList" >{{role.name}}</option>
+                            <select class="form-select" v-model="recipient.roleId">
+                                <option v-for="role in roleList" :value="role.id">{{role.name}}</option>
                             </select>
                         </b-input-group>
                     </div>

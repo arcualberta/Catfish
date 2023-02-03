@@ -17,21 +17,21 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     actions: {
         createNewWorkflow() {
             let newState= {
-                id:Guid.create(),
-                name :"Empty State",
+                id : Guid.create() as unknown as Guid,
+                name : "Empty State",
                 description : "This is initial state"
             } as WorkflowState;
             this.workflow = {
-                id: Guid.EMPTY as unknown as Guid,
-                name: "",
-                description: "",
-                states: [] as WorkflowState[],
-                roles: [] as WorkflowRole[],
-                emailTemplates: [] as WorkflowEmailTemplate[],
-                actions: [] as WorkflowAction[],
-                triggers: [] as WorkflowTrigger[],
-                entityTemplateId: Guid.EMPTY as unknown as Guid,
-                popups: [] as WorkflowPopup[]
+                id : Guid.EMPTY as unknown as Guid,
+                name : "",
+                description : "",
+                states : [] as WorkflowState[],
+                roles : [] as WorkflowRole[],
+                emailTemplates : [] as WorkflowEmailTemplate[],
+                actions : [] as WorkflowAction[],
+                triggers : [] as WorkflowTrigger[],
+                entityTemplateId : Guid.EMPTY as unknown as Guid,
+                popups : [] as WorkflowPopup[]
             }
             this.workflow.states.push(newState);
         },
@@ -54,9 +54,11 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 console.error("Cannot save null workflow.")
                 return;
             }
-
-            const newWorkflow = this.workflow?.id?.toString() === Guid.EMPTY;
+            
+            const newWorkflow = this.workflow?.id === Guid.EMPTY as unknown as Guid;
+            console.log(this.workflow?.id)
             let api = `${config.dataRepositoryApiRoot}/api/workflow`;
+            console.log(api)
             //let api = "https://localhost:5020/api/workflow";
             let method = "";
             if (newWorkflow) {
@@ -68,7 +70,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 api = `${api}/${this.workflow.id}`
                 method = "PUT";
             }
-
+console.log(JSON.stringify(this.workflow))
             fetch(api,
                 {
                     body: JSON.stringify(this.workflow),

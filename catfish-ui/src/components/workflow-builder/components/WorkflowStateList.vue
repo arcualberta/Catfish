@@ -9,6 +9,7 @@
     const store = useWorkflowBuilderStore();
     const addStates = ref(false);
     const editMode = ref(false);
+    const newStateGuid = ref(Guid.create() as unknown as Guid);
     const ToggleAddStates = () => (addStates.value = !addStates.value);
     let disabled = ref(true);
 
@@ -21,7 +22,7 @@
     const addState = (id : Guid)=>{
         if(id === Guid.EMPTY as unknown as Guid){
             let newState= {
-                id: Guid.create(),
+                id: newStateGuid.value,
                 name :state.value.name,
                 description : state.value.description
             } as WorkflowState;

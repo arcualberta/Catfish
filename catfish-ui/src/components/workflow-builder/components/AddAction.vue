@@ -43,7 +43,7 @@
       actuionValues[0].authorizations!.forEach((a) => {
           let newAuth = {
           id : a.id,
-          currentState : a.currentState,
+          currentStateId : a.currentStateId,
           authorizedBy : a.authorizedBy,
           authorizedRoleId : a.authorizedRoleId,
           authorizedDomain : a.authorizedDomain,
@@ -89,7 +89,7 @@
         action.value.name = "";
         action.value.description = "";
         action.value.formTemplate = Guid.EMPTY as unknown as Guid;
-        action.value.formView = "";
+        action.value.formView = eFormView.EntrySlip;
         buttons.value = [];
         authorizations.value = [];
     }
@@ -151,7 +151,7 @@
         if(id === Guid.EMPTY as unknown as Guid){
         let newAuth = {
             id : Guid.create(),
-            currentState : authorization.value.currentState,
+            currentState : authorization.value.currentStateId,
             authorizedBy : authorization.value.authorizedBy,
             authorizedRoleId : authorization.value.authorizedRoleId,
             authorizedDomain : authorization.value.authorizedDomain,
@@ -283,7 +283,7 @@
             <div class="popup-list-item">
                 <b-list-group>
                     <b-list-group-item v-for="auth in authorizations" :key="(auth.id as unknown as string)">
-                        <span>{{ getState(auth.currentState as Guid) }}-</span><span>{{getRole(auth.authorizedRoleId as Guid)}}</span><span>{{auth.authorizedDomain}}</span><span v-if="auth.authorizedBy==eAuthorizedBy.Owner">Owner</span>
+                        <span>{{ getState(auth.currentStateId as Guid) }}-</span><span>{{getRole(auth.authorizedRoleId as Guid)}}</span><span>{{auth.authorizedDomain}}</span><span v-if="auth.authorizedBy==eAuthorizedBy.Owner">Owner</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteAuthorization(auth.id as Guid)"/>
                         </span>
@@ -299,7 +299,7 @@
                 <template v-slot:body>
                 <div >
                     <b-input-group prepend="For state" class="mt-3">
-                        <select class="form-select" v-model="authorization.currentState" >
+                        <select class="form-select" v-model="authorization.currentStateId" >
                             <option v-for="state in store.workflow?.states" :value="state.id">{{state.name}}</option>
                         </select>
                     </b-input-group>

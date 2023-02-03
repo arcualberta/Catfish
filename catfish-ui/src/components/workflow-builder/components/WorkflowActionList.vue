@@ -24,7 +24,7 @@
     }
     const checkState = (stateId : Guid, authorizations : Authorization[]) => {
         authorizations.forEach((a) =>{
-            if (a.currentState === stateId){
+            if (a.currentStateId === stateId){
                 console.log("True")
                 return true
             }
@@ -60,7 +60,7 @@
                         <div v-for="state in store.workflow?.states">
                             <div class="left-space"><b>{{ state.name }} : </b>
                                 <span v-for="auth in action.authorizations">
-                                    <span v-if="auth.currentState == state.id">
+                                    <span v-if="auth.currentStateId == state.id">
                                         <span v-if="auth.authorizedRoleId" class="one-space"><b>{{getRole(auth.authorizedRoleId as Guid)}}</b></span>
                                         <span v-if="auth.authorizedDomain" class="one-space"><b>{{auth.authorizedDomain}}</b></span>
                                         <span v-if="auth.authorizedBy==eAuthorizedBy.Owner" class="one-space"><b>Owner</b></span>
