@@ -87,26 +87,59 @@ namespace Catfish.API.Repository.Controllers
         // PUT api/<EntitiesController>/5
         [HttpPut("{id}")]
         [Authorize(Roles = "SysAdmin")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] EntityData value)
+        public async Task<IActionResult> Put(Guid id, [FromForm] string value, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
         {
             try
             {
-                if (id != value.Id)
+                if (!ModelState.IsValid)
                     return BadRequest();
 
-               // var code = await _entityTemplateService.UpdateEntity(value);
-               _context.Entry(value).State = EntityState.Modified;
+                var settings = new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                EntityData entityInstance = JsonConvert.DeserializeObject<EntityData>(value, settings);
+
+                if (id != entityInstance!.Id)
+                    return BadRequest();
+
+                // var code = await _entityTemplateService.AddEntity(value);
+                EntityTemplate template = _entityTemplateService.GetEntityTemplate(entityInstance.TemplateId);//value.TemplateId)
+                entityInstance.Template = template; //value.Template=template
+
+               // var code = await _entityService.AddEntity(entityInstance, files, fileKeys);//value
+                _context.Entry(entityInstance).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                return Ok(); // StatusCode((int) code);
+              
+                return Ok();
             }
-            catch(Exception)
+            catch (Exception ex)
             {
                 //TODO: Log the error in error log
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
+        /*   public async Task<IActionResult> Put(Guid id, [FromBody] EntityData value)
+          {
+              try
+              {
+                  if (id != value.Id)
+                      return BadRequest();
 
-       // PATCH api/<EntitiesController>/5
+                 // var code = await _entityTemplateService.UpdateEntity(value);
+                 _context.Entry(value).State = EntityState.Modified;
+                  await _context.SaveChangesAsync();
+                  return Ok(); // StatusCode((int) code);
+              }
+              catch(Exception)
+              {
+                  //TODO: Log the error in error log
+                  return StatusCode((int)HttpStatusCode.InternalServerError);
+              }
+          }*/
+        // PATCH api/<EntitiesController>/5
         [HttpPatch("{id}")]
         public void Patch(Guid id, [FromBody] FormData value)
         {

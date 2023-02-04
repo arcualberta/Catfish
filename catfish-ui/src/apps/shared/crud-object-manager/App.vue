@@ -10,7 +10,7 @@ const props = defineProps<{
    
 }>()
 
- if(props.jwtToken && localStorage.getItem("catfishJwtToken") === null){
+ if(props.jwtToken){
         localStorage.setItem("catfishJwtToken", props.jwtToken)
   }
 const store = useCRUDManagerStore();

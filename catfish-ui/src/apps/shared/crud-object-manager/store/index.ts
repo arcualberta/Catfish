@@ -16,8 +16,8 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
         loadEntries(apiUrl: string) {
             const api = `${apiUrl}`
             const jwtToken = localStorage.getItem("catfishJwtToken")
-            //console.log('LoadApi', api)
-            //console.log('jwt Token', jwtToken)
+            console.log('LoadApi', api)
+            console.log('jwt Token', jwtToken)
             fetch(api, {
                 method: 'GET',
                 headers: {
