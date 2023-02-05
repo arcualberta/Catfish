@@ -22,10 +22,10 @@
             disabled.value = true; 
     })
     
-    const addTemplate =(id:Guid)=>{
+    const addTemplate = (id : Guid) => {
         if(id === Guid.EMPTY as unknown as Guid){
-            let newTemplate= {
-                id : Guid.create(),
+            let newTemplate = {
+                id : Guid.create().toString() as unknown as Guid,
                 name : template.value.name,
                 description : template.value.description,
                 emailSubject : template.value.emailSubject,
@@ -34,7 +34,7 @@
             } as WorkflowEmailTemplate;
             emailTemplates.value?.push(newTemplate)
         }else{
-            emailTemplates.value!.forEach((emt)=> {
+            emailTemplates.value!.forEach((emt) => {
                 if(emt.id === template.value.id){
                     emt.name = template.value.name;
                     emt.description = template.value.description;
@@ -59,7 +59,7 @@
         template.value.id = templateValues[0].id
         addTemplates.value = true
     }
-    const resetFields = ()=>{
+    const resetFields = () => {
         template.value.id = Guid.EMPTY as unknown as Guid;
         template.value.name = "";
         template.value.description = "";

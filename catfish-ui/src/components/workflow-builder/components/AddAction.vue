@@ -96,7 +96,7 @@
     const addButton = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
         let newButton = {
-            id : Guid.create(),
+            id : Guid.create().toString() as unknown as Guid,
             type : button.value.type,
             label : button.value.label,
             currentStateId : button.value.currentStateId,
@@ -123,7 +123,7 @@
     const addAction = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
         let newAction = {
-            id : Guid.create(),
+            id : Guid.create().toString() as unknown as Guid,
             name : action.value.name,
             description : action.value.description,
             formTemplate : action.value.formTemplate,
@@ -150,7 +150,7 @@
     const addAuthorization = (id: Guid) => {
         if(id === Guid.EMPTY as unknown as Guid){
         let newAuth = {
-            id : Guid.create(),
+            id : Guid.create().toString() as unknown as Guid,
             currentState : authorization.value.currentStateId,
             authorizedBy : authorization.value.authorizedBy,
             authorizedRoleId : authorization.value.authorizedRoleId,

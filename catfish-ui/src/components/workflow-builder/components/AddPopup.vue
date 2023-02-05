@@ -38,17 +38,17 @@
     const toggleButtons = () => {
         addButtons.value = true;
     }
-    const addPopup = (id : Guid)=>{
+    const addPopup = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
             let newPopup = {
-                id : Guid.create(),
+                id : Guid.create().toString() as unknown as Guid,
                 title : popup.value.title,
                 Message : popup.value.Message,
                 buttons : buttons.value
             } as WorkflowPopup
             store.workflow?.popups?.push(newPopup);
         }else{
-            store.workflow?.popups!.forEach((p)=> {
+            store.workflow?.popups!.forEach((p) => {
                 if(p.id === id){
                     p.title = popup.value.title,
                     p.Message = popup.value.Message,
@@ -60,10 +60,10 @@
         buttons.value = [];
         resetPopup();
     }
-    const addButton = (id : Guid)=>{
+    const addButton = (id : Guid) => {
         if(id === Guid.EMPTY as unknown as Guid){
             let newButton = {
-                id : Guid.create(),
+                id : Guid.create().toString() as unknown as Guid,
                 text : button.value.text,
                 returnValue : button.value.returnValue 
             } as PopupButton

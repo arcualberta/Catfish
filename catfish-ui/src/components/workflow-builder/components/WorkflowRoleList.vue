@@ -19,20 +19,20 @@
             disabled.value = true; 
     })
 
-    const addRole = (id: Guid)=>{
+    const addRole = (id: Guid) => {
         if(id === Guid.EMPTY as unknown as Guid){
-            let newWorkflowRole= {
-                id: Guid.create(),
-                name :role.value.name,
+            let newWorkflowRole = {
+                id : Guid.create().toString() as unknown as Guid,
+                name : role.value.name,
                 description : role.value.description
             } as WorkflowRole;
     
         roles.value?.push(newWorkflowRole);
         }else{
-            roles.value!.forEach((rl)=> {
+            roles.value!.forEach((rl) => {
                 if(rl.id === role.value.id){
-                    rl.name= role.value.name;
-                    rl.description= role.value.description;
+                    rl.name = role.value.name;
+                    rl.description = role.value.description;
                 }    
              })
         }
@@ -40,7 +40,7 @@
         resetFields();
         addRoles.value = false;
     }
-    const resetFields = ()=>{
+    const resetFields = () => {
         role.value.id = Guid.EMPTY as unknown as Guid;
         role.value.name = "";
         role.value.description = "";

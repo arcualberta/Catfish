@@ -79,7 +79,7 @@ export interface Recipient {
     id: Guid;
     emailType: eEmailType;
     recipienType:eRecipientType;
-    roleId: Guid;
+    roleId: Guid | null;
     email: string | null;
 }
 export interface PopupButton {

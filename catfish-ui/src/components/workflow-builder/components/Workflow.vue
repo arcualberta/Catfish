@@ -20,7 +20,7 @@
          store.loadEntityTemplates();
     });
     
-    const templateOptions=computed(()=>{
+    const templateOptions = computed(() => {
           const options = store.entityTemplates.map(template => {
                 return {
                     value: template.id,
@@ -29,7 +29,7 @@
             });
         return options;
     });
- const workflow =computed(()=>store.workflow);
+ const workflow = computed(() => store.workflow);
 </script>
 
 <template>

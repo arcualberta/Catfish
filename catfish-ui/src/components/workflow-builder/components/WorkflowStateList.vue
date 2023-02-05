@@ -9,38 +9,37 @@
     const store = useWorkflowBuilderStore();
     const addStates = ref(false);
     const editMode = ref(false);
-    const newStateGuid = ref(Guid.create() as unknown as Guid);
     const ToggleAddStates = () => (addStates.value = !addStates.value);
     let disabled = ref(true);
 
     watch(() => state.value.name, async newValue => {
-        if (newValue.length>0)
+        if (newValue.length > 0)
             disabled.value = false; 
         else
             disabled.value = true; 
     })
-    const addState = (id : Guid)=>{
+    const addState = (id : Guid) => {
         if(id === Guid.EMPTY as unknown as Guid){
             let newState= {
-                id: newStateGuid.value,
-                name :state.value.name,
+                id : Guid.create().toString() as unknown as Guid,
+                name : state.value.name,
                 description : state.value.description
             } as WorkflowState;
             store.workflow?.states?.push(newState);
         }else{
-            store.workflow?.states!.forEach((st)=> {
+            store.workflow?.states!.forEach((st) => {
                 if(st.id === state.value.id){
-                    st.name= state.value.name;
-                    st.description= state.value.description;
+                    st.name = state.value.name;
+                    st.description = state.value.description;
                 }    
              })
-             editMode.value=false;
+             editMode.value = false;
         }
         resetFields()
-        addStates.value=false;
+        addStates.value = false;
         
     }
-    const resetFields = ()=>{
+    const resetFields = () => {
         state.value.id = Guid.EMPTY as unknown as Guid
         state.value.name = ""
         state.value.description = ""

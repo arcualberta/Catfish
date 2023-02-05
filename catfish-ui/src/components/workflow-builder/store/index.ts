@@ -17,7 +17,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     actions: {
         createNewWorkflow() {
             let newState= {
-                id : Guid.create() as unknown as Guid,
+                id : Guid.create().toString() as unknown as Guid,
                 name : "Empty State",
                 description : "This is initial state"
             } as WorkflowState;

@@ -19,7 +19,7 @@
     let toRecipients = computed(() => recipients.value?.filter(rec => rec.emailType == eEmailType.To) as Recipient[]);
     let ccRecipients = computed(() => recipients.value?.filter(rec => rec.emailType == eEmailType.Cc) as Recipient[]);
     let bccRecipients = computed(() => recipients.value?.filter(rec => rec.emailType == eEmailType.Bcc) as Recipient[]);
-
+    const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
     if(props.editMode){
         const triggerValues = store.workflow?.triggers?.filter(tr => tr.id == props.editTriggerId ) as WorkflowTrigger[];
         trigger.value.id = triggerValues[0].id;
@@ -36,6 +36,7 @@
             email : rl.email
             }  as Recipient
         recipients.value!.push(newRecipient);  
+        recipient.value.id = Guid.EMPTY as unknown as Guid;
         })
     }else{
         trigger.value.id = Guid.EMPTY as unknown as Guid;
@@ -44,8 +45,8 @@
     const addTrigger = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
             let newTrigger = {
-                id : Guid.create(),
-                type: trigger.value.type,
+                id : Guid.create().toString() as unknown as Guid,
+                type : trigger.value.type,
                 name :trigger.value.name,
                 description : trigger.value.description,
                 templateId : trigger.value.templateId,
@@ -58,8 +59,8 @@
             store.workflow?.triggers!.forEach((tr) => {
                 if(tr.id == id){
                     tr.type = trigger.value.type,
-                    tr.name= trigger.value.name,
-                    tr.description= trigger.value.description,
+                    tr.name = trigger.value.name,
+                    tr.description = trigger.value.description,
                     tr.templateId = trigger.value.templateId,
                     tr.recipients = recipients.value as Recipient[]
                 }    
@@ -82,13 +83,13 @@
         recipient.value.roleId = Guid.EMPTY as unknown as Guid;
         recipient.value.email = "";
     }
-    const addRecipient = (id : Guid)=>{
+    const addRecipient = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
         let newRecipient = {
-            id : Guid.create(),
+            id : Guid.create().toString() as unknown as Guid,
             emailType : recipient.value.emailType,
             recipienType : recipient.value.recipienType,
-            role : recipient.value.roleId,
+            roleId : recipient.value.roleId,
             email : recipient.value.email
         } as unknown as Recipient
         recipients.value?.push(newRecipient);
@@ -96,7 +97,7 @@
         resetRecipients();
     }
     }
-    const deleteRecipient = (id : Guid)=>{
+    const deleteRecipient = (id : Guid) => {
         const idx = recipients.value?.findIndex(opt => opt.id == id)
         recipients.value?.splice(idx as number, 1)
     }
@@ -106,7 +107,10 @@
         resetFields()
     }
 
-    const ToggleAddRecipients = () => (addRecipients.value = !addRecipients.value)
+    const ToggleAddRecipients = () => {
+        addRecipients.value = !addRecipients.value;
+        recipient.value.id =  Guid.EMPTY as unknown as Guid;
+    }
         
     
 </script>
@@ -130,14 +134,14 @@
             </b-input-group>
             <b-input-group prepend="Email Template" class="mt-3">
                 <select class="form-select" v-model="trigger.templateId">
-                    <option v-for="opt in emailTemplates" >{{opt.name}}</option>
+                    <option v-for="opt in emailTemplates"  :value="opt.id">{{opt.name}}</option>
                 </select>
             </b-input-group>
             <div class="title-recipient"><h5>To</h5></div>
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in toRecipients" >
-                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{recipient.roleId}}</span><span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{getRole(recipient.roleId as Guid)}}</span><span>{{recipient.email}}</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -148,7 +152,7 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in ccRecipients" >
-                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{recipient.roleId}}</span><span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{getRole(recipient.roleId as Guid)}}</span><span>{{recipient.email}}</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -159,7 +163,7 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in bccRecipients" >
-                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{recipient.roleId}}</span><span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{getRole(recipient.roleId as Guid)}}</span><span>{{recipient.email}}</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -206,6 +210,7 @@
                 </div>
                 </template>
                 <template v-slot:footer>
+                    recipient id ;{{ recipient.id }}
                     <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addRecipient(recipient.id as Guid)">Add recipient</button>
                 </template>
             </ConfirmPopUp>
