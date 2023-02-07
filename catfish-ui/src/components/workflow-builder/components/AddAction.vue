@@ -26,6 +26,7 @@
       action.value.name = actuionValues[0].name;
       action.value.description = actuionValues[0].description as string;
       action.value.formTemplate = actuionValues[0].formTemplate;
+      store.loadTemplate(action.value.formTemplate as Guid)
       action.value.formView = actuionValues[0].formView;
       actuionValues[0].buttons!.forEach((b) => {
           let newButton = {
