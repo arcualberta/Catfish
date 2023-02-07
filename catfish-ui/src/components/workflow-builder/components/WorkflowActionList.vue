@@ -28,11 +28,13 @@
     const checkAuth = (stateId:Guid, actionId : Guid) => {
         const auth = store.workflow?.actions.filter(a => a.id == actionId)[0].authorizations;
             auth?.forEach((au) => {
+                console.log("currentStateId", au.currentStateId)
+                console.log("stateId", stateId)
+
                 if(au.currentStateId === stateId) {
                     return "true";
                 }
             })
-            console.log("false")
         return "false";
     }
     

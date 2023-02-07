@@ -43,8 +43,7 @@ namespace Catfish.API.Repository.Controllers
         public async Task<EntityTemplate?> Get(Guid id, bool includeForms = true)
         {
             if(includeForms)
-                return await _context.EntityTemplates!.Include(et => et.Forms)
-                                                       .Include(et=>et.Workflows).FirstOrDefaultAsync(fd => fd.Id == id);
+                return await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(fd => fd.Id == id);
             else
                 return await _context.EntityTemplates!.FirstOrDefaultAsync(fd => fd.Id == id);
         }
