@@ -26,15 +26,14 @@
     }
 
     const checkAuth = (stateId:Guid, actionId : Guid) => {
-        const auth = store.workflow?.actions.find(a => a.id == actionId)?.authorizations;
+        const auth = store.workflow?.actions.filter(a => a.id == actionId)[0].authorizations;
             auth?.forEach((au) => {
-                if(au.currentStateId == stateId) {
-                    console.log("true")
-                    return true;
+                if(au.currentStateId === stateId) {
+                    return "true";
                 }
             })
             console.log("false")
-        return false;
+        return "false";
     }
     
     
@@ -64,16 +63,16 @@
                         <b-card-text v-if="action.buttons.length>0"><b>Buttons : <span v-for="button in action.buttons"><span class="one-space">{{button.label}}</span></span></b></b-card-text>
                         <b-card-text v-if="action.authorizations.length>0"><b>Authorization    </b>
                             <div v-for="state in store.workflow?.states">
-                            <div class="left-space" ><b>{{ state.name }} : </b>
-                                <span v-for="auth in action.authorizations">
-                                    <span v-if="auth.currentStateId == state.id">
-                                        <span v-if="auth.authorizedRoleId" class="one-space"><b>{{getRole(auth.authorizedRoleId as Guid)}}</b></span>
-                                        <span v-if="auth.authorizedDomain" class="one-space"><b>{{auth.authorizedDomain}}</b></span>
-                                        <span v-if="auth.authorizedBy==eAuthorizedBy.Owner" class="one-space"><b>Owner</b></span>
+                                <div class="left-space" v-if="checkAuth(state.id as Guid, action.id as Guid)"><b> {{ state.name }} : </b>
+                                    <span v-for="auth in action.authorizations">
+                                        <span v-if="auth.currentStateId == state.id">
+                                            <span v-if="auth.authorizedRoleId" class="one-space"><b>{{getRole(auth.authorizedRoleId as Guid)}}</b></span>
+                                            <span v-if="auth.authorizedDomain" class="one-space"><b>{{auth.authorizedDomain}}</b></span>
+                                            <span v-if="auth.authorizedBy==eAuthorizedBy.Owner" class="one-space"><b>Owner</b></span>
+                                        </span>
                                     </span>
-                                </span>
+                                </div>
                             </div>
-                        </div>
                         </b-card-text>
                     </b-card>
                 </b-collapse>

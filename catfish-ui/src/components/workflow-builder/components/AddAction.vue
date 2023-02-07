@@ -150,7 +150,7 @@
         if(id === Guid.EMPTY as unknown as Guid){
         let newAuth = {
             id : Guid.create().toString() as unknown as Guid,
-            currentState : authorization.value.currentStateId,
+            currentStateId : authorization.value.currentStateId,
             authorizedBy : authorization.value.authorizedBy,
             authorizedRoleId : authorization.value.authorizedRoleId,
             authorizedDomain : authorization.value.authorizedDomain,
