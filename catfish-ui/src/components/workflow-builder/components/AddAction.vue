@@ -18,9 +18,8 @@
     const authorization = ref({} as Authorization);
     const buttons = ref([] as unknown as Button[]);
     const authorizations = ref([] as Authorization[]);
-    const triggerTypes = computed(() => eTriggerType);
     const selectedTriggerId = ref(Guid.EMPTY  as unknown as Guid);
-    
+    const getField = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0]);
     if(props.editMode){
       const actuionValues = store.workflow?.actions?.filter(a => a.id == props.editActionId ) as WorkflowAction[];
       action.value.id = actuionValues[0].id;
@@ -208,7 +207,9 @@
 
             <div class="header-style">Submission Forms</div>
             <b-input-group prepend="Form Template" class="mt-3">
-                <b-form-select v-model="action.formTemplate" :options="eFormView"></b-form-select>
+                <select class="form-select" v-model="action.formTemplate">
+                    <option v-for="form in store.entityTemplate?.entityTemplateSettings.dataForms" :value="form.id">{{ form.name }}</option>
+                </select>
             </b-input-group>
             <b-input-group prepend="Form View" class="mt-3">
                 <b-form-select v-model="action.formView" :options="eFormView"></b-form-select>
@@ -321,10 +322,28 @@
                         </b-input-group>
                     </div>
                     <div v-if="authorization.authorizedBy == eAuthorizedBy.FormField">
-                        Form Field
+                        <b-input-group  prepend="Form" class="mt-3">
+                            <select class="form-select" v-model="authorization.authorizedFormId">
+                                <option v-for="form in store.entityTemplate?.entityTemplateSettings.dataForms" :value="form.id">{{form.name}}</option>
+                            </select>
+                        </b-input-group>
+                        <b-input-group  prepend="Field" class="mt-3">
+                            <select class="form-select" v-model="authorization.authorizedFeildId">
+                                <option v-for="field in getField(authorization.authorizedFormId as Guid)?.fields" :value="field.id">{{field.title}}</option>
+                            </select>
+                        </b-input-group>
                     </div>
                     <div v-if="authorization.authorizedBy == eAuthorizedBy.MetadataField">
-                        Metadata Form Field
+                        <b-input-group  prepend="Metadata Form" class="mt-3">
+                            <select class="form-select" v-model="authorization.authorizedMetadataFormId">
+                                <option v-for="form in store.entityTemplate?.entityTemplateSettings.metadataForms" :value="form.id">{{form.name}}</option>
+                            </select>
+                        </b-input-group>
+                        <b-input-group  prepend="Metadata Field" class="mt-3">
+                            <select class="form-select" v-model="authorization.authorizedMetadataFeildId">
+                                <option v-for="field in getField(authorization.authorizedMetadataFormId as Guid)?.fields" :value="field.id">{{field.title}}</option>
+                            </select>
+                        </b-input-group>
                     </div>
                 </div>
                 </template>

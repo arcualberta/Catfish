@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { Guid } from 'guid-typescript';
     import { useWorkflowBuilderStore } from '../store';
-    import { ref } from 'vue';
+    import { ref, computed, watch} from 'vue';
     import {default as AddAction} from './AddAction.vue'
     import { eAuthorizedBy} from "../../../components/shared/constants";
     import { Authorization, WorkflowAction } from '../models';
@@ -10,6 +10,8 @@
     const store = useWorkflowBuilderStore();
     const editMode = ref(false);
     const selectedButtons = ref([] as Guid[]);
+    const authList = ref([] as string[]);
+    
     const actionId = ref(Guid.EMPTY as unknown as Guid);
     const Toggle = () => (store.showActionPanel = true)
     const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
@@ -22,17 +24,21 @@
         actionId.value = Id;
         store.showActionPanel = true;
     }
-    const checkState = (stateId : Guid, authorizations : Authorization[]) => {
-        authorizations.forEach((a) =>{
-            if (a.currentStateId === stateId){
-                console.log("True")
-                return true
-            }
 
-        })
-        return false
-        console.log("False")
+    const checkAuth = (stateId:Guid, actionId : Guid) => {
+        const auth = store.workflow?.actions.find(a => a.id == actionId)?.authorizations;
+            auth?.forEach((au) => {
+                if(au.currentStateId == stateId) {
+                    console.log("true")
+                    return true;
+                }
+            })
+            console.log("false")
+        return false;
     }
+    
+    
+    
     const setAccordion = (Id : Guid) => {
         if(selectedButtons.value.includes(Id)){
             const idx = selectedButtons.value.findIndex(sb => sb == Id)
@@ -56,9 +62,9 @@
                         <b-card-text v-if="action.formTemplate != (Guid.EMPTY as unknown as Guid)"><b>Template :  {{action.formTemplate}}</b></b-card-text>
                         <b-card-text v-if="action.formView"><b>Form View :  {{action.formView}}</b></b-card-text>
                         <b-card-text v-if="action.buttons.length>0"><b>Buttons : <span v-for="button in action.buttons"><span class="one-space">{{button.label}}</span></span></b></b-card-text>
-                        <b-card-text v-if="action.authorizations.length>0"><b>Authorization   </b>
-                        <div v-for="state in store.workflow?.states">
-                            <div class="left-space"><b>{{ state.name }} : </b>
+                        <b-card-text v-if="action.authorizations.length>0"><b>Authorization    </b>
+                            <div v-for="state in store.workflow?.states">
+                            <div class="left-space" ><b>{{ state.name }} : </b>
                                 <span v-for="auth in action.authorizations">
                                     <span v-if="auth.currentStateId == state.id">
                                         <span v-if="auth.authorizedRoleId" class="one-space"><b>{{getRole(auth.authorizedRoleId as Guid)}}</b></span>
@@ -69,7 +75,6 @@
                             </div>
                         </div>
                         </b-card-text>
-                        <b-card-text v-if="action.authorizations.length>0">{{  }},</b-card-text>
                     </b-card>
                 </b-collapse>
                 <span style="display:inline">

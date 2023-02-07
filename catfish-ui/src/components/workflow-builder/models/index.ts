@@ -81,6 +81,10 @@ export interface Recipient {
     recipienType:eRecipientType;
     roleId: Guid | null;
     email: string | null;
+    FormId: Guid | null;
+    FeildId: Guid | null;
+    MetadataFormId: Guid | null;
+    MetadataFeildId: Guid | null;
 }
 export interface PopupButton {
     id: Guid;

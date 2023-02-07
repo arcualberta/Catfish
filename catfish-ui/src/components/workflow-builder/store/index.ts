@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { Guid } from "guid-typescript";
+import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { TemplateEntry } from '@/components/entity-editor/models';
 import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup } from '../models/'
@@ -12,7 +13,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         entityTemplates : [] as TemplateEntry[],
         showActionPanel : false as boolean,
         showTriggerPanel : false as boolean,
-        showPopupPanel : false as boolean  
+        showPopupPanel : false as boolean,
+        entityTemplate: null as EntityTemplate | null,
     }),
     actions: {
         createNewWorkflow() {
@@ -34,6 +36,27 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 popups : [] as WorkflowPopup[]
             }
             this.workflow.states.push(newState);
+        },
+        loadTemplate(templateId: Guid) {
+            console.log("templateId",templateId)
+            if(templateId.toString() === Guid.EMPTY)
+                return;
+
+            let webRoot = config.dataRepositoryApiRoot;
+            const api = `${webRoot}/api/entity-templates/${templateId}`;
+            console.log(api)
+
+            fetch(api, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.entityTemplate = data as EntityTemplate;
+                    console.log("entityTemplate", this.entityTemplate)
+                })
+                .catch((error) => {
+                    console.error('Load Template API Error:', error);
+                });
         },
         loadWorkflow(id: Guid) {
             const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;//`https://localhost:5020/api/workflow/${id}`;
