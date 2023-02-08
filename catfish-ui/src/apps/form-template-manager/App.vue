@@ -22,12 +22,12 @@ const userJwtToken = _dataAttributes && _dataAttributes?.value? (_dataAttributes
 
 <template>
    
-    <CrudObjectManager :api-root="apiRoot">
+    <CrudObjectManager :api-root="apiRoot" :jwt-token="userJwtToken">
         <template #object-type>Form Template</template>      
        <!-- <template #list-entry-delegate>List Entry</template>-->
-        <template #create-delegate><form-builder :api-root="apiRoot" /></template>
+        <template #create-delegate><form-builder :api-root="apiRoot" :jwt-token="userJwtToken" /></template>
         <template #read-delegate>ReadFormComponent</template>
-        <template #update-delegate><form-builder :api-root="apiRoot" /></template>
+        <template #update-delegate><form-builder :api-root="apiRoot" :jwt-token="userJwtToken" /></template>
         <template #delete-delegate>Delete</template>
     </CrudObjectManager>
     <div>{{userJwtToken}}</div>
