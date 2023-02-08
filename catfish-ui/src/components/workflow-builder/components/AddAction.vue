@@ -20,46 +20,6 @@
     const authorizations = ref([] as Authorization[]);
     const selectedTriggerId = ref(Guid.EMPTY  as unknown as Guid);
     const getField = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0]);
-    if(props.editMode){
-      const actuionValues = store.workflow?.actions?.filter(a => a.id == props.editActionId ) as WorkflowAction[];
-      action.value.id = actuionValues[0].id;
-      action.value.name = actuionValues[0].name;
-      action.value.description = actuionValues[0].description as string;
-      action.value.formTemplateId = actuionValues[0].formTemplateId;
-      store.loadTemplate(actuionValues[0].formTemplateId as Guid)
-      action.value.formView = actuionValues[0].formView;
-      actuionValues[0].buttons!.forEach((b) => {
-          let newButton = {
-          id : b.id,
-          type : b.type,
-          label : b.label,
-          currentStateId : b.currentStateId,
-          nextStateId : b.nextStateId,
-          popupId : b.popupId, 
-          triggers : b.triggers
-          }  as Button
-      buttons.value!.push(newButton);  
-      });
-      actuionValues[0].authorizations!.forEach((a) => {
-          let newAuth = {
-          id : a.id,
-          currentStateId : a.currentStateId,
-          authorizedBy : a.authorizedBy,
-          authorizedRoleId : a.authorizedRoleId,
-          authorizedDomain : a.authorizedDomain,
-          authorizedFormId : a.authorizedFormId,
-          authorizedFeildId : a.authorizedFeildId,
-          authorizedMetadataFormId : a.authorizedMetadataFormId,
-          authorizedMetadataFeildId : a.authorizedMetadataFeildId
-          }  as Authorization
-      authorizations.value!.push(newAuth);  
-      })
-    }else{
-        action.value.id = Guid.EMPTY as unknown as Guid;
-        authorization.value.id = Guid.EMPTY as unknown as Guid;
-        button.value.id = Guid.EMPTY as unknown as Guid;
-        button.value.triggers = [];
-    }
     const getState = (stateId : Guid) => (store.workflow?.states.filter(st => st.id == stateId)[0]?.name);
     const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
     const getTrigger = (triggerId : Guid) => (store.workflow?.triggers.filter(tr => tr.id == triggerId)[0]?.name);
@@ -92,6 +52,8 @@
         action.value.formView = eFormView.EntrySlip;
         buttons.value = [];
         authorizations.value = [];
+        resetButtonFields();
+        resetAuthFields();
     }
     const addButton = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
@@ -190,6 +152,47 @@
         button.value.popupId = buttonValues[0].popupId
         button.value.triggers = buttonValues[0].triggers
         addButtons.value = true;
+    }
+    if(props.editMode){
+      const actuionValues = store.workflow?.actions?.filter(a => a.id == props.editActionId ) as WorkflowAction[];
+      action.value.id = actuionValues[0].id;
+      action.value.name = actuionValues[0].name;
+      action.value.description = actuionValues[0].description as string;
+      action.value.formTemplateId = actuionValues[0].formTemplateId;
+      store.loadTemplate(actuionValues[0].formTemplateId as Guid)
+      action.value.formView = actuionValues[0].formView;
+      actuionValues[0].buttons!.forEach((b) => {
+          let newButton = {
+          id : b.id,
+          type : b.type,
+          label : b.label,
+          currentStateId : b.currentStateId,
+          nextStateId : b.nextStateId,
+          popupId : b.popupId, 
+          triggers : b.triggers
+          }  as Button
+      buttons.value!.push(newButton);  
+      });
+      actuionValues[0].authorizations!.forEach((a) => {
+          let newAuth = {
+          id : a.id,
+          currentStateId : a.currentStateId,
+          authorizedBy : a.authorizedBy,
+          authorizedRoleId : a.authorizedRoleId,
+          authorizedDomain : a.authorizedDomain,
+          authorizedFormId : a.authorizedFormId,
+          authorizedFeildId : a.authorizedFeildId,
+          authorizedMetadataFormId : a.authorizedMetadataFormId,
+          authorizedMetadataFeildId : a.authorizedMetadataFeildId
+          }  as Authorization
+      authorizations.value!.push(newAuth);  
+      })
+    }else{
+        action.value.id = Guid.EMPTY as unknown as Guid;
+        authorization.value.id = Guid.EMPTY as unknown as Guid;
+        button.value.id = Guid.EMPTY as unknown as Guid;
+        button.value.triggers = [];
+        resetFields();
     }
 </script>
 

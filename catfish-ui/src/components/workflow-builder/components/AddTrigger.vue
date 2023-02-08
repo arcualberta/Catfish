@@ -21,32 +21,7 @@
     let bccRecipients = computed(() => recipients.value?.filter(rec => rec.emailType == eEmailType.Bcc) as Recipient[]);
     const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
     const getField = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0]);
-    if(props.editMode){
-        const triggerValues = store.workflow?.triggers?.filter(tr => tr.id == props.editTriggerId ) as WorkflowTrigger[];
-        trigger.value.id = triggerValues[0].id;
-        trigger.value.type = triggerValues[0].type;
-        trigger.value.name = triggerValues[0].name;
-        trigger.value.description = triggerValues[0].description as string
-        trigger.value.templateId = triggerValues[0].templateId
-        triggerValues[0].recipients!.forEach((rl) => {
-            let newRecipient = {
-            id : rl.id,
-            emailType : rl.emailType ,
-            recipienType : rl.recipienType,
-            roleId : rl.roleId,
-            email : rl.email,
-            FormId : rl.FormId,
-            FeildId : rl.FeildId,
-            MetadataFormId : rl.MetadataFormId,
-            MetadataFeildId : rl.MetadataFeildId
-            }  as Recipient
-        recipients.value!.push(newRecipient);  
-        recipient.value.id = Guid.EMPTY as unknown as Guid;
-        })
-    }else{
-        trigger.value.id = Guid.EMPTY as unknown as Guid;
-        recipient.value.id = Guid.EMPTY as unknown as Guid;
-    }
+
     const addTrigger = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
             let newTrigger = {
@@ -90,6 +65,8 @@
         recipient.value.email = "";
         recipient.value.FormId = null;
         recipient.value.FeildId = null;
+        recipient.value.MetadataFormId = null;
+        recipient.value.MetadataFeildId = null;
     }
     const addRecipient = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
@@ -122,9 +99,34 @@
     const ToggleAddRecipients = () => {
         addRecipients.value = !addRecipients.value;
         recipient.value.id =  Guid.EMPTY as unknown as Guid;
+    }   
+    if(props.editMode){
+        const triggerValues = store.workflow?.triggers?.filter(tr => tr.id == props.editTriggerId ) as WorkflowTrigger[];
+        trigger.value.id = triggerValues[0].id;
+        trigger.value.type = triggerValues[0].type;
+        trigger.value.name = triggerValues[0].name;
+        trigger.value.description = triggerValues[0].description as string
+        trigger.value.templateId = triggerValues[0].templateId
+        triggerValues[0].recipients!.forEach((rl) => {
+            let newRecipient = {
+            id : rl.id,
+            emailType : rl.emailType ,
+            recipienType : rl.recipienType,
+            roleId : rl.roleId,
+            email : rl.email,
+            FormId : rl.FormId,
+            FeildId : rl.FeildId,
+            MetadataFormId : rl.MetadataFormId,
+            MetadataFeildId : rl.MetadataFeildId
+            }  as Recipient
+        recipients.value!.push(newRecipient);  
+        recipient.value.id = Guid.EMPTY as unknown as Guid;
+        })
+    }else{
+        trigger.value.id = Guid.EMPTY as unknown as Guid;
+        recipient.value.id = Guid.EMPTY as unknown as Guid;
+        resetFields();
     }
-        
-    
 </script>
 
 <template>
