@@ -13,7 +13,7 @@ namespace Catfish.API.Repository.Services
            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
             //DEBUG
-            string folderRoot = "C:\\Projects\\JLPT";
+            string folderRoot = "C:\\Projects\\Import";
             string sourceFile = Path.Combine(folderRoot, "all-data-groupize.xlsx");
 
             using (var stream = System.IO.File.Open(sourceFile, FileMode.Open, FileAccess.Read))
