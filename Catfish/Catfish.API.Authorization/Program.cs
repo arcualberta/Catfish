@@ -12,12 +12,9 @@ builder.AddPiranha(options =>
 
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 //Adding general Catfish extensions
-builder.AddCatfishExtensions();
+builder.AddCatfishExtensions(true, false);
 
 //Adding project-specific services
 builder.Services.AddScoped<ICatfishUserManager, CatfishUserManager>();
@@ -37,5 +34,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCatfishExtensions();
+app.UseCatfishExtensions(true, false);
 app.Run();

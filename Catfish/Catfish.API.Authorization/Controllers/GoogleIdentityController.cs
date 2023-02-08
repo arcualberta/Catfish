@@ -12,31 +12,43 @@ namespace Catfish.API.Authorization.Controllers
     {
         private readonly IGoogleIdentity _googleIdentity;
         private readonly ICatfishUserManager _catfishUserManager;
-        public GoogleIdentityController(IGoogleIdentity googleIdentity, ICatfishUserManager catfishUserManager)
+        private readonly IJwtProcessor _jwtProcessor;
+        public GoogleIdentityController(IGoogleIdentity googleIdentity, ICatfishUserManager catfishUserManager, IJwtProcessor jwtProcessor)
         {
             _googleIdentity = googleIdentity;
-            _catfishUserManager = catfishUserManager;   
+            _catfishUserManager = catfishUserManager;
+            _jwtProcessor = jwtProcessor;
         }
 
         // POST api/<GoogleIdentityController>
         [HttpPost]
-        public async Task<LoginResult> Post([FromBody] string jwt)
+        //public async Task<LoginResult> Post([FromBody] string jwt) //
+        public async Task<string> Post([FromBody] string jwt)
         {
             try
             {
                 var externalLoginResult = await _googleIdentity.GetUserLoginResult(jwt);
+                // var globalUserRoles=null;
+                string jwtToken = "";
                 if (externalLoginResult.Success)
                 {
                     var user = await _catfishUserManager.GetUser(externalLoginResult);
                     var globalUserRoles = await _catfishUserManager.GetGlobalRoles(user);
                     externalLoginResult.Id = user.Id;
                     externalLoginResult.GlobalRoles = globalUserRoles;
+
+                    string userData = string.Empty; //???
+                    DateTime expiredAt = DateTime.Now.AddDays(1);
+                    jwtToken = _jwtProcessor.CreateUserToken(externalLoginResult.Name!, globalUserRoles, userData,expiredAt);
                 }
-                return externalLoginResult;
+
+                 
+                 return jwtToken;
+               // return externalLoginResult;
             }
             catch(Exception ex)
             {
-                return new LoginResult();
+                return String.Empty; // new LoginResult();
             }
         }
     }

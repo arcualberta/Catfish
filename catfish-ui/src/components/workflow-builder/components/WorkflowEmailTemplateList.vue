@@ -11,41 +11,35 @@
     const store = useWorkflowBuilderStore();
     const emailTemplates = ref(store.workflow?.emailTemplates);
     const addTemplates = ref(false);
-    const templateId = ref("");
-    const templateName = ref("");
-    const templateDescription = ref("");
-    const templateSubject = ref("");
-    const templateBody = ref("");
+    const template = ref({} as unknown as WorkflowEmailTemplate);
     let disabled = ref(true);
     const ToggleAddStates = () => (addTemplates.value = !addTemplates.value);
 
-    watch(() => templateName.value, async newValue => {
+    watch(() => template.value.name, async newValue => {
         if (newValue.length>0)
             disabled.value = false; 
         else
             disabled.value = true; 
     })
     
-    const addTemplate =(id:string)=>{
-        if(id.length === 0){
-            let newTemplate= {
-                id:Guid.create(),
-                name :templateName.value,
-                description : templateDescription.value,
-                emailSubject: templateSubject.value,
-                emailBody: templateBody.value
+    const addTemplate = (id : Guid) => {
+        if(id === Guid.EMPTY as unknown as Guid){
+            let newTemplate = {
+                id : Guid.create().toString() as unknown as Guid,
+                name : template.value.name,
+                description : template.value.description,
+                emailSubject : template.value.emailSubject,
+                emailBody : template.value.emailBody
 
             } as WorkflowEmailTemplate;
-        
             emailTemplates.value?.push(newTemplate)
         }else{
-            const idx = emailTemplates.value?.findIndex(emt => emt.id.toString() == templateId.value)
-            emailTemplates.value!.forEach((emt)=> {
-                if(emt.id.toString() === templateId.value){
-                    emt.name= templateName.value;
-                    emt.description= templateDescription.value;
-                    emt.emailSubject= templateSubject.value;
-                    emt.emailBody= templateBody.value;
+            emailTemplates.value!.forEach((emt) => {
+                if(emt.id === template.value.id){
+                    emt.name = template.value.name;
+                    emt.description = template.value.description;
+                    emt.emailSubject = template.value.emailSubject;
+                    emt.emailBody = template.value.emailBody;
                 }    
              })
         }
@@ -53,24 +47,24 @@
         addTemplates.value = false;
     }
     const deleteTemplate = (templateId: Guid) => {
-        const idx =emailTemplates.value?.findIndex(tmp => tmp.id == templateId)
+        const idx = emailTemplates.value?.findIndex(tmp => tmp.id == templateId)
         emailTemplates.value?.splice(idx as number, 1)
     }
     const editTemplate = (editTemplateId: Guid) => {
         const templateValues = emailTemplates.value?.filter(tmp => tmp.id == editTemplateId) as WorkflowEmailTemplate[]
-        templateName.value=templateValues[0].name 
-        templateDescription.value = templateValues[0].description as string
-        templateSubject.value = templateValues[0].emailSubject as string
-        templateBody.value = templateValues[0].emailBody as string
-        templateId.value = templateValues[0].id.toString()
+        template.value.name = templateValues[0].name 
+        template.value.description = templateValues[0].description
+        template.value.emailSubject = templateValues[0].emailSubject
+        template.value.emailBody = templateValues[0].emailBody
+        template.value.id = templateValues[0].id
         addTemplates.value = true
     }
-    const resetFields = ()=>{
-        templateId.value = "";
-        templateName.value = "";
-        templateDescription.value = "";
-        templateSubject.value = "";
-        templateBody.value = "";
+    const resetFields = () => {
+        template.value.id = Guid.EMPTY as unknown as Guid;
+        template.value.name = "";
+        template.value.description = "";
+        template.value.emailSubject = "";
+        template.value.emailBody = "";
     }
 </script>
 
@@ -95,21 +89,21 @@
         <template v-slot:body>
             <div >
                 <b-input-group prepend="Name" class="mt-3">
-                    <b-form-input v-model="templateName" ></b-form-input>
+                    <b-form-input v-model="template.name" ></b-form-input>
                 </b-input-group>
                 <b-input-group prepend="Description" class="mt-3">
-                    <b-form-textarea v-model="templateDescription" rows="3" max-rows="6"></b-form-textarea>
+                    <b-form-textarea v-model="(template.description as string)" rows="3" max-rows="6"></b-form-textarea>
                 </b-input-group>
                 <b-input-group prepend="Subject" class="mt-3">
-                    <b-form-input v-model="templateSubject" ></b-form-input>
+                    <b-form-input v-model="template.emailSubject" ></b-form-input>
                 </b-input-group>
                 <b-input-group prepend="Email Body" class="mt-3">
-                    <QuillEditor v-model:content="templateBody" contentType="html" theme="snow"  class="text-editor"></QuillEditor>
+                    <QuillEditor v-model:content="template.emailBody" contentType="html" theme="snow"  class="text-editor"></QuillEditor>
                 </b-input-group>
             </div>
         </template>
         <template v-slot:footer>
-            <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addTemplate(templateId)">Add</button>
+            <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addTemplate(template.id as unknown as Guid)">Add</button>
         </template>
     </ConfirmPopUp>
 </template>
