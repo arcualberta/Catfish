@@ -103,6 +103,7 @@
     cursor: pointer;
     line-height: 1.15385;
     padding: 8px .8em;
+    width: 83px;
 }
 .plus-btn{
     background-color: #1ca5b8;
