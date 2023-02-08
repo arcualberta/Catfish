@@ -8,6 +8,8 @@
     const editMode = ref(false);
     const triggerId = ref(Guid.EMPTY as unknown as Guid);
     const Toggle = () => {
+        editMode.value = false;
+        triggerId.value = Guid.EMPTY as unknown as Guid;
         store.showTriggerPanel = true;
     }
     const deleteTrigger = (triggerId : Guid) => {

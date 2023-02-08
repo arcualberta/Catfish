@@ -80,6 +80,7 @@
         trigger.value.description = "";
         trigger.value.type = eTriggerType.Email;
         trigger.value.templateId = Guid.EMPTY as unknown as Guid;
+        resetRecipients()
     }
 
     const resetRecipients = () => {
@@ -130,7 +131,7 @@
     <div v-if="store.showTriggerPanel" class="col-sm-6">
         <div class="alert alert-secondary" role="alert">
             <div class="panel-delete">
-                <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deletePanel()"/>
+                <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="resetFields();deletePanel()"/>
             </div>
             <b-input-group prepend="Type" class="mt-3">
                 <select class="form-select" v-model="trigger.type">

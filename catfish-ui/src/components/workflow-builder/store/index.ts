@@ -39,7 +39,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         },
         loadTemplate(templateId: Guid) {
             console.log("templateId",templateId)
-            if(templateId.toString() === Guid.EMPTY)
+            if(templateId === Guid.EMPTY as unknown as Guid)
                 return;
 
             let webRoot = config.dataRepositoryApiRoot;

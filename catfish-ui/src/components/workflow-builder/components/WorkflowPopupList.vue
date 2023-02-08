@@ -8,7 +8,11 @@
     const editMode = ref(false);
     const popupId = ref(Guid.EMPTY as unknown as Guid);
 
-    const Toggle = () => (store.showPopupPanel = true)
+    const Toggle = () => {
+        editMode.value = false;
+        popupId.value = Guid.EMPTY as unknown as Guid;
+        store.showPopupPanel = true
+    }
     const deleteTrigger = (popupId : Guid) => {
         const idx = store.workflow?.popups?.findIndex(pop => pop.id == popupId)
         store.workflow?.popups?.splice(idx as number, 1)

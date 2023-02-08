@@ -19,7 +19,7 @@ export interface WorkflowAction{
     id: Guid;
     name: string;
     description: string | null;
-    formTemplate: Guid;
+    formTemplateId: Guid | null;
     formView: eFormView;
     buttons: Button[];
     authorizations: Authorization[];

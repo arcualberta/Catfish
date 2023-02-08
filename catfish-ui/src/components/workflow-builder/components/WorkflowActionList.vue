@@ -13,8 +13,13 @@
     const authList = ref([] as string[]);
     
     const actionId = ref(Guid.EMPTY as unknown as Guid);
-    const Toggle = () => (store.showActionPanel = true)
+    const Toggle = () => {
+        editMode.value = false;
+        actionId.value = Guid.EMPTY as unknown as Guid;
+        store.showActionPanel = true
+    }
     const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
+    const getFormTemplate = (formId : Guid) => (store.entityTemplate?.forms.filter(et => et.id == formId)[0]?.name);
     const deleteAction = (id : Guid) => {
         const idx = store.workflow?.actions.findIndex(ac => ac.id == id)
         store.workflow?.actions.splice(idx as number, 1)
@@ -53,7 +58,7 @@
                 <b-collapse :id="action.name.replaceAll(' ', '')">
                     <b-card>
                         <b-card-text><b>Name :  {{action.name}}</b></b-card-text>
-                        <b-card-text v-if="action.formTemplate != (Guid.EMPTY as unknown as Guid)"><b>Template :  {{action.formTemplate}}</b></b-card-text>
+                        <b-card-text v-if="action.formTemplateId != (Guid.EMPTY as unknown as Guid)"><b>Template :  {{getFormTemplate(action.formTemplateId as Guid)}}</b></b-card-text>
                         <b-card-text v-if="action.formView"><b>Form View :  {{action.formView}}</b></b-card-text>
                         <b-card-text v-if="action.buttons.length>0"><b>Buttons : <span v-for="button in action.buttons"><span class="one-space">{{button.label}}</span></span></b></b-card-text>
                         <b-card-text v-if="action.authorizations.length>0"><b>Authorization    </b>

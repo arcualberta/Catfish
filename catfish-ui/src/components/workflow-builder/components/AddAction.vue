@@ -25,8 +25,8 @@
       action.value.id = actuionValues[0].id;
       action.value.name = actuionValues[0].name;
       action.value.description = actuionValues[0].description as string;
-      action.value.formTemplate = actuionValues[0].formTemplate;
-      store.loadTemplate(action.value.formTemplate as Guid)
+      action.value.formTemplateId = actuionValues[0].formTemplateId;
+      store.loadTemplate(actuionValues[0].formTemplateId as Guid)
       action.value.formView = actuionValues[0].formView;
       actuionValues[0].buttons!.forEach((b) => {
           let newButton = {
@@ -88,7 +88,7 @@
     const resetFields = () => {
         action.value.name = "";
         action.value.description = "";
-        action.value.formTemplate = Guid.EMPTY as unknown as Guid;
+        action.value.formTemplateId = Guid.EMPTY as unknown as Guid;
         action.value.formView = eFormView.EntrySlip;
         buttons.value = [];
         authorizations.value = [];
@@ -126,7 +126,7 @@
             id : Guid.create().toString() as unknown as Guid,
             name : action.value.name,
             description : action.value.description,
-            formTemplate : action.value.formTemplate,
+            formTemplateId : action.value.formTemplateId,
             formView : action.value.formView,
             buttons : buttons.value,
             authorizations : authorizations.value
@@ -137,7 +137,7 @@
                 if(a.id === id){
                     a.name = action.value.name,
                     a.description = action.value.description,
-                    a.formTemplate = action.value.formTemplate,
+                    a.formTemplateId = action.value.formTemplateId,
                     a.formView = action.value.formView,
                     a.buttons = buttons.value,
                     a.authorizations = authorizations.value
@@ -208,8 +208,8 @@
 
             <div class="header-style">Submission Forms</div>
             <b-input-group prepend="Form Template" class="mt-3">
-                <select class="form-select" v-model="action.formTemplate">
-                    <option v-for="form in store.entityTemplate?.entityTemplateSettings.dataForms" :value="form.id">{{ form.name }}</option>
+                <select class="form-select" v-model="action.formTemplateId">
+                    <option v-for="form in store.entityTemplate?.entityTemplateSettings?.dataForms" :value="form.id">{{ form.name }}</option>
                 </select>
             </b-input-group>
             <b-input-group prepend="Form View" class="mt-3">
