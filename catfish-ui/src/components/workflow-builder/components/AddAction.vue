@@ -6,7 +6,9 @@
     import { default as ConfirmPopUp } from "../../shared/components/pop-up/ConfirmPopUp.vue"
     import { eFormView, eTriggerType ,eByttonTypeValues, getButtonTypeLabel, getAuthorizedByLabel, eAuthorizedByValues, eAuthorizedBy, eButtonTypes} from "../../../components/shared/constants";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+    import { getFieldTitle } from '@/components/shared/form-helpers'
     import { BInputGroup, BFormInput, BFormTextarea, BFormSelect, BListGroup, BListGroupItem } from 'bootstrap-vue-3';
+import { Field } from '@/components/shared/form-models';
     
     const props = defineProps < { editMode: boolean,
                                   editActionId: Guid } > ();
@@ -288,7 +290,12 @@
             <div class="popup-list-item">
                 <b-list-group>
                     <b-list-group-item v-for="auth in authorizations" :key="(auth.id as unknown as string)">
-                        <span>{{ getState(auth.currentStateId as Guid) }}-</span><span>{{getRole(auth.authorizedRoleId as Guid)}}</span><span>{{auth.authorizedDomain}}</span><span v-if="auth.authorizedBy==eAuthorizedBy.Owner">Owner</span>
+                        <span>{{ getState(auth.currentStateId as Guid) }}-</span>
+                        <span>{{getRole(auth.authorizedRoleId as Guid)}}</span>
+                        <span>{{auth.authorizedDomain}}</span>
+                        <span v-if="auth.authorizedBy==eAuthorizedBy.Owner">Owner</span>
+                        <span v-if="auth.authorizedBy==eAuthorizedBy.FormField">({{ auth.authorizedFormId }}-{{ auth.authorizedFeildId }}</span>
+                        <span v-if="auth.authorizedBy==eAuthorizedBy.MetadataField">({{ auth.authorizedMetadataFormId }}-{{ auth.authorizedMetadataFeildId }}</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteAuthorization(auth.id as Guid)"/>
                         </span>
@@ -333,7 +340,7 @@
                         </b-input-group>
                         <b-input-group  prepend="Field" class="mt-3">
                             <select class="form-select" v-model="authorization.authorizedFeildId">
-                                <option v-for="field in getField(authorization.authorizedFormId as Guid)?.fields" :value="field.id">{{field.title}}</option>
+                                <option v-for="field in getField(authorization.authorizedFormId as Guid)?.fields" :value="field.id">{{getFieldTitle(field as Field, null)}}</option>
                             </select>
                         </b-input-group>
                     </div>
@@ -345,7 +352,7 @@
                         </b-input-group>
                         <b-input-group  prepend="Metadata Field" class="mt-3">
                             <select class="form-select" v-model="authorization.authorizedMetadataFeildId">
-                                <option v-for="field in getField(authorization.authorizedMetadataFormId as Guid)?.fields" :value="field.id">{{field.title}}</option>
+                                <option v-for="field in getField(authorization.authorizedMetadataFormId as Guid)?.fields" :value="field.id">{{getFieldTitle(field as Field, null)}}</option>
                             </select>
                         </b-input-group>
                     </div>

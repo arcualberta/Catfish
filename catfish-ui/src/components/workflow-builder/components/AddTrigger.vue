@@ -5,7 +5,9 @@
     import { useWorkflowBuilderStore } from '../store';
     import { WorkflowTrigger, Recipient } from '../models'
     import { default as ConfirmPopUp } from "../../shared/components/pop-up/ConfirmPopUp.vue"
+    import { getFieldTitle } from '@/components/shared/form-helpers'
     import { Guid } from 'guid-typescript';
+    import { Field } from '@/components/shared/form-models';
 
     const props = defineProps < { editMode: boolean,
                                   editTriggerId: Guid } > ();
@@ -177,7 +179,11 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in bccRecipients" >
-                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{getRole(recipient.roleId as Guid)}}</span><span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span>
+                        <span>{{getRole(recipient.roleId as Guid)}}</span>
+                        <span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.FormField">({{ recipient.FormId }}-{{ recipient.FeildId }})</span>
+                        <span v-if="recipient.recipienType==eRecipientType.MetadataField">({{ recipient.MetadataFormId }}-{{ recipient.MetadataFeildId }})</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -215,7 +221,6 @@
                             <b-form-input v-model="(recipient.email as string)" ></b-form-input>
                         </b-input-group>
                     </div>
-                    
                     <div v-if="recipient.recipienType == eRecipientType.FormField">
                         <b-input-group  prepend="Form" class="mt-3">
                             <select class="form-select" v-model="recipient.FormId">
@@ -224,10 +229,9 @@
                         </b-input-group>
                         <b-input-group  prepend="Field" class="mt-3">
                             <select class="form-select" v-model="recipient.FeildId">
-                                <option v-for="field in getField(recipient.FormId as Guid)?.fields" :value="field.id">{{field.title}}</option>
+                                <option v-for="field in getField(recipient.FormId as Guid)?.fields" :value="field.id">{{getFieldTitle(field as Field, null)}}</option>
                             </select>
                         </b-input-group>
-                        
                     </div>
                     <div v-if="recipient.recipienType == eRecipientType.MetadataField">
                         <b-input-group  prepend="Metadata Form" class="mt-3">
@@ -237,7 +241,7 @@
                         </b-input-group>
                         <b-input-group  prepend="Metadata Field" class="mt-3">
                             <select class="form-select" v-model="recipient.MetadataFeildId">
-                                <option v-for="field in getField(recipient.MetadataFormId as Guid)?.fields" :value="field.id">{{field.title}}</option>
+                                <option v-for="field in getField(recipient.MetadataFormId as Guid)?.fields" :value="field.id">{{getFieldTitle(field as Field, null)}}</option>
                             </select>
                         </b-input-group>
                     </div>
