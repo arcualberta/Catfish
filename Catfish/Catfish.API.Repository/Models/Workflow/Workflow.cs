@@ -6,12 +6,11 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public Guid EntityTemplateId { get; set; }
-        public List<Trigger> Triggers { get; set; } = new List<Trigger>();
-
         public List<WorkflowAction>  Actions { get; set; } = new List<WorkflowAction>();
         public List<WorkflowState>  States { get; set; } = new List<WorkflowState>();
-        public List<Role> Roles { get;set; } = new List<Role>();
-        public List<EmailTemplate> EmailTemplates { get; set; }= new List<EmailTemplate>();
-        public object Popups { get; set; }
+        public List<WorkflowRole> Roles { get;set; } = new List<WorkflowRole>();
+        public List<WorkflowTrigger> Triggers { get; set; } = new List<WorkflowTrigger>();
+        public List<WorkflowEmailTemplate> EmailTemplates { get; set; }= new List<WorkflowEmailTemplate>();
+        public List<WorkflowPopup> Popups { get; set; } = new List<WorkflowPopup>();
     }
 }

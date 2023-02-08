@@ -6,17 +6,19 @@
     
     const store = useWorkflowBuilderStore();
     const editMode = ref(false);
-    const triggerId = ref("");
+    const triggerId = ref(Guid.EMPTY as unknown as Guid);
     const Toggle = () => {
+        editMode.value = false;
+        triggerId.value = Guid.EMPTY as unknown as Guid;
         store.showTriggerPanel = true;
     }
-    const deleteTrigger = (triggerId: Guid) => {
+    const deleteTrigger = (triggerId : Guid) => {
         const idx =store.workflow?.triggers?.findIndex(tmp => tmp.id == triggerId)
         store.workflow?.triggers?.splice(idx as number, 1)
     }
-    const editTrigger = (Id: Guid) => {
+    const editTrigger = (Id : Guid) => {
         editMode.value = true;
-        triggerId.value = Id.toString();
+        triggerId.value = Id;
         store.showTriggerPanel = true;
     }
 </script>
@@ -35,7 +37,7 @@
         </div>
     <div class="header-style">Triggers <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="Toggle()"/></div>
     <div v-if="store.showTriggerPanel">
-        <AddTrigger :editMode="editMode" :editTriggerId="triggerId"/>
+        <AddTrigger :editMode="editMode" :editTriggerId="(triggerId as Guid)"/>
     </div>
     
 </template>

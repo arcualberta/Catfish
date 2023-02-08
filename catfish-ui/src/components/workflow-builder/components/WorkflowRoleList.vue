@@ -6,36 +6,33 @@
     import { Guid } from 'guid-typescript';
 
     
-    let roleId = ref("")
-    let roleName = ref("")
-    let roleDescription = ref("")
+    let role = ref({} as unknown as WorkflowRole)
     const store = useWorkflowBuilderStore();
     const addRoles = ref(false);
     let disabled = ref(true);
     const roles = ref(store.workflow?.roles);
     const ToggleAddRoles = () => (addRoles.value = !addRoles.value);
-    watch(() => roleName.value, async newValue => {
+    watch(() => role.value.name, async newValue => {
         if (newValue.length>0)
             disabled.value = false; 
         else
             disabled.value = true; 
     })
 
-    const addRole = (id: string)=>{
-        if(id.length===0){
-            let newWorkflowRole= {
-                id:Guid.create(),
-                name :roleName.value,
-                description : roleDescription.value
+    const addRole = (id: Guid) => {
+        if(id === Guid.EMPTY as unknown as Guid){
+            let newWorkflowRole = {
+                id : Guid.create().toString() as unknown as Guid,
+                name : role.value.name,
+                description : role.value.description
             } as WorkflowRole;
     
         roles.value?.push(newWorkflowRole);
         }else{
-            const idx = roles.value?.findIndex(r => r.id.toString() == roleId.value)
-            roles.value!.forEach((rl)=> {
-                if(rl.id.toString() === roleId.value){
-                    rl.name= roleName.value;
-                    rl.description= roleDescription.value;
+            roles.value!.forEach((rl) => {
+                if(rl.id === role.value.id){
+                    rl.name = role.value.name;
+                    rl.description = role.value.description;
                 }    
              })
         }
@@ -43,10 +40,10 @@
         resetFields();
         addRoles.value = false;
     }
-    const resetFields = ()=>{
-        roleId.value = "";
-        roleName.value = "";
-        roleDescription.value = "";
+    const resetFields = () => {
+        role.value.id = Guid.EMPTY as unknown as Guid;
+        role.value.name = "";
+        role.value.description = "";
     }
 
     const deleteRole = (roleId: Guid) => {
@@ -55,9 +52,9 @@
     }
     const editRole = (editRoleId: Guid) => {
         const roleValues = roles.value?.filter(opt => opt.id == editRoleId) as WorkflowRole[]
-        roleName.value=roleValues[0].name 
-        roleDescription.value = roleValues[0].description as string
-        roleId.value = roleValues[0].id.toString()
+        role.value.name = roleValues[0].name 
+        role.value.description = roleValues[0].description as string
+        role.value.id = roleValues[0].id
         addRoles.value = true
     }
 </script>
@@ -84,15 +81,15 @@
             <template v-slot:body>
                 <div >
                     <b-input-group prepend="Name" class="mt-3">
-                        <b-form-input v-model="roleName" ></b-form-input>
+                        <b-form-input v-model="role.name" ></b-form-input>
                     </b-input-group>
                     <b-input-group prepend="Description" class="mt-3">
-                        <b-form-textarea v-model="roleDescription" rows="3" max-rows="6"></b-form-textarea>
+                        <b-form-textarea v-model="(role.description as string)" rows="3" max-rows="6"></b-form-textarea>
                     </b-input-group>
                 </div>
             </template>
             <template v-slot:footer>
-                <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addRole(roleId)">Add</button>
+                <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addRole(role.id as Guid)">Add</button>
             </template>
         </ConfirmPopUp>
     </div>

@@ -15,9 +15,14 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
 
         loadEntries(apiUrl: string) {
             const api = `${apiUrl}`
+            const jwtToken = localStorage.getItem("catfishJwtToken")
             console.log('LoadApi', api)
+            console.log('jwt Token', jwtToken)
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${jwtToken}`,
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -30,8 +35,12 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
         deleteObject(apiUrl: string, id: Guid) {
             const api = `${apiUrl}`
             console.log('api', api)
+            const jwtToken = localStorage.getItem("catfishJwtToken")
             fetch(api, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `bearer ${jwtToken}`,
+                }
             })
                 .then(response => {
                     if (response.ok) {
@@ -69,13 +78,16 @@ export const useCRUDManagerStore = defineStore('CRUDManagerStore', {
             console.log("change state started")
             const api = `${apiUrl}`
             console.log('api', api)
+            const jwtToken = localStorage.getItem("catfishJwtToken")
             fetch(api, {
                 body: JSON.stringify(newStatus),
                 method: 'POST',
                 headers: {
                     'encType': 'multipart/form-data',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${jwtToken}`,
                 },
+               
             })
                 .then(response => {
                     if (response.ok) {

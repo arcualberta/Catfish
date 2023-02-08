@@ -19,6 +19,7 @@ namespace Catfish.API.Repository.Controllers
         }
         // GET: api/Forms
         [HttpGet]
+        [Authorize(Roles ="SysAdmin")]
         public async Task<ActionResult<IEnumerable<Workflow>>> Get()
         {
             if (_context.Workflows == null)
@@ -31,6 +32,7 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<Workflow>> GetWorkflow(Guid id)
         {
             if (_context.Workflows == null)
@@ -79,6 +81,7 @@ namespace Catfish.API.Repository.Controllers
         // POST: api/Forms
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<Workflow>> PostWorkflow(Workflow workflow)
         {
             try
@@ -105,6 +108,7 @@ namespace Catfish.API.Repository.Controllers
 
         // DELETE: api/workflow/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (_context.Workflows == null)

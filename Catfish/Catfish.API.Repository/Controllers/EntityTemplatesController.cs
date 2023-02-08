@@ -40,18 +40,18 @@ namespace Catfish.API.Repository.Controllers
         // GET: api/Forms/5
         //   GET api/<EntityTemplatesController>/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<EntityTemplate?> Get(Guid id, bool includeForms = true)
         {
             if(includeForms)
-                return await _context.EntityTemplates!.Include(et => et.Forms)
-                                                       .Include(et=>et.Workflows).FirstOrDefaultAsync(fd => fd.Id == id);
+                return await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(fd => fd.Id == id);
             else
                 return await _context.EntityTemplates!.FirstOrDefaultAsync(fd => fd.Id == id);
         }
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
-      //  [Authorize(Roles ="SysAdmin")]
+        [Authorize(Roles ="SysAdmin")]
         public async Task<IActionResult> Post([FromBody] EntityTemplate value)
         {
             try
@@ -72,6 +72,7 @@ namespace Catfish.API.Repository.Controllers
 
         // PUT api/<EntityTeplatesController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Put(Guid id, [FromBody] EntityTemplate value)
         {
             try
@@ -100,6 +101,7 @@ namespace Catfish.API.Repository.Controllers
 
         // DELETE api/<FormSubmissionController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (_context.EntityTemplates == null)
@@ -119,6 +121,7 @@ namespace Catfish.API.Repository.Controllers
             return Ok();
         }
         [HttpPost("change-state/{id}")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
         {
             if (_context.EntityTemplates == null)

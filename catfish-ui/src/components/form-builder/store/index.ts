@@ -13,7 +13,13 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
         form: null as FormTemplate | null,
         transientMessageModel: {} as TransientMessageModel,
         apiRoot: null as string |null,
-        activeContainer: null as FormTemplate | null as Field | null
+        activeContainer: null as FormTemplate | null as Field | null,
+        jwtToken: {
+            get: () =>  localStorage.getItem("catfishJwtToken"),
+            set:(val: string) => {
+                localStorage.setItem("catfishJwtToken", val)
+            }
+        } as unknown as string
     }),
     actions: {
         createNewForm(){
@@ -30,7 +36,10 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
             let api = `${this.getApiRoot}/${id}`;//`https://localhost:5020/api/forms/${id}`;
             console.log(api)
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.jwtToken}`,
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -46,7 +55,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                 console.error("Cannot save null form.")
                 return;
             }
-
+          //  console.log("save form jwt " + this.jwtToken)
             const newForm = this.form?.id?.toString() === Guid.EMPTY;
             let api = `${this.getApiRoot}`;//`${config.dataRepositoryApiRoot}/api/forms`//"https://localhost:5020/api/forms";
             let method = "";
@@ -72,8 +81,10 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                         'encType': 'multipart/form-data',
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': `${config.dataRepositoryApiRoot}`,//'http://localhost:5020',
-                        'Access-Control-Allow-Credentials': 'true'
+                        'Access-Control-Allow-Credentials': 'true',
+                        'Authorization': `bearer ${this.jwtToken}`
                     },
+                   
                 })
                 .then(response => {
                     if (response.ok) {

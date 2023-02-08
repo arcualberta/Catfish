@@ -5,11 +5,12 @@
     import {default as WorkflowStates} from './WorkflowStateList.vue'
     import {default as WorkflowRoles} from './WorkflowRoleList.vue'
     import {default as WorkflowTriggers} from './WorkflowTriggerList.vue'
-    import { default as WorkflowEmailTemplates } from './EmailTemplateList.vue';
+    import { default as WorkflowEmailTemplates } from './WorkflowEmailTemplateList.vue';
     import { default as WorkflowPopups } from './WorkflowPopupList.vue';
-    import { computed, onMounted, ref } from 'vue';
+    import { computed, onMounted, watch } from 'vue';
     import {useWorkflowBuilderStore} from '../store'
     import { SelectableOption } from '@/components/shared/components/form-field-selection-dropdown/models';
+import { Guid } from 'guid-typescript';
 
 
     const props = defineProps < { model: Workflow } > ();
@@ -19,8 +20,10 @@
         
          store.loadEntityTemplates();
     });
-    
-    const templateOptions=computed(()=>{
+    watch(() => store.workflow?.entityTemplateId, async newValue => {
+        store.loadTemplate(newValue as Guid);
+    })
+    const templateOptions = computed(() => {
           const options = store.entityTemplates.map(template => {
                 return {
                     value: template.id,
@@ -29,16 +32,30 @@
             });
         return options;
     });
- const workflow =computed(()=>store.workflow);
+
+    
+ const workflow = computed(() => store.workflow);
 </script>
 
 <template>
+  {{ store.workflow }}
+  <div class="col-sm-6">
+    <b-input-group prepend="Name" class="mt-3">
+      <b-form-input v-model="model.name" ></b-form-input>
+    </b-input-group>
+    <b-input-group prepend="Description" class="mt-3">
+      <b-form-textarea v-model="model.description" rows="3" max-rows="6"></b-form-textarea>
+    </b-input-group>
+  </div>
+  
   <b-row class="col-sm-6">
     <b-col class="col-sm-4 header-style">
       Entity Template:
     </b-col>
     <b-col class="col-sm-8 header-style">
-      <b-form-select v-model="workflow!.entityTemplateId" :options="templateOptions"></b-form-select>
+      <select class="form-select" v-model="workflow!.entityTemplateId">
+          <option v-for="opt in templateOptions" :value="opt.value" @change="store.loadTemplate(opt.value)">{{ opt.text }}</option>
+      </select>
     </b-col>
   </b-row>
   <div class="tab-view">
