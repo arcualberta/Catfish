@@ -183,20 +183,15 @@ namespace Catfish.API.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("WorkflowId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("eTriggerType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WorkflowId");
-
                     b.ToTable("CF_Repo_Triggers");
                 });
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.Workflow", b =>
+            modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.WorkflowDbRecord", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -206,11 +201,20 @@ namespace Catfish.API.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("EntityTemplateId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SerializedWorkflow")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("EntityTemplateId");
 
                     b.ToTable("CF_Repo_Workflows");
                 });
@@ -260,11 +264,15 @@ namespace Catfish.API.Repository.Migrations
                     b.Navigation("SubjectEntity");
                 });
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.Trigger", b =>
+            modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.WorkflowDbRecord", b =>
                 {
-                    b.HasOne("Catfish.API.Repository.Models.Workflow.Workflow", null)
-                        .WithMany("Triggers")
-                        .HasForeignKey("WorkflowId");
+                    b.HasOne("Catfish.API.Repository.Models.Entities.EntityTemplate", "EntityTemplate")
+                        .WithMany("Workflows")
+                        .HasForeignKey("EntityTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EntityTemplate");
                 });
 
             modelBuilder.Entity("EntityTemplateFormTemplate", b =>
@@ -289,9 +297,9 @@ namespace Catfish.API.Repository.Migrations
                     b.Navigation("SubjectRelationships");
                 });
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.Workflow", b =>
+            modelBuilder.Entity("Catfish.API.Repository.Models.Entities.EntityTemplate", b =>
                 {
-                    b.Navigation("Triggers");
+                    b.Navigation("Workflows");
                 });
 #pragma warning restore 612, 618
         }

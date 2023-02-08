@@ -1,4 +1,6 @@
-﻿namespace Catfish.API.Repository.Models.Entities
+﻿using Catfish.API.Repository.Models.Workflow;
+
+namespace Catfish.API.Repository.Models.Entities
 {
     public class EntityTemplate
     {
@@ -22,5 +24,7 @@
         }
 
         public ICollection<FormTemplate> Forms { get; set; } = new List<FormTemplate>();
+
+        public ICollection<WorkflowDbRecord> Workflows { get; set; } = new List<WorkflowDbRecord>();
     }
 }

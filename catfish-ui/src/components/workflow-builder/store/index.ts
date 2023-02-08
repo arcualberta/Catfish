@@ -1,18 +1,66 @@
 import { defineStore } from 'pinia';
-
 import { Guid } from "guid-typescript";
-
-import { Workflow } from '../models/'
+import { EntityTemplate } from '../../entity-template-builder/models'
+import { default as config } from "@/appsettings";
+import { TemplateEntry } from '@/components/entity-editor/models';
+import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup } from '../models/'
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
-        workflow: null as Workflow | null,
-        transientMessage: null as string | null,
-        transientMessageClass: null as string | null
+        workflow : null as Workflow | null,
+        transientMessage : null as string | null,
+        transientMessageClass : null as string | null,
+        entityTemplates : [] as TemplateEntry[],
+        showActionPanel : false as boolean,
+        showTriggerPanel : false as boolean,
+        showPopupPanel : false as boolean,
+        entityTemplate: null as EntityTemplate | null,
+        jwtToken: null as string | null 
     }),
     actions: {
+        createNewWorkflow() {
+            let newState= {
+                id : Guid.create().toString() as unknown as Guid,
+                name : "Empty State",
+                description : "This is initial state"
+            } as WorkflowState;
+            this.workflow = {
+                id : Guid.EMPTY as unknown as Guid,
+                name : "",
+                description : "",
+                states : [] as WorkflowState[],
+                roles : [] as WorkflowRole[],
+                emailTemplates : [] as WorkflowEmailTemplate[],
+                actions : [] as WorkflowAction[],
+                triggers : [] as WorkflowTrigger[],
+                entityTemplateId : Guid.EMPTY as unknown as Guid,
+                popups : [] as WorkflowPopup[]
+            }
+            this.workflow.states.push(newState);
+        },
+        loadTemplate(templateId: Guid) {
+            console.log("templateId",templateId)
+            if(templateId === Guid.EMPTY as unknown as Guid)
+                return;
+
+            let webRoot = config.dataRepositoryApiRoot;
+            const api = `${webRoot}/api/entity-templates/${templateId}`;
+            console.log(api)
+
+            fetch(api, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.entityTemplate = data as EntityTemplate;
+                    console.log("entityTemplate", this.entityTemplate)
+                })
+                .catch((error) => {
+                    console.error('Load Template API Error:', error);
+                });
+        },
         loadWorkflow(id: Guid) {
-            const api = `https://localhost:5020/api/workflow/${id}`;
+            const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
                 method: 'GET'
             })
@@ -30,9 +78,12 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 console.error("Cannot save null workflow.")
                 return;
             }
-
-            const newWorkflow = this.workflow?.id?.toString() === Guid.EMPTY;
-            let api = "https://localhost:5020/api/workflow";
+            
+            const newWorkflow = this.workflow?.id === Guid.EMPTY as unknown as Guid;
+            console.log(this.workflow?.id)
+            let api = `${config.dataRepositoryApiRoot}/api/workflow`;
+            console.log(api)
+            //let api = "https://localhost:5020/api/workflow";
             let method = "";
             if (newWorkflow) {
                 console.log("Saving new workflow.")
@@ -43,7 +94,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 api = `${api}/${this.workflow.id}`
                 method = "PUT";
             }
-
+            console.log(JSON.stringify(this.workflow))
             fetch(api,
                 {
                     body: JSON.stringify(this.workflow),
@@ -82,5 +133,24 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                     console.error('Workflow Save API Error:', error)
                 });
         },
+        loadEntityTemplates() {
+            const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;//`https://localhost:5020/api/workflow/${id}`;
+            fetch(api, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.entityTemplates = data;
+                })
+                .catch((error) => {
+                    console.error('Load Entity Templates API Error:', error);
+                });
+
+        },
+    },
+    getters:{
+        getJwtToken(state){
+            return state.jwtToken? state.jwtToken: localStorage.getItem("catfishJwtToken");
+        }
     }
 });
