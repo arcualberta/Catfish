@@ -84,9 +84,13 @@ export enum eEmailType{
     Cc,
     Bcc
 }
+export const eEmailTypeValues: eEmailType[] = Object.keys(eEmailType).filter(key => typeof eEmailType[key as any] === 'number').sort().map(key => eEmailType[key as any] as unknown as eEmailType)
+export const getEmailTypeLabel = (val: eEmailType): string => splitCamelCase(eEmailType[val])
 export enum eTriggerType{
     Email = 1
 }
+export const eTriggerTypeValues: eTriggerType[] = Object.keys(eTriggerType).filter(key => typeof eTriggerType[key as any] === 'number').sort().map(key => eTriggerType[key as any] as unknown as eTriggerType)
+export const getTriggerTypeLabel = (val: eTriggerType): string => splitCamelCase(eTriggerType[val])
 export enum eRecipientType{
     Role = 1,
     Owner,
@@ -94,7 +98,35 @@ export enum eRecipientType{
     MetadataField,
     Email
 }
+export const eRecipientTypeValues: eRecipientType[] = Object.keys(eRecipientType).filter(key => typeof eRecipientType[key as any] === 'number').sort().map(key => eRecipientType[key as any] as unknown as eRecipientType)
+export const getRecipientTypeLabel = (val: eRecipientType): string => splitCamelCase(eRecipientType[val])
 export enum eButtonReturnType{
     true = 1,
     false
+}
+export const eByttonReturnTypeValues: eButtonReturnType[] = Object.keys(eButtonReturnType).filter(key => typeof eButtonReturnType[key as any] === 'number').sort().map(key => eButtonReturnType[key as any] as unknown as eButtonReturnType)
+export const getButtonReturnTypeLabel = (val: eButtonReturnType): string => splitCamelCase(eButtonReturnType[val])
+
+export enum eAuthorizedBy{
+    Role = 1,
+    Owner,
+    Domain,
+    FormField,
+    MetadataField
+}
+export const eAuthorizedByValues: eAuthorizedBy[] = Object.keys(eAuthorizedBy).filter(key => typeof eAuthorizedBy[key as any] === 'number').sort().map(key => eAuthorizedBy[key as any] as unknown as eAuthorizedBy)
+export const getAuthorizedByLabel = (val: eAuthorizedBy): string => splitCamelCase(eAuthorizedBy[val])
+export enum eButtonTypes{
+    Button = 1,
+    Link
+}
+export const eByttonTypeValues: eButtonTypes[] = Object.keys(eButtonTypes).filter(key => typeof eButtonTypes[key as any] === 'number').sort().map(key => eButtonTypes[key as any] as unknown as eButtonTypes)
+export const getButtonTypeLabel = (val: eButtonTypes): string => splitCamelCase(eButtonTypes[val])
+
+export enum eFormView{
+    EntrySlip = 'Entry Slip',
+    ItemDetails = "Item Details",
+    ItemEditView = "Item Edit View",
+    ChildFormEntrySlip="Child Form Entry Slip",
+    ChildFormEditView="Child Form Edit View"
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed, onMounted, watch } from "vue";
+    import { computed, onMounted, toRef, watch } from "vue";
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
     import { TransientMessageModel } from '../shared/components/transient-message/models'
@@ -20,7 +20,8 @@
        // piniaInstance: Pinia,
        // repositoryRoot: string,
         formId?: Guid,
-        apiRoot: string | null
+        apiRoot: string | null,
+        jwtToken: string | null
     }>();
 
     const store = useFormBuilderStore();
@@ -32,7 +33,11 @@
         store.setApiRoot(props.apiRoot);
     }
     //const transientMessage = computed(() => store.transientMessageModel);
-
+    //const _dataAttributes = toRef(props, 'dataAttributes')
+    //const userJwtToken = _dataAttributes && _dataAttributes?.value? (_dataAttributes.value["UserJwtToken"] as string) : null;
+    if(props.jwtToken)
+         store.jwtToken=props.jwtToken as string;
+         
     if (formId)
         store.loadForm(formId)
 

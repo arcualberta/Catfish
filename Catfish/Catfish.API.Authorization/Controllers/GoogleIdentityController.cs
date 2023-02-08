@@ -48,7 +48,7 @@ namespace Catfish.API.Authorization.Controllers
             }
             catch(Exception ex)
             {
-                return jwt; // new LoginResult();
+                return String.Empty; // new LoginResult();
             }
         }
     }

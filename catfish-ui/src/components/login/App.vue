@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-    import { computed, onMounted, ref } from 'vue'
-    import { Pinia } from 'pinia'
+    import { onMounted } from 'vue'
     import { useLoginStore } from './store'
     import { GoogleIdentityResult } from './models'
 
-    const props = defineProps<{ //piniaInstance: Pinia, 
-                             authorizationRoot: string}>();
+    const props = defineProps<{  authorizationRoot: string}>();
 
     const authorizationStore = useLoginStore();
 
@@ -19,7 +17,6 @@
         authorizationStore.authorize(response.credential);
     }
 
-    //const jwtToken =computed(()=>(authorizationStore.jwtToken? authorizationStore.jwtToken as string : null));
 </script>
 
 <template>

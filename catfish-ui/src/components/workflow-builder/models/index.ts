@@ -1,71 +1,45 @@
 
-import { eRecipientType, eTriggerType, eEmailType } from "../../../components/shared/constants"
+import { eRecipientType, eTriggerType, eEmailType, eAuthorizedBy, eButtonTypes, eFormView } from "../../../components/shared/constants"
 
 import { Guid } from "guid-typescript";
-import { eButtonType  } from "./constants";
 
 export interface Workflow {
     id: Guid;
     name: string;
     description: string;
-    states: WorkflowState[];
-    actions: WorkflowAction[];
     entityTemplateId: Guid;
-    triggers: WorkflowTrigger[];
+    actions: WorkflowAction[];
+    states: WorkflowState[];
     roles: WorkflowRole[];
-    emailTemplates: EmailTemplate[];   
+    triggers: WorkflowTrigger[];
+    emailTemplates: WorkflowEmailTemplate[];   
     popups: WorkflowPopup[];   
 }
-
-export type WorkflowAction = FormSubmissionAction;
-
-export interface FormSubmissionAction {
+export interface WorkflowAction{
     id: Guid;
     name: string;
-    description: string;
-    formId: Guid;//not in the back end yet
-    
-    buttonType: eButtonType;
-    buttonLabel: string;
-    triggers: WorkflowTrigger[];
-    permissions: WorkflowPermission[];
-    frontEndStoreAction: string;
-    frontEndViewTransition: object | null;
+    description: string | null;
+    formTemplateId: Guid | null;
+    formView: eFormView;
+    buttons: Button[];
+    authorizations: Authorization[];
 }
-
-export interface SubmissionOption {
-    actionButton: string;
-    validateForm: boolean;
-    preState: string | null;
-    postState: string;
-}
-
 export interface WorkflowState {
     id: Guid;
     name: string;
     description: string | null;
 }
-
 export interface WorkflowRole {
     id: Guid;
     name: string;
     description: string | null;
 }
-
-export interface EmailTemplate {
+export interface WorkflowEmailTemplate {
     id: Guid;
     name: string;
     description: string | null;
     emailSubject: string;
     emailBody: string;
-}
-
-export interface Recipient {
-    id: Guid;
-    emailType: eEmailType;
-    recipienType:eRecipientType;
-    role: string | null;
-    email: string | null;
 }
 export interface WorkflowTrigger {
     id: Guid;
@@ -81,6 +55,37 @@ export interface WorkflowPopup {
     Message: string;
     buttons:PopupButton[]
 }
+export interface Authorization{
+    id: Guid;
+    currentStateId: Guid;
+    authorizedBy: eAuthorizedBy;
+    authorizedRoleId: Guid | null;
+    authorizedDomain: string | null;
+    authorizedFormId: Guid | null;
+    authorizedFeildId: Guid | null;
+    authorizedMetadataFormId: Guid | null;
+    authorizedMetadataFeildId: Guid | null;
+}
+export interface Button{
+    id: Guid;
+    type: eButtonTypes;
+    label: string;
+    currentStateId: Guid;
+    nextStateId: Guid;
+    popupId: Guid | null;
+    triggers: Array<Guid>;
+}
+export interface Recipient {
+    id: Guid;
+    emailType: eEmailType;
+    recipienType:eRecipientType;
+    roleId: Guid | null;
+    email: string | null;
+    FormId: Guid | null;
+    FeildId: Guid | null;
+    MetadataFormId: Guid | null;
+    MetadataFeildId: Guid | null;
+}
 export interface PopupButton {
     id: Guid;
     text: string;
@@ -89,13 +94,4 @@ export interface PopupButton {
 export interface TabNavigationDefinition {
     name: string;
     title: string;
-}
-export interface WorkflowPermission
-{
-    id: Guid;
-    currentState: WorkflowState | null;
-    newState: WorkflowState | null;
-    isOwnerAuthorized: boolean;
-    authorizedDomains: string[];
-    authorizedRoles: WorkflowRole[];
 }
