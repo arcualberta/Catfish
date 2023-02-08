@@ -23,7 +23,8 @@
     let bccRecipients = computed(() => recipients.value?.filter(rec => rec.emailType == eEmailType.Bcc) as Recipient[]);
     const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
     const getField = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0]);
-
+    const getFormName = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0].name);
+    const getFieldName = (formId : Guid, fieldId : Guid) => (getField(formId)?.fields.filter(f => f.id == fieldId)[0] as Field);
     const addTrigger = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
             let newTrigger = {
@@ -103,6 +104,7 @@
         recipient.value.id =  Guid.EMPTY as unknown as Guid;
     }   
     if(props.editMode){
+        store.loadTemplate(store.workflow?.entityTemplateId as Guid)
         const triggerValues = store.workflow?.triggers?.filter(tr => tr.id == props.editTriggerId ) as WorkflowTrigger[];
         trigger.value.id = triggerValues[0].id;
         trigger.value.type = triggerValues[0].type;
@@ -157,7 +159,11 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in toRecipients" >
-                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{getRole(recipient.roleId as Guid)}}</span><span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span>
+                        <span>{{getRole(recipient.roleId as Guid)}}</span>
+                        <span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.FormField"> ( Form: {{ getFormName(recipient.FormId as Guid) }} - Field: {{ getFieldTitle(getFieldName(recipient.FormId as Guid, recipient.FeildId as Guid), null) }})</span>
+                        <span v-if="recipient.recipienType==eRecipientType.MetadataField">( Metadata Form: {{ getFormName(recipient.MetadataFormId as Guid) }} - Metadata Field: {{ getFieldTitle(getFieldName(recipient.FormId as Guid, recipient.FeildId as Guid), null) }})</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -168,7 +174,11 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in ccRecipients" >
-                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{getRole(recipient.roleId as Guid)}}</span><span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span>
+                        <span>{{getRole(recipient.roleId as Guid)}}</span>
+                        <span>{{recipient.email}}</span>
+                        <span v-if="recipient.recipienType==eRecipientType.FormField">( Form: {{ getFormName(recipient.FormId as Guid) }} - Field: {{ getFieldTitle(getFieldName(recipient.FormId as Guid, recipient.FeildId as Guid), null) }})</span>
+                        <span v-if="recipient.recipienType==eRecipientType.MetadataField">( Metadata Form: {{ getFormName(recipient.FormId as Guid) }} - Metadata Field: {{ getFieldTitle(getFieldName(recipient.FormId as Guid, recipient.FeildId as Guid), null) }})</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -182,8 +192,8 @@
                         <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span>
                         <span>{{getRole(recipient.roleId as Guid)}}</span>
                         <span>{{recipient.email}}</span>
-                        <span v-if="recipient.recipienType==eRecipientType.FormField">({{ recipient.FormId }}-{{ recipient.FeildId }})</span>
-                        <span v-if="recipient.recipienType==eRecipientType.MetadataField">({{ recipient.MetadataFormId }}-{{ recipient.MetadataFeildId }})</span>
+                        <span v-if="recipient.recipienType==eRecipientType.FormField">( Form: {{ getFormName(recipient.FormId as Guid) }} - Field: {{ getFieldTitle(getFieldName(recipient.FormId as Guid, recipient.FeildId as Guid), null) }})</span>
+                        <span v-if="recipient.recipienType==eRecipientType.MetadataField">( Metadata Form: {{ getFormName(recipient.FormId as Guid) }} - Metadata Field: {{ getFieldTitle(getFieldName(recipient.FormId as Guid, recipient.FeildId as Guid), null) }})</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -248,11 +258,11 @@
                 </div>
                 </template>
                 <template v-slot:footer>
-                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addRecipient(recipient.id as Guid)">Add recipient</button>
+                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addRecipient(recipient.id as Guid)">Add</button>
                 </template>
             </ConfirmPopUp>
-            <div style="margin-left: 90%;">
-                <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addTrigger(trigger.id as Guid)">Add</button>
+            <div style="margin-left: 85%;">
+                <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addTrigger(trigger.id as Guid)"><span v-if="!props.editMode">Add</span><span v-if="props.editMode">Update</span></button>
             </div>
             
         </div>
