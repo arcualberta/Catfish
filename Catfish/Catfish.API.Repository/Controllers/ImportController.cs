@@ -19,7 +19,7 @@ namespace Catfish.API.Repository.Controllers
         }
         // GET: api/Forms
         [HttpPost("from-excel")]
-       public ActionResult FromExcel([FromForm] string value/*, [FromForm] IFormFile file */)
+       public ActionResult FromExcel([FromForm] string value, IFormFile file )
         {
             /* if (!ModelState.IsValid)
                  return BadRequest();
@@ -33,7 +33,7 @@ namespace Catfish.API.Repository.Controllers
             // ExcelData data = JsonConvert.DeserializeObject<ExcelData>(value, settings);
             //Debug ONLY
             ExcelData data = new ExcelData();
-            _importService.ImportFromExcel(data);
+            _importService.ImportFromExcel(data, file);
 
             return Ok();
         }
