@@ -7,6 +7,7 @@ import router from '@/router';
 import { FieldEntry, FormTemplate } from '../../shared/form-models';
 import { FormEntry } from '../../shared';
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
+import { useLoginStore } from '@/components/login/store';
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
@@ -15,7 +16,13 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         formEntries: [] as FormEntry[],
         transientMessageModel: {} as TransientMessageModel,
         forms: [] as FormTemplate[],
-        apiRoot: null as string |null
+        apiRoot: null as string |null,
+        jwtToken: {
+            get: () =>  localStorage.getItem("catfishJwtToken"),
+            set:(val: string) => {
+                localStorage.setItem("catfishJwtToken", val)
+            }
+        } as unknown as string
     }),
     actions: {
         newTemplate() {
@@ -34,6 +41,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                     descriptionField: {} as FieldEntry,
                     mediaField: {} as FieldEntry
                 }
+                
             };
         },
         associateForm(formId: Guid) {
@@ -44,7 +52,10 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                // console.log("loading form: ", api);
 
                 fetch(api, {
-                    method: 'GET'
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `bearer ${this.jwtToken}`,
+                    }
                 })
                     .then(response => response.json())
                     .then(data => {
@@ -60,9 +71,11 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             let webRoot = config.dataRepositoryApiRoot//"https://" + this.getApiRoot.split("/")[2];
             const api = `${webRoot}/api/forms`;
             console.log("loading forms: ", api);
+            //const jwtToken = localStorage.getItem("catfishJwtToken");
 
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers:{'Authorization': `bearer ${this.jwtToken}`,}
             })
                 .then(response => response.json())
                 .then(data => {
@@ -77,7 +90,10 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
             console.log("loading entityTemplate: ", api);
 
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.jwtToken}`,
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -106,12 +122,21 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 api = `${api}/${this.template?.id}`
                 method = "PUT";
             }
+
+            //Get the JWT token from the Login Store for now.
+            //We will need to add the 
+            const token = "" 
+            console.log("save entity teplae token " + this.jwtToken)
+            console.log("save entity template api " + api)
+            console.log("save entity method " + method)
+
             fetch(api, {
                 body: JSON.stringify(this.template),
                 method: method,
                 headers: {
                         'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorizarization': `bearer ${this.jwtToken}`
                 },
             })
             .then(response => {
@@ -166,6 +191,7 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
     getters:{
         getApiRoot(state){
             return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/entity-templates";
-        }
+        },
+        
     }    
 });
