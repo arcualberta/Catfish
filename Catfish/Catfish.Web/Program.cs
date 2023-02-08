@@ -47,7 +47,7 @@ try
 
 
     //Adding Catfish extensions
-    builder.AddCatfishExtensions();
+    builder.AddCatfishExtensions(true, false);
     builder.Services.AddCatfishWebExtensions();
 
     ConfigHelper.Initialize(builder.Configuration);

@@ -15,6 +15,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         showTriggerPanel : false as boolean,
         showPopupPanel : false as boolean,
         entityTemplate: null as EntityTemplate | null,
+        jwtToken: null as string | null 
     }),
     actions: {
         createNewWorkflow() {
@@ -93,7 +94,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 api = `${api}/${this.workflow.id}`
                 method = "PUT";
             }
-console.log(JSON.stringify(this.workflow))
+            console.log(JSON.stringify(this.workflow))
             fetch(api,
                 {
                     body: JSON.stringify(this.workflow),
@@ -146,5 +147,10 @@ console.log(JSON.stringify(this.workflow))
                 });
 
         },
+    },
+    getters:{
+        getJwtToken(state){
+            return state.jwtToken? state.jwtToken: localStorage.getItem("catfishJwtToken");
+        }
     }
 });
