@@ -78,7 +78,7 @@ export interface Button{
 export interface Recipient {
     id: Guid;
     emailType: eEmailType;
-    recipienType:eRecipientType;
+    recipientType:eRecipientType;
     roleId: Guid | null;
     email: string | null;
     formId: Guid | null;

@@ -32,8 +32,11 @@
    
     const workflowId = props.workflowId? props.workflowId : route.params.id as unknown as Guid;
   
-    if (workflowId)
+    if (workflowId){
         store.loadWorkflow(workflowId)
+        //store.loadTemplate(store.workflow?.entityTemplateId as Guid)
+    }
+        
 
     watch(() => store.transientMessage, async newMessage => {
         if (newMessage)
