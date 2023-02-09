@@ -11,7 +11,7 @@
     const authorizationStore = useLoginStore();
     const router = useRouter();
 
-    const loginRes = computed(()=> authorizationStore.loginResult.get());
+    const loginRes = computed(()=> authorizationStore.loginResult);
     
     watch(() => loginRes.value, async newResult => {
        // console.log('watch(() => authorizationStore.loginResult.get(), async newResult => ')
