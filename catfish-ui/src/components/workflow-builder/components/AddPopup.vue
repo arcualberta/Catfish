@@ -24,7 +24,7 @@
             let newPopup = {
                 id : Guid.create().toString() as unknown as Guid,
                 title : popup.value.title,
-                Message : popup.value.Message,
+                message : popup.value.message,
                 buttons : buttons.value
             } as WorkflowPopup
             store.workflow?.popups?.push(newPopup);
@@ -32,7 +32,7 @@
             store.workflow?.popups!.forEach((p) => {
                 if(p.id === id){
                     p.title = popup.value.title,
-                    p.Message = popup.value.Message,
+                    p.message = popup.value.message,
                     p.buttons = buttons.value
                 }    
             })
@@ -60,7 +60,7 @@
     const resetPopup = () => {
         popup.value.id = Guid.EMPTY as unknown as Guid;
         popup.value.title = "";
-        popup.value.Message = "";
+        popup.value.message = "";
         resetButtons();
     }
     const resetButtons = () => {
@@ -77,7 +77,7 @@
       const popupValues = store.workflow?.popups?.filter(p => p.id == props.editPopupId ) as WorkflowPopup[];
       popup.value.id = popupValues[0].id;
       popup.value.title = popupValues[0].title;
-      popup.value.Message = popupValues[0].Message;
+      popup.value.message = popupValues[0].message;
       popupValues[0].buttons!.forEach((btn) => {
           let newButton = {
           id : btn.id,
@@ -89,7 +89,7 @@
     }else{
         popup.value.id = Guid.EMPTY as unknown as Guid;
         popup.value.title = "";
-        popup.value.Message = "";
+        popup.value.message = "";
     }
 </script>
 
@@ -103,7 +103,7 @@
                 <b-form-input v-model="popup.title" ></b-form-input>
             </b-input-group>
             <b-input-group prepend="Message" class="mt-3">
-                <QuillEditor v-model:content="popup.Message" contentType="html" theme="snow"  class="text-editor"></QuillEditor>
+                <QuillEditor v-model:content="popup.message" contentType="html" theme="snow"  class="text-editor"></QuillEditor>
             </b-input-group>
             <br>
             <b-list-group class="col-sm-6">
