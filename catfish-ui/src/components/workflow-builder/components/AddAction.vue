@@ -300,8 +300,8 @@ import { Field } from '@/components/shared/form-models';
                         <span>{{getRole(auth.authorizedRoleId as Guid)}}</span>
                         <span>{{auth.authorizedDomain}}</span>
                         <span v-if="auth.authorizedBy==eAuthorizedBy.Owner">Owner</span>
-                        <span v-if="auth.authorizedBy==eAuthorizedBy.FormField"> (Form:{{ getFormName(auth.authorizedFormId as Guid) }}-Field: {{ getFieldTitle(getFieldName(auth.authorizedFormId as Guid, auth.authorizedFeildId as Guid), null) }})</span>
-                        <span v-if="auth.authorizedBy==eAuthorizedBy.MetadataField">(Metadata Form:{{ getFormName(auth.authorizedMetadataFormId as Guid) }}-Metadata Field: {{ getFieldTitle(getFieldName(auth.authorizedMetadataFormId as Guid, auth.authorizedMetadataFeildId as Guid), null) }})</span>
+                        <span v-if="auth.authorizedBy==eAuthorizedBy.FormField"> (Form: {{ getFormName(auth.authorizedFormId as Guid) }} - Field: {{ getFieldTitle(getFieldName(auth.authorizedFormId as Guid, auth.authorizedFeildId as Guid), null) }})</span>
+                        <span v-if="auth.authorizedBy==eAuthorizedBy.MetadataField">(Metadata Form: {{ getFormName(auth.authorizedMetadataFormId as Guid) }} - Metadata Field: {{ getFieldTitle(getFieldName(auth.authorizedMetadataFormId as Guid, auth.authorizedMetadataFeildId as Guid), null) }})</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteAuthorization(auth.id as Guid)"/>
                         </span>

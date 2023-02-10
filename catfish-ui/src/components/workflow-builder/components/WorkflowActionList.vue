@@ -10,8 +10,8 @@
     const store = useWorkflowBuilderStore();
     const editMode = ref(false);
     const selectedButtons = ref([] as Guid[]);
-    const authList = ref([] as string[]);
     
+    store.loadTemplate(store.workflow?.entityTemplateId as Guid);
     const actionId = ref(Guid.EMPTY as unknown as Guid);
     const Toggle = () => {
         editMode.value = false;
@@ -31,7 +31,6 @@
     }
 
     const checkAuth = (stateId:Guid, actionId : Guid): boolean => {
-        console.log("Calling checkAuth")
         const auth = store.workflow?.actions.filter(a => a.id == actionId)[0].authorizations;
 
         const result = auth?.filter( au => au.currentStateId == stateId)?.length
