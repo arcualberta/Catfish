@@ -8,17 +8,16 @@ namespace Catfish.API.Repository.Services
 {
     public class ImportService : IImportService
     {
+        private readonly RepoDbContext _context;
+
+        public ImportService(RepoDbContext context)
+        {
+            _context = context;
+        }
         public bool ImportFromExcel(IFormFile file)
         {
            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-            // var filePath = Path.GetTempFileName();
-            //copy file
-            /* using (var stream = System.IO.File.Create(filePath))
-             {
-                 await formFile.CopyToAsync(stream);
-             }*/
-
-
+           
 
             ExcelData dataModel = new ExcelData();
 
@@ -53,41 +52,134 @@ namespace Catfish.API.Repository.Services
             return true;
         }
 
-        public bool ImportEntityTemplateSchema(string templateName, string primaryFormName, IFormFile file)
+        public EntityTemplate ImportEntityTemplateSchema(string templateName, string primaryFormName, IFormFile file)
         {
+            EntityTemplate template;
+            if (!string.IsNullOrEmpty(templateName))
+            {
+                template = _context.EntityTemplates.Where(f => f.Name == templateName).FirstOrDefault();
+                if (template != null)
+                    return template;
+            }
+
             //Reaad the excel file.
+           // DataSet dataSet = GetSheetData(file);
 
-            //Create a new EntityTemplate. Name it after the given template name,
+            //assuming the haeder is in 1st row
+           template = CreateEntityTemplate(templateName, primaryFormName, file);
 
-            //For each sheet in the excel file
-            FormTemplate form = CreateFormTemplate();
-
-            //if the form name is as same as the primaryFormName, please set it's root = true.
-
-            //Add the new form to the newly created template
-
-            //Add the new template to the database
-
-            //Save changes
-
-            
-            throw new NotImplementedException();
+            _context.EntityTemplates.Add(template);
+            //_context.SaveChanges()
+            return template;
+           
         }
 
-        private FormTemplate CreateFormTemplate(/* Data in an excel sheet, aloing with the sheet name ExcelSheet */)
+        private FormTemplate CreateFormTemplate(DataRow headerRow, string currentSheetName, string primarySheetName)
+        {
+            FormTemplate template= new FormTemplate();
+            template.Id = Guid.NewGuid();
+            template.Name = currentSheetName;
+            template.Description = "This form template was created from excel sheet '" + currentSheetName + "'";
+            template.Created = DateTime.Now;
+            template.Updated = DateTime.Now;
+
+          // EntityTemplateSettings templateSettings = new EntityTemplateSettings();
+
+            //if (currentSheetName == primarySheetName) {
+           //     template.isRe
+           // }
+            template.Fields = new List<Field>();
+            List<Field> fields = new List<Field>();
+            foreach(string colValue in headerRow.ItemArray.ToList())
+            {
+                Field field = new Field();
+                field.Id = Guid.NewGuid();
+                field.Type = FieldType.ShortAnswer;
+                TextCollection textCol = new TextCollection();
+                textCol.Id = Guid.NewGuid();
+                Text txtVal = new Text() { Id = Guid.NewGuid(), Lang = "en", Value = colValue, TextType = eTextType.ShortAnswer };
+                textCol.Values = new Text[1];
+                textCol.Values[0] = txtVal;
+                field.Title = textCol;
+
+                //template.Fields.Add(field);
+                fields.Add(field);
+            }
+
+            template.SerializedFields= JsonConvert.SerializeObject(fields);
+
+            _context.Forms.Add(template);
+            return template;
+
+        }
+        private EntityTemplate CreateEntityTemplate(string templateName,  string primarySheetName,IFormFile file)
         {
             //Create a new FormTemplate
-            //Set the name to the name of the sheet (tab)
+            EntityTemplate template = new EntityTemplate();
+            template.Id = Guid.NewGuid();
+            template.Name = templateName;
+            template.Created = DateTime.Now;
+            template.Updated = DateTime.Now;
+            template.State = eState.Draft;
+            template.Forms = new List<FormTemplate>();
 
-            //Load all columns in the given sheet.
-            //For each column
-                //Assume the column content is string
-                //Create a new ShortAnswer field with the name of the column heading
-                //Add the new Short Answer field to the form
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            //Add the new form to the database table but do not save changes yet.
+            //DataRowCollection rows;
+            DataSet dataSet;
+            EntityTemplateSettings templateSettings = new EntityTemplateSettings();
+            templateSettings.DataForms = new FormEntry[] { };
+            List<FormEntry> dataForms = new List<FormEntry>();
 
-            throw new NotImplementedException();
+            int sheetIndex = 0;
+            
+            using (var stream = new MemoryStream())
+            {
+                file.CopyTo(stream);
+                stream.Position = 0;
+
+
+                using (var excelDataReader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    var conf = new ExcelDataSetConfiguration()
+                    {
+                        ConfigureDataTable = a => new ExcelDataTableConfiguration
+                        {
+                            UseHeaderRow = false //need the header
+                        }
+                    };
+                    if(excelDataReader.NextResult())
+                    {
+                        var sheetName = excelDataReader.Name; 
+                        
+                        dataSet = excelDataReader.AsDataSet(conf);
+
+                        DataRowCollection rows = dataSet.Tables[sheetName].Rows;
+
+                        //assuming the 1st row is the header
+                        FormTemplate formTemplate = CreateFormTemplate(rows[0], sheetName, primarySheetName);
+
+                        FormEntry entry = new FormEntry();
+                        entry.Id = formTemplate.Id;
+                        entry.IsRequired = sheetName.ToLower() == primarySheetName.ToLower() ? true : false;
+                        entry.Name = formTemplate.Name;
+                        entry.State = formTemplate.Status;
+                        dataForms.Add(entry);
+                        //templateSettings.DataForms[sheetIndex] = entry;
+                        //STILL NEED FIELD MAPPING!!!!
+                         
+                       // template.EntityTemplateSettings = templateSettings;
+                        template.Forms.Add(formTemplate);
+                        
+                       
+                        sheetIndex++;
+                    } 
+                }
+            }
+            templateSettings.DataForms= dataForms.ToArray();
+
+            template.EntityTemplateSettings = templateSettings;
+            return template;
         }
 
     }
