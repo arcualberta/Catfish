@@ -54,23 +54,31 @@ namespace Catfish.API.Repository.Services
 
         public EntityTemplate ImportEntityTemplateSchema(string templateName, string primaryFormName, IFormFile file)
         {
-            EntityTemplate template;
-            if (!string.IsNullOrEmpty(templateName))
+            try
             {
-                template = _context.EntityTemplates.Where(f => f.Name == templateName).FirstOrDefault();
-                if (template != null)
-                    return template;
+                EntityTemplate template;
+                if (!string.IsNullOrEmpty(templateName))
+                {
+                    template = _context.EntityTemplates.Where(f => f.Name == templateName).FirstOrDefault();
+                    if (template != null)
+                        return template;
+                }
+
+                //Reaad the excel file.
+                // DataSet dataSet = GetSheetData(file);
+
+                //assuming the haeder is in 1st row
+                template = CreateEntityTemplate(templateName, primaryFormName, file);
+
+                _context.EntityTemplates!.Add(template);
+                _context.SaveChanges();
+                return template;
             }
-
-            //Reaad the excel file.
-           // DataSet dataSet = GetSheetData(file);
-
-            //assuming the haeder is in 1st row
-           template = CreateEntityTemplate(templateName, primaryFormName, file);
-
-            _context.EntityTemplates!.Add(template);
-            _context.SaveChanges();
-            return template;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+           
            
         }
 
@@ -119,6 +127,7 @@ namespace Catfish.API.Repository.Services
             EntityTemplate template = new EntityTemplate();
             template.Id = Guid.NewGuid();
             template.Name = templateName;
+            template.Description = "Entity template created from excel workbook";
             template.Created = DateTime.Now;
             template.Updated = DateTime.Now;
             template.State = eState.Draft;
