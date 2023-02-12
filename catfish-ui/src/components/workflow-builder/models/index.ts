@@ -52,7 +52,7 @@ export interface WorkflowTrigger {
 export interface WorkflowPopup {
     id: Guid;
     title: string;
-    Message: string;
+    message: string;
     buttons:PopupButton[]
 }
 export interface Authorization{
@@ -78,13 +78,13 @@ export interface Button{
 export interface Recipient {
     id: Guid;
     emailType: eEmailType;
-    recipienType:eRecipientType;
+    recipientType:eRecipientType;
     roleId: Guid | null;
     email: string | null;
-    FormId: Guid | null;
-    FeildId: Guid | null;
-    MetadataFormId: Guid | null;
-    MetadataFeildId: Guid | null;
+    formId: Guid | null;
+    fieldId: Guid | null;
+    metadataFormId: Guid | null;
+    metadataFeildId: Guid | null;
 }
 export interface PopupButton {
     id: Guid;

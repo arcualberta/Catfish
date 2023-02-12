@@ -9,6 +9,7 @@
     let role = ref({} as unknown as WorkflowRole)
     const store = useWorkflowBuilderStore();
     const addRoles = ref(false);
+    const editMode = ref(false);
     let disabled = ref(true);
     const roles = ref(store.workflow?.roles);
     const ToggleAddRoles = () => (addRoles.value = !addRoles.value);
@@ -38,12 +39,14 @@
         }
         
         resetFields();
+        editMode.value = false;
         addRoles.value = false;
     }
     const resetFields = () => {
         role.value.id = Guid.EMPTY as unknown as Guid;
         role.value.name = "";
         role.value.description = "";
+        editMode.value = false;
     }
 
     const deleteRole = (roleId: Guid) => {
@@ -55,6 +58,7 @@
         role.value.name = roleValues[0].name 
         role.value.description = roleValues[0].description as string
         role.value.id = roleValues[0].id
+        editMode.value = true
         addRoles.value = true
     }
 </script>
@@ -89,7 +93,7 @@
                 </div>
             </template>
             <template v-slot:footer>
-                <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addRole(role.id as Guid)">Add</button>
+                <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addRole(role.id as Guid)"><span v-if="!editMode">Add</span><span v-if="editMode">Update</span></button>
             </template>
         </ConfirmPopUp>
     </div>

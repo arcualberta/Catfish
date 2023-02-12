@@ -32,8 +32,11 @@
    
     const workflowId = props.workflowId? props.workflowId : route.params.id as unknown as Guid;
   
-    if (workflowId)
+    if (workflowId){
         store.loadWorkflow(workflowId)
+        //store.loadTemplate(store.workflow?.entityTemplateId as Guid)
+    }
+        
 
     watch(() => store.transientMessage, async newMessage => {
         if (newMessage)
@@ -103,6 +106,7 @@
     cursor: pointer;
     line-height: 1.15385;
     padding: 8px .8em;
+    width: 83px;
 }
 .plus-btn{
     background-color: #1ca5b8;
