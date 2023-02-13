@@ -91,6 +91,7 @@ namespace DataProcessing
             await IndexTheatersBatch(sources, outputFolder, start);
         }
 
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexChineseRecords
         [Fact]
         public async void IndexChineseRecords()
         {
