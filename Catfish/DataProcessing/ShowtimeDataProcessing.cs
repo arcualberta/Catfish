@@ -124,7 +124,7 @@ namespace DataProcessing
                         foreach (var entry in archive.Entries)
                         {
                             List<SolrDoc> solrDocs = new List<SolrDoc>();
-
+                            int n = 0;
                             try
                             {
                                 string entry_key = $"{zipfile_key}\\{entry.Name}";
@@ -160,6 +160,9 @@ namespace DataProcessing
                                         await solrService.Index(solrDocs);
                                         await solrService.CommitAsync();
 
+                                        await File.AppendAllTextAsync(processingLogFile, $"Indexed {n+1} to {solrDocs.Count} entries in {entry_key}{Environment.NewLine}");
+                                        n += solrDocs.Count;
+
                                         solrDocs.Clear();
                                         GC.Collect();
                                     }
@@ -169,6 +172,9 @@ namespace DataProcessing
                                 {
                                     await solrService.Index(solrDocs);
                                     await solrService.CommitAsync();
+
+                                    await File.AppendAllTextAsync(processingLogFile, $"Indexed {n + 1} to {solrDocs.Count} entries in {entry_key}{Environment.NewLine}");
+                                    n += solrDocs.Count;
 
                                     solrDocs.Clear();
                                     GC.Collect();
