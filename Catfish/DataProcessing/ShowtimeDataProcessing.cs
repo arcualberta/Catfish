@@ -177,7 +177,8 @@ namespace DataProcessing
                             catch(Exception ex)
                             {
                                 await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {entry.Name}: {ex.Message}{Environment.NewLine}");
-
+                                solrDocs.Clear();
+                                GC.Collect();
                             }                           
                         }
                     }
