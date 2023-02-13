@@ -160,7 +160,7 @@ namespace DataProcessing
                                         await solrService.Index(solrDocs);
                                         await solrService.CommitAsync();
 
-                                        await File.AppendAllTextAsync(processingLogFile, $"Indexed {n+1} to {solrDocs.Count} entries in {entry_key}{Environment.NewLine}");
+                                        await File.AppendAllTextAsync(processingLogFile, $"Indexed {n+1} to {n + solrDocs.Count} entries in {entry_key}{Environment.NewLine}");
                                         n += solrDocs.Count;
 
                                         solrDocs.Clear();
@@ -173,7 +173,7 @@ namespace DataProcessing
                                     await solrService.Index(solrDocs);
                                     await solrService.CommitAsync();
 
-                                    await File.AppendAllTextAsync(processingLogFile, $"Indexed {n + 1} to {solrDocs.Count} entries in {entry_key}{Environment.NewLine}");
+                                    await File.AppendAllTextAsync(processingLogFile, $"Indexed {n + 1} to {n + solrDocs.Count} entries in {entry_key}{Environment.NewLine}");
                                     n += solrDocs.Count;
 
                                     solrDocs.Clear();
