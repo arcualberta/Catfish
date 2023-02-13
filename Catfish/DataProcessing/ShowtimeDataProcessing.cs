@@ -153,21 +153,32 @@ namespace DataProcessing
                                         solrDoc.AddField("release_date_dt", showtime.GetElementValueStr(child, "release_date"));
 
                                     }
+
+                                    //Indexing the showtimes batch
+                                    if (solrDocs.Count >= 1000)
+                                    {
+                                        await solrService.Index(solrDocs);
+                                        await solrService.CommitAsync();
+
+                                        solrDocs.Clear();
+                                        GC.Collect();
+                                    }
                                 } //End: foreach (var child in xml.Elements())
 
+                                if (solrDocs.Count >= 0)
+                                {
+                                    await solrService.Index(solrDocs);
+                                    await solrService.CommitAsync();
+
+                                    solrDocs.Clear();
+                                    GC.Collect();
+                                }
                             }
                             catch(Exception ex)
                             {
                                 await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {entry.Name}: {ex.Message}{Environment.NewLine}");
 
-                            }
-
-                            //Indexing the showtimes batch
-                            await solrService.Index(solrDocs);
-                            await solrService.CommitAsync();
-
-                            solrDocs.Clear();
-                            GC.Collect();
+                            }                           
                         }
                     }
                 }
