@@ -10,8 +10,8 @@ namespace Catfish.API.Repository.Controllers
     public class ImportController : ControllerBase
     {
         //private readonly RepoDbContext _context;
-        private readonly IImportService _importService;
-        public ImportController(IImportService importService)
+        private readonly IExcelFileProcessingService _importService;
+        public ImportController(IExcelFileProcessingService importService)
         {
             _importService = importService;
             // _context = context;

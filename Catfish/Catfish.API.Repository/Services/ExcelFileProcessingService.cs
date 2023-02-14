@@ -6,11 +6,11 @@ using System.Data;
 
 namespace Catfish.API.Repository.Services
 {
-    public class ImportService : IImportService
+    public class ExcelFileProcessingService : IExcelFileProcessingService
     {
         private readonly RepoDbContext _context;
 
-        public ImportService(RepoDbContext context)
+        public ExcelFileProcessingService(RepoDbContext context)
         {
             _context = context;
         }
@@ -57,12 +57,6 @@ namespace Catfish.API.Repository.Services
             try
             {
                 EntityTemplate template;
-                if (!string.IsNullOrEmpty(templateName))
-                {
-                    template = _context.EntityTemplates!.Where(f => f.Name == templateName).FirstOrDefault();
-                    if (template != null)
-                        return template;
-                }
 
                 //Reaad the excel file.
                 // DataSet dataSet = GetSheetData(file);

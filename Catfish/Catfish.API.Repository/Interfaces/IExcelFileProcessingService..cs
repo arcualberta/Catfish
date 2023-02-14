@@ -2,7 +2,7 @@
 
 namespace Catfish.API.Repository.Interfaces
 {
-    public interface IImportService
+    public interface IExcelFileProcessingService
     {
         public EntityTemplate ImportEntityTemplateSchema(string templateName, string primaryFormName, IFormFile file);
         public bool ImportFromExcel(IFormFile file);
