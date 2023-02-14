@@ -35,7 +35,7 @@ namespace Catfish.API.Repository.Controllers
 
 
         [HttpPost("data-from-excel")]
-        public ActionResult DataFromExcel([FromForm] string value, IFormFile file )
+        public ActionResult DataFromExcel(Guid templateId, string pivotColumnName IFormFile file )
         {
             /* if (!ModelState.IsValid)
                  return BadRequest();
@@ -48,7 +48,7 @@ namespace Catfish.API.Repository.Controllers
              };*/
             // ExcelData data = JsonConvert.DeserializeObject<ExcelData>(value, settings);
             //Debug ONLY
-            _importService.ImportFromExcel(file);
+            _importService.ImportDataFromExcel(templateId, file, pivotColumnName);
 
             return Ok();
         }
