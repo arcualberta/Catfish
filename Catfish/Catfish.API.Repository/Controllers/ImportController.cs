@@ -6,7 +6,7 @@ namespace Catfish.API.Repository.Controllers
 {
     [ApiController]
     [EnableCors(CorsPolicyNames.General)]
-    [Route(Routes.BackgroundJob.Root)]
+    [Route(Routes.Import.Root)]
     public class ImportController : ControllerBase
     {
         //private readonly RepoDbContext _context;
@@ -19,7 +19,7 @@ namespace Catfish.API.Repository.Controllers
         }
 
         [HttpPost("schema-from-excel")]
-        public ActionResult SchemaFromExcel(string templateName, string primarySheetName, IFormFile file)
+        public ActionResult SchemaFromExcel(string templateName, string primarySheetName, string pivotColumnName, IFormFile file)
         {
             try
             {
@@ -34,8 +34,8 @@ namespace Catfish.API.Repository.Controllers
         }
 
 
-        [HttpPost("from-excel")]
-        public ActionResult FromExcel([FromForm] string value, IFormFile file )
+        [HttpPost("data-from-excel")]
+        public ActionResult DataFromExcel([FromForm] string value, IFormFile file )
         {
             /* if (!ModelState.IsValid)
                  return BadRequest();

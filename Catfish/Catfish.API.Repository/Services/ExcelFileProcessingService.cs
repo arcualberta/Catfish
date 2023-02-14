@@ -3,6 +3,7 @@
 using Catfish.API.Repository.Models.Import;
 using ExcelDataReader;
 using System.Data;
+using System.Net;
 
 namespace Catfish.API.Repository.Services
 {
@@ -14,7 +15,7 @@ namespace Catfish.API.Repository.Services
         {
             _context = context;
         }
-        public bool ImportFromExcel(IFormFile file)
+        public HttpStatusCode ImportDataFromExcel(Guid templateId, IFormFile file, string pivotColumnName)
         {
            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
            
@@ -49,7 +50,7 @@ namespace Catfish.API.Repository.Services
                 }
             }
 
-            return true;
+            return HttpStatusCode.NotFound;
         }
 
         public EntityTemplate ImportEntityTemplateSchema(string templateName, string primaryFormName, IFormFile file)
@@ -142,11 +143,11 @@ namespace Catfish.API.Repository.Services
                         }
                     };
                     dataSet = excelDataReader.AsDataSet(conf);
-                   for(int i=0; i<excelDataReader.ResultsCount; i++)
+                    for (int i = 0; i < excelDataReader.ResultsCount; i++)
                     {
                         var sheetName = excelDataReader.Name;
 
-                        DataRowCollection rows = dataSet.Tables[sheetName].Rows;
+                        DataRowCollection rows = dataSet!.Tables[sheetName]!.Rows;
 
                         //assuming the 1st row is the header
                         FormTemplate formTemplate = CreateFormTemplate(rows[0], sheetName);
@@ -154,23 +155,23 @@ namespace Catfish.API.Repository.Services
                         FormEntry entry = new FormEntry();
                         entry.Id = formTemplate.Id;
                         entry.IsRequired = sheetName.ToLower() == primarySheetName.ToLower() ? true : false;
-                        entry.Name = formTemplate.Name;
+                        entry.Name = formTemplate!.Name!;
                         entry.State = formTemplate.Status;
                         dataForms.Add(entry);
-                        
+
                         //STILL NEED FIELD MAPPING!!!!
 
                         templateSettings.TitleField = new FieldEntry() { FieldId = formTemplate.Fields![0].Id, FormId = formTemplate.Id };
                         templateSettings.DescriptionField = new FieldEntry() { FieldId = formTemplate.Fields![1].Id, FormId = formTemplate.Id };
-                        if(formTemplate.Name == primarySheetName)
-                            templateSettings.PrimaryFormId= formTemplate.Id;
+                        if (formTemplate.Name == primarySheetName)
+                            templateSettings.PrimaryFormId = formTemplate.Id;
 
                         formTemplate.EntityTemplates.Add(template);
                         _context.Forms!.Add(formTemplate);
 
 
                         formTemplates.Add(formTemplate);
-                       
+
                         //read next sheet
                         excelDataReader.NextResult();
 
