@@ -32,14 +32,10 @@ namespace DataProcessing
     [Collection("Database collection")]
     public class ShowtimeDataProcessing : IClassFixture<TransactionalTestDatabaseFixture>
     {
-        public TransactionalTestDatabaseFixture _fixture { get; }
-
         public readonly TestHelper _testHelper;
-        public int MAX_RECORDS = 1; //DEBUG ONLY -- set it to 0 or -1 to ignore it
 
-        public ShowtimeDataProcessing(TransactionalTestDatabaseFixture fixture)
+        public ShowtimeDataProcessing()
         {
-            _fixture = fixture;
             _testHelper = new TestHelper();
         }
 
@@ -98,12 +94,12 @@ namespace DataProcessing
             if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out maxParallelProcess))
                 maxParallelProcess = 1;
 
-            outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            outputFolder = _testHelper!.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
             if (string.IsNullOrEmpty(outputFolder))
                 outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
-            srcFolderRoot = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
+            srcFolderRoot = _testHelper!.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
             if (string.IsNullOrEmpty(srcFolderRoot))
                 srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
             Assert.True(Directory.Exists(srcFolderRoot));
