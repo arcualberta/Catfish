@@ -47,11 +47,13 @@ namespace DataProcessing
         [Fact]
         public void IndexFlattenedShowtimes()
         {
+            string[] skipFiles = new string[] { "_chn.zip" };
+           
             DateTime start = DateTime.Now;
 
             PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
 
-            var tasks = sourceBatches.Select(x => IndexFlattenedShowtimesBatch(x, outputFolder, start));
+            var tasks = sourceBatches.Select(x => IndexFlattenedShowtimesBatch(x, outputFolder, start, skipFiles));
             Task.WhenAll(tasks).Wait();
         }
 
@@ -117,7 +119,7 @@ namespace DataProcessing
             }
         }
 
-        private async Task IndexFlattenedShowtimesBatch(string[] folderList, string outputFolder, DateTime start)
+        private async Task IndexFlattenedShowtimesBatch(string[] folderList, string outputFolder, DateTime start, string[] skipFiles)
         {
             int srcFolderPathCharacterLength = folderList[0].LastIndexOf("\\") + 1;
             string first = folderList[0].Substring(srcFolderPathCharacterLength);
@@ -145,6 +147,10 @@ namespace DataProcessing
                         continue;
 
                     var zipFiles = Directory.GetFiles(srcFolder);
+
+                    foreach(var skip in skipFiles)
+                        zipFiles = zipFiles.Where(file => !file.EndsWith(skip)).ToArray();
+
                     bool folderProcessingSuccessful = true;
                     foreach (var zipFile in zipFiles)
                     {
