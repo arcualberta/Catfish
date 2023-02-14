@@ -59,7 +59,7 @@ namespace Catfish.API.Repository.Services
                 EntityTemplate template;
                 if (!string.IsNullOrEmpty(templateName))
                 {
-                    template = _context.EntityTemplates.Where(f => f.Name == templateName).FirstOrDefault();
+                    template = _context.EntityTemplates!.Where(f => f.Name == templateName).FirstOrDefault();
                     if (template != null)
                         return template;
                 }
@@ -82,7 +82,7 @@ namespace Catfish.API.Repository.Services
            
         }
 
-        private FormTemplate CreateFormTemplate(DataRow headerRow, string currentSheetName, string primarySheetName)
+        private FormTemplate CreateFormTemplate(DataRow headerRow, string currentSheetName)
         {
             FormTemplate template= new FormTemplate();
             
@@ -92,13 +92,7 @@ namespace Catfish.API.Repository.Services
             template.Created = DateTime.Now;
             template.Updated = DateTime.Now;
 
-          // EntityTemplateSettings templateSettings = new EntityTemplateSettings();
-
-            //if (currentSheetName == primarySheetName) {
-           //     template.isRe
-           // }
-            template.Fields = new List<Field>();
-            List<Field> fields = new List<Field>();
+            IList<Field> fields = new List<Field>();
             foreach(string colValue in headerRow.ItemArray.ToList())
             {
                 Field field = new Field();
@@ -111,15 +105,11 @@ namespace Catfish.API.Repository.Services
                 textCol.Values[0] = txtVal;
                 field.Title = textCol;
 
-                //template.Fields.Add(field);
                 fields.Add(field);
             }
 
-            template.SerializedFields= JsonConvert.SerializeObject(fields);
-
-          //  _context.Forms!.Add(template);
+            template.Fields = fields;
             return template;
-
         }
         private EntityTemplate CreateEntityTemplate(string templateName,  string primarySheetName,IFormFile file)
         {
@@ -148,7 +138,6 @@ namespace Catfish.API.Repository.Services
                 file.CopyTo(stream);
                 stream.Position = 0;
 
-
                 using (var excelDataReader = ExcelReaderFactory.CreateReader(stream))
                 {
                     var conf = new ExcelDataSetConfiguration()
@@ -163,11 +152,10 @@ namespace Catfish.API.Repository.Services
                     {
                         var sheetName = excelDataReader.Name;
 
-
                         DataRowCollection rows = dataSet.Tables[sheetName].Rows;
 
                         //assuming the 1st row is the header
-                        FormTemplate formTemplate = CreateFormTemplate(rows[0], sheetName, primarySheetName);
+                        FormTemplate formTemplate = CreateFormTemplate(rows[0], sheetName);
 
                         FormEntry entry = new FormEntry();
                         entry.Id = formTemplate.Id;
@@ -180,17 +168,17 @@ namespace Catfish.API.Repository.Services
 
                         templateSettings.TitleField = new FieldEntry() { FieldId = formTemplate.Fields![0].Id, FormId = formTemplate.Id };
                         templateSettings.DescriptionField = new FieldEntry() { FieldId = formTemplate.Fields![1].Id, FormId = formTemplate.Id };
+                        if(formTemplate.Name == primarySheetName)
+                            templateSettings.PrimaryFormId= formTemplate.Id;
 
                         formTemplate.EntityTemplates.Add(template);
                         _context.Forms!.Add(formTemplate);
 
+
                         formTemplates.Add(formTemplate);
-
-
                        
                         //read next sheet
                         excelDataReader.NextResult();
-
 
                     } 
                 }
