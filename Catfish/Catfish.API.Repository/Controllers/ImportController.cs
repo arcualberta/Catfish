@@ -35,7 +35,7 @@ namespace Catfish.API.Repository.Controllers
 
 
         [HttpPost("data-from-excel")]
-        public ActionResult DataFromExcel(Guid templateId, string pivotColumnName IFormFile file )
+        public ActionResult DataFromExcel(Guid templateId, string pivotColumnName, IFormFile file )
         {
             /* if (!ModelState.IsValid)
                  return BadRequest();
