@@ -19,7 +19,7 @@ namespace Catfish.API.Repository.Controllers
         }
 
         [HttpPost("schema-from-excel")]
-        public ActionResult SchemaFromExcel(string templateName, string primarySheetName, string pivotColumnName, IFormFile file)
+        public ActionResult SchemaFromExcel(string templateName, string primarySheetName,  IFormFile file)
         {
             try
             {
@@ -37,18 +37,8 @@ namespace Catfish.API.Repository.Controllers
         [HttpPost("data-from-excel")]
         public ActionResult DataFromExcel(Guid templateId, string pivotColumnName, IFormFile file )
         {
-            /* if (!ModelState.IsValid)
-                 return BadRequest();
-
-             var settings = new JsonSerializerSettings()
-             {
-                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                 TypeNameHandling = TypeNameHandling.All,
-                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-             };*/
-            // ExcelData data = JsonConvert.DeserializeObject<ExcelData>(value, settings);
-            //Debug ONLY
-            _importService.ImportDataFromExcel(templateId, file, pivotColumnName);
+           
+            _importService.ImportDataFromExcel(templateId, pivotColumnName, file);
 
             return Ok();
         }
