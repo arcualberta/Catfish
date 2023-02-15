@@ -65,9 +65,9 @@ namespace Catfish.API.Repository.Services
                         _context!.Entities!.Add(entityData);
 
 
-                        //DebugLoggerFactoryExtensions ONLY!!!!
+                        //DEBUG  ONLY!!!!
                         if (i == 1)
-                            break;//ONLY PROCESS 2 ROW
+                            break;//ONLY PROCESS 2 ROWS
                     }
                   _context.SaveChanges();
                 }
@@ -224,8 +224,8 @@ namespace Catfish.API.Repository.Services
             FormTemplate primaryForm = forms.Where(f => f.Id == primaryFormId).FirstOrDefault();
             int pivotColumIndex = GetPivotColumnIndex(dataSet, primaryForm.Name, pivotColumn);
 
-            entity.Title = primaryRow.ItemArray[pivotColumIndex].ToString();//pivot column should not be empty
-            entity.Description = primaryRow.ItemArray[0] == null ? "" : primaryRow.ItemArray[1].ToString();
+            entity.Title = primaryRow.ItemArray[0].ToString();// primaryRow!.ItemArray[pivotColumIndex]!.ToString();
+            entity.Description = primaryRow.ItemArray[pivotColumIndex].ToString();//pivot column should not be empty
             entity.State = eState.Active; //??
             entity.Created = DateTime.Now;
             entity.Updated = DateTime.Now;
