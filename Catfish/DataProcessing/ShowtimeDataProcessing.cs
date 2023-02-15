@@ -42,10 +42,12 @@ namespace DataProcessing
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexFlattenedShowtimes
         [Fact]
         public void IndexFlattenedShowtimes()
-        {           
+        {
+            string[] skipFiles = new string[] { "_chn.zip" };
+           
             DateTime start = DateTime.Now;
 
-            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches, out string[] skipFiles);
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
 
             var tasks = sourceBatches.Select(x => IndexFlattenedShowtimesBatch(x, outputFolder, start, skipFiles));
             Task.WhenAll(tasks).Wait();
@@ -57,7 +59,7 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches, out string[] skipFiles);
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
 
             var tasks = sourceBatches.Select(x => IndexMoviesBatch(x, outputFolder, start));
             Task.WhenAll(tasks).Wait();
@@ -69,7 +71,7 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches, out string[] skipFiles);
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
 
             //Theaters shohuld NOT be processed in parallel since we want to skip duplicate theater records
             //that appear across batches. Therefore, if the configureation specifies more than one parallel
@@ -87,23 +89,20 @@ namespace DataProcessing
             await IndexTheatersBatch(sources, outputFolder, start);
         }
 
-        private void PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches, out string[] skipFiles)
+        private void PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches)
         {
             if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out maxParallelProcess))
                 maxParallelProcess = 1;
 
-            outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value!;
+            outputFolder = _testHelper!.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
             if (string.IsNullOrEmpty(outputFolder))
                 outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
-            srcFolderRoot = _testHelper!.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value!;
+            srcFolderRoot = _testHelper!.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
             if (string.IsNullOrEmpty(srcFolderRoot))
                 srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
             Assert.True(Directory.Exists(srcFolderRoot));
-
-            var skipFilesLog = _testHelper!.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipFilesLogFile")?.Value!;
-            skipFiles = string.IsNullOrEmpty(skipFilesLog) ? new string[0] : File.ReadAllLines(skipFilesLog);
 
             var srcFolders = Directory.GetDirectories(srcFolderRoot);
             sourceBatches = new List<string[]>();
