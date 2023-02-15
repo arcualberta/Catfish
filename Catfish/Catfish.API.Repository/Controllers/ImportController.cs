@@ -6,12 +6,12 @@ namespace Catfish.API.Repository.Controllers
 {
     [ApiController]
     [EnableCors(CorsPolicyNames.General)]
-    [Route(Routes.BackgroundJob.Root)]
+    [Route(Routes.Import.Root)]
     public class ImportController : ControllerBase
     {
         //private readonly RepoDbContext _context;
-        private readonly IImportService _importService;
-        public ImportController(IImportService importService)
+        private readonly IExcelFileProcessingService _importService;
+        public ImportController(IExcelFileProcessingService importService)
         {
             _importService = importService;
             // _context = context;
@@ -19,44 +19,26 @@ namespace Catfish.API.Repository.Controllers
         }
 
         [HttpPost("schema-from-excel")]
-        public ActionResult SchemaFromExcel(string templateName, string primarySheetName, IFormFile file)
+        public ActionResult SchemaFromExcel(string templateName, string primarySheetName,  IFormFile file)
         {
-            //Call ImportEntityTemplateSchema in the import service
-            //If successful, please return OK. Otherwise, return 500 error.
+            try
+            {
+                _importService.ImportEntityTemplateSchema(templateName, primarySheetName, file);
+            }
+            catch (Exception ex)
+            {
 
-
-            /* if (!ModelState.IsValid)
-                 return BadRequest();
-
-             var settings = new JsonSerializerSettings()
-             {
-                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                 TypeNameHandling = TypeNameHandling.All,
-                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-             };*/
-            // ExcelData data = JsonConvert.DeserializeObject<ExcelData>(value, settings);
-            //Debug ONLY
-            _importService.ImportFromExcel(file);
+            }
 
             return Ok();
         }
 
 
-        [HttpPost("from-excel")]
-        public ActionResult FromExcel([FromForm] string value, IFormFile file )
+        [HttpPost("data-from-excel")]
+        public ActionResult DataFromExcel(Guid templateId, string pivotColumnName, IFormFile file )
         {
-            /* if (!ModelState.IsValid)
-                 return BadRequest();
-
-             var settings = new JsonSerializerSettings()
-             {
-                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                 TypeNameHandling = TypeNameHandling.All,
-                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-             };*/
-            // ExcelData data = JsonConvert.DeserializeObject<ExcelData>(value, settings);
-            //Debug ONLY
-            _importService.ImportFromExcel(file);
+           
+            _importService.ImportDataFromExcel(templateId, pivotColumnName, file);
 
             return Ok();
         }

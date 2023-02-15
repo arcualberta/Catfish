@@ -11,7 +11,7 @@ namespace Catfish.API.Repository.Services
         private readonly string _solrCoreUrl;
         //private readonly ErrorLog _errorLog;
         private readonly bool _indexFieldNames;
-        private static readonly HttpClient _httpClient = new HttpClient();
+        public static readonly HttpClient _httpClient = new HttpClient();
 
 
         public SolrService()
@@ -27,6 +27,9 @@ namespace Catfish.API.Repository.Services
 
             _indexFieldNames = false;
             _ = bool.TryParse(_config.GetSection("SolarConfiguration:IndexFieldNames").Value, out _indexFieldNames);
+
+            if (int.TryParse(_config.GetSection("SolarConfiguration:HttpTimeoutSeconds").Value, out int httpTimeoutSeconds))
+                _httpClient.Timeout = TimeSpan.FromSeconds(httpTimeoutSeconds);
         }
         public async Task Index(EntityData entity, List<FormTemplate> forms)
         {
@@ -66,7 +69,7 @@ namespace Catfish.API.Repository.Services
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
             using var content = new StringContent(payloadXmlString, Encoding.UTF8, "text/xml");
-            using var httpResponse = await _httpClient.PostAsync(uri, content).ConfigureAwait(false);
+            using var httpResponse = await _httpClient.PostAsync(uri, content);
 
             httpResponse.EnsureSuccessStatusCode();
         }
@@ -75,7 +78,7 @@ namespace Catfish.API.Repository.Services
         {
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
-            using var httpResponse = await _httpClient.GetAsync(uri).ConfigureAwait(false);
+            using var httpResponse = await _httpClient.GetAsync(uri);
 
             httpResponse.EnsureSuccessStatusCode();
         }
