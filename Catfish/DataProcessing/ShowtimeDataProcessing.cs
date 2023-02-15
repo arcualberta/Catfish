@@ -30,9 +30,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace DataProcessing
 {
     [Collection("Database collection")]
-    public class ShowtimeDataProcessing : IClassFixture<TransactionalTestDatabaseFixture>
+    public class ShowtimeDataProcessing
     {
+
         public readonly TestHelper _testHelper;
+        public int MAX_RECORDS = 1; //DEBUG ONLY -- set it to 0 or -1 to ignore it
 
         public ShowtimeDataProcessing()
         {
@@ -43,11 +45,9 @@ namespace DataProcessing
         [Fact]
         public void IndexFlattenedShowtimes()
         {
-            string[] skipFiles = new string[] { "_chn.zip" };
-           
             DateTime start = DateTime.Now;
 
-            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches, out string[] skipFiles);
 
             var tasks = sourceBatches.Select(x => IndexFlattenedShowtimesBatch(x, outputFolder, start, skipFiles));
             Task.WhenAll(tasks).Wait();
@@ -59,7 +59,7 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches, out string[] skipFiles);
 
             var tasks = sourceBatches.Select(x => IndexMoviesBatch(x, outputFolder, start));
             Task.WhenAll(tasks).Wait();
@@ -71,38 +71,144 @@ namespace DataProcessing
         {
             DateTime start = DateTime.Now;
 
-            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches);
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches, out string[] skipFiles, false);
 
-            //Theaters shohuld NOT be processed in parallel since we want to skip duplicate theater records
+            //Theaters should NOT be processed in parallel since we want to skip duplicate theater records
             //that appear across batches. Therefore, if the configureation specifies more than one parallel
             //batch, we override it.
-            string[] sources = null;
-            if (maxParallelProcess > 1)
-            {
-                List<string> mergedSources = new List<string>();
-                sourceBatches.ForEach(src => mergedSources.AddRange(src));
-                sources = mergedSources.ToArray();
-            }
-            else
-                sources = sourceBatches[0];
+            Assert.True(maxParallelProcess == 1, "Expected to have no parallel processes");
+
+            string[] sources = sourceBatches[0];
+            ////if (maxParallelProcess > 1)
+            ////{
+            ////    List<string> mergedSources = new List<string>();
+            ////    sourceBatches.ForEach(src => mergedSources.AddRange(src));
+            ////    sources = mergedSources.ToArray();
+            ////}
+            ////else
+            ////    sources = sourceBatches[0];
 
             await IndexTheatersBatch(sources, outputFolder, start);
         }
 
-        private void PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches)
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexChineseRecords
+        [Fact]
+        public async void IndexChineseRecords()
         {
-            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out maxParallelProcess))
+            //Since the chinese data set is already flattened, we try to extract them here.
+
+            DateTime start = DateTime.Now;
+            string logFilePrefix = $"chinese-records-";
+
+            PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches, out string[] skipFiles, false);
+           
+            Assert.True(maxParallelProcess == 1, "Expected to have no parallel processes");
+
+            string timestampStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
+
+            var solrService = _testHelper.Solr;
+
+            string[] sources = sourceBatches[0];
+            foreach (var srcFolder in sources)
+            {
+                int srcFolderPathCharacterLength = srcFolder.LastIndexOf("\\") + 1;
+                var zipFiles = Directory.GetFiles(srcFolder);
+                foreach (var zipFile in zipFiles.Where(file => file.EndsWith("chn.zip")))
+                {
+                    string zipfile_key = zipFile.Substring(srcFolderPathCharacterLength);
+
+                    using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                    {
+                        foreach (var entry in archive.Entries)
+                        {
+                            List<SolrDoc> solrDocs = new List<SolrDoc>();
+                            int n = 0;
+                            try
+                            {
+                                string entry_key = $"{zipfile_key}\\{entry.Name}";
+                                XElement xml = LoadXmlFromZipEntry(entry);
+                                foreach (var child in xml.Elements())
+                                {
+                                    string entryType = child.Name.ToString().ToLower();
+                                    if (entryType == "showtime")
+                                    {
+                                        SolrDoc solrDoc = new SolrDoc();
+                                        solrDocs.Add(solrDoc);
+
+                                        solrDoc.AddId(Guid.NewGuid().ToString());
+                                        solrDoc.AddField("entry_type_s", "showtime");
+                                        solrDoc.AddField("entry_src_s", entry_key);
+
+                                        var showtime = new Showtime(child);
+                                        AddShowtime(solrDoc, showtime);
+
+                                        solrDoc.AddField("movie_cnname_t", showtime.GetElementValueStr(child, "movie_cnname"));
+                                        solrDoc.AddField("theater_cnname_t", showtime.GetElementValueStr(child, "theater_cnname"));
+                                        solrDoc.AddField("theater_name_t", showtime.GetElementValueStr(child, "theater_name"));
+                                        solrDoc.AddField("theater_state_t", showtime.GetElementValueStr(child, "theater_province"));
+                                        solrDoc.AddField("theater_city_t", showtime.GetElementValueStr(child, "theater_city"));
+                                        solrDoc.AddField("theater_area_t", showtime.GetElementValueStr(child, "theater_area"));
+                                        solrDoc.AddField("release_date_dt", showtime.GetElementValueStr(child, "release_date"));
+
+                                    }
+
+                                    //Indexing the showtimes batch
+                                    if (solrDocs.Count >= 1000)
+                                    {
+                                        await solrService.Index(solrDocs);
+                                        await solrService.CommitAsync();
+
+                                        await File.AppendAllTextAsync(processingLogFile, $"Indexed {n+1} to {n + solrDocs.Count} entries in {entry_key}{Environment.NewLine}");
+                                        n += solrDocs.Count;
+
+                                        solrDocs.Clear();
+                                        GC.Collect();
+                                    }
+                                } //End: foreach (var child in xml.Elements())
+
+                                if (solrDocs.Count >= 0)
+                                {
+                                    await solrService.Index(solrDocs);
+                                    await solrService.CommitAsync();
+
+                                    await File.AppendAllTextAsync(processingLogFile, $"Indexed {n + 1} to {n + solrDocs.Count} entries in {entry_key}{Environment.NewLine}");
+                                    n += solrDocs.Count;
+
+                                    solrDocs.Clear();
+                                    GC.Collect();
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {entry.Name}: {ex.Message}{Environment.NewLine}");
+                                solrDocs.Clear();
+                                GC.Collect();
+                            }                           
+                        }
+                    }
+                }
+            }
+        }
+
+        private void PrepareForIndexing(out string srcFolderRoot, out string outputFolder, out int maxParallelProcess, out List<string[]> sourceBatches, out string[] skipFiles, bool preapreForParellelProcessing = true)
+        {
+            if (!preapreForParellelProcessing || !int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out maxParallelProcess))
                 maxParallelProcess = 1;
 
-            outputFolder = _testHelper!.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
+            outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value!;
             if (string.IsNullOrEmpty(outputFolder))
                 outputFolder = "C:\\Projects\\Showtime Database\\output";
             Directory.CreateDirectory(outputFolder);
 
-            srcFolderRoot = _testHelper!.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value;
+            srcFolderRoot = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:SourceFolderRoot")?.Value!;
             if (string.IsNullOrEmpty(srcFolderRoot))
                 srcFolderRoot = "C:\\Projects\\Showtime Database\\cinema-source.com";
             Assert.True(Directory.Exists(srcFolderRoot));
+
+            var skipFilesLog = _testHelper!.Configuration.GetSection("ShowtimeDbIngesionSettings:SkipFilesLogFile")?.Value!;
+            skipFiles = string.IsNullOrEmpty(skipFilesLog) ? new string[0] : File.ReadAllLines(skipFilesLog);
 
             var srcFolders = Directory.GetDirectories(srcFolderRoot);
             sourceBatches = new List<string[]>();
@@ -119,13 +225,13 @@ namespace DataProcessing
         {
             int srcFolderPathCharacterLength = folderList[0].LastIndexOf("\\") + 1;
             string first = folderList[0].Substring(srcFolderPathCharacterLength);
-            string last = folderList[folderList.Length-1].Substring(srcFolderPathCharacterLength);
-            
+            string last = folderList[folderList.Length - 1].Substring(srcFolderPathCharacterLength);
+
             string logFilePrefix = $"flattened-showtimes-{first}-{last}";
 
             string timestampStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
             string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}.txt");
-            string errorLogFile      = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
 
             string trackingFile = Path.Combine(outputFolder, $"{logFilePrefix}-tracking-keys.txt");
             if (!File.Exists(trackingFile))
@@ -144,7 +250,7 @@ namespace DataProcessing
 
                     var zipFiles = Directory.GetFiles(srcFolder);
 
-                    foreach(var skip in skipFiles)
+                    foreach (var skip in skipFiles)
                         zipFiles = zipFiles.Where(file => !file.EndsWith(skip)).ToArray();
 
                     bool folderProcessingSuccessful = true;
@@ -262,7 +368,7 @@ namespace DataProcessing
                                                 if (matchingMovies.Any())
                                                     AddMovie(solrDoc, matchingMovies.First(), true);
 
-                                                if(matchingTheaters.Any())
+                                                if (matchingTheaters.Any())
                                                     AddTheater(solrDoc, matchingTheaters.First(), true);
                                             }
                                         } //End: foreach (var child in xml.Elements())
@@ -304,7 +410,7 @@ namespace DataProcessing
                     await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {folder_key}: {ex.Message}{Environment.NewLine}");
                 }
                 //GC.Collect();
-               
+
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
 
@@ -601,15 +707,45 @@ namespace DataProcessing
             if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:MaxParallelProcesses")?.Value, out int maxParallelProcesses))
                 maxParallelProcesses = 5;
 
-            int range = (int) Math.Ceiling(totalCount / (double)maxParallelProcesses);
+            int range = (int)Math.Ceiling(totalCount / (double)maxParallelProcesses);
 
             List<int> offsets = new List<int>();
-            for(int i = 0; i < maxParallelProcesses; ++i)
+            for (int i = 0; i < maxParallelProcesses; ++i)
                 offsets.Add(i * range);
 
             //DetectDuplicates(entryType, 0, range).Wait();
             var tasks = offsets.Select(x => DetectDuplicates(entryType, x, range));
             Task.WhenAll(tasks).Wait();
+        }
+
+        [Fact]
+        public void ExtractUniqueErrorFiles()
+        {
+            var srcFolder = "C:\\Projects\\Showtime Database\\error-logs";
+            var dstFolder = "C:\\Projects\\Showtime Database\\error-logs-unique";
+            var startPrefix = "2";
+
+            Directory.CreateDirectory(dstFolder);
+            var srcFiles = Directory.GetFiles(srcFolder);
+            var uniqueEntries = new List<string>();
+
+            foreach (var file in srcFiles)
+            {
+                var lines = File.ReadAllLines(file);
+
+                foreach(var line in lines)
+                {
+                    if (!string.IsNullOrEmpty(startPrefix) && !line.StartsWith(startPrefix))
+                        continue;
+
+                    var subLine = line.Substring(0, line.IndexOf(".zip") + 4);
+                    if(!uniqueEntries.Contains(subLine))
+                        uniqueEntries.Add(subLine);
+                }
+            }
+
+            var outputFile = Path.Combine(dstFolder, "unique-errors.txt");
+            File.WriteAllLines(outputFile, uniqueEntries);
         }
 
         private async Task DetectDuplicates(string entryType, int offset, int maxCount)
@@ -628,7 +764,7 @@ namespace DataProcessing
             Directory.CreateDirectory(outputFolder);
 
             string startTimeStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string filePrefix = $"duplicate-check-{entryType}s_{offset}-to-{offset+maxCount}_{startTimeStr}";
+            string filePrefix = $"duplicate-check-{entryType}s_{offset}-to-{offset + maxCount}_{startTimeStr}";
             string processingLogFile = Path.Combine(outputFolder, $"{filePrefix}.txt");
             string errorLogFile = Path.Combine(outputFolder, $"{filePrefix}-errors.txt");
             string duplicateOutputFile = Path.Combine(outputFolder, $"{filePrefix}-results.txt");
@@ -678,263 +814,6 @@ namespace DataProcessing
             File.AppendAllText(processingLogFile, $"{Environment.NewLine}Processing completed in {(DateTime.Now - start).ToString()}.{Environment.NewLine}\tSuccessfully processed {totalProcessed + 1} entries.{Environment.NewLine}\tFound a total of {totalDuplicatesFound} duplicates.{Environment.NewLine}");
         }
 
-        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeDataProcessing.IndexData
-        [Fact]
-        public void IndexData()
-        {
-            DateTime start = DateTime.Now;
-
-            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:IndexBatchSize")?.Value, out int batchSize))
-                batchSize = 1000;
-
-            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:MaxBatchesToProcess")?.Value, out int maxBatchesToProcess))
-                maxBatchesToProcess = int.MaxValue;
-
-            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:StartupShowtimeIdForIndexing")?.Value, out int startShowtimeId))
-                startShowtimeId = 0;
-
-            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:StopShowtimeIdForIndexing")?.Value, out int stopShowtimeId))
-                stopShowtimeId = int.MaxValue;
-
-            if (!int.TryParse(_testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:ContextTimeoutInMinutes")?.Value, out int contextTimeoutInMinutes))
-                contextTimeoutInMinutes = 3;
-
-            if (!bool.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:AllowDuplicateShowtimeRecords")?.Value, out bool allowDuplicateShowtimeRecords))
-                allowDuplicateShowtimeRecords = false;
-
-            if (!bool.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:SaveSolrDocsInsteadOfPosting")?.Value, out bool saveSolrDocsInsteadOfPosting))
-                saveSolrDocsInsteadOfPosting = false;
-
-            string outputFolder = _testHelper.Configuration.GetSection("ShowtimeDbIngesionSettings:OutputFolder")?.Value;
-            if (string.IsNullOrEmpty(outputFolder))
-                outputFolder = "C:\\Projects\\Showtime Database\\output";
-            Directory.CreateDirectory(outputFolder);
-
-            string indexType = allowDuplicateShowtimeRecords ? "-with-duplicates" : "";
-            string fileSuffix = start.ToString("yyyy-MM-dd_HH-mm-ss");
-            string processingLogFile = Path.Combine(outputFolder, $"index-data-log{indexType}_{fileSuffix}.txt");
-            string errorLogFile = Path.Combine(outputFolder, $"indexing-data-error{indexType}-log_{fileSuffix}.txt");
-
-            string solrDocsFolderRelativePath = null;
-            string solrDocsFolderAbsolutePath = null;
-            if (saveSolrDocsInsteadOfPosting)
-            {
-                solrDocsFolderRelativePath = $"solr-docs{indexType}";
-                solrDocsFolderAbsolutePath = Path.Combine(outputFolder, solrDocsFolderRelativePath);
-                Directory.CreateDirectory(solrDocsFolderAbsolutePath);
-            }
-
-
-            List<SolrDoc> solrDocs = new List<SolrDoc>();
-            int offset = 0;
-            if (startShowtimeId > 0)
-            {
-                using (var context = _testHelper.CreateNewShowtimeDbContext())
-                {
-                    context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
-                    var firstRecord = context.ShowtimeRecords.FirstOrDefault();
-                    int min_id = firstRecord == null ? 0 : firstRecord.id;
-                    offset = startShowtimeId > min_id ? startShowtimeId - min_id : 0;
-                }
-            }
-
-            int currentBatch = 0;
-            bool continue_processing = true;
-            while (continue_processing)
-            {
-                var connection_t0 = DateTime.Now;
-                using (var context = _testHelper.CreateNewShowtimeDbContext())
-                {
-                    string batchStr = "";
-                    context.Database.SetCommandTimeout(contextTimeoutInMinutes * 60);
-                    var connection_t1 = DateTime.Now;
-                    string log_message = $"Connection setup time: {(connection_t1 - connection_t0).TotalSeconds} seconds.";
-
-                    try
-                    {
-                        var sql_t0 = DateTime.Now;
-                        var showtimes = context!.ShowtimeRecords.Skip(offset).Take(batchSize).ToList();
-                        var sql_t1 = DateTime.Now;
-
-                        if (!showtimes.Any() || currentBatch >= maxBatchesToProcess)
-                            break; //while(true)
-
-                        if (showtimes.Last().id > stopShowtimeId)
-                        {
-                            var skip_set = showtimes.Where(st => st.id >= stopShowtimeId).ToList();
-                            foreach (var st in skip_set)
-                                showtimes.Remove(st);
-                            continue_processing = false;
-                        }
-
-                        offset += showtimes.Count;
-                        ++currentBatch;
-
-                        batchStr = $"{showtimes.First().id} - {showtimes.Last().id}";
-
-                        File.AppendAllText(processingLogFile, $"{log_message} Loaded showtime records with ids in the range {batchStr} in {(sql_t1 - sql_t0).TotalSeconds} seconds.");
-
-                        //Creating solr docs
-                        Movie movie = null;
-                        Theater theater = null;
-                        Showtime showtime = null;
-
-                        for (int i = 0; i < showtimes.Count; ++i)
-                        {
-                            var showtimeRecord = showtimes[i];
-
-                            try
-                            {
-                                showtime = JsonSerializer.Deserialize<Showtime>(showtimeRecord.content.ToString());
-
-                                if (!showtimeRecord.movie_error.HasValue || !showtimeRecord.movie_error.Value)
-                                {
-                                    if (movie?.movie_id == showtime!.movie_id)
-                                    {
-                                        //Movie is already loaded in an immediate past iteration. Nothing to do here
-                                    }
-                                    else
-                                    {
-                                        MovieRecord movieRecord = context.MovieRecords.FirstOrDefault(m => m.movie_id == showtimeRecord.movie_id);
-                                        if (movieRecord == null)
-                                        {
-                                            movie = null;
-                                            foreach (var rec in showtimes.Where(sr => sr.movie_id == showtimeRecord.movie_id))
-                                                rec.movie_error = true;
-                                        }
-                                        else
-                                            movie = JsonSerializer.Deserialize<Movie>(movieRecord!.content);
-                                    }
-                                }
-
-                                if (!showtimeRecord.theater_error.HasValue || !showtimeRecord.theater_error.Value)
-                                {
-                                    if (theater?.theater_id == showtime!.theater_id)
-                                    {
-                                        //Theater is already loaded in an immediate past iteration. Nothing to do here
-                                    }
-                                    else
-                                    {
-                                        TheaterRecord theaterRecord = context.TheaterRecords.FirstOrDefault(t => t.theater_id == showtimeRecord.theater_id);
-                                        if (theaterRecord == null)
-                                        {
-                                            theater = null;
-                                            foreach (var rec in showtimes.Where(sr => sr.theater_id == showtimeRecord.theater_id))
-                                                rec.theater_error = true;
-                                        }
-                                        else
-                                            theater = JsonSerializer.Deserialize<Theater>(theaterRecord!.content);
-                                    }
-                                }
-
-                                SolrDoc doc = new SolrDoc();
-
-                                AddShowtime(doc, showtime!, showtimeRecord.id, allowDuplicateShowtimeRecords);
-
-                                if (movie != null)
-                                    AddMovie(doc, movie);
-
-                                if (theater != null)
-                                    AddTheater(doc, theater);
-
-                                solrDocs.Add(doc);
-                            }
-                            catch (Exception ex)
-                            {
-                                File.AppendAllText(errorLogFile, $"EXCEPTION in Showtime {showtimeRecord.id} <movie_id:{showtimeRecord.movie_id}, theater_id:{showtimeRecord.theater_id}, show_date:{showtimeRecord.show_date}>: {ex.Message}{Environment.NewLine}");
-                            }
-
-                        }//End: for (int i = 0; i < showtimes.Count; ++i)
-
-
-                        string exportMessage = $"Data processing time: {(DateTime.Now - sql_t1).TotalSeconds} seconds. "
-                            + (saveSolrDocsInsteadOfPosting ? "Saving" : "Indexing")
-                            + $" {solrDocs.Count} records";
-
-                        var solr_t0 = DateTime.Now;
-                        if (solrDocs.Count > 0)
-                        {
-                            if (saveSolrDocsInsteadOfPosting)
-                            {
-                                try
-                                {
-                                    var solrDocsBatchFile = $"{showtimes[0].id}-{showtimes[showtimes.Count - 1].id}";
-                                    File.AppendAllText(processingLogFile, $" {exportMessage} to {solrDocsFolderRelativePath}\\{solrDocsBatchFile}.zip");
-                                    SaveToZipFile(solrDocs, solrDocsFolderAbsolutePath!, solrDocsBatchFile);
-                                }
-                                catch(Exception ex)
-                                {
-                                    File.AppendAllText(errorLogFile, $"EXCEPTION in saving to zip file {batchStr}.zip: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
-                                }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    //Call solr service to index the batch of docs
-                                    ISolrService solr = _testHelper.Solr;
-
-                                    File.AppendAllText(processingLogFile, $" Indexing {solrDocs.Count} records");
-                                    solr.Index(solrDocs).Wait(600000); //10 minute timeout
-                                    solr.CommitAsync().Wait(600000); //10 minute timeout
-                                }
-                                catch (Exception ex)
-                                {
-                                    File.AppendAllText(errorLogFile, $"EXCEPTION in posting to solr index in batch {batchStr}: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{Environment.NewLine}");
-                                }
-                            }
-
-                            //Clearning the bufffer
-                            solrDocs.Clear();
-
-                        }//End: if (solrDocs.Count > 0)
-
-                        var solr_t1 = DateTime.Now;
-                        File.AppendAllText(processingLogFile, $" completed in {(solr_t1 - solr_t0).TotalSeconds} seconds.");
-                    }
-                    catch (Exception ex)
-                    {
-                        File.AppendAllText(errorLogFile, $"EXCEPTION in batch {batchStr}: {ex.Message}{Environment.NewLine}");
-                    }
-                }//End: using (var context = _testHelper.CreateNewShowtimeDbContext())
-                GC.Collect();
-                File.AppendAllText(processingLogFile, $" Batch execution time: {(DateTime.Now - connection_t0).TotalSeconds} seconds.{Environment.NewLine}");
-
-            }//End: while(true)
-
-
-            var timelapse = (DateTime.Now - start).ToString();
-            string logText = $"Total indexing time: {timelapse}{Environment.NewLine}";
-            File.AppendAllText(processingLogFile, logText);
-        }
-
-
-        private void SaveToZipFile(List<SolrDoc> solrDocs, string outputFolder, string filename)
-        {
-            string zipfile = Path.Combine(outputFolder, $"{filename}.zip");
-            using (ZipArchive archive = ZipFile.Open(zipfile, ZipArchiveMode.Create))
-            {
-                ZipArchiveEntry entry = archive.CreateEntry($"{filename}.xml", CompressionLevel.Optimal);
-                var output_stream = entry.Open();
-
-                //Writing the wrapper opening element
-                output_stream.Write(new UTF8Encoding(true).GetBytes("<add>\n"));
-
-                //Writing all solr docs
-                foreach (var doc in solrDocs)
-                {
-                    var xml = doc.Root.ToString();
-                    output_stream.Write(new UTF8Encoding(true).GetBytes($"{xml}\n"));
-                }
-
-                //Writing the wrapper closing element
-                output_stream.Write(new UTF8Encoding(true).GetBytes("</add>"));
-
-                //Closing the stream
-                output_stream.Close();
-            }            
-        }
-
         private void AddShowtime(SolrDoc doc, Showtime showtime)
         {
             var showdate_str = showtime.show_date.HasValue ? showtime.show_date.Value.ToString("yyyy-MM-dd") : "yyyy-mm-dd";
@@ -954,25 +833,6 @@ namespace DataProcessing
             doc.AddField("show_with_t", showtime.show_with);
             doc.AddField("show_sound_t", showtime.show_sound);
             doc.AddField("show_comments_ts", showtime.show_comments);
-        }
-
-        private void AddShowtime(SolrDoc doc, Showtime showtime, int showtimeDbId, bool allowDuplicateShowtimeRecords)
-        {
-            string showtime_id_date_str = (showtime!.show_date != null) ? showtime!.show_date.Value.ToString("yyyyMMdd") : Guid.NewGuid().ToString();
-            var showtime_id = $"{showtime!.movie_id}-{showtime!.theater_id}-{showtime_id_date_str}";
-
-            if (allowDuplicateShowtimeRecords)
-            {
-                doc.AddId(showtimeDbId.ToString());
-                doc.AddField("showtime_id_s", showtime_id);
-            }
-            else
-            {
-                doc.AddId(showtime_id);
-                doc.AddField("showtime_db_id_i", showtimeDbId);
-            }
-
-            AddShowtime(doc, showtime);
         }
 
         private void AddTheater(SolrDoc doc, Theater theater, bool skipId = false)
@@ -1043,7 +903,7 @@ namespace DataProcessing
             doc.AddField("intl_advisory_t", movie.intl_advisory);
             doc.AddField("intl_release_dt", movie.intl_release);
             doc.AddField("intl_poster_t", movie.intl_poster);
-        }      
+        }
     }
 
     /**
@@ -1354,7 +1214,7 @@ namespace DataProcessing
             theater_area = MergeStrings(theater_area, src.theater_area, instance);
             theater_location = MergeStrings(theater_location, src.theater_location, instance);
             theater_market = MergeStrings(theater_market, src.theater_market, instance);
-             
+
             if (!theater_screens.HasValue) theater_screens = src.theater_screens;
 
             theater_seating = MergeStrings(theater_seating, src.theater_seating, instance);
@@ -1384,7 +1244,7 @@ namespace DataProcessing
     /**
      * Showtime class
      */
-    public class Showtime: XmlDoc
+    public class Showtime : XmlDoc
     {
 
         public int movie_id { get; set; }
@@ -1411,7 +1271,7 @@ namespace DataProcessing
             //Most of the time show-date is defined in a date attribute of a chiled element called show_date
             show_date = GetElementAttDateYYYYDDMM(xml, "show_date", "date");
 
-            if(!show_date.HasValue)
+            if (!show_date.HasValue)
             {
                 //some times, the show date is defined as the element value 
                 var dateStr = GetElementValueStr(xml, "show_date");
@@ -1423,11 +1283,11 @@ namespace DataProcessing
                         throw new Exception($"Date string {dateStr} cannot be parsed as a DateTime object");
                 }
             }
-            
+
             //Most of the time, the showtimes element is encapsulated in the show_date element
             XElement show_date_element = GetChildElement(xml, "show_date");
             showtimes = GetElementValueStr(show_date_element, "showtimes", ",");
-            if(showtimes == null || showtimes?.Length == 0)
+            if (showtimes == null || showtimes?.Length == 0)
             {
                 //sometime, the showtimes element is directly in the main showtime element
                 showtimes = GetElementValueStr(xml, "showtimes", ",");
@@ -1443,7 +1303,7 @@ namespace DataProcessing
                         showTimeMunitesList.Add(hhmm[0] * 60 + hhmm[1]);
                 }
             }
-            showtime_minutes= showTimeMunitesList.ToArray();
+            showtime_minutes = showTimeMunitesList.ToArray();
 
             show_attributes = GetElementValueStr(show_date_element, "show_attributes", ",");
             show_passes = GetElementValueStr(show_date_element, "show_passes");
@@ -1456,104 +1316,4 @@ namespace DataProcessing
 
     }
 
-
-    public class MovieRecord
-    {
-        public int id { get; set; }
-        public int movie_id { get; set; }
-        public int batch { get; set; }
-        public int instances { get; set; }
-        public string content { get; set; }
-
-        public void Merge(Movie src)
-        {
-            ++instances;
-            Movie myMovie = JsonSerializer.Deserialize<Movie>(content);
-            myMovie!.Merge(src, instances);
-            content = JsonSerializer.Serialize(myMovie);
-        }
-    }
-    public class TheaterRecord
-    {
-        public int id { get; set; }
-        public int theater_id { get; set; }
-        public int batch { get; set; }
-        public int instances { get; set; }
-        public string content { get; set; }
-
-        public void Merge(Theater src)
-        {
-            ++instances;
-            Theater myTheater = JsonSerializer.Deserialize<Theater>(content);
-            myTheater!.Merge(src, instances);
-            content = JsonSerializer.Serialize(myTheater);
-        }
-    }
-
-    public class ShowtimeRecord
-    {
-        public int id { get; set; }
-        public int movie_id { get; set; }
-        public int theater_id { get; set; }
-        public DateTime? show_date { get; set; }
-        public int batch { get; set; }
-        public bool? movie_error { get; set; }
-        public bool? theater_error { get; set; }
-        public bool? is_validated { get; set; }
-        public string content { get; set; }
-    }
-
-    public class TrackingKey
-    {
-        public int id { get; set; }
-        public string entry_key { get; set; }
-    }
-
-    public class ShowtimeDbContext : DbContext
-    {
-        public DbSet<MovieRecord> MovieRecords { get; set; }
-        public DbSet<TheaterRecord> TheaterRecords { get; set; }
-        public DbSet<ShowtimeRecord> ShowtimeRecords { get; set; }
-        public DbSet<TrackingKey> TrackingKeys { get; set; }
-
-        public ShowtimeDbContext(DbContextOptions<ShowtimeDbContext> options)
-            : base(options)
-        {
-        }
-    }
-
-
-    public class TransactionalTestDatabaseFixture
-    {
-        private const string ConnectionString = @"Server=.\\;Database=showtime;User Id=showtime;Password=password;Trusted_Connection=True;MultipleActiveResultSets=true";
-
-        public ShowtimeDbContext CreateContext()
-            => new ShowtimeDbContext(
-                new DbContextOptionsBuilder<ShowtimeDbContext>()
-                    .UseSqlServer(ConnectionString)
-                    .Options);
-
-        public TransactionalTestDatabaseFixture()
-        {
-            using var context = CreateContext();
-           // context.Database.EnsureDeleted();
-            //context.Database.EnsureCreated();
-
-            //Cleanup();
-        }
-
-        public void Cleanup()
-        {
-            using var context = CreateContext();
-
-            ////    context.AddRange(
-            ////        new Blog { Name = "Blog1", Url = "http://blog1.com" },
-            ////        new Blog { Name = "Blog2", Url = "http://blog2.com" });
-            ////    context.SaveChanges();
-        }
-    }
-
-        
-
-
-    }
+}
