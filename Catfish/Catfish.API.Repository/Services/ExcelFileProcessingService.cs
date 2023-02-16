@@ -68,8 +68,8 @@ namespace Catfish.API.Repository.Services
 
 
                         //DEBUG  ONLY!!!!
-                        if (i == 1)
-                            break;//ONLY PROCESS 2 ROWS
+                     //   if (i == 1)
+                       //     break;//ONLY PROCESS 2 ROWS
                     }
                   _context.SaveChanges();
                 }
