@@ -136,9 +136,11 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 body: JSON.stringify(this.template),
                 method: method,
                 headers: {
-                        'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json',
-                        'Authorizarization': `bearer ${this.jwtToken}`
+                    'encType': 'multipart/form-data',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': `${config.dataRepositoryApiRoot}`,//'http://localhost:5020',
+                    'Access-Control-Allow-Credentials': 'true',
+                    'Authorization': `bearer ${this.jwtToken}`
                 },
             })
             .then(response => {
