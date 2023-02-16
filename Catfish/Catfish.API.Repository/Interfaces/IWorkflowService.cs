@@ -10,6 +10,6 @@ namespace Catfish.API.Repository.Interfaces
         public Task<Workflow?> GetWorkFlow(Guid id);
         public Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id);
         public Workflow GetWorkFlowDetails(Guid id);
-        bool ExecuteTriggers(Guid workflowId, Guid actionId, Guid buttonId)
+        bool ExecuteTriggers(Guid workflowId, Guid actionId, Guid buttonId);
     }
 }
