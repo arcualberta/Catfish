@@ -14,12 +14,14 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
         transientMessageModel: {} as TransientMessageModel,
         apiRoot: null as string |null,
         activeContainer: null as FormTemplate | null as Field | null,
-        jwtToken: {
+       /* jwtToken: {
             get: () =>  localStorage.getItem("catfishJwtToken"),
             set:(val: string) => {
                 localStorage.setItem("catfishJwtToken", val)
             }
-        } as unknown as string
+        } as unknown as string*/
+        get jwtToken() { return localStorage.getItem("catfishJwtToken") as string },
+        set jwtToken(val:string) { localStorage.setItem("catfishJwtToken", val) } 
     }),
     actions: {
         createNewForm(){
@@ -64,7 +66,8 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                 this.form.id = Guid.create().toString() as unknown as Guid;
                 this.form.status= eState.Draft;
                 method = "POST";
-                console.log(JSON.stringify(this.form))
+               // console.log(JSON.stringify(this.form))
+               //console.log(JSON.stringify(this.jwtToken))
             }
             else {
                 console.log("Updating existing form.")
@@ -72,7 +75,7 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
                 method = "PUT";
                 console.log("form ", JSON.stringify(this.form))
             }
-
+          
             fetch(api,
                 {
                     body: JSON.stringify(this.form),
@@ -129,6 +132,9 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
     getters:{
         getApiRoot(state){
             return state.apiRoot? state.apiRoot : config.dataRepositoryApiRoot + "/api/forms";
-        }
+        },
+       /* getJwtToken(state){
+            return state.jwtToken? state.jwtToken : localStorage.getItem("catfishJwtToken")
+        }*/
     } 
 });

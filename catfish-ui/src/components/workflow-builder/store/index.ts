@@ -14,7 +14,9 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         showActionPanel : false as boolean,
         showTriggerPanel : false as boolean,
         showPopupPanel : false as boolean,
-        entityTemplate: null as EntityTemplate | null
+        entityTemplate: null as EntityTemplate | null,
+        get jwtToken() { return localStorage.getItem("catfishJwtToken") as string },
+        set jwtToken(val:string) { localStorage.setItem("catfishJwtToken", val) }
     }),
     actions: {
         createNewWorkflow() {

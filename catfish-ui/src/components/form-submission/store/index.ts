@@ -14,7 +14,9 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
         files: [] as File[] | null,
-        fileKeys: [] as string[] | null
+        fileKeys: [] as string[] | null,
+        get jwtToken() { return localStorage.getItem("catfishJwtToken") as string },
+        set jwtToken(val:string) { localStorage.setItem("catfishJwtToken", val) }
 
     }),
     actions: {
