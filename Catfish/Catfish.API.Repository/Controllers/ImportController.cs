@@ -41,6 +41,10 @@ namespace Catfish.API.Repository.Controllers
             {
                 _importService.ImportDataFromExcel(templateId, pivotColumnName, file);
             }
+            catch(CatfishException ex)
+            {
+                return StatusCode((int)ex.HttpStatusCode, ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500);

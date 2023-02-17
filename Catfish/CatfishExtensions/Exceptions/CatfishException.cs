@@ -15,5 +15,11 @@ namespace CatfishExtensions.Exceptions
             :base(message)
         {
         }
+
+        public CatfishException(string message, HttpStatusCode code)
+           : base(message)
+        {
+            HttpStatusCode = code;
+        }
     }
 }

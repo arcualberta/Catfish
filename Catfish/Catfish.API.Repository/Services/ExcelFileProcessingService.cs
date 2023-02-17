@@ -23,12 +23,12 @@ namespace Catfish.API.Repository.Services
           
             EntityTemplate entityTemplate = _entityTemplateService.GetEntityTemplate(templateId);
             if (entityTemplate == null)
-                return HttpStatusCode.NotFound;
+                throw new CatfishException("Specified Entity Template not found", HttpStatusCode.NotFound);//return HttpStatusCode.NotFound;
 
             FormTemplate primaryFormTemplate = entityTemplate.Forms.Where(f => f.Id == entityTemplate!.EntityTemplateSettings!.PrimaryFormId).FirstOrDefault();
 
             if (primaryFormTemplate == null)
-                return HttpStatusCode.NotFound;
+                throw new CatfishException("Specified Primary Form Template not found", HttpStatusCode.NotFound);
 
             string primarySheetName = primaryFormTemplate!.Name!;
 
@@ -57,7 +57,7 @@ namespace Catfish.API.Repository.Services
 
                     //Check if the number of fields in the templates is same with the number of column on the sheet
                     if (primaryFormTemplate.Fields!.Count != rows[0].ItemArray!.Count())
-                        return HttpStatusCode.BadRequest;
+                        throw new CatfishException("Template's fields count and the sheet's columns count is not equal", HttpStatusCode.BadRequest);
 
                     for (int i = 0; i < rows.Count; i++)//foreach (DataRow row in rows)
                     {
@@ -76,7 +76,7 @@ namespace Catfish.API.Repository.Services
                 }
             }
 
-            return HttpStatusCode.NotFound;
+            return HttpStatusCode.OK;
         }
 
         public EntityTemplate ImportEntityTemplateSchema(string templateName, string primaryFormName, IFormFile file)
@@ -97,7 +97,7 @@ namespace Catfish.API.Repository.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new CatfishException(ex.Message, HttpStatusCode.InternalServerError);
             }
            
            
@@ -215,7 +215,7 @@ namespace Catfish.API.Repository.Services
         {
             int? ind = data!.Tables[sheetName]!.Columns[pivotColumn] == null? -1 :  data!.Tables[sheetName]!.Columns[pivotColumn]?.Ordinal;
 
-            return ind.Value; //data!.Tables[sheetName]!.Columns[pivotColumn]!.Ordinal; //get index of the pivotcolumn
+            return ind.Value; 
         }
         
         private EntityData CreateEntityData(Guid templateId, Guid primaryFormId, DataSet dataSet, List<FormTemplate> forms, DataRow primaryRow, eEntityType eEntityType, string pivotColumn)
