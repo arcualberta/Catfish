@@ -3,7 +3,7 @@ import { Guid } from "guid-typescript";
 import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { TemplateEntry } from '@/components/entity-editor/models';
-import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup } from '../models/'
+import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup, WorkflowUser } from '../models/'
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -11,6 +11,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         transientMessage : null as string | null,
         transientMessageClass : null as string | null,
         entityTemplates : [] as TemplateEntry[],
+        users : [] as WorkflowUser[],
         showActionPanel : false as boolean,
         showTriggerPanel : false as boolean,
         showPopupPanel : false as boolean,
@@ -153,6 +154,23 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 })
                 .catch((error) => {
                     console.error('Load Entity Templates API Error:', error);
+                });
+
+        },
+        loadPiranhaUsers() {
+            const api = `${config.dataRepositoryApiRoot}/api/workflow/load-users`;//`https://localhost:5020/api/workflow/${id}`;
+            fetch(api, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.jwtToken}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.users = data;
+                })
+                .catch((error) => {
+                    console.error('Load workflow API Error:', error);
                 });
 
         },

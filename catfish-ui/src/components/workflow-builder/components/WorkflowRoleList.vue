@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { WorkflowRole, TabNavigationDefinition} from '../models'
+    import { WorkflowRole, WorkflowUser} from '../models'
     import { computed, ref,watch } from 'vue';
     import {default as ConfirmPopUp} from "../../shared/components/pop-up/ConfirmPopUp.vue"
     import { useWorkflowBuilderStore } from '../store';
@@ -12,6 +12,7 @@
     const editMode = ref(false);
     let disabled = ref(true);
     const roles = ref(store.workflow?.roles);
+    const selectedUserId = ref(Guid.EMPTY  as unknown as Guid);
     const ToggleAddRoles = () => (addRoles.value = !addRoles.value);
     watch(() => role.value.name, async newValue => {
         if (newValue.length>0)
@@ -25,7 +26,8 @@
             let newWorkflowRole = {
                 id : Guid.create().toString() as unknown as Guid,
                 name : role.value.name,
-                description : role.value.description
+                description : role.value.description,
+                users : role.value.users
             } as WorkflowRole;
     
         roles.value?.push(newWorkflowRole);
@@ -34,6 +36,7 @@
                 if(rl.id === role.value.id){
                     rl.name = role.value.name;
                     rl.description = role.value.description;
+                    rl.users = role.value.users;
                 }    
              })
         }
@@ -42,10 +45,17 @@
         editMode.value = false;
         addRoles.value = false;
     }
+    const addUser = (id: Guid) => {
+        if(id != Guid.EMPTY as unknown as Guid){
+            const newUser = store.users.find(u => u.id == id) as WorkflowUser;
+            role.value.users.push(newUser);
+        }
+    }
     const resetFields = () => {
         role.value.id = Guid.EMPTY as unknown as Guid;
         role.value.name = "";
         role.value.description = "";
+        role.value.users = [];
         editMode.value = false;
     }
 
@@ -53,11 +63,16 @@
         const idx = roles.value?.findIndex(opt => opt.id == roleId)
         roles.value?.splice(idx as number, 1)
     }
+    const deleteUser = (userId: Guid) => {
+        const idx = role.value.users?.findIndex(usr => usr.id == userId)
+        role.value.users?.splice(idx as number, 1)
+    }
     const editRole = (editRoleId: Guid) => {
         const roleValues = roles.value?.filter(opt => opt.id == editRoleId) as WorkflowRole[]
         role.value.name = roleValues[0].name 
         role.value.description = roleValues[0].description as string
         role.value.id = roleValues[0].id
+        role.value.users = roleValues[0].users
         editMode.value = true
         addRoles.value = true
     }
@@ -89,6 +104,22 @@
                     </b-input-group>
                     <b-input-group prepend="Description" class="mt-3">
                         <b-form-textarea v-model="(role.description as string)" rows="3" max-rows="6"></b-form-textarea>
+                    </b-input-group>
+                    <div class="content-style">Users</div>
+                    <div class="popup-list-item">
+                        <b-list-group>
+                            <b-list-group-item v-for="user in role.users" :key="user.userName">
+                                <span>{{user.userName}}
+                                    <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteUser(user.id as Guid)"/>
+                                </span>
+                            </b-list-group-item>
+                        </b-list-group>
+                    </div>
+                    <b-input-group prepend="Users" class="mt-12">
+                        <select class="form-select" v-model="selectedUserId">
+                            <option v-for="user in store.users" :value="user.id">{{user.userName}}</option>
+                        </select>
+                        <span class="trigger-add"><font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#00cc66" @click="addUser(selectedUserId as unknown as Guid)"/></span>
                     </b-input-group>
                 </div>
             </template>

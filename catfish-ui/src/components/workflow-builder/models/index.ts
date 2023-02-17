@@ -33,6 +33,7 @@ export interface WorkflowRole {
     id: Guid;
     name: string;
     description: string | null;
+    users: WorkflowUser[];
 }
 export interface WorkflowEmailTemplate {
     id: Guid;
@@ -90,6 +91,11 @@ export interface PopupButton {
     id: Guid;
     text: string;
     returnValue: string;
+}
+export interface WorkflowUser {
+    id: Guid;
+    userName: string;
+    email: string;
 }
 export interface TabNavigationDefinition {
     name: string;

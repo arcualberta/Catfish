@@ -19,6 +19,7 @@ import { Guid } from 'guid-typescript';
          //load entity templates
         
          store.loadEntityTemplates();
+         store.loadPiranhaUsers();
     });
     watch(() => store.workflow?.entityTemplateId, async newValue => {
         store.loadTemplate(newValue as Guid);

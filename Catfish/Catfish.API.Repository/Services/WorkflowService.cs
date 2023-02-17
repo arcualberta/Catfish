@@ -1,21 +1,28 @@
 ﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Models.Forms;
 using Catfish.API.Repository.Models.Workflow;
+//using Piranha;
+using Piranha.AspNetCore.Identity.Data;
+using Piranha.AspNetCore.Identity.SQLServer;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using System.Security.Claims;
 
 namespace Catfish.API.Repository.Services
 {
     public class WorkflowService : IWorkflowService
     {
         private readonly RepoDbContext _context;
+        public readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEntityTemplateService _entityTemplateService;
+        public readonly IdentitySQLServerDb _piranhaDb;
 
-        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService)
+        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IdentitySQLServerDb piranhaDb)
         {
             _context = context;
             _entityTemplateService = entityTemplateService;
+            _piranhaDb = piranhaDb;
         }
 
         public async Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id)
@@ -53,6 +60,50 @@ namespace Catfish.API.Repository.Services
 
             return wrkFlow;
         }
+        public string GetLoggedUserEmail()
+        {
+            try
+            {
+                string userId = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if(userId != null)
+                {
+                    var userDetails = _piranhaDb.Users.Where(ud => ud.Id == Guid.Parse(userId)).FirstOrDefault();
+                    return userDetails.Email;
+                }
+                else
+                {
+                    return "";
+                }
+                
+            }
+            catch (Exception ex)
+            {
+               return "";
+            }
+        }
+        public List<WorkflowUser> GetPiranhaUsers()
+        {
+            try
+            {
+                List<WorkflowUser> users = new List<WorkflowUser>();
+                foreach(var user in _piranhaDb.Users)
+                {
+                    var newUser = new WorkflowUser
+                    {
+                        Id = user.Id,
+                        UserName = user.UserName,
+                        Email = user.Email,
+                    };
+                    users.Add(newUser);
+                }
+                return users;
+                    
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public bool ExecuteTriggers(Guid workflowId, Guid actionId, Guid buttonId)
         {
             try
@@ -70,24 +121,30 @@ namespace Catfish.API.Repository.Services
                     WorkflowTrigger trigger = workflow.Triggers.Where(tr => tr.Id == triggerId).FirstOrDefault();
                     if (trigger?.Type == eTriggerType.Email)
                     {
+                        List<Email> emails = new List<Email>();
+                        Email email = new Email();
+
+                        WorkflowEmailTemplate emailTemplate = workflow.EmailTemplates.Where(a => a.Id == trigger.TemplateId).FirstOrDefault();
+                        email.Subject = emailTemplate.EmailSubject;
+                        email.Body = emailTemplate.EmailBody;
                         foreach (var recipient in trigger.Recipients)
                         {
                             switch (recipient.RecipientType)
                             {
                                 case eRecipientType.Role:
-                                    // code block
+                                    emails.Add(GetRoleDetails(email, recipient));
                                     break;
                                 case eRecipientType.Owner:
-                                    // code block
+                                    emails.Add(GetOwnerDetails(email, recipient));
                                     break;
                                 case eRecipientType.Email:
-                                    // code block
+                                    emails.Add(GetEmailDetails(email, recipient));
                                     break;
                                 case eRecipientType.FormField:
-                                    // code block
+                                    emails.Add(GetFormFieldDetails(email, recipient));
                                     break;
                                 case eRecipientType.MetadataField:
-                                    // code block
+                                    emails.Add(GetMetadataFieldDetails(email, recipient));
                                     break;
                                 default:
                                     // code block
@@ -103,6 +160,42 @@ namespace Catfish.API.Repository.Services
 
                 return false;
             }
+        }
+        private Email GetRoleDetails(Email email, Recipient recipient)
+        {
+            
+            return email;
+        }
+        private Email GetOwnerDetails(Email email, Recipient recipient)
+        {
+            switch (recipient.EmailType)
+            {
+                case eEmailType.To:
+                    email.ToRecipientEmail = GetLoggedUserEmail();
+                    break;
+                case eEmailType.Cc:
+                    email.CcRecipientEmail = GetLoggedUserEmail();
+                    break;
+                    case eEmailType.Bcc:
+                    email.BccRecipientEmail = GetLoggedUserEmail();
+                    break;
+                default:
+                    // code block
+                    break;
+            }
+            return email;
+        }
+        private Email GetEmailDetails(Email email, Recipient recipient)
+        {
+            return email;
+        }
+        private Email GetFormFieldDetails(Email email, Recipient recipient)
+        {
+            return email;
+        }
+        private Email GetMetadataFieldDetails(Email email, Recipient recipient)
+        {
+            return email;
         }
     }
 }

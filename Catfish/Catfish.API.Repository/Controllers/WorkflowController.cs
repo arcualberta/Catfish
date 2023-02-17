@@ -130,6 +130,13 @@ namespace Catfish.API.Repository.Controllers
 
             return Ok();
         }
-       
+        [HttpGet("load-users")]
+        //[Authorize(Roles = "SysAdmin")]
+        public List<WorkflowUser> LoadUsers()
+        {
+            return _workflorSrv.GetPiranhaUsers();
+
+        }
+
     }
 }
