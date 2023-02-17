@@ -10,7 +10,7 @@ namespace CatfishExtensions.Exceptions
     public  class CatfishException: SystemException
     {
         public HttpStatusCode HttpStatusCode { get; set; }
-        public int CustomStatusCode { get; set; }
+        public int ErrorCode { get; set; }
         public CatfishException(string message)
             :base(message)
         {
