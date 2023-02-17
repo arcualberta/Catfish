@@ -53,6 +53,8 @@ namespace Catfish.API.Repository.Services
                   
                   
                     DataRowCollection   rows = dataSet!.Tables[primarySheetName]!.Rows;
+
+                    //Check if the number of fields in the templates is same with the number of column on the sheet
                     if (primaryFormTemplate.Fields!.Count != rows[0].ItemArray!.Count())
                         return HttpStatusCode.BadRequest;
 
@@ -66,8 +68,8 @@ namespace Catfish.API.Repository.Services
 
 
                         //DEBUG  ONLY!!!!
-                        if (i == 1)
-                            break;//ONLY PROCESS 2 ROWS
+                     //   if (i == 1)
+                       //     break;//ONLY PROCESS 2 ROWS
                     }
                   _context.SaveChanges();
                 }
@@ -186,7 +188,7 @@ namespace Catfish.API.Repository.Services
 
                         templateSettings.TitleField = new FieldEntry() { FieldId = formTemplate.Fields![0].Id, FormId = formTemplate.Id };
                         templateSettings.DescriptionField = new FieldEntry() { FieldId = formTemplate.Fields![1].Id, FormId = formTemplate.Id };
-                        if (formTemplate.Name == primarySheetName)
+                        if (formTemplate!.Name!.ToLower() == primarySheetName.ToLower())
                             templateSettings.PrimaryFormId = formTemplate.Id;
 
                         formTemplate.EntityTemplates.Add(template);
@@ -210,8 +212,9 @@ namespace Catfish.API.Repository.Services
 
         private int GetPivotColumnIndex(DataSet data, string sheetName, string pivotColumn)
         {
+            int? ind = data!.Tables[sheetName]!.Columns[pivotColumn] == null? -1 :  data!.Tables[sheetName]!.Columns[pivotColumn]?.Ordinal;
 
-            return data!.Tables[sheetName]!.Columns[pivotColumn]!.Ordinal; //get index of the pivotcolumn
+            return ind.Value; //data!.Tables[sheetName]!.Columns[pivotColumn]!.Ordinal; //get index of the pivotcolumn
         }
         
         private EntityData CreateEntityData(Guid templateId, Guid primaryFormId, DataSet dataSet, List<FormTemplate> forms, DataRow primaryRow, eEntityType eEntityType, string pivotColumn)
@@ -222,10 +225,10 @@ namespace Catfish.API.Repository.Services
             entity.EntityType = eEntityType;
 
             FormTemplate primaryForm = forms.Where(f => f.Id == primaryFormId).FirstOrDefault();
-            int pivotColumIndex = GetPivotColumnIndex(dataSet, primaryForm.Name, pivotColumn);
+            int pivotColumIndex = GetPivotColumnIndex(dataSet, primaryForm!.Name!, pivotColumn);
 
-            entity.Title = primaryRow.ItemArray[0].ToString();// primaryRow!.ItemArray[pivotColumIndex]!.ToString();
-            entity.Description = primaryRow.ItemArray[pivotColumIndex].ToString();//pivot column should not be empty
+            entity.Title = primaryRow!.ItemArray[0].ToString();// primaryRow!.ItemArray[pivotColumIndex]!.ToString();
+            entity.Description = primaryRow!.ItemArray[pivotColumIndex].ToString();//pivot column should not be empty
             entity.State = eState.Active; //??
             entity.Created = DateTime.Now;
             entity.Updated = DateTime.Now;
@@ -241,7 +244,7 @@ namespace Catfish.API.Repository.Services
 
           
             string pivotColumnValue = "";
-            pivotColumnValue = GetPivotColumnValue(primaryRow, primaryForm.Name, pivotColumIndex);
+            pivotColumnValue = GetPivotColumnValue(primaryRow, primaryForm!.Name!, pivotColumIndex);
             data.FieldData = CreateFieldData(primaryForm!.Fields!.ToList(), primaryRow);
             formData.Add(data);
            
@@ -250,20 +253,25 @@ namespace Catfish.API.Repository.Services
             foreach (FormTemplate form in forms)
             {
                 if(form.Id != primaryFormId)
-                {
-                    FormData dt = new FormData();
-                    dt.FormId = form.Id;
-                    dt.Created = DateTime.Now;
-                    dt.Updated = DateTime.Now;
-                    dt.Id = Guid.NewGuid();
+                { 
                     //Check if the sheet contain the pivot colum -- if not don't import the data
-                    //TODO
+                    // if no pivot column found, it will return -1
                     pivotColumIndex = GetPivotColumnIndex(dataSet, form.Name!, pivotColumn);//have recheck in case the pivot column not in the same position in different sheet
-                    DataRow row = GetChildFormRow(dataSet, form.Name!, pivotColumIndex, pivotColumnValue);
-                    if(row != null)
-                         dt.FieldData = CreateFieldData(form.Fields!.ToList(), row);
+                    
+                    if (pivotColumIndex > -1)
+                    {
+                        FormData dt = new FormData();
+                        dt.FormId = form.Id;
+                        dt.Created = DateTime.Now;
+                        dt.Updated = DateTime.Now;
+                        dt.Id = Guid.NewGuid();
 
-                    formData.Add(dt);
+                        DataRow row = GetChildFormRow(dataSet, form.Name!, pivotColumIndex, pivotColumnValue);
+                        if (row != null)
+                            dt.FieldData = CreateFieldData(form.Fields!.ToList(), row);
+
+                        formData.Add(dt);
+                    }
                 }
             }
 
@@ -292,7 +300,7 @@ namespace Catfish.API.Repository.Services
 
             foreach(DataRow row in rows)
             {
-                if (row[pivotColumIndex].ToString() == pivotColumnValue)
+                if (row[pivotColumIndex].ToString().ToLower() == pivotColumnValue.ToLower())
                 {
                     _row = row;
                     break;
@@ -311,7 +319,7 @@ namespace Catfish.API.Repository.Services
                 fldData.Id = Guid.NewGuid();
                 fldData.FieldId = fields[i].Id;
 
-                string colValue = row.ItemArray[i].ToString();
+                string colValue = row!.ItemArray[i]!.ToString();
                 TextCollection textCol = new TextCollection();
                 textCol.Id = Guid.NewGuid();
                 Text txtVal = new Text() { Id = Guid.NewGuid(), Lang = "en", Value = colValue, TextType = eTextType.ShortAnswer };

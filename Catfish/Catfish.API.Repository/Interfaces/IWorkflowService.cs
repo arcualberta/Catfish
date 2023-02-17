@@ -5,7 +5,6 @@ namespace Catfish.API.Repository.Interfaces
 {
     public interface IWorkflowService
     {
-        
         Task<List<Workflow>> GetWorkflows();
         Task<Workflow?> GetWorkFlow(Guid id);
         Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id);

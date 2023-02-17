@@ -27,7 +27,7 @@ namespace Catfish.API.Repository.Controllers
             }
             catch (Exception ex)
             {
-
+                return StatusCode(500);
             }
 
             return Ok();
@@ -37,8 +37,14 @@ namespace Catfish.API.Repository.Controllers
         [HttpPost("data-from-excel")]
         public ActionResult DataFromExcel(Guid templateId, string pivotColumnName, IFormFile file )
         {
-           
-            _importService.ImportDataFromExcel(templateId, pivotColumnName, file);
+            try
+            {
+                _importService.ImportDataFromExcel(templateId, pivotColumnName, file);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
 
             return Ok();
         }

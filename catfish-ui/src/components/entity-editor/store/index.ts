@@ -26,12 +26,14 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         entitySearchResult: null as EntitySearchResult | null,
         storeId:(Guid.create()).toString(),
         apiRoot: null as string | null,
-        jwtToken: {
+       /* jwtToken: {
             get: () =>  localStorage.getItem("catfishJwtToken"),
             set:(val: string) => {
                 localStorage.setItem("catfishJwtToken", val)
             }
-        } as unknown as string
+        } as unknown as string*/
+        get jwtToken() { return localStorage.getItem("catfishJwtToken") as string },
+        set jwtToken(val:string) { localStorage.setItem("catfishJwtToken", val) }
     }),
     actions: {
         loadTemplates() {
