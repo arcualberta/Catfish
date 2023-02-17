@@ -4,6 +4,7 @@ using Catfish.API.Repository.Models.Import;
 using ExcelDataReader;
 using System.Data;
 using System.Net;
+using System.Data.SqlClient;
 
 namespace Catfish.API.Repository.Services
 {
@@ -260,21 +261,23 @@ namespace Catfish.API.Repository.Services
                     
                     if (pivotColumIndex > -1)
                     {
-                        FormData dt = new FormData();
-                        dt.FormId = form.Id;
-                        dt.Created = DateTime.Now;
-                        dt.Updated = DateTime.Now;
-                        dt.Id = Guid.NewGuid();
+                        var selectedRows = GetChildFormRows(dataSet, form.Name!, pivotColumIndex, pivotColumnValue);
 
-                        DataRow row = GetChildFormRow(dataSet, form.Name!, pivotColumIndex, pivotColumnValue);
-                        if (row != null)
+                        foreach (DataRow row in selectedRows)
+                        {
+                            FormData dt = new FormData();
+                            dt.FormId = form.Id;
+                            dt.Created = DateTime.Now;
+                            dt.Updated = DateTime.Now;
+                            dt.Id = Guid.NewGuid();
+
                             dt.FieldData = CreateFieldData(form.Fields!.ToList(), row);
 
-                        formData.Add(dt);
+                            formData.Add(dt);
+                        }
                     }
                 }
             }
-
 
             entity.Data = formData;
             return entity;
@@ -288,26 +291,24 @@ namespace Catfish.API.Repository.Services
 
             return val;
         }
-        private DataRow? GetChildFormRow(DataSet dataset, string sheetName, int pivotColumIndex, string pivotColumnValue)
+        private DataRow? GetChildFormRow(DataSet dataset, string sheetName,  string pivotColumnValue)
         {
-            DataRow _row= null;
-           
-
-           // if(pivotColumIndex == null)
-             //   return null;
-
+            
             DataRowCollection rows = dataset.Tables[sheetName]!.Rows;
+            object[] condition = new object[1];
+            condition[0] = pivotColumnValue;
 
-            foreach(DataRow row in rows)
-            {
-                if (row[pivotColumIndex].ToString().ToLower() == pivotColumnValue.ToLower())
-                {
-                    _row = row;
-                    break;
-                }
-            }
+            DataRow selectedRow = rows.Find(condition[0]);
+            return selectedRow;
+        }
 
-            return _row;
+        private IEnumerable<DataRow> GetChildFormRows(DataSet dataset, string sheetName, int pivotColumIndex, string pivotColumnValue)
+        { 
+
+           DataRowCollection rows = (dataset.Tables[sheetName]!.Rows);
+         
+            var selectedRows = rows.Cast<DataRow>().Where(r => r[pivotColumIndex].ToString().ToLower() == pivotColumnValue.ToLower());
+            return selectedRows;
         }
         private List<FieldData> CreateFieldData(List<Field> fields, DataRow row)
         {
