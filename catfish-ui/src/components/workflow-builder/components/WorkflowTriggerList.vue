@@ -5,6 +5,7 @@
     import { ref } from 'vue';
     
     const store = useWorkflowBuilderStore();
+    store.loadTemplate(store.workflow?.entityTemplateId as Guid);
     const editMode = ref(false);
     const triggerId = ref(Guid.EMPTY as unknown as Guid);
     const Toggle = () => {

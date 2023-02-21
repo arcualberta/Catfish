@@ -61,6 +61,7 @@ namespace Catfish.API.Repository.Controllers
             WorkflowDbRecord workflowRecord = await _workflorSrv.GetWorkflowDbRecord(id);
 
             workflowRecord.Workflow = workflow;
+            workflowRecord.Updated = DateTime.Now;
 
             _context.Entry(workflowRecord).State = EntityState.Modified;
 
@@ -95,6 +96,8 @@ namespace Catfish.API.Repository.Controllers
                 //NEED TO BE UPDATED
                 workflowRecord.Name = workflow.Name;
                 workflowRecord.Description = workflow.Description;
+                workflowRecord.Created = DateTime.Now;
+                workflowRecord.Updated = DateTime.Now;
                 _context.Workflows.Add(workflowRecord);
                 await _context.SaveChangesAsync();
 
@@ -127,6 +130,13 @@ namespace Catfish.API.Repository.Controllers
 
             return Ok();
         }
-       
+        [HttpGet("load-users")]
+        //[Authorize(Roles = "SysAdmin")]
+        public List<WorkflowUser> LoadUsers()
+        {
+            return _workflorSrv.GetPiranhaUsers();
+
+        }
+
     }
 }
