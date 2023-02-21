@@ -9,5 +9,6 @@
         public FieldEntry TitleField { get; set; }
         public FieldEntry DescriptionField { get; set; }
         public FieldEntry MediaField { get; set; }
+        public Guid? PrimaryFormId { get; set; }
     }
 }

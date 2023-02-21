@@ -5,10 +5,12 @@ namespace Catfish.API.Repository.Interfaces
 {
     public interface IWorkflowService
     {
-        
-        public Task<List<Workflow>> GetWorkflows();
-        public Task<Workflow?> GetWorkFlow(Guid id);
-
-        public Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id);
+        Task<List<Workflow>> GetWorkflows();
+        Task<Workflow?> GetWorkFlow(Guid id);
+        Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id);
+        Workflow GetWorkFlowDetails(Guid id);
+        string GetLoggedUserEmail();
+        List<WorkflowUser> GetPiranhaUsers();
+        bool ExecuteTriggers(Guid workflowId, Guid actionId, Guid buttonId);
     }
 }

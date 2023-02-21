@@ -3,7 +3,7 @@ import { Guid } from "guid-typescript";
 import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { TemplateEntry } from '@/components/entity-editor/models';
-import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup } from '../models/'
+import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup, WorkflowUser } from '../models/'
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -11,11 +11,13 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         transientMessage : null as string | null,
         transientMessageClass : null as string | null,
         entityTemplates : [] as TemplateEntry[],
+        users : [] as WorkflowUser[],
         showActionPanel : false as boolean,
         showTriggerPanel : false as boolean,
         showPopupPanel : false as boolean,
         entityTemplate: null as EntityTemplate | null,
-        jwtToken: null as string | null 
+        get jwtToken() { return localStorage.getItem("catfishJwtToken") as string },
+        set jwtToken(val:string) { localStorage.setItem("catfishJwtToken", val) }
     }),
     actions: {
         createNewWorkflow() {
@@ -48,7 +50,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             console.log(api)
 
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.jwtToken}`
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -62,7 +67,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         loadWorkflow(id: Guid) {
             const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.jwtToken}`
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -101,8 +109,9 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                     method: method,
                     headers: {
                         'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json'
-                    },
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${this.jwtToken}`
+                    }
                 })
                 .then(response => {
                     if (response.ok) {
@@ -136,7 +145,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         loadEntityTemplates() {
             const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.jwtToken}`
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -147,10 +159,27 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 });
 
         },
+        loadPiranhaUsers() {
+            const api = `${config.dataRepositoryApiRoot}/api/workflow/load-users`;//`https://localhost:5020/api/workflow/${id}`;
+            fetch(api, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.jwtToken}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.users = data;
+                })
+                .catch((error) => {
+                    console.error('Load workflow API Error:', error);
+                });
+
+        },
     },
     getters:{
-        getJwtToken(state){
-            return state.jwtToken? state.jwtToken: localStorage.getItem("catfishJwtToken");
+        jwtToken(state){
+            return localStorage.getItem("catfishJwtToken");
         }
     }
 });
