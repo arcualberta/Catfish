@@ -1,9 +1,6 @@
 ﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Models.Forms;
 using Catfish.API.Repository.Models.Workflow;
-//using Piranha;
-using Piranha.AspNetCore.Identity.Data;
-using Piranha.AspNetCore.Identity.SQLServer;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using System.Net;
@@ -16,13 +13,11 @@ namespace Catfish.API.Repository.Services
         private readonly RepoDbContext _context;
         public readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEntityTemplateService _entityTemplateService;
-        public readonly IdentitySQLServerDb _piranhaDb;
 
-        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IdentitySQLServerDb piranhaDb)
+        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService)
         {
             _context = context;
             _entityTemplateService = entityTemplateService;
-            _piranhaDb = piranhaDb;
         }
 
         public async Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id)
@@ -60,50 +55,7 @@ namespace Catfish.API.Repository.Services
 
             return wrkFlow;
         }
-        public string GetLoggedUserEmail()
-        {
-            try
-            {
-                string userId = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier).Value;
-                if(userId != null)
-                {
-                    var userDetails = _piranhaDb.Users.Where(ud => ud.Id == Guid.Parse(userId)).FirstOrDefault();
-                    return userDetails.Email;
-                }
-                else
-                {
-                    return "";
-                }
-                
-            }
-            catch (Exception ex)
-            {
-               return "";
-            }
-        }
-        public List<WorkflowUser> GetPiranhaUsers()
-        {
-            try
-            {
-                List<WorkflowUser> users = new List<WorkflowUser>();
-                foreach(var user in _piranhaDb.Users)
-                {
-                    var newUser = new WorkflowUser
-                    {
-                        Id = user.Id,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                    };
-                    users.Add(newUser);
-                }
-                return users;
-                    
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        
         public bool ExecuteTriggers(Guid workflowId, Guid actionId, Guid buttonId)
         {
             try
@@ -129,13 +81,14 @@ namespace Catfish.API.Repository.Services
                         email.Body = emailTemplate.EmailBody;
                         foreach (var recipient in trigger.Recipients)
                         {
+                            string emailAddtress = "";
                             switch (recipient.RecipientType)
                             {
                                 case eRecipientType.Role:
                                     emails.Add(GetRoleDetails(email, recipient));
                                     break;
                                 case eRecipientType.Owner:
-                                    emails.Add(GetOwnerDetails(email, recipient));
+                                    emailAddtress = "";// GetLoggedUserEmail();
                                     break;
                                 case eRecipientType.Email:
                                     emails.Add(GetEmailDetails(email, recipient));
@@ -166,25 +119,7 @@ namespace Catfish.API.Repository.Services
             
             return email;
         }
-        private Email GetOwnerDetails(Email email, Recipient recipient)
-        {
-            switch (recipient.EmailType)
-            {
-                case eEmailType.To:
-                    email.ToRecipientEmail = GetLoggedUserEmail();
-                    break;
-                case eEmailType.Cc:
-                    email.CcRecipientEmail = GetLoggedUserEmail();
-                    break;
-                    case eEmailType.Bcc:
-                    email.BccRecipientEmail = GetLoggedUserEmail();
-                    break;
-                default:
-                    // code block
-                    break;
-            }
-            return email;
-        }
+        
         private Email GetEmailDetails(Email email, Recipient recipient)
         {
             return email;
