@@ -43,7 +43,6 @@
         state.value.id = Guid.EMPTY as unknown as Guid
         state.value.name = ""
         state.value.description = ""
-        editMode.value = false;
     }
     const deleteState = (stateId : Guid) => {
         const idx = store.workflow?.states?.findIndex(opt => opt.id == stateId)
@@ -89,7 +88,7 @@
         </div>
         </template>
         <template v-slot:footer>
-            <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addState(state.id as Guid)"><span v-if="!editMode">Add</span><span v-if="editMode">Update</span></button>
+            <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addState(state.id as Guid)">Add</button>
         </template>
     </ConfirmPopUp>
 </template>

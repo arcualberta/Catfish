@@ -3,8 +3,6 @@ using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Services;
 using CatfishExtensions;
 using Hangfire;
-using Piranha.AspNetCore.Identity.SQLServer;
-using Piranha.Data.EF.SQLServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,13 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
 ConfigurationManager configuration = builder.Configuration;
-string sqlConnectionString = configuration.GetConnectionString("catfish");
-builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(sqlConnectionString));
-/* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
-builder.Services.AddPiranhaEF<SQLServerDb>(options =>
-    options.UseSqlServer(sqlConnectionString));
-builder.Services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
-    options.UseSqlServer(sqlConnectionString));
+builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("catfish")));
+
 
 // MR Jan 24 2023: Hangfire
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("catfish")));
@@ -42,7 +35,6 @@ builder.Services.AddScoped<IEntityService, EntityService>();
 builder.Services.AddScoped<ISolrService, SolrService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
-builder.Services.AddScoped<IExcelFileProcessingService, ExcelFileProcessingService>();
 
 var app = builder.Build();
 

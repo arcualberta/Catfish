@@ -33,7 +33,6 @@ export interface WorkflowRole {
     id: Guid;
     name: string;
     description: string | null;
-    users: WorkflowUser[];
 }
 export interface WorkflowEmailTemplate {
     id: Guid;
@@ -53,7 +52,7 @@ export interface WorkflowTrigger {
 export interface WorkflowPopup {
     id: Guid;
     title: string;
-    message: string;
+    Message: string;
     buttons:PopupButton[]
 }
 export interface Authorization{
@@ -79,23 +78,18 @@ export interface Button{
 export interface Recipient {
     id: Guid;
     emailType: eEmailType;
-    recipientType:eRecipientType;
+    recipienType:eRecipientType;
     roleId: Guid | null;
     email: string | null;
-    formId: Guid | null;
-    fieldId: Guid | null;
-    metadataFormId: Guid | null;
-    metadataFeildId: Guid | null;
+    FormId: Guid | null;
+    FeildId: Guid | null;
+    MetadataFormId: Guid | null;
+    MetadataFeildId: Guid | null;
 }
 export interface PopupButton {
     id: Guid;
     text: string;
     returnValue: string;
-}
-export interface WorkflowUser {
-    id: Guid;
-    userName: string;
-    email: string;
 }
 export interface TabNavigationDefinition {
     name: string;

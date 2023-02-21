@@ -20,12 +20,11 @@ namespace CatfishExtensions.Helpers
         bool GetEnabledLocalLogin();
         string[] GetAccessRestrictionAllowedDomains();
         string GetDefaultUserRole();
+
         bool GetValue(string key, bool defaultValue);
         string GetValue(string key, string defaultValue);
         string[] GetValue(string key, string[] defaultValue);
         int GetValue(string key, int defaultValue);
-        string GetSmtpServer();
-        string GetSmtpEmail();
 
         eLoginLinkPosition GetLoginLinkPosition();
 
@@ -119,15 +118,6 @@ namespace CatfishExtensions.Helpers
                     return pos;
                 else
                     return eLoginLinkPosition.Header;
-            }
-            public string GetSmtpEmail()
-            {
-                return _configuration["EmailServer:Email"];
-            }
-
-            public string GetSmtpServer()
-            {
-                return _configuration["EmailServer:SmtpServer"];
             }
         }
     }
