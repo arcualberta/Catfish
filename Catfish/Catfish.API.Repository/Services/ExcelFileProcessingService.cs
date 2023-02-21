@@ -4,6 +4,7 @@ using Catfish.API.Repository.Models.Import;
 using ExcelDataReader;
 using System.Data;
 using System.Net;
+using System.Data.SqlClient;
 
 namespace Catfish.API.Repository.Services
 {
@@ -22,12 +23,12 @@ namespace Catfish.API.Repository.Services
           
             EntityTemplate entityTemplate = _entityTemplateService.GetEntityTemplate(templateId);
             if (entityTemplate == null)
-                return HttpStatusCode.NotFound;
+                throw new CatfishException("Specified Entity Template not found", HttpStatusCode.NotFound);//return HttpStatusCode.NotFound;
 
             FormTemplate primaryFormTemplate = entityTemplate.Forms.Where(f => f.Id == entityTemplate!.EntityTemplateSettings!.PrimaryFormId).FirstOrDefault();
 
             if (primaryFormTemplate == null)
-                return HttpStatusCode.NotFound;
+                throw new CatfishException("Specified Primary Form Template not found", HttpStatusCode.NotFound);
 
             string primarySheetName = primaryFormTemplate!.Name!;
 
@@ -56,7 +57,7 @@ namespace Catfish.API.Repository.Services
 
                     //Check if the number of fields in the templates is same with the number of column on the sheet
                     if (primaryFormTemplate.Fields!.Count != rows[0].ItemArray!.Count())
-                        return HttpStatusCode.BadRequest;
+                        throw new CatfishException("Template's fields count and the sheet's columns count is not equal", HttpStatusCode.BadRequest);
 
                     for (int i = 0; i < rows.Count; i++)//foreach (DataRow row in rows)
                     {
@@ -75,7 +76,7 @@ namespace Catfish.API.Repository.Services
                 }
             }
 
-            return HttpStatusCode.NotFound;
+            return HttpStatusCode.OK;
         }
 
         public EntityTemplate ImportEntityTemplateSchema(string templateName, string primaryFormName, IFormFile file)
@@ -96,7 +97,7 @@ namespace Catfish.API.Repository.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new CatfishException(ex.Message, HttpStatusCode.InternalServerError);
             }
            
            
@@ -214,7 +215,7 @@ namespace Catfish.API.Repository.Services
         {
             int? ind = data!.Tables[sheetName]!.Columns[pivotColumn] == null? -1 :  data!.Tables[sheetName]!.Columns[pivotColumn]?.Ordinal;
 
-            return ind.Value; //data!.Tables[sheetName]!.Columns[pivotColumn]!.Ordinal; //get index of the pivotcolumn
+            return ind.Value; 
         }
         
         private EntityData CreateEntityData(Guid templateId, Guid primaryFormId, DataSet dataSet, List<FormTemplate> forms, DataRow primaryRow, eEntityType eEntityType, string pivotColumn)
@@ -260,21 +261,23 @@ namespace Catfish.API.Repository.Services
                     
                     if (pivotColumIndex > -1)
                     {
-                        FormData dt = new FormData();
-                        dt.FormId = form.Id;
-                        dt.Created = DateTime.Now;
-                        dt.Updated = DateTime.Now;
-                        dt.Id = Guid.NewGuid();
+                        var selectedRows = GetChildFormRows(dataSet, form.Name!, pivotColumIndex, pivotColumnValue);
 
-                        DataRow row = GetChildFormRow(dataSet, form.Name!, pivotColumIndex, pivotColumnValue);
-                        if (row != null)
+                        foreach (DataRow row in selectedRows)
+                        {
+                            FormData dt = new FormData();
+                            dt.FormId = form.Id;
+                            dt.Created = DateTime.Now;
+                            dt.Updated = DateTime.Now;
+                            dt.Id = Guid.NewGuid();
+
                             dt.FieldData = CreateFieldData(form.Fields!.ToList(), row);
 
-                        formData.Add(dt);
+                            formData.Add(dt);
+                        }
                     }
                 }
             }
-
 
             entity.Data = formData;
             return entity;
@@ -288,26 +291,24 @@ namespace Catfish.API.Repository.Services
 
             return val;
         }
-        private DataRow? GetChildFormRow(DataSet dataset, string sheetName, int pivotColumIndex, string pivotColumnValue)
+        private DataRow? GetChildFormRow(DataSet dataset, string sheetName,  string pivotColumnValue)
         {
-            DataRow _row= null;
-           
-
-           // if(pivotColumIndex == null)
-             //   return null;
-
+            
             DataRowCollection rows = dataset.Tables[sheetName]!.Rows;
+            object[] condition = new object[1];
+            condition[0] = pivotColumnValue;
 
-            foreach(DataRow row in rows)
-            {
-                if (row[pivotColumIndex].ToString().ToLower() == pivotColumnValue.ToLower())
-                {
-                    _row = row;
-                    break;
-                }
-            }
+            DataRow selectedRow = rows.Find(condition[0]);
+            return selectedRow;
+        }
 
-            return _row;
+        private IEnumerable<DataRow> GetChildFormRows(DataSet dataset, string sheetName, int pivotColumIndex, string pivotColumnValue)
+        { 
+
+           DataRowCollection rows = (dataset.Tables[sheetName]!.Rows);
+         
+            var selectedRows = rows.Cast<DataRow>().Where(r => r[pivotColumIndex].ToString().ToLower() == pivotColumnValue.ToLower());
+            return selectedRows;
         }
         private List<FieldData> CreateFieldData(List<Field> fields, DataRow row)
         {
