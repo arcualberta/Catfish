@@ -3,8 +3,6 @@ using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Services;
 using CatfishExtensions;
 using Hangfire;
-using Piranha.AspNetCore.Identity.SQLServer;
-using Piranha.Data.EF.SQLServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,11 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 ConfigurationManager configuration = builder.Configuration;
 string sqlConnectionString = configuration.GetConnectionString("catfish");
 builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(sqlConnectionString));
-/* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
-builder.Services.AddPiranhaEF<SQLServerDb>(options =>
-    options.UseSqlServer(sqlConnectionString));
-builder.Services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
-    options.UseSqlServer(sqlConnectionString));
+
 
 // MR Jan 24 2023: Hangfire
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("catfish")));

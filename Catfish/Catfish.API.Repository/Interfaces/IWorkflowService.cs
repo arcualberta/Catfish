@@ -9,8 +9,6 @@ namespace Catfish.API.Repository.Interfaces
         Task<Workflow?> GetWorkFlow(Guid id);
         Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id);
         Workflow GetWorkFlowDetails(Guid id);
-        string GetLoggedUserEmail();
-        List<WorkflowUser> GetPiranhaUsers();
         bool ExecuteTriggers(Guid workflowId, Guid actionId, Guid buttonId);
     }
 }
