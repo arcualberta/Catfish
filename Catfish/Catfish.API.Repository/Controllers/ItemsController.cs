@@ -141,9 +141,26 @@ namespace Catfish.API.Repository.Controllers
           }*/
         // PATCH api/<EntitiesController>/5
         [HttpPatch("{id}")]
-        public void Patch(Guid id, [FromBody] FormData value)
+        public IActionResult Patch(Guid id, [FromBody] FormData value)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
+                EntityData item = _entityService.GetEntity(id);
+
+                if(item == null)
+                    return BadRequest();
+
+                item.Data.Add(value);
+                _context.Entry(item).State = EntityState.Modified;
+                _context.SaveChanges();
+
+                return Ok();
+            }catch(Exception ex)
+            {
+                return BadRequest();
+            }
         }
 
 
