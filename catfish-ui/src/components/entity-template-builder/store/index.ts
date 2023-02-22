@@ -41,7 +41,9 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                     dataForms: [],
                     titleField: {} as FieldEntry,
                     descriptionField: {} as FieldEntry,
-                    mediaField: {} as FieldEntry
+                    mediaField: {} as FieldEntry,
+                    primaryFormId:Guid.EMPTY as unknown as Guid
+
                 }
                 
             };
