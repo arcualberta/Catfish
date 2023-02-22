@@ -92,11 +92,30 @@ namespace Catfish.API.Repository.Controllers
         }
 
         //// PATCH api/<FormSubmissionController>/5
-        //[HttpPatch("{id}")]
-        //public void Patch(Guid id, [FromBody] FormData value)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [HttpPatch("{id}")]
+        public ActionResult Patch(Guid id, [FromBody] FormTemplate value)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
+                EntityTemplate template = _entityTemplateService.GetEntityTemplate(id);
+
+                if (template == null)
+                    return BadRequest();
+
+                //Add new formTemplate to existing entityTemplate
+                template.Forms.Add(value);
+                _context.Entry(template).State = EntityState.Modified;
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
 
 
         // DELETE api/<FormSubmissionController>/5
