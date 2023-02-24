@@ -17,9 +17,8 @@ import { Guid } from 'guid-typescript';
     const store = useWorkflowBuilderStore();
     onMounted(() => {
          //load entity templates
-        
+        store.loadUsers();
          store.loadEntityTemplates();
-         store.loadPiranhaUsers();
     });
     watch(() => store.workflow?.entityTemplateId, async newValue => {
         store.loadTemplate(newValue as Guid);

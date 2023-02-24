@@ -33,7 +33,7 @@ export interface WorkflowRole {
     id: Guid;
     name: string;
     description: string | null;
-    users: WorkflowUser[];
+    users: UserInfo[];
 }
 export interface WorkflowEmailTemplate {
     id: Guid;
@@ -61,6 +61,7 @@ export interface Authorization{
     currentStateId: Guid;
     authorizedBy: eAuthorizedBy;
     authorizedRoleId: Guid | null;
+    users: Array<Guid>;
     authorizedDomain: string | null;
     authorizedFormId: Guid | null;
     authorizedFeildId: Guid | null;
@@ -92,7 +93,7 @@ export interface PopupButton {
     text: string;
     returnValue: string;
 }
-export interface WorkflowUser {
+export interface UserInfo {
     id: Guid;
     userName: string;
     email: string;

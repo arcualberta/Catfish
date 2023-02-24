@@ -1,4 +1,7 @@
 
+using Catfish.API.Authorization.Interfaces;
+using Catfish.API.Authorization.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -18,6 +21,7 @@ builder.AddCatfishExtensions(true, false);
 
 //Adding project-specific services
 builder.Services.AddScoped<ICatfishUserManager, CatfishUserManager>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

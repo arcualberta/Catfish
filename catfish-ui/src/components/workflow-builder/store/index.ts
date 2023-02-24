@@ -3,7 +3,7 @@ import { Guid } from "guid-typescript";
 import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { TemplateEntry } from '@/components/entity-editor/models';
-import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup, WorkflowUser } from '../models/'
+import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup, UserInfo } from '../models/'
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -11,7 +11,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         transientMessage : null as string | null,
         transientMessageClass : null as string | null,
         entityTemplates : [] as TemplateEntry[],
-        users : [] as WorkflowUser[],
+        users : [] as UserInfo[],
         showActionPanel : false as boolean,
         showTriggerPanel : false as boolean,
         showPopupPanel : false as boolean,
@@ -159,8 +159,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 });
 
         },
-        loadPiranhaUsers() {
-            const api = `${config.dataRepositoryApiRoot}/api/workflow/load-users`;//`https://localhost:5020/api/workflow/${id}`;
+        loadUsers() {
+            const api = `${config.authorizationApiRoot}api/PiranhaUsers`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
                 method: 'GET',
                 headers: {
@@ -172,10 +172,11 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                     this.users = data;
                 })
                 .catch((error) => {
-                    console.error('Load workflow API Error:', error);
+                    console.error('Load users API Error:', error);
                 });
 
         },
+        
     },
     getters:{
         jwtToken(state){
