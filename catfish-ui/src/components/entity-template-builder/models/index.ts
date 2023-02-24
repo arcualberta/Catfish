@@ -9,6 +9,7 @@ export interface EntityTemplateSettings{
     titleField: FieldEntry | null;
     descriptionField: FieldEntry | null;
     mediaField: FieldEntry | null;
+    primaryFormId: Guid | null;
 }
 
 export interface EntityTemplate {
