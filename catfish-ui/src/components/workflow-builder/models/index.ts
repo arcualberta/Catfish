@@ -61,7 +61,6 @@ export interface Authorization{
     currentStateId: Guid;
     authorizedBy: eAuthorizedBy;
     authorizedRoleId: Guid | null;
-    users: Array<Guid>;
     authorizedDomain: string | null;
     authorizedFormId: Guid | null;
     authorizedFeildId: Guid | null;
@@ -81,7 +80,8 @@ export interface Recipient {
     id: Guid;
     emailType: eEmailType;
     recipientType:eRecipientType;
-    roleId: Guid | null;
+    roleId: Guid | null
+    users:Array<Guid>;
     email: string | null;
     formId: Guid | null;
     fieldId: Guid | null;

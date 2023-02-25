@@ -23,7 +23,7 @@ namespace Catfish.API.Repository.Controllers
         }
         // GET: api/<EntityTemplateController>
         [HttpGet]
-        //[Authorize(Roles = "SysAdmin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<IEnumerable<TemplateEntry>>> Get()
         {
             if (_context.EntityTemplates == null)

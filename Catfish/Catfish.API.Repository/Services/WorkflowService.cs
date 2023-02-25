@@ -81,14 +81,14 @@ namespace Catfish.API.Repository.Services
                         email.Body = emailTemplate.EmailBody;
                         foreach (var recipient in trigger.Recipients)
                         {
-                            string emailAddtress = "";
+                            List<string> emailAddtress = new List<string>();
                             switch (recipient.RecipientType)
                             {
                                 case eRecipientType.Role:
-                                    emails.Add(GetRoleDetails(email, recipient));
+                                    emailAddtress.AddRange(GetRoleDetails(recipient));
                                     break;
                                 case eRecipientType.Owner:
-                                    emailAddtress = "";// GetLoggedUserEmail();
+                                    emailAddtress.Add(GetLoggedUserEmail());
                                     break;
                                 case eRecipientType.Email:
                                     emails.Add(GetEmailDetails(email, recipient));
@@ -114,10 +114,16 @@ namespace Catfish.API.Repository.Services
                 return false;
             }
         }
-        private Email GetRoleDetails(Email email, Recipient recipient)
+
+        private string GetLoggedUserEmail()
         {
-            
-            return email;
+            throw new NotImplementedException();
+        }
+
+        private List<string> GetRoleDetails(Recipient recipient)
+        {
+            List<string> emails = new List<string>();
+            return emails;
         }
         
         private Email GetEmailDetails(Email email, Recipient recipient)
