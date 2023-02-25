@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace CatfishExtensions.DTO
 {
-    public class UserInfo
+    public class TenantInfo
     {
         public Guid Id { get; set; }
-        public string IdentityUserId { get; set; }
-        public string? UserName { get; set; }
-        public string? Email { get; set; }
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
+        public IList<TenantRoleInfo>? Roles { get; protected set; }
+
     }
 }
