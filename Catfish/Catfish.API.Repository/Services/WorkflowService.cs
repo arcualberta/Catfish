@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Interfaces;
+﻿using Catfish.API.Authorization.Interfaces;
+using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Models.Forms;
 using Catfish.API.Repository.Models.Workflow;
 using Microsoft.AspNetCore.Http;
@@ -13,11 +14,15 @@ namespace Catfish.API.Repository.Services
         private readonly RepoDbContext _context;
         public readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEntityTemplateService _entityTemplateService;
+        private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
 
-        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService)
+        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IUserService userService, IEmailService emailService)
         {
             _context = context;
             _entityTemplateService = entityTemplateService;
+            _userService = userService;
+            _emailService = emailService;
         }
 
         public async Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id)
@@ -91,7 +96,7 @@ namespace Catfish.API.Repository.Services
                                     emailAddtress.Add(GetLoggedUserEmail());
                                     break;
                                 case eRecipientType.Email:
-                                    emails.Add(GetEmailDetails(email, recipient));
+                                    emailAddtress.Add(recipient.Email);
                                     break;
                                 case eRecipientType.FormField:
                                     emails.Add(GetFormFieldDetails(email, recipient));
@@ -103,7 +108,26 @@ namespace Catfish.API.Repository.Services
                                     // code block
                                     break;
                             }
+                            switch (recipient.EmailType)
+                            {
+                                case eEmailType.To:
+                                    email.ToRecipientEmail.AddRange(emailAddtress);
+                                    break;
+                                case eEmailType.Cc:
+                                    email.CcRecipientEmail.AddRange(emailAddtress);
+                                    break;
+                                case eEmailType.Bcc:
+                                    email.BccRecipientEmail.AddRange(emailAddtress);
+                                    break;
+                                    emails.Add(GetMetadataFieldDetails(email, recipient));
+                                    break;
+                                default:
+                                    // code block
+                                    break;
+                            }
+
                         }
+                        _emailService.SendEmail(email);
                     }
                 }
                 return true;
@@ -117,19 +141,26 @@ namespace Catfish.API.Repository.Services
 
         private string GetLoggedUserEmail()
         {
-            throw new NotImplementedException();
+            string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string email = _userService.GetUserById(Guid.Parse(userId)).Email;
+            return email;
         }
 
         private List<string> GetRoleDetails(Recipient recipient)
         {
             List<string> emails = new List<string>();
+            foreach(var userId in recipient.Users)
+            {
+                string? email = _userService.GetUserById(userId).Email;
+                if(email != null)
+                {
+                    emails.Add(email);
+                }
+            }
             return emails;
         }
         
-        private Email GetEmailDetails(Email email, Recipient recipient)
-        {
-            return email;
-        }
+        
         private Email GetFormFieldDetails(Email email, Recipient recipient)
         {
             return email;

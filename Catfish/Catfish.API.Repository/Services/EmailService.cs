@@ -18,12 +18,17 @@
             {
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.From = new MailAddress(_config.GetSmtpEmail());
-                mailMessage.To.Add(email.ToRecipientEmail);
-                mailMessage.CC.Add(email.CcRecipientEmail);
-                mailMessage.Bcc.Add(email.BccRecipientEmail);
                 mailMessage.Subject = email.Subject;
                 mailMessage.IsBodyHtml = true;
                 mailMessage.Body = "<p>" + email.Body + "</p>";
+                foreach(string emailRecipient in email.ToRecipientEmail)
+                    mailMessage.To.Add(emailRecipient);
+
+                foreach (string emailRecipient in email.CcRecipientEmail)
+                    mailMessage.CC.Add(emailRecipient);
+
+                foreach (string emailRecipient in email.BccRecipientEmail)
+                    mailMessage.Bcc.Add(emailRecipient);
 
                 using (SmtpClient client = new SmtpClient(_config.GetSmtpServer(), portNumber))
                 {

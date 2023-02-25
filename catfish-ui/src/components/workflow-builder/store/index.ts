@@ -152,7 +152,6 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("data", data)
                     this.entityTemplates = data;
                 })
                 .catch((error) => {

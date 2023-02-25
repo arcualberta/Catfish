@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Catfish.API.Authorization\Catfish.API.Authorization.csproj" />
     <ProjectReference Include="..\CatfishExtensions\CatfishExtensions.csproj" />
   </ItemGroup>
 

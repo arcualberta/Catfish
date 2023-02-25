@@ -20,6 +20,17 @@ namespace Catfish.API.Authorization.Services
             };
             return userInfo;
         }
+        public UserInfo GetUserById(Guid id)
+        {
+            var info = _piranhaDb.Users.Where(u => u.Id == id).FirstOrDefault();
+            UserInfo userInfo = new UserInfo
+            {
+                Id = info.Id,
+                UserName = info.UserName,
+                Email = info.Email
+            };
+            return userInfo;
+        }
         public async Task<List<UserInfo>> GetUsers()
         {
             var info = await _piranhaDb.Users.ToListAsync();
