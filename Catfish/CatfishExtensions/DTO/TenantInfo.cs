@@ -10,8 +10,8 @@ namespace CatfishExtensions.DTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = "";
-        public string Description { get; set; } = "";
-        public IList<TenantRoleInfo>? Roles { get; protected set; }
+        public string? Description { get; set; } = "";
+        public IList<TenantRoleInfo>? Roles { get; protected set; } = new List<TenantRoleInfo>();
 
     }
 }

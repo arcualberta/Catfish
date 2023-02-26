@@ -100,5 +100,52 @@ namespace Catfish.API.Auth.Services
                 model.TenantId = await _db.TenantRoles.Where(r => r.Id == model.Id).Select(r => r.TenantId).FirstOrDefaultAsync(); ;
             _db.Entry(model).State= EntityState.Modified;
         }
+
+        public async Task<UserMembership> GetMembership(IdentityUser user)
+        {
+            UserMembership membership = new UserMembership();
+
+            if (user == null)
+                return membership;
+
+            membership.User = new UserInfo() { Id = Guid.Empty, IdentityUserId = user.Id, UserName = user.UserName, Email = user.Email };
+
+            //Get the list of Tenant-User objects where this user is assciated with
+            var userTenancies = await _db.TenantUsers
+                .Include(u => u.Role)
+                .ThenInclude(r => r.Tenant)
+                .Where(u => u.IdentityUserId == user.Id)
+                .ToListAsync();
+
+            foreach (var tenancyUser in userTenancies)
+            {
+                var tenantInfo = membership.Tenancy.FirstOrDefault(t => t.Id == tenancyUser.Role.TenantId);
+                if (tenantInfo == null)
+                {
+                    tenantInfo = new TenantInfo() 
+                    { 
+                        Id = tenancyUser.Role.TenantId, 
+                        Name = tenancyUser.Role.Tenant.Name, 
+                        Description = tenancyUser.Role.Tenant.Description
+                    };
+                    membership.Tenancy.Add(tenantInfo);
+                }
+
+                var roleInfo = tenantInfo.Roles!.FirstOrDefault(r => r.Id == tenancyUser.RoleId);
+                if (roleInfo == null)
+                {
+                    roleInfo = new TenantRoleInfo() 
+                    { 
+                        Id = tenancyUser.RoleId,
+                        Name = tenancyUser.Role.Name, 
+                        Description = tenancyUser.Role.Description,
+                    };
+
+                    tenantInfo.Roles.Add(roleInfo);
+                }
+            }
+
+            return membership;
+        }
     }
 }

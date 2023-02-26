@@ -25,6 +25,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddSingleton(new MapperConfiguration(mc => mc.AddProfile(new AuthMapper())).CreateMapper());
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 
