@@ -19,7 +19,7 @@ namespace Catfish.API.Auth.Controllers
             _accountService = accountService;
         }
 
-        [HttpPost]
+        [HttpPost("seed")]
         public async Task<ActionResult> Seed(RegistrationModel model)
         {
             try
@@ -44,6 +44,8 @@ namespace Catfish.API.Auth.Controllers
         {
             try
             {
+                //
+                //int offset = 0; int max = int.MaxValue;
                 var ret = await _accountService.GetUsers(offset, max);
                 return Ok(ret);
             }
@@ -99,7 +101,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         // DELETE: api/Users/5
-        [HttpDelete("{username}")]
+        [HttpDelete]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(string username)
         {
@@ -118,6 +120,7 @@ namespace Catfish.API.Auth.Controllers
             }
 
         }
+       
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)

@@ -28,18 +28,19 @@ namespace Catfish.API.Auth.Services
         private readonly IAuthService _authService;
         public readonly IMapper _mapper;
 
-        public AccountService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, AuthDbContext db, string privateKey, string issuer, string audience, int jwtTokenLifeInMinutes, IAuthService authService, IMapper mapper)
+        public AccountService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, AuthDbContext db, IAuthService authService, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _db = db;
-            _privateKey = privateKey;
-            _issuer = issuer;
-            _audience = audience;
-            _jwtTokenLifeInMinutes = jwtTokenLifeInMinutes;
             _authService = authService;
             _mapper = mapper;
+
+            _privateKey = _configuration["JwtConfig:RsaPrivateKey"]; // LoadJwtPrivateKeyFromFile();
+            _issuer = _configuration["JwtConfig:Issuer"];
+            _audience = _configuration["JwtConfig:Audience"];
+            _jwtTokenLifeInMinutes = _configuration.GetValue("JwtConfig:TokenExpiryDurationInMinutes", 60);
         }
 
         #region Public Methods
@@ -156,9 +157,9 @@ namespace Catfish.API.Auth.Services
         #endregion
 
         #region Private Methods
-        private string LoadJwtPrivateKey()
+        private string LoadJwtPrivateKeyFromFile()
         {
-            if (!string.IsNullOrEmpty(_configuration["JWT:Asymmetric:PrivateKey"]))
+            if (!string.IsNullOrEmpty(_configuration["JwtConfig:RsaPrivateKey"]))
             {
                 List<string> key_lines = File.ReadAllLines(_configuration["JWT:Asymmetric:PrivateKey"]).ToList();
                 if (key_lines.First().IndexOf("private key", StringComparison.OrdinalIgnoreCase) > 0)
