@@ -45,6 +45,7 @@ namespace CatfishWebExtensions
                 });
             });
 
+            services.AddSingleton<ISecurity, CatfishSecurity>();
 
             //Catfish services
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
