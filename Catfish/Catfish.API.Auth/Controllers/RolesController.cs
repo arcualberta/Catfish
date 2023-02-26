@@ -3,6 +3,7 @@ using Catfish.API.Auth.Interfaces;
 using Catfish.API.Auth.Models;
 using CatfishExtensions.DTO;
 using CatfishExtensions.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> PutRole(TenantRoleInfo dto)
         {
             try
@@ -45,6 +47,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> PatchRole(AuthPatchModel dto)
         {
             try
