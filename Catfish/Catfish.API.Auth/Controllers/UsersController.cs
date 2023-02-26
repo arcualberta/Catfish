@@ -37,6 +37,7 @@ namespace Catfish.API.Auth.Controllers
             }
         }
 
+
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<UserInfo>>> GetUsers(int offset = 0, int max = int.MaxValue)
@@ -78,7 +79,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> PutUser(ChangePasswordModel model)
         {
             try

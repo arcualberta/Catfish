@@ -3,7 +3,6 @@ using Catfish.API.Auth.Interfaces;
 using Catfish.API.Auth.Models;
 using CatfishExtensions.DTO;
 using CatfishExtensions.Exceptions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +27,6 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<TenantInfo>>> GetTenants(int offset = 0, int max = int.MaxValue)
         {
             var tenants = await _db.Tenants.OrderBy(t => t.Name).Skip(offset).Take(max).ToListAsync();
@@ -36,7 +34,6 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<TenantInfo>> GetTenant(Guid id)
         {
             var tenant = await _db.Tenants
@@ -49,7 +46,6 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> PutTenant(TenantInfo dto)
         {
             Tenant tenant = _mapper.Map<Tenant>(dto);
@@ -69,7 +65,6 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<TenantInfo>> PostTenant(TenantInfo dto)
         {
             try
@@ -89,7 +84,6 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteTenant(Guid id)
         {
             try
@@ -112,7 +106,6 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPatch]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> PatchTenant(AuthPatchModel dto)
         {
             try
