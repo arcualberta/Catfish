@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Configuration;
 
 namespace CatfishWebExtensions
 {
@@ -45,7 +47,7 @@ namespace CatfishWebExtensions
                 });
             });
 
-            services.AddSingleton<ISecurity, CatfishSecurity>();
+            //services.AddSingleton<ISecurity, CatfishSecurity>();
 
             //Catfish services
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();

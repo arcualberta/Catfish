@@ -8,6 +8,9 @@ namespace CatfishExtensions.Interfaces
 {
     public interface ICatfishWebClient
     {
-        public Task<HttpResponseMessage> Get(string url);
+        Task<HttpResponseMessage> Get(string url);
+        Task<HttpResponseMessage> Get(string url, string jwtBearerToken);
+        Task<HttpResponseMessage> PostJson(string url, object payload);
+
     }
 }
