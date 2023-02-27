@@ -57,14 +57,35 @@ namespace CatfishWebExtensions.Services
 
         public async Task AuthorizeSuccessfulExternalLogin(LoginResult externalLoginResult, HttpContext httpContext)
         {
+            //Since this is an externally logged in user, we use an internally generated password for local and AuthApi logins
+            var password = GetPasswordFor(externalLoginResult.Email);
+
+            bool status = false;
+            var jwt = await _authProxy.Login(externalLoginResult.Email, password);
+
+            ////////if (string.IsNullOrEmpty(jwt) && _configuration.GetSection("TenancyConfig:AllowGuestLogin").Get<bool>())
+            ////////{
+            ////////    //Creating a guest login account
+            ////////    status = await _authProxy.Register(new RegistrationModel()
+            ////////    {
+            ////////        Username = externalLoginResult.Email,
+            ////////        Email = externalLoginResult.Email,
+            ////////        Password = password,
+            ////////        ConfirmPassword = password
+            ////////    });
+            ////////    if (!status)
+            ////////        return; //Registration failed. Nothing much can be done beyond this point.
+
+            ////////    jwt = await _authProxy.Login(externalLoginResult.Email, password);
+            ////////}
+
+            //Stores JWT token in session
+            ////////httpContext.Session.SetString("JWT", jwt);
+
+            //TODO: get the membership by decoding the jwt string instead of making another API call below.
             var membership = await _authProxy.GetMembership(externalLoginResult.Email);
-            if (membership == null && _configuration.GetSection("SiteConfig:AllowGuestLogin").Get<bool>())
-            {
-                //TODO:
-                //Creating a guest login account
-                string guestRole = _configuration.GetSection("SiteConfig:GuestRole").Value;
-                string tenantName = _configuration.GetSection("SiteConfig:Tenant").Value;
-            }
+            if (membership == null)
+                return; //No membership exist at all. Cannot proceed.
 
             //Since this method is called when an external login is successful, we should create a local account
             //if it doesn' exists
@@ -73,8 +94,9 @@ namespace CatfishWebExtensions.Services
                 throw new CatfishException($"Unable to get or create local user {externalLoginResult?.Email}");
 
             //Sign-in with the local user
-            var password = GetPasswordForLocalAccount(membership.User.Email);
-            var status = await _security.SignIn(httpContext, user.UserName, password);
+            
+            status = await _security.SignIn(httpContext, user.UserName, password);
+
 
         }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,12 @@ namespace CatfishExtensions.Services
             _configuration = configuration;
             _apiRoot = configuration.GetSection("SiteConfig:AuthMicroserviceUrl").Value?.TrimEnd('/');
         }
+
+        public async Task<string> Login(string username, string password)
+            => await _webClient.PostJson<string>($"{_apiRoot}/api/users/login/{username}", new LoginModel() { UserName = username, Password = password});
+
+        public async Task<bool> Register(RegistrationModel model)
+            => (await _webClient.PostJson($"{_apiRoot}/api/users", model)).StatusCode == HttpStatusCode.OK;
 
         public async Task<UserMembership> GetMembership(string username)
             => await _webClient.Get<UserMembership>($"{_apiRoot}/api/users/membership/{username}");

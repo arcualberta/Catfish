@@ -9,6 +9,8 @@ namespace CatfishExtensions.Interfaces
 {
     public interface IAuthApiProxy
     {
+        Task<string> Login(string username, string password);
+        Task<bool> Register(RegistrationModel model);
         Task<UserMembership> GetMembership(string username);
     }
 }

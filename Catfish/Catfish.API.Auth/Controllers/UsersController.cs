@@ -79,11 +79,13 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostUser(RegistrationModel model)
         {
             try
             {
+                if (User?.IsInRole("Admin") != true && model.SystemRoles.Any())
+                    return Unauthorized("System roles can only be specified by Authorization Service Administrators.");
+                
                 await _accountService.CreateUser(model);
                 return Ok();
             }
@@ -142,7 +144,7 @@ namespace Catfish.API.Auth.Controllers
        
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<ActionResult<string>> Login([FromBody] LoginModel model)
         {
             try
             {
