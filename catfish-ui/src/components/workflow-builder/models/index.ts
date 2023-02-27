@@ -53,7 +53,7 @@ export interface WorkflowTrigger {
 export interface WorkflowPopup {
     id: Guid;
     title: string;
-    message: string;
+    Message: string;
     buttons:PopupButton[]
 }
 export interface Authorization{

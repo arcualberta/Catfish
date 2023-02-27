@@ -10,23 +10,25 @@ import router from '@/router';
 export const useLoginStore = defineStore('LoginStore', {
     state: () => ({
         authorizationApiRoot: null as string | null,
-
-        //Creating loginResult property with it's setter and getter overridden to
-        //store and retrieve value through local storage.
-        get loginResult() {
-            if (localStorage.getItem("catfishLoginResult") === null) {
-                return {} as LoginResult;
+        loginResult: {
+            get: ()=>{
+                if (localStorage.getItem("catfishLoginResult") === null) {
+                    return {} as LoginResult;
+                }
+                let loginResultStr = localStorage.getItem("catfishLoginResult")
+                return JSON.parse(loginResultStr as string) as LoginResult;
+            },
+            set:(val: LoginResult)=> {
+                localStorage.setItem("catfishLoginResult", JSON.stringify(val))
             }
-            else{
-                return JSON.parse(localStorage.getItem("catfishLoginResult") as string) as LoginResult;
+        } as unknown as LoginResult,
+        jwtToken: {
+            get: () =>  localStorage.getItem("catfishJwtToken"),
+            set:(val: string) => {
+                localStorage.setItem("catfishJwtToken", val)
             }
-        },
-        set loginResult(val:LoginResult) { localStorage.setItem("catfishLoginResult", JSON.stringify(val)) },      
-
-        //Creating jwtToken property with it's setter and getter overridden to
-        //store and retrieve value through local storage.
-        get jwtToken() { return localStorage.getItem("catfishJwtToken") as string },
-        set jwtToken(val:string) { localStorage.setItem("catfishJwtToken", val) }       
+        } as unknown as string
+        
     }),
     actions: {
         authorize(jwt: string) {

@@ -96,7 +96,7 @@ export enum eRecipientType{
     Owner,
     FormField,
     MetadataField,
-    Email
+    EmailcurrentState
 }
 export const eRecipientTypeValues: eRecipientType[] = Object.keys(eRecipientType).filter(key => typeof eRecipientType[key as any] === 'number').sort().map(key => eRecipientType[key as any] as unknown as eRecipientType)
 export const getRecipientTypeLabel = (val: eRecipientType): string => splitCamelCase(eRecipientType[val])
@@ -132,3 +132,4 @@ export enum eFormView{
 }
 export const eFormViewValues: eFormView[] = Object.keys(eFormView).filter(key => typeof eFormView[key as any] === 'number').sort().map(key => eFormView[key as any] as unknown as eFormView)
 export const getFormViewLabel = (val: eFormView): string => splitCamelCase(eFormView[val])
+

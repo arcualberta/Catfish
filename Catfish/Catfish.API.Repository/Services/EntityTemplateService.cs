@@ -16,7 +16,7 @@ namespace Catfish.API.Repository.Services
         }
         public EntityTemplate GetEntityTemplate(Guid id)
         {
-            return _context.EntityTemplates!.Include(t => t.Forms).Where(t => t.Id == id).FirstOrDefault();
+            return _context.EntityTemplates!.Where(t => t.Id == id).FirstOrDefault();
         }
 
         public async Task<HttpStatusCode> AddEntity(EntityTemplate entityTemplate)

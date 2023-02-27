@@ -51,8 +51,8 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
-        [Authorize(Roles = "SysAdmin")]
-        public async Task<IActionResult> Post(EntityTemplate value)//public async Task<IActionResult> Post(EntityTemplate value)
+        [Authorize(Roles ="SysAdmin")]
+        public async Task<IActionResult> Post([FromBody] EntityTemplate value)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace Catfish.API.Repository.Controllers
         // PUT api/<EntityTeplatesController>/5
         [HttpPut("{id}")]
         [Authorize(Roles = "SysAdmin")]
-        public async Task<IActionResult> Put(Guid id, EntityTemplate value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] EntityTemplate value)
         {
             try
             {

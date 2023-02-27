@@ -24,11 +24,9 @@ namespace CatfishExtensions.Helpers
         string GetValue(string key, string defaultValue);
         string[] GetValue(string key, string[] defaultValue);
         int GetValue(string key, int defaultValue);
-        string GetSmtpServer();
-        string GetSmtpEmail();
-
         eLoginLinkPosition GetLoginLinkPosition();
-
+        string GetSmtpEmail();
+        string GetSmtpServer();
         public class ReadAppConfiguration : ICatfishAppConfiguration
         {
             private readonly IConfiguration _configuration;

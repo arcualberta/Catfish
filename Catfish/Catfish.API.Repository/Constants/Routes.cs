@@ -40,9 +40,5 @@
         {
             public const string Root = "api/background-job";
         }
-        internal static class Import
-        {
-            public const string Root = "api/import";
-        }
     }
 }
