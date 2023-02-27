@@ -100,7 +100,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> PutUser(ChangePasswordModel model)
         {
             try
@@ -123,7 +123,7 @@ namespace Catfish.API.Auth.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> DeleteUser(string username)
         {
             try

@@ -28,7 +28,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult> PutRole(TenantRoleInfo dto)
         {
             try
@@ -47,7 +47,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPatch]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult> PatchRole(AuthPatchModel dto)
         {
             try

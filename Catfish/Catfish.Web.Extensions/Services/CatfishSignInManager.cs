@@ -3,6 +3,7 @@ using CatfishWebExtensions.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
@@ -63,27 +64,35 @@ namespace CatfishWebExtensions.Services
             bool status = false;
             var jwt = await _authProxy.Login(externalLoginResult.Email, password);
 
-            ////////if (string.IsNullOrEmpty(jwt) && _configuration.GetSection("TenancyConfig:AllowGuestLogin").Get<bool>())
-            ////////{
-            ////////    //Creating a guest login account
-            ////////    status = await _authProxy.Register(new RegistrationModel()
-            ////////    {
-            ////////        Username = externalLoginResult.Email,
-            ////////        Email = externalLoginResult.Email,
-            ////////        Password = password,
-            ////////        ConfirmPassword = password
-            ////////    });
-            ////////    if (!status)
-            ////////        return; //Registration failed. Nothing much can be done beyond this point.
+            if (string.IsNullOrEmpty(jwt) && _configuration.GetSection("TenancyConfig:AllowGuestLogin").Get<bool>())
+            {
+                //Creating a guest login account
+                status = await _authProxy.Register(new RegistrationModel()
+                {
+                    Username = externalLoginResult.Email,
+                    Email = externalLoginResult.Email,
+                    Password = password,
+                    ConfirmPassword = password
+                });
+                if (!status)
+                    return; //Registration failed. Nothing much can be done beyond this point.
 
-            ////////    jwt = await _authProxy.Login(externalLoginResult.Email, password);
-            ////////}
+                jwt = await _authProxy.Login(externalLoginResult.Email, password);
+            }
+
+            if (string.IsNullOrEmpty(jwt))
+                return; //Sign-in with the Auth API was not successful. Cannot move forward with it.
 
             //Stores JWT token in session
-            ////////httpContext.Session.SetString("JWT", jwt);
+            httpContext.Session.SetString("JWT", jwt);
 
-            //TODO: get the membership by decoding the jwt string instead of making another API call below.
-            var membership = await _authProxy.GetMembership(externalLoginResult.Email);
+            //Get the membership by decoding the jwt string instead of making another API call below.
+            var token = _jwtProcessor.ReadToken(jwt);
+            var membershipStr = token.Payload.Claims.FirstOrDefault(c => c.Type == "membership")?.Value;
+            if(string.IsNullOrEmpty(membershipStr))
+                return; //No membership exist at all. Cannot proceed.
+
+            var membership = JsonConvert.DeserializeObject<UserMembership>(membershipStr);
             if (membership == null)
                 return; //No membership exist at all. Cannot proceed.
 
@@ -94,10 +103,7 @@ namespace CatfishWebExtensions.Services
                 throw new CatfishException($"Unable to get or create local user {externalLoginResult?.Email}");
 
             //Sign-in with the local user
-            
             status = await _security.SignIn(httpContext, user.UserName, password);
-
-
         }
 
         private async Task<User> GetOrCreateLocalUser(UserMembership membership)
@@ -143,7 +149,20 @@ namespace CatfishWebExtensions.Services
                     foreach(var role in expectedLocalRoles)
                     {
                         if(!localRoles.Contains(role))
+                        {
+                            if (!(await _roleManager.RoleExistsAsync(role)))
+                            {
+                                await _roleManager.CreateAsync(new Role()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = role,
+                                    NormalizedName = role.ToUpper(),
+                                });
+                            }
+
                             await _userManager.AddToRoleAsync(user, role);
+
+                        }
                     }
                }
 
