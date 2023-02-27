@@ -13,10 +13,12 @@ namespace Catfish.API.Auth.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly IAuthService _authService;
 
-        public UsersController(IAccountService accountService)
+        public UsersController(IAccountService accountService, IAuthService authService)
         {
             _accountService = accountService;
+            _authService = authService;
         }
 
         [HttpPost("seed")]
@@ -43,10 +45,28 @@ namespace Catfish.API.Auth.Controllers
         {
             try
             {
-                //
-                //int offset = 0; int max = int.MaxValue;
                 var ret = await _accountService.GetUsers(offset, max);
                 return Ok(ret);
+            }
+            catch (CatfishException ex)
+            {
+                return StatusCode((int)ex.HttpStatusCode, ex.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("membership/{username}")]
+        public async Task<ActionResult<UserMembership>> GeMembership(string username)
+        {
+            try
+            {
+                var user = await _accountService.GetUser(username);
+                var membership = await _authService.GetMembership(user);
+
+                return Ok(membership);
             }
             catch (CatfishException ex)
             {

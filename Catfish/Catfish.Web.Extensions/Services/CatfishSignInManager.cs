@@ -1,4 +1,7 @@
 ﻿using CatfishExtensions.DTO;
+using CatfishWebExtensions.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
@@ -11,16 +14,18 @@ namespace CatfishWebExtensions.Services
 {
     internal class CatfishSignInManager : ICatfishSignInManager
     {
+        private string _authUrlRoot;
+        private readonly string _passwordSalt;
+
         private readonly IConfiguration _configuration;
         private readonly ISecurity _security;
         private readonly IJwtProcessor _jwtProcessor;
         private readonly ICatfishWebClient _catfishWebClient;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        private string _authUrlRoot;
-        private readonly string _passwordSalt;
+        private readonly IAuthApiProxy _authProxy;
 
-        public CatfishSignInManager(IConfiguration configuration, ISecurity security, IJwtProcessor jwtProcessor, ICatfishWebClient catfishWebClient, UserManager<User> userManager, RoleManager<Role> roleManager)
+        public CatfishSignInManager(IConfiguration configuration, ISecurity security, IJwtProcessor jwtProcessor, ICatfishWebClient catfishWebClient, UserManager<User> userManager, RoleManager<Role> roleManager, IAuthApiProxy authApiProxy)
         {
             _configuration = configuration;
             _security = security;
@@ -30,6 +35,7 @@ namespace CatfishWebExtensions.Services
             _roleManager = roleManager;
             _authUrlRoot = _configuration.GetSection("SiteConfig:AuthMicroserviceUrl").Value?.TrimEnd('/');
             _passwordSalt = _configuration.GetSection("SiteConfig:LocalAccountPasswordSalt").Value;
+            _authProxy = authApiProxy;
         }
 
         public async Task<bool> SignIn(User user, HttpContext httpContext)
@@ -64,6 +70,28 @@ namespace CatfishWebExtensions.Services
             {
                 return false;
             }
+        }
+
+        public async Task AuthorizeSuccessfulExternalLogin(LoginResult externalLoginResult)
+        {
+            var membership = await _authProxy.GetMembership(externalLoginResult.Email);
+            if (membership != null)
+            {
+
+            }
+
+            ////var user = await catfishUserManager.GetUser(result);
+            ////if (user == null)
+            ////    throw new CatfishException("Unable to retrieve or create user");
+
+            //////Obtain the list of global roles of the user
+            ////result.GlobalRoles = await catfishUserManager.GetGlobalRoles(user);
+
+            ////bool signInStatus = false;
+            ////if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
+            ////    signInStatus = await catfishSignInManager.SignIn(user, request.HttpContext);
+
+
         }
 
         private async Task<JwtSecurityToken> AuthorizeJwt(string username, string password)

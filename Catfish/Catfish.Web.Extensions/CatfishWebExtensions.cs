@@ -84,33 +84,25 @@ namespace CatfishWebExtensions
             RegisterBlocks();
 
             //Google Login
-            (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt, 
-                IGoogleIdentity googleIdentity, 
-                IConfiguration configuration, 
-                HttpRequest request, 
+            (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt,
+                IGoogleIdentity googleIdentity,
+                IConfiguration configuration,
+                HttpRequest request,
                 ICatfishUserManager catfishUserManager,
                 ICatfishSignInManager catfishSignInManager) =>
             {
-                try
+                //Decode the login result
+                var result = await googleIdentity.GetUserLoginResult(jwt);
+
+                if (result.Success)
                 {
-                    var result = await googleIdentity.GetUserLoginResult(jwt);
+                    await catfishSignInManager.AuthorizeSuccessfulExternalLogin(result);
 
-                    var user = await catfishUserManager.GetUser(result);
-                    if (user == null)
-                        throw new CatfishException("Unable to retrieve or create user");
+                    var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
+                    if (string.IsNullOrEmpty(siteRoot))
+                        siteRoot = "/";
 
-                    //Obtain the list of global roles of the user
-                    result.GlobalRoles = await catfishUserManager.GetGlobalRoles(user);
-
-                    bool signInStatus = false;
-                    if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
-                        signInStatus = await catfishSignInManager.SignIn(user, request.HttpContext);
-                   
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    return new LoginResult();
+                    request.HttpContext.Response.Redirect(siteRoot);
                 }
             });
 
@@ -118,13 +110,10 @@ namespace CatfishWebExtensions
             (builder as WebApplication)?.MapGet("/logout", async (IConfiguration configuration, HttpRequest request, ICatfishSignInManager catfishSignInManager) =>
             {
                 await catfishSignInManager.SignOut(request.HttpContext);
-                if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
-                {
-                    var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
-                    if (string.IsNullOrEmpty(siteRoot))
-                        siteRoot = "/";
-                    request.HttpContext.Response.Redirect(siteRoot);
-                }
+                var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
+                if (string.IsNullOrEmpty(siteRoot))
+                    siteRoot = "/";
+                request.HttpContext.Response.Redirect(siteRoot);
             });
 
 

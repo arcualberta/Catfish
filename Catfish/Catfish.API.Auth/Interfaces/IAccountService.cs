@@ -14,5 +14,6 @@ namespace Catfish.API.Auth.Interfaces
         Task<IList<UserInfo>> GetUsers(int offset = 0, int max = int.MaxValue);
         Task<string> GetSignedToken(LoginResult externalLoginResult);
         Task<string> GetSignedToken(IdentityUser user);
+        Task<IdentityUser> GetUser(string username);
     }
 }

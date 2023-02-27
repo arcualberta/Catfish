@@ -15,6 +15,13 @@ namespace CatfishExtensions.Services
             return response;
         }
 
+        public async Task<T> Get<T>(string url)
+        {
+            var response = await _httpClient.GetAsync(url);
+            string responseString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(responseString);
+        }
+
         public async Task<HttpResponseMessage> Get(string url, string jwtBearerToken)
         {
             _httpClient.DefaultRequestHeaders.Remove("Authorization");

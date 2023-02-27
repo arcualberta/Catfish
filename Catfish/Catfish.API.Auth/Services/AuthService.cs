@@ -108,7 +108,9 @@ namespace Catfish.API.Auth.Services
             if (user == null)
                 return membership;
 
-            membership.User = new UserInfo() { Id = Guid.Empty, IdentityUserId = user.Id, UserName = user.UserName, Email = user.Email };
+            var systemRoles = await _userManager.GetRolesAsync(user);
+
+            membership.User = new UserInfo() { Id = Guid.Empty, IdentityUserId = user.Id, UserName = user.UserName, Email = user.Email, SystemRoles = systemRoles };
 
             //Get the list of Tenant-User objects where this user is assciated with
             var userTenancies = await _db.TenantUsers

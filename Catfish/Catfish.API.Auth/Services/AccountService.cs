@@ -169,6 +169,9 @@ namespace Catfish.API.Auth.Services
             return token;
         }
 
+        public async Task<IdentityUser> GetUser(string username)
+            => await _userManager.FindByNameAsync(username);
+
         #endregion
 
         #region Private Methods
