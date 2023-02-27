@@ -35,7 +35,6 @@ namespace Catfish.API.Authorization.Controllers
 
         // POST api/<GoogleIdentityController>
         [HttpPost]
-        //public async Task<LoginResult> Post([FromBody] string jwt) //
         public async Task<string> Post([FromBody] string jwt)
         {
             try
@@ -46,7 +45,7 @@ namespace Catfish.API.Authorization.Controllers
             }
             catch(Exception)
             {
-                return String.Empty; // new LoginResult();
+                return String.Empty;
             }
         }
     }
