@@ -1,6 +1,7 @@
 ﻿
 namespace CatfishWebExtensions.Services
 {
+    [Obsolete]
     public class CatfishUserManager : ICatfishUserManager
     {
         private readonly UserManager<User> _userManager;
