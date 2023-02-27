@@ -21,11 +21,7 @@ namespace CatfishExtensions.Services
         }
 
         public async Task<UserMembership> GetMembership(string username)
-        {
-            var membership = await _webClient.Get<UserMembership>($"{_apiRoot}/membership/{username}");
-
-            return membership;
-        }
+            => await _webClient.Get<UserMembership>($"{_apiRoot}/api/users/membership/{username}");
 
     }
 }

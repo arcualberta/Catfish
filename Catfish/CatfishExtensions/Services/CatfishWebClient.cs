@@ -18,7 +18,7 @@ namespace CatfishExtensions.Services
         public async Task<T> Get<T>(string url)
         {
             var response = await _httpClient.GetAsync(url);
-            string responseString = await response.Content.ReadAsStringAsync();
+            string responseString = response.IsSuccessStatusCode ? await response.Content.ReadAsStringAsync() : "";
             return JsonConvert.DeserializeObject<T>(responseString);
         }
 
@@ -36,6 +36,21 @@ namespace CatfishExtensions.Services
             var payloadString = JsonConvert.SerializeObject(payload);
             HttpContent content = new StringContent(payloadString, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(url, content);
+            return response;
+        }
+
+        public async Task<T> PostJson<T>(string url, object payload)
+        {
+            var response = await PostJson(url, payload);
+            string responseString = response.IsSuccessStatusCode ? await response.Content.ReadAsStringAsync() : "";
+            return JsonConvert.DeserializeObject<T>(responseString);
+        }
+
+        public async Task<HttpResponseMessage> PatchJson(string url, object payload)
+        {
+            var payloadString = JsonConvert.SerializeObject(payload);
+            HttpContent content = new StringContent(payloadString, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PatchAsync(url, content);
             return response;
         }
 

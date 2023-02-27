@@ -48,6 +48,14 @@ namespace Catfish.API.Auth.Controllers
             return (tenant== null) ? NotFound() : Ok(_mapper.Map<TenantInfo>(tenant));
         }
 
+        [HttpGet("by-name/{name}")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<TenantInfo>>> GetTenant(string name)
+        {
+            var tenant = await _db.Tenants.FirstOrDefaultAsync(t => t.Name == name);
+            return (tenant == null) ? NotFound() : Ok(_mapper.Map<TenantInfo>(tenant));
+        }
+
         [HttpPut]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> PutTenant(TenantInfo dto)

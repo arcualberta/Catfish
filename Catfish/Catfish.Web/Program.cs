@@ -1,4 +1,7 @@
 
+using CatfishExtensions.Interfaces;
+using Microsoft.Extensions.Hosting.Internal;
+
 try
 {
 
@@ -67,8 +70,12 @@ try
     // Initialize Piranha
         App.Init(options.Api);
 
+//        App.Hooks.Site.RegisterOnLoad((site) => {
+//            var tenantApiProxy = options.Builder.ApplicationServices.GetService<ITenantApiProxy>();
+//            tenantApiProxy.EnsureTenancy().Wait();
+//        });
 
-    // Build content types
+        // Build content types
         new ContentTypeBuilder(options.Api)
             .AddAssembly(typeof(Program).Assembly)
             .AddAssembly(typeof(CatfishWebsite).Assembly)

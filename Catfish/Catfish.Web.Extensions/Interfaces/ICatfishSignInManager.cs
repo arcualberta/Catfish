@@ -10,6 +10,6 @@ namespace CatfishWebExtensions.Interfaces
     {
         Task<bool> SignIn(User user, HttpContext httpContext);
         Task<bool> SignOut(HttpContext context);
-        Task AuthorizeSuccessfulExternalLogin(LoginResult externalLoginResult);
+        Task AuthorizeSuccessfulExternalLogin(LoginResult externalLoginResult, HttpContext httpContext);
     }
 }

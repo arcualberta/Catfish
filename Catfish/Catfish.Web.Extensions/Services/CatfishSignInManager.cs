@@ -1,6 +1,7 @@
 ﻿using CatfishExtensions.DTO;
 using CatfishWebExtensions.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Piranha.AspNetCore.Identity.Data;
 using System;
@@ -16,6 +17,7 @@ namespace CatfishWebExtensions.Services
     {
         private string _authUrlRoot;
         private readonly string _passwordSalt;
+        private readonly string _tenantName;
 
         private readonly IConfiguration _configuration;
         private readonly ISecurity _security;
@@ -33,9 +35,11 @@ namespace CatfishWebExtensions.Services
             _catfishWebClient = catfishWebClient;
             _userManager = userManager;
             _roleManager = roleManager;
+            _authProxy = authApiProxy;
+
             _authUrlRoot = _configuration.GetSection("SiteConfig:AuthMicroserviceUrl").Value?.TrimEnd('/');
             _passwordSalt = _configuration.GetSection("SiteConfig:LocalAccountPasswordSalt").Value;
-            _authProxy = authApiProxy;
+            _tenantName = _configuration.GetSection("TenancyConfig:Name").Value;
         }
 
         public async Task<bool> SignIn(User user, HttpContext httpContext)
@@ -72,13 +76,28 @@ namespace CatfishWebExtensions.Services
             }
         }
 
-        public async Task AuthorizeSuccessfulExternalLogin(LoginResult externalLoginResult)
+
+
+        public async Task AuthorizeSuccessfulExternalLogin(LoginResult externalLoginResult, HttpContext httpContext)
         {
             var membership = await _authProxy.GetMembership(externalLoginResult.Email);
-            if (membership != null)
+            if (membership == null && _configuration.GetSection("SiteConfig:AllowGuestLogin").Get<bool>())
             {
-
+                //TODO:
+                //Creating a guest login account
+                string guestRole = _configuration.GetSection("SiteConfig:GuestRole").Value;
+                string tenantName = _configuration.GetSection("SiteConfig:Tenant").Value;
             }
+
+            //Since this method is called when an external login is successful, we should create a local account
+            //if it doesn' exists
+            var user = await GetOrCreateLocalUser(membership);
+            if (user == null)
+                throw new CatfishException($"Unable to get or create local user {externalLoginResult?.Email}");
+
+            //Sign-in with the local user
+            var password = GetPasswordForLocalAccount(membership.User.Email);
+            var status = await _security.SignIn(httpContext, user.UserName, password);
 
             ////var user = await catfishUserManager.GetUser(result);
             ////if (user == null)
@@ -93,6 +112,65 @@ namespace CatfishWebExtensions.Services
 
 
         }
+
+        private async Task<User> GetOrCreateLocalUser(UserMembership membership)
+        {
+
+            if (string.IsNullOrEmpty(membership?.User?.UserName))
+                return null;
+
+            try
+            {
+                //Get the user identified in the login result
+                User user = await _userManager.FindByNameAsync(membership.User.UserName);
+
+                if (user == null)
+                {
+                    //Creating a profile
+                    user = new User();
+                    user.UserName = membership.User.UserName;
+                    user.NormalizedUserName = user.UserName.ToUpper();
+                    user.Email = membership.User.Email;
+                    user.EmailConfirmed = true;
+                    var password = GetPasswordForLocalAccount(membership.User.Email);
+                    await _userManager.CreateAsync(user, password);
+                }
+
+                if(user != null)
+                {
+                    //Combining the membership's global roles and the currrent groups membership roles
+                    //into the expected local roles. 
+                    var expectedLocalRoles = new List<string>(membership.User.SystemRoles);
+                    var tenancyRoles = membership.Tenancy?.FirstOrDefault(t => t.Name == _tenantName)?.Roles.Select(r => r.Name);
+                    if (tenancyRoles?.Any() == true)
+                        expectedLocalRoles.AddRange(tenancyRoles);
+
+
+                    //Making sure the user's global roles and membership are aligned with the local roles
+                    var localRoles = await _userManager.GetRolesAsync(user);
+                    foreach(var role in localRoles)
+                    {
+                        if(!expectedLocalRoles.Contains(role))
+                            await _userManager.RemoveFromRoleAsync(user, role);
+                    }
+                    foreach(var role in expectedLocalRoles)
+                    {
+                        if(!localRoles.Contains(role))
+                            await _userManager.AddToRoleAsync(user, role);
+                    }
+               }
+
+                return user;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        private string GetPasswordForLocalAccount(string userEmail)
+            => CryptographyHelper.GenerateHash(userEmail, _passwordSalt);
 
         private async Task<JwtSecurityToken> AuthorizeJwt(string username, string password)
         {

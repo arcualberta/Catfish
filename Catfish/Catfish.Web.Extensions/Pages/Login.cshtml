@@ -39,9 +39,7 @@
                 if (!response.ok)
                     console.log('Authentication API call failed')
                 else
-                    return response.json();
-        }).then(data => {
-                window.location.href = '@redirectLocation';
+                    window.location.href = '@redirectLocation';
         })
         .catch((error) => {
                 console.error('Authentication API Error:', error);

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using CatfishExtensions.DTO;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
 
 namespace CatfishWebExtensions
@@ -96,7 +98,7 @@ namespace CatfishWebExtensions
 
                 if (result.Success)
                 {
-                    await catfishSignInManager.AuthorizeSuccessfulExternalLogin(result);
+                    await catfishSignInManager.AuthorizeSuccessfulExternalLogin(result, request.HttpContext);
 
                     var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
                     if (string.IsNullOrEmpty(siteRoot))
@@ -116,6 +118,15 @@ namespace CatfishWebExtensions
                 request.HttpContext.Response.Redirect(siteRoot);
             });
 
+            //Initializing tenancy
+            (builder as WebApplication)?.MapGet("/init", async (IConfiguration configuration, HttpRequest request, ITenantApiProxy tenantApiProxy) =>
+            {
+                await tenantApiProxy.EnsureTenancy();
+                var siteRoot = configuration.GetSection("SiteConfig:SiteUrl").Value;
+                if (string.IsNullOrEmpty(siteRoot))
+                    siteRoot = "/";
+                request.HttpContext.Response.Redirect(siteRoot);
+            });
 
             return builder
                 .UseStaticFiles(new StaticFileOptions
@@ -134,9 +145,9 @@ namespace CatfishWebExtensions
                     RequestPath = "/Pages/DisplayTemplates"
                 })
                 .UseStaticFiles(new StaticFileOptions
-                 {
-                     FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.css"),
-                     RequestPath = "/assets/css"
+                {
+                    FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.css"),
+                    RequestPath = "/assets/css"
                 })
                  .UseStaticFiles(new StaticFileOptions
                  {
@@ -157,7 +168,7 @@ namespace CatfishWebExtensions
                  {
                      FileProvider = new EmbeddedFileProvider(typeof(Module).Assembly, "CatfishWebExtensions.assets.public.vendors.vuerouter"),
                      RequestPath = "/assets/public/vendors/vuerouter"
-                 });
+                 });                 ;
         }
 
 
