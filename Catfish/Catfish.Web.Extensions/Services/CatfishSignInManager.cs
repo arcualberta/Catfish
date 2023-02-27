@@ -42,27 +42,6 @@ namespace CatfishWebExtensions.Services
             _tenantName = _configuration.GetSection("TenancyConfig:Name").Value;
         }
 
-        public async Task<bool> SignIn(User user, HttpContext httpContext)
-        {
-            try
-            {
-                var password = GetPasswordFor(user.Email);
-                var token = await AuthorizeJwt(user.UserName, password);
-                if(token != null)
-                {
-                    await EnsureLocalUserExists(token, password);
-                }
-
-                //Sign-in the user with the local account so that the permissions are granted properly.
-                var status = await _security.SignIn(httpContext, user.UserName, password);
-                return status;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
         public async Task<bool> SignOut(HttpContext context)
         {
             try
@@ -75,8 +54,6 @@ namespace CatfishWebExtensions.Services
                 return false;
             }
         }
-
-
 
         public async Task AuthorizeSuccessfulExternalLogin(LoginResult externalLoginResult, HttpContext httpContext)
         {
@@ -98,18 +75,6 @@ namespace CatfishWebExtensions.Services
             //Sign-in with the local user
             var password = GetPasswordForLocalAccount(membership.User.Email);
             var status = await _security.SignIn(httpContext, user.UserName, password);
-
-            ////var user = await catfishUserManager.GetUser(result);
-            ////if (user == null)
-            ////    throw new CatfishException("Unable to retrieve or create user");
-
-            //////Obtain the list of global roles of the user
-            ////result.GlobalRoles = await catfishUserManager.GetGlobalRoles(user);
-
-            ////bool signInStatus = false;
-            ////if (bool.TryParse(configuration.GetSection("SiteConfig:IsWebApp").Value, out bool isWebApp) && isWebApp)
-            ////    signInStatus = await catfishSignInManager.SignIn(user, request.HttpContext);
-
 
         }
 
