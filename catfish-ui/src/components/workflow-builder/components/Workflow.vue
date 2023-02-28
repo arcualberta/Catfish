@@ -38,6 +38,7 @@ import { Guid } from 'guid-typescript';
 </script>
 
 <template>
+  {{ store.workflow }}
   <div class="col-sm-6">
     <b-input-group prepend="Name" class="mt-3">
       <b-form-input v-model="model.name" ></b-form-input>

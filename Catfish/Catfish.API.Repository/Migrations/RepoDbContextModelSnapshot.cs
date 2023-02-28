@@ -169,14 +169,35 @@ namespace Catfish.API.Repository.Migrations
                     b.ToTable("CF_Repo_Forms");
                 });
 
-            modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.WorkflowDbRecord", b =>
+
+            modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.Trigger", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("eTriggerType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CF_Repo_Triggers");
+                });
+
+
+            modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.WorkflowDbRecord", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -192,9 +213,6 @@ namespace Catfish.API.Repository.Migrations
                     b.Property<string>("SerializedWorkflow")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

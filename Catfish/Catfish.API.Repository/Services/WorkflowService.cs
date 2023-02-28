@@ -12,10 +12,13 @@ namespace Catfish.API.Repository.Services
     public class WorkflowService : IWorkflowService
     {
         private readonly RepoDbContext _context;
+
         public readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
+
+
 
         public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IUserService userService, IEmailService emailService)
         {
@@ -23,6 +26,7 @@ namespace Catfish.API.Repository.Services
             _entityTemplateService = entityTemplateService;
             _userService = userService;
             _emailService = emailService;
+
         }
 
         public async Task<WorkflowDbRecord?> GetWorkflowDbRecord(Guid id)
@@ -48,7 +52,6 @@ namespace Catfish.API.Repository.Services
             List<WorkflowDbRecord> workflowRecords = await _context.Workflows.ToListAsync();
             return workflowRecords.Select(wr => wr.Workflow).ToList();
         }
-
         public Workflow GetWorkFlowDetails(Guid id)
         {
             WorkflowDbRecord workflowRecord =  _context.Workflows.Where(w => w.Id == id).FirstOrDefault();

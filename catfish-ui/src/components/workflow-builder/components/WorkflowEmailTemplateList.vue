@@ -11,7 +11,6 @@
     const store = useWorkflowBuilderStore();
     const emailTemplates = ref(store.workflow?.emailTemplates);
     const addTemplates = ref(false);
-    const editMode = ref(false);
     const template = ref({} as unknown as WorkflowEmailTemplate);
     let disabled = ref(true);
     const ToggleAddStates = () => (addTemplates.value = !addTemplates.value);
@@ -58,7 +57,6 @@
         template.value.emailSubject = templateValues[0].emailSubject
         template.value.emailBody = templateValues[0].emailBody
         template.value.id = templateValues[0].id
-        editMode.value = true
         addTemplates.value = true
     }
     const resetFields = () => {
@@ -67,7 +65,6 @@
         template.value.description = "";
         template.value.emailSubject = "";
         template.value.emailBody = "";
-        editMode.value = false;
     }
 </script>
 
@@ -106,7 +103,7 @@
             </div>
         </template>
         <template v-slot:footer>
-            <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addTemplate(template.id as unknown as Guid)"><span v-if="!editMode">Add</span><span v-if="editMode">Update</span></button>
+            <button type="button" class="modal-add-btn" aria-label="Close modal" :disabled="disabled" @click="addTemplate(template.id as unknown as Guid)">Add</button>
         </template>
     </ConfirmPopUp>
 </template>

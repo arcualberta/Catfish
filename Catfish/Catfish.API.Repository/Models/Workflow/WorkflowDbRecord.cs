@@ -21,26 +21,29 @@ namespace Catfish.API.Repository.Models.Workflow
             get => Workflow.Description;
             set => Workflow.Description = value;
         }
+
         public string SerializedWorkflow
         { 
             get => JsonConvert.SerializeObject(Workflow); 
             set => Workflow = string.IsNullOrEmpty(value) ? new Workflow() : JsonConvert.DeserializeObject<Workflow>(value!)!; 
         }
+
         public WorkflowDbRecord()
         {
             Workflow = new Workflow();
         }
+
         public WorkflowDbRecord(Workflow workflow)
         {
             Workflow = workflow;
         }
+
         public Guid EntityTemplateId 
         {
             get => Workflow.EntityTemplateId; 
             set => Workflow.EntityTemplateId = value;
         }
-        public DateTime Created { get; set; }
-        public DateTime Updated { get; set; }
+
         public EntityTemplate EntityTemplate { get; set; }
     }
 }

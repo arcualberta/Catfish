@@ -36,7 +36,6 @@
         trigger.value.templateId = Guid.EMPTY as unknown as Guid;
         resetRecipients()
     }
-
     const resetRecipients = () => {
         recipient.value.emailType = eEmailType.To;
         recipient.value.recipientType = eRecipientType.Owner;
@@ -105,20 +104,20 @@
         recipients.value = [];
         resetFields()
     }
-    
+
     const addRecipient = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
         let newRecipient = {
             id : Guid.create().toString() as unknown as Guid,
             emailType : recipient.value.emailType,
-            recipientType : recipient.value.recipientType,
+            recipienType : recipient.value.recipienType,
             roleId : recipient.value.roleId,
             users: recipient.value.users,
             email : recipient.value.email,
-            formId : recipient.value.formId,
-            fieldId : recipient.value.fieldId,
-            metadataFormId : recipient.value.metadataFormId,
-            metadataFeildId : recipient.value.metadataFeildId
+            FormId : recipient.value.FormId,
+            FeildId : recipient.value.FeildId,
+            MetadataFormId : recipient.value.MetadataFormId,
+            MetadataFeildId : recipient.value.MetadataFeildId
         } as unknown as Recipient
         recipients.value?.push(newRecipient);
         addRecipients.value = false;
@@ -142,9 +141,7 @@
     const ToggleAddRecipients = () => {
         addRecipients.value = !addRecipients.value;
         recipient.value.id =  Guid.EMPTY as unknown as Guid;
-    }   
-    
-    
+    }  
 </script>
 
 <template>
@@ -173,11 +170,7 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in toRecipients" >
-                        <span v-if="recipient.recipientType==eRecipientType.Owner">Owner</span>
-                        <span>{{getRole(recipient.roleId as Guid)}}</span> 
-                        <span>{{recipient.email}}</span>
-                        <span v-if="recipient.recipientType==eRecipientType.FormField"> ( Form: {{ getFormName(recipient.formId as Guid) }} - Field: {{ getFieldTitle(getFieldName(recipient.formId as Guid, recipient.fieldId as Guid), null)}})</span>
-                        <span v-if="recipient.recipientType==eRecipientType.MetadataField">( Metadata Form: {{ getFormName(recipient.metadataFormId as Guid) }} - Metadata Field: {{ getFieldTitle(getFieldName(recipient.formId as Guid, recipient.fieldId as Guid), null) }})</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{getRole(recipient.roleId as Guid)}}</span><span>{{recipient.email}}</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -188,11 +181,7 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in ccRecipients" >
-                        <span v-if="recipient.recipientType==eRecipientType.Owner">Owner</span>
-                        <span>{{getRole(recipient.roleId as Guid)}}</span>
-                        <span>{{recipient.email}}</span>
-                        <span v-if="recipient.recipientType==eRecipientType.FormField">( Form: {{ getFormName(recipient.formId as Guid) }} - Field: {{ getFieldTitle(getFieldName(recipient.formId as Guid, recipient.fieldId as Guid), null) }})</span>
-                        <span v-if="recipient.recipientType==eRecipientType.MetadataField">( Metadata Form: {{ getFormName(recipient.formId as Guid) }} - Metadata Field: {{ getFieldTitle(getFieldName(recipient.formId as Guid, recipient.fieldId as Guid), null) }})</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span><span>{{getRole(recipient.roleId as Guid)}}</span><span>{{recipient.email}}</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -203,11 +192,11 @@
             <div class="list-recipient">
                 <b-list-group>
                     <b-list-group-item v-for="recipient in bccRecipients" >
-                        <span v-if="recipient.recipientType==eRecipientType.Owner">Owner</span>
+                        <span v-if="recipient.recipienType==eRecipientType.Owner">Owner</span>
                         <span>{{getRole(recipient.roleId as Guid)}}</span>
                         <span>{{recipient.email}}</span>
-                        <span v-if="recipient.recipientType==eRecipientType.FormField">( Form: {{ getFormName(recipient.formId as Guid) }} - Field: {{ getFieldTitle(getFieldName(recipient.formId as Guid, recipient.fieldId as Guid), null) }})</span>
-                        <span v-if="recipient.recipientType==eRecipientType.MetadataField">( Metadata Form: {{ getFormName(recipient.formId as Guid) }} - Metadata Field: {{ getFieldTitle(getFieldName(recipient.formId as Guid, recipient.fieldId as Guid), null) }})</span>
+                        <span v-if="recipient.recipienType==eRecipientType.FormField">({{ recipient.FormId }}-{{ recipient.FeildId }})</span>
+                        <span v-if="recipient.recipienType==eRecipientType.MetadataField">({{ recipient.MetadataFormId }}-{{ recipient.MetadataFeildId }})</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteRecipient(recipient.id)"/>
                         </span>
@@ -228,12 +217,12 @@
                         </select>
                     </b-input-group>
                     <b-input-group prepend="Recipient Type" class="mt-3">
-                        <select class="form-select" v-model="recipient.recipientType">
+                        <select class="form-select" v-model="recipient.recipienType">
                             <option v-for="con in eRecipientTypeValues" :value="con">{{getRecipientTypeLabel(con)}}</option>
                         </select>
                     </b-input-group>
 
-                    <div v-if="recipient.recipientType == eRecipientType.Role">
+                    <div v-if="recipient.recipienType == eRecipientType.Role">
                         <b-input-group prepend="Role" class="mt-3">
                             <select class="form-select" v-model="recipient.roleId">
                                 <option v-for="role in roleList" :value="role.id">{{role.name}}</option>
@@ -248,6 +237,7 @@
                             </b-list-group-item>
                         </b-list-group>
                     </div>
+
                     <b-input-group prepend="Users" class="mt-3">
                         <select class="form-select" v-model="selectedUserId">
                             <option v-for="user in getUsers(recipient.roleId as Guid)" :value="user.id">{{user.userName}}</option>
@@ -260,38 +250,38 @@
                             <b-form-input v-model="(recipient.email as string)" ></b-form-input>
                         </b-input-group>
                     </div>
-                    <div v-if="recipient.recipientType == eRecipientType.FormField">
+                    <div v-if="recipient.recipienType == eRecipientType.FormField">
                         <b-input-group  prepend="Form" class="mt-3">
-                            <select class="form-select" v-model="recipient.formId">
+                            <select class="form-select" v-model="recipient.FormId">
                                 <option v-for="form in store.entityTemplate?.entityTemplateSettings.dataForms" :value="form.id">{{form.name}}</option>
                             </select>
                         </b-input-group>
                         <b-input-group  prepend="Field" class="mt-3">
-                            <select class="form-select" v-model="recipient.fieldId">
-                                <option v-for="field in getField(recipient.formId as Guid)?.fields" :value="field.id">{{getFieldTitle(field as Field, null)}}</option>
+                            <select class="form-select" v-model="recipient.FeildId">
+                                <option v-for="field in getField(recipient.FormId as Guid)?.fields" :value="field.id">{{getFieldTitle(field as Field, null)}}</option>
                             </select>
                         </b-input-group>
                     </div>
-                    <div v-if="recipient.recipientType == eRecipientType.MetadataField">
+                    <div v-if="recipient.recipienType == eRecipientType.MetadataField">
                         <b-input-group  prepend="Metadata Form" class="mt-3">
-                            <select class="form-select" v-model="recipient.metadataFormId">
+                            <select class="form-select" v-model="recipient.MetadataFormId">
                                 <option v-for="form in store.entityTemplate?.entityTemplateSettings.metadataForms" :value="form.id">{{form.name}}</option>
                             </select>
                         </b-input-group>
                         <b-input-group  prepend="Metadata Field" class="mt-3">
-                            <select class="form-select" v-model="recipient.metadataFeildId">
-                                <option v-for="field in getField(recipient.metadataFormId as Guid)?.fields" :value="field.id">{{getFieldTitle(field as Field, null)}}</option>
+                            <select class="form-select" v-model="recipient.MetadataFeildId">
+                                <option v-for="field in getField(recipient.MetadataFormId as Guid)?.fields" :value="field.id">{{getFieldTitle(field as Field, null)}}</option>
                             </select>
                         </b-input-group>
                     </div>
                 </div>
                 </template>
                 <template v-slot:footer>
-                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addRecipient(recipient.id as Guid)">Add</button>
+                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addRecipient(recipient.id as Guid)">Add recipient</button>
                 </template>
             </ConfirmPopUp>
-            <div style="margin-left: 85%;">
-                <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addTrigger(trigger.id as Guid)"><span v-if="!props.editMode">Add</span><span v-if="props.editMode">Update</span></button>
+            <div style="margin-left: 90%;">
+                <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addTrigger(trigger.id as Guid)">Add</button>
             </div>
             
         </div>

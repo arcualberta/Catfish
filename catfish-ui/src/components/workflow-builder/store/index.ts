@@ -16,8 +16,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         showTriggerPanel : false as boolean,
         showPopupPanel : false as boolean,
         entityTemplate: null as EntityTemplate | null,
-        get jwtToken() { return localStorage.getItem("catfishJwtToken") as string },
-        set jwtToken(val:string) { localStorage.setItem("catfishJwtToken", val) }
+        jwtToken: null as string | null 
     }),
     actions: {
         createNewWorkflow() {
@@ -50,10 +49,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             console.log(api)
 
             fetch(api, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `bearer ${this.jwtToken}`
-                }
+                method: 'GET'
             })
                 .then(response => response.json())
                 .then(data => {
@@ -67,10 +63,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         loadWorkflow(id: Guid) {
             const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `bearer ${this.jwtToken}`
-                }
+                method: 'GET'
             })
                 .then(response => response.json())
                 .then(data => {
@@ -109,9 +102,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                     method: method,
                     headers: {
                         'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json',
-                        'Authorization': `bearer ${this.jwtToken}`
-                    }
+                        'Content-Type': 'application/json'
+                    },
                 })
                 .then(response => {
                     if (response.ok) {
@@ -145,10 +137,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         loadEntityTemplates() {
             const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `bearer ${this.jwtToken}`
-                }
+                method: 'GET'
             })
                 .then(response => response.json())
                 .then(data => {
@@ -174,13 +163,11 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 .catch((error) => {
                     console.error('Load users API Error:', error);
                 });
-
         },
-        
     },
     getters:{
-        jwtToken(state){
-            return localStorage.getItem("catfishJwtToken");
+        getJwtToken(state){
+            return state.jwtToken? state.jwtToken: localStorage.getItem("catfishJwtToken");
         }
     }
 });
