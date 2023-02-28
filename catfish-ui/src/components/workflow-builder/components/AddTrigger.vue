@@ -15,15 +15,67 @@
     const trigger = ref({} as unknown as WorkflowTrigger);
     const recipient = ref({} as unknown as Recipient);
     const recipients = ref([] as unknown as Recipient[]);
+    const selectedUserId = ref(Guid.EMPTY  as unknown as Guid);
     const addRecipients = ref(false);
     const emailTemplates = computed(() => store.workflow?.emailTemplates);
     const roleList = computed(() => store.workflow?.roles);
     let toRecipients = computed(() => recipients.value?.filter(rec => rec.emailType == eEmailType.To) as Recipient[]);
     let ccRecipients = computed(() => recipients.value?.filter(rec => rec.emailType == eEmailType.Cc) as Recipient[]);
     let bccRecipients = computed(() => recipients.value?.filter(rec => rec.emailType == eEmailType.Bcc) as Recipient[]);
+    const getUsers = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.users);
+    const getUser = (userId : Guid) => (store.users.filter(u => u.id == userId)[0]?.userName);
+    const addUser = (id : Guid) => {if(id != Guid.EMPTY as unknown as Guid)recipient.value.users.push(id)};
     const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
     const getField = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0]);
-
+    const getFormName = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0].name);
+    const getFieldName = (formId : Guid, fieldId : Guid) => (getField(formId)?.fields.filter(f => f.id == fieldId)[0] as Field);
+    const resetFields = () => {
+        trigger.value.name = "";
+        trigger.value.description = "";
+        trigger.value.type = eTriggerType.Email;
+        trigger.value.templateId = Guid.EMPTY as unknown as Guid;
+        resetRecipients()
+    }
+    const resetRecipients = () => {
+        recipient.value.emailType = eEmailType.To;
+        recipient.value.recipientType = eRecipientType.Owner;
+        recipient.value.roleId = Guid.EMPTY as unknown as Guid;
+        selectedUserId.value = Guid.EMPTY as unknown as Guid;
+        recipient.value.email = "";
+        recipient.value.formId = Guid.EMPTY as unknown as Guid;
+        recipient.value.fieldId = Guid.EMPTY as unknown as Guid;
+        recipient.value.metadataFormId = Guid.EMPTY as unknown as Guid;
+        recipient.value.metadataFeildId = Guid.EMPTY as unknown as Guid;
+        recipient.value.users = [];
+    }
+    if(props.editMode){
+        const triggerValues = store.workflow?.triggers?.filter(tr => tr.id == props.editTriggerId ) as WorkflowTrigger[];
+        trigger.value.id = triggerValues[0].id;
+        trigger.value.type = triggerValues[0].type;
+        trigger.value.name = triggerValues[0].name;
+        trigger.value.description = triggerValues[0].description as string
+        trigger.value.templateId = triggerValues[0].templateId
+        
+        triggerValues[0].recipients!.forEach((rl) => {
+            let newRecipient = {
+            id : rl.id,
+            emailType : rl.emailType ,
+            recipientType : rl.recipientType,
+            roleId : rl.roleId as Guid,
+            users : rl.users,
+            email : rl.email,
+            formId : rl.formId as Guid,
+            fieldId : rl.fieldId as Guid,
+            metadataFormId : rl.metadataFormId as Guid,
+            metadataFeildId : rl.metadataFeildId as Guid
+            }  as Recipient
+        recipients.value!.push(newRecipient); 
+        })
+    }else{
+        trigger.value.id = Guid.EMPTY as unknown as Guid;
+        recipient.value.id = Guid.EMPTY as unknown as Guid;
+        resetFields();
+    }
     const addTrigger = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
             let newTrigger = {
@@ -52,24 +104,7 @@
         recipients.value = [];
         resetFields()
     }
-    const resetFields = () => {
-        trigger.value.name = "";
-        trigger.value.description = "";
-        trigger.value.type = eTriggerType.Email;
-        trigger.value.templateId = Guid.EMPTY as unknown as Guid;
-        resetRecipients()
-    }
 
-    const resetRecipients = () => {
-        recipient.value.emailType = eEmailType.To;
-        recipient.value.recipienType = eRecipientType.Owner;
-        recipient.value.roleId = Guid.EMPTY as unknown as Guid;
-        recipient.value.email = "";
-        recipient.value.FormId = null;
-        recipient.value.FeildId = null;
-        recipient.value.MetadataFormId = null;
-        recipient.value.MetadataFeildId = null;
-    }
     const addRecipient = (id : Guid) => {
         if(id == Guid.EMPTY as unknown as Guid){
         let newRecipient = {
@@ -77,6 +112,7 @@
             emailType : recipient.value.emailType,
             recipienType : recipient.value.recipienType,
             roleId : recipient.value.roleId,
+            users: recipient.value.users,
             email : recipient.value.email,
             FormId : recipient.value.FormId,
             FeildId : recipient.value.FeildId,
@@ -92,6 +128,10 @@
         const idx = recipients.value?.findIndex(opt => opt.id == id)
         recipients.value?.splice(idx as number, 1)
     }
+    const deleteUser = (id : Guid) => {
+        const idx = recipient.value.users.findIndex(u => u == id)
+        recipient.value.users?.splice(idx as number, 1)
+    }
     const deletePanel = () => {
         store.showTriggerPanel = false;
         recipients.value = [];
@@ -101,34 +141,7 @@
     const ToggleAddRecipients = () => {
         addRecipients.value = !addRecipients.value;
         recipient.value.id =  Guid.EMPTY as unknown as Guid;
-    }   
-    if(props.editMode){
-        const triggerValues = store.workflow?.triggers?.filter(tr => tr.id == props.editTriggerId ) as WorkflowTrigger[];
-        trigger.value.id = triggerValues[0].id;
-        trigger.value.type = triggerValues[0].type;
-        trigger.value.name = triggerValues[0].name;
-        trigger.value.description = triggerValues[0].description as string
-        trigger.value.templateId = triggerValues[0].templateId
-        triggerValues[0].recipients!.forEach((rl) => {
-            let newRecipient = {
-            id : rl.id,
-            emailType : rl.emailType ,
-            recipienType : rl.recipienType,
-            roleId : rl.roleId,
-            email : rl.email,
-            FormId : rl.FormId,
-            FeildId : rl.FeildId,
-            MetadataFormId : rl.MetadataFormId,
-            MetadataFeildId : rl.MetadataFeildId
-            }  as Recipient
-        recipients.value!.push(newRecipient);  
-        recipient.value.id = Guid.EMPTY as unknown as Guid;
-        })
-    }else{
-        trigger.value.id = Guid.EMPTY as unknown as Guid;
-        recipient.value.id = Guid.EMPTY as unknown as Guid;
-        resetFields();
-    }
+    }  
 </script>
 
 <template>
@@ -215,8 +228,24 @@
                                 <option v-for="role in roleList" :value="role.id">{{role.name}}</option>
                             </select>
                         </b-input-group>
+                        <div class="popup-list-item">
+                        <b-list-group>
+                            <b-list-group-item v-for="userId in recipient.users" :key="userId.toString()">
+                                <span>{{getUser(userId as Guid)}}
+                                    <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteUser(userId as Guid)"/>
+                                </span>
+                            </b-list-group-item>
+                        </b-list-group>
                     </div>
-                    <div v-if="recipient.recipienType == eRecipientType.Email">
+
+                    <b-input-group prepend="Users" class="mt-3">
+                        <select class="form-select" v-model="selectedUserId">
+                            <option v-for="user in getUsers(recipient.roleId as Guid)" :value="user.id">{{user.userName}}</option>
+                        </select>
+                        <span class="trigger-add"><font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#00cc66" @click="addUser(selectedUserId as Guid)"/></span>
+                    </b-input-group>
+                    </div>
+                    <div v-if="recipient.recipientType == eRecipientType.Email">
                         <b-input-group  prepend="Email" class="mt-3">
                             <b-form-input v-model="(recipient.email as string)" ></b-form-input>
                         </b-input-group>

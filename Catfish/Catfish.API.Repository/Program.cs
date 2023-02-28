@@ -18,7 +18,9 @@ builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
 ConfigurationManager configuration = builder.Configuration;
-builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("catfish")));
+
+string sqlConnectionString = configuration.GetConnectionString("catfish");
+builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(sqlConnectionString));
 
 
 // MR Jan 24 2023: Hangfire
@@ -31,7 +33,6 @@ builder.AddCatfishExtensions(true, true);
 //Adding services specific to this project
 builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 builder.Services.AddScoped<IEntityService, EntityService>();
-
 builder.Services.AddScoped<ISolrService, SolrService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();

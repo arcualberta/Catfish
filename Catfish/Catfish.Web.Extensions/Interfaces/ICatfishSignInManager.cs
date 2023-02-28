@@ -8,7 +8,7 @@ namespace CatfishWebExtensions.Interfaces
 {
     public interface ICatfishSignInManager
     {
-        public Task<bool> SignIn(User user, HttpContext httpContext);
-        public Task<bool> SignOut(HttpContext context);
+        Task<bool> SignOut(HttpContext context);
+        Task AuthorizeSuccessfulExternalLogin(LoginResult externalLoginResult, HttpContext httpContext);
     }
 }

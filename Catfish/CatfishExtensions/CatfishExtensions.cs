@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -18,6 +19,8 @@ namespace CatfishExtensions
             services.AddSingleton<ICatfishWebClient, CatfishWebClient>();
             services.AddScoped<IJwtProcessor, JwtProcessor>();
             services.AddScoped<IGoogleIdentity, GoogleIdentity > ();
+            services.AddSingleton<IAuthApiProxy, AuthApiProxy>();
+            services.AddSingleton<ITenantApiProxy, TenantApiProxy>();
 
             if (configureSwagger)
             {
@@ -103,8 +106,13 @@ namespace CatfishExtensions
             });
 
             //Adding Authentication with JWT Bearer
-            builder.Services.AddAuthentication()
-                .AddJwtBearer("Asymmetric", options =>
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
                 {
                     SecurityKey rsa = builder.Services.BuildServiceProvider().GetRequiredService<RsaSecurityKey>();
 

@@ -21,21 +21,27 @@ import { Field } from '@/components/shared/form-models';
     const buttons = ref([] as unknown as Button[]);
     const authorizations = ref([] as Authorization[]);
     const selectedTriggerId = ref(Guid.EMPTY  as unknown as Guid);
+    const selectedUserId = ref(Guid.EMPTY  as unknown as Guid);
     const getField = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0]);
     const getState = (stateId : Guid) => (store.workflow?.states.filter(st => st.id == stateId)[0]?.name);
     const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
+    const getUsers = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.users);
+    const getUser = (userId : Guid) => (store.users.filter(u => u.id == userId)[0]?.userName);
     const getTrigger = (triggerId : Guid) => (store.workflow?.triggers.filter(tr => tr.id == triggerId)[0]?.name);
     const deletePanel = () => (store.showActionPanel = false);
     const addTrigger = (id : Guid) => {if(id != Guid.EMPTY as unknown as Guid)button.value.triggers.push(id)};
+    const addUser = (id : Guid) => {if(id != Guid.EMPTY as unknown as Guid)authorization.value.users.push(id)};
     const resetAuthFields = () => {
         authorization.value.id = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedBy = eAuthorizedBy.Owner;
         authorization.value.authorizedRoleId = Guid.EMPTY as unknown as Guid;
+        selectedUserId.value = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedFormId = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedFeildId = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedMetadataFormId = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedMetadataFeildId = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedDomain = "";
+        authorization.value.users = [];
     }
     const resetButtonFields = () => {
         button.value.id = Guid.EMPTY as unknown as Guid;
@@ -118,6 +124,7 @@ import { Field } from '@/components/shared/form-models';
             currentStateId : authorization.value.currentStateId,
             authorizedBy : authorization.value.authorizedBy,
             authorizedRoleId : authorization.value.authorizedRoleId,
+            users : authorization.value.users,
             authorizedDomain : authorization.value.authorizedDomain,
             authorizedFormId : authorization.value.authorizedFormId,
             authorizedFeildId : authorization.value.authorizedFeildId,
@@ -143,6 +150,10 @@ import { Field } from '@/components/shared/form-models';
     const deleteTrigger = (id : Guid) => {
         const idx = button.value.triggers.findIndex(tr => tr == id)
         button.value.triggers?.splice(idx as number, 1)
+    }
+    const deleteUser = (id : Guid) => {
+        const idx = authorization.value.users.findIndex(u => u == id)
+        authorization.value.users?.splice(idx as number, 1)
     }
     const editButton = (btnId : Guid) => {
         const buttonValues = buttons.value?.filter(btn => btn.id == btnId) as Button[]
@@ -181,6 +192,7 @@ import { Field } from '@/components/shared/form-models';
           currentStateId : a.currentStateId,
           authorizedBy : a.authorizedBy,
           authorizedRoleId : a.authorizedRoleId,
+          users : a.users,
           authorizedDomain : a.authorizedDomain,
           authorizedFormId : a.authorizedFormId,
           authorizedFeildId : a.authorizedFeildId,
@@ -278,7 +290,7 @@ import { Field } from '@/components/shared/form-models';
                         <select class="form-select" v-model="selectedTriggerId">
                             <option v-for="trigger in store.workflow?.triggers" :value="trigger.id">{{trigger.name}}</option>
                         </select>
-                        <span class="trigger-add"><font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#00cc66" @click="addTrigger(selectedTriggerId as unknown as Guid)"/></span>
+                        <span class="trigger-add"><font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#00cc66" @click="addTrigger(selectedTriggerId as Guid)"/></span>
                     </b-input-group>
                 </div>
                 </template>
@@ -326,6 +338,22 @@ import { Field } from '@/components/shared/form-models';
                             <option v-for="role in store.workflow?.roles" :value="role.id">{{role.name}}</option>
                         </select>
                     </b-input-group>
+                    <div class="popup-list-item">
+                        <b-list-group>
+                            <b-list-group-item v-for="userId in authorization.users" :key="userId.toString()">
+                                <span>{{getUser(userId as Guid)}}
+                                    <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteUser(userId as Guid)"/>
+                                </span>
+                            </b-list-group-item>
+                        </b-list-group>
+                    </div>
+                    <b-input-group prepend="Users" class="mt-3">
+                        <select class="form-select" v-model="selectedUserId">
+                            <option v-for="user in getUsers(authorization.authorizedRoleId as Guid)" :value="user.id">{{user.userName}}</option>
+                        </select>
+                        <span class="trigger-add"><font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#00cc66" @click="addUser(selectedUserId as Guid)"/></span>
+                    </b-input-group>
+                    
                     </div>
                     <div v-if="authorization.authorizedBy == eAuthorizedBy.Domain">
                         <b-input-group prepend="Domain" class="mt-3">
