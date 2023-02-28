@@ -51,8 +51,8 @@ namespace Catfish.API.Auth.Services
             if (await _userManager.Users.CountAsync() > 0)
                 throw new CatfishException("Accounts already exist.") { HttpStatusCode = HttpStatusCode.BadRequest };
 
-            if (!model.SystemRoles.Where(r => r.ToLower() == "admin").Any())
-                model.SystemRoles.Add("Admin");
+            if (!model.SystemRoles.Where(r => r.ToLower() == "sysadmin").Any())
+                model.SystemRoles.Add("SysAdmin");
 
 			await CreateUser(model);
         }
