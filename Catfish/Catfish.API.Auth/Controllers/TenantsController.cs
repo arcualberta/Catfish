@@ -48,8 +48,16 @@ namespace Catfish.API.Auth.Controllers
             return (tenant== null) ? NotFound() : Ok(_mapper.Map<TenantInfo>(tenant));
         }
 
+        [HttpGet("by-name/{name}")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<TenantInfo>>> GetTenant(string name)
+        {
+            var tenant = await _db.Tenants.FirstOrDefaultAsync(t => t.Name == name);
+            return (tenant == null) ? NotFound() : Ok(_mapper.Map<TenantInfo>(tenant));
+        }
+
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult> PutTenant(TenantInfo dto)
         {
             Tenant tenant = _mapper.Map<Tenant>(dto);
@@ -69,7 +77,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<TenantInfo>> PostTenant(TenantInfo dto)
         {
             try
@@ -89,7 +97,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult> DeleteTenant(Guid id)
         {
             try
@@ -112,7 +120,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpPatch]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult> PatchTenant(AuthPatchModel dto)
         {
             try

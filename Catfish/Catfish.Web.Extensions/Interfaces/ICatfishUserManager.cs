@@ -3,6 +3,7 @@
 
 namespace CatfishWebExtensions.Interfaces
 {
+    [Obsolete]
     public interface ICatfishUserManager
     {
         public Task<User> GetUser(LoginResult externalLoginResult);

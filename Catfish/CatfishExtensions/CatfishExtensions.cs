@@ -19,6 +19,8 @@ namespace CatfishExtensions
             services.AddSingleton<ICatfishWebClient, CatfishWebClient>();
             services.AddScoped<IJwtProcessor, JwtProcessor>();
             services.AddScoped<IGoogleIdentity, GoogleIdentity > ();
+            services.AddSingleton<IAuthApiProxy, AuthApiProxy>();
+            services.AddSingleton<ITenantApiProxy, TenantApiProxy>();
 
             if (configureSwagger)
             {

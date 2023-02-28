@@ -3,6 +3,7 @@ using Catfish.API.Auth.Interfaces;
 using Catfish.API.Auth.Models;
 using CatfishExtensions.DTO;
 using CatfishExtensions.Exceptions;
+using CatfishExtensions.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -132,16 +133,9 @@ namespace Catfish.API.Auth.Services
         {
             var user = await _userManager.FindByNameAsync(model.UserName);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
-            {
-                var userRoles = await _userManager.GetRolesAsync(user);
-
-                var membership = await _authService.GetMembership(user);
-
-                string token = GetSignedToken(user.UserName, userRoles, membership, "", DateTime.Now.AddMinutes(_jwtTokenLifeInMinutes));
-                return token;
-            }
-
-            throw new CatfishException("Login failed") { HttpStatusCode = HttpStatusCode.Unauthorized };
+                return await GetSignedToken(user);
+            else
+                throw new CatfishException("Login failed") { HttpStatusCode = HttpStatusCode.Unauthorized };
         }
 
 
@@ -153,6 +147,30 @@ namespace Catfish.API.Auth.Services
                 .Select(u => _mapper.Map<UserInfo>(u))
                 .ToListAsync();
         }
+
+        public async Task<string> GetSignedToken(LoginResult externalLoginResult)
+        {
+            if (!externalLoginResult.Success)
+                return string.Empty;
+
+            //In our system, we use email as the username
+            var user = await _userManager.FindByNameAsync(externalLoginResult.Email);
+            if(user == null)
+                return string.Empty;
+
+            return await GetSignedToken(user);
+        }
+
+        public async Task<string> GetSignedToken(IdentityUser user)
+        {
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var membership = await _authService.GetMembership(user);
+            string token = GetSignedToken(user.UserName, userRoles, membership, "", DateTime.Now.AddMinutes(_jwtTokenLifeInMinutes));
+            return token;
+        }
+
+        public async Task<IdentityUser> GetUser(string username)
+            => await _userManager.FindByNameAsync(username);
 
         #endregion
 
