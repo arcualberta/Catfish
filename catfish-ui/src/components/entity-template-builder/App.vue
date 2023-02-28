@@ -54,6 +54,7 @@
     const titleField = computed(() => template.value?.entityTemplateSettings.titleField);
     const descriptionField = computed(() => template.value?.entityTemplateSettings.descriptionField);
     const mediaField = computed(() => template.value?.entityTemplateSettings.mediaField);
+    const primaryFormId=computed(() => template.value?.entityTemplateSettings.primaryFormId);
 
     const formFieldSelectorSource = computed(() => [{ formGroupName: 'Matadata Form', formGroup: template.value?.entityTemplateSettings.metadataForms?.filter(form => form.isRequired) },
         { formGroupName: 'Data Form', formGroup: template.value?.entityTemplateSettings.dataForms?.filter(form => form.isRequired) }])
@@ -135,6 +136,16 @@
                 </b-col>
                 <b-col class="col-sm-10">
                     <h6>{{template.state}}</h6>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col class="col-sm-2">
+                    <label :for="template.entityTemplateSettings.primaryFormId?.toString()"><h6>Primary Form:</h6></label>
+                </b-col>
+                <b-col class="col-sm-6">
+                    <select v-model="template.entityTemplateSettings.primaryFormId" :name="template.entityTemplateSettings.primaryFormId?.toString()" class="form-select">
+                        <option v-for="entry in store.formEntries" :key="entry.id.toString()" :value="entry.id">{{entry.name}}</option>
+                    </select>
                 </b-col>
             </b-row>
         </div>

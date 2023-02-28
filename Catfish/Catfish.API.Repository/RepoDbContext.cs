@@ -53,7 +53,6 @@ namespace Catfish.API.Repository
         public DbSet<EntityTemplate>? EntityTemplates { get; set; }
         //public DbSet<Collection>? Collections { get; set; }
         public DbSet<Relationship>? Relationships { get; set; }
-        public DbSet<WorkflowTrigger> Triggers { get; set; }
         public DbSet<WorkflowDbRecord> Workflows { get; set; }
 
     }

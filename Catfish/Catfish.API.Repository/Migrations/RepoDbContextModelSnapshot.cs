@@ -169,6 +169,7 @@ namespace Catfish.API.Repository.Migrations
                     b.ToTable("CF_Repo_Forms");
                 });
 
+
             modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.Trigger", b =>
                 {
                     b.Property<Guid>("Id")
@@ -190,6 +191,7 @@ namespace Catfish.API.Repository.Migrations
 
                     b.ToTable("CF_Repo_Triggers");
                 });
+
 
             modelBuilder.Entity("Catfish.API.Repository.Models.Workflow.WorkflowDbRecord", b =>
                 {
