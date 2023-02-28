@@ -1,4 +1,4 @@
-﻿using Catfish.API.Authorization.Interfaces;
+﻿using Catfish.API.Auth.Interfaces;
 using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Models.Forms;
 using Catfish.API.Repository.Models.Workflow;
@@ -15,16 +15,16 @@ namespace Catfish.API.Repository.Services
 
         public readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEntityTemplateService _entityTemplateService;
-        private readonly IUserService _userService;
+        private readonly IAccountService _accountService;
         private readonly IEmailService _emailService;
 
 
 
-        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IUserService userService, IEmailService emailService)
+        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IAccountService accountService, IEmailService emailService)
         {
             _context = context;
             _entityTemplateService = entityTemplateService;
-            _userService = userService;
+            _accountService = accountService;
             _emailService = emailService;
 
         }
@@ -145,7 +145,7 @@ namespace Catfish.API.Repository.Services
         private string GetLoggedUserEmail()
         {
             string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            string email = _userService.GetUserById(Guid.Parse(userId)).Email;
+            string email = "";// _accountService.GetUserById(Guid.Parse(userId)).Email;
             return email;
         }
 
@@ -154,7 +154,7 @@ namespace Catfish.API.Repository.Services
             List<string> emails = new List<string>();
             foreach(var userId in recipient.Users)
             {
-                string? email = _userService.GetUserById(userId).Email;
+                string? email = "";// _accountService.GetUserById(userId).Email;
                 if(email != null)
                 {
                     emails.Add(email);

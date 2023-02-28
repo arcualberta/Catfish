@@ -1,7 +1,9 @@
 ﻿using Catfish.API.Auth.Interfaces;
+using CatfishExtensions.Constants;
 using CatfishExtensions.DTO;
 using CatfishExtensions.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -10,6 +12,7 @@ namespace Catfish.API.Auth.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors(CorsPolicyNames.General)]
     public class UsersController : ControllerBase
     {
         private readonly IAccountService _accountService;
