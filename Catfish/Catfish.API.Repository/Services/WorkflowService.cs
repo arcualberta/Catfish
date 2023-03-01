@@ -1,5 +1,4 @@
-﻿using Catfish.API.Auth.Interfaces;
-using Catfish.API.Repository.Interfaces;
+﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Models.Forms;
 using Catfish.API.Repository.Models.Workflow;
 using Microsoft.AspNetCore.Http;
@@ -15,16 +14,14 @@ namespace Catfish.API.Repository.Services
 
         public readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEntityTemplateService _entityTemplateService;
-        private readonly IAccountService _accountService;
         private readonly IEmailService _emailService;
 
 
 
-        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IAccountService accountService, IEmailService emailService)
+        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService,  IEmailService emailService)
         {
             _context = context;
             _entityTemplateService = entityTemplateService;
-            _accountService = accountService;
             _emailService = emailService;
 
         }
@@ -146,7 +143,10 @@ namespace Catfish.API.Repository.Services
         {
             string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             string email = "";// _accountService.GetUserById(Guid.Parse(userId)).Email;
-            return email;
+            if (email == null)
+                return "";
+            else
+                return email;
         }
 
         private List<string> GetRoleDetails(Recipient recipient)
