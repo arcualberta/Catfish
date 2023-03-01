@@ -17,8 +17,6 @@ namespace Catfish.API.Repository.Services
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IEmailService _emailService;
 
-
-
         public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IEmailService emailService)
         {
             _context = context;
