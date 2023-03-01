@@ -1,7 +1,7 @@
 ﻿@model CatfishWebExtensions.Blocks.FormBuilder
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishConfiguration;
+@inject ICatfishAppConfiguration _catfishConfiguration;
 
 @{
     var viewData = new ViewDataDictionary(this.ViewData)

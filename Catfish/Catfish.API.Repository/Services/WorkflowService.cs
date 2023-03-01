@@ -15,16 +15,14 @@ namespace Catfish.API.Repository.Services
 
         public readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEntityTemplateService _entityTemplateService;
-        private readonly IAccountService _accountService;
         private readonly IEmailService _emailService;
 
 
 
-        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IAccountService accountService, IEmailService emailService)
+        public WorkflowService(RepoDbContext context, IEntityTemplateService entityTemplateService, IEmailService emailService)
         {
             _context = context;
             _entityTemplateService = entityTemplateService;
-            _accountService = accountService;
             _emailService = emailService;
 
         }
