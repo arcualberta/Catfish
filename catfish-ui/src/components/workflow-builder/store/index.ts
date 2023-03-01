@@ -149,7 +149,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
 
         },
         loadUsers() {
-            const api = `${config.authorizationApiRoot}api/PiranhaUsers`;//`https://localhost:5020/api/workflow/${id}`;
+            const api = `${config.authorizationApiRoot}api/Users`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
                 method: 'GET',
                 headers: {
