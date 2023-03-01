@@ -37,6 +37,7 @@ builder.Services.AddScoped<ISolrService, SolrService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 //builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
+builder.Services.AddScoped<IExcelFileProcessingService, ExcelFileProcessingService>();
 
 var app = builder.Build();
 

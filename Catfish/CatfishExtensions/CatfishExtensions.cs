@@ -86,7 +86,7 @@ namespace CatfishExtensions
             string jwtValidAudience = configuration.GetSection("JwtConfig:Audience").Value;
             string jwtValidIssuer = configuration.GetSection("JwtConfig:Issuer").Value;
 
-            string jwtPublicKey = configuration.GetSection("JwtConfig:RsaPublicKey").Value;//File.ReadAllText(configuration["JwtConfig:RsaPublicKey"]) ;
+             string jwtPublicKey = configuration.GetSection("JwtConfig:RsaPublicKey").Value;//File.ReadAllText(configuration["JwtConfig:RsaPublicKey"]) ;
             if (jwtPublicKey.IndexOf("public key", StringComparison.OrdinalIgnoreCase) > 0)
                 jwtPublicKey = jwtPublicKey.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[1];
 
