@@ -24,7 +24,10 @@ namespace CatfishExtensions.Services
         public async Task<string> Login(string username, string password)
         {
             var response = await _webClient.PostJson($"{_apiRoot}/api/users/login", new LoginModel() { UserName = username, Password = password });
-            return await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsStringAsync();
+            else
+                return "";
         }
 
         public async Task<bool> Register(RegistrationModel model)

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Catfish.API.Auth.Interfaces;
 using Catfish.API.Auth.Models;
+using CatfishExtensions.Constants;
 using CatfishExtensions.DTO;
 using CatfishExtensions.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +14,7 @@ namespace Catfish.API.Auth.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors(CorsPolicyNames.General)]
     public class TenantsController : ControllerBase
     {
         private readonly AuthDbContext _db;

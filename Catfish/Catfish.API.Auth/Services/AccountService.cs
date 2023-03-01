@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
 
 namespace Catfish.API.Auth.Services
 {
@@ -51,8 +52,8 @@ namespace Catfish.API.Auth.Services
             if (await _userManager.Users.CountAsync() > 0)
                 throw new CatfishException("Accounts already exist.") { HttpStatusCode = HttpStatusCode.BadRequest };
 
-            if (!model.SystemRoles.Where(r => r.ToLower() == "admin").Any())
-                model.SystemRoles.Add("Admin");
+            if (!model.SystemRoles.Where(r => r.ToLower() == "sysadmin").Any())
+                model.SystemRoles.Add("SysAdmin");
 
 			await CreateUser(model);
         }
@@ -165,7 +166,7 @@ namespace Catfish.API.Auth.Services
         {
             var userRoles = await _userManager.GetRolesAsync(user);
             var membership = await _authService.GetMembership(user);
-            string token = GetSignedToken(user.UserName, userRoles, membership, "", DateTime.Now.AddMinutes(_jwtTokenLifeInMinutes));
+            string token = GetSignedToken(user.UserName, user.Email, userRoles, membership, "", DateTime.Now.AddMinutes(_jwtTokenLifeInMinutes));
             return token;
         }
 
@@ -192,12 +193,13 @@ namespace Catfish.API.Auth.Services
             return "";
         }
 
-        private string GetSignedToken(string userName, IList<string> userRoles, UserMembership membership, string userData, DateTime expiresAt)
+        private string GetSignedToken(string userName, string userEmail, IList<string> userRoles, UserMembership membership, string userData, DateTime expiresAt)
         {
             var authClaims = new List<Claim>
                 {
 					//new Claim(ClaimTypes.Name, userName),
 					new Claim("username", userName),
+                    new Claim(ClaimTypes.Email, userEmail),
                     new Claim("userdata", userData),
                     new Claim("membership", JsonConvert.SerializeObject(membership)),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
