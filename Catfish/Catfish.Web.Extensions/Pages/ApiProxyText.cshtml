@@ -3,4 +3,17 @@
 @{
 }
 
-@Html.Raw(Model.ModelData)
+<div class="alert alert-info">
+    <h3>JWT</h3>
+    @Html.Raw(Model.Jwt)
+</div>
+
+
+<div class="alert alert-info">
+    <h3>Tenants</h3>
+    @Html.Raw(Model.Tenants)
+</div>
+
+
+
+
