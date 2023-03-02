@@ -52,7 +52,6 @@ namespace CatfishWebExtensions
             //services.AddSingleton<ISecurity, CatfishSecurity>();
 
             //Catfish services
-            services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<ICatfishUserManager, CatfishUserManager>();
             services.AddScoped<ICatfishSignInManager, CatfishSignInManager>();
             services.AddScoped<IAssetRegistry, AssetRegistry>();

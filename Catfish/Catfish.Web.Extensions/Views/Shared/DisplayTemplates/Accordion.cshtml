@@ -1,7 +1,8 @@
 ﻿@model CatfishWebExtensions.Blocks.Accordion
 @using CatfishWebExtensions.Blocks;
+@using CatfishExtensions.Interfaces;
 
-@inject CatfishExtensions.Helpers.ICatfishAppConfiguration _catfishConfiguration;
+@inject ICatfishAppConfiguration _catfishConfiguration;
 
 @{
     var css_classes = Model.CSSClasses.Value;
