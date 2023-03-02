@@ -1,5 +1,4 @@
-﻿using Catfish.API.Auth.Interfaces;
-using Catfish.API.Repository.Interfaces;
+﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Models.Forms;
 using Catfish.API.Repository.Models.Workflow;
 using Microsoft.AspNetCore.Http;
@@ -142,7 +141,10 @@ namespace Catfish.API.Repository.Services
         {
             string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             string email = "";// _accountService.GetUserById(Guid.Parse(userId)).Email;
-            return email;
+            if (email == null)
+                return "";
+            else
+                return email;
         }
 
         private List<string> GetRoleDetails(Recipient recipient)
