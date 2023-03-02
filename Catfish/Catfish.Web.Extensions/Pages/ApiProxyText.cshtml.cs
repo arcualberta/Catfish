@@ -5,12 +5,15 @@ namespace CatfishWebExtensions.Pages
 {
     public class ApiProxyTextModel : PageModel
     {
-        public string ModelData { get; set; }
+        public string Jwt { get; set; }
+        public string Tenants { get; set; }
         public void OnGet()
         {
-            var jwt = Request.HttpContext.Session.Get("JWT");
+            var jwt = "jwt"; // Request.HttpContext.Session.Get("JWT");
 
-            ModelData = jwt.ToString();
+            Jwt = jwt.ToString();
+
+            Tenants = "Tenants";
         }
     }
 }
