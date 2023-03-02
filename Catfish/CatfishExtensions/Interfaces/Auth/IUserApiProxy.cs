@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatfishExtensions.Interfaces
+namespace CatfishExtensions.Interfaces.Auth
 {
-    public interface IAuthApiProxy
+    public interface IUserApiProxy
     {
         Task<string> Login(string username, string password);
         Task<bool> Register(RegistrationModel model);

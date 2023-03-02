@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
+using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
 
 namespace CatfishWebExtensions
 {
@@ -55,6 +56,7 @@ namespace CatfishWebExtensions
             services.AddScoped<ICatfishUserManager, CatfishUserManager>();
             services.AddScoped<ICatfishSignInManager, CatfishSignInManager>();
             services.AddScoped<IAssetRegistry, AssetRegistry>();
+            services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>

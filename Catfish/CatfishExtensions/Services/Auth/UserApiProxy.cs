@@ -1,4 +1,5 @@
 ﻿using CatfishExtensions.DTO;
+using CatfishExtensions.Interfaces.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,15 +7,15 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatfishExtensions.Services
+namespace CatfishExtensions.Services.Auth
 {
-    public class AuthApiProxy : IAuthApiProxy
+    public class UserApiProxy : IUserApiProxy
     {
         private readonly ICatfishWebClient _webClient;
         private readonly IConfiguration _configuration;
         private readonly string? _apiRoot;
 
-        public AuthApiProxy(ICatfishWebClient webClient, IConfiguration configuration)
+        public UserApiProxy(ICatfishWebClient webClient, IConfiguration configuration)
         {
             _webClient = webClient;
             _configuration = configuration;
