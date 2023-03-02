@@ -5,30 +5,18 @@ using CatfishExtensions;
 using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-// Add services to the container.
-
-builder.Services.AddControllers()
-    .AddNewtonsoftJson();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-//MR Jan 26 2023 -- commented out calling swagger 
-//we will try to call catfish.Extension builder.AddCatfishJwtAuthprization()
-//builder.Services.AddSwaggerGen();
-
 ConfigurationManager configuration = builder.Configuration;
 
-string sqlConnectionString = configuration.GetConnectionString("catfish");
-builder.Services.AddDbContext<RepoDbContext>(options => options.UseSqlServer(sqlConnectionString));
+// Entity Framework
+builder.Services.AddDbContext<RepoDbContext>(options
+    => options.UseSqlServer(configuration.GetConnectionString("RepoConnectionString")!));
 
-
-// MR Jan 24 2023: Hangfire
-builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("catfish")));
-builder.Services.AddHangfireServer();
-
-//Adding Catfish extensions
 builder.AddCatfishExtensions(true, true);
+
+builder.Services.AddControllers().AddNewtonsoftJson();
+
+builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString")));
+builder.Services.AddHangfireServer();
 
 //Adding services specific to this project
 builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();
@@ -38,22 +26,14 @@ builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 //builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
 builder.Services.AddScoped<IExcelFileProcessingService, ExcelFileProcessingService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-
-app.UseHttpsRedirection();
-
-//MR Jan 26 2023 -- commented out UseAuthorization() 
-//we will call UseJwtAuthorization from CatfishExtension
-//app.UseAuthorization();
 app.UseCatfishExtensions(true, true);
+
+// Configure the HTTP request pipeline.
+app.UseHttpsRedirection();
 
 app.MapControllers();
 

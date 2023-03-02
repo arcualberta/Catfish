@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
-ConfigurationManager configuration = builder!.Configuration;
+ConfigurationManager configuration = builder.Configuration;
 
 // Entity Framework
 builder.Services.AddDbContext<AuthDbContext>(options
