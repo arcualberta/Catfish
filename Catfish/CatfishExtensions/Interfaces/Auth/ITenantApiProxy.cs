@@ -14,5 +14,6 @@ namespace CatfishExtensions.Interfaces.Auth
         Task<bool> PatchTenant(AuthPatchModel patchModel);
         Task EnsureTenancy();
         Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null);
+        Task<TenantInfo> GetTenantById(Guid id, string? jwtBearerToken = null);
     }
 }

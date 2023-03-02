@@ -17,7 +17,10 @@
             Model.Jwt = jwt.ToString();
 
             Model.Tenants = await _tenantProxy.GetTenants(0, 10, Model.Jwt);
+            
+            var tenantDetails = await _tenantProxy.GetTenantById(Model.Tenants.ElementAt(0).Id, Model.Jwt);
 
+            var test="";
 }
 
 <div class="alert alert-info">
@@ -34,6 +37,22 @@
            <div>@t.Name  -  @t.Id</div>
         }
     }
+    
+</div>
+
+<div class="alert alert-info">
+    <h3>Tenant  Details</h3>
+      <div>Id : @tenantDetails.Id</div>
+     <div>Name : @tenantDetails.Name</div>
+     <div>Description : @tenantDetails.Description</div>
+     <div>Roles:
+        @{
+            foreach(var r in tenantDetails.Roles)
+            {
+                <div>@r.Name</div>
+            }
+        }
+     </div>
     
 </div>
 

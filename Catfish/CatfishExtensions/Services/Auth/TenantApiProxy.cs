@@ -81,5 +81,14 @@ namespace CatfishExtensions.Services.Auth
                 return result;
            
         }
+        public async Task<TenantInfo> GetTenantById(Guid id, string? jwtBearerToken = null)
+        {
+
+            var url = $"{_apiRoot}/api/Tenants/{id}";
+            var result = await _webClient.Get<TenantInfo>(url, jwtBearerToken);
+
+            return result;
+
+        }
     }
 }
