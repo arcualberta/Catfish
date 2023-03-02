@@ -1,6 +1,23 @@
 ﻿@page "/test"
+@using CatfishExtensions.DTO
 @model CatfishWebExtensions.Pages.ApiProxyTextModel
+@inject IHttpContextAccessor _httpContextAccessor
+@inject CatfishWebExtensions.Interfaces.ICatfishUserManager _usrManager
+@inject CatfishExtensions.Interfaces.Auth.ITenantApiProxy _tenantProxy
 @{
+   // Model.Jwt = HttpContextAccessor.HttpContext.Session.GetString("JWT").ToString();
+        //January 06 2023 -- get current login user
+            // step 1
+           
+            string currUserName = _httpContextAccessor.HttpContext.User.Identity.Name;
+            //step 2 -- get thejwt login token from webExternsion method
+            // AsyncCallback CatfihUserNamanegr get userjwtLogin token 
+            var jwt = await _usrManager.GetUserJwtLoginTokenAsync(currUserName, _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated);
+
+            Model.Jwt = jwt.ToString();
+
+            Model.Tenants = await _tenantProxy.GetTenants(0, 10, Model.Jwt);
+
 }
 
 <div class="alert alert-info">
@@ -11,7 +28,13 @@
 
 <div class="alert alert-info">
     <h3>Tenants</h3>
-    @Html.Raw(Model.Tenants)
+    @{
+        foreach(TenantInfo t in Model.Tenants)
+        {
+           <div>@t.Name  -  @t.Id</div>
+        }
+    }
+    
 </div>
 
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatfishExtensions.Interfaces
+namespace CatfishExtensions.Interfaces.Auth
 {
     public interface ITenantApiProxy
     {
@@ -13,5 +13,6 @@ namespace CatfishExtensions.Interfaces
         Task<TenantInfo> CreateTenant(TenantInfo tenant);
         Task<bool> PatchTenant(AuthPatchModel patchModel);
         Task EnsureTenancy();
+        Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null);
     }
 }

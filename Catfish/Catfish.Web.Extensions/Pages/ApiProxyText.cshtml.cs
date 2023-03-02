@@ -1,19 +1,29 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using CatfishExtensions.DTO;
+using CatfishExtensions.Interfaces.Auth;
 
 namespace CatfishWebExtensions.Pages
 {
+
     public class ApiProxyTextModel : PageModel
     {
+        //public readonly ITenantApiProxy _tenantProxy;
         public string Jwt { get; set; }
-        public string Tenants { get; set; }
+        public List<TenantInfo> Tenants { get; set; }
+
+       /* public ApiProxyTextModel(ITenantApiProxy tenantProxy, string jwt, string tenants)
+        {
+            _tenantProxy = tenantProxy;
+        }*/
+
         public void OnGet()
         {
-            var jwt = "jwt"; // Request.HttpContext.Session.Get("JWT");
 
-            Jwt = jwt.ToString();
+            // var jwt = HttpContext.Session.GetString("JWT");
 
-            Tenants = "Tenants";
+            //Jwt = jwt.ToString();
+
+          //  Tenants = _tenantProxy.GetTenants(0, 10, Jwt).ToString();
         }
     }
 }

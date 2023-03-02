@@ -1,4 +1,5 @@
 ﻿using CatfishExtensions.DTO;
+using CatfishExtensions.Interfaces.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore.Query.Internal;

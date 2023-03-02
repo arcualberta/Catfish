@@ -1,11 +1,12 @@
 ﻿using CatfishExtensions.DTO;
+using CatfishExtensions.Interfaces.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatfishExtensions.Services
+namespace CatfishExtensions.Services.Auth
 {
     public class TenantApiProxy : ITenantApiProxy
     {
@@ -71,5 +72,14 @@ namespace CatfishExtensions.Services
             => await _webClient.PostJson<TenantInfo>($"{_apiRoot}/api/tenants", tenant);
         public async Task<bool> PatchTenant(AuthPatchModel patchModel)
             => (await _webClient.PatchJson($"{_apiRoot}/api/tenants", patchModel)).IsSuccessStatusCode;
+
+        public async Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null)
+        {
+           
+                var url = $"{_apiRoot}/api/Tenants?offset={offset}&max={max}";
+                var result = await _webClient.Get<List<TenantInfo>>(url, jwtBearerToken);
+                return result;
+           
+        }
     }
 }
