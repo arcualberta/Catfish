@@ -1,23 +1,30 @@
 ﻿namespace Catfish.API.Repository.Services
 {
     using Catfish.API.Repository.Interfaces;
+    using CatfishExtensions.Interfaces;
     using System.Net.Mail;
-    public class EmailService
+    public class EmailService : IEmailService
     {
-        private ICatfishAppConfiguration _config;
-        static int portNumber = 587;
-        static bool enableSSL = true;
+        private readonly IConfiguration _config;
+        private readonly string _fromEmail;
+        private readonly string _smtpServer;
+        private readonly int _smtpPort;
+        private readonly bool _ssl;
 
-        public EmailService(ICatfishAppConfiguration config)
+        public EmailService(IConfiguration config)
         {
             _config = config;
+            _fromEmail = _config.GetSection("EmailConfig:Sender").Value;
+            _smtpServer = _config.GetSection("EmailConfig:Server").Value;
+            _smtpPort = _config.GetValue<int>("EmailConfig:Port");
+            _ssl = _config.GetValue<bool>("EmailConfig:SSL");
         }
         public void SendEmail(Email email)
         {
             try
             {
                 MailMessage mailMessage = new MailMessage();
-                mailMessage.From = new MailAddress(_config.GetSmtpEmail());
+                mailMessage.From = new MailAddress(_fromEmail);
                 mailMessage.Subject = email.Subject;
                 mailMessage.IsBodyHtml = true;
                 mailMessage.Body = "<p>" + email.Body + "</p>";
@@ -30,10 +37,10 @@
                 foreach (string emailRecipient in email.BccRecipientEmail)
                     mailMessage.Bcc.Add(emailRecipient);
 
-                using (SmtpClient client = new SmtpClient(_config.GetSmtpServer(), portNumber))
+                using (SmtpClient client = new SmtpClient(_smtpServer, _smtpPort))
                 {
                     client.UseDefaultCredentials = true;
-                    client.EnableSsl = true;
+                    client.EnableSsl = _ssl;
                     client.Send(mailMessage);
                 }
             }
