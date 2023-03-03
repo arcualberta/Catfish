@@ -4,6 +4,7 @@ import { EntityTemplate } from '../../entity-template-builder/models'
 import { default as config } from "@/appsettings";
 import { TemplateEntry } from '@/components/entity-editor/models';
 import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup, UserInfo } from '../models/'
+import { useLoginStore } from '@/components/login/store';
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -16,7 +17,6 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         showTriggerPanel : false as boolean,
         showPopupPanel : false as boolean,
         entityTemplate: null as EntityTemplate | null,
-        jwtToken: null as string | null 
     }),
     actions: {
         createNewWorkflow() {
@@ -153,7 +153,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             fetch(api, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `bearer ${this.jwtToken}`
+                    'Authorization': `bearer ${this.getJwtToken}`
                 }
             })
                 .then(response => response.json())
@@ -167,7 +167,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     },
     getters:{
         getJwtToken(state){
-            return state.jwtToken? state.jwtToken: localStorage.getItem("catfishJwtToken");
+            return useLoginStore().jwtToken
         }
     }
 });
