@@ -48,6 +48,18 @@
     // =======================  TESTING ROLES =========================================================//
     Model.Roles = await _roleProxy.GetRoles(0, 100, Model.Jwt);
 
+    //PUT
+    var role = Model.Roles[0];
+    role.Description = "Role description -- added through PUT call";
+    await _roleProxy.PutRole(role, Model.Jwt);
+
+    //Patch 
+    AuthPatchModel rolePatch = new AuthPatchModel();
+    rolePatch.ParentId = role.Id;
+    rolePatch.NewChildren = new string[] { "Admin" };
+    var res = await _roleProxy.PatchRole(rolePatch, Model.Jwt);
+
+
           
 }
 
@@ -85,12 +97,14 @@
 </div>
 
 <h3>Roles</h3>
-<div>  @{
+<div class="alert alert-warning">  
+    @{
         foreach(TenantRoleInfo t in Model.Roles)
         {
-           <div>@t.Name  -  @t.Id</div>
+           <div>@t.Name  -  @t.Id   - @t.Description</div>
         }
-    }</div>
+    }
+  </div>
 
 
 
