@@ -40,14 +40,14 @@ namespace CatfishExtensions.Services.Auth
                 List<string> newRoles = new List<string>();
                 foreach (var role in roles)
                 {
-                    if (!tenant.Roles.Any(r => r.Name == role))
+                    if (!tenant.Roles!.Any(r => r.Name == role))
                         newRoles.Add(role);
                 }
 
                 //Find any old empty roles to be deleted.
                 //Note that we will not automatically delete any roles that contain users.
                 List<string> deleteRoles = new List<string>();
-                foreach (var role in tenant.Roles.Where(t => !t.Users.Any()))
+                foreach (var role in tenant.Roles!.Where(t => !t.Users.Any()))
                 {
                     if (!roles.Any(r => r == role.Name))
                         deleteRoles.Add(role.Name);
@@ -67,51 +67,20 @@ namespace CatfishExtensions.Services.Auth
         }
 
         public async Task<TenantInfo> GetTenantByName(string tenantName, string? jwtBearerToken = null)
-        {
-            // await _webClient.Get<TenantInfo>($"{_apiRoot}/api/tenants/by-name/{tenantName}");
-            var url = $"{_apiRoot}/api/Tenants/by-name/{tenantName}";
-            var result = await _webClient.Get<TenantInfo>(url, jwtBearerToken);
-
-            return result;
-        }
-           
+            => await _webClient.Get<TenantInfo>($"{_apiRoot}/api/Tenants/by-name/{tenantName}", jwtBearerToken);
+            
         public async Task<TenantInfo> CreateTenant(TenantInfo tenant)
             => await _webClient.PostJson<TenantInfo>($"{_apiRoot}/api/tenants", tenant);
         public async Task<bool> PatchTenant(AuthPatchModel patchModel, string? jwtBearerToken = null)
-        {
-            //(await _webClient.PatchJson($"{_apiRoot}/api/tenants", patchModel)).IsSuccessStatusCode;
-            var url = $"{_apiRoot}/api/tenants";
-            var result = await _webClient.PatchJson(url, patchModel, jwtBearerToken);//await _webClient.Get<TenantInfo>(url, jwtBearerToken);
-
-            return result.IsSuccessStatusCode;
-        }
-          
+            => (await _webClient.PatchJson($"{_apiRoot}/api/tenants", patchModel, jwtBearerToken)).IsSuccessStatusCode;
 
         public async Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null)
-        {
-           
-                var url = $"{_apiRoot}/api/Tenants?offset={offset}&max={max}";
-                var result = await _webClient.Get<List<TenantInfo>>(url, jwtBearerToken);
-                return result;
-           
-        }
+            => await _webClient.Get<List<TenantInfo>>($"{_apiRoot}/api/Tenants?offset={offset}&max={max}", jwtBearerToken);
+
         public async Task<TenantInfo> GetTenantById(Guid id, string? jwtBearerToken = null)
-        {
-
-            var url = $"{_apiRoot}/api/Tenants/{id}";
-            var result = await _webClient.Get<TenantInfo>(url, jwtBearerToken);
-
-            return result;
-
-        }
+            => await _webClient.Get<TenantInfo>($"{_apiRoot}/api/Tenants/{id}", jwtBearerToken);
 
         public async Task<TenantInfo> PostTenant(TenantInfo dto, string? jwtToken = null)
-        {
-          
-            var url = $"{_apiRoot}/api/Tenants/";
-            var result = await _webClient.PostJson<TenantInfo>(url,dto, jwtToken);
-
-            return result;
-        }
+            => await _webClient.PostJson<TenantInfo>($"{_apiRoot}/api/Tenants/", dto, jwtToken);
     }
 }
