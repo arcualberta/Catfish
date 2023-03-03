@@ -86,8 +86,14 @@ namespace Catfish.API.Auth.Controllers
             try
             {
                 Tenant model = _mapper.Map<Tenant>(dto);
-                _db.Tenants.Add(model);
-                await _db.SaveChangesAsync();
+
+                //Mr March 3 2023: Add checking to only added tenant when the given tenant's name is not existed yet in the db
+                bool tenantExisted =await  _authService.IsTenantExistedByName(model.Name);
+               
+                if (!tenantExisted) { 
+                    _db.Tenants.Add(model);
+                    await _db.SaveChangesAsync();
+                  }
                 return Ok(_mapper.Map<TenantInfo>(model));
             }
             catch (DbUpdateConcurrencyException)

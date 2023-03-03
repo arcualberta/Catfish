@@ -18,8 +18,8 @@
 
     Model.Jwt = jwt.ToString();
     //TEst Post -- good
-    // TenantInfo tenant = new TenantInfo() { Id = Guid.NewGuid(), Name = "New Tenant", Description = "New Tenant description" };
-    // var newTenant = await _tenantProxy.PostTenant(tenant, Model.Jwt);
+     TenantInfo tenant = new TenantInfo() { Id = Guid.NewGuid(), Name = "New Tenant", Description = "New Tenant description" };
+     var newTenant = await _tenantProxy.PostTenant(tenant, Model.Jwt);
 
     Model.Tenants = await _tenantProxy.GetTenants(0, 10, Model.Jwt);
 
