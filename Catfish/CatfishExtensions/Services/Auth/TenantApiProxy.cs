@@ -66,12 +66,26 @@ namespace CatfishExtensions.Services.Auth
             }
         }
 
-        public async Task<TenantInfo> GetTenantByName(string tenantName)
-            => await _webClient.Get<TenantInfo>($"{_apiRoot}/api/tenants/by-name/{tenantName}");
+        public async Task<TenantInfo> GetTenantByName(string tenantName, string? jwtBearerToken = null)
+        {
+            // await _webClient.Get<TenantInfo>($"{_apiRoot}/api/tenants/by-name/{tenantName}");
+            var url = $"{_apiRoot}/api/Tenants/by-name/{tenantName}";
+            var result = await _webClient.Get<TenantInfo>(url, jwtBearerToken);
+
+            return result;
+        }
+           
         public async Task<TenantInfo> CreateTenant(TenantInfo tenant)
             => await _webClient.PostJson<TenantInfo>($"{_apiRoot}/api/tenants", tenant);
-        public async Task<bool> PatchTenant(AuthPatchModel patchModel)
-            => (await _webClient.PatchJson($"{_apiRoot}/api/tenants", patchModel)).IsSuccessStatusCode;
+        public async Task<bool> PatchTenant(AuthPatchModel patchModel, string? jwtBearerToken = null)
+        {
+            //(await _webClient.PatchJson($"{_apiRoot}/api/tenants", patchModel)).IsSuccessStatusCode;
+            var url = $"{_apiRoot}/api/tenants";
+            var result = await _webClient.PatchJson(url, patchModel, jwtBearerToken);//await _webClient.Get<TenantInfo>(url, jwtBearerToken);
+
+            return result.IsSuccessStatusCode;
+        }
+          
 
         public async Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null)
         {
@@ -89,6 +103,15 @@ namespace CatfishExtensions.Services.Auth
 
             return result;
 
+        }
+
+        public async Task<TenantInfo> PostTenant(TenantInfo dto, string? jwtToken = null)
+        {
+          
+            var url = $"{_apiRoot}/api/Tenants/";
+            var result = await _webClient.PostJson<TenantInfo>(url,dto, jwtToken);
+
+            return result;
         }
     }
 }

@@ -5,22 +5,32 @@
 @inject CatfishWebExtensions.Interfaces.ICatfishUserManager _usrManager
 @inject CatfishExtensions.Interfaces.Auth.ITenantApiProxy _tenantProxy
 @{
-   // Model.Jwt = HttpContextAccessor.HttpContext.Session.GetString("JWT").ToString();
-        //January 06 2023 -- get current login user
-            // step 1
-           
-            string currUserName = _httpContextAccessor.HttpContext.User.Identity.Name;
-            //step 2 -- get thejwt login token from webExternsion method
-            // AsyncCallback CatfihUserNamanegr get userjwtLogin token 
-            var jwt = await _usrManager.GetUserJwtLoginTokenAsync(currUserName, _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated);
+    // Model.Jwt = HttpContextAccessor.HttpContext.Session.GetString("JWT").ToString();
+    //January 06 2023 -- get current login user
+    // step 1
 
-            Model.Jwt = jwt.ToString();
+    string currUserName = _httpContextAccessor.HttpContext.User.Identity.Name;
+    //step 2 -- get thejwt login token from webExternsion method
+    // AsyncCallback CatfihUserNamanegr get userjwtLogin token 
+    var jwt = await _usrManager.GetUserJwtLoginTokenAsync(currUserName, _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated);
 
-            Model.Tenants = await _tenantProxy.GetTenants(0, 10, Model.Jwt);
-            
-            var tenantDetails = await _tenantProxy.GetTenantById(Model.Tenants.ElementAt(0).Id, Model.Jwt);
+    Model.Jwt = jwt.ToString();
+    //TEst Post
+    // TenantInfo tenant = new TenantInfo() { Id = Guid.NewGuid(), Name = "New Tenant", Description = "New Tenant description" };
+    // var newTenant = await _tenantProxy.PostTenant(tenant, Model.Jwt);
 
-            var test="";
+    Model.Tenants = await _tenantProxy.GetTenants(0, 10, Model.Jwt);
+
+    var tenantDetails = await _tenantProxy.GetTenantById(Model.Tenants.ElementAt(0).Id, Model.Jwt);
+
+    var sas_tenant = await _tenantProxy.GetTenantByName("SAS", Model.Jwt);
+    AuthPatchModel authPatchModel = new AuthPatchModel();
+    authPatchModel.ParentId = sas_tenant.Id;
+    authPatchModel.NewChildren = new string[]{ "Portal Admin"};
+    
+    bool patchSuccess =  await _tenantProxy.PatchTenant(authPatchModel, Model.Jwt);
+
+          
 }
 
 <div class="alert alert-info">

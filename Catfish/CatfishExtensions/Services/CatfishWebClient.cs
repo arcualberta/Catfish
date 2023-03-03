@@ -53,9 +53,9 @@ namespace CatfishExtensions.Services
             if (!string.IsNullOrEmpty(jwtBearerToken))
                 _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {jwtBearerToken}");
 
-            var payloadString = JsonConvert.SerializeObject(payload);
+             var payloadString = JsonConvert.SerializeObject(payload);
             HttpContent content = new StringContent(payloadString, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PatchAsync(url, content);
+            var response = await _httpClient.PatchAsync(url, content); //await _httpClient.PatchAsync(url, content);
             return response;
         }
         public async Task<T> PatchJson<T>(string url, object payload, string? jwtBearerToken = null)
