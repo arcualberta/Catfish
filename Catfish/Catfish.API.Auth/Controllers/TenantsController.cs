@@ -116,9 +116,9 @@ namespace Catfish.API.Auth.Controllers
                 await _db.SaveChangesAsync();
                 return NoContent();
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

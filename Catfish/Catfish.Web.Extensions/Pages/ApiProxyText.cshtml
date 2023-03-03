@@ -4,6 +4,7 @@
 @inject IHttpContextAccessor _httpContextAccessor
 @inject CatfishWebExtensions.Interfaces.ICatfishUserManager _usrManager
 @inject CatfishExtensions.Interfaces.Auth.ITenantApiProxy _tenantProxy
+@inject CatfishExtensions.Interfaces.Auth.IRoleApiProxy _roleProxy
 @{
     // Model.Jwt = HttpContextAccessor.HttpContext.Session.GetString("JWT").ToString();
     //January 06 2023 -- get current login user
@@ -26,20 +27,27 @@
     //TESTING PATH -- good
     //var sas_tenant = await _tenantProxy.GetTenantByName("SAS", Model.Jwt);
     //AuthPatchModel authPatchModel = new AuthPatchModel();
-  //  authPatchModel.ParentId = sas_tenant.Id;
-  //  authPatchModel.NewChildren = new string[]{ "Portal Admin"};
+    //  authPatchModel.ParentId = sas_tenant.Id;
+    //  authPatchModel.NewChildren = new string[]{ "Portal Admin"};
 
- //   bool patchSuccess =  await _tenantProxy.PatchTenant(authPatchModel, Model.Jwt);
+    //   bool patchSuccess =  await _tenantProxy.PatchTenant(authPatchModel, Model.Jwt);
 
     //TESTING PUT -- good
-   // var modifiedTenant = Model.Tenants[0];
+    // var modifiedTenant = Model.Tenants[0];
     //change the name from "New Tenant" to "Modified Tenant"
-   // modifiedTenant.Name = "Modified Tenant";
-   // bool modifiedSuccess = await _tenantProxy.PutTenant(modifiedTenant, Model.Jwt);
+    // modifiedTenant.Name = "Modified Tenant";
+    // bool modifiedSuccess = await _tenantProxy.PutTenant(modifiedTenant, Model.Jwt);
 
-   //DELETE
-   var tenantToDelete = Model.Tenants[0];
-  var deleteSuccess =  await _tenantProxy.DeleteTenant(tenantToDelete.Id, Model.Jwt);
+    //DELETE -- good
+
+    // var tenantToDelete = Model.Tenants[0];
+    //var deleteSuccess =  await _tenantProxy.DeleteTenant(tenantToDelete.Id, Model.Jwt);
+
+
+
+    // =======================  TESTING ROLES =========================================================//
+    Model.Roles = await _roleProxy.GetRoles(0, 100, Model.Jwt);
+
           
 }
 
@@ -75,6 +83,14 @@
      </div>
     
 </div>
+
+<h3>Roles</h3>
+<div>  @{
+        foreach(TenantRoleInfo t in Model.Roles)
+        {
+           <div>@t.Name  -  @t.Id</div>
+        }
+    }</div>
 
 
 

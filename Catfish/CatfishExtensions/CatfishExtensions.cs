@@ -23,6 +23,7 @@ namespace CatfishExtensions
             services.AddScoped<IGoogleIdentity, GoogleIdentity > ();
             services.AddSingleton<IUserApiProxy, UserApiProxy>();
             services.AddSingleton<ITenantApiProxy, TenantApiProxy>();
+            services.AddSingleton<IRoleApiProxy, RoleApiProxy>();
 
             if (configureSwagger)
             {
