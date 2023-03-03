@@ -16,5 +16,8 @@ namespace CatfishExtensions.Interfaces.Auth
         Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null);
         Task<TenantInfo> GetTenantById(Guid id, string? jwtBearerToken = null);
         Task<TenantInfo> PostTenant(TenantInfo dto, string? jwtToken = null);
+
+        Task<bool> PutTenant(TenantInfo dto, string? jwtToken = null);
+        Task<bool> DeleteTenant(Guid id, string? jwtToken = null);
     }
 }

@@ -14,5 +14,8 @@ namespace CatfishExtensions.Interfaces
         Task<T> PostJson<T>(string url, object payload, string? jwtBearerToken = null);
         Task<HttpResponseMessage> PatchJson(string url, object payload, string? jwtBearerToken = null);
         Task<T> PatchJson<T>(string url, object payload, string? jwtBearerToken = null);
+        Task<T> PutJson<T>(string url, object payload, string? jwtBearerToken = null);
+        Task<HttpResponseMessage> PutJson(string url, object payload, string? jwtBearerToken = null);
+        Task<HttpResponseMessage> Delete(string url, string? jwtBearerToken = null);
     }
 }

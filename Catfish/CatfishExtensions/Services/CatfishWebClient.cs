@@ -65,5 +65,31 @@ namespace CatfishExtensions.Services
             return JsonConvert.DeserializeObject<T>(responseString);
         }
 
+        public async Task<T> PutJson<T>(string url, object payload, string? jwtBearerToken = null)
+        {
+            var response = await PutJson(url, payload, jwtBearerToken);
+            string responseString = response.IsSuccessStatusCode ? await response.Content.ReadAsStringAsync() : "";
+            return JsonConvert.DeserializeObject<T>(responseString);
+        }
+        public async Task<HttpResponseMessage> PutJson(string url, object payload, string? jwtBearerToken = null)
+        {
+            _httpClient.DefaultRequestHeaders.Remove("Authorization");
+            if (!string.IsNullOrEmpty(jwtBearerToken))
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {jwtBearerToken}");
+
+            var payloadString = JsonConvert.SerializeObject(payload);
+            HttpContent content = new StringContent(payloadString, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(url, content); //await _httpClient.PatchAsync(url, content);
+            return response;
+        }
+        public async Task<HttpResponseMessage> Delete(string url, string? jwtBearerToken = null)
+        {
+            _httpClient.DefaultRequestHeaders.Remove("Authorization");
+            if (!string.IsNullOrEmpty(jwtBearerToken))
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {jwtBearerToken}");
+            var response = await _httpClient.DeleteAsync(url);
+
+            return response;
+        }
     }
 }

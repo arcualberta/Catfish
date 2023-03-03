@@ -82,5 +82,12 @@ namespace CatfishExtensions.Services.Auth
 
         public async Task<TenantInfo> PostTenant(TenantInfo dto, string? jwtToken = null)
             => await _webClient.PostJson<TenantInfo>($"{_apiRoot}/api/Tenants/", dto, jwtToken);
+
+        public async Task<bool> PutTenant(TenantInfo dto, string? jwtToken = null)
+            => (await _webClient.PutJson($"{_apiRoot}/api/Tenants/", dto, jwtToken)).IsSuccessStatusCode;
+
+        public async Task<bool> DeleteTenant(Guid id, string? jwtToken = null)
+          => (await _webClient.Delete($"{_apiRoot}/api/Tenants/{id}",jwtToken)).IsSuccessStatusCode;
+
     }
 }

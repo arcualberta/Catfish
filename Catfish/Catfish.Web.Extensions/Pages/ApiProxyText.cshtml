@@ -15,7 +15,7 @@
     var jwt = await _usrManager.GetUserJwtLoginTokenAsync(currUserName, _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated);
 
     Model.Jwt = jwt.ToString();
-    //TEst Post
+    //TEst Post -- good
     // TenantInfo tenant = new TenantInfo() { Id = Guid.NewGuid(), Name = "New Tenant", Description = "New Tenant description" };
     // var newTenant = await _tenantProxy.PostTenant(tenant, Model.Jwt);
 
@@ -23,13 +23,23 @@
 
     var tenantDetails = await _tenantProxy.GetTenantById(Model.Tenants.ElementAt(0).Id, Model.Jwt);
 
-    var sas_tenant = await _tenantProxy.GetTenantByName("SAS", Model.Jwt);
-    AuthPatchModel authPatchModel = new AuthPatchModel();
-    authPatchModel.ParentId = sas_tenant.Id;
-    authPatchModel.NewChildren = new string[]{ "Portal Admin"};
-    
-    bool patchSuccess =  await _tenantProxy.PatchTenant(authPatchModel, Model.Jwt);
+    //TESTING PATH -- good
+    //var sas_tenant = await _tenantProxy.GetTenantByName("SAS", Model.Jwt);
+    //AuthPatchModel authPatchModel = new AuthPatchModel();
+  //  authPatchModel.ParentId = sas_tenant.Id;
+  //  authPatchModel.NewChildren = new string[]{ "Portal Admin"};
 
+ //   bool patchSuccess =  await _tenantProxy.PatchTenant(authPatchModel, Model.Jwt);
+
+    //TESTING PUT -- good
+   // var modifiedTenant = Model.Tenants[0];
+    //change the name from "New Tenant" to "Modified Tenant"
+   // modifiedTenant.Name = "Modified Tenant";
+   // bool modifiedSuccess = await _tenantProxy.PutTenant(modifiedTenant, Model.Jwt);
+
+   //DELETE
+   var tenantToDelete = Model.Tenants[0];
+  var deleteSuccess =  await _tenantProxy.DeleteTenant(tenantToDelete.Id, Model.Jwt);
           
 }
 
