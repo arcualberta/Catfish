@@ -5,6 +5,7 @@
 @inject CatfishWebExtensions.Interfaces.ICatfishUserManager _usrManager
 @inject CatfishExtensions.Interfaces.Auth.ITenantApiProxy _tenantProxy
 @inject CatfishExtensions.Interfaces.Auth.IRoleApiProxy _roleProxy
+@inject CatfishExtensions.Interfaces.Auth.IUserApiProxy _userProxy
 @{
     // Model.Jwt = HttpContextAccessor.HttpContext.Session.GetString("JWT").ToString();
     //January 06 2023 -- get current login user
@@ -57,10 +58,16 @@
     AuthPatchModel rolePatch = new AuthPatchModel();
     rolePatch.ParentId = role.Id;
     rolePatch.NewChildren = new string[] { "Admin" };
-    var res = await _roleProxy.PatchRole(rolePatch, Model.Jwt);
 
 
-          
+    // =======================  TESTING USERS =========================================================//
+    Model.Users= await _userProxy.GetUsers(0, 100, Model.Jwt);
+
+    //modified user
+    UserInfo user = Model.Users[0]; //user name= Admin
+    user.Email = "admin@putcall.com";
+
+    await _userProxy.PutUser(user, Model.Jwt);
 }
 
 <div class="alert alert-info">
@@ -105,6 +112,17 @@
         }
     }
   </div>
+
+  <h3>Users</h3>
+<div class="alert alert-success">  
+    @{
+        foreach(UserInfo t in Model.Users)
+        {
+           <div>@t.UserName  -  @t.Id   - @t.Email</div>
+        }
+    }
+  </div>
+
 
 
 

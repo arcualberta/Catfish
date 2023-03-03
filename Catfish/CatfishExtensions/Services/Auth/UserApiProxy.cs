@@ -37,5 +37,14 @@ namespace CatfishExtensions.Services.Auth
         public async Task<UserMembership> GetMembership(string username)
             => await _webClient.Get<UserMembership>($"{_apiRoot}/api/users/membership/{username}");
 
+        public async Task<List<UserInfo>> GetUsers(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null)
+          => await _webClient.Get<List<UserInfo>>($"{_apiRoot}/api/users?offset={offset}&max={max}", jwtBearerToken);
+
+        public async Task<bool> PutUser(UserInfo dto, string? jwtToken = null)
+         => (await _webClient.PutJson($"{_apiRoot}/api/users/", dto, jwtToken)).IsSuccessStatusCode;
+
+        public async Task<bool> DeleteUser(Guid id, string? jwtToken = null)
+         => (await _webClient.Delete($"{_apiRoot}/api/users/{id}", jwtToken)).IsSuccessStatusCode;
+
     }
 }
