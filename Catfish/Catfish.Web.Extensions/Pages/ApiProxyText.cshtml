@@ -1,0 +1,81 @@
+﻿@page "/test"
+@using CatfishExtensions.DTO
+@model CatfishWebExtensions.Pages.ApiProxyTextModel
+@inject IHttpContextAccessor _httpContextAccessor
+@inject CatfishWebExtensions.Interfaces.ICatfishUserManager _usrManager
+@inject CatfishExtensions.Interfaces.Auth.ITenantApiProxy _tenantProxy
+@{
+    // Model.Jwt = HttpContextAccessor.HttpContext.Session.GetString("JWT").ToString();
+    //January 06 2023 -- get current login user
+    // step 1
+
+    string currUserName = _httpContextAccessor.HttpContext.User.Identity.Name;
+    //step 2 -- get thejwt login token from webExternsion method
+    // AsyncCallback CatfihUserNamanegr get userjwtLogin token 
+    var jwt = await _usrManager.GetUserJwtLoginTokenAsync(currUserName, _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated);
+
+    Model.Jwt = jwt.ToString();
+    //TEst Post -- good
+    // TenantInfo tenant = new TenantInfo() { Id = Guid.NewGuid(), Name = "New Tenant", Description = "New Tenant description" };
+    // var newTenant = await _tenantProxy.PostTenant(tenant, Model.Jwt);
+
+    Model.Tenants = await _tenantProxy.GetTenants(0, 10, Model.Jwt);
+
+    var tenantDetails = await _tenantProxy.GetTenantById(Model.Tenants.ElementAt(0).Id, Model.Jwt);
+
+    //TESTING PATH -- good
+    //var sas_tenant = await _tenantProxy.GetTenantByName("SAS", Model.Jwt);
+    //AuthPatchModel authPatchModel = new AuthPatchModel();
+  //  authPatchModel.ParentId = sas_tenant.Id;
+  //  authPatchModel.NewChildren = new string[]{ "Portal Admin"};
+
+ //   bool patchSuccess =  await _tenantProxy.PatchTenant(authPatchModel, Model.Jwt);
+
+    //TESTING PUT -- good
+   // var modifiedTenant = Model.Tenants[0];
+    //change the name from "New Tenant" to "Modified Tenant"
+   // modifiedTenant.Name = "Modified Tenant";
+   // bool modifiedSuccess = await _tenantProxy.PutTenant(modifiedTenant, Model.Jwt);
+
+   //DELETE
+   var tenantToDelete = Model.Tenants[0];
+  var deleteSuccess =  await _tenantProxy.DeleteTenant(tenantToDelete.Id, Model.Jwt);
+          
+}
+
+<div class="alert alert-info">
+    <h3>JWT</h3>
+    @Html.Raw(Model.Jwt)
+</div>
+
+
+<div class="alert alert-info">
+    <h3>Tenants</h3>
+    @{
+        foreach(TenantInfo t in Model.Tenants)
+        {
+           <div>@t.Name  -  @t.Id</div>
+        }
+    }
+    
+</div>
+
+<div class="alert alert-info">
+    <h3>Tenant  Details</h3>
+      <div>Id : @tenantDetails.Id</div>
+     <div>Name : @tenantDetails.Name</div>
+     <div>Description : @tenantDetails.Description</div>
+     <div>Roles:
+        @{
+            foreach(var r in tenantDetails.Roles)
+            {
+                <div>@r.Name</div>
+            }
+        }
+     </div>
+    
+</div>
+
+
+
+

@@ -11,8 +11,8 @@ namespace CatfishExtensions.DTO
     {
         public Guid ParentId { get; set; }
         [Display(Name = "New Children to be Added")]
-        public string[] NewChildren { get; set; }
+        public string[] NewChildren { get; set; } = new string[0];
         [Display(Name = "Old Children to be Deleted")]
-        public string[] DeleteChildren { get; set; }
+        public string[] DeleteChildren { get; set; } = new string[0];
     }
 }
