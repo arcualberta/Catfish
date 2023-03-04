@@ -22,15 +22,11 @@ namespace Catfish.API.Repository.Controllers
             _entityTemplateService = entityTemplateService;
         }
         // GET: api/<EntityTemplateController>
-        [HttpGet]
+        [HttpGet("{tenantId}")]
 //        [Authorize(Roles = "SysAdmin")]
-        [Authorize(Policy = "Membership")]
-        public async Task<ActionResult<IEnumerable<TemplateEntry>>> Get()
+        [Authorize(Policy = "Tenant")]
+        public async Task<ActionResult<IEnumerable<TemplateEntry>>> Get(Guid tenantId)
         {
-            if (_context.EntityTemplates == null)
-            {
-                return NotFound();
-            }
             return await _context.EntityTemplates!
                 .Where(et=>et.State != eState.Deleted)
                 .OrderBy(et => et.Name)
@@ -40,9 +36,10 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms/5
         //   GET api/<EntityTemplatesController>/5
-        [HttpGet("{id}")]
-        [Authorize(Roles = "SysAdmin")]
-        public async Task<EntityTemplate?> Get(Guid id, bool includeForms = true)
+        [HttpGet("{tenantId}/{id}")]
+        //[Authorize(Roles = "SysAdmin")]
+        [Authorize(Policy = "Tenant")]
+        public async Task<EntityTemplate?> Get(Guid tenantId, Guid id, bool includeForms = true)
         {
             if(includeForms)
                 return await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(fd => fd.Id == id);

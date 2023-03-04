@@ -21,7 +21,7 @@ namespace CatfishExtensions.Interfaces.Auth.Requirements
         {
             var userIdInClaim = context.User.Claims.Where(claim => claim.Type == "username").FirstOrDefault();
             var request = _httpContextAccessor.HttpContext.Request;
-
+            var tenantId = request.RouteValues["tenantId"].ToString();
             context.Succeed(requirement);
 
             return Task.CompletedTask;

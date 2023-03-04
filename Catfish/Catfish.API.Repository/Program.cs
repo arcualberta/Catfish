@@ -32,7 +32,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Membership", policy =>
+    options.AddPolicy("Tenant", policy =>
         policy.Requirements.Add(new MembershipRequirement()));
 });
 
