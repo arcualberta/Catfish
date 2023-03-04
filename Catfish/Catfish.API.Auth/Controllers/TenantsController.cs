@@ -32,9 +32,10 @@ namespace Catfish.API.Auth.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<TenantInfo>>> GetTenants(int offset = 0, int max = int.MaxValue)
+        public async Task<ActionResult<IEnumerable<TenantInfo>>> GetTenants(int offset = 0, int max = int.MaxValue, bool includeRoles = false)
         {
-            var tenants = await _db.Tenants.OrderBy(t => t.Name).Skip(offset).Take(max).ToListAsync();
+            IQueryable<Tenant> query = includeRoles ? _db.Tenants.Include(t => t.Roles) : _db.Tenants;
+            var tenants = await query.OrderBy(t => t.Name).Skip(offset).Take(max).ToListAsync();
             return Ok(tenants.Select(rec => _mapper.Map<TenantInfo>(rec)).ToList());
         }
 
