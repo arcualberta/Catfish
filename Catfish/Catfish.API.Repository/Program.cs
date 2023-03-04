@@ -2,7 +2,10 @@ using Catfish.API.Repository;
 using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Services;
 using CatfishExtensions;
+using CatfishExtensions.Interfaces.Auth.Requirements;
 using Hangfire;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -23,10 +26,18 @@ builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 builder.Services.AddScoped<IEntityService, EntityService>();
 builder.Services.AddScoped<ISolrService, SolrService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
-//builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
 builder.Services.AddScoped<IExcelFileProcessingService, ExcelFileProcessingService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Membership", policy =>
+        policy.Requirements.Add(new MembershipRequirement()));
+});
+
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IAuthorizationHandler, MembershipHandler>();
 
 var app = builder.Build();
 
