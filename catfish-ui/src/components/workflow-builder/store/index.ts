@@ -49,7 +49,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             console.log(api)
 
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.getJwtToken}`
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -63,7 +66,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         loadWorkflow(id: Guid) {
             const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.getJwtToken}`
+                }
             })
                 .then(response => response.json())
                 .then(data => {
@@ -102,8 +108,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                     method: method,
                     headers: {
                         'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${this.getJwtToken}`
                     },
+                    
                 })
                 .then(response => {
                     if (response.ok) {
@@ -137,7 +145,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         loadEntityTemplates() {
             const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;//`https://localhost:5020/api/workflow/${id}`;
             fetch(api, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': `bearer ${this.getJwtToken}`
+                }
             })
                 .then(response => response.json())
                 .then(data => {
