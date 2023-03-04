@@ -11,7 +11,7 @@ namespace Catfish.API.Auth.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
-        public ICollection<TenantRole> Roles { get; set; }
+        public ICollection<TenantRole> Roles { get; set; } = new List<TenantRole>();
 
     }
 }

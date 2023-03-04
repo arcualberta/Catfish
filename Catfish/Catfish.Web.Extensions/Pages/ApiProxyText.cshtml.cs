@@ -10,11 +10,12 @@ namespace CatfishWebExtensions.Pages
         //public readonly ITenantApiProxy _tenantProxy;
         public string Jwt { get; set; }
         public List<TenantInfo> Tenants { get; set; }
+        public List<TenantRoleInfo> Roles { get; set; }
 
-       /* public ApiProxyTextModel(ITenantApiProxy tenantProxy, string jwt, string tenants)
-        {
-            _tenantProxy = tenantProxy;
-        }*/
+        /* public ApiProxyTextModel(ITenantApiProxy tenantProxy, string jwt, string tenants)
+         {
+             _tenantProxy = tenantProxy;
+         }*/
 
         public void OnGet()
         {

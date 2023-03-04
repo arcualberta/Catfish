@@ -19,7 +19,7 @@ import { Guid } from 'guid-typescript';
          //load entity templates
         store.loadUsers();
          store.loadEntityTemplates();
-         store.loadTemplate(store.workflow?.entityTemplateId)
+         store.loadTemplate(store.workflow?.entityTemplateId as Guid)
     });
     watch(() => store.workflow?.entityTemplateId, async newValue => {
         store.loadTemplate(newValue as Guid);
