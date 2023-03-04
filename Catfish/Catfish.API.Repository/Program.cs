@@ -1,11 +1,9 @@
 using Catfish.API.Repository;
 using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Services;
-using CatfishExtensions;
-using CatfishExtensions.Interfaces.Auth.Requirements;
+using CatfishExtensions.Services.Auth.Requirements;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -29,6 +27,12 @@ builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
 builder.Services.AddScoped<IExcelFileProcessingService, ExcelFileProcessingService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+//////Retrieving tenant info from the Auth API and adding access policies for each role in each tenant.
+//////NOTE: This will require the Auth API running before starting the repository service
+////var webClient = new CatfishExtensions.Services.CatfishWebClient();
+////var tenantApiProxy = new CatfishExtensions.Services.Auth.TenantApiProxy(webClient, configuration);
+////var tenants = await tenantApiProxy.GetTenants(0, int.MaxValue, true);
 
 builder.Services.AddAuthorization(options =>
 {

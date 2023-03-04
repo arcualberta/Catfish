@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatfishExtensions.Interfaces.Auth.Requirements
+namespace CatfishExtensions.Services.Auth.Requirements
 {
     public class MembershipRequirement : IAuthorizationRequirement
     {
