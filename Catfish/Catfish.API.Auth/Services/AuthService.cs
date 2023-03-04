@@ -149,5 +149,12 @@ namespace Catfish.API.Auth.Services
 
             return membership;
         }
+
+        public async Task<bool> IsTenantExistedByName(string tenantName)
+        {
+            var tenant = _db.Tenants.Where(t => t.Name == tenantName).FirstOrDefault();
+
+            return tenant != null ? true : false;
+        }
     }
 }
