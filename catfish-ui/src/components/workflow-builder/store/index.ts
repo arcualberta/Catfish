@@ -5,6 +5,7 @@ import { default as config } from "@/appsettings";
 import { TemplateEntry } from '@/components/entity-editor/models';
 import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup, UserInfo } from '../models/'
 import { useLoginStore } from '@/components/login/store';
+import { ApiHelper } from '@/components/shared/apiHelper';
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -46,14 +47,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
 
             let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/${templateId}`;
-            console.log(api)
-
-            fetch(api, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `bearer ${this.getJwtToken}`
-                }
-            })
+            ApiHelper.get(api)
                 .then(response => response.json())
                 .then(data => {
                     this.entityTemplate = data as EntityTemplate;
@@ -64,13 +58,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 });
         },
         loadWorkflow(id: Guid) {
-            const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;//`https://localhost:5020/api/workflow/${id}`;
-            fetch(api, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `bearer ${this.getJwtToken}`
-                }
-            })
+            const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;
+            ApiHelper.get(api)
                 .then(response => response.json())
                 .then(data => {
                     this.workflow = data;
@@ -90,29 +79,9 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             console.log(this.workflow?.id)
             let api = `${config.dataRepositoryApiRoot}/api/workflow`;
             console.log(api)
-            //let api = "https://localhost:5020/api/workflow";
-            let method = "";
-            if (newWorkflow) {
-                console.log("Saving new workflow.")
-                method = "POST";
-            }
-            else {
-                console.log("Updating existing workflow.")
-                api = `${api}/${this.workflow.id}`
-                method = "PUT";
-            }
-            console.log(JSON.stringify(this.workflow))
-            fetch(api,
-                {
-                    body: JSON.stringify(this.workflow),
-                    method: method,
-                    headers: {
-                        'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json',
-                        'Authorization': `bearer ${this.getJwtToken}`
-                    },
-                })
-                .then(response => {
+            let promise = newWorkflow ? ApiHelper.postJson(api, this.workflow) : ApiHelper.putJson(`${api}/${this.workflow.id}`, this.workflow)
+
+            promise.then(response => {
                     if (response.ok) {
                         this.transientMessage = "The form saved successfully"
                         this.transientMessageClass = "success"
@@ -142,13 +111,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 });
         },
         loadEntityTemplates() {
-            const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;//`https://localhost:5020/api/workflow/${id}`;
-            fetch(api, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `bearer ${this.getJwtToken}`
-                }
-            })
+            const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;
+            ApiHelper.get(api)
                 .then(response => response.json())
                 .then(data => {
                     this.entityTemplates = data;
@@ -159,13 +123,8 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
 
         },
         loadUsers() {
-            const api = `${config.authorizationApiRoot}api/Users`;//`https://localhost:5020/api/workflow/${id}`;
-            fetch(api, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `bearer ${this.getJwtToken}`
-                }
-            })
+            const api = `${config.authorizationApiRoot}api/Users`;
+            ApiHelper.get(api)
                 .then(response => response.json())
                 .then(data => {
                     this.users = data;
@@ -174,10 +133,5 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                     console.error('Load users API Error:', error);
                 });
         },
-    },
-    getters:{
-        getJwtToken(state){
-            return useLoginStore().jwtToken
-        }
     }
 });
