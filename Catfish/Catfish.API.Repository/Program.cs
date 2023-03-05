@@ -37,7 +37,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Tenant", policy =>
-        policy.Requirements.Add(new MembershipRequirement()));
+        policy.Requirements.Add(new BelongsToTenantRequirement()));
 });
 
 builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
