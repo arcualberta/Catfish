@@ -36,7 +36,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Tenant", policy =>
+    options.AddPolicy("BelongsToTenant", policy =>
         policy.Requirements.Add(new BelongsToTenantRequirement()));
 });
 

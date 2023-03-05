@@ -24,7 +24,7 @@ namespace Catfish.API.Repository.Controllers
         // GET: api/<EntityTemplateController>
         [HttpGet("{tenantId}")]
 //        [Authorize(Roles = "SysAdmin")]
-        [Authorize(Policy = "Tenant")]
+        [Authorize(Policy = "BelongsToTenant")]
         public async Task<ActionResult<IEnumerable<TemplateEntry>>> Get(Guid tenantId)
         {
             return await _context.EntityTemplates!
@@ -38,7 +38,7 @@ namespace Catfish.API.Repository.Controllers
         //   GET api/<EntityTemplatesController>/5
         [HttpGet("{tenantId}/{id}")]
         //[Authorize(Roles = "SysAdmin")]
-        [Authorize(Policy = "Tenant")]
+        [Authorize(Policy = "BelongsToTenant")]
         public async Task<EntityTemplate?> Get(Guid tenantId, Guid id, bool includeForms = true)
         {
             if(includeForms)
