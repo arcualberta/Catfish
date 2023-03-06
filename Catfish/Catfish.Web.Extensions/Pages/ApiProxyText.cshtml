@@ -18,8 +18,8 @@
 
     Model.Jwt = jwt.ToString();
     //TEst Post -- good
-     TenantInfo tenant = new TenantInfo() { Id = Guid.NewGuid(), Name = "New Tenant", Description = "New Tenant description" };
-     var newTenant = await _tenantProxy.PostTenant(tenant, Model.Jwt);
+    TenantInfo tenant = new TenantInfo() { Id = Guid.NewGuid(), Name = "New Tenant", Description = "New Tenant description" };
+    var newTenant = await _tenantProxy.PostTenant(tenant, Model.Jwt);
 
     Model.Tenants = await _tenantProxy.GetTenants(0, 10, false, Model.Jwt);
 
@@ -68,6 +68,14 @@
     user.Email = "admin@putcall.com";
 
     await _userProxy.PutUser(user, Model.Jwt);
+
+    //Get Membership
+    var userMembership = await _userProxy.GetMembership("admin");
+
+
+    //DELETE
+    
+    await _userProxy.DeleteUser("userToDelete", Model.Jwt);
 }
 
 <div class="alert alert-info">
@@ -121,6 +129,11 @@
            <div>@t.UserName  -  @t.Id   - @t.Email</div>
         }
     }
+  </div>
+
+  <div class="alert alert-success">  
+   <h5>User Membership</h5>
+   <div>User: @userMembership.User.UserName  -- @userMembership.Tenancy[0].Name</div>
   </div>
 
 
