@@ -58,6 +58,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 });
         },
         loadWorkflow(id: Guid) {
+
             const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;
             WebClient.get(api)
                 .then(response => response.json())
@@ -82,6 +83,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             let promise = newWorkflow ? WebClient.postJson(api, this.workflow) : WebClient.putJson(`${api}/${this.workflow.id}`, this.workflow)
 
             promise.then(response => {
+
                     if (response.ok) {
                         this.transientMessage = "The form saved successfully"
                         this.transientMessageClass = "success"
@@ -111,6 +113,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 });
         },
         loadEntityTemplates() {
+
             const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;
             WebClient.get(api)
                 .then(response => response.json())
