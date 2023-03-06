@@ -68,6 +68,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'solrSearchPanel',
         component: () => import('./views/SolrSearchPanel.vue')
     },
+    {
+        path: '/api-test/',
+        name: 'ApiTest',
+        component: () => import('./views/ApiTest.vue')
+    },
 ]
 
 const router = createRouter({
