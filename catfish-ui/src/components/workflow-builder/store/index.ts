@@ -5,7 +5,7 @@ import { default as config } from "@/appsettings";
 import { TemplateEntry } from '@/components/entity-editor/models';
 import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup, UserInfo } from '../models/'
 import { useLoginStore } from '@/components/login/store';
-import { ApiHelper } from '@/components/shared/apiHelper';
+import { WebClient } from '@/api/webClient';
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -47,7 +47,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
 
             let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/${templateId}`;
-            ApiHelper.get(api)
+            WebClient.get(api)
                 .then(response => response.json())
                 .then(data => {
                     this.entityTemplate = data as EntityTemplate;
@@ -59,7 +59,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         },
         loadWorkflow(id: Guid) {
             const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;
-            ApiHelper.get(api)
+            WebClient.get(api)
                 .then(response => response.json())
                 .then(data => {
                     this.workflow = data;
@@ -79,7 +79,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             console.log(this.workflow?.id)
             let api = `${config.dataRepositoryApiRoot}/api/workflow`;
             console.log(api)
-            let promise = newWorkflow ? ApiHelper.postJson(api, this.workflow) : ApiHelper.putJson(`${api}/${this.workflow.id}`, this.workflow)
+            let promise = newWorkflow ? WebClient.postJson(api, this.workflow) : WebClient.putJson(`${api}/${this.workflow.id}`, this.workflow)
 
             promise.then(response => {
                     if (response.ok) {
@@ -112,7 +112,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         },
         loadEntityTemplates() {
             const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;
-            ApiHelper.get(api)
+            WebClient.get(api)
                 .then(response => response.json())
                 .then(data => {
                     this.entityTemplates = data;
@@ -124,7 +124,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         },
         loadUsers() {
             const api = `${config.authorizationApiRoot}api/Users`;
-            ApiHelper.get(api)
+            WebClient.get(api)
                 .then(response => response.json())
                 .then(data => {
                     this.users = data;

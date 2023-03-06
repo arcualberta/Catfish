@@ -14,8 +14,9 @@
     <button class="home-link" @click="navigateTo('/edit-form-submission')">Edit Form Submission</button>
     <button class="home-link" @click="navigateTo('/google-calendar')">Google Calendar</button>
     <button class="home-link" @click="navigateTo('/entity-template-builder')">Entity Template Builder</button>
-     <button class="home-link" @click="navigateTo('/entity-editor')">Entity Editor</button>
-     <button class="home-link" @click="navigateTo('/solr-search-panel')">Solr Search</button>
+    <button class="home-link" @click="navigateTo('/entity-editor')">Entity Editor</button>
+    <button class="home-link" @click="navigateTo('/solr-search-panel')">Solr Search</button>
+    <button class="home-link" @click="navigateTo('/api-test')">API Test</button>
 </template>
 
 <style scoped>
