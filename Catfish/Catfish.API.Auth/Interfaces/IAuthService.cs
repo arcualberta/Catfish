@@ -10,5 +10,7 @@ namespace Catfish.API.Auth.Interfaces
         Task PatchRole(AuthPatchModel model);
         Task UpdateRole(TenantRole model);
         Task<UserMembership> GetMembership(IdentityUser user);
+
+        Task<bool> IsTenantExistedByName(string tenantName);
     }
 }

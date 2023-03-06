@@ -13,7 +13,7 @@ namespace CatfishExtensions.Interfaces.Auth
         Task<TenantInfo> CreateTenant(TenantInfo tenant);
         Task<bool> PatchTenant(AuthPatchModel patchModel, string? jwtBearerToken = null);
         Task EnsureTenancy();
-        Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null);
+        Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, bool includeRoles = false, string? jwtBearerToken = null);
         Task<TenantInfo> GetTenantById(Guid id, string? jwtBearerToken = null);
         Task<TenantInfo> PostTenant(TenantInfo dto, string? jwtToken = null);
 

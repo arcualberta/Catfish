@@ -1,9 +1,5 @@
 ﻿using CatfishExtensions.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CatfishExtensions.Interfaces.Auth
 {
@@ -12,5 +8,8 @@ namespace CatfishExtensions.Interfaces.Auth
         Task<string> Login(string username, string password);
         Task<bool> Register(RegistrationModel model);
         Task<UserMembership> GetMembership(string username);
+        Task<List<UserInfo>> GetUsers(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null);
+        Task<bool> PutUser(UserInfo dto, string? jwtToken = null);
+        Task<bool> DeleteUser(string userName, string? jwtToken = null);
     }
 }

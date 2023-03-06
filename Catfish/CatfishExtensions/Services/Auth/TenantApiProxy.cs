@@ -74,8 +74,8 @@ namespace CatfishExtensions.Services.Auth
         public async Task<bool> PatchTenant(AuthPatchModel patchModel, string? jwtBearerToken = null)
             => (await _webClient.PatchJson($"{_apiRoot}/api/tenants", patchModel, jwtBearerToken)).IsSuccessStatusCode;
 
-        public async Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null)
-            => await _webClient.Get<List<TenantInfo>>($"{_apiRoot}/api/Tenants?offset={offset}&max={max}", jwtBearerToken);
+        public async Task<List<TenantInfo>> GetTenants(int offset = 0, int max = int.MaxValue, bool includeRoles = false, string? jwtBearerToken = null)
+            => await _webClient.Get<List<TenantInfo>>($"{_apiRoot}/api/Tenants?offset={offset}&max={max}&includeRoles={includeRoles}", jwtBearerToken);
 
         public async Task<TenantInfo> GetTenantById(Guid id, string? jwtBearerToken = null)
             => await _webClient.Get<TenantInfo>($"{_apiRoot}/api/Tenants/{id}", jwtBearerToken);
