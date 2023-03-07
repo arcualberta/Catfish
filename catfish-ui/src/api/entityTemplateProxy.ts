@@ -36,6 +36,7 @@ export class EntityTemplateProxy{
             }
             throw e;
         }*/
+       
     }    
 
     static async Put(entityTemplate: EntityTemplate): Promise<boolean> {
