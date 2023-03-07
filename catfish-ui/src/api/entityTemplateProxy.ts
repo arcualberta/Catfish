@@ -3,7 +3,7 @@ import { TemplateEntry } from "@/components/entity-editor/models";
 import { EntityTemplate } from "@/components/entity-template-builder/models";
 import { ReturnVoid } from "@/components/form-submission/__VLS_types";
 import { Guid } from "guid-typescript";
-import { CrudProxy } from "./crudProxy";
+import { CrudProxy, ObjectId } from "./crudProxy";
 import { WebClient } from "./webClient";
 
 export class EntityTemplateProxy{
@@ -18,8 +18,9 @@ export class EntityTemplateProxy{
         return await EntityTemplateProxy._crudProxy.Get<EntityTemplate>(id);
     }
 
-    static async Post(entityTemplate: EntityTemplate): Promise<boolean> {
-        let newIdCreated = false
+    static async Post<EntityTemplate extends ObjectId>(entityTemplate: EntityTemplate): Promise<boolean> {
+       return await this._crudProxy.Post<EntityTemplate>(entityTemplate);
+        /* let newIdCreated = false
         try{
             if(!entityTemplate.id || entityTemplate.id == Guid.parse(Guid.EMPTY)) {
                 entityTemplate.id = Guid.create().toString() as unknown as Guid
@@ -33,7 +34,7 @@ export class EntityTemplateProxy{
                 entityTemplate.id = Guid.parse(Guid.EMPTY)
             }
             throw e;
-        }
+        }*/
     }    
 
     static async Put(entityTemplate: EntityTemplate): Promise<boolean> {

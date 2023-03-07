@@ -5,8 +5,11 @@ import { ListEntry } from "@/components/shared";
 import { Guid } from "guid-typescript";
 import { WebClient } from "./webClient";
 
+export interface ObjectId{
+    id: Guid | null
+ }
 export class CrudProxy{
-
+ 
     private _apiRoot: string;
 
     constructor(apiRoot: string) {
@@ -25,19 +28,19 @@ export class CrudProxy{
         return data as T   
     }
 
-    async Post(entityTemplate: EntityTemplate): Promise<boolean> {
+    async Post<T extends ObjectId>(data: T): Promise<boolean> {
         let newIdCreated = false
         try{
-            if(!entityTemplate.id || entityTemplate.id == Guid.parse(Guid.EMPTY)) {
-                entityTemplate.id = Guid.create().toString() as unknown as Guid
+            if(!data.id || data.id == Guid.parse(Guid.EMPTY)) {
+                data.id = Guid.create().toString() as unknown as Guid
                 newIdCreated = true
             }
-            var response = await WebClient.postJson(`${this._apiRoot}`, entityTemplate)
+            var response = await WebClient.postJson(`${this._apiRoot}`, data)
             return true;
         }
         catch(e){
             if(newIdCreated){
-                entityTemplate.id = Guid.parse(Guid.EMPTY)
+                data.id = Guid.parse(Guid.EMPTY)
             }
             throw e;
         }
