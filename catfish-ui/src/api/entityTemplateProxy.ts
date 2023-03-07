@@ -2,6 +2,7 @@ import { default as config } from "@/appsettings";
 import { TemplateEntry } from "@/components/entity-editor/models";
 import { EntityTemplate } from "@/components/entity-template-builder/models";
 import { ReturnVoid } from "@/components/form-submission/__VLS_types";
+import { eState } from "@/components/shared/constants";
 import { Guid } from "guid-typescript";
 import { CrudProxy, ObjectId } from "./crudProxy";
 import { WebClient } from "./webClient";
@@ -43,6 +44,10 @@ export class EntityTemplateProxy{
     
     static async Delete(id: Guid): Promise<boolean>{
         return await EntityTemplateProxy._crudProxy.Delete(id)
+    }
+    static async ChangeState(id: Guid, newState: eState): Promise<boolean>{
+        var response = await WebClient.postJson(`${this.getApiRoot()}/change-state/{id}`, Object.values(newState))
+        return true;
     }
 
     private static getApiRoot = () => `${config.dataRepositoryApiRoot}/api/entity-templates`;
