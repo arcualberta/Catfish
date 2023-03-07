@@ -3,20 +3,19 @@ import { TemplateEntry } from "@/components/entity-editor/models";
 import { EntityTemplate } from "@/components/entity-template-builder/models";
 import { ReturnVoid } from "@/components/form-submission/__VLS_types";
 import { Guid } from "guid-typescript";
+import { CrudProxy } from "./crudProxy";
 import { WebClient } from "./webClient";
 
 export class EntityTemplateProxy{
 
-    static async List(): Promise<TemplateEntry[]> {
-        var response = await WebClient.get(this.getApiRoot())
-        var data = await response.json()
-        return data as TemplateEntry[]   
+    private static _crudProxy: CrudProxy = new CrudProxy(`${config.dataRepositoryApiRoot}/api/entity-templates`);
+    
+    static async List (): Promise<TemplateEntry[]> {
+        return await EntityTemplateProxy._crudProxy.List<TemplateEntry>();
     }
 
     static async Get(id: Guid): Promise<EntityTemplate> {
-        var response = await WebClient.get(`${this.getApiRoot()}/${id}`)
-        var data = await response.json()
-        return data as EntityTemplate   
+        return await EntityTemplateProxy._crudProxy.Get<EntityTemplate>(id);
     }
 
     static async Post(entityTemplate: EntityTemplate): Promise<boolean> {
@@ -38,9 +37,12 @@ export class EntityTemplateProxy{
     }    
 
     static async Put(entityTemplate: EntityTemplate): Promise<boolean> {
-        var response = await WebClient.putJson(`${this.getApiRoot()}`, entityTemplate)
-        return true
-    }    
+        return await EntityTemplateProxy._crudProxy.Put(entityTemplate.id as Guid, entityTemplate); 
+    } 
+    
+    static async Delete(id: Guid): Promise<boolean>{
+        return await EntityTemplateProxy._crudProxy.Delete(id)
+    }
 
     private static getApiRoot = () => `${config.dataRepositoryApiRoot}/api/entity-templates`;
 }
