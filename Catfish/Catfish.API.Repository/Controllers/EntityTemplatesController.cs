@@ -59,6 +59,9 @@ namespace Catfish.API.Repository.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
+                if(value.Created == DateTime.MinValue)
+                    value.Created= DateTime.Now;
+
                 var code = await _entityTemplateService.AddEntity(value);
                 await _context.SaveChangesAsync();
                 return StatusCode((int)code);

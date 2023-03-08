@@ -86,7 +86,7 @@ namespace Catfish.API.Auth.Controllers
         {
             try
             {
-                if (User?.IsInRole("Admin") != true && model.SystemRoles.Any())
+                if (User?.IsInRole("SysAdmin") != true && model.SystemRoles.Any())
                     return Unauthorized("System roles can only be specified by Authorization Service Administrators.");
                 
                 await _accountService.CreateUser(model);
@@ -125,7 +125,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         // DELETE: api/Users/5
-        [HttpDelete]
+        [HttpDelete("{username}")]
         [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> DeleteUser(string username)
         {

@@ -1,4 +1,5 @@
 ﻿using CatfishExtensions.DTO;
+using CatfishExtensions.Interfaces.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,15 +7,15 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatfishExtensions.Services
+namespace CatfishExtensions.Services.Auth
 {
-    public class AuthApiProxy : IAuthApiProxy
+    public class UserApiProxy : IUserApiProxy
     {
         private readonly ICatfishWebClient _webClient;
         private readonly IConfiguration _configuration;
         private readonly string? _apiRoot;
 
-        public AuthApiProxy(ICatfishWebClient webClient, IConfiguration configuration)
+        public UserApiProxy(ICatfishWebClient webClient, IConfiguration configuration)
         {
             _webClient = webClient;
             _configuration = configuration;
@@ -35,6 +36,15 @@ namespace CatfishExtensions.Services
 
         public async Task<UserMembership> GetMembership(string username)
             => await _webClient.Get<UserMembership>($"{_apiRoot}/api/users/membership/{username}");
+
+        public async Task<List<UserInfo>> GetUsers(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null)
+          => await _webClient.Get<List<UserInfo>>($"{_apiRoot}/api/users?offset={offset}&max={max}", jwtBearerToken);
+
+        public async Task<bool> PutUser(UserInfo dto, string? jwtToken = null)
+         => (await _webClient.PutJson($"{_apiRoot}/api/users/", dto, jwtToken)).IsSuccessStatusCode;
+
+        public async Task<bool> DeleteUser(string userName, string? jwtToken = null)
+         => (await _webClient.Delete($"{_apiRoot}/api/users/{userName}", jwtToken)).IsSuccessStatusCode;
 
     }
 }

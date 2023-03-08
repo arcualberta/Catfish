@@ -1,8 +1,10 @@
 ﻿using CatfishExtensions.DTO;
+using CatfishExtensions.Interfaces.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
+using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
 
 namespace CatfishWebExtensions
 {
@@ -55,6 +57,7 @@ namespace CatfishWebExtensions
             services.AddScoped<ICatfishUserManager, CatfishUserManager>();
             services.AddScoped<ICatfishSignInManager, CatfishSignInManager>();
             services.AddScoped<IAssetRegistry, AssetRegistry>();
+            services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -190,6 +193,10 @@ namespace CatfishWebExtensions
             App.Blocks.Register<Card>();
             App.Blocks.Register<GoogleCalendar>();
             App.Blocks.Register<FormBuilder>();
+
+            //Carousel
+            App.Blocks.Register<CarouselSlide>();
+            App.Blocks.Register<Carousel>();
         }
         #endregion
     }

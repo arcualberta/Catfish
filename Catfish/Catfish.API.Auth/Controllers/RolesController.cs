@@ -30,6 +30,14 @@ namespace Catfish.API.Auth.Controllers
             _authService = authService;
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<TenantRole>>> GetTenants(int offset = 0, int max = int.MaxValue)
+        {
+            var tenants = await _db.TenantRoles.OrderBy(t => t.Name).Skip(offset).Take(max).ToListAsync();
+            return Ok(tenants.Select(rec => _mapper.Map<TenantRole>(rec)).ToList());
+        }
+
         [HttpPut]
         [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult> PutRole(TenantRoleInfo dto)

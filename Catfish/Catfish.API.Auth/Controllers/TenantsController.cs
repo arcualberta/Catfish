@@ -32,9 +32,10 @@ namespace Catfish.API.Auth.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<TenantInfo>>> GetTenants(int offset = 0, int max = int.MaxValue)
+        public async Task<ActionResult<IEnumerable<TenantInfo>>> GetTenants(int offset = 0, int max = int.MaxValue, bool includeRoles = false)
         {
-            var tenants = await _db.Tenants.OrderBy(t => t.Name).Skip(offset).Take(max).ToListAsync();
+            IQueryable<Tenant> query = includeRoles ? _db.Tenants.Include(t => t.Roles) : _db.Tenants;
+            var tenants = await query.OrderBy(t => t.Name).Skip(offset).Take(max).ToListAsync();
             return Ok(tenants.Select(rec => _mapper.Map<TenantInfo>(rec)).ToList());
         }
 
@@ -53,7 +54,7 @@ namespace Catfish.API.Auth.Controllers
 
         [HttpGet("by-name/{name}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<TenantInfo>>> GetTenant(string name)
+        public async Task<ActionResult<TenantInfo>> GetTenant(string name)
         {
             var tenant = await _db.Tenants.FirstOrDefaultAsync(t => t.Name == name);
             return (tenant == null) ? NotFound() : Ok(_mapper.Map<TenantInfo>(tenant));
@@ -86,8 +87,14 @@ namespace Catfish.API.Auth.Controllers
             try
             {
                 Tenant model = _mapper.Map<Tenant>(dto);
-                _db.Tenants.Add(model);
-                await _db.SaveChangesAsync();
+
+                //Mr March 3 2023: Add checking to only added tenant when the given tenant's name is not existed yet in the db
+                bool tenantExisted =await  _authService.IsTenantExistedByName(model.Name);
+               
+                if (!tenantExisted) { 
+                    _db.Tenants.Add(model);
+                    await _db.SaveChangesAsync();
+                  }
                 return Ok(_mapper.Map<TenantInfo>(model));
             }
             catch (DbUpdateConcurrencyException)
@@ -116,9 +123,9 @@ namespace Catfish.API.Auth.Controllers
                 await _db.SaveChangesAsync();
                 return NoContent();
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

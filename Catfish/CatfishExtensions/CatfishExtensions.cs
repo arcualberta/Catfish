@@ -1,4 +1,6 @@
 ﻿
+using CatfishExtensions.Interfaces.Auth;
+using CatfishExtensions.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -19,8 +21,9 @@ namespace CatfishExtensions
             services.AddSingleton<ICatfishWebClient, CatfishWebClient>();
             services.AddScoped<IJwtProcessor, JwtProcessor>();
             services.AddScoped<IGoogleIdentity, GoogleIdentity > ();
-            services.AddSingleton<IAuthApiProxy, AuthApiProxy>();
+            services.AddSingleton<IUserApiProxy, UserApiProxy>();
             services.AddSingleton<ITenantApiProxy, TenantApiProxy>();
+            services.AddSingleton<IRoleApiProxy, RoleApiProxy>();
 
             if (configureSwagger)
             {
