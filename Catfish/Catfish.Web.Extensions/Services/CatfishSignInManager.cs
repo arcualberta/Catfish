@@ -1,4 +1,5 @@
 ﻿using CatfishExtensions.DTO;
+using CatfishExtensions.Interfaces.Auth;
 using CatfishWebExtensions.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -26,9 +27,9 @@ namespace CatfishWebExtensions.Services
         private readonly ICatfishWebClient _catfishWebClient;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        private readonly IAuthApiProxy _authProxy;
+        private readonly IUserApiProxy _authProxy;
 
-        public CatfishSignInManager(IConfiguration configuration, ISecurity security, IJwtProcessor jwtProcessor, ICatfishWebClient catfishWebClient, UserManager<User> userManager, RoleManager<Role> roleManager, IAuthApiProxy authApiProxy)
+        public CatfishSignInManager(IConfiguration configuration, ISecurity security, IJwtProcessor jwtProcessor, ICatfishWebClient catfishWebClient, UserManager<User> userManager, RoleManager<Role> roleManager, IUserApiProxy authApiProxy)
         {
             _configuration = configuration;
             _security = security;

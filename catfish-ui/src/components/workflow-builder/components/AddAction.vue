@@ -4,7 +4,7 @@
     import { Authorization, Button, WorkflowAction } from '../models';
     import { useWorkflowBuilderStore } from '../store';
     import { default as ConfirmPopUp } from "../../shared/components/pop-up/ConfirmPopUp.vue"
-    import { eFormView, eTriggerType ,eByttonTypeValues, getButtonTypeLabel, getAuthorizedByLabel, eAuthorizedByValues, eAuthorizedBy, eButtonTypes} from "../../../components/shared/constants";
+    import { eFormView, eFormViewValues, getFormViewLabel ,eByttonTypeValues, getButtonTypeLabel, getAuthorizedByLabel, eAuthorizedByValues, eAuthorizedBy, eButtonTypes} from "../../../components/shared/constants";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import { getFieldTitle } from '@/components/shared/form-helpers'
     import { BInputGroup, BFormInput, BFormTextarea, BFormSelect, BListGroup, BListGroupItem } from 'bootstrap-vue-3';
@@ -14,6 +14,7 @@ import { Field } from '@/components/shared/form-models';
                                   editActionId: Guid } > ();
     const store = useWorkflowBuilderStore();
     const addButtons = ref(false);
+    const editButtons = ref(false);
     const addAuthorizations = ref(false);
     const action = ref({} as unknown as WorkflowAction);
     const button = ref({} as unknown as Button);
@@ -21,27 +22,23 @@ import { Field } from '@/components/shared/form-models';
     const buttons = ref([] as unknown as Button[]);
     const authorizations = ref([] as Authorization[]);
     const selectedTriggerId = ref(Guid.EMPTY  as unknown as Guid);
-    const selectedUserId = ref(Guid.EMPTY  as unknown as Guid);
     const getField = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0]);
+    const getFormName = (formId : Guid) => (store.entityTemplate?.forms.filter(f => f.id == formId)[0].name);
+    const getFieldName = (formId : Guid, fieldId : Guid) => (getField(formId)?.fields.filter(f => f.id == fieldId)[0] as Field);
     const getState = (stateId : Guid) => (store.workflow?.states.filter(st => st.id == stateId)[0]?.name);
     const getRole = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.name);
-    const getUsers = (roleId : Guid) => (store.workflow?.roles.filter(r => r.id == roleId)[0]?.users);
-    const getUser = (userId : Guid) => (store.users.filter(u => u.id == userId)[0]?.userName);
     const getTrigger = (triggerId : Guid) => (store.workflow?.triggers.filter(tr => tr.id == triggerId)[0]?.name);
     const deletePanel = () => (store.showActionPanel = false);
     const addTrigger = (id : Guid) => {if(id != Guid.EMPTY as unknown as Guid)button.value.triggers.push(id)};
-    const addUser = (id : Guid) => {if(id != Guid.EMPTY as unknown as Guid)authorization.value.users.push(id)};
     const resetAuthFields = () => {
         authorization.value.id = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedBy = eAuthorizedBy.Owner;
         authorization.value.authorizedRoleId = Guid.EMPTY as unknown as Guid;
-        selectedUserId.value = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedFormId = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedFeildId = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedMetadataFormId = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedMetadataFeildId = Guid.EMPTY as unknown as Guid;
         authorization.value.authorizedDomain = "";
-        authorization.value.users = [];
     }
     const resetButtonFields = () => {
         button.value.id = Guid.EMPTY as unknown as Guid;
@@ -52,6 +49,7 @@ import { Field } from '@/components/shared/form-models';
         button.value.popupId = Guid.EMPTY as unknown as Guid;
         selectedTriggerId.value = Guid.EMPTY as unknown as Guid;
         button.value.triggers = [];
+        editButtons.value = false;
     }
     const resetFields = () => {
         action.value.name = "";
@@ -103,7 +101,7 @@ import { Field } from '@/components/shared/form-models';
         } as unknown as WorkflowAction
         store.workflow?.actions?.push(newAction);
         }else{
-            store.workflow?.actions!.forEach((a)=> {
+            store.workflow?.actions!.forEach((a) => {
                 if(a.id === id){
                     a.name = action.value.name,
                     a.description = action.value.description,
@@ -124,7 +122,6 @@ import { Field } from '@/components/shared/form-models';
             currentStateId : authorization.value.currentStateId,
             authorizedBy : authorization.value.authorizedBy,
             authorizedRoleId : authorization.value.authorizedRoleId,
-            users : authorization.value.users,
             authorizedDomain : authorization.value.authorizedDomain,
             authorizedFormId : authorization.value.authorizedFormId,
             authorizedFeildId : authorization.value.authorizedFeildId,
@@ -137,7 +134,6 @@ import { Field } from '@/components/shared/form-models';
         
         resetAuthFields();
         addAuthorizations.value = false;
-        resetAuthFields();
     }
     const deleteAuthorization = (id : Guid) => {
         const idx = authorizations.value?.findIndex(auth => auth.id == id)
@@ -151,10 +147,6 @@ import { Field } from '@/components/shared/form-models';
         const idx = button.value.triggers.findIndex(tr => tr == id)
         button.value.triggers?.splice(idx as number, 1)
     }
-    const deleteUser = (id : Guid) => {
-        const idx = authorization.value.users.findIndex(u => u == id)
-        authorization.value.users?.splice(idx as number, 1)
-    }
     const editButton = (btnId : Guid) => {
         const buttonValues = buttons.value?.filter(btn => btn.id == btnId) as Button[]
         button.value.id = buttonValues[0].id
@@ -164,16 +156,17 @@ import { Field } from '@/components/shared/form-models';
         button.value.nextStateId = buttonValues[0].nextStateId
         button.value.popupId = buttonValues[0].popupId
         button.value.triggers = buttonValues[0].triggers
+        editButtons.value = true;
         addButtons.value = true;
     }
     if(props.editMode){
+      store.loadTemplate(store.workflow?.entityTemplateId as Guid)
       const actuionValues = store.workflow?.actions?.filter(a => a.id == props.editActionId ) as WorkflowAction[];
       action.value.id = actuionValues[0].id;
       action.value.name = actuionValues[0].name;
       action.value.description = actuionValues[0].description as string;
       action.value.formTemplateId = actuionValues[0].formTemplateId;
-      store.loadTemplate(actuionValues[0].formTemplateId as Guid)
-      action.value.formView = actuionValues[0].formView;
+      action.value.formView = actuionValues[0].formView as eFormView;
       actuionValues[0].buttons!.forEach((b) => {
           let newButton = {
           id : b.id,
@@ -192,7 +185,6 @@ import { Field } from '@/components/shared/form-models';
           currentStateId : a.currentStateId,
           authorizedBy : a.authorizedBy,
           authorizedRoleId : a.authorizedRoleId,
-          users : a.users,
           authorizedDomain : a.authorizedDomain,
           authorizedFormId : a.authorizedFormId,
           authorizedFeildId : a.authorizedFeildId,
@@ -222,7 +214,6 @@ import { Field } from '@/components/shared/form-models';
             <b-input-group prepend="Description" class="mt-3">
                 <b-form-textarea v-model="(action.description as string)" rows="3" max-rows="6"></b-form-textarea>
             </b-input-group>
-
             <div class="header-style">Submission Forms</div>
             <b-input-group prepend="Form Template" class="mt-3">
                 <select class="form-select" v-model="action.formTemplateId">
@@ -230,7 +221,9 @@ import { Field } from '@/components/shared/form-models';
                 </select>
             </b-input-group>
             <b-input-group prepend="Form View" class="mt-3">
-                <b-form-select v-model="action.formView" :options="eFormView"></b-form-select>
+                <select class="form-select" v-model="action.formView">
+                    <option v-for="view in eFormViewValues" :value="view">{{ getFormViewLabel(view) }}</option>
+                </select>
             </b-input-group>
             <div v-if="buttons.length > 0" class="header-style">Buttons</div>
             <div class="popup-list-item">
@@ -290,12 +283,12 @@ import { Field } from '@/components/shared/form-models';
                         <select class="form-select" v-model="selectedTriggerId">
                             <option v-for="trigger in store.workflow?.triggers" :value="trigger.id">{{trigger.name}}</option>
                         </select>
-                        <span class="trigger-add"><font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#00cc66" @click="addTrigger(selectedTriggerId as Guid)"/></span>
+                        <span class="trigger-add"><font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#00cc66" @click="addTrigger(selectedTriggerId as unknown as Guid)"/></span>
                     </b-input-group>
                 </div>
                 </template>
                 <template v-slot:footer>
-                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addButton(button.id as Guid)">Add Button</button>
+                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addButton(button.id as Guid)"><span v-if="!editButtons">Add</span><span v-if="editButtons">Update</span></button>
                 </template>
             </ConfirmPopUp>
             <div v-if="authorizations.length>0" class="header-style">Authorizations</div>
@@ -306,15 +299,15 @@ import { Field } from '@/components/shared/form-models';
                         <span>{{getRole(auth.authorizedRoleId as Guid)}}</span>
                         <span>{{auth.authorizedDomain}}</span>
                         <span v-if="auth.authorizedBy==eAuthorizedBy.Owner">Owner</span>
-                        <span v-if="auth.authorizedBy==eAuthorizedBy.FormField">({{ auth.authorizedFormId }}-{{ auth.authorizedFeildId }}</span>
-                        <span v-if="auth.authorizedBy==eAuthorizedBy.MetadataField">({{ auth.authorizedMetadataFormId }}-{{ auth.authorizedMetadataFeildId }}</span>
+                        <span v-if="auth.authorizedBy==eAuthorizedBy.FormField"> (Form: {{ getFormName(auth.authorizedFormId as Guid) }} - Field: {{ getFieldTitle(getFieldName(auth.authorizedFormId as Guid, auth.authorizedFeildId as Guid), null) }})</span>
+                        <span v-if="auth.authorizedBy==eAuthorizedBy.MetadataField">(Metadata Form: {{ getFormName(auth.authorizedMetadataFormId as Guid) }} - Metadata Field: {{ getFieldTitle(getFieldName(auth.authorizedMetadataFormId as Guid, auth.authorizedMetadataFeildId as Guid), null) }})</span>
                         <span>
                             <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteAuthorization(auth.id as Guid)"/>
                         </span>
                     </b-list-group-item>
                 </b-list-group>
             </div>
-            <div class="content-style">Add Authorization <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="addAuthorizations = true"/></div>
+            <div class="content-style">Add Authorization <font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#1ca5b8" @click="resetAuthFields();addAuthorizations = true"/></div>
             <ConfirmPopUp v-if="addAuthorizations" >
                 <template v-slot:header>
                     Add a Authorization.
@@ -338,22 +331,6 @@ import { Field } from '@/components/shared/form-models';
                             <option v-for="role in store.workflow?.roles" :value="role.id">{{role.name}}</option>
                         </select>
                     </b-input-group>
-                    <div class="popup-list-item">
-                        <b-list-group>
-                            <b-list-group-item v-for="userId in authorization.users" :key="userId.toString()">
-                                <span>{{getUser(userId as Guid)}}
-                                    <font-awesome-icon icon="fa-solid fa-circle-xmark" style="color: red; float: right;" @click="deleteUser(userId as Guid)"/>
-                                </span>
-                            </b-list-group-item>
-                        </b-list-group>
-                    </div>
-                    <b-input-group prepend="Users" class="mt-3">
-                        <select class="form-select" v-model="selectedUserId">
-                            <option v-for="user in getUsers(authorization.authorizedRoleId as Guid)" :value="user.id">{{user.userName}}</option>
-                        </select>
-                        <span class="trigger-add"><font-awesome-icon icon="fa-solid fa-circle-plus" style="color:#00cc66" @click="addUser(selectedUserId as Guid)"/></span>
-                    </b-input-group>
-                    
                     </div>
                     <div v-if="authorization.authorizedBy == eAuthorizedBy.Domain">
                         <b-input-group prepend="Domain" class="mt-3">
@@ -387,11 +364,11 @@ import { Field } from '@/components/shared/form-models';
                 </div>
                 </template>
                 <template v-slot:footer>
-                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addAuthorization(authorization.id as Guid)">Add Authorization</button>
+                    <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addAuthorization(authorization.id as Guid)">Add</button>
                 </template>
             </ConfirmPopUp>
-            <div style="margin-left: 90%;">
-                <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addAction(action.id as Guid)">Add</button>
+            <div style="margin-left: 85%;">
+                <button type="button" class="modal-add-btn" aria-label="Close modal"  @click="addAction(action.id as Guid)"><span v-if="!props.editMode">Add</span><span v-if="props.editMode">Update</span></button>
             </div>
         </div>
     </div>
