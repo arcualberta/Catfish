@@ -193,6 +193,10 @@ namespace CatfishWebExtensions
             App.Blocks.Register<Card>();
             App.Blocks.Register<GoogleCalendar>();
             App.Blocks.Register<FormBuilder>();
+
+            //Carousel
+            App.Blocks.Register<CarouselSlide>();
+            App.Blocks.Register<Carousel>();
         }
         #endregion
     }
