@@ -29,7 +29,7 @@ watch(() => entityTemplates.value, async newList => {
     })
 
 const newEntityTemplate = ref({ name: "Test Entity Template", description: "This is a test entity template." } as EntityTemplate)
-//EntityTemplateProxy.Post(newEntityTemplate.value as EntityTemplate).catch(e => error.value = e)
+EntityTemplateProxy.Post(newEntityTemplate.value as EntityTemplate).catch(e => error.value = e)
 
 //Displays a deep clone for update since we don't want the newEntityTemplate to be changed in this display
 //when we test the PUT call. However, we will actually change this entry in the database. This is okay because
@@ -49,14 +49,14 @@ watch(() => formTemplates.value, async newList => {
     })
 
 const newFormTemplate = ref({ name: "Test Form Template", description: "This is a test form template." } as FormTemplate)
-//FormProxy.Post(newFormTemplate.value as FormTemplate).catch(e => error.value = e)
+FormProxy.Post(newFormTemplate.value as FormTemplate).catch(e => error.value = e)
 
 //Displays a deep clone for update since we don't want the newEntityTemplate to be changed in this display
 //when we test the PUT call. However, we will actually change this entry in the database. This is okay because
 //we will be deleting it from the database in the DELETE test anyway.
 const updatedFormTemplate = ref(JSON.parse(JSON.stringify(newFormTemplate.value)) as FormTemplate);
 updatedFormTemplate.value.name = "Updated Form Template"
-//FormProxy.Put(updatedFormTemplate.value as FormTemplate).then(val => {}).catch(e => error.value = "Updated Form Template: " + e)
+FormProxy.Put(updatedFormTemplate.value as FormTemplate).then(val => {}).catch(e => error.value = "Updated Form Template: " + e)
 
 //==============================   WORKFLOW
 const wkflows = ref([] as Workflow[])
@@ -87,6 +87,27 @@ const acollection = ref(null as null | EntityData)
 watch(() => collections.value, async newList => {
     if(newList.length > 0)
         CollectionProxy.Get((newList[0] as EntityEntry).id).then(val =>  acollection.value = val).catch(e => error.value = e);
+    })
+
+/*const newCollection = ref(null as null | EntityData);
+newCollection.value = entityEditorStore.createNewEntity(eEntityType.Collection) as unknown as EntityData;
+CollectionProxy.Post(newCollection.value as EntityData).catch(e => error.value = e)
+
+
+
+const updatedCollection = ref(JSON.parse(JSON.stringify(acollection.value)) as EntityData);
+updatedCollection.value!.updated= new Date();
+CollectionProxy.Put(updatedCollection.value as EntityData).then(val => {}).catch(e => error.value = "Updated Collection: " + e)
+*/
+
+//=============================== Items
+const items = ref([] as EntityEntry[])
+ItemProxy.List().then(val =>  items.value = val).catch(e => error.value = e);
+// acollection details
+const anItem = ref(null as null | EntityData)
+watch(() => items.value, async newList => {
+    if(newList.length > 0)
+        ItemProxy.Get((newList[0] as EntityEntry).id).then(val =>  anItem.value = val).catch(e => error.value = e);
     })
 
 /*const newCollection = ref(null as null | EntityData);
@@ -177,4 +198,23 @@ CollectionProxy.Put(updatedCollection.value as EntityData).then(val => {}).catch
         <h4>New Collection</h4>
         {{ newCollection }}
     </div>
+
+    <!--                    I T E M S               -->
+    <div class="alert alert-warning mt-2" style="max-height: 200px; overflow-y: scroll;">
+        <h4>Items List</h4>
+        {{ items }}
+    </div>
+    <div class="alert alert-warning mt-2" style="max-height: 200px; overflow-y: scroll;">
+        <h4>An Item</h4>
+        {{ anItem }}
+    </div>
+   <!-- <div class="alert alert-warning mt-2" style="max-height: 200px; overflow-y: scroll;">
+        <h4>Updated Collection</h4>
+        {{ updatedCollection }}
+    </div>
+ <div class="alert alert-warning mt-2" style="max-height: 200px; overflow-y: scroll;">
+        <h4>New Collection</h4>
+        {{ newCollection }}
+    </div>
+    -->
 </template>
