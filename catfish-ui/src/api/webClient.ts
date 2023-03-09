@@ -17,6 +17,7 @@ export class WebClient{
     private static getJwtToken = (): string =>  useLoginStore().jwtToken;
     
     private static async invoke(url:string, method:string): Promise<Response> {
+       
         var response = await fetch(url, {
             method: method,
             headers: {

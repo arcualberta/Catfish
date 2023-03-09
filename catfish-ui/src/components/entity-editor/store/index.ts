@@ -56,11 +56,11 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                     console.error('Load Templates API Error:', error);
                 });
         },
-        createNewEntity() {
+        createNewEntity(type: eEntityType | null) {
             this.entity = {
                 id: Guid.createEmpty().toString() as unknown as Guid,
                 templateId: Guid.createEmpty().toString() as unknown as Guid,
-                entityType: eEntityType.Unknown,
+                entityType: type? type : eEntityType.Unknown,
                 data: [] as FormDataModel[],
                 subjectRelationships:[] as Relationship[],
                 objectRelationships: [] as Relationship[],
