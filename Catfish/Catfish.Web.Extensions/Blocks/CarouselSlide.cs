@@ -12,6 +12,7 @@ namespace CatfishWebExtensions.Blocks
         public ImageField Image { get; set; }
         public StringField Title { get; set; }
         public HtmlField Content { get; set; }
+        public CheckBoxField Overlay { get; set; }
 
     }
 }
