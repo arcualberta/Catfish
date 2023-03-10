@@ -6,6 +6,8 @@ import { TemplateEntry } from '@/components/entity-editor/models';
 import { Workflow, WorkflowState, WorkflowRole, WorkflowEmailTemplate, WorkflowTrigger, WorkflowAction, WorkflowPopup, UserInfo } from '../models/'
 import { useLoginStore } from '@/components/login/store';
 import { WebClient } from '@/api/webClient';
+import {EntityTemplateProxy} from "@/api/entityTemplateProxy";
+import { WorkflowProxy } from '@/api/workflowProxy';
 
 export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
     state: () => ({
@@ -40,12 +42,12 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             }
             this.workflow.states.push(newState);
         },
-        loadTemplate(templateId: Guid) {
+        async loadTemplate(templateId: Guid) {
             console.log("templateId",templateId)
             if(templateId === Guid.EMPTY as unknown as Guid)
                 return;
 
-            let webRoot = config.dataRepositoryApiRoot;
+         /*   let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/${templateId}`;
             WebClient.get(api)
                 .then(response => response.json())
@@ -55,11 +57,12 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 })
                 .catch((error) => {
                     console.error('Load Template API Error:', error);
-                });
+                });*/
+                this.entityTemplate = await EntityTemplateProxy.Get(templateId);
         },
-        loadWorkflow(id: Guid) {
+        async loadWorkflow(id: Guid) {
 
-            const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;
+           /* const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;
             WebClient.get(api)
                 .then(response => response.json())
                 .then(data => {
@@ -67,30 +70,36 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 })
                 .catch((error) => {
                     console.error('Load Workflow API Error:', error);
-                });
+                });*/
+               this.workflow = await  WorkflowProxy.Get(id);
 
         },
-        saveWorkflow() {
+        async saveWorkflow() {
             if (!this.workflow) {
                 console.error("Cannot save null workflow.")
                 return;
             }
             
             const newWorkflow = this.workflow?.id === Guid.EMPTY as unknown as Guid;
-            console.log(this.workflow?.id)
+            var response;
+            if(newWorkflow){
+                response = await WorkflowProxy.Post<Workflow>(this.workflow as Workflow)
+            }
+           /* console.log(this.workflow?.id)
             let api = `${config.dataRepositoryApiRoot}/api/workflow`;
             console.log(api)
             let promise = newWorkflow ? WebClient.postJson(api, this.workflow) : WebClient.putJson(`${api}/${this.workflow.id}`, this.workflow)
+           */
+           // promise.then(response => {
 
-            promise.then(response => {
-
-                    if (response.ok) {
+                    if (response) {
                         this.transientMessage = "The form saved successfully"
                         this.transientMessageClass = "success"
                     }
                     else {
                         this.transientMessageClass = "danger"
-                        switch (response.status) {
+                        this.transientMessage = "The form saved fail"
+                        /*switch (response.status) {
                             case 400:
                                 this.transientMessage = "Bad request. Failed to save the workflow";
                                 break;
@@ -103,18 +112,18 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                             default:
                                 this.transientMessage = "Unknown error occured. Failed to save the workflow"
                                 break;
-                        }
+                        }*/
                     }
-                })
+              /*  })
                 .catch((error) => {
                     this.transientMessage = "Unknown error occurred"
                     this.transientMessageClass = "danger"
                     console.error('Workflow Save API Error:', error)
-                });
+                });*/
         },
-        loadEntityTemplates() {
-
-            const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;
+        async loadEntityTemplates() {
+            this.entityTemplates = await EntityTemplateProxy.List();
+           /* const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;
             WebClient.get(api)
                 .then(response => response.json())
                 .then(data => {
@@ -123,6 +132,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
                 .catch((error) => {
                     console.error('Load Entity Templates API Error:', error);
                 });
+                */
 
         },
         loadUsers() {
