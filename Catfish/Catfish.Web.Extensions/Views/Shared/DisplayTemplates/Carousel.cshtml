@@ -1,13 +1,15 @@
 ﻿@model CatfishWebExtensions.Blocks.Carousel
 @using CatfishWebExtensions.Blocks;
 @using CatfishExtensions.Interfaces;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @inject ICatfishAppConfiguration _catfishConfiguration;
 
 @{
     var css_classes = Model.CssClasses.Value;
+    var blockDivId = $"carousel-{Model.Id.ToString()}";
 }
-<div class="carousel @css_classes" id="accordion-@Model.Id">
+@*<div class="carousel @css_classes" id="accordion-@Model.Id">
     Test page
     @foreach(var item in Model.Items)
     {
@@ -19,3 +21,37 @@
 
     }
 </div>
+*@
+
+<div id="@blockDivId" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        @for(int i=0; i<Model.Items.Count; ++i)
+        {
+            var isActive = i == 0 ? "active" : "";
+            <li data-target="#@blockDivId" data-slide-to="@i" class="@isActive"></li>
+        }
+    </ol>
+    <div class="carousel-inner">
+        @for(int i=0; i<Model.Items.Count; ++i){
+
+            var item = Model.Items[i];
+            if (item is CarouselSlide)
+            {
+                var viewData = new ViewDataDictionary(this.ViewData);
+                viewData.Add("index", i);
+                var slide = item as CarouselSlide;
+                <partial name="DisplayTemplates/CarouselOverlaySlide" model="@slide" view-data="@viewData" />
+            }
+        }
+     </div>
+    <a class="carousel-control-prev" href="#@blockDivId" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#@blockDivId" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+
