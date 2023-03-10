@@ -2,8 +2,9 @@
 import {EntityTemplateProxy} from "@/api/entityTemplateProxy"
 import {CollectionProxy} from "@/api/collectionProxy"
 import {ItemProxy} from "@/api/itemProxy"
-import {FormProxy} from "@/api/formProxy"
+import {FormProxy} from "@/api/formProxy" //formTemplateProxy
 import {WorkflowProxy} from "@/api/workflowProxy"
+import {FormDataProxy} from "@/api/formDataProxy"
 
 import { EntityData, TemplateEntry } from "@/components/entity-editor/models";
 import { EntityTemplate } from "@/components/entity-template-builder/models";
@@ -12,7 +13,7 @@ import { Guid } from "guid-typescript";
 import { ref, watch } from "vue";
 import { eEntityType, eState } from "@/components/shared/constants"
 import { useEntityEditorStore } from '../components/entity-editor/store';
-import { FormTemplate } from "@/components/shared/form-models"
+import { FormTemplate, FormData } from "@/components/shared/form-models"
 import { Workflow } from "@/components/workflow-builder/models"
 import { createGuid } from "@/components/shared/form-helpers"
 
@@ -120,6 +121,17 @@ const updatedCollection = ref(JSON.parse(JSON.stringify(acollection.value)) as E
 updatedCollection.value!.updated= new Date();
 CollectionProxy.Put(updatedCollection.value as EntityData).then(val => {}).catch(e => error.value = "Updated Collection: " + e)
 */
+
+
+//=============================== FormSubmissions
+const formSubmissions = ref([] as Guid[])
+FormDataProxy.List().then(val =>  formSubmissions.value = val).catch(e => error.value = e);
+// acollection details
+const aFormData = ref(null as null | FormData)
+watch(() => formSubmissions.value, async newList => {
+    if(newList.length > 0)
+        FormDataProxy.Get(newList[0] as Guid).then(val =>  aFormData.value = val).catch(e => error.value = e);
+    })
 </script>
 
 <template>
@@ -217,4 +229,15 @@ CollectionProxy.Put(updatedCollection.value as EntityData).then(val => {}).catch
         {{ newCollection }}
     </div>
     -->
+
+
+     <!--                    F O R M  S U B M I S S I O N S               -->
+     <div class="alert alert-info mt-2" style="max-height: 200px; overflow-y: scroll;">
+        <h4>FormSubmission List</h4>
+        {{ JSON.stringify(formSubmissions) }}
+    </div>
+    <div class="alert alert-info mt-2" style="max-height: 200px; overflow-y: scroll;">
+        <h4>A Form Submission Data</h4>
+        {{ JSON.stringify(aFormData) }}
+    </div>
 </template>
