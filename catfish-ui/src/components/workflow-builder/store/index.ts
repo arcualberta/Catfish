@@ -47,30 +47,10 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
             if(templateId === Guid.EMPTY as unknown as Guid)
                 return;
 
-         /*   let webRoot = config.dataRepositoryApiRoot;
-            const api = `${webRoot}/api/entity-templates/${templateId}`;
-            WebClient.get(api)
-                .then(response => response.json())
-                .then(data => {
-                    this.entityTemplate = data as EntityTemplate;
-                    console.log("entityTemplate", this.entityTemplate)
-                })
-                .catch((error) => {
-                    console.error('Load Template API Error:', error);
-                });*/
                 this.entityTemplate = await EntityTemplateProxy.Get(templateId);
         },
         async loadWorkflow(id: Guid) {
 
-           /* const api = `${config.dataRepositoryApiRoot}/api/workflow/${id}`;
-            WebClient.get(api)
-                .then(response => response.json())
-                .then(data => {
-                    this.workflow = data;
-                })
-                .catch((error) => {
-                    console.error('Load Workflow API Error:', error);
-                });*/
                this.workflow = await  WorkflowProxy.Get(id);
 
         },
@@ -123,16 +103,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
         },
         async loadEntityTemplates() {
             this.entityTemplates = await EntityTemplateProxy.List();
-           /* const api = `${config.dataRepositoryApiRoot}/api/entity-templates`;
-            WebClient.get(api)
-                .then(response => response.json())
-                .then(data => {
-                    this.entityTemplates = data;
-                })
-                .catch((error) => {
-                    console.error('Load Entity Templates API Error:', error);
-                });
-                */
+          
 
         },
         loadUsers() {
