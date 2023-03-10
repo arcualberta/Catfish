@@ -6,7 +6,7 @@ import { createOption, createTextCollection, isOptionField, cloneTextCollection 
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
 import { eState } from '@/components/shared/constants';
-import {FormProxy} from '@/api/FormProxy'
+import {FormProxy} from '@/api/formProxy'
 export const useFormBuilderStore = defineStore('FormBuilderStore', {
     state: () => ({
         lang: ["en", "fr"],
@@ -33,49 +33,34 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
         },
         async loadForm(id: Guid) {
            this.form = await FormProxy.Get(id);
-            /*
-            let api = `${this.getApiRoot}/${id}`;//`https://localhost:5020/api/forms/${id}`;
-            console.log(api)
-            fetch(api, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `bearer ${this.jwtToken}`,
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.form = data;
-                })
-                .catch((error) => {
-                    console.error('Load Form API Error:', error);
-                });
-                */
+           
         },
         async saveForm() {
             if (!this.form) {
                 console.error("Cannot save null form.")
                 return;
             }
-          //  console.log("save form jwt " + this.jwtToken)
+         
             const newForm = this.form?.id?.toString() === Guid.EMPTY;
-            //let api = `${this.getApiRoot}`;//`${config.dataRepositoryApiRoot}/api/forms`//"https://localhost:5020/api/forms";
-           // let method = "";
+            var response;
             if (newForm) {
-                //console.log("Saving new form.")
+               
                 this.form.id = Guid.create().toString() as unknown as Guid;
                 this.form.status= eState.Draft;
-                //method = "POST";
-                //console.log(JSON.stringify(this.form))
-                await FormProxy.Post<FormTemplate>(this.form as FormTemplate);
+              
+                response = await FormProxy.Post<FormTemplate>(this.form as FormTemplate);
+               
             }
             else {
-               // console.log("Updating existing form.")
-               // api = `${api}/${this.form.id}`
-              //  method = "PUT";
-               // console.log("form ", JSON.stringify(this.form))
-                await FormProxy.Put(this.form as FormTemplate);
+                response = await FormProxy.Put(this.form as FormTemplate);
             }
-
+            if(response){
+                this.transientMessageModel.message = "The template saved/updated successfully"
+                this.transientMessageModel.messageClass = "success"
+               }else{
+                this.transientMessageModel.message = "The template fail to save/update"
+                this.transientMessageModel.messageClass = "danger"
+               }
            /* fetch(api,
                 {
                     body: JSON.stringify(this.form),
