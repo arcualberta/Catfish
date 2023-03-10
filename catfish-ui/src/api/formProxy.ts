@@ -16,12 +16,12 @@ export class FormProxy{
         return await this._crudProxy.List<FormEntry>();
     }
 
-    static async Get(id: Guid): Promise<FormData> {
-        return await this._crudProxy.Get<FormData>(id);
+    static async Get(id: Guid): Promise<FormTemplate> {
+        return await this._crudProxy.Get<FormTemplate>(id);
     }
 
-    static async Post<FormData extends ObjectId>(formData: FormData): Promise<boolean> {
-       return await this._crudProxy.Post<FormData>(formData);
+    static async Post<FormTemplate extends ObjectId>(formData: FormTemplate): Promise<boolean> {
+       return await this._crudProxy.Post<FormTemplate>(formData);
        
     }    
 

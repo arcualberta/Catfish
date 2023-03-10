@@ -157,8 +157,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             let fileKeys = formSubmissionstore.fileKeys as string[];
            
              //update fileReferences
-             console.log("save entity api: " + api)
-             console.log("save entity token: " + this.jwtToken)
+             //console.log("save entity api: " + api)
+             //console.log("save entity token: " + this.jwtToken)
             var formData = new FormData();
              //update fileReference
             let fileKeyIdx=0;
