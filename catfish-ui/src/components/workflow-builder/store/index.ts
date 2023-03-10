@@ -136,7 +136,7 @@ export const useWorkflowBuilderStore = defineStore('WorkflowBuilderStore', {
 
         },
         loadUsers() {
-            const api = `${config.authorizationApiRoot}api/Users`;
+            const api = `${config.authorizationApiRoot}/api/Users`;
             WebClient.get(api)
                 .then(response => response.json())
                 .then(data => {
