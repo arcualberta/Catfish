@@ -40,7 +40,15 @@
                 var viewData = new ViewDataDictionary(this.ViewData);
                 viewData.Add("index", i);
                 var slide = item as CarouselSlide;
-                <partial name="DisplayTemplates/CarouselSlides/Overlay" model="@slide" view-data="@viewData" />
+                if (slide.Overlay)
+                {
+                    <partial name="DisplayTemplates/CarouselSlides/Overlay" model="@slide" view-data="@viewData" />
+                }
+                else
+                {
+                    <partial name="DisplayTemplates/CarouselSlides/SideBySide" model="@slide" view-data="@viewData" />
+                }
+
             }
         }
      </div>
