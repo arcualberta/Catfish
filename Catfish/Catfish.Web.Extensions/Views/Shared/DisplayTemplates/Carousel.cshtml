@@ -1,6 +1,7 @@
 ﻿@model CatfishWebExtensions.Blocks.Carousel
 @using CatfishWebExtensions.Blocks;
 @using CatfishExtensions.Interfaces;
+@using static CatfishWebExtensions.Constants.Enums
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @inject ICatfishAppConfiguration _catfishConfiguration;
@@ -40,15 +41,15 @@
                 var viewData = new ViewDataDictionary(this.ViewData);
                 viewData.Add("index", i);
                 var slide = item as CarouselSlide;
-                if (slide.Overlay)
+                switch (slide.Layout.Value)
                 {
-                    <partial name="DisplayTemplates/CarouselSlides/Overlay" model="@slide" view-data="@viewData" />
+                    case eCarouselLayout.Slide: <partial name="DisplayTemplates/CarouselSlides/Slide" model="@slide" view-data="@viewData" />
+                    break;
+                    case eCarouselLayout.Overlay: <partial name="DisplayTemplates/CarouselSlides/Overlay" model="@slide" view-data="@viewData" />
+                    break;
+                    case eCarouselLayout.SideBySide: <partial name="DisplayTemplates/CarouselSlides/SideBySide" model="@slide" view-data="@viewData" />
+                    break;
                 }
-                else
-                {
-                    <partial name="DisplayTemplates/CarouselSlides/SideBySide" model="@slide" view-data="@viewData" />
-                }
-
             }
         }
      </div>

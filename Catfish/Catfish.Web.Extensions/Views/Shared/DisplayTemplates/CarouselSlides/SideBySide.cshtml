@@ -11,7 +11,7 @@
     string isActive = index == 0 ? "active" : "";
 }
 <div class="carousel-item @isActive">
-    <div class="d-block w-100 row">
+    <div class="row">
         <div class="hidden-xs hidden-sm col-md-5">
             <div class="stdImg" style="background-image: url(@url)"></div>
         </div>
@@ -19,17 +19,6 @@
          @Html.Raw(content)
         </div>
     </div>
-    
-
-    @*<b-row>
-        <b-col class="col-sm-4">
-            <img class="d-block w-100" src="@url" alt="@Model.Title.Value">
-        </b-col>
-        <b-col class="col-sm-8">
-            @Html.Raw(content)
-        </b-col>
-    </b-row>*@
-    
 </div>
 <style>
 .stdImg {
