@@ -14,7 +14,9 @@
 <div class="carousel-item @isActive">
     <img class="d-block w-100" src="@url" alt="@Model.Title.Value">
     <div class="carousel-caption d-none d-md-block">
-    <h5>@title</h5>
-    <p>@Html.Raw(content)</p>
+        <div class="overlay-content">
+            <h5>@title</h5>
+            <p>@Html.Raw(content)</p>
+        </div>
   </div>
 </div>
