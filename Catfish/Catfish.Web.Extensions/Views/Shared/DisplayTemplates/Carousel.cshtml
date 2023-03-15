@@ -10,21 +10,8 @@
     var css_classes = Model.CssClasses.Value;
     var blockDivId = $"carousel-{Model.Id.ToString()}";
 }
-@*<div class="carousel @css_classes" id="accordion-@Model.Id">
-    Test page
-    @foreach(var item in Model.Items)
-    {
-        if(item is CarouselSlide)
-        {
-            var slide = item as CarouselSlide;
-           // slide.
-        }
 
-    }
-</div>
-*@
-
-<div id="@blockDivId" class="carousel slide" data-ride="carousel">
+<div id="@blockDivId" class="carousel slide @Model.CssClasses" data-ride="carousel">
     <ol class="carousel-indicators">
         @for(int i=0; i<Model.Items.Count; ++i)
         {
