@@ -1,4 +1,5 @@
-﻿using Piranha.Extend;
+﻿using CatfishWebExtensions.Models.Fileds;
+using Piranha.Extend;
 using Piranha.Extend.Fields;
 
 namespace CatfishWebExtensions.Models.Regions
@@ -16,5 +17,8 @@ namespace CatfishWebExtensions.Models.Regions
 
         [Field(Title = "Css")]
         public TextField Css { get; set; }
+
+        [Field(Title ="Upload Css File")]
+        public Piranha.Extend.Fields.DocumentField CssFile { get; set; }
     }
 }
