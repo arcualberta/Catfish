@@ -1,8 +1,4 @@
-﻿using CatfishWebExtensions.Models.Fileds;
-using Piranha.Extend;
-using Piranha.Extend.Fields;
-
-namespace CatfishWebExtensions.Models.Regions
+﻿namespace CatfishWebExtensions.Models.Regions
 {
     public class WebSettings
     {
