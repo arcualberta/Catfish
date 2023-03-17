@@ -744,13 +744,14 @@ namespace DataProcessing
                                             {
                                                 Theater theater = new Theater(child);
 
-                                                //Check whether this theater already exist
-                                                var existing = theaters[theater.theater_id];
-
-                                                if (existing != null)
-                                                    theaters.Add(theater.theater_id, theater);
-                                                else
+                                                //Check whether this theater already
+                                                if(theaters.ContainsKey(theater.theater_id))
+                                                {
+                                                    var existing = theaters[theater.theater_id];
                                                     existing.Merge(theater);
+                                                }
+                                                else
+                                                    theaters.Add(theater.theater_id, theater);
 
                                                 SolrDoc solrDoc = new SolrDoc() ;
                                                 solrDocs.Add(solrDoc);
