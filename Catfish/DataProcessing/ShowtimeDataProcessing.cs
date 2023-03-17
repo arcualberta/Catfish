@@ -756,6 +756,8 @@ namespace DataProcessing
                                                         //We need to merge the entry_key
                                                         existing.entry_key = XmlDoc.MergeStrings(existing.entry_key, entry_key, ref isUpdated)!;
 
+                                                        ++existing.instance_count;
+
                                                         //And, we will replace the newly created theater with this updated existing one
                                                         theater = existing;
                                                     }
@@ -773,6 +775,7 @@ namespace DataProcessing
                                                     solrDoc.AddId(theater.theater_id);
                                                     solrDoc.AddField("entry_type_s", "theater");
                                                     solrDoc.AddField("entry_src_t", theater.entry_key);
+                                                    solrDoc.AddField("instance_count_i", theater.instance_count);
                                                     AddTheater(solrDoc, theater);
                                                 }
                                                     
@@ -1062,6 +1065,7 @@ namespace DataProcessing
     public class XmlDoc
     {
         public string entry_key { get; set; }
+        public int instance_count { get; set; } = 1;
 
         public XmlDoc() { }
 
