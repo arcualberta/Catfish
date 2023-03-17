@@ -139,7 +139,7 @@ namespace DataProcessing
 
                                         solrDoc.AddId(Guid.NewGuid().ToString());
                                         solrDoc.AddField("entry_type_s", "showtime");
-                                        solrDoc.AddField("entry_src_s", entry_key);
+                                        solrDoc.AddField("entry_src_t", entry_key);
 
                                         var showtime = new Showtime(child);
                                         AddShowtime(solrDoc, showtime);
@@ -361,7 +361,7 @@ namespace DataProcessing
 
                                                 solrDoc.AddId(Guid.NewGuid().ToString());
                                                 solrDoc.AddField("entry_type_s", "showtime");
-                                                solrDoc.AddField("entry_src_s", entry_key);
+                                                solrDoc.AddField("entry_src_t", entry_key);
 
                                                 AddShowtime(solrDoc, showtime);
 
@@ -485,7 +485,7 @@ namespace DataProcessing
 
                                                 solrDoc.AddId(Guid.NewGuid().ToString());
                                                 solrDoc.AddField("entry_type_s", "movie");
-                                                solrDoc.AddField("entry_src_s", entry_key);
+                                                solrDoc.AddField("entry_src_t", entry_key);
                                                 AddMovie(solrDoc, new Movie(child));
                                             }
                                         }
@@ -622,7 +622,7 @@ namespace DataProcessing
 
                                                     solrDoc.AddId(Guid.NewGuid().ToString());
                                                     solrDoc.AddField("entry_type_s", "theater");
-                                                    solrDoc.AddField("entry_src_s", entry_key);
+                                                    solrDoc.AddField("entry_src_t", entry_key);
                                                     solrDoc.AddField("entry_occurrence_i", uniqueTheaters.Count);
                                                     AddTheater(solrDoc, theater);
                                                 }
@@ -743,23 +743,39 @@ namespace DataProcessing
                                             if (entryType == "theater")
                                             {
                                                 Theater theater = new Theater(child);
+                                                theater.entry_key = entry_key;
 
                                                 //Check whether this theater already
-                                                if(theaters.ContainsKey(theater.theater_id))
+                                                if (theaters.ContainsKey(theater.theater_id))
                                                 {
                                                     var existing = theaters[theater.theater_id];
-                                                    existing.Merge(theater);
+                                                    bool isUpdated = existing.Merge(theater);
+
+                                                    if (isUpdated)
+                                                    {
+                                                        //We need to merge the entry_key
+                                                        existing.entry_key = XmlDoc.MergeStrings(existing.entry_key, entry_key, ref isUpdated)!;
+
+                                                        //And, we will replace the newly created theater with this updated existing one
+                                                        theater = existing;
+                                                    }
+                                                    else
+                                                        theater = null; //the record already exists. So, we will set this to null so that we will not add it to the solr index again
                                                 }
                                                 else
                                                     theaters.Add(theater.theater_id, theater);
 
-                                                SolrDoc solrDoc = new SolrDoc() ;
-                                                solrDocs.Add(solrDoc);
+                                                if (theater != null)
+                                                {
+                                                    SolrDoc solrDoc = new SolrDoc();
+                                                    solrDocs.Add(solrDoc);
 
-                                                solrDoc.AddId(theater.theater_id);
-                                                solrDoc.AddField("entry_type_s", "theater");
-                                                solrDoc.AddField("entry_src_s", entry_key);
-                                                AddTheater(solrDoc, theater);                                               
+                                                    solrDoc.AddId(theater.theater_id);
+                                                    solrDoc.AddField("entry_type_s", "theater");
+                                                    solrDoc.AddField("entry_src_t", theater.entry_key);
+                                                    AddTheater(solrDoc, theater);
+                                                }
+                                                    
                                             }
                                         }
 
@@ -1045,6 +1061,8 @@ namespace DataProcessing
      */
     public class XmlDoc
     {
+        public string entry_key { get; set; }
+
         public XmlDoc() { }
 
         public XElement GetChildElement(XElement parent, string elementName) => parent.Element(elementName)!;
@@ -1086,21 +1104,39 @@ namespace DataProcessing
             return new DateTime(int.Parse(datestr!.Substring(0, 4)), int.Parse(datestr!.Substring(4, 2)), int.Parse(datestr!.Substring(6, 2)));
         }
 
-        public string? MergeStrings(string? str1, string? str2)
+        public static string? MergeStrings(string? oldValue, string? newValue, ref bool isModified, string separator = "|||")
         {
-            if (string.IsNullOrEmpty(str1))
-                return str2;
-            else if (string.IsNullOrEmpty(str2))
-                return str1;
-            else if (Regex.Replace(str1, @"\s+", "") != Regex.Replace(str2, @"\s+", "")) //compares excluding white spaces
-                return $"{str1} ||| {str2}";
-            else
-                return str1;
+            if (string.IsNullOrEmpty(newValue))
+                return oldValue;
+
+            //From here onwards, we have a non-empty newValue
+
+            if (string.IsNullOrEmpty(oldValue))
+            {
+                isModified = true;
+                return newValue;
+            }
+
+            //From here onwards, we have non-empty oldValue and newValue
+
+            //generate "signatures" that exclude white spaces
+            var currentValSignatures = oldValue.Split(separator).Select(v => Regex.Replace(v, @"\s+", "")); 
+            var newValSignature = Regex.Replace(newValue, @"\s+", ""); //generate a version that excludes white spaces
+            if (currentValSignatures.Contains(newValSignature))
+                return oldValue;
+
+            //Here, the newValue does not exsit in the oldValue, so we should append it
+            isModified = true;
+            return $"{oldValue} {separator} {newValue}";
         }
 
-        public List<string> MergeArrays(List<string> arr1, List<string> arr2)
+        public static List<string> MergeArrays(List<string> arr1, List<string> arr2, ref bool isModified)
         {
             //return arr1.Union(arr2.Select(str => $"#{instance}# {str}").ToList()).ToList();
+            if(arr1.Intersect(arr2).Count() == arr2.Count())
+                return arr1; //All elements in arr2 are already in arr1
+
+            isModified = true;
             return arr1.Union(arr2).ToList();
         }
     }
@@ -1173,43 +1209,58 @@ namespace DataProcessing
             }
         }
 
-        public void Merge(Movie src, int instance)
+        public bool Merge(Movie src, int instance)
         {
             //Merging values
+            bool updated = false;
 
-            title = MergeStrings(title, src.title);
+            title = MergeStrings(title, src.title, ref updated);
 
-            if (src.pictures?.Count > 0) pictures = MergeArrays(pictures, src.pictures);
-            if (src.hipictures?.Count > 0) hipictures = MergeArrays(hipictures, src.hipictures); // hipictures.Union(src.hipictures).ToList();
+            if (src.pictures?.Count > 0) pictures = MergeArrays(pictures, src.pictures, ref updated);
+            if (src.hipictures?.Count > 0) hipictures = MergeArrays(hipictures, src.hipictures, ref updated); // hipictures.Union(src.hipictures).ToList();
 
-            rating = MergeStrings(rating, src.rating);
-            advisory = MergeStrings(advisory, src.advisory);
+            rating = MergeStrings(rating, src.rating, ref updated);
+            advisory = MergeStrings(advisory, src.advisory, ref updated);
 
-            if (src.genres?.Count > 0) genres = MergeArrays(genres, src.genres);
-            if (src.casts?.Count > 0) casts = MergeArrays(casts, src.casts);
-            if (src.directors?.Count > 0) directors = MergeArrays(directors, src.directors);
-            if (!release_date.HasValue) release_date = src.release_date;
+            if (src.genres?.Count > 0) genres = MergeArrays(genres, src.genres, ref updated);
+            if (src.casts?.Count > 0) casts = MergeArrays(casts, src.casts, ref updated);
+            if (src.directors?.Count > 0) directors = MergeArrays(directors, src.directors, ref updated);
+            if (!release_date.HasValue && src.release_date.HasValue)
+            {
+                updated = true;
+                release_date = src.release_date;
+            }
 
-            release_notes = MergeStrings(release_notes, src.release_notes);
-            release_dvd = MergeStrings(release_dvd, src.release_dvd);
+            release_notes = MergeStrings(release_notes, src.release_notes, ref updated);
+            release_dvd = MergeStrings(release_dvd, src.release_dvd, ref updated);
 
-            if (running_time < 0) running_time = src.running_time;
+            if (running_time < 0 && src.running_time >= 0)
+            {
+                updated = true;
+                running_time = src.running_time;
+            }
 
-            official_site = MergeStrings(official_site, src.official_site);
+            official_site = MergeStrings(official_site, src.official_site, ref updated);
 
-            if (src.distributors?.Count > 0) distributors = MergeArrays(distributors, src.distributors);
-            if (src.producers?.Count > 0) producers = MergeArrays(producers, src.producers);
-            if (src.writers?.Count > 0) writers = MergeArrays(writers, src.writers);
+            if (src.distributors?.Count > 0) distributors = MergeArrays(distributors, src.distributors, ref updated);
+            if (src.producers?.Count > 0) producers = MergeArrays(producers, src.producers, ref updated);
+            if (src.writers?.Count > 0) writers = MergeArrays(writers, src.writers, ref updated);
 
-            synopsis = MergeStrings(synopsis, src.synopsis);
-            lang = MergeStrings(lang, src.lang);
-            intl_country = MergeStrings(intl_country, src.intl_country);
-            intl_name = MergeStrings(intl_name, src.intl_name);
-            intl_cert = MergeStrings(intl_cert, src.intl_cert);
-            intl_advisory = MergeStrings(intl_advisory, src.intl_advisory);
-            intl_poster = MergeStrings(intl_poster, src.intl_poster);
+            synopsis = MergeStrings(synopsis, src.synopsis, ref updated);
+            lang = MergeStrings(lang, src.lang, ref updated);
+            intl_country = MergeStrings(intl_country, src.intl_country, ref updated);
+            intl_name = MergeStrings(intl_name, src.intl_name, ref updated);
+            intl_cert = MergeStrings(intl_cert, src.intl_cert, ref updated);
+            intl_advisory = MergeStrings(intl_advisory, src.intl_advisory, ref updated);
+            intl_poster = MergeStrings(intl_poster, src.intl_poster, ref updated);
 
-            if (!intl_release.HasValue) intl_release = src.intl_release;
+            if (!intl_release.HasValue && src.intl_release.HasValue)
+            {
+                updated = true;
+                intl_release = src.intl_release;
+            }
+
+            return updated;
         }
     }
 
@@ -1334,44 +1385,60 @@ namespace DataProcessing
             theater_lon == other.theater_lon &&
             theater_lat == other.theater_lat;
         }
-        public void Merge(Theater src)
+        public bool Merge(Theater src)
         {
-            theater_name = MergeStrings(theater_name, src.theater_name);
-            theater_address = MergeStrings(theater_address, src.theater_address);
-            theater_city = MergeStrings(theater_city, src.theater_city);
-            theater_state = MergeStrings(theater_state, src.theater_state);
-            theater_zip = MergeStrings(theater_zip, src.theater_zip);
-            theater_phone = MergeStrings(theater_phone, src.theater_phone);
-            theater_attributes = MergeStrings(theater_attributes, src.theater_attributes);
-            theater_ticketing = MergeStrings(theater_ticketing, src.theater_ticketing);
-            theater_closed_reason = MergeStrings(theater_closed_reason, src.theater_closed_reason);
-            theater_area = MergeStrings(theater_area, src.theater_area);
-            theater_location = MergeStrings(theater_location, src.theater_location);
-            theater_market = MergeStrings(theater_market, src.theater_market);
+            bool updated = false;
 
-            if (!theater_screens.HasValue) theater_screens = src.theater_screens;
+            theater_name = MergeStrings(theater_name, src.theater_name, ref updated);
+            theater_address = MergeStrings(theater_address, src.theater_address, ref updated);
+            theater_city = MergeStrings(theater_city, src.theater_city, ref updated);
+            theater_state = MergeStrings(theater_state, src.theater_state, ref updated);
+            theater_zip = MergeStrings(theater_zip, src.theater_zip, ref updated);
+            theater_phone = MergeStrings(theater_phone, src.theater_phone, ref updated);
+            theater_attributes = MergeStrings(theater_attributes, src.theater_attributes, ref updated);
+            theater_ticketing = MergeStrings(theater_ticketing, src.theater_ticketing, ref updated);
+            theater_closed_reason = MergeStrings(theater_closed_reason, src.theater_closed_reason, ref updated);
+            theater_area = MergeStrings(theater_area, src.theater_area, ref updated);
+            theater_location = MergeStrings(theater_location, src.theater_location, ref updated);
+            theater_market = MergeStrings(theater_market, src.theater_market, ref updated);
 
-            theater_seating = MergeStrings(theater_seating, src.theater_seating);
-            theater_adult = MergeStrings(theater_adult, src.theater_adult);
-            theater_child = MergeStrings(theater_child, src.theater_child);
-            theater_senior = MergeStrings(theater_senior, src.theater_senior);
-            theater_country = MergeStrings(theater_country, src.theater_country);
-            theater_url = MergeStrings(theater_url, src.theater_url);
-            theater_chain_id = MergeStrings(theater_chain_id, src.theater_chain_id);
-            theater_adult_bargain = MergeStrings(theater_adult_bargain, src.theater_adult_bargain);
-            theater_senior_bargain = MergeStrings(theater_senior_bargain, src.theater_senior_bargain);
-            theater_child_bargain = MergeStrings(theater_child_bargain, src.theater_child_bargain);
-            theater_special_bargain = MergeStrings(theater_special_bargain, src.theater_special_bargain);
-            theater_adult_super = MergeStrings(theater_adult_super, src.theater_adult_super);
-            theater_senior_super = MergeStrings(theater_senior_super, src.theater_senior_super);
-            theater_child_super = MergeStrings(theater_child_super, src.theater_child_super);
-            theater_price_comment = MergeStrings(theater_price_comment, src.theater_price_comment);
-            theater_extra = MergeStrings(theater_extra, src.theater_extra);
-            theater_desc = MergeStrings(theater_desc, src.theater_desc);
-            theater_type = MergeStrings(theater_type, src.theater_type);
+            if (!theater_screens.HasValue && src.theater_screens.HasValue)
+            {
+                updated = true;
+                theater_screens = src.theater_screens;
+            }
 
-            if (!theater_lat.HasValue) theater_lat = src.theater_lat;
-            if (!theater_lon.HasValue) theater_lon = src.theater_lon;
+            theater_seating = MergeStrings(theater_seating, src.theater_seating, ref updated);
+            theater_adult = MergeStrings(theater_adult, src.theater_adult, ref updated);
+            theater_child = MergeStrings(theater_child, src.theater_child, ref updated);
+            theater_senior = MergeStrings(theater_senior, src.theater_senior, ref updated);
+            theater_country = MergeStrings(theater_country, src.theater_country, ref updated);
+            theater_url = MergeStrings(theater_url, src.theater_url, ref updated);
+            theater_chain_id = MergeStrings(theater_chain_id, src.theater_chain_id, ref updated);
+            theater_adult_bargain = MergeStrings(theater_adult_bargain, src.theater_adult_bargain, ref updated);
+            theater_senior_bargain = MergeStrings(theater_senior_bargain, src.theater_senior_bargain, ref updated);
+            theater_child_bargain = MergeStrings(theater_child_bargain, src.theater_child_bargain, ref updated);
+            theater_special_bargain = MergeStrings(theater_special_bargain, src.theater_special_bargain, ref updated);
+            theater_adult_super = MergeStrings(theater_adult_super, src.theater_adult_super, ref updated);
+            theater_senior_super = MergeStrings(theater_senior_super, src.theater_senior_super, ref updated);
+            theater_child_super = MergeStrings(theater_child_super, src.theater_child_super, ref updated);
+            theater_price_comment = MergeStrings(theater_price_comment, src.theater_price_comment, ref updated);
+            theater_extra = MergeStrings(theater_extra, src.theater_extra, ref updated);
+            theater_desc = MergeStrings(theater_desc, src.theater_desc, ref updated);
+            theater_type = MergeStrings(theater_type, src.theater_type, ref updated);
+
+            if (!theater_lat.HasValue && src.theater_lat.HasValue)
+            {
+                updated = true;
+                theater_lat = src.theater_lat;
+            }
+            if (!theater_lon.HasValue && src.theater_lon.HasValue)
+            {
+                updated = true;
+                theater_lon = src.theater_lon;
+            }
+
+            return updated;
         }
     }
 
