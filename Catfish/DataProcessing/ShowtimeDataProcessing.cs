@@ -531,7 +531,7 @@ namespace DataProcessing
             }//End: foreach (var batchFolder in srcBatcheFolders)
         }
 
-        private async Task IndexTheatersBatch(string[] folderList, string outputFolder, DateTime start)
+        private async Task IndexTheatersBatchOld(string[] folderList, string outputFolder, DateTime start)
         {
             int srcFolderPathCharacterLength = folderList[0].LastIndexOf("\\") + 1;
             string first = folderList[0].Substring(srcFolderPathCharacterLength);
@@ -626,6 +626,139 @@ namespace DataProcessing
                                                     solrDoc.AddField("entry_occurrence_i", uniqueTheaters.Count);
                                                     AddTheater(solrDoc, theater);
                                                 }
+                                            }
+                                        }
+
+                                        //Indexing the theater batch
+                                        if (solrDocs.Count > 0)
+                                        {
+                                            int waitTimeTimeoutMills = 10 * 60 * 1000;
+                                            solrService.Index(solrDocs).Wait(waitTimeTimeoutMills);
+                                            solrService.CommitAsync().Wait(waitTimeTimeoutMills);
+                                        }
+                                        await File.AppendAllTextAsync(trackingFile, $"{entry_key}{Environment.NewLine}");
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        zipFilerProcessingSuccessful = false;
+                                        folderProcessingSuccessful = false;
+                                        await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile} > {archiveEntry.Name}: {ex.Message}{Environment.NewLine}");
+                                    }
+
+                                    solrDocs.Clear();
+                                    GC.Collect();
+                                }
+                            } //End: using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+
+                            if (zipFilerProcessingSuccessful)
+                                await File.AppendAllTextAsync(trackingFile, $"{zipfile_key}{Environment.NewLine}");
+                        }
+                        catch (Exception ex)
+                        {
+                            folderProcessingSuccessful = false;
+                            await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {zipFile}: {ex.Message}{Environment.NewLine}");
+                        }
+
+                    } //End: foreach (var zipFile in zipFiles)
+
+                    if (folderProcessingSuccessful)
+                        await File.AppendAllTextAsync(trackingFile, $"{folder_key}{Environment.NewLine}");
+                }
+                catch (Exception ex)
+                {
+                    await File.AppendAllTextAsync(errorLogFile, $"EXCEPTION in {folder_key}: {ex.Message}{Environment.NewLine}");
+                }
+                //GC.Collect();
+
+            }//End: foreach (var batchFolder in srcBatcheFolders)
+        }
+
+        private async Task IndexTheatersBatch(string[] folderList, string outputFolder, DateTime start)
+        {
+            int srcFolderPathCharacterLength = folderList[0].LastIndexOf("\\") + 1;
+            string first = folderList[0].Substring(srcFolderPathCharacterLength);
+            string last = folderList[folderList.Length - 1].Substring(srcFolderPathCharacterLength);
+
+            string logFilePrefix = $"theaters-{first}-{last}";
+
+            string timestampStr = start.ToString("yyyy-MM-dd_HH-mm-ss");
+            string processingLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}.txt");
+            string errorLogFile = Path.Combine(outputFolder, $"{logFilePrefix}-processing-{timestampStr}-errors.txt");
+
+            string trackingFile = Path.Combine(outputFolder, $"{logFilePrefix}-tracking-keys.txt");
+            if (!File.Exists(trackingFile))
+                File.Create(trackingFile).Close();
+            string[] trackingKeys = File.ReadAllLines(trackingFile);
+
+            Dictionary<int, Theater> theaters = new Dictionary<int, Theater>();
+
+            var solrService = _testHelper.Solr;
+
+            foreach (var srcFolder in folderList)
+            {
+                string folder_key = srcFolder.Substring(srcFolderPathCharacterLength);
+                try
+                {
+                    if (trackingKeys.Contains(folder_key))
+                        continue;
+
+                    var zipFiles = Directory.GetFiles(srcFolder);
+                    bool folderProcessingSuccessful = true;
+                    foreach (var zipFile in zipFiles)
+                    {
+                        string zipfile_key = zipFile.Substring(srcFolderPathCharacterLength);
+
+                        try
+                        {
+                            if (trackingKeys.Contains(zipfile_key))
+                                continue;
+
+                            await File.AppendAllTextAsync(processingLogFile, $"Archive {zipFile}.{Environment.NewLine}");
+                            bool zipFilerProcessingSuccessful = true;
+
+                            using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                            {
+                                List<ZipArchiveEntry> theatersArchiveEntries = null;
+
+                                if (folder_key == "0_backfill")
+                                    theatersArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("THEATER.XML")).ToList();
+                                else
+                                    theatersArchiveEntries = archive.Entries.Where(entry => entry.Name.ToUpper().EndsWith("T.XML")).ToList();
+
+                                //Loading movies
+                                foreach (var archiveEntry in theatersArchiveEntries)
+                                {
+                                    string entry_key = $"{zipfile_key}\\{archiveEntry.Name}";
+                                    if (trackingKeys.Contains(entry_key))
+                                        continue;
+
+                                    List<SolrDoc> solrDocs = new List<SolrDoc>();
+                                    try
+                                    {
+                                        XElement xml = LoadXmlFromZipEntry(archiveEntry);
+                                        foreach (var child in xml.Elements())
+                                        {
+                                            string entryType = child.Name.ToString().ToLower();
+                                            if (entryType == "theater")
+                                            {
+                                                Theater theater = new Theater(child);
+
+                                                //Check whether this theater already exist
+                                                var existing = theaters[theater.theater_id];
+
+                                                if (existing != null)
+                                                    theaters.Add(theater.theater_id, theater);
+                                                else
+                                                    existing.Merge(theater);
+
+                                                SolrDoc solrDoc = new SolrDoc() ;
+                                                solrDocs.Add(solrDoc);
+
+                                                solrDoc.AddId(theater.theater_id);
+                                                solrDoc.AddField("entry_type_s", "theater");
+                                                solrDoc.AddField("entry_src_s", entry_key);
+                                                AddTheater(solrDoc, theater);                                               
                                             }
                                         }
 
@@ -952,7 +1085,7 @@ namespace DataProcessing
             return new DateTime(int.Parse(datestr!.Substring(0, 4)), int.Parse(datestr!.Substring(4, 2)), int.Parse(datestr!.Substring(6, 2)));
         }
 
-        public string? MergeStrings(string? str1, string? str2, int instance)
+        public string? MergeStrings(string? str1, string? str2)
         {
             if (string.IsNullOrEmpty(str1))
                 return str2;
@@ -964,7 +1097,7 @@ namespace DataProcessing
                 return str1;
         }
 
-        public List<string> MergeArrays(List<string> arr1, List<string> arr2, int instance)
+        public List<string> MergeArrays(List<string> arr1, List<string> arr2)
         {
             //return arr1.Union(arr2.Select(str => $"#{instance}# {str}").ToList()).ToList();
             return arr1.Union(arr2).ToList();
@@ -1043,37 +1176,37 @@ namespace DataProcessing
         {
             //Merging values
 
-            title = MergeStrings(title, src.title, instance);
+            title = MergeStrings(title, src.title);
 
-            if (src.pictures?.Count > 0) pictures = MergeArrays(pictures, src.pictures, instance);
-            if (src.hipictures?.Count > 0) hipictures = MergeArrays(hipictures, src.hipictures, instance); // hipictures.Union(src.hipictures).ToList();
+            if (src.pictures?.Count > 0) pictures = MergeArrays(pictures, src.pictures);
+            if (src.hipictures?.Count > 0) hipictures = MergeArrays(hipictures, src.hipictures); // hipictures.Union(src.hipictures).ToList();
 
-            rating = MergeStrings(rating, src.rating, instance);
-            advisory = MergeStrings(advisory, src.advisory, instance);
+            rating = MergeStrings(rating, src.rating);
+            advisory = MergeStrings(advisory, src.advisory);
 
-            if (src.genres?.Count > 0) genres = MergeArrays(genres, src.genres, instance);
-            if (src.casts?.Count > 0) casts = MergeArrays(casts, src.casts, instance);
-            if (src.directors?.Count > 0) directors = MergeArrays(directors, src.directors, instance);
+            if (src.genres?.Count > 0) genres = MergeArrays(genres, src.genres);
+            if (src.casts?.Count > 0) casts = MergeArrays(casts, src.casts);
+            if (src.directors?.Count > 0) directors = MergeArrays(directors, src.directors);
             if (!release_date.HasValue) release_date = src.release_date;
 
-            release_notes = MergeStrings(release_notes, src.release_notes, instance);
-            release_dvd = MergeStrings(release_dvd, src.release_dvd, instance);
+            release_notes = MergeStrings(release_notes, src.release_notes);
+            release_dvd = MergeStrings(release_dvd, src.release_dvd);
 
             if (running_time < 0) running_time = src.running_time;
 
-            official_site = MergeStrings(official_site, src.official_site, instance);
+            official_site = MergeStrings(official_site, src.official_site);
 
-            if (src.distributors?.Count > 0) distributors = MergeArrays(distributors, src.distributors, instance);
-            if (src.producers?.Count > 0) producers = MergeArrays(producers, src.producers, instance);
-            if (src.writers?.Count > 0) writers = MergeArrays(writers, src.writers, instance);
+            if (src.distributors?.Count > 0) distributors = MergeArrays(distributors, src.distributors);
+            if (src.producers?.Count > 0) producers = MergeArrays(producers, src.producers);
+            if (src.writers?.Count > 0) writers = MergeArrays(writers, src.writers);
 
-            synopsis = MergeStrings(synopsis, src.synopsis, instance);
-            lang = MergeStrings(lang, src.lang, instance);
-            intl_country = MergeStrings(intl_country, src.intl_country, instance);
-            intl_name = MergeStrings(intl_name, src.intl_name, instance);
-            intl_cert = MergeStrings(intl_cert, src.intl_cert, instance);
-            intl_advisory = MergeStrings(intl_advisory, src.intl_advisory, instance);
-            intl_poster = MergeStrings(intl_poster, src.intl_poster, instance);
+            synopsis = MergeStrings(synopsis, src.synopsis);
+            lang = MergeStrings(lang, src.lang);
+            intl_country = MergeStrings(intl_country, src.intl_country);
+            intl_name = MergeStrings(intl_name, src.intl_name);
+            intl_cert = MergeStrings(intl_cert, src.intl_cert);
+            intl_advisory = MergeStrings(intl_advisory, src.intl_advisory);
+            intl_poster = MergeStrings(intl_poster, src.intl_poster);
 
             if (!intl_release.HasValue) intl_release = src.intl_release;
         }
@@ -1200,41 +1333,41 @@ namespace DataProcessing
             theater_lon == other.theater_lon &&
             theater_lat == other.theater_lat;
         }
-        public void Merge(Theater src, int instance)
+        public void Merge(Theater src)
         {
-            theater_name = MergeStrings(theater_name, src.theater_name, instance);
-            theater_address = MergeStrings(theater_address, src.theater_address, instance);
-            theater_city = MergeStrings(theater_city, src.theater_city, instance);
-            theater_state = MergeStrings(theater_state, src.theater_state, instance);
-            theater_zip = MergeStrings(theater_zip, src.theater_zip, instance);
-            theater_phone = MergeStrings(theater_phone, src.theater_phone, instance);
-            theater_attributes = MergeStrings(theater_attributes, src.theater_attributes, instance);
-            theater_ticketing = MergeStrings(theater_ticketing, src.theater_ticketing, instance);
-            theater_closed_reason = MergeStrings(theater_closed_reason, src.theater_closed_reason, instance);
-            theater_area = MergeStrings(theater_area, src.theater_area, instance);
-            theater_location = MergeStrings(theater_location, src.theater_location, instance);
-            theater_market = MergeStrings(theater_market, src.theater_market, instance);
+            theater_name = MergeStrings(theater_name, src.theater_name);
+            theater_address = MergeStrings(theater_address, src.theater_address);
+            theater_city = MergeStrings(theater_city, src.theater_city);
+            theater_state = MergeStrings(theater_state, src.theater_state);
+            theater_zip = MergeStrings(theater_zip, src.theater_zip);
+            theater_phone = MergeStrings(theater_phone, src.theater_phone);
+            theater_attributes = MergeStrings(theater_attributes, src.theater_attributes);
+            theater_ticketing = MergeStrings(theater_ticketing, src.theater_ticketing);
+            theater_closed_reason = MergeStrings(theater_closed_reason, src.theater_closed_reason);
+            theater_area = MergeStrings(theater_area, src.theater_area);
+            theater_location = MergeStrings(theater_location, src.theater_location);
+            theater_market = MergeStrings(theater_market, src.theater_market);
 
             if (!theater_screens.HasValue) theater_screens = src.theater_screens;
 
-            theater_seating = MergeStrings(theater_seating, src.theater_seating, instance);
-            theater_adult = MergeStrings(theater_adult, src.theater_adult, instance);
-            theater_child = MergeStrings(theater_child, src.theater_child, instance);
-            theater_senior = MergeStrings(theater_senior, src.theater_senior, instance);
-            theater_country = MergeStrings(theater_country, src.theater_country, instance);
-            theater_url = MergeStrings(theater_url, src.theater_url, instance);
-            theater_chain_id = MergeStrings(theater_chain_id, src.theater_chain_id, instance);
-            theater_adult_bargain = MergeStrings(theater_adult_bargain, src.theater_adult_bargain, instance);
-            theater_senior_bargain = MergeStrings(theater_senior_bargain, src.theater_senior_bargain, instance);
-            theater_child_bargain = MergeStrings(theater_child_bargain, src.theater_child_bargain, instance);
-            theater_special_bargain = MergeStrings(theater_special_bargain, src.theater_special_bargain, instance);
-            theater_adult_super = MergeStrings(theater_adult_super, src.theater_adult_super, instance);
-            theater_senior_super = MergeStrings(theater_senior_super, src.theater_senior_super, instance);
-            theater_child_super = MergeStrings(theater_child_super, src.theater_child_super, instance);
-            theater_price_comment = MergeStrings(theater_price_comment, src.theater_price_comment, instance);
-            theater_extra = MergeStrings(theater_extra, src.theater_extra, instance);
-            theater_desc = MergeStrings(theater_desc, src.theater_desc, instance);
-            theater_type = MergeStrings(theater_type, src.theater_type, instance);
+            theater_seating = MergeStrings(theater_seating, src.theater_seating);
+            theater_adult = MergeStrings(theater_adult, src.theater_adult);
+            theater_child = MergeStrings(theater_child, src.theater_child);
+            theater_senior = MergeStrings(theater_senior, src.theater_senior);
+            theater_country = MergeStrings(theater_country, src.theater_country);
+            theater_url = MergeStrings(theater_url, src.theater_url);
+            theater_chain_id = MergeStrings(theater_chain_id, src.theater_chain_id);
+            theater_adult_bargain = MergeStrings(theater_adult_bargain, src.theater_adult_bargain);
+            theater_senior_bargain = MergeStrings(theater_senior_bargain, src.theater_senior_bargain);
+            theater_child_bargain = MergeStrings(theater_child_bargain, src.theater_child_bargain);
+            theater_special_bargain = MergeStrings(theater_special_bargain, src.theater_special_bargain);
+            theater_adult_super = MergeStrings(theater_adult_super, src.theater_adult_super);
+            theater_senior_super = MergeStrings(theater_senior_super, src.theater_senior_super);
+            theater_child_super = MergeStrings(theater_child_super, src.theater_child_super);
+            theater_price_comment = MergeStrings(theater_price_comment, src.theater_price_comment);
+            theater_extra = MergeStrings(theater_extra, src.theater_extra);
+            theater_desc = MergeStrings(theater_desc, src.theater_desc);
+            theater_type = MergeStrings(theater_type, src.theater_type);
 
             if (!theater_lat.HasValue) theater_lat = src.theater_lat;
             if (!theater_lon.HasValue) theater_lon = src.theater_lon;
