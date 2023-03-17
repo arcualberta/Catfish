@@ -29,6 +29,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace DataProcessing
 {
+    public enum eUpdateStatus { None, Added, Merged }
+
     [Collection("Database collection")]
     public class ShowtimeDataProcessing
     {
@@ -749,16 +751,19 @@ namespace DataProcessing
                                                 if (theaters.ContainsKey(theater.theater_id))
                                                 {
                                                     var existing = theaters[theater.theater_id];
-                                                    bool isUpdated = existing.Merge(theater);
+                                                    eUpdateStatus isUpdated = existing.Merge(theater);
 
-                                                    if (isUpdated)
+                                                    if (isUpdated != eUpdateStatus.None)
                                                     {
-                                                        //We need to merge the entry_key
-                                                        existing.entry_key = XmlDoc.MergeStrings(existing.entry_key, entry_key, ref isUpdated)!;
+                                                        if (isUpdated == eUpdateStatus.Merged)
+                                                        {
+                                                            //We need to merge the entry_key
+                                                            existing.entry_key = XmlDoc.MergeStrings(existing.entry_key, entry_key, ref isUpdated)!;
 
-                                                        ++existing.instance_count;
+                                                            ++existing.instance_count;
+                                                        }
 
-                                                        //And, we will replace the newly created theater with this updated existing one
+                                                        //We will replace the newly created theater with this updated existing one
                                                         theater = existing;
                                                     }
                                                     else
@@ -1108,7 +1113,7 @@ namespace DataProcessing
             return new DateTime(int.Parse(datestr!.Substring(0, 4)), int.Parse(datestr!.Substring(4, 2)), int.Parse(datestr!.Substring(6, 2)));
         }
 
-        public static string? MergeStrings(string? oldValue, string? newValue, ref bool isModified, string separator = "|||")
+        public static string? MergeStrings(string? oldValue, string? newValue, ref eUpdateStatus updateStatus, string separator = "|||")
         {
             if (string.IsNullOrEmpty(newValue))
                 return oldValue;
@@ -1117,7 +1122,7 @@ namespace DataProcessing
 
             if (string.IsNullOrEmpty(oldValue))
             {
-                isModified = true;
+                updateStatus = eUpdateStatus.Added;
                 return newValue;
             }
 
@@ -1130,17 +1135,17 @@ namespace DataProcessing
                 return oldValue;
 
             //Here, the newValue does not exsit in the oldValue, so we should append it
-            isModified = true;
+            updateStatus = eUpdateStatus.Merged;
             return $"{oldValue} {separator} {newValue}";
         }
 
-        public static List<string> MergeArrays(List<string> arr1, List<string> arr2, ref bool isModified)
+        public static List<string> MergeArrays(List<string> arr1, List<string> arr2, ref eUpdateStatus updateStatus)
         {
             //return arr1.Union(arr2.Select(str => $"#{instance}# {str}").ToList()).ToList();
             if(arr1.Intersect(arr2).Count() == arr2.Count())
                 return arr1; //All elements in arr2 are already in arr1
 
-            isModified = true;
+            updateStatus = eUpdateStatus.Added;
             return arr1.Union(arr2).ToList();
         }
     }
@@ -1213,10 +1218,10 @@ namespace DataProcessing
             }
         }
 
-        public bool Merge(Movie src, int instance)
+        public eUpdateStatus Merge(Movie src, int instance)
         {
             //Merging values
-            bool updated = false;
+            eUpdateStatus updated = eUpdateStatus.None;
 
             title = MergeStrings(title, src.title, ref updated);
 
@@ -1231,7 +1236,7 @@ namespace DataProcessing
             if (src.directors?.Count > 0) directors = MergeArrays(directors, src.directors, ref updated);
             if (!release_date.HasValue && src.release_date.HasValue)
             {
-                updated = true;
+                updated = eUpdateStatus.Added;
                 release_date = src.release_date;
             }
 
@@ -1240,7 +1245,7 @@ namespace DataProcessing
 
             if (running_time < 0 && src.running_time >= 0)
             {
-                updated = true;
+                updated = eUpdateStatus.Added;
                 running_time = src.running_time;
             }
 
@@ -1260,7 +1265,7 @@ namespace DataProcessing
 
             if (!intl_release.HasValue && src.intl_release.HasValue)
             {
-                updated = true;
+                updated = eUpdateStatus.Added;
                 intl_release = src.intl_release;
             }
 
@@ -1389,9 +1394,9 @@ namespace DataProcessing
             theater_lon == other.theater_lon &&
             theater_lat == other.theater_lat;
         }
-        public bool Merge(Theater src)
+        public eUpdateStatus Merge(Theater src)
         {
-            bool updated = false;
+            eUpdateStatus updated = eUpdateStatus.None;
 
             theater_name = MergeStrings(theater_name, src.theater_name, ref updated);
             theater_address = MergeStrings(theater_address, src.theater_address, ref updated);
@@ -1408,7 +1413,7 @@ namespace DataProcessing
 
             if (!theater_screens.HasValue && src.theater_screens.HasValue)
             {
-                updated = true;
+                updated = eUpdateStatus.Added;
                 theater_screens = src.theater_screens;
             }
 
@@ -1433,12 +1438,12 @@ namespace DataProcessing
 
             if (!theater_lat.HasValue && src.theater_lat.HasValue)
             {
-                updated = true;
+                updated = eUpdateStatus.Added;
                 theater_lat = src.theater_lat;
             }
             if (!theater_lon.HasValue && src.theater_lon.HasValue)
             {
-                updated = true;
+                updated = eUpdateStatus.Added;
                 theater_lon = src.theater_lon;
             }
 
