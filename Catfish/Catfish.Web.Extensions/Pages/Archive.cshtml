@@ -15,6 +15,10 @@
     };
 
     bool isCatfishArchive = Model.Data is CatfishArchive;
+    if (isCatfishArchive)
+    {
+       var page = Model.Data as CatfishArchive;
+    }
 }
 @section head {
     @WebApp.MetaTags(Model.Data)

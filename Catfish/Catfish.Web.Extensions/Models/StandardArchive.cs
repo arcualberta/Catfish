@@ -1,7 +1,7 @@
 
 namespace CatfishWebExtensions.Models
 {
-    [PageType(Title = "Standard archive", IsArchive = true)]
+    [PageType(Title = "Standard archive")]
     public class StandardArchive : Page<StandardArchive>
     {
     }
