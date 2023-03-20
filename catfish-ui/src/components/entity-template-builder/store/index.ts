@@ -3,11 +3,13 @@ import { defineStore } from 'pinia';
 import { EntityTemplate } from '../models';
 import { eState } from "../../shared/constants";
 import { default as config } from "@/appsettings";
-import router from '@/router';
+//import router from '@/router';
 import { FieldEntry, FormTemplate } from '../../shared/form-models';
 import { FormEntry } from '../../shared';
 import { TransientMessageModel } from '../../shared/components/transient-message/models'
-import { useLoginStore } from '@/components/login/store';
+//import { useLoginStore } from '@/components/login/store';
+import { EntityTemplateProxy } from '@/api/entityTemplateProxy';
+import {FormProxy} from '@/api/formProxy'
 
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
@@ -41,54 +43,25 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                     descriptionField: {} as FieldEntry,
                     mediaField: {} as FieldEntry,
                     primaryFormId:Guid.EMPTY as unknown as Guid
-
                 }
-                
             };
         },
-        associateForm(formId: Guid) {
+        async associateForm(formId: Guid) {
             if (formId.toString() !== Guid.EMPTY && this.forms.findIndex(form => form.id === formId) < 0) {
-                //this.getApiRoot => https://localhost:40520/api/entity-temlates
-            let webRoot = config.dataRepositoryApiRoot;//"https://" + this.getApiRoot.split("/")[2];
-                const api = `${webRoot}/api/forms/${formId}`;
-               // console.log("loading form: ", api);
-
-                fetch(api, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `bearer ${this.jwtToken}`,
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        this.forms.push(data as FormTemplate)
-                    })
-                    .catch((error) => {
-                        console.error('Load Form API Error:', error);
-                    });
+            
+            var data = await FormProxy.Get(formId);
+            this.forms.push(data as FormTemplate);
+            
             }
         },
-        loadFormEntries() {
-            //this.getApiRoot => localhost:40520/api/entity-temlates
-            let webRoot = config.dataRepositoryApiRoot//"https://" + this.getApiRoot.split("/")[2];
-            const api = `${webRoot}/api/forms`;
-            console.log("loading forms: ", api);
-            //const jwtToken = localStorage.getItem("catfishJwtToken");
+        async loadFormEntries() {
 
-            fetch(api, {
-                method: 'GET',
-                headers:{'Authorization': `bearer ${this.jwtToken}`,}
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.formEntries = data as FormEntry[]
-                })
-                .catch((error) => {
-                    console.error('Load Forms API Error:', error);
-                });
+            this.formEntries = await FormProxy.List();
+         
         },
-        loadTemplate(id: Guid) {
-            const api = `${this.getApiRoot}/${id}`;
+        async loadTemplate(id: Guid) {
+            this.template = await EntityTemplateProxy.Get(id);
+           /* const api = `${this.getApiRoot}/${id}`;
             console.log("loading entityTemplate: ", api);
 
             fetch(api, {
@@ -104,77 +77,35 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 })
                 .catch((error) => {
                     console.error('Load Entity Template API Error:', error);
-                });
+                });*/
         },
-        saveTemplate(){
-            //console.log("save form template: ", JSON.stringify(this.template));
+        async saveTemplate(){
+           
             const newTemplate = this.template?.id?.toString() === Guid.EMPTY;
-            
-            let api = this.getApiRoot;
-            let method = "";
+            var response;
             if (newTemplate) {
                 console.log("Saving new template.");
                 if(this.template?.id?.toString() === Guid.EMPTY){
                     this.template.id = Guid.create().toString() as unknown as Guid;
                 }
-                method = "POST";
+                response = await EntityTemplateProxy.Post<EntityTemplate>(this.template as EntityTemplate);
+               // method = "POST";
+             
             }
             else {
                 console.log("Updating existing template.")
-                api = `${api}/${this.template?.id}`
-                method = "PUT";
+             
+               response = await EntityTemplateProxy.Put(this.template as EntityTemplate);
+              
             }
-
-            //Get the JWT token from the Login Store for now.
-            //We will need to add the 
-            const token = "" 
-            console.log("save entity teplae token " + this.jwtToken)
-            console.log("save entity template api " + api)
-            console.log("save entity method " + method)
-
-            fetch(api, {
-                body: JSON.stringify(this.template),
-                method: method,
-                headers: {
-                        'encType': 'multipart/form-data',
-                        'Content-Type': 'application/json',
-                        'Authorizarization': `bearer ${this.jwtToken}`
-                },
-            })
-            .then(response => {
-                if (response.ok) {
-                    //router.push(`/edit-entity-template/${this.template!.id}`)
-                    this.transientMessageModel.message = "The template saved successfully"
-                    this.transientMessageModel.messageClass = "success"
-                }
-                else {
-                    if (newTemplate && this.template)
-                        this.template.id = Guid.EMPTY as unknown as Guid;
-
-                    this.transientMessageModel.messageClass = "danger"
-                    switch (response.status) {
-                        case 400:
-                            this.transientMessageModel.message = "Bad request. Failed to save the form";
-                            break;
-                        case 404:
-                            this.transientMessageModel.message = "Form not found";
-                            break;
-                        case 500:
-                            this.transientMessageModel.message = "An internal server error occurred. Failed to save the form"
-                            break;
-                        default:
-                            this.transientMessageModel.message = "Unknown error occured. Failed to save the form"
-                            break;
-                    }
-                }
-            })
-            .catch((error) => {
-                if (newTemplate && this.template)
-                        this.template.id = Guid.EMPTY as unknown as Guid;
-                this.transientMessageModel.message = "Unknown error occurred"
+            if(response){
+                this.transientMessageModel.message = "The template saved/updated successfully"
+                this.transientMessageModel.messageClass = "success"
+               }else{
+                this.transientMessageModel.message = "The template fail to save/update"
                 this.transientMessageModel.messageClass = "danger"
-                console.error('Save/Update Entity Template API Error:', error);
-            });
+               }
+          
         },
         deleteFormEntry(id: Guid) {
             let index = this.template!.entityTemplateSettings.dataForms!.findIndex(fe => fe.id === id);
