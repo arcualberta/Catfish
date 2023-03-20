@@ -15,7 +15,7 @@ try
      * this adds a slight overhead it should not be
      * enabled in production.
      */
-        options.AddRazorRuntimeCompilation = true;
+        //options.AddRazorRuntimeCompilation = true;
 
         options.UseCms();
         options.UseManager();

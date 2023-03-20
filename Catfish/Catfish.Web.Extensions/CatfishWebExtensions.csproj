@@ -30,6 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Fileds\FileField.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Areas\Manager\Pages\styleSheets\Index-xx.cshtml" />
     <Content Remove="assets\manager\js\css.js" />
   </ItemGroup>
 
@@ -79,6 +84,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CatfishExtensions\CatfishExtensions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Fileds\" />
   </ItemGroup>
 
 </Project>
