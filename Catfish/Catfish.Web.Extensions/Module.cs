@@ -65,6 +65,16 @@ namespace CatfishWebExtensions
         {
             MenuItem group;
 
+            group = Menu.Items.FirstOrDefault(ite => ite.Name == "Content");
+            group.Items.Add(new MenuItem
+            {
+                InternalId = "CatfishWebExtensionsStyleSheets",
+                Name = "StyleSheets",
+                Route = "~/manager/styleSheets",
+                //Policy = Permissions.CatfishWebExtensions,
+                Css = "fab fa-css3"
+            });
+
             ////// Add manager menu items
             ////Menu.Items.Add(new MenuItem
             ////{

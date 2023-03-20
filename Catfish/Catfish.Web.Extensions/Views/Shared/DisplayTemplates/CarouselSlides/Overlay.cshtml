@@ -1,0 +1,22 @@
+﻿@model CatfishWebExtensions.Blocks.CarouselSlide
+
+@{
+    var url = Model.Image.Media.PublicUrl;
+    var title = Model.Title;
+    var content = Model.Content;
+    if (url.StartsWith("~"))
+    {
+        url = url.Substring(1);
+    }
+    int? index = ViewData["index"] as int?;
+    string isActive = index == 0 ? "active" : "";
+}
+<div class="carousel-item @isActive">
+    <img class="d-block w-100" src="@url" alt="@Model.Title.Value">
+    <div class="carousel-caption d-none d-md-block">
+        <div class="overlay-content">
+            <h5>@title</h5>
+            <p>@Html.Raw(content)</p>
+        </div>
+  </div>
+</div>

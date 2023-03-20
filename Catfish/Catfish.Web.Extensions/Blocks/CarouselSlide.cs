@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CatfishWebExtensions.Constants.Enums;
 
 namespace CatfishWebExtensions.Blocks
 {
@@ -12,6 +13,7 @@ namespace CatfishWebExtensions.Blocks
         public ImageField Image { get; set; }
         public StringField Title { get; set; }
         public HtmlField Content { get; set; }
+        public SelectField<eCarouselLayout> Layout { get; set; }
 
     }
 }

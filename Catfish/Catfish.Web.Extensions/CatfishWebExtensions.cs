@@ -17,6 +17,8 @@ namespace CatfishWebExtensions
         /// <returns>The services</returns>
         public static IServiceCollection AddCatfishWebExtensions(this IServiceCollection services)
         {
+            //Add file extension
+            Piranha.App.MediaTypes.Documents.Add(".css", "text/css, application/css-stylesheet");
             // Add the CatfishWebExtensions module
             Piranha.App.Modules.Register<Module>();
 

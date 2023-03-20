@@ -42,4 +42,4 @@ global using CatfishExtensions.Models;
 global using CatfishWebExtensions.Interfaces;
 global using CatfishWebExtensions.Services;
 global using CatfishWebExtensions.Blocks;
-
+global using CatfishWebExtensions.Models.Pages;

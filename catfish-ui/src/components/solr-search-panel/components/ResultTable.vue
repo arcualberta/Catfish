@@ -19,7 +19,8 @@ import {toTableData, downloadCSV} from '../helpers'
     //const requestedResultFieldNames = computed(()=>store.activeSelectedResultFieldNames)
     const tableData = computed(() => toTableData(props.model.resultEntries, fieldDefs.value, store.activeSelectedResultFieldNames))
 
-    //const downloadData = () => downloadCSV(props.model.resultEntries, fieldDefs.value)
+    const downloadData = () => downloadCSV(props.model.resultEntries, fieldDefs.value)
+/*
     const getFieldValue=(data: SolrFieldData[], fdkey: string)=>{
        
             const flData = data.find((dt)=>{
@@ -27,6 +28,7 @@ import {toTableData, downloadCSV} from '../helpers'
             }); 
           return flData? flData.value: "";
     }
+
     const downloadCSVData= () => {
     let csv = '';
     //header labels
@@ -49,11 +51,13 @@ import {toTableData, downloadCSV} from '../helpers'
     anchor.download = 'showtimesSearchResult.csv';
     anchor.click();
 }
+*/
 </script>
 
 <template>
     <div v-if="model.resultEntries.length > 0" class="download-panel">
-        <button @click="downloadCSVData()" class="btn btn-success">Download CSV</button>
+        <!--<button @click="downloadCSVData()" class="btn btn-success">Download CSV</button>-->
+        <button @click="downloadData()" class="btn btn-success" style="z-index:10000">Download CSV</button>
     </div>
     <div class="mt-2">
         <span v-if="hasPrev" class="link" @click="store.previous()">&lt;&lt;&lt;</span>
