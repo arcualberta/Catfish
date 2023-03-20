@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace CatfishExtensions.DTO.Entity
 {
-    public class Relationship
+    public class RelationshipDto
     {
         public Guid SubjectEntityId { get; set; }
-        public  EntityData SubjectEntity { get; set; }
+        public  EntityDataDto SubjectEntity { get; set; }
 
         public Guid ObjectEntityId { get; set; }
-        public  EntityData ObjectEntity { get; set; }
+        public  EntityDataDto ObjectEntity { get; set; }
 
         public string Name { get; set; }
         public int Order { get; set; }

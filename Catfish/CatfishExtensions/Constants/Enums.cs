@@ -4,8 +4,8 @@
 namespace CatfishExtensions.Constants
 {
     
-   // [JsonConverter(typeof(StringEnumConverter))]
-    /*  public enum eState
+    [JsonConverter(typeof(StringEnumConverter))]
+      public enum eState
      {
          Draft = 0,
          Active,
@@ -51,6 +51,6 @@ namespace CatfishExtensions.Constants
          DropDown,
          InfoSection,
          AttachmentField
-     }*/
+     }
 
 }

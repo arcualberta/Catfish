@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace CatfishExtensions.DTO.Entity
 {
-    public class EntityTemplate
+    public class EntityTemplateDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
-       // public eState State { get; set; }
+        public eState State { get; set; }
 
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
