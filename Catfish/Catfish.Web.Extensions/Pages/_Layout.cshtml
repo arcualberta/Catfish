@@ -13,14 +13,15 @@
         siteTitle = "ARC CMS <small>3.0</small>";
 
     var currentSite = await WebApp.Site.GetContentAsync<CatfishWebExtensions.Models.Sites.CatfishWebsite>();
+
     bool enabledLocalLogin = _catfishAppConfig.GetEnabledLocalLogin();
     var loginLinkPosition = _catfishAppConfig.GetLoginLinkPosition();
 
-
-    var catfishSiteCss = currentSite.WebSettings.Css.Value;
-    var catfishSiteJavascript = currentSite.WebSettings.Javascript.Value;
-    var catfishSiteCustomHeaderContent = currentSite.WebSettings.HeaderContents.Value;
-     var catfishSiteCustomFooterContent = currentSite.WebSettings.FooterContent.Value;
+   
+    var catfishSiteCss = currentSite?.WebSettings.Css.Value;
+    var catfishSiteJavascript = currentSite?.WebSettings.Javascript.Value;
+    var catfishSiteCustomHeaderContent = currentSite?.WebSettings.HeaderContents.Value;
+    var catfishSiteCustomFooterContent = currentSite?.WebSettings.FooterContent.Value;
 
 }
 <!doctype html>
@@ -41,15 +42,7 @@
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <style>
-        .block.column-block img{
-	        height: auto;
-        }
-        @Html.Raw(catfishSiteCss)
-    </style>
-    <script> 
-          @Html.Raw(catfishSiteJavascript)
-    </script>
+  
     @RenderSection("head", required: false)
 
     <partial name="_AssetRegistry" />
