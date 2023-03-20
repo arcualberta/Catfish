@@ -14,6 +14,7 @@ import { getConcatenatedTitle, getConcatenatedDescription} from '@/components/sh
 import { useFormSubmissionStore } from '@/components/form-submission/store';
 import {useEntitySelectStore} from '../../shared/components/entity-selection-list/store'
 import { useLoginStore } from '@/components/login/store';
+import {EntityTemplateProxy} from '@/api/entityTemplateProxy'
 
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
     state: () => ({
@@ -34,8 +35,10 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
         } as unknown as string
     }),
     actions: {
-        loadTemplates() {
-            let webRoot = config.dataRepositoryApiRoot;
+        async loadTemplates() {
+
+            this.templates = await EntityTemplateProxy.List();
+          /*  let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/`;
            
            // const loginStore = useLoginStore();
@@ -55,12 +58,13 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 .catch((error) => {
                     console.error('Load Templates API Error:', error);
                 });
+                */
         },
-        createNewEntity() {
+        createNewEntity(type: eEntityType | null) {
             this.entity = {
                 id: Guid.createEmpty().toString() as unknown as Guid,
                 templateId: Guid.createEmpty().toString() as unknown as Guid,
-                entityType: eEntityType.Unknown,
+                entityType: type? type : eEntityType.Unknown,
                 data: [] as FormDataModel[],
                 subjectRelationships:[] as Relationship[],
                 objectRelationships: [] as Relationship[],
@@ -73,12 +77,12 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
               
             }
         },
-        loadTemplate(templateId: Guid) {
+        async loadTemplate(templateId: Guid) {
 
             if(templateId.toString() === Guid.EMPTY)
                 return;
-
-            let webRoot = config.dataRepositoryApiRoot;
+            this.entityTemplate = await EntityTemplateProxy.Get(templateId);
+          /*  let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/${templateId}`;
             console.log(api)
            // const jwtToken=localStorage.getItem("catfishJwtToken");
@@ -95,7 +99,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 })
                 .catch((error) => {
                     console.error('Load Template API Error:', error);
-                });
+                });*/
         },
         addFileReference(file: File, fieldId: Guid){
             let fileKey="";
@@ -157,8 +161,8 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
             let fileKeys = formSubmissionstore.fileKeys as string[];
            
              //update fileReferences
-             console.log("save entity api: " + api)
-             console.log("save entity token: " + this.jwtToken)
+             //console.log("save entity api: " + api)
+             //console.log("save entity token: " + this.jwtToken)
             var formData = new FormData();
              //update fileReference
             let fileKeyIdx=0;

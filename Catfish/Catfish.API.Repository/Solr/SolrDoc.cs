@@ -187,6 +187,11 @@ namespace Catfish.API.Repository.Solr
             _root.Add(NewField("id", id));
         }
 
+        public void AddId(int id)
+        {
+            _root.Add(NewField("id", id));
+        }
+
         public void AddField(string name, int? val)
         {
             if (val.HasValue)

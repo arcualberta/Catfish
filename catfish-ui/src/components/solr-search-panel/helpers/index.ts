@@ -107,7 +107,8 @@ export function downloadCSV(rows: SolrResultEntry[], fieldDefs: SearchFieldDefin
     rows.forEach((row: SolrResultEntry) => {
         let csv_line = '';
         fieldDefs.forEach(def => {
-            csv_line += row.data.find(d => d.key === def.name)?.value + ',';
+            const val = row.data.find(d => d.key === def.name)?.value;
+            csv_line += (val ? val : "") + ',';
         });
         csv += csv_line.replace(/,\s*$/, '') + '\n';
     });

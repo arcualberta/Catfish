@@ -43,8 +43,8 @@ namespace CatfishExtensions.Services.Auth
         public async Task<bool> PutUser(UserInfo dto, string? jwtToken = null)
          => (await _webClient.PutJson($"{_apiRoot}/api/users/", dto, jwtToken)).IsSuccessStatusCode;
 
-        public async Task<bool> DeleteUser(Guid id, string? jwtToken = null)
-         => (await _webClient.Delete($"{_apiRoot}/api/users/{id}", jwtToken)).IsSuccessStatusCode;
+        public async Task<bool> DeleteUser(string userName, string? jwtToken = null)
+         => (await _webClient.Delete($"{_apiRoot}/api/users/{userName}", jwtToken)).IsSuccessStatusCode;
 
     }
 }

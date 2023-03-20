@@ -10,6 +10,6 @@ namespace CatfishExtensions.Interfaces.Auth
         Task<UserMembership> GetMembership(string username);
         Task<List<UserInfo>> GetUsers(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null);
         Task<bool> PutUser(UserInfo dto, string? jwtToken = null);
-        Task<bool> DeleteUser(Guid id, string? jwtToken = null);
+        Task<bool> DeleteUser(string userName, string? jwtToken = null);
     }
 }

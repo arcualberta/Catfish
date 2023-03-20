@@ -125,7 +125,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         // DELETE: api/Users/5
-        [HttpDelete]
+        [HttpDelete("{username}")]
         [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> DeleteUser(string username)
         {
