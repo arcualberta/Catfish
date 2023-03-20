@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Compile Remove="Constants\Enums1.cs" />
+    <Compile Remove="DTO\EntityEntry.cs" />
+    <Compile Remove="DTO\EntitySearchResult.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,10 +12,11 @@ global using System.ComponentModel.DataAnnotations;
 global using CatfishExtensions;
 global using CatfishExtensions.Helpers;
 global using CatfishExtensions.Constants;
+global using CatfishExtensions.DTO.Entity;
 
 
 //Project namespaces
-global using Catfish.API.Repository.Enumerations;
+//global using Catfish.API.Repository.Enumerations;
 global using CatfishExtensions.Exceptions;
 global using Catfish.API.Repository.Models.Forms;
 global using Catfish.API.Repository.Constants;
