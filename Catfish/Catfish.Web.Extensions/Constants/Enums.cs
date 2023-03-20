@@ -14,5 +14,15 @@ namespace CatfishWebExtensions.Constants
             Overlay,
             SideBySide
         }
+        public enum eArchiveListLayout
+        {
+            Block = 0,
+            List
+        }
+        public enum eArchivePostLayout
+        {
+            SideBySide = 0,
+            Upright
+        }
     }
 }
