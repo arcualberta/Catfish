@@ -1,4 +1,6 @@
 ﻿
+using CatfishExtensions.DTO.Forms;
+
 namespace Catfish.API.Repository.Models.Forms
 {
     /// <summary>

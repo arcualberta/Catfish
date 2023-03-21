@@ -11,9 +11,16 @@
     <Compile Remove="DTO\EntityEntry.cs" />
     <Compile Remove="DTO\EntitySearchResult.cs" />
     <Compile Remove="DTO\EntityTemplateSettings.cs" />
+    <Compile Remove="DTO\ExtendedOptionValue.cs" />
+    <Compile Remove="DTO\Field.cs" />
+    <Compile Remove="DTO\FieldData.cs" />
     <Compile Remove="DTO\FieldEntry.cs" />
+    <Compile Remove="DTO\FileReference.cs" />
     <Compile Remove="DTO\FormEntry.cs" />
+    <Compile Remove="DTO\Option.cs" />
     <Compile Remove="DTO\TemplateEntry.cs" />
+    <Compile Remove="DTO\Text.cs" />
+    <Compile Remove="DTO\TextCollection.cs" />
   </ItemGroup>
 
   <ItemGroup>
