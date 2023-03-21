@@ -15,11 +15,13 @@
     };
 
     bool isCatfishArchive = Model.Data is CatfishArchive;
-    if (isCatfishArchive)
-    {
-       var page = Model.Data as CatfishArchive;
-    }
 }
+@if (isCatfishArchive)
+    {
+       var pages = Model.Data as CatfishArchive;
+       <partial name="DisplayTemplates/Partial/ArchivePost" model="@Model" />
+    }
+    else{
 @section head {
     @WebApp.MetaTags(Model.Data)
 }
@@ -142,3 +144,4 @@
         }
     </div>
 </main>
+}
