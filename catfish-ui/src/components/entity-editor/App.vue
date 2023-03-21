@@ -56,7 +56,7 @@
     const templateEntries = computed(()=>store.templates);
     
     const createEntity = ()=>{
-        store.createNewEntity();
+        store.createNewEntity(null);
     };
     let isNewEntity = ref(true);
     if(entityId){
