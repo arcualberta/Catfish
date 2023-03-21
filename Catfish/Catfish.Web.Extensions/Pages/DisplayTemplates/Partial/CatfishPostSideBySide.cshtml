@@ -1,0 +1,54 @@
+﻿@model ArchivePage<StandardArchive, Piranha.Models.PostInfo>
+@{
+    var i = (int) ViewData["index"];
+    var post = Model.Archive.Posts[i];
+    bool isCatfishArchive = Model.Data is CatfishArchive;
+    if (isCatfishArchive)
+    {
+       var data = Model.Data as CatfishArchive;
+    }
+}
+<header>
+    <b-row>
+        <b-col class="col-sm-4">
+            @if (post.PrimaryImage.HasValue)
+            {
+                <a href="@post.Permalink">
+                    <img class="rounded mb-3" src="@Url.Content(WebApp.Media.ResizeImage(post.PrimaryImage, 1140, 450))" alt="@post.PrimaryImage.Media.AltText">
+                </a>
+            }
+        </b-col>
+        <b-col class="col-sm-8">
+            <h3>@post.Title</h3>
+    <p class="post-meta">
+        <span>
+            In <a href="@Model.Data.Permalink/category/@post.Category.Slug">@post.Category.Title</a>
+        </span>
+        <span>
+            Tags
+            @foreach (var tag in post.Tags)
+            {
+                <a href="@Model.Data.Permalink/tag/@tag.Slug">#@tag.Slug</a>
+            }
+        </span>
+        @if (post.IsPublished)
+        {
+            <span>
+                Published @post.Published.Value.ToShortDateString()
+            </span>
+        }
+        @if (post.EnableComments && post.CommentCount > 0)
+        {
+            <span>
+                <a href="@post.Permalink#comments">@post.CommentCount @(post.CommentCount == 1 ? "comment" : "comments")</a>
+            </span>
+        }
+    </p>
+    <p>@Html.Raw(post.Excerpt)</p>
+    <a href="@post.Permalink" class="btn btn-primary">Read more</a>
+        </b-col>
+    </b-row>
+    
+    
+</header>
+

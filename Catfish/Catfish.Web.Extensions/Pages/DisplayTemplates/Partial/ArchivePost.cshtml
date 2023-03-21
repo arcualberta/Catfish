@@ -21,11 +21,11 @@
                     viewData.Add("index", i);
                     @if(data.ArchivePageSetting.PostLayout.Equals(eArchiveListLayout.Block))
                     {
-                        <partial name="DisplayTemplates/Partial/ArchivePostBlock" model="@post" view-data="@viewData"/>
+                        <partial name="DisplayTemplates/Partial/CatfishPostBlock" model="@Model" view-data="@viewData"/>
                     }
                     else
                     {
-                        <partial name="DisplayTemplates/Partial/ArchivePostList" model="@Model" view-data="@viewData"/>
+                        <partial name="DisplayTemplates/Partial/CatfishPostList" model="@Model" view-data="@viewData"/>
                     }
                 
                     @if (i == 0)

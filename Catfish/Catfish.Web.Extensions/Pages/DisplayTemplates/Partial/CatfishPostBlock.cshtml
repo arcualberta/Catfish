@@ -1,50 +1,21 @@
 ﻿@using static CatfishWebExtensions.Constants.Enums
 @model ArchivePage<StandardArchive, Piranha.Models.PostInfo>
 @{
-    var index = ViewData["index"] as int?;
-    var post = Model.Archive.Posts[index];
-    bool isCatfishArchive = Model.Data is CatfishArchive;
-    if (isCatfishArchive)
-    {
-       var data = Model.Data as CatfishArchive;
-    }
+    var i = (int) ViewData["index"];
+    var post = Model.Archive.Posts[i];
 }
-    <div class="@(index == 0 ? "col-md-12" : "col-md-6")">
+    <div class="@(i == 0 ? "col-md-12" : "col-md-6")">
         <article>
-            <header>
-                @if (post.PrimaryImage.HasValue)
-                {
-                    <a href="@post.Permalink">
-                        <img class="rounded mb-3" src="@Url.Content(WebApp.Media.ResizeImage(post.PrimaryImage, 1140, 450))" alt="@post.PrimaryImage.Media.AltText">
-                    </a>
-                }
-                <h3>@post.Title</h3>
-                <p class="post-meta">
-                    <span>
-                        In <a href="@Model.Data.Permalink/category/@post.Category.Slug">@post.Category.Title</a>
-                    </span>
-                    <span>
-                        Tags
-                        @foreach (var tag in post.Tags)
-                        {
-                            <a href="@Model.Data.Permalink/tag/@tag.Slug">#@tag.Slug</a>
-                        }
-                    </span>
-                    @if (post.IsPublished)
-                    {
-                        <span>
-                            Published @post.Published.Value.ToShortDateString()
-                        </span>
-                    }
-                    @if (post.EnableComments && post.CommentCount > 0)
-                    {
-                        <span>
-                            <a href="@post.Permalink#comments">@post.CommentCount @(post.CommentCount == 1 ? "comment" : "comments")</a>
-                        </span>
-                    }
-                </p>
-                <p>@Html.Raw(post.Excerpt)</p>
-                <a href="@post.Permalink" class="btn btn-primary">Read more</a>
-            </header>
+        @{
+            var data = Model.Data as CatfishArchive;
+            if(data.ArchivePageSetting.PostLayout.Equals(eArchivePostLayout.SideBySide))
+            {
+                <partial name="DisplayTemplates/Partial/CatfishPostSideBySide" model="@Model" />
+            }
+            else
+            {
+                <partial name="DisplayTemplates/Partial/CatfishPostUpright" model="@Model" />
+            }
+        }
         </article>
     </div>
