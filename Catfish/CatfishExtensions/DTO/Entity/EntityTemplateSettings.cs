@@ -1,4 +1,7 @@
-﻿namespace Catfish.API.Repository.DTO
+﻿using CatfishExtensions.DTO.Forms;
+
+
+namespace CatfishExtensions.DTO.Entity
 {
     public class EntityTemplateSettings
     {

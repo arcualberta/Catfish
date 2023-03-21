@@ -10,6 +10,10 @@
     <Compile Remove="Constants\Enums1.cs" />
     <Compile Remove="DTO\EntityEntry.cs" />
     <Compile Remove="DTO\EntitySearchResult.cs" />
+    <Compile Remove="DTO\EntityTemplateSettings.cs" />
+    <Compile Remove="DTO\FieldEntry.cs" />
+    <Compile Remove="DTO\FormEntry.cs" />
+    <Compile Remove="DTO\TemplateEntry.cs" />
   </ItemGroup>
 
   <ItemGroup>
