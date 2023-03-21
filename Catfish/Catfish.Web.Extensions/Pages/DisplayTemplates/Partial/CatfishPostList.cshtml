@@ -1,13 +1,14 @@
 ﻿@using static CatfishWebExtensions.Constants.Enums
 @model ArchivePage<StandardArchive, Piranha.Models.PostInfo>
 @{
-    int? index = ViewData["index"] as int?;
+    var index = ViewData["index"] as int;
     var post = Model.Archive.Posts[index];
     bool isCatfishArchive = Model.Data is CatfishArchive;
     if (isCatfishArchive)
     {
        var data = Model.Data as CatfishArchive;
     }
+}
     <div class="col-md-12">
         <article>
             <header>
