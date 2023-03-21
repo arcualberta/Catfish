@@ -13,7 +13,7 @@ global using CatfishExtensions;
 global using CatfishExtensions.Helpers;
 global using CatfishExtensions.Constants;
 global using CatfishExtensions.DTO.Entity;
-
+global using CatfishExtensions.DTO.Forms;
 
 //Project namespaces
 //global using Catfish.API.Repository.Enumerations;
