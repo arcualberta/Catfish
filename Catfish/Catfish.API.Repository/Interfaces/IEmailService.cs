@@ -1,4 +1,6 @@
-﻿namespace Catfish.API.Repository.Interfaces
+﻿using CatfishExtensions.DTO;
+
+namespace Catfish.API.Repository.Interfaces
 {
     public interface IEmailService
     {

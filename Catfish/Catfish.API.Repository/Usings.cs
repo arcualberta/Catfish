@@ -21,5 +21,5 @@ global using CatfishExtensions.Exceptions;
 global using Catfish.API.Repository.Models.Forms;
 global using Catfish.API.Repository.Constants;
 global using Catfish.API.Repository.Models.Entities;
-global using Catfish.API.Repository.DTO;
+//global using Catfish.API.Repository.DTO;
 

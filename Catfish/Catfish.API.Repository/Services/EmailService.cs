@@ -1,6 +1,7 @@
 ﻿namespace Catfish.API.Repository.Services
 {
     using Catfish.API.Repository.Interfaces;
+    using CatfishExtensions.DTO;
     using CatfishExtensions.Interfaces;
     using System.Net.Mail;
     public class EmailService : IEmailService
