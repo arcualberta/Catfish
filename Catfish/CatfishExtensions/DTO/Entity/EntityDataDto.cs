@@ -1,6 +1,6 @@
 ﻿
-
 using CatfishExtensions.Constants;
+using CatfishExtensions.DTO.Forms;
 
 namespace CatfishExtensions.DTO.Entity
 {
@@ -16,9 +16,10 @@ namespace CatfishExtensions.DTO.Entity
         public virtual List<RelationshipDto> SubjectRelationships { get; set; } = new List<RelationshipDto>();
         public virtual List<RelationshipDto> ObjectRelationships { get; set; } = new List<RelationshipDto>();
 
-     
-        public DateTime Created { get; set; }
-        public DateTime Updated { get; set; }
+
+        // public DateTime Created { get; set; }
+        // public DateTime Updated { get; set; }
+        public ICollection<FormDataDto>? Data { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
 

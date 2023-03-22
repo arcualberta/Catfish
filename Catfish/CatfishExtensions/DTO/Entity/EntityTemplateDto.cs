@@ -19,8 +19,8 @@ namespace CatfishExtensions.DTO.Entity
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-      
 
+        public EntityTemplateSettings? EntityTemplateSettings { get; set; }
         public ICollection<FormTemplateDto> Forms { get; set; } = new List<FormTemplateDto>();
 
        // public ICollection<WorkflowDbRecord> Workflows { get; set; } = new List<WorkflowDbRecord>();

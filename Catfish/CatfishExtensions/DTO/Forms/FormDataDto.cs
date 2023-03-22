@@ -22,13 +22,13 @@ namespace CatfishExtensions.DTO.Forms
         /// <summary>
         /// Created timestamp.
         /// </summary>
-        public DateTime Created { get; set; } = DateTime.Now;
-
+      //
         /// <summary>
         /// Last updated timestamp.
         /// </summary>
-        public DateTime Updated { get; set; }
+      //  public DateTime Updated { get; set; }
 
         public eState State { get; set; }
+        public IList<FieldData>? FieldData { get; set; }
     }
 }
