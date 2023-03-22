@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using CatfishExtensions.DTO.Forms;
 
 namespace Catfish.API.Repository.Controllers
@@ -9,10 +10,12 @@ namespace Catfish.API.Repository.Controllers
     public class FormsController : ControllerBase
     {
         private readonly RepoDbContext _context;
+        private readonly IMapper _mapper;
 
-        public FormsController(RepoDbContext context)
+        public FormsController(RepoDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -35,7 +38,7 @@ namespace Catfish.API.Repository.Controllers
         // GET: api/Forms/5
         [HttpGet("{id}")]
         [Authorize(Roles = "SysAdmin")]
-        public async Task<ActionResult<FormTemplate>> GetForm(Guid id)
+        public async Task<ActionResult<FormTemplateDto>> GetForm(Guid id)
         {
             if (_context.Forms == null)
             {
@@ -48,19 +51,22 @@ namespace Catfish.API.Repository.Controllers
                 return NotFound();
             }
 
-            return form;
+            return Ok(_mapper.Map<FormTemplateDto>(form));
         }
 
         // PUT: api/Forms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize(Roles = "SysAdmin")]
-        public async Task<IActionResult> PutForm(Guid id, FormTemplate form)
+        public async Task<IActionResult> PutForm(Guid id, FormTemplateDto formDto)
         {
-            if (id != form.Id)
+            if (id != formDto.Id)
             {
                 return BadRequest();
             }
+
+            FormTemplate form = _mapper.Map<FormTemplate>(formDto);
+            form.Updated = DateTime.Now;
 
             _context.Entry(form).State = EntityState.Modified;
 
@@ -87,7 +93,7 @@ namespace Catfish.API.Repository.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Roles = "SysAdmin")]
-        public async Task<ActionResult<FormTemplate>> PostForm(FormTemplate form)
+        public async Task<ActionResult<FormTemplate>> PostForm(FormTemplateDto formDto)
         {
             try
             {
@@ -96,6 +102,11 @@ namespace Catfish.API.Repository.Controllers
                 {
                     return Problem("Entity set 'RepoDbContext.Forms'  is null.");
                 }
+
+                FormTemplate form = _mapper.Map<FormTemplate>(formDto);
+                form.Created = DateTime.Now;
+                form.Updated = DateTime.Now;
+
                 _context.Forms.Add(form);
                 await _context.SaveChangesAsync();
 
@@ -103,7 +114,7 @@ namespace Catfish.API.Repository.Controllers
             }
             catch (Exception)
             {
-                if (FormExists(form.Id))
+                if (FormExists(formDto.Id))
                 {
                     return BadRequest();
                 }
