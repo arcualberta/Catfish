@@ -1,4 +1,6 @@
 ﻿
+using CatfishExtensions.DTO.Forms;
+
 namespace Catfish.API.Repository.Controllers
 {
     [ApiController]

@@ -1,8 +1,14 @@
-﻿namespace Catfish.API.Repository.DTO
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CatfishExtensions.DTO.Forms
 {
     public class FileReference
     {
-        public  Guid Id {get;set;}
+        public Guid Id { get; set; }
         public string FileName { get; set; }
         public string OriginalFileName { get; set; }
         public string Thumbnail { get; set; }

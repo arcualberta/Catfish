@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository.Interfaces;
+using CatfishExtensions.DTO.Forms;
 using System.Net;
 
 namespace Catfish.API.Repository.Services
