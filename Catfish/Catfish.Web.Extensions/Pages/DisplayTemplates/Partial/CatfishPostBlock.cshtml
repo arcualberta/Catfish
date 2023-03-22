@@ -8,7 +8,7 @@
         <article>
         @{
             var data = Model.Data as CatfishArchive;
-            if(data.ArchivePageSetting.PostLayout.Equals(eArchivePostLayout.SideBySide))
+            if(data.ArchivePageSetting.PostLayout.Value == eArchivePostLayout.SideBySide)
             {
                 <partial name="DisplayTemplates/Partial/CatfishPostSideBySide" model="@Model" />
             }
