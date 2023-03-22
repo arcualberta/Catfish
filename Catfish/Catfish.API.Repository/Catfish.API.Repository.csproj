@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AuthorizationFilter.cs" />
     <Compile Remove="Constants\Enums1.cs" />
   </ItemGroup>
 

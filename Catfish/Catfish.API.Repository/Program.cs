@@ -1,5 +1,7 @@
+using AutoMapper;
 using Catfish.API.Repository;
 using Catfish.API.Repository.Interfaces;
+using Catfish.API.Repository.Models.Entity;
 using Catfish.API.Repository.Services;
 using CatfishExtensions;
 using Hangfire;
@@ -17,6 +19,9 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString")));
 builder.Services.AddHangfireServer();
+
+builder.Services.AddSingleton(new MapperConfiguration(mc => mc.AddProfile(new EntityMapper())).CreateMapper());
+builder.Services.AddSingleton(new MapperConfiguration(mc => mc.AddProfile(new FormMapper())).CreateMapper());
 
 //Adding services specific to this project
 builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();

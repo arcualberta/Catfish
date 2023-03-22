@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Interfaces;
+﻿using AutoMapper;
+using Catfish.API.Repository.Interfaces;
 using System.Linq;
 using System.Net;
 
@@ -15,11 +16,13 @@ namespace Catfish.API.Repository.Controllers
         private readonly RepoDbContext _context;
 
         private readonly IEntityTemplateService _entityTemplateService;
+        private readonly IMapper _mapper;
 
-        public EntityTemplatesController(RepoDbContext context, IEntityTemplateService entityTemplateService)
+        public EntityTemplatesController(RepoDbContext context, IEntityTemplateService entityTemplateService, IMapper mapper)
         {
             _context = context;
             _entityTemplateService = entityTemplateService;
+            _mapper = mapper;
         }
         // GET: api/<EntityTemplateController>
         [HttpGet]
@@ -41,18 +44,26 @@ namespace Catfish.API.Repository.Controllers
         //   GET api/<EntityTemplatesController>/5
         [HttpGet("{id}")]
         [Authorize(Roles = "SysAdmin")]
-        public async Task<EntityTemplate?> Get(Guid id, bool includeForms = true)
+        public async Task<EntityTemplateDto?> Get(Guid id, bool includeForms = true)
         {
-            if(includeForms)
-                return await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(fd => fd.Id == id);
+
+            var entityTemplates = (dynamic)null;
+            if (includeForms)
+            {
+                entityTemplates = await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(fd => fd.Id == id);
+            }
             else
-                return await _context.EntityTemplates!.FirstOrDefaultAsync(fd => fd.Id == id);
+            {
+                entityTemplates= await _context.EntityTemplates!.FirstOrDefaultAsync(fd => fd.Id == id);
+            }
+
+            return Ok(_mapper.Map<EntityTemplateDto>(entityTemplates));
         }
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
         [Authorize(Roles ="SysAdmin")]
-        public async Task<IActionResult> Post([FromBody] EntityTemplate value)
+        public async Task<IActionResult> Post([FromBody] EntityTemplateDto value)
         {
             try
             {
@@ -62,7 +73,11 @@ namespace Catfish.API.Repository.Controllers
                 if(value.Created == DateTime.MinValue)
                     value.Created= DateTime.Now;
 
-                var code = await _entityTemplateService.AddEntity(value);
+                value.Updated = DateTime.Now;
+
+                EntityTemplate template = _mapper.Map<EntityTemplate>(value);
+
+                var code = await _entityTemplateService.AddEntity(template);
                 await _context.SaveChangesAsync();
                 return StatusCode((int)code);
             }
@@ -76,14 +91,16 @@ namespace Catfish.API.Repository.Controllers
         // PUT api/<EntityTeplatesController>/5
         [HttpPut("{id}")]
         [Authorize(Roles = "SysAdmin")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] EntityTemplate value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] EntityTemplateDto value)
         {
             try
             {
                 if (id != value.Id)
                     return BadRequest();
 
-                var code = await _entityTemplateService.UpdateEntity(value);
+                value.Updated = DateTime.Now;
+                EntityTemplate template = _mapper.Map<EntityTemplate>(value);
+                var code = await _entityTemplateService.UpdateEntity(template);
                 await _context.SaveChangesAsync();
                 return StatusCode((int) code);
             }
@@ -96,7 +113,7 @@ namespace Catfish.API.Repository.Controllers
 
         //// PATCH api/<FormSubmissionController>/5
         [HttpPatch("{id}")]
-        public ActionResult Patch(Guid id, [FromBody] FormTemplate value)
+        public ActionResult Patch(Guid id, [FromBody] FormTemplateDto value)
         {
             try
             {
@@ -108,7 +125,8 @@ namespace Catfish.API.Repository.Controllers
                     return BadRequest();
 
                 //Add new formTemplate to existing entityTemplate
-                template.Forms.Add(value);
+                FormTemplate formTemplate = _mapper.Map<FormTemplate>(value);
+                template.Forms.Add(formTemplate);
                 _context.Entry(template).State = EntityState.Modified;
                 _context.SaveChanges();
 
