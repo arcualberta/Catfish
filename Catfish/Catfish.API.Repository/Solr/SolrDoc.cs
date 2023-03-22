@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using CatfishExtensions.DTO.Forms;
+using System.Xml.Linq;
 
 namespace Catfish.API.Repository.Solr
 {

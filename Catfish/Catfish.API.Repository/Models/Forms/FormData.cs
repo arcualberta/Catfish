@@ -1,4 +1,6 @@
-﻿namespace Catfish.API.Repository.Models.Forms
+﻿using CatfishExtensions.DTO.Forms;
+
+namespace Catfish.API.Repository.Models.Forms
 {
     public class FormData
     {

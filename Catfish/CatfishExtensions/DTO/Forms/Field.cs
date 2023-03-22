@@ -1,8 +1,11 @@
-﻿namespace Catfish.API.Repository.DTO
+﻿using CatfishExtensions.Constants;
+
+
+namespace CatfishExtensions.DTO.Forms
 {
     public class Field
     {
-        public  FieldType Type { get; set; }
+        public FieldType Type { get; set; }
 
         public Guid Id { get; set; }
 

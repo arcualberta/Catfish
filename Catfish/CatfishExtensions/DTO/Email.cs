@@ -1,4 +1,6 @@
-﻿namespace Catfish.API.Repository.DTO
+﻿
+
+namespace CatfishExtensions.DTO
 {
     public class Email
     {

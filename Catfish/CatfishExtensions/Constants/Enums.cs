@@ -1,18 +1,18 @@
 ﻿using Newtonsoft.Json.Converters;
 
-namespace Catfish.API.Repository.Constants
+namespace CatfishExtensions.Constants
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum eState 
+   // [JsonConverter(typeof(StringEnumConverter))]
+    public enum eState
     {
-        Draft = 0, 
-        Active, 
-        Archived, 
-        Inactive, 
+        Draft = 0,
+        Active,
+        Archived,
+        Inactive,
         Deleted
     }
 
-    public enum eEntityType 
+    public enum eEntityType
     {
         Item,
         Collection,
