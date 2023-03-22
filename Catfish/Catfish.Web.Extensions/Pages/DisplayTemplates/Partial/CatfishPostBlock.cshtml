@@ -1,5 +1,21 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using static CatfishWebExtensions.Constants.Enums
+@model ArchivePage<StandardArchive, Piranha.Models.PostInfo>
 @{
+    var i = (int) ViewData["index"];
+    var post = Model.Archive.Posts[i];
 }
+    <div class="@(i == 0 ? "col-md-12" : "col-md-6")">
+        <article>
+        @{
+            var data = Model.Data as CatfishArchive;
+            if(data.ArchivePageSetting.PostLayout.Equals(eArchivePostLayout.SideBySide))
+            {
+                <partial name="DisplayTemplates/Partial/CatfishPostSideBySide" model="@Model" />
+            }
+            else
+            {
+                <partial name="DisplayTemplates/Partial/CatfishPostUpright" model="@Model" />
+            }
+        }
+        </article>
+    </div>
