@@ -7,7 +7,9 @@ namespace Catfish.API.Repository.Models.Forms
         public FormMapper()
         {
             CreateMap<FormData, FormDataDto>();
+            CreateMap<FormDataDto, FormData>();
             CreateMap<FormTemplate, FormTemplateDto>();
+            CreateMap<FormTemplateDto, FormTemplate>();
         }
         
     }

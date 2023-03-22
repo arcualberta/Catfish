@@ -1,4 +1,5 @@
 ﻿using CatfishExtensions.Constants;
+using CatfishExtensions.DTO.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace CatfishExtensions.DTO.Entity
 
       
 
-       // public ICollection<FormTemplate> Forms { get; set; } = new List<FormTemplate>();
+        public ICollection<FormTemplateDto> Forms { get; set; } = new List<FormTemplateDto>();
 
        // public ICollection<WorkflowDbRecord> Workflows { get; set; } = new List<WorkflowDbRecord>();
     }
