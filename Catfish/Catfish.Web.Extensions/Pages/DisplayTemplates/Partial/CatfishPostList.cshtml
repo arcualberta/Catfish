@@ -8,12 +8,15 @@
         <article>
              @{
             var data = Model.Data as CatfishArchive;
-            if(data.ArchivePageSetting.PostLayout.Equals(eArchivePostLayout.SideBySide))
+            //Enum.TryParse<eArchivePostLayout>(data.ArchivePageSetting.PostLayout.Value, out eArchiveListLayout layout);
+            if(data.ArchivePageSetting.PostLayout.Value == eArchivePostLayout.SideBySide)
             {
+                var x = "got here";
                 <partial name="DisplayTemplates/Partial/CatfishPostSideBySide" model="@Model" />
             }
             else
             {
+                var x = "got here";
                 <partial name="DisplayTemplates/Partial/CatfishPostUpright" model="@Model" />
             }
         }

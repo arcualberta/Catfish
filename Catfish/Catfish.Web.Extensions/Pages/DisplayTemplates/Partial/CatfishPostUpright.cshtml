@@ -12,7 +12,7 @@
     @if (post.PrimaryImage.HasValue)
     {
         <a href="@post.Permalink">
-            <img class="rounded mb-3" src="@Url.Content(WebApp.Media.ResizeImage(post.PrimaryImage, 1140, 450))" alt="@post.PrimaryImage.Media.AltText">
+            <img class="rounded mb-3" src="@Url.Content(post.PrimaryImage)" alt="@post.PrimaryImage.Media.AltText">
         </a>
     }
     <h3>@post.Title</h3>
