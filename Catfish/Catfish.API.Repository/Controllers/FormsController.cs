@@ -44,14 +44,15 @@ namespace Catfish.API.Repository.Controllers
             {
                 return NotFound();
             }
-            var form = await _context.Forms.FindAsync(id);
+            FormTemplate form = await _context.Forms.FindAsync(id);
 
             if (form == null)
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<FormTemplateDto>(form));
+            FormTemplateDto formTemplateDto = _mapper.Map<FormTemplateDto>(form);
+            return Ok(formTemplateDto);
         }
 
         // PUT: api/Forms/5

@@ -56,6 +56,6 @@ namespace Catfish.API.Repository.Models.Forms
         }
 
         [JsonIgnore]
-        public ICollection<EntityTemplate> EntityTemplates { get; set; } = new List<EntityTemplate>();
+        public IList<EntityTemplate> EntityTemplates { get; set; } = new List<EntityTemplate>();
     }
 }

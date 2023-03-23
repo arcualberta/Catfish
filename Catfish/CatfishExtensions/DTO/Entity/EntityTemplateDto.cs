@@ -21,7 +21,7 @@ namespace CatfishExtensions.DTO.Entity
 
        // public string? SerializedEntityTemplateSettings { get; set; }
        public EntityTemplateSettings EntityTemplateSettings { get; set; }
-        public ICollection<FormTemplateDto> Forms { get; set; } = new List<FormTemplateDto>();
+        public IList<FormTemplateDto> Forms { get; set; }
 
        // public ICollection<WorkflowDbRecord> Workflows { get; set; } = new List<WorkflowDbRecord>();
     }

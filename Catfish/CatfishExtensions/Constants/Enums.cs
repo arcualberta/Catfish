@@ -14,20 +14,20 @@ namespace CatfishExtensions.Constants
 
     public enum eEntityType
     {
-        Item,
+        Item=0,
         Collection,
         Unknown
     }
     public enum eSearchTarget
     {
-        Title,
+        Title=0,
         Description,
         TitleOrDescription
     }
 
     public enum eTextType
     {
-        ShortAnswer,
+        ShortAnswer=0,
         Paragraph,
         RichText,
         AttachmentField
@@ -35,7 +35,7 @@ namespace CatfishExtensions.Constants
 
     public enum FieldType
     {
-        ShortAnswer,
+        ShortAnswer=0,
         Paragraph,
         RichText,
         Date,
