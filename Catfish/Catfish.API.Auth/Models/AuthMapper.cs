@@ -8,14 +8,9 @@ namespace Catfish.API.Auth.Models
     {
         public AuthMapper()
         {
-            CreateMap<Tenant, TenantInfo>();
-            CreateMap<TenantInfo, Tenant>();
-
-            CreateMap<TenantRole, TenantRoleInfo>();
-            CreateMap<TenantRoleInfo, TenantRole>();
-
-            CreateMap<TenantUser, UserInfo>();
-            CreateMap<IdentityUser, UserInfo>();
+            CreateMap<Tenant, TenantInfo>().ReverseMap();
+            CreateMap<TenantRole, TenantRoleInfo>().ReverseMap();
+            CreateMap<TenantUser, UserInfo>().ReverseMap();
         }
     }
 }
