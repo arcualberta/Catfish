@@ -43,21 +43,28 @@ namespace Catfish.API.Repository.Controllers
         // GET: api/Forms/5
         //   GET api/<EntityTemplatesController>/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "SysAdmin")]
+        //[Authorize(Roles = "SysAdmin")]
         public async Task<EntityTemplateDto?> Get(Guid id, bool includeForms = true)
         {
-
-            var entityTemplates = (dynamic)null;
-            if (includeForms)
+            try
             {
-                entityTemplates = await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(fd => fd.Id == id);
-            }
-            else
-            {
-                entityTemplates= await _context.EntityTemplates!.FirstOrDefaultAsync(fd => fd.Id == id);
-            }
 
-            return Ok(_mapper.Map<EntityTemplateDto>(entityTemplates));
+                EntityTemplate entityTemplates = null;// new EntityTemplate();
+                if (includeForms)
+                {
+                    entityTemplates = await _context.EntityTemplates!.Include(et => et.Forms).FirstOrDefaultAsync(fd => fd.Id == id);
+                }
+                else
+                {
+                    entityTemplates = await _context.EntityTemplates!.FirstOrDefaultAsync(fd => fd.Id == id);
+                }
+                EntityTemplateDto? entityTemplateDTo = _mapper.Map<EntityTemplateDto>(entityTemplates);
+                return entityTemplateDTo;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         // POST api/<EntityTemplatesController>
@@ -81,7 +88,7 @@ namespace Catfish.API.Repository.Controllers
                 await _context.SaveChangesAsync();
                 return StatusCode((int)code);
             }
-            catch(Exception)
+            catch(Exception Ex)
             {
                 //TODO: Log the error in error log
                 return StatusCode((int) HttpStatusCode.InternalServerError);

@@ -15,13 +15,24 @@ builder.Services.AddDbContext<RepoDbContext>(options
 
 builder.AddCatfishExtensions(true, true);
 
+
+
 builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString")));
 builder.Services.AddHangfireServer();
 
-builder.Services.AddSingleton(new MapperConfiguration(mc => mc.AddProfile(new EntityMapper())).CreateMapper());
-builder.Services.AddSingleton(new MapperConfiguration(mc => mc.AddProfile(new FormMapper())).CreateMapper());
+var autoMappconfiguration = new MapperConfiguration(cfg => {
+    cfg.CreateMap<string, int>().ConvertUsing(s => Convert.ToInt32(s));
+    cfg.CreateMap<string, DateTime>().ConvertUsing(s=>System.Convert.ToDateTime(s));
+   // cfg.CreateMap<string, eState>().ConvertUsing<eState>();
+    cfg.AddProfile(new EntityMapper());
+    cfg.AddProfile(new FormMapper());
+});
+
+builder.Services.AddSingleton(autoMappconfiguration.CreateMapper());
+//builder.Services.AddSingleton(new MapperConfiguration(mc => mc.AddProfile(new EntityMapper())).CreateMapper());
+//builder.Services.AddSingleton(new MapperConfiguration(mc => mc.AddProfile(new FormMapper())).CreateMapper());
 
 //Adding services specific to this project
 builder.Services.AddScoped<IEntityTemplateService, EntityTemplateService>();

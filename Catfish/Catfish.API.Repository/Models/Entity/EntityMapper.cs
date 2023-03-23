@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Extensions.EnumMapping;
 
 namespace Catfish.API.Repository.Models.Entity
 {
@@ -6,17 +7,20 @@ namespace Catfish.API.Repository.Models.Entity
     {
         public EntityMapper()
         {
-            CreateMap<EntityData, EntityDataDto>();
-            CreateMap<EntityDataDto, EntityData>();
+            CreateMap<EntityData, EntityDataDto>().ReverseMap();
+            // CreateMap<EntityDataDto, EntityData>();
+            //  .ConvertUsingEnumMapping(opt => opt
 
-            CreateMap<EntityTemplate, EntityTemplateDto>();
-            CreateMap<EntityTemplateDto, EntityTemplate>();
+            //       .MapValue(Source.First, Destination.Default)
 
-            CreateMap<Relationship, RelationshipDto>();
-            CreateMap<RelationshipDto, Relationship>();
+            CreateMap<EntityTemplate, EntityTemplateDto>().ReverseMap();// ConvertUsingEnumMapping(opt => opt.MapValue(EntityTemplate.State, EntityTemplateDto.State)).ReverseMap(); 
+          // CreateMap<EntityTemplateDto, EntityTemplate>().ForMember(dest => dest.Updated, opt => opt.MapFrom(src => (src.Updated != null))).ReverseMap();
 
-            CreateMap<EntityData, EntityEntry>();
-            CreateMap<EntityEntry, EntityData>();
+            CreateMap<Relationship, RelationshipDto>().ReverseMap();
+           // CreateMap<RelationshipDto, Relationship>();
+
+           // CreateMap<EntityData, EntityEntry>();
+           // CreateMap<EntityEntry, EntityData>();
         }
     }
 }
