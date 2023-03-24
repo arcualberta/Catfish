@@ -19,7 +19,7 @@
                     var post = Model.Archive.Posts[i];
                     var viewData = new ViewDataDictionary(this.ViewData);
                     viewData.Add("index", i);
-                    @if(data.ArchivePageSetting.PostLayout.Equals(eArchiveListLayout.Block))
+                    @if(data.ArchivePageSetting.PageLayout.Value == eArchiveListLayout.Block )
                     {
                         <partial name="DisplayTemplates/Partial/CatfishPostBlock" model="@Model" view-data="@viewData"/>
                     }
