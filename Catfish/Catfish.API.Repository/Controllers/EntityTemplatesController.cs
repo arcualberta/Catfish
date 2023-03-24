@@ -43,7 +43,7 @@ namespace Catfish.API.Repository.Controllers
         // GET: api/Forms/5
         //   GET api/<EntityTemplatesController>/5
         [HttpGet("{id}")]
-        //[Authorize(Roles = "SysAdmin")]
+        [Authorize(Roles = "SysAdmin")]
         public async Task<EntityTemplateDto?> Get(Guid id, bool includeForms = true)
         {
             try

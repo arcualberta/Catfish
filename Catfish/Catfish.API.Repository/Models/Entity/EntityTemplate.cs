@@ -23,8 +23,8 @@ namespace Catfish.API.Repository.Models.Entities
             set => SerializedEntityTemplateSettings = value == null ? null : JsonConvert.SerializeObject(value);
         }
 
-        public ICollection<FormTemplate> Forms { get; set; } = new List<FormTemplate>();
+        public IList<FormTemplate> Forms { get; set; } = new List<FormTemplate>();
 
-        public ICollection<WorkflowDbRecord> Workflows { get; set; } = new List<WorkflowDbRecord>();
+        public IList<WorkflowDbRecord> Workflows { get; set; } = new List<WorkflowDbRecord>();
     }
 }

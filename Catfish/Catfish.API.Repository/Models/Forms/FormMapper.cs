@@ -6,11 +6,11 @@ namespace Catfish.API.Repository.Models.Forms
     {
         public FormMapper()
         {
-            CreateMap<FormData, FormDataDto>();
-            CreateMap<FormDataDto, FormData>();
+            CreateMap<FormData, FormDataDto>().ReverseMap();
+            //CreateMap<FormDataDto, FormData>();
 
-            CreateMap<FormTemplate, FormTemplateDto>();
-            CreateMap<FormTemplateDto, FormTemplate>();
+            CreateMap<FormTemplate, FormTemplateDto>().ReverseMap();
+           // CreateMap<FormTemplateDto, FormTemplate>();
         }
         
     }
