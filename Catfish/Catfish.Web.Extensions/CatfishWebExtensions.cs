@@ -1,5 +1,6 @@
 ﻿using CatfishExtensions.DTO;
 using CatfishExtensions.Interfaces.Auth;
+using CatfishWebExtensions.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -200,6 +201,12 @@ namespace CatfishWebExtensions
             App.Blocks.Register<CarouselSlide>();
             App.Blocks.Register<Carousel>();
         }
+
+        private static void RegisterAssets()
+        {
+            Assets.Headers.Add(new PartialView("DefaultHeder", "/mypath"));
+        }
+
         #endregion
     }
 }
