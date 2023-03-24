@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Interfaces;
+﻿using AutoMapper;
+using Catfish.API.Repository.Interfaces;
 using Newtonsoft.Json.Serialization;
 using System.Net;
 
