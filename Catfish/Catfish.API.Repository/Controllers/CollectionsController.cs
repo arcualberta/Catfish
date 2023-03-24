@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Interfaces;
+﻿using AutoMapper;
+using Catfish.API.Repository.Interfaces;
 using Newtonsoft.Json.Serialization;
 using System.Net;
 
@@ -15,12 +16,14 @@ namespace Catfish.API.Repository.Controllers
         private readonly RepoDbContext _context;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IEntityService _entityService;
+        private readonly IMapper _mapper;
 
-        public CollectionsController(RepoDbContext context, IEntityTemplateService entityTemplateService, IEntityService entityService)
+        public CollectionsController(RepoDbContext context, IEntityTemplateService entityTemplateService, IEntityService entityService, IMapper mapper)
         {
             _context = context;
             _entityTemplateService = entityTemplateService;
             _entityService = entityService;
+            _mapper = mapper;
         }
         // GET: api/<EntityTemplateController>
         [HttpGet]
@@ -39,15 +42,20 @@ namespace Catfish.API.Repository.Controllers
         //   GET api/<ItemsController>/5
         [HttpGet("{id}")]
         [Authorize(Roles = "SysAdmin")]
-        public async Task<EntityData> Get(Guid id, bool includeRelationship=true)
+        public async Task<EntityDataDto> Get(Guid id, bool includeRelationship=true)
         {
+            EntityData entity = new EntityData();
              if(includeRelationship)
-                return await _context.Entities!.Include(e=>e.SubjectRelationships)
+                entity = await _context.Entities!.Include(e=>e.SubjectRelationships)
                                                .Include(e=>e.ObjectRelationships)
                                                .Include(e=>e.Template)
                                                .FirstOrDefaultAsync(fd => fd.Id == id && fd.EntityType == eEntityType.Collection);
              else
-                return await _context.Entities!.FirstOrDefaultAsync(fd => fd.Id == id);
+                entity = await _context.Entities!.FirstOrDefaultAsync(fd => fd.Id == id);
+
+             EntityDataDto dto = _mapper.Map<EntityDataDto>(entity);
+
+            return dto;
         }
 
         // POST api/<EntityTemplatesController>
