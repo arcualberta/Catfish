@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Interfaces;
+﻿using AutoMapper;
+using Catfish.API.Repository.Interfaces;
 using Newtonsoft.Json.Serialization;
 using System.Net;
 
@@ -15,12 +16,14 @@ namespace Catfish.API.Repository.Controllers
         private readonly RepoDbContext _context;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IEntityService _entityService;
+        private readonly IMapper _mapper;
 
-        public EntitiesController(RepoDbContext context, IEntityTemplateService entityTemplateService, IEntityService entityService)
+        public EntitiesController(RepoDbContext context, IEntityTemplateService entityTemplateService, IEntityService entityService, IMapper mapper)
         {
             _context = context;
             _entityTemplateService = entityTemplateService;
             _entityService = entityService;
+            _mapper = mapper;
         }
         // GET: api/<EntityTemplateController>
         [HttpGet("{entityType}/{searchTarget}/{searchText}/{offset}/{max}")]
@@ -49,15 +52,22 @@ namespace Catfish.API.Repository.Controllers
         //   GET api/<EntitiesController>/5
         [HttpGet("{id}")]
         [Authorize(Roles = "SysAdmin")]
-        public async Task<EntityData> Get(Guid id, bool includeRelationship=true)
+        public async Task<EntityDataDto> Get(Guid id, bool includeRelationship=true)
         {
+            EntityData entityData = new EntityData();
+
              if(includeRelationship)
-                return await _context.Entities!.Include(e=>e.SubjectRelationships)
+                entityData = await _context.Entities!.Include(e=>e.SubjectRelationships)
                                                .Include(e=>e.ObjectRelationships)
                                                .Include(e=>e.Template)
                                                .FirstOrDefaultAsync(e => e.Id == id);
              else
-                return await _context.Entities!.FirstOrDefaultAsync(fd => fd.Id == id);
+                entityData = await _context.Entities!.FirstOrDefaultAsync(fd => fd.Id == id);
+
+             EntityDataDto entityDataDto = _mapper.Map<EntityDataDto>(entityData);
+
+            return entityDataDto;
+
         }
 
         // POST api/<EntityTemplatesController>
@@ -95,15 +105,17 @@ namespace Catfish.API.Repository.Controllers
 
         // PUT api/<EntitiesController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] EntityData value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] EntityDataDto value)
         {
             try
             {
                 if (id != value.Id)
                     return BadRequest();
 
-               // var code = await _entityTemplateService.UpdateEntity(value);
-               _context.Entry(value).State = EntityState.Modified;
+                EntityData entity = _mapper.Map<EntityData>(value);
+                entity.Updated = DateTime.Now;
+
+               _context.Entry(entity).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return Ok(); // StatusCode((int) code);
             }
