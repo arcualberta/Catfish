@@ -1,6 +1,8 @@
-﻿using System;
+﻿using CatfishWebExtensions.Models.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +12,26 @@ namespace CatfishWebExtensions
     {
         public static List<PartialView> Headers { get; private set; } = new List<PartialView>();
         public static List<PartialView> Footers { get; private set; } = new List<PartialView>();
+
+        public static IEnumerable<HeaderModelAttribute> GetHeaderTypes()
+        {
+            Type t = typeof(HeaderModelAttribute);
+            Assembly assemFromType = t.Assembly;
+
+            List<HeaderModelAttribute> ret = new List<HeaderModelAttribute>();
+
+            foreach (Type type in assemFromType.GetTypes())
+            {
+                foreach(var att in type.GetCustomAttributes(typeof(HeaderModelAttribute), true))
+                {
+                    ret.Add(att as HeaderModelAttribute);
+                }
+            }
+
+            return ret;
+        }
+
+        
     }
 
     public class PartialView

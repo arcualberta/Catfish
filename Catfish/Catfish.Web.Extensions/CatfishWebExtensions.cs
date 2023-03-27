@@ -1,10 +1,12 @@
 ﻿using CatfishExtensions.DTO;
 using CatfishExtensions.Interfaces.Auth;
+using CatfishWebExtensions.Models.Attributes;
 using CatfishWebExtensions.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
 
 namespace CatfishWebExtensions
@@ -89,6 +91,8 @@ namespace CatfishWebExtensions
 
             //Registering blocks
             RegisterBlocks();
+
+            RegisterAssets();
 
             //Google Login
             (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt,
@@ -204,7 +208,15 @@ namespace CatfishWebExtensions
 
         private static void RegisterAssets()
         {
-            Assets.Headers.Add(new PartialView("DefaultHeder", "/mypath"));
+            
+            var headerAttributes = Assets.GetHeaderTypes();
+            foreach(var att in headerAttributes)
+            {
+                var name = att.Name;
+                var viewTemplate = att.ViewTemplate;
+            }
+            Assets.Headers.Add(new PartialView("DefaultHeder", "Header/_DefaultHeader"));
+            //Assets.Headers.Add(new PartialView("BiLeveleHeader", "Header/_BiLevelHeader"));
         }
 
         #endregion
