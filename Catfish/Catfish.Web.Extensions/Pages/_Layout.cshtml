@@ -46,11 +46,12 @@
     @RenderSection("head", required: false)
 
     <partial name="_AssetRegistry" />
-    <partial name="Header/_DefaultHeader" />
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-md navbar-light fixed-top">
+    <partial name="Header/_DefaultHeader" />
+
+    <nav class="navbar navbar-expand-md navbar-light ">
         <div class="container">
             <a class="navbar-brand" href="~/">@Html.Raw(siteTitle)</a>
             <partial name="Menu/_DefaultMenu" />
