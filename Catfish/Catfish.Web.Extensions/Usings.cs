@@ -41,5 +41,5 @@ global using CatfishExtensions.Models;
 //Project namespaces
 global using CatfishWebExtensions.Interfaces;
 global using CatfishWebExtensions.Services;
-global using CatfishWebExtensions.Blocks;
+global using CatfishWebExtensions.Models.Blocks;
 global using CatfishWebExtensions.Models.Pages;

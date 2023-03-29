@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static CatfishWebExtensions.Constants.Enums;
 
-namespace CatfishWebExtensions.Blocks
+namespace CatfishWebExtensions.Models.Blocks
 {
     [BlockType(Name = "Carousel Slide", Category = "Content", Icon = "fas fa-window-maximize")]
     public class CarouselSlide : Block

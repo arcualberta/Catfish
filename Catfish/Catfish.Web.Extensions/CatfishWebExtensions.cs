@@ -1,6 +1,7 @@
 ﻿using CatfishExtensions.DTO;
 using CatfishExtensions.Interfaces.Auth;
 using CatfishWebExtensions.Models.Attributes;
+using CatfishWebExtensions.Models.Blocks;
 using CatfishWebExtensions.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;

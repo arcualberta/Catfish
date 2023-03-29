@@ -1,13 +1,12 @@
-﻿
-namespace CatfishWebExtensions.Blocks
+﻿namespace CatfishWebExtensions.Models.Blocks
 {
     [BlockType(Name = "Extended Image", Category = "Content", Icon = "fas fa-images")]
     public class ExtendedImage : Block
     {
-        [Display(Name ="Image Source")]
+        [Display(Name = "Image Source")]
         public ImageField Source { get; set; }
 
-        [Display(Name ="Link URL")]
+        [Display(Name = "Link URL")]
         public StringField LinkUrl { get; set; }
 
         [Display(Name = "Open on New Page")]
