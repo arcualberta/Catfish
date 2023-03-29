@@ -1,4 +1,4 @@
-import { eConstraintType, eFieldConstraint } from "@/components/shared/constants";
+import { eConstraintType, eFieldConstraint, eFieldType } from "@/components/shared/constants";
 import { SearchFieldDefinition, SolrFieldData, SolrResultEntry } from "../models";
 import { FieldConstraint } from "../models/FieldConstraint";
 import { FieldExpression } from "../models/FieldExpression";
@@ -48,19 +48,19 @@ export function buildQueryString(model: FieldExpression | FieldConstraint): stri
             //Enforce specified constraint on the field value
             switch(fieldConstraint.constraint){
                 case eFieldConstraint.Contains:
-                    return `${fieldConstraint.field.name}:${fieldConstraint.value}`;
+                    return `${fieldConstraint.field.name}:${getFieldConstraintValue(fieldConstraint)}`;
                 case eFieldConstraint.Equals:
-                    return `${fieldConstraint.field.name}:"${fieldConstraint.value}"`;
+                    return `${fieldConstraint.field.name}:"${getFieldConstraintValue(fieldConstraint)}"`;
                 case eFieldConstraint.NotEquals:
-                    return `-${fieldConstraint.field.name}:"${fieldConstraint.value}"`;
+                    return `-${fieldConstraint.field.name}:"${getFieldConstraintValue(fieldConstraint)}"`;
                 case eFieldConstraint.GreaterThan:
-                    return `${fieldConstraint.field.name}:{${fieldConstraint.value} TO *}`;
+                    return `${fieldConstraint.field.name}:{${getFieldConstraintValue(fieldConstraint)} TO *}`;
                 case eFieldConstraint.GreaterThanOrEqual:
-                    return `${fieldConstraint.field.name}:[${fieldConstraint.value} TO *]`;
+                    return `${fieldConstraint.field.name}:[${getFieldConstraintValue(fieldConstraint)} TO *]`;
                 case eFieldConstraint.LessThan:
-                    return `${fieldConstraint.field.name}:{* TO ${fieldConstraint.value}}`;
+                    return `${fieldConstraint.field.name}:{* TO ${getFieldConstraintValue(fieldConstraint)}}`;
                 case eFieldConstraint.LessThanOrEqual:
-                    return `${fieldConstraint.field.name}:[* TO ${fieldConstraint.value}]`;
+                    return `${fieldConstraint.field.name}:[* TO ${getFieldConstraintValue(fieldConstraint)}]`;
                 default:
                     return null; //Unsupported field constraint
             } 
@@ -69,6 +69,14 @@ export function buildQueryString(model: FieldExpression | FieldConstraint): stri
             return null; //Field is selecyted byt no value is specified, so ignore
         }
     }
+}
+
+export function getFieldConstraintValue(fieldConstraint: FieldConstraint) {
+    if(fieldConstraint.field?.type == eFieldType.Date){
+        return fieldConstraint.value ?  `${fieldConstraint.value}T00:00:00Z` : null
+    }
+
+    return fieldConstraint.value
 }
 
 export function toTableData(rows: SolrResultEntry[], fieldDefs: SearchFieldDefinition[], requestedResultFieldNames: string[]){
