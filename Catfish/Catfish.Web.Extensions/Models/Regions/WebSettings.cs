@@ -1,4 +1,6 @@
-﻿namespace CatfishWebExtensions.Models.Regions
+﻿using CatfishWebExtensions.Models.Attributes;
+
+namespace CatfishWebExtensions.Models.Regions
 {
     public class WebSettings
     {
@@ -16,5 +18,8 @@
 
         [Field(Title ="Upload Css File")]
         public Piranha.Extend.Fields.DocumentField CssFile { get; set; }
+
+        [Field(Title = "Site Header")]
+        public DataSelectField<HeaderModelAttribute> HeaderList { get; set; }
     }
 }

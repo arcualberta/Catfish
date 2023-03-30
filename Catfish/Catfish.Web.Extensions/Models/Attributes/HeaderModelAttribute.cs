@@ -11,5 +11,16 @@ namespace CatfishWebExtensions.Models.Attributes
     {
         public string Name { get; set; }
         public string ViewTemplate { get; set; }
+
+        static async Task<IEnumerable<DataSelectFieldItem>> GetList()
+        {
+            var headers = Assets.GetHeaderTypes();
+
+            return headers.Select(p => new DataSelectFieldItem
+            {
+                Id = p.ViewTemplate,
+                Name = p.Name
+            });
+        }
     }
 }
