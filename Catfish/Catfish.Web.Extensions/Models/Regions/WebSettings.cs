@@ -1,4 +1,5 @@
 ﻿using CatfishWebExtensions.Models.Attributes;
+using CatfishWebExtensions.Models.Sites.Headers;
 
 namespace CatfishWebExtensions.Models.Regions
 {
@@ -21,5 +22,8 @@ namespace CatfishWebExtensions.Models.Regions
 
         [Field(Title = "Site Header")]
         public DataSelectField<HeaderModelAttribute> HeaderList { get; set; }
+
+        [Field(Title = "Header Settings")]
+        public DefaultHeader HeaderSettings { get; set; } = new DefaultHeader();
     }
 }
