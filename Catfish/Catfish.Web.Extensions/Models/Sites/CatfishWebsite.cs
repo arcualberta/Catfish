@@ -3,6 +3,7 @@ using Piranha.Extend;
 using Piranha.Models;
 using Piranha.Extend.Fields;
 using CatfishWebExtensions.Models.Regions;
+using CatfishWebExtensions.Models.Sites.Headers;
 
 namespace CatfishWebExtensions.Models.Sites
 {
@@ -15,6 +16,9 @@ namespace CatfishWebExtensions.Models.Sites
 
         [Region(Title = "Workflow", Display = RegionDisplayMode.Setting)]
         public WorkflowSettings WorkflowSettings { get; set; }
+
+        [Region(Title = "Header Settings", Display = RegionDisplayMode.Setting)]
+        public DefaultHeader HeaderSettings { get; set; }
 
         public CatfishWebsite()
         {
