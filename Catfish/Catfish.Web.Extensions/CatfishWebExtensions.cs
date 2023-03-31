@@ -2,6 +2,7 @@
 using CatfishExtensions.Interfaces.Auth;
 using CatfishWebExtensions.Models.Attributes;
 using CatfishWebExtensions.Models.Blocks;
+using CatfishWebExtensions.Models.Sites;
 using CatfishWebExtensions.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -94,6 +95,8 @@ namespace CatfishWebExtensions
             RegisterBlocks();
 
             RegisterAssets();
+
+            RegisterHooks();
 
             //Google Login
             (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt,
@@ -220,6 +223,16 @@ namespace CatfishWebExtensions
             //Assets.Headers.Add(new PartialView("BiLeveleHeader", "Header/_BiLevelHeader"));
         }
 
+        private static void RegisterHooks()
+        {
+            App.Hooks.Site.RegisterOnLoad((site) => {
+
+                //if(site is CatfishWebsite)
+                //{
+                //    var cfsite = site as CatfishWebsite;
+                //} 
+            });
+        }
         #endregion
     }
 }
