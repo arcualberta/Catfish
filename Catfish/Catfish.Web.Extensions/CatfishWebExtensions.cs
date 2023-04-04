@@ -9,7 +9,10 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using Piranha.AspNetCore.Services;
+using Piranha.Models;
 using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
+using CatfishWebExtensions.Models.Sites.Headers;
 
 namespace CatfishWebExtensions
 {
@@ -220,17 +223,25 @@ namespace CatfishWebExtensions
                 var viewTemplate = att.ViewTemplate;
             }
             Assets.Headers.Add(new PartialView("DefaultHeder", "Header/_DefaultHeader"));
-            //Assets.Headers.Add(new PartialView("BiLeveleHeader", "Header/_BiLevelHeader"));
+            Assets.Headers.Add(new PartialView("BiLeveleHeader", "Header/_BiLevelHeader"));
         }
 
         private static void RegisterHooks()
         {
-            App.Hooks.Site.RegisterOnLoad((site) => {
+            App.Hooks.SiteContent.RegisterOnLoad((site) => {
 
-                //if(site is CatfishWebsite)
-                //{
-                //    var cfsite = site as CatfishWebsite;
-                //} 
+                if (site is CatfishWebsite)
+                {
+                    var currentSite = site as CatfishWebsite;
+                    if (currentSite.WebSettings.HeaderList.Id == "Header/_DefaultHeader")
+                    {
+                        if(currentSite.DefaultHeader == null | currentSite.DefaultHeader!.GetType() != typeof(DefaultHeader))
+                        {
+                            currentSite.DefaultHeader = new DefaultHeader();
+                        }
+                        //if(currentSite.WebSettings.HeaderList.Value.ViewTemplate == )
+                    }
+                }
             });
         }
         #endregion

@@ -11,5 +11,7 @@ namespace CatfishWebExtensions.Models.Sites.Headers
     [HeaderModel(Name = "Bi-level Header", ViewTemplate = "Header/_BiLevelHeader")]
     public class BiLevelHeader : DefaultHeader
     {
+        [Field(Title = "Test Value")]
+        public ImageField Value { get; set; }
     }
 }
