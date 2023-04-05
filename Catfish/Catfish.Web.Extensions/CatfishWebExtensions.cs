@@ -238,18 +238,28 @@ namespace CatfishWebExtensions
         {
             App.Hooks.SiteContent.RegisterOnLoad((site) => {
 
-                if (site is CatfishWebsite)
-                {
+                
                     var currentSite = site as CatfishWebsite;
+                if(currentSite != null)
+                {
                     if (currentSite.WebSettings.HeaderList.Id == "Headers/_DefaultHeader")
                     {
-                        if(currentSite.DefaultHeader == null | currentSite.DefaultHeader!.GetType() != typeof(DefaultHeader))
+                        if (currentSite.Header == null | currentSite.Header!.GetType() != typeof(DefaultHeader))
                         {
-                            currentSite.DefaultHeader = new DefaultHeader();
+                            currentSite.Header = new DefaultHeader();
                         }
                         //if(currentSite.WebSettings.HeaderList.Value.ViewTemplate == )
                     }
+                    else if (currentSite.WebSettings.HeaderList.Id == "Headers/_BiLevelHeader")
+                    {
+                        if (currentSite.Header == null | currentSite.Header!.GetType() != typeof(BiLevelHeader))
+                        {
+                            currentSite.Header = new BiLevelHeader();
+                        }
+                    }
                 }
+                    
+                
             });
         }
         #endregion

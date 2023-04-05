@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace CatfishWebExtensions.Models.Sites.Headers
 {
-    [HeaderModel(Name = "Bi-level Header", ViewTemplate = "Header/_BiLevelHeader")]
+    [HeaderModel(Name = "Bi-level Header", ViewTemplate = "Headers/_BiLevelHeader")]
     public class BiLevelHeader : DefaultHeader
     {
         [Field(Title = "Test Value")]
