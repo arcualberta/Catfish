@@ -222,8 +222,16 @@ namespace CatfishWebExtensions
                 var name = att.Name;
                 var viewTemplate = att.ViewTemplate;
             }
-            Assets.Headers.Add(new PartialView("DefaultHeder", "Header/_DefaultHeader"));
-            Assets.Headers.Add(new PartialView("BiLeveleHeader", "Header/_BiLevelHeader"));
+            Assets.Headers.Add(new PartialView("DefaultHeder", "Headers/_DefaultHeader"));
+            Assets.Headers.Add(new PartialView("BiLeveleHeader", "Headers/_BiLevelHeader"));
+
+            var footerAttributes = Assets.GetFooterTypes();
+            foreach (var att in footerAttributes)
+            {
+                var name = att.Name;
+                var viewTemplate = att.ViewTemplate;
+            }
+            Assets.Footers.Add(new PartialView("DefaultFooter", "Footers/_DefaultFooter"));
         }
 
         private static void RegisterHooks()
@@ -233,7 +241,7 @@ namespace CatfishWebExtensions
                 if (site is CatfishWebsite)
                 {
                     var currentSite = site as CatfishWebsite;
-                    if (currentSite.WebSettings.HeaderList.Id == "Header/_DefaultHeader")
+                    if (currentSite.WebSettings.HeaderList.Id == "Headers/_DefaultHeader")
                     {
                         if(currentSite.DefaultHeader == null | currentSite.DefaultHeader!.GetType() != typeof(DefaultHeader))
                         {

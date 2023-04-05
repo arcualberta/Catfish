@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CatfishWebExtensions.Models.Sites.Headers
 {
-    [HeaderModel(Name = "Default Header", ViewTemplate = "Header/_DefaultHeader")]
+    [HeaderModel(Name = "Default Header", ViewTemplate = "Headers/_DefaultHeader")]
     public class DefaultHeader
     {
         [Field(Title = "Header Logo")]

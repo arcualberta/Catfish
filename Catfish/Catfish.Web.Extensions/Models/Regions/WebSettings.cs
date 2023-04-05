@@ -22,6 +22,9 @@ namespace CatfishWebExtensions.Models.Regions
 
         [Field(Title = "Site Header")]
         public DataSelectField<HeaderModelAttribute> HeaderList { get; set; }
-        
+
+        [Field(Title = "Site Footer")]
+        public DataSelectField<FooterModelAttribute> FooterList { get; set; }
+
     }
 }

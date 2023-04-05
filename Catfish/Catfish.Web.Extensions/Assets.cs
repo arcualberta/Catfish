@@ -30,8 +30,25 @@ namespace CatfishWebExtensions
 
             return ret;
         }
+        public static IEnumerable<FooterModelAttribute> GetFooterTypes()
+        {
+            Type t = typeof(FooterModelAttribute);
+            Assembly assemFromType = t.Assembly;
 
-        
+            List<FooterModelAttribute> ret = new List<FooterModelAttribute>();
+
+            foreach (Type type in assemFromType.GetTypes())
+            {
+                foreach (var att in type.GetCustomAttributes(typeof(FooterModelAttribute), true))
+                {
+                    ret.Add(att as FooterModelAttribute);
+                }
+            }
+
+            return ret;
+        }
+
+
     }
 
     public class PartialView
