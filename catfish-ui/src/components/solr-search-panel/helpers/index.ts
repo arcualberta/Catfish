@@ -115,8 +115,22 @@ export function downloadCSV(rows: SolrResultEntry[], fieldDefs: SearchFieldDefin
     rows.forEach((row: SolrResultEntry) => {
         let csv_line = '';
         fieldDefs.forEach(def => {
-            const val = row.data.find(d => d.key === def.name)?.value;
-            csv_line += (val ? val : "") + ',';
+            let val = row.data.find(d => d.key === def.name)?.value;
+            if(!val){
+                //No value is there to add.
+            }
+            else if(typeof val == 'string'){
+                val = (val as string).replace(/"/g, '""') //replace any double quotes with two double quotes
+                csv_line += `"${val}"`
+            }
+            else if(Array.isArray(val)){
+                csv_line += `"${val.join()}"` //Join arrays by commas and append the result as a string value
+            }
+            else{
+                csv_line += val //append the value as is
+            }
+
+            csv_line += ',' //append a comma after appending the value to the csv line
         });
         csv += csv_line.replace(/,\s*$/, '') + '\n';
     });

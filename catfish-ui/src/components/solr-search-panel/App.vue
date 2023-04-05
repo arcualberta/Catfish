@@ -113,6 +113,8 @@ const visible=ref(false);
             <option value="250">250</option>
             <option value="500">500</option>
             <option value="1000">1000</option>
+            <option value="2500">2500</option>
+            <option value="5000">5000</option>
         </select> 
     </div>
     <div v-if="uiMode === eUiMode.Default" class="query-wrapper">
