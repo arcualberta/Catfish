@@ -19,12 +19,5 @@ namespace CatfishWebExtensions.Models.Regions
 
         [Field(Title ="Upload Css File")]
         public Piranha.Extend.Fields.DocumentField CssFile { get; set; }
-
-        [Field(Title = "Site Header")]
-        public DataSelectField<HeaderModelAttribute> HeaderList { get; set; }
-
-        [Field(Title = "Site Footer")]
-        public DataSelectField<FooterModelAttribute> FooterList { get; set; }
-
     }
 }

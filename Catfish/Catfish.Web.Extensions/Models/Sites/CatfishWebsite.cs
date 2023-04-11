@@ -19,10 +19,10 @@ namespace CatfishWebExtensions.Models.Sites
         public WorkflowSettings WorkflowSettings { get; set; }
 
         [Region(Title = "Header Settings", Display = RegionDisplayMode.Setting)]
-        public DefaultHeader? Header { get; set; } = null;
+        public DefaultHeader Header { get; set; } = null;
 
         [Region(Title = "Footer Settings", Display = RegionDisplayMode.Setting)]
-        public DefaultFooter? Footer { get; set; } = null;
+        public DefaultFooter Footer { get; set; } = null;
 
         public CatfishWebsite()
         {

@@ -9,9 +9,9 @@ using System.Xml.Linq;
 namespace CatfishWebExtensions.Models.Sites.Headers
 {
     [HeaderModel(Name = "Bi-level Header", ViewTemplate = "Headers/_BiLevelHeader")]
-    public class BiLevelHeader : DefaultHeader
+    public class UpperLevel : LowerLevel
     {
-        [Field(Title = "Test Value")]
-        public ImageField Value { get; set; }
+        [Field(Title = "Upper Header")]
+        public HtmlField UpperHeader { get; set; }
     }
 }

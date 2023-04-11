@@ -97,9 +97,7 @@ namespace CatfishWebExtensions
             //Registering blocks
             RegisterBlocks();
 
-            RegisterAssets();
-
-            RegisterHooks();
+            
 
             //Google Login
             (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt,
@@ -213,55 +211,28 @@ namespace CatfishWebExtensions
             App.Blocks.Register<Carousel>();
         }
 
-        private static void RegisterAssets()
-        {
+        //private static void RegisterAssets()
+        //{
             
-            var headerAttributes = Assets.GetHeaderTypes();
-            foreach(var att in headerAttributes)
-            {
-                var name = att.Name;
-                var viewTemplate = att.ViewTemplate;
-            }
-            Assets.Headers.Add(new PartialView("DefaultHeder", "Headers/_DefaultHeader"));
-            Assets.Headers.Add(new PartialView("BiLeveleHeader", "Headers/_BiLevelHeader"));
+        //    var headerAttributes = Assets.GetHeaderTypes();
+        //    foreach(var att in headerAttributes)
+        //    {
+        //        var name = att.Name;
+        //        var viewTemplate = att.ViewTemplate;
+        //    }
+        //    Assets.Headers.Add(new PartialView("DefaultHeder", "Headers/_DefaultHeader"));
+        //    Assets.Headers.Add(new PartialView("BiLeveleHeader", "Headers/_BiLevelHeader"));
 
-            var footerAttributes = Assets.GetFooterTypes();
-            foreach (var att in footerAttributes)
-            {
-                var name = att.Name;
-                var viewTemplate = att.ViewTemplate;
-            }
-            Assets.Footers.Add(new PartialView("DefaultFooter", "Footers/_DefaultFooter"));
-        }
+        //    var footerAttributes = Assets.GetFooterTypes();
+        //    foreach (var att in footerAttributes)
+        //    {
+        //        var name = att.Name;
+        //        var viewTemplate = att.ViewTemplate;
+        //    }
+        //    Assets.Footers.Add(new PartialView("DefaultFooter", "Footers/_DefaultFooter"));
+        //}
 
-        private static void RegisterHooks()
-        {
-            App.Hooks.SiteContent.RegisterOnLoad((site) => {
-
-                
-                    var currentSite = site as CatfishWebsite;
-                if(currentSite != null)
-                {
-                    if (currentSite.WebSettings.HeaderList.Id == "Headers/_DefaultHeader")
-                    {
-                        if (currentSite.Header == null | currentSite.Header!.GetType() != typeof(DefaultHeader))
-                        {
-                            currentSite.Header = new DefaultHeader();
-                        }
-                        //if(currentSite.WebSettings.HeaderList.Value.ViewTemplate == )
-                    }
-                    else if (currentSite.WebSettings.HeaderList.Id == "Headers/_BiLevelHeader")
-                    {
-                        if (currentSite.Header == null | currentSite.Header!.GetType() != typeof(BiLevelHeader))
-                        {
-                            currentSite.Header = new BiLevelHeader();
-                        }
-                    }
-                }
-                    
-                
-            });
-        }
+        
         #endregion
     }
 }
