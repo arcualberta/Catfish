@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace CatfishWebExtensions.Models.Sites.Footers
 {
-    public class DefaultFooter : UpperLevel
+    public class UpperLevel : LowerLevel
     {
-        
+        [Field(Title = "Upper Footer")]
+        public HtmlField UpperFooter { get; set; }
     }
 }
