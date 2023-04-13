@@ -1,23 +1,31 @@
 ﻿@model CatfishWebExtensions.Models.Sites.Footers.DefaultFooter
 
 @{
-    var upperFooter = Model.UpperFooter;
-    var logo = Model.Logo.Media.PublicUrl;
-    var footerTitle = Model.FooterTitle;
-    var copyright = Model.Copyright;
+    var upperFooter = Model?.UpperFooter;
+    var logo = Model?.Logo.Media.PublicUrl;
+    var footerTitle = Model?.FooterTitle;
+    var copyright = Model?.Copyright;
     if (logo.StartsWith("~"))
     {
         logo = logo.Substring(1);
     }
 }
 <div class="upper-footer">
-    @Html.Raw(upperFooter)
+    @if(upperFooter != null)
+    {
+        @Html.Raw(upperFooter)
+    }
+    
 </div>
 <div class="lower-footer row">
+    @if(footerTitle != null)
+    {
     <div class="col-sm-4">
         @copyright
     </div>
     <div class="col-sm-8">
-       <img src=@logo class="site-logo"><span class="site-logo">@footerTitle</span> 
+        <img src=@logo class="site-logo"><span class="site-logo">@footerTitle</span> 
     </div>
+    }
+    
 </div>
