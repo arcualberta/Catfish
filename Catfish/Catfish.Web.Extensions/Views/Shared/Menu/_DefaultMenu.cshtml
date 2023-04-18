@@ -50,7 +50,7 @@
     </ul>
 </div>
 
-@if(loginLinkPosition == eLoginLinkPosition.Header && (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin))
+@if(loginLinkPosition == eLoginLinkPosition.Header  && (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin))
 {
     <div class="signinout">
         @if (User.IsInRole("SysAdmin"))
@@ -67,4 +67,13 @@
             <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
         }
     </div>
+}
+@if(loginLinkPosition == eLoginLinkPosition.None && User.Identity.IsAuthenticated)
+{
+    @if (User.IsInRole("SysAdmin"))
+        {
+            <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager/login/auth'"><span class="fa fa-table"> Dashboard</span></button>
+        }
+    var url = string.Format("{0}/logout", siteRoot);
+    <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
 }
