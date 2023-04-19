@@ -2,10 +2,10 @@
 
 @{
     var upperFooter = Model?.UpperFooter;
-    var logo = Model?.Logo.Media.PublicUrl;
+    var logo = Model?.Logo?.Media?.PublicUrl;
     var footerTitle = Model?.FooterTitle;
     var copyright = Model?.Copyright;
-    if (logo.StartsWith("~"))
+    if (!string.IsNullOrEmpty(logo) && logo.StartsWith("~"))
     {
         logo = logo.Substring(1);
     }
