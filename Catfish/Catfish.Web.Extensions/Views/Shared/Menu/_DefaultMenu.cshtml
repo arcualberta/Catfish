@@ -34,7 +34,7 @@
     <span class="navbar-toggler-icon"></span>
 </button>
 <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav menu-bar">
         @foreach (var item in (await WebApp.Site.Sitemap.ForUserAsync(User, Auth)).Where(i => !i.IsHidden))
         {
             if(item.Items.Where(it => !it.IsHidden).Any()){
@@ -42,7 +42,7 @@
             }else {
                 var highlight = item.Id == WebApp.PageId ? "active" : "";
                 <li class="nav-item @highlight">
-                    <a class="btn nav-link"  role="button" aria-expanded="false" href="@WebApp.Url(item)">@item.MenuTitle</a>
+                    <a class="btn nav-link nav-color"  role="button" aria-expanded="false" href="@WebApp.Url(item)">@item.MenuTitle</a>
                 </li>
                 
             }
