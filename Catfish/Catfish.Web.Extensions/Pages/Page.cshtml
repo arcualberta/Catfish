@@ -29,7 +29,7 @@
     @foreach (var block in Model.Data.Blocks)
     {
         <div class="block @block.CssName()">
-            <div class="container">
+            <div class="container" style="padding: 0;">
                 @Html.DisplayFor(m => block, block.GetType().Name)
             </div>
         </div>
