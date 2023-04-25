@@ -11,7 +11,7 @@
     var blockDivId = $"carousel-{Model.Id.ToString()}";
 }
 
-<div id="@blockDivId" class="carousel slide @Model.CssClasses" data-ride="carousel">
+<div id="@blockDivId" class="carousel slide @Model.CssClasses.Value" data-ride="carousel">
     <ol class="carousel-indicators">
         @for(int i=0; i<Model.Items.Count; ++i)
         {
