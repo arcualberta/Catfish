@@ -26,12 +26,24 @@
     
     @if(siteTitle != null)
     {
-    <div class="row">
-        <div class="header-logo">
-            <a class="site-title" href=@siteURL.Value title=@title.Value>
+    <div class="row header-color">
+        <div class="col-sm-3">
+            <div class="header-logo">
+                <a class="site-title" href=@siteURL.Value title=@title.Value>
                 <img src=@imgUrl>
-                <span >@siteTitle</span>
             </a>
+                
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="faculty-name">
+                <a class="site-faculty-title" href="https://www.ualberta.ca/arts/index.html">
+                Faculty of Arts</a>
+            </div>
+            <div class="related-sites-title">
+                <span >@siteTitle</span>
+            </div>
+            
         </div>
     </div>
     }
