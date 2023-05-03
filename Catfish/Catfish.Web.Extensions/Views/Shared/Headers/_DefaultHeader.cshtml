@@ -8,6 +8,8 @@
 @{
     var currentSite = await WebApp.Site.GetContentAsync<CatfishWebExtensions.Models.Sites.CatfishWebsite>();
     var imgUrl = Model?.Logo?.Media?.PublicUrl;
+    var faculty = Model?.Faculty;
+    var facultyUrl = Model?.FacultyURL;
     var title = Model?.Title;
     var siteTitle = Model?.SiteTitle;
     var upperLevel = Model?.UpperHeader;
@@ -26,8 +28,8 @@
     
     @if(siteTitle != null)
     {
-    <div class="row header-color">
-        <div class="col-sm-3">
+    <div class="row">
+        <div class="div-logo">
             <div class="header-logo">
                 <a class="site-title" href=@siteURL.Value title=@title.Value>
                 <img src=@imgUrl>
@@ -35,10 +37,10 @@
                 
             </div>
         </div>
-        <div class="col-sm-9">
+        <div class="div-title">
             <div class="faculty-name">
-                <a class="site-faculty-title" href="https://www.ualberta.ca/arts/index.html">
-                Faculty of Arts</a>
+                <a class="site-faculty-title" href=@facultyUrl.Value>
+                @faculty</a>
             </div>
             <div class="related-sites-title">
                 <span >@siteTitle</span>

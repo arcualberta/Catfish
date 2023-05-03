@@ -11,6 +11,12 @@ namespace CatfishWebExtensions.Models.Sites.Headers
         [Field(Title = "Header Logo")]
         public ImageField Logo { get; set; }
 
+        [Field(Title = "Faculty")]
+        public TextField Faculty { get; set; }
+
+        [Field(Title = "Faculty URL")]
+        public TextField FacultyURL { get; set; }
+
         [Field(Title = "Title")]
         public TextField Title { get; set; }
 
