@@ -7,13 +7,13 @@ using static CatfishWebExtensions.Constants.Enums;
 
 namespace CatfishWebExtensions.Models.Blocks
 {
-    [BlockType(Name = "Carousel Slide", Category = "Content", Icon = "fas fa-window-maximize")]
-    public class CarouselSlide : Block
+    [BlockType(Name = "Slide", Category = "Content", Icon = "fas fa-window-maximize")]
+    public class Slide : Block
     {
         public ImageField Image { get; set; }
         public StringField Title { get; set; }
         public HtmlField Content { get; set; }
-        public SelectField<eCarouselLayout> Layout { get; set; }
+        public SelectField<eSlideLayout> Layout { get; set; }
 
     }
 }

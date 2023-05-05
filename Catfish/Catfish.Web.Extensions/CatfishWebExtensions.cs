@@ -207,7 +207,7 @@ namespace CatfishWebExtensions
             App.Blocks.Register<FormBuilder>();
 
             //Carousel
-            App.Blocks.Register<CarouselSlide>();
+            App.Blocks.Register<Slide>();
             App.Blocks.Register<Carousel>();
         }
 

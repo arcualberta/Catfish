@@ -23,20 +23,12 @@
         @for(int i=0; i<Model.Items.Count; ++i){
 
             var item = Model.Items[i];
-            if (item is CarouselSlide)
+            if (item is Slide)
             {
                 var viewData = new ViewDataDictionary(this.ViewData);
                 viewData.Add("index", i);
-                var slide = item as CarouselSlide;
-                switch (slide.Layout.Value)
-                {
-                    case eCarouselLayout.Slide: <partial name="DisplayTemplates/CarouselSlides/Slide" model="@slide" view-data="@viewData" />
-                    break;
-                    case eCarouselLayout.Overlay: <partial name="DisplayTemplates/CarouselSlides/Overlay" model="@slide" view-data="@viewData" />
-                    break;
-                    case eCarouselLayout.SideBySide: <partial name="DisplayTemplates/CarouselSlides/SideBySide" model="@slide" view-data="@viewData" />
-                    break;
-                }
+                var slide = item as Slide;
+               <partial name="DisplayTemplates/SlideTemplates/Slide" model="@slide" view-data="@viewData" />
             }
         }
      </div>
@@ -50,6 +42,4 @@
     </a>
 </div>
 
-@*<script src='https://kit.fontawesome.com/a076d05399.js' ></script>
 
-*@
