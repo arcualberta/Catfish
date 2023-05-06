@@ -1,0 +1,46 @@
+﻿@using static CatfishWebExtensions.Constants.Enums
+@model CatfishWebExtensions.Models.Blocks.Slide
+@{
+    var url = Model?.Image?.Media.PublicUrl;
+    var content = Model?.Content.Value;
+    var title = Model?.Title.Value;
+    if (url.StartsWith("~"))
+    {
+        url = url.Substring(1);
+    }
+    int? index = ViewData["index"] as int?;
+    string isActive = index == 0 ? "active" : "";
+}
+<div class="carousel-item @isActive">
+    <div class="row">
+        @if(Model.Layout.Value == eSlideLayout.TextBottom)
+        {
+        <div >
+            <div class="std-img" style="background-image: url(@url)"></div>
+        </div>
+        <div>
+            <div class="slide-title">
+                @title
+            </div>
+            <div class="slide-content">
+                @Html.Raw(content)
+            </div>
+        </div>
+        }
+        else if(Model.Layout.Value == eSlideLayout.TextTop)
+        {
+            <div>
+                <div class="slide-title">
+                    @title
+                </div>
+                <div class="slide-content">
+                    @Html.Raw(content)
+                </div>
+            </div>
+            <div>
+                <div class="std-img" style="background-image: url(@url)"></div>
+            </div>
+        }
+
+    </div>
+</div>
