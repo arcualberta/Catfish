@@ -4,6 +4,7 @@
     var url = Model?.Image?.Media.PublicUrl;
     var content = Model?.Content.Value;
     var title = Model?.Title.Value;
+    var link = Model?.Link;
     if (url.StartsWith("~"))
     {
         url = url.Substring(1);
@@ -19,10 +20,17 @@
             <div class="std-img" style="background-image: url(@url)"></div>
         </div>
         <div>
-            <div class="slide-title">
-                @title
+            <div class="container slide-title">
+                @if(link != null)
+            {
+                <h5><a href=@link.Value>@title</a></h5>
+            }
+            else
+            {
+                <h5>@title</h5>
+            }
             </div>
-            <div class="slide-content">
+            <div class="container slide-content">
                 @Html.Raw(content)
             </div>
         </div>
@@ -30,10 +38,17 @@
         else if(Model.Layout.Value == eSlideLayout.TextTop)
         {
             <div>
-                <div class="slide-title">
-                    @title
+                <div class="container slide-title">
+                    @if(link != null)
+            {
+                <h5><a href=@link.Value>@title</a></h5>
+            }
+            else
+            {
+                <h5>@title</h5>
+            }
                 </div>
-                <div class="slide-content">
+                <div class="container slide-content">
                     @Html.Raw(content)
                 </div>
             </div>

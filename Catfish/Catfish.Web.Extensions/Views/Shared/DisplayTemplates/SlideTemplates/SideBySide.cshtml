@@ -1,9 +1,10 @@
 ﻿@model CatfishWebExtensions.Models.Blocks.Slide
 
 @{
-    var url = Model.Image.Media.PublicUrl;
-    var content = Model.Content.Value;
+    var url = Model?.Image?.Media?.PublicUrl;
+    var content = Model?.Content.Value;
     var title = Model?.Title.Value;
+    var link = Model?.Link;
     if (url.StartsWith("~"))
     {
         url = url.Substring(1);
@@ -18,7 +19,14 @@
         </div>
         <div class="col-xs-12 col-md-7 article-desc">
             <div>
-                @title
+            @if(link != null)
+            {
+                <h5><a href=@link.Value>@title</a></h5>
+            }
+            else
+            {
+                <h5>@title</h5>
+            }
             </div>
             <div>
                 @Html.Raw(content)
