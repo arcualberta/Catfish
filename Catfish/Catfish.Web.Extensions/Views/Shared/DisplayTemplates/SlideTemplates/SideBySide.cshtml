@@ -1,4 +1,5 @@
-﻿@model CatfishWebExtensions.Models.Blocks.Slide
+﻿@using static CatfishWebExtensions.Constants.Enums
+@model CatfishWebExtensions.Models.Blocks.Slide
 
 @{
     var url = Model?.Image?.Media?.PublicUrl;
@@ -12,7 +13,9 @@
     int? index = ViewData["index"] as int?;
     string isActive = index == 0 ? "active" : "";
 }
-<div class="carousel-item @isActive">
+@if(Model.Usage.Value == eUsage.Carousel)
+{
+    <div class="carousel-item @isActive">
     <div class="row">
         <div class="hidden-xs hidden-sm col-md-5">
             <div class="std-img" style="background-image: url(@url)"></div>
@@ -33,4 +36,29 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
+}
+else if(Model.Usage.Value == eUsage.Content)
+{
+    <div class="row">
+        <div class="hidden-xs hidden-sm col-md-5">
+            <div class="std-img" style="background-image: url(@url)"></div>
+        </div>
+        <div class="col-xs-12 col-md-7 article-desc">
+            <div>
+            @if(link != null)
+            {
+                <h5><a href=@link.Value>@title</a></h5>
+            }
+            else
+            {
+                <h5>@title</h5>
+            }
+            </div>
+            <div>
+                @Html.Raw(content)
+            </div>
+        </div>
+    </div>
+}
+

@@ -8,6 +8,12 @@ namespace CatfishWebExtensions.Constants
 {
     public class Enums
     {
+        public enum eUsage
+        {
+            Carousel = 0,
+            Content
+
+        }
         public enum eSlideLayout
         {
             ImageOnly = 0,

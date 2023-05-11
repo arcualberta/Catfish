@@ -14,6 +14,7 @@ namespace CatfishWebExtensions.Models.Blocks
         public StringField Title { get; set; }
         public StringField Link { get; set; }
         public HtmlField Content { get; set; }
+        public SelectField<eUsage> Usage { get; set; }
         public SelectField<eSlideLayout> Layout { get; set; }
     }
 }

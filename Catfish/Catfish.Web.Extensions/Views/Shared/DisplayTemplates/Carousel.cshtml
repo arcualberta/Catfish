@@ -28,7 +28,7 @@
                 var viewData = new ViewDataDictionary(this.ViewData);
                 viewData.Add("index", i);
                 var slide = item as Slide;
-               <partial name="DisplayTemplates/SlideTemplates/Slide" model="@slide" view-data="@viewData" />
+               <partial name="DisplayTemplates/Slide" model="@slide" view-data="@viewData" />
             }
         }
      </div>
