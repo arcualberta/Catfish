@@ -67,44 +67,39 @@ else if (Model.Usage.Value == eUsage.Content)
 {
     @if(Model.Layout.Value == eSlideLayout.TextBottom)
         {
-        <div >
+        <div class="card text-center">
             <div class="std-img" style="background-image: url(@url)"></div>
-        </div>
-        <div>
-            <div class="container slide-title">
-                @if(link != null)
+            <div class="card-body">
+            @if(link != null)
             {
-                <h5><a href=@link.Value>@title</a></h5> 
+                <h5 class="card-title"><a href=@link.Value>@title</a></h5> 
             }
             else
             {
-                <h5>@title</h5>
+                <h5 class="card-title">@title</h5>
             }
-            </div>
-            <div class="container slide-content">
-                @Html.Raw(content)
+            <p class="card-text">@Html.Raw(content)</p>
+            <a href="#" class="btn btn-primary">...</a>
             </div>
         </div>
         }
         else if(Model.Layout.Value == eSlideLayout.TextTop)
         {
-            <div>
-                <div class="container slide-title">
-                    @if(link != null)
+            <div class="card text-center">
+            
+            <div class="card-body">
+            @if(link != null)
             {
-                <h5><a href=@link.Value>@title</a></h5>
+                <h5 class="card-title"><a href=@link.Value>@title</a></h5> 
             }
             else
             {
-                <h5>@title</h5>
+                <h5 class="card-title">@title</h5>
             }
-                </div>
-                <div class="container slide-content">
-                    @Html.Raw(content)
-                </div>
+            <p class="card-text">@Html.Raw(content)</p>
+            <a href="#" class="btn btn-primary">...</a>
             </div>
-            <div>
-                <div class="std-img" style="background-image: url(@url)"></div>
-            </div>
+            <div class="std-img" style="background-image: url(@url)"></div>
+        </div>
         }
 }
