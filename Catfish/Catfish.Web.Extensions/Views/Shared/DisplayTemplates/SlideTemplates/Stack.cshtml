@@ -1,12 +1,12 @@
 ﻿@using static CatfishWebExtensions.Constants.Enums
 @model CatfishWebExtensions.Models.Blocks.Slide
 @{
-    var url = Model?.Image?.Media.PublicUrl;
+    var url = Model?.Image?.Media?.PublicUrl;
     var content = Model?.Content.Value;
     var title = Model?.Title.Value;
     var link = Model?.Link;
     var usage = Model?.Usage;
-    if (url.StartsWith("~"))
+    if (url != null && url.StartsWith("~"))
     {
         url = url.Substring(1);
     }
@@ -19,28 +19,32 @@
     <div class="row">
         @if(Model.Layout.Value == eSlideLayout.TextBottom)
         {
-        <div >
-            <div class="std-img" style="background-image: url(@url)"></div>
-        </div>
-        <div>
-            <div class="container slide-title">
+            if(url != null)
+            {
+                <div class="img-wrapper">
+                    <div class="std-img" style="background-image: url(@url)"></div>
+                </div> 
+            }
+               
+            <div class="content-wrapper">
+                <div class="container slide-title">
                 @if(link != null)
-            {
-                <h5><a href=@link.Value>@title</a></h5> 
-            }
-            else
-            {
-                <h5>@title</h5>
-            }
+                {
+                    <h5><a href=@link.Value>@title</a></h5> 
+                }
+                else
+                {
+                    <h5>@title</h5>
+                }
+                </div>
+                <div class="container slide-content">
+                    @Html.Raw(content)
+                </div>
             </div>
-            <div class="container slide-content">
-                @Html.Raw(content)
-            </div>
-        </div>
         }
         else if(Model.Layout.Value == eSlideLayout.TextTop)
         {
-            <div>
+            <div class="content-wrapper">
                 <div class="container slide-title">
                     @if(link != null)
             {
@@ -55,7 +59,7 @@
                     @Html.Raw(content)
                 </div>
             </div>
-            <div>
+            <div class="img-wrapper">
                 <div class="std-img" style="background-image: url(@url)"></div>
             </div>
         }
@@ -68,7 +72,7 @@ else if (Model.Usage.Value == eUsage.Content)
     @if(Model.Layout.Value == eSlideLayout.TextBottom)
         {
         <div class="card text-center">
-            <div class="std-img" style="background-image: url(@url)"></div>
+            <img class="std-img" src="@url" style="border-radius: 300px;">
             <div class="card-body">
             @if(link != null)
             {
@@ -79,7 +83,7 @@ else if (Model.Usage.Value == eUsage.Content)
                 <h5 class="card-title">@title</h5>
             }
             <p class="card-text">@Html.Raw(content)</p>
-            <a href="#" class="btn btn-primary">...</a>
+            @*<a href="#" class="btn btn-primary">...</a>*@
             </div>
         </div>
         }
@@ -97,9 +101,9 @@ else if (Model.Usage.Value == eUsage.Content)
                 <h5 class="card-title">@title</h5>
             }
             <p class="card-text">@Html.Raw(content)</p>
-            <a href="#" class="btn btn-primary">...</a>
+            @*<a href="#" class="btn btn-primary">...</a>*@
             </div>
-            <div class="std-img" style="background-image: url(@url)"></div>
+            <img class="std-img" src="@url" style="border-radius: 300px;">
         </div>
         }
 }

@@ -2,8 +2,8 @@
 @model CatfishWebExtensions.Models.Blocks.Slide
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
-    var url = Model.Image.Media.PublicUrl;
-    if (url.StartsWith("~"))
+    var url = Model?.Image?.Media?.PublicUrl;
+    if (url!= null && url.StartsWith("~"))
     {
         url = url.Substring(1);
     }
