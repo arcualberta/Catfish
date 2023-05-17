@@ -6,11 +6,19 @@ using System.Threading.Tasks;
 
 namespace CatfishWebExtensions.Models.Blocks
 {
-    [BlockGroupType(Name = "Archive Preview", Category = "Content", Icon = "fas fa-archive")]
+    [BlockType(Name = "Archive Preview", Category = "Content", Icon = "fas fa-archive")]
     public class ArchivePreview : Block
     {
-        public StringField ArchiveId { get; set; }
+        [Display(Name = "Css Classes")]
         public StringField CssClasses { get; set; }
+
+        [Display(Name = "Title")]
+        public StringField Title { get; set; }
+
+        [Display(Name = "Archive Id")]
+        public StringField ArchiveId { get; set; }
+
+        [Display(Name = "Post Count")]
         public StringField PostCount { get; set; }
     }
 }
