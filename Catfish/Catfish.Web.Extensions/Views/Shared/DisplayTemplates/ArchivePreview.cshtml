@@ -1,0 +1,22 @@
+﻿@using CatfishWebExtensions.Models
+@model ArchivePage<StandardArchive, Piranha.Models.PostInfo>
+@{
+    var posts = Model.Archive.Posts.Count;
+    bool isCatfishArchive = Model.Data is CatfishArchive;
+    if (isCatfishArchive)
+    {
+       var data = Model.Data as CatfishArchive;
+    }
+}
+<div class="container">
+    <div class="row">
+        @for(var i = 0; i < 3; i++)
+        {
+            var data = Model.Data as CatfishArchive;
+            var post = Model.Archive.Posts[i];
+            <div>
+                Test
+            </div>
+        }
+     </div>
+</div>

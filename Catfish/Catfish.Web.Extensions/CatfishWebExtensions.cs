@@ -209,6 +209,10 @@ namespace CatfishWebExtensions
             //Carousel
             App.Blocks.Register<Slide>();
             App.Blocks.Register<Carousel>();
+
+            //Archive post
+            App.Blocks.Register<ArchivePreview>();
+
         }
 
         //private static void RegisterAssets()
