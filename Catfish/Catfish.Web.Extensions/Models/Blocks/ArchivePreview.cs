@@ -9,6 +9,7 @@ namespace CatfishWebExtensions.Models.Blocks
     [BlockGroupType(Name = "Archive Preview", Category = "Content", Icon = "fas fa-archive")]
     public class ArchivePreview : Block
     {
+        public StringField ArchiveId { get; set; }
         public StringField CssClasses { get; set; }
         public StringField PostCount { get; set; }
     }

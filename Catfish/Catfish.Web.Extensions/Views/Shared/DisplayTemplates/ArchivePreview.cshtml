@@ -1,21 +1,39 @@
 ﻿@using CatfishWebExtensions.Models
-@model ArchivePage<StandardArchive, Piranha.Models.PostInfo>
+@model CatfishWebExtensions.Models.Blocks.ArchivePreview;
+
 @{
-    var posts = Model.Archive.Posts.Count;
-    bool isCatfishArchive = Model.Data is CatfishArchive;
-    if (isCatfishArchive)
+    //TODO: Get the archive ID from the ArivhePriveew block
+    if (string.IsNullOrEmpty(Model.ArchiveId))
     {
-       var data = Model.Data as CatfishArchive;
+        return;
     }
+
+    //TODO: remove the following
+    Model.ArchiveId = "1274935f-526c-465f-acb5-14b7a0320d45"; //Local test page
+
+    var archivePageId = Guid.Parse(Model.ArchiveId);
+
+
+    //TODO: Retrieve the archive page identified by the above ID here using a Piranha APO Call.
+
+    //TODO: retrieve the latest N posts from the archive with the above ID as a list and set it to the following posts variables.
+    var posts = new List<StandardPost>(); 
+
+    //var posts = Model.Archive.Posts.Count;
+    //bool isCatfishArchive = Model.Data is CatfishArchive;
+    //if (isCatfishArchive)
+    //{
+    //   var data = Model.Data as CatfishArchive;
+    //}
 }
+
 <div class="container">
     <div class="row">
-        @for(var i = 0; i < 3; i++)
+        @foreach(var post in posts)
         {
-            var data = Model.Data as CatfishArchive;
-            var post = Model.Archive.Posts[i];
             <div>
-                Test
+                <div>@post.Title</div>
+
             </div>
         }
      </div>
