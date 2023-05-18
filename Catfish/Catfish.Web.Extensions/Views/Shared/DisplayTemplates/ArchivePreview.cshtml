@@ -13,18 +13,20 @@
     //Model.ArchiveId = "1274935f-526c-465f-acb5-14b7a0320d45"; //Local test page
 
     var archivePageId = Guid.Parse(Model.ArchiveId.Value);
-    var postCount = int.Parse(Model.PostCount.Value);
+    if(!int.TryParse(Model.PostCount.Value, out int postCount))
+    {
+        postCount = 3;
+    }
 
     //TODO: Retrieve the archive page identified by the above ID here using a Piranha APO Call.
 
     var page = await WebApp.Api.Pages.GetByIdAsync(archivePageId);
     var archive = await WebApp.Api.Archives.GetByIdAsync<StandardPost>(archivePageId, postCount);
-    var postList = archive.Posts.ToList();
-    var posts = new List<StandardPost>();
-    for (var n = 0; n < postCount; n++)
-    {
-        posts.Add(postList[n]);
-    }
+    var posts = archive.Posts
+        .Where(p => p.IsPublished)
+        .OrderBy(p => p.LastModified)
+        .Take(postCount)
+        .ToList();
 
 }
 
