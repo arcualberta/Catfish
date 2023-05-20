@@ -1,0 +1,57 @@
+﻿@using CatfishWebExtensions.Models
+@inject Piranha.AspNetCore.Services.IApplicationService WebApp
+@model CatfishWebExtensions.Models.Blocks.ArchivePreview;
+
+@{
+    //TODO: Get the archive ID from the ArivhePriveew block
+    if (string.IsNullOrEmpty(Model.ArchiveId))
+    {
+        return;
+    }
+
+    //TODO: remove the following
+    //Model.ArchiveId = "1274935f-526c-465f-acb5-14b7a0320d45"; //Local test page
+
+    var archivePageId = Guid.Parse(Model.ArchiveId.Value);
+    if(!int.TryParse(Model.PostCount.Value, out int postCount))
+    {
+        postCount = 3;
+    }
+
+    //TODO: Retrieve the archive page identified by the above ID here using a Piranha APO Call.
+
+    var page = await WebApp.Api.Pages.GetByIdAsync(archivePageId);
+    var archive = await WebApp.Api.Archives.GetByIdAsync<StandardPost>(archivePageId, postCount);
+    var posts = archive.Posts
+        .Where(p => p.IsPublished)
+        .OrderBy(p => p.LastModified)
+        .Take(postCount)
+        .ToList();
+
+}
+
+
+    <h3 class="col-xs-12">@Model.Title</h3>
+    <div class="row">
+        @foreach(var post in posts)
+        {
+            var imageURL = post?.PrimaryImage?.Media?.PublicUrl;
+            if (imageURL!= null && imageURL.StartsWith("~"))
+            {
+                imageURL = imageURL.Substring(1);
+            }
+            <div class="col-md">
+                <div class="eventDesc">
+                    <div>
+                        <img src="@imageURL" alt="" width="100%" height="100%" />
+                    </div>
+                    <div>
+                        <a class="event-desc-header" href="@post?.Permalink">@post.Title</a> <br />
+                        <p class="event-desc-content">@post?.Excerpt  
+                            <a class="readMore" href="@post?.Permalink"> Read More</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+     </div>

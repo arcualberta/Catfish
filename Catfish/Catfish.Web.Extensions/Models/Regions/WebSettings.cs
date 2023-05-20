@@ -1,4 +1,7 @@
-﻿namespace CatfishWebExtensions.Models.Regions
+﻿using CatfishWebExtensions.Models.Attributes;
+using CatfishWebExtensions.Models.Sites.Headers;
+
+namespace CatfishWebExtensions.Models.Regions
 {
     public class WebSettings
     {

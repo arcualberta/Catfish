@@ -1,11 +1,18 @@
 ﻿using CatfishExtensions.DTO;
 using CatfishExtensions.Interfaces.Auth;
+using CatfishWebExtensions.Models.Attributes;
+using CatfishWebExtensions.Models.Blocks;
+using CatfishWebExtensions.Models.Sites;
 using CatfishWebExtensions.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
+using Piranha.AspNetCore.Services;
+using Piranha.Models;
 using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
+using CatfishWebExtensions.Models.Sites.Headers;
 
 namespace CatfishWebExtensions
 {
@@ -89,6 +96,8 @@ namespace CatfishWebExtensions
 
             //Registering blocks
             RegisterBlocks();
+
+            
 
             //Google Login
             (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt,
@@ -198,15 +207,36 @@ namespace CatfishWebExtensions
             App.Blocks.Register<FormBuilder>();
 
             //Carousel
-            App.Blocks.Register<CarouselSlide>();
+            App.Blocks.Register<Slide>();
             App.Blocks.Register<Carousel>();
+
+            //Archive post
+            App.Blocks.Register<ArchivePreview>();
+
         }
 
-        private static void RegisterAssets()
-        {
-            Assets.Headers.Add(new PartialView("DefaultHeder", "/mypath"));
-        }
+        //private static void RegisterAssets()
+        //{
+            
+        //    var headerAttributes = Assets.GetHeaderTypes();
+        //    foreach(var att in headerAttributes)
+        //    {
+        //        var name = att.Name;
+        //        var viewTemplate = att.ViewTemplate;
+        //    }
+        //    Assets.Headers.Add(new PartialView("DefaultHeder", "Headers/_DefaultHeader"));
+        //    Assets.Headers.Add(new PartialView("BiLeveleHeader", "Headers/_BiLevelHeader"));
 
+        //    var footerAttributes = Assets.GetFooterTypes();
+        //    foreach (var att in footerAttributes)
+        //    {
+        //        var name = att.Name;
+        //        var viewTemplate = att.ViewTemplate;
+        //    }
+        //    Assets.Footers.Add(new PartialView("DefaultFooter", "Footers/_DefaultFooter"));
+        //}
+
+        
         #endregion
     }
 }

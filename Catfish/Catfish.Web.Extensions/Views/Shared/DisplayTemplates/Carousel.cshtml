@@ -1,5 +1,5 @@
-﻿@model CatfishWebExtensions.Blocks.Carousel
-@using CatfishWebExtensions.Blocks;
+﻿@model CatfishWebExtensions.Models.Blocks.Carousel
+@using CatfishWebExtensions.Models.Blocks;
 @using CatfishExtensions.Interfaces;
 @using static CatfishWebExtensions.Constants.Enums
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
@@ -11,7 +11,7 @@
     var blockDivId = $"carousel-{Model.Id.ToString()}";
 }
 
-<div id="@blockDivId" class="carousel slide @Model.CssClasses" data-ride="carousel">
+<div id="@blockDivId" class="carousel slide @Model.CssClasses.Value" data-ride="carousel">
     <ol class="carousel-indicators">
         @for(int i=0; i<Model.Items.Count; ++i)
         {
@@ -23,29 +23,21 @@
         @for(int i=0; i<Model.Items.Count; ++i){
 
             var item = Model.Items[i];
-            if (item is CarouselSlide)
+            if (item is Slide)
             {
                 var viewData = new ViewDataDictionary(this.ViewData);
                 viewData.Add("index", i);
-                var slide = item as CarouselSlide;
-                switch (slide.Layout.Value)
-                {
-                    case eCarouselLayout.Slide: <partial name="DisplayTemplates/CarouselSlides/Slide" model="@slide" view-data="@viewData" />
-                    break;
-                    case eCarouselLayout.Overlay: <partial name="DisplayTemplates/CarouselSlides/Overlay" model="@slide" view-data="@viewData" />
-                    break;
-                    case eCarouselLayout.SideBySide: <partial name="DisplayTemplates/CarouselSlides/SideBySide" model="@slide" view-data="@viewData" />
-                    break;
-                }
+                var slide = item as Slide;
+               <partial name="DisplayTemplates/Slide" model="@slide" view-data="@viewData" />
             }
         }
      </div>
     <a class="carousel-control-prev" href="#@blockDivId" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <i class="fa fa-caret-left fa-4x carousel-icon" aria-hidden="true"></i>
         <span class="sr-only">Previous</span>
     </a>
     <a class="carousel-control-next" href="#@blockDivId" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <i class="fa fa-caret-right fa-4x carousel-icon" aria-hidden="true"></i>
         <span class="sr-only">Next</span>
     </a>
 </div>

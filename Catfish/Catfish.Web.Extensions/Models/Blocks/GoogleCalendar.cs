@@ -1,19 +1,18 @@
-﻿
-namespace CatfishWebExtensions.Blocks
+﻿namespace CatfishWebExtensions.Models.Blocks
 {
     [BlockType(Name = "Google Calendar", Category = "Widgets", Icon = "fas fa-calendar-alt")]
     public class GoogleCalendar : Block
     {
-        [Field(Title = "Title", Description ="Optional title for the calendar")]
+        [Field(Title = "Title", Description = "Optional title for the calendar")]
         public StringField Title { get; set; }
 
-        [Field(Title = "Description", Description ="Optional short description for the calendar")]
+        [Field(Title = "Description", Description = "Optional short description for the calendar")]
         public TextField Description { get; set; }
 
         [Field(Title = "Css Class")]
         public StringField CssClass { get; set; }
 
-        [Field(Title = "Calendar IDs", Description ="You could provide more than one id if you wish, please separate them by a comma")]
+        [Field(Title = "Calendar IDs", Description = "You could provide more than one id if you wish, please separate them by a comma")]
         public StringField CalendarIds { get; set; }
 
         public enum DisplayOptions
@@ -26,7 +25,7 @@ namespace CatfishWebExtensions.Blocks
 
         public string[] getCalendarIds()
         {
-            if(CalendarIds.Value != null)
+            if (CalendarIds.Value != null)
             {
                 return CalendarIds.Value.Split(',');
             }

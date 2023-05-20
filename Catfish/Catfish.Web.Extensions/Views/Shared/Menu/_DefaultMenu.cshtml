@@ -34,7 +34,7 @@
     <span class="navbar-toggler-icon"></span>
 </button>
 <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav menu-bar">
         @foreach (var item in (await WebApp.Site.Sitemap.ForUserAsync(User, Auth)).Where(i => !i.IsHidden))
         {
             if(item.Items.Where(it => !it.IsHidden).Any()){
@@ -42,7 +42,7 @@
             }else {
                 var highlight = item.Id == WebApp.PageId ? "active" : "";
                 <li class="nav-item @highlight">
-                    <a class="btn nav-link"  role="button" aria-expanded="false" href="@WebApp.Url(item)">@item.MenuTitle</a>
+                    <a class="btn nav-link nav-color"  role="button" aria-expanded="false" href="@WebApp.Url(item)">@item.MenuTitle</a>
                 </li>
                 
             }
@@ -50,7 +50,7 @@
     </ul>
 </div>
 
-@if(loginLinkPosition == eLoginLinkPosition.Header && (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin))
+@if(loginLinkPosition == eLoginLinkPosition.Header  && (_catfishAppConfig.IsAllowGoogleLogin() || enabledLocalLogin))
 {
     <div class="signinout">
         @if (User.IsInRole("SysAdmin"))
@@ -67,4 +67,13 @@
             <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
         }
     </div>
+}
+@if(loginLinkPosition == eLoginLinkPosition.None && User.Identity.IsAuthenticated)
+{
+    @if (User.IsInRole("SysAdmin"))
+        {
+            <button class="btn btn-link" onclick="window.location.href='@ConfigHelper.SiteUrl/manager/login/auth'"><span class="fa fa-table"> Dashboard</span></button>
+        }
+    var url = string.Format("{0}/logout", siteRoot);
+    <button id="btnSignOut" class="btn btn-link" onclick="window.location.href = '@url'; return false;"><span class="fa fa-sign-out"> Sign Out</span></button>
 }

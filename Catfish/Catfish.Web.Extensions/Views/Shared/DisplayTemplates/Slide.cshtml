@@ -1,0 +1,27 @@
+﻿@using static CatfishWebExtensions.Constants.Enums
+@model CatfishWebExtensions.Models.Blocks.Slide
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    var url = Model?.Image?.Media?.PublicUrl;
+    if (url!= null && url.StartsWith("~"))
+    {
+        url = url.Substring(1);
+    }
+    int? index = ViewData["index"] as int?;
+}
+ 
+     @switch (Model.Layout.Value)
+        {
+            
+            case eSlideLayout.ImageOnly: <partial name="DisplayTemplates/SlideTemplates/ImageOnly" model="Model" />
+            break;
+            case eSlideLayout.Overlay: <partial name="DisplayTemplates/SlideTemplates/Overlay" model="Model" />
+            break;
+            case eSlideLayout.SideBySide: <partial name="DisplayTemplates/SlideTemplates/SideBySide" model="Model"  />
+            break;
+            case eSlideLayout.TextBottom: <partial name="DisplayTemplates/SlideTemplates/Stack" model="Model"  />
+            break;
+            case eSlideLayout.TextTop: <partial name="DisplayTemplates/SlideTemplates/Stack" model="Model"  />
+            break;
+        }
+          

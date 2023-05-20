@@ -14,5 +14,6 @@ namespace CatfishWebExtensions.Models.Regions
 
         [Field(Title = "Catfish Post Layout")]
         public SelectField<eArchivePostLayout> PostLayout { get; set; }
+
     }
 }
