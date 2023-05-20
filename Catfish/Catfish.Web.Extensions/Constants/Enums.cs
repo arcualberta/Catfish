@@ -8,11 +8,20 @@ namespace CatfishWebExtensions.Constants
 {
     public class Enums
     {
-        public enum eCarouselLayout
+        public enum eUsage
         {
-            Slide = 0,
+            Carousel = 0,
+            Content
+
+        }
+        public enum eSlideLayout
+        {
+            ImageOnly = 0,
             Overlay,
-            SideBySide
+            SideBySide,
+            TextTop,
+            TextBottom
+           
         }
         public enum eArchiveListLayout
         {

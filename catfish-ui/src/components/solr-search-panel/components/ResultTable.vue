@@ -20,38 +20,7 @@ import {toTableData, downloadCSV} from '../helpers'
     const tableData = computed(() => toTableData(props.model.resultEntries, fieldDefs.value, store.activeSelectedResultFieldNames))
 
     const downloadData = () => downloadCSV(props.model.resultEntries, fieldDefs.value)
-/*
-    const getFieldValue=(data: SolrFieldData[], fdkey: string)=>{
-       
-            const flData = data.find((dt)=>{
-                    return dt.key === fdkey
-            }); 
-          return flData? flData.value: "";
-    }
 
-    const downloadCSVData= () => {
-    let csv = '';
-    //header labels
-    fieldDefs.value.forEach(fldef => {
-        csv += fldef.label
-    });
-     //data
-    props.model.resultEntries.forEach((row: SolrResultEntry) => {
-          
-            fieldDefs.value.forEach(fldef => {
-                    
-                    csv += getFieldValue(row.data, fldef.name) + ","
-            });
-            csv += "\n";
-    });
- 
-    const anchor = document.createElement('a');
-    anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-    anchor.target = '_blank';
-    anchor.download = 'showtimesSearchResult.csv';
-    anchor.click();
-}
-*/
 </script>
 
 <template>

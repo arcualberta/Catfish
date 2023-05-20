@@ -1,9 +1,10 @@
-﻿@model CatfishWebExtensions.Blocks.CarouselSlide
+﻿@model CatfishWebExtensions.Models.Blocks.Slide
 
 @{
-    var url = Model.Image.Media.PublicUrl;
-    var title = Model.Title;
-    var content = Model.Content;
+    var url = Model?.Image.Media.PublicUrl;
+    var title = Model?.Title;
+    var content = Model?.Content;
+    var link = Model?.Link;
     if (url.StartsWith("~"))
     {
         url = url.Substring(1);
@@ -15,7 +16,15 @@
     <img class="d-block w-100" src="@url" alt="@Model.Title.Value">
     <div class="carousel-caption d-none d-md-block">
         <div class="overlay-content">
-            <h5>@title</h5>
+            @if(link != null)
+            {
+                <h5><a href=@link.Value>@title</a></h5>
+            }
+            else
+            {
+                <h5>@title</h5>
+            }
+            
             <p>@Html.Raw(content)</p>
         </div>
   </div>

@@ -1,5 +1,4 @@
-﻿
-namespace CatfishWebExtensions.Blocks
+﻿namespace CatfishWebExtensions.Models.Blocks
 {
     [BlockType(Name = "Card", Category = "Content", Icon = "fas fa-window-maximize")]
     public class Card : Block
