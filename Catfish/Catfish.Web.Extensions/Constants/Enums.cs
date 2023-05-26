@@ -23,6 +23,12 @@ namespace CatfishWebExtensions.Constants
             TextBottom
            
         }
+        public enum eImageLayout
+        {
+            Circle = 0,
+            Regular
+
+        }
         public enum eArchiveListLayout
         {
             Block = 0,
