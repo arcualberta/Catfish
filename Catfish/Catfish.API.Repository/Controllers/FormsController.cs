@@ -18,7 +18,7 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms
         [HttpGet]
-        [Authorize(Roles = "SysAdmin")]
+       // [Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<IEnumerable<FormEntry>>> Get()
         {
             if (_context.Forms == null)
@@ -34,7 +34,7 @@ namespace Catfish.API.Repository.Controllers
 
         // GET: api/Forms/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "SysAdmin")]
+        //[Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<FormTemplate>> GetForm(Guid id)
         {
             if (_context.Forms == null)
@@ -54,7 +54,7 @@ namespace Catfish.API.Repository.Controllers
         // PUT: api/Forms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Roles = "SysAdmin")]
+       // [Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> PutForm(Guid id, FormTemplate form)
         {
             if (id != form.Id)
@@ -116,7 +116,7 @@ namespace Catfish.API.Repository.Controllers
 
         // DELETE: api/Forms/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "SysAdmin")]
+        //[Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (_context.Forms == null)
