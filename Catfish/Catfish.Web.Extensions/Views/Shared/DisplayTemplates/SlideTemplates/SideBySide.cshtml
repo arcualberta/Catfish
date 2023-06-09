@@ -6,6 +6,7 @@
     var content = Model?.Content.Value;
     var title = Model?.Title.Value;
     var link = Model?.Link;
+    var imageLayout = Model?.ImageLayout.Value;
     if (url.StartsWith("~"))
     {
         url = url.Substring(1);
@@ -42,7 +43,15 @@ else if(Model.Usage.Value == eUsage.Content)
 {
     <div class="row">
         <div class="hidden-xs hidden-sm col-md-5">
-            <div class="std-img" style="background-image: url(@url)"></div>
+            @if(imageLayout == eImageLayout.Circle)
+            {
+                <div class="std-img" style="background-image: url(@url)"></div>
+            }
+            else
+            {
+                <img src="@url" class="reg-img"/>
+            }
+            
         </div>
         <div class="col-xs-12 col-md-7 article-desc">
             <div>

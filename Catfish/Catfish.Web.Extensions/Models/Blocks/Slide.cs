@@ -16,5 +16,7 @@ namespace CatfishWebExtensions.Models.Blocks
         public HtmlField Content { get; set; }
         public SelectField<eUsage> Usage { get; set; }
         public SelectField<eSlideLayout> Layout { get; set; }
+        [Display(Name = "Image Layout")]
+        public SelectField<eImageLayout> ImageLayout { get; set; }
     }
 }
