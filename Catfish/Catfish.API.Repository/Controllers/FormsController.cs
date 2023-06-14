@@ -136,7 +136,7 @@ namespace Catfish.API.Repository.Controllers
             return Ok();
         }
         [HttpPost("change-state/{id}")]
-        [Authorize(Roles = "SysAdmin")]
+        //[Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
         {
             if (_context.Forms == null)
