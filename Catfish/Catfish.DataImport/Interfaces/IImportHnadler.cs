@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Catfish.DataImport.Interfaces
 {
-    internal interface IImportHnadler
+    public interface IImportHnadler
     {
+        public void Execute();
     }
 }
