@@ -27,6 +27,7 @@ namespace CatfishExtensions.Helpers
         eLoginLinkPosition GetLoginLinkPosition();
         string GetSmtpEmail();
         string GetSmtpServer();
+        string GetMeisLogo();
         public class ReadAppConfiguration : ICatfishAppConfiguration
         {
             private readonly IConfiguration _configuration;
@@ -126,6 +127,10 @@ namespace CatfishExtensions.Helpers
             public string GetSmtpServer()
             {
                 return _configuration["EmailServer:SmtpServer"];
+            }
+            public string GetMeisLogo()
+            {
+                return _configuration["SiteConfig:MEISLogoPath"];
             }
         }
     }
