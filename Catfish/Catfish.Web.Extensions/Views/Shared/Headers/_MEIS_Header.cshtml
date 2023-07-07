@@ -8,13 +8,13 @@
 @{
     var currentSite = await WebApp.Site.GetContentAsync<CatfishWebExtensions.Models.Sites.CatfishWebsite>();
     var imgUrl = Model?.Logo?.Media?.PublicUrl;
+    var sideLogoUrl = Model?.SideLogo?.Media?.PublicUrl;
     var faculty = Model?.Faculty;
     var facultyUrl = Model?.FacultyURL;
     var title = Model?.Title;
     var siteTitle = Model?.SiteTitle;
     var upperLevel = Model?.UpperHeader;
     var siteURL = Model?.SiteURL;
-    var meisLogo = "/uploads/3f24fa36-2537-46a3-b01b-89bfba40a1eb/MeisLogo.png";//_catfishAppConfig.GetMeisLogo();
     if (!string.IsNullOrEmpty(imgUrl) && imgUrl.StartsWith("~"))
     {
         imgUrl = imgUrl.Substring(1);
@@ -48,7 +48,7 @@
             </div>
         </div>
         <div class="meis-logo">
-                <img src=@meisLogo alt="" width="121px" height="66px" /><span class="meis-title">Middle Eastern and Islamic Studies</span>
+                <img src=@sideLogoUrl />
             </div>
     </div>
     }
