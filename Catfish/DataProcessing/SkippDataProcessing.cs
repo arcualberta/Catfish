@@ -43,6 +43,8 @@ namespace DataProcessing
         {
             _testHelper = new TestHelper();
         }
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.SkippDataProcessing.ImportData
         [Fact]
         public async Task ImportData()
         {
