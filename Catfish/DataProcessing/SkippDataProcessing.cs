@@ -44,7 +44,7 @@ namespace DataProcessing
             _testHelper = new TestHelper();
         }
         [Fact]
-        public void ImportData()
+        public async Task ImportData()
         {
             int rowCount = 1;
             bool headerRow = true;
@@ -67,7 +67,10 @@ namespace DataProcessing
                 }
 
                 SolrDoc solrDoc = new SolrDoc();
+                solrDocs.Add(solrDoc);
+
                 solrDoc.AddId(Guid.NewGuid().ToString());
+
                 for (int i = 0; i < row.Values.Count; ++i)
                 {
                     string colHeading = colHeadings[i];
@@ -78,7 +81,8 @@ namespace DataProcessing
 
                     if (colHeading == "Timestamp")
                     {
-                        solrDoc.AddField(TIMESTAMP, colValue);
+                        if(DateTime.TryParse(colValue, out DateTime timestamp))
+                            solrDoc.AddField(TIMESTAMP, timestamp.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
                     }
                     else if (colHeading == "Email Address")
@@ -158,12 +162,12 @@ namespace DataProcessing
                         solrDoc.AddField($"data_{FORM_ID}_{ROLES}_ts", colValue);
                     }
                     
+                    
 
                 }
-                solrDocs.Add(solrDoc);
-                solrService.Index(solrDocs);
-                solrService.CommitAsync();
             }
+            await solrService.Index(solrDocs);
+            await solrService.CommitAsync();
         }
         public List<RowData> ReadGoogleSheet()
         {

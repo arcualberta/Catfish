@@ -66,7 +66,7 @@ namespace Catfish.API.Repository.Services
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
             using var content = new StringContent(payloadXmlString, Encoding.UTF8, "text/xml");
-            using var httpResponse = await _httpClient.PostAsync(uri, content).ConfigureAwait(false);
+            using var httpResponse = await _httpClient.PostAsync(uri, content);
 
             httpResponse.EnsureSuccessStatusCode();
         }
