@@ -38,6 +38,9 @@ namespace DataProcessing
         private readonly Guid ADDITIONAL_KEYWORDS = Guid.Parse("aeaf264c-06e0-7bec-1073-832cbdb88bca");
         //private readonly Guid SOCIAL_MEDIA = Guid.Parse("");
         private readonly Guid ADITIONAL_CONTACT = Guid.Parse("260bedf2-ef68-c0be-be4b-e0e98ddcaf65");
+        private readonly Guid UNDERSTAND = Guid.Parse("4e030a3d-818c-9c3a-00cf-6be47a8dfc6e");
+        private readonly Guid CONSENT = Guid.Parse("a9ca2955-352d-e5f5-2901-3bcf0a2cb721");
+        private readonly Guid AGREE = Guid.Parse("232a1241-949d-e430-7deb-cd3fa1011b72");
         private readonly string TIMESTAMP = "TimeStamp_dt";
         public SkippDataProcessing()
         {
@@ -137,11 +140,12 @@ namespace DataProcessing
                     }
                     else if (colHeading == "Where are they located")
                     {
-                        solrDoc.AddField($"data_{FORM_ID}_{LOCATION}_ts", colValue);
+                        solrDoc.AddField($"data_{FORM_ID}_{LOCATION}_ts", SplitWords(colValue, ";"));
                     }
                     else if (colHeading == "What theme(s) does your research fall under")
                     {
-                        solrDoc.AddField($"data_{FORM_ID}_{THEME}_ts", colValue);
+                        
+                        solrDoc.AddField($"data_{FORM_ID}_{THEME}_ts", SplitWords(colValue, ","));
                     }
                     else if (colHeading == "Please briefly describe your current or recent research project(s)")
                     {
@@ -149,7 +153,7 @@ namespace DataProcessing
                     }
                     else if (colHeading == "Research keywords")
                     {
-                        solrDoc.AddField($"data_{FORM_ID}_{ADDITIONAL_KEYWORDS}_ts", colValue);
+                        solrDoc.AddField($"data_{FORM_ID}_{ADDITIONAL_KEYWORDS}_ts", SplitWords(colValue, ";"));
                     }
                     else if (colHeading == "Who initiated your research project")
                     {
@@ -163,13 +167,29 @@ namespace DataProcessing
                     {
                         solrDoc.AddField($"data_{FORM_ID}_{ROLES}_ts", colValue);
                     }
-                    
-                    
+                    else if (colHeading == "understand")
+                    {
+                        solrDoc.AddField($"data_{FORM_ID}_{UNDERSTAND}_ts", colValue);
+                    }
+                    else if (colHeading == "consent")
+                    {
+                        solrDoc.AddField($"data_{FORM_ID}_{CONSENT}_ts", colValue);
+                    }
+                    else if (colHeading == "agree")
+                    {
+                        solrDoc.AddField($"data_{FORM_ID}_{AGREE}_ts", colValue);
+                    }
+
+
 
                 }
             }
             await solrService.Index(solrDocs);
             await solrService.CommitAsync();
+        }
+        private string[] SplitWords(string val, string seperator)
+        {
+          return val.Split(seperator, StringSplitOptions.RemoveEmptyEntries).Select(k => k.Trim()).ToArray();
         }
         public List<RowData> ReadGoogleSheet()
         {
