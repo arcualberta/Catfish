@@ -103,6 +103,10 @@
     </div>
     -->
     <hr />
+
+    <div class="alert alert-info">
+        {{ store.form }}
+    </div>
    
 
 </template>

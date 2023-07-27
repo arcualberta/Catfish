@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProcessing", "DataProce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.API.Auth", "Catfish.API.Auth\Catfish.API.Auth.csproj", "{8DC6E53D-43FA-405F-A77F-720C45F51481}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish.DataImport", "Catfish.DataImport\Catfish.DataImport.csproj", "{1CE3A72D-16F9-465F-9232-58F1BDCD2CEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{8DC6E53D-43FA-405F-A77F-720C45F51481}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DC6E53D-43FA-405F-A77F-720C45F51481}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DC6E53D-43FA-405F-A77F-720C45F51481}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CE3A72D-16F9-465F-9232-58F1BDCD2CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CE3A72D-16F9-465F-9232-58F1BDCD2CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CE3A72D-16F9-465F-9232-58F1BDCD2CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CE3A72D-16F9-465F-9232-58F1BDCD2CEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -24,7 +24,7 @@ namespace Catfish.API.Repository.Controllers
         }
         // GET: api/<EntityTemplateController>
         [HttpGet]
-        [Authorize(Roles = "SysAdmin")]
+        //[Authorize(Roles = "SysAdmin")]
         public async Task<ActionResult<IEnumerable<EntityEntry>>> Get()
         {
             if (_context.Entities == null)
@@ -38,7 +38,7 @@ namespace Catfish.API.Repository.Controllers
         // GET: api/Forms/5
         //   GET api/<ItemsController>/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "SysAdmin")]
+       // [Authorize(Roles = "SysAdmin")]
         public async Task<EntityData> Get(Guid id, bool includeRelationship=true)
         {
              if(includeRelationship)
@@ -52,7 +52,7 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<EntityTemplatesController>
         [HttpPost]
-        [Authorize(Roles = "SysAdmin")]
+        //[Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Post([FromForm] string value, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
         {
             try
@@ -86,7 +86,7 @@ namespace Catfish.API.Repository.Controllers
 
         // PUT api/<EntitiesController>/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "SysAdmin")]
+        //[Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Put(Guid id, [FromForm] string value, [FromForm] List<IFormFile> files, [FromForm] List<string> fileKeys)
         {
             try
@@ -166,7 +166,7 @@ namespace Catfish.API.Repository.Controllers
 
        // DELETE api/<EntitiesController>/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "SysAdmin")]
+        //[Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (_context.Entities == null)
@@ -205,7 +205,7 @@ namespace Catfish.API.Repository.Controllers
         }
 
         [HttpPost("change-state/{id}")]
-        [Authorize(Roles = "SysAdmin")]
+        //[Authorize(Roles = "SysAdmin")]
         public async Task<IActionResult> ChangeState(Guid id, [FromBody] eState newState)
         {
             if (_context.Entities == null)

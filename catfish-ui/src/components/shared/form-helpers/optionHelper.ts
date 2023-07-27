@@ -22,9 +22,11 @@ export function getOptionValues(optionText: TextCollection | null, lang: string 
 }
 
 export const cloneOption = (option: Option) => {
+	
 	const clone = JSON.parse(JSON.stringify(option)) as Option;
-	clone.id = Guid.create();
-	clone.optionText.id = Guid.create();
-	clone.optionText.values.forEach(txt => txt.id = Guid.create())
+	clone.id = Guid.create().toString() as unknown as Guid,
+	clone.optionText.id = Guid.create().toString() as unknown as Guid,
+	clone.optionText.values.forEach(txt => txt.id = Guid.create().toString() as unknown as Guid)
+	console.log
 	return clone;
 }
