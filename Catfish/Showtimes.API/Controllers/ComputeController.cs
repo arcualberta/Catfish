@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Showtimes.API.DTO;
+using Showtimes.API.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,6 +17,10 @@ namespace Showtimes.API.Controllers
             // Create and save the request object
             // Send the request to Catfish batch processing
             // Return the Guid of the created request object
+            int count = 0;
+       
+            BackgroundProcessingDelegate.QueryDelegate(delegate { BackgroundProcessingDelegate.CountShowtimes(queryParams, out count); });
+            BackgroundProcessingDelegate.QueryDelegate(delegate { BackgroundProcessingDelegate.NotifyUser(requestLabel, notificationEmail); });
             return Ok();
         }
 
