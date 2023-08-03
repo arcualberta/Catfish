@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Mvc;
 using Showtimes.API.DTO;
+using Showtimes.API.Interfaces;
 using Showtimes.API.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,6 +12,12 @@ namespace Showtimes.API.Controllers
     [ApiController]
     public class ComputeController : ControllerBase
     {
+        private readonly IShowtimeQueryService _showtimeQuery;
+        public ComputeController(IShowtimeQueryService showtimeQuery)
+        {
+            _showtimeQuery = showtimeQuery;
+        }
+
         [HttpPost("showtimes-count")]
         public async Task<ActionResult> ShowtimesCount(string requestLabel, string notificationEmail, QueryParams queryParams)
         {
@@ -17,10 +25,17 @@ namespace Showtimes.API.Controllers
             // Create and save the request object
             // Send the request to Catfish batch processing
             // Return the Guid of the created request object
+
+            //Using multicast Delegate -- option 1
             int count = 0;
        
             BackgroundProcessingDelegate.QueryDelegate(delegate { BackgroundProcessingDelegate.CountShowtimes(queryParams, out count); });
             BackgroundProcessingDelegate.QueryDelegate(delegate { BackgroundProcessingDelegate.NotifyUser(requestLabel, notificationEmail); });
+
+            //Hangfire BGJob -- option 2
+            var parentJobId = BackgroundJob.Enqueue(() => _showtimeQuery.CountShowtimes(queryParams));
+            BackgroundJob.ContinueJobWith(parentJobId, () => _showtimeQuery.NotifyUser(requestLabel, notificationEmail));
+
             return Ok();
         }
 
