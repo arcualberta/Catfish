@@ -32,8 +32,8 @@ namespace Showtimes.API.Controllers
             BackgroundProcessingDelegate.QueryDelegate(delegate { BackgroundProcessingDelegate.CountShowtimes(queryParams, out count); });
             BackgroundProcessingDelegate.QueryDelegate(delegate { BackgroundProcessingDelegate.NotifyUser(requestLabel, notificationEmail); });
 
-            //Hangfire BGJob -- option 2
-            var parentJobId = BackgroundJob.Enqueue(() => _showtimeQuery.CountShowtimes(queryParams));
+            //Hangfire BGJob -- option 2 -- I like this option 
+            var parentJobId = BackgroundJob.Enqueue(() => _showtimeQuery.CountShowtimes(queryParams, out count));
             BackgroundJob.ContinueJobWith(parentJobId, () => _showtimeQuery.NotifyUser(requestLabel, notificationEmail));
 
             return Ok();

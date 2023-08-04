@@ -39,7 +39,12 @@ namespace Showtimes.API.Services
             return string.Join("AND", queries.ToArray());
         }
 
-        public async Task<int> CountShowtimes(QueryParams param)
+        public void CountShowtimes(QueryParams param, out int count)
+        {
+            count = Task.Run(() => CountShowtimesAsync(param)).GetAwaiter().GetResult(); 
+        }
+
+        public async Task<int> CountShowtimesAsync(QueryParams param)
         {
             // solrSearchResult = await _solr.ExecuteSearch(query, offset, max, filterQuery, sortBy, fieldList, maxHiglightSnippets);
             // var jobId = BackgroundJob.Enqueue(() => _solr.ExecuteSearch());
