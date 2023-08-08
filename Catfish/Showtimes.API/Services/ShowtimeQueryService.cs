@@ -41,7 +41,7 @@ namespace Showtimes.API.Services
 
         public void CountShowtimes(QueryParams param, out int count)
         {
-            count = Task.Run(() => CountShowtimesAsync(param)).GetAwaiter().GetResult(); 
+            count = Task.Run(() => CountShowtimesAsync(param)).Result;
         }
 
         public async Task<int> CountShowtimesAsync(QueryParams param)
