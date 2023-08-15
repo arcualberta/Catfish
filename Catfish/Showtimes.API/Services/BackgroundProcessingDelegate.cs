@@ -47,12 +47,12 @@ namespace Showtimes.API.Services
         /// <returns></returns>
         public static string? BuildingQueryString(QueryParams queryParams)
         {
-            //TODO: Solr fields name
-            string countryFieldName = "";
-            string movieIdFieldName = "";
-            string theaterIdFieldName = "";
-            string fromDateFieldName = "";
-            string toDateFieldName = "";
+            //TODO: Showtimes Solr fields name
+            string countryFieldName = "intl_country_s";
+            string movieIdFieldName = "movie_id_i";
+            string theaterIdFieldName = "theater_id_i";
+            string fromDateFieldName = "show_date_dt";
+            string toDateFieldName = "show_date_dt";
 
             List<string> queries = new List<string>();
             if (queryParams == null)
