@@ -1,0 +1,61 @@
+﻿@model CatfishWebExtensions.Models.Sites.Headers.UpperLevel
+@using CatfishExtensions.Helpers
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Piranha.AspNetCore.Services.IApplicationService WebApp;
+@inject ICatfishAppConfiguration _catfishAppConfig;
+@inject Piranha.IApi _piranhaApi;
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@{
+    var currentSite = await WebApp.Site.GetContentAsync<CatfishWebExtensions.Models.Sites.CatfishWebsite>();
+    var imgUrl = Model?.Logo?.Media?.PublicUrl;
+    var sideLogoUrl = Model?.SideLogo?.Media?.PublicUrl;
+    var faculty = Model?.Faculty;
+    var facultyUrl = Model?.FacultyURL;
+    var title = Model?.Title;
+    var siteTitle = Model?.SiteTitle;
+    var upperLevel = Model?.UpperHeader;
+    var siteURL = Model?.SiteURL;
+    if (!string.IsNullOrEmpty(imgUrl) && imgUrl.StartsWith("~"))
+    {
+        imgUrl = imgUrl.Substring(1);
+    }
+    if (!string.IsNullOrEmpty(sideLogoUrl) && sideLogoUrl.StartsWith("~"))
+    {
+        sideLogoUrl = sideLogoUrl.Substring(1);
+    }
+}
+<div id="header" class="container-fluid">
+    
+        @if(upperLevel != null)
+        {
+            @Html.Raw(upperLevel)
+        }
+    
+    @if(siteTitle != null)
+    {
+    <div class="row">
+        <div class="div-logo">
+            <div class="header-logo">
+                <a class="site-title" href=@siteURL.Value title=@title.Value>
+                <img src=@imgUrl>
+            </a>
+                
+            </div>
+        </div>
+        <div class="div-title">
+            <div class="faculty-name">
+                <a class="site-faculty-title" href=@facultyUrl.Value>
+                @faculty</a>
+            </div>
+            <div class="related-sites-title">
+                <span >@siteTitle</span>
+            </div>
+        </div>
+        <div class="meis-logo">
+                <img src=@sideLogoUrl />
+            </div>
+    </div>
+    }
+    
+
+</div>
