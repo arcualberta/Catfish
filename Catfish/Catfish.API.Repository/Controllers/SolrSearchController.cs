@@ -1,5 +1,6 @@
 ﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Solr;
+using Hangfire;
 
 
 
@@ -45,6 +46,29 @@ namespace Catfish.API.Repository.Controllers
             return solrSearchResult;
         }
 
+        [HttpPost("schedule-search-job")]
+        public async Task<string> ScheduleSearchJob(
+            [FromForm] string query,
+            [FromForm] string email 
+            
+           /* string? filterQuery = null,
+            string? sortBy = null,
+            string? fieldList = null,
+            int maxHiglightSnippets = 1*/)
+        {
+            SearchResult solrSearchResult = null;
+            string parentJobId = "";
+            try
+            {
+               parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJob(query, out solrSearchResult));
+               // BackgroundJob.ContinueJobWith(parentJobId, () => _solr.NotifyUser(requestLabel, email));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
+            return parentJobId;
+        }
     }
 }

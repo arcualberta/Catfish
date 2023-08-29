@@ -53,7 +53,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 this.isLoadig = false;
             });
         },
-        executeJob(query: string | null, email: string|null) {
+        executeJob(query: string | null, email: string) {
             this.isLoadig = true;
            // this.offset = offset;
            // this.max = max;
@@ -62,11 +62,14 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
 
             const form = new FormData();
             form.append("query", this.activeQueryString);
-          //  form.append("offset", offset.toString())
+            form.append("email", email)
           //  form.append("max", max.toString());
 
             this.queryStart = new Date().getTime()
-            fetch(this.queryApi, {
+
+            var querySearchJobApi = this.queryApi + "\schedule-search-job"
+
+            fetch(querySearchJobApi, {
                 method: 'POST',
                 body: form,
                 headers: {
@@ -75,9 +78,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             })
                 .then(response => response.json())
                 .then(data => {
-                    this.queryResult = data;
-                    this.queryTime = (new Date().getTime() - this.queryStart) / 1000.0
-                    this.isLoadig = false;
+                    alert("Jod has been successfully submitted");
                 })
                 .catch((error) => {
                     console.error('Load Entities API Error:', error);

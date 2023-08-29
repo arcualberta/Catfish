@@ -22,5 +22,7 @@ namespace Catfish.API.Repository.Interfaces
             string? fieldList = null,
             int maxHiglightSnippets = 1, 
             bool useSolrJson = false);
+        public void SubmitSearchJob(string query, out SearchResult searchResult);
+        
     }
 }

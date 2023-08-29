@@ -94,7 +94,7 @@
 
     function executeJob() {
         store.queryResult = null;
-        /*
+        
         if (uiMode.value === eUiMode.Default) {
             store.executeJob(quertString.value, email.value)
            // const resultEntryTypes = store.selectedEntryType ? store.selectedEntryType.label : "All Entry Types"
@@ -108,9 +108,9 @@
             else {
                 alert("Please specify a query")
             }
-        }*/
+        }
 
-        alert("Search job submitted. When it ready, notoification will be send to your email: " + email.value)
+       // alert("Search job submitted. When it ready, notoification will be send to your email: " + email.value)
     }
 
     const visible = ref(false);
