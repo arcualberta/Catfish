@@ -53,6 +53,37 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 this.isLoadig = false;
             });
         },
+        executeJob(query: string | null, email: string|null) {
+            this.isLoadig = true;
+           // this.offset = offset;
+           // this.max = max;
+
+            this.activeQueryString = query && query.trim().length > 0 ? query : "*:*";
+
+            const form = new FormData();
+            form.append("query", this.activeQueryString);
+          //  form.append("offset", offset.toString())
+          //  form.append("max", max.toString());
+
+            this.queryStart = new Date().getTime()
+            fetch(this.queryApi, {
+                method: 'POST',
+                body: form,
+                headers: {
+                    'encType': 'multipart/form-data'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.queryResult = data;
+                    this.queryTime = (new Date().getTime() - this.queryStart) / 1000.0
+                    this.isLoadig = false;
+                })
+                .catch((error) => {
+                    console.error('Load Entities API Error:', error);
+                    this.isLoadig = false;
+                });
+        },
         next(){
             console.log("next")
             this.query(this.activeQueryString, this.offset+this.max, this.max)
