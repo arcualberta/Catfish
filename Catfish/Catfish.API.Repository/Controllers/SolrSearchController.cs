@@ -1,5 +1,6 @@
 ﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Solr;
+using CatfishExtensions.DTO;
 using Hangfire;
 
 
@@ -15,10 +16,12 @@ namespace Catfish.API.Repository.Controllers
     {
         
         private readonly ISolrService _solr;
+        private readonly IEmailService _email;
 
-        public SolrSearchController(ISolrService solrService)
+        public SolrSearchController(ISolrService solrService, IEmailService email)
         {
             _solr = solrService;
+            _email = email;
         }
 
 
@@ -60,8 +63,14 @@ namespace Catfish.API.Repository.Controllers
             string parentJobId = "";
             try
             {
-               parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJob(query, out solrSearchResult));
-               // BackgroundJob.ContinueJobWith(parentJobId, () => _solr.NotifyUser(requestLabel, email));
+               parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJob(query));
+
+               /* Email emailDto = new Email();
+                emailDto.Subject = "Background Job";
+                emailDto.ToRecipientEmail = new List<string> { email };
+                emailDto.Body = "Your background is done. You could download yoyr data <a href='' >here </a>";
+
+                BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));*/
             }
             catch (Exception ex)
             {

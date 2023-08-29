@@ -193,9 +193,14 @@ namespace Catfish.API.Repository.Services
             return fieldNames;
         }
 
-        public void SubmitSearchJob(string query, out SearchResult searchResult)
+        public void SubmitSearchJob(string query)
         {
-            searchResult = Task.Run(() => ExecuteSearch(query, 0, int.MaxValue)).Result; //await ExecuteSearch(query, 0, int.MaxValue);
+            SearchResult searchResult = Task.Run(() => ExecuteSearch(query, 0, int.MaxValue)).Result; //await ExecuteSearch(query, 0, int.MaxValue);
+
+
+            //save the searchResult??
         }
+
+
     }
 }

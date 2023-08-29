@@ -19,7 +19,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         queryStart: 0,
         queryTime: 0,
         queryApi: 'https://localhost:5020/api/solr-search',
-        isLoadig: false
+        isLoadig: false,
+        jobId:""
     }),
     actions: {
         query(query: string | null, offset: number, max: number){
@@ -67,7 +68,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
 
             this.queryStart = new Date().getTime()
 
-            var querySearchJobApi = this.queryApi + "\schedule-search-job"
+            var querySearchJobApi = this.queryApi + "/schedule-search-job"
 
             fetch(querySearchJobApi, {
                 method: 'POST',
@@ -78,7 +79,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             })
                 .then(response => response.json())
                 .then(data => {
-                    alert("Jod has been successfully submitted");
+                    this.jobId = data;
+                    alert("Jod has been successfully submitted: job id " + this.jobId);
                 })
                 .catch((error) => {
                     console.error('Load Entities API Error:', error);
