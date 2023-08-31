@@ -22,7 +22,19 @@ namespace Catfish.API.Repository.Interfaces
             string? fieldList = null,
             int maxHiglightSnippets = 1, 
             bool useSolrJson = false);
-        public void SubmitSearchJob(string query);
-        
+
+        public Task<string> ExecuteSolrSearch(
+           string query,
+           int start,
+           int max,
+           string? filterQuery = null,
+           string? sortBy = null,
+           string? fieldList = null,
+           int maxHiglightSnippets = 1,
+           string outputFormat = "csv");
+        public Task SubmitSearchJobAsync(string query, string filename="");
+        public void WriteToCsv(string content, string path);
+
+
     }
 }

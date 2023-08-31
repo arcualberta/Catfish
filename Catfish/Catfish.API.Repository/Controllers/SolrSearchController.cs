@@ -52,18 +52,16 @@ namespace Catfish.API.Repository.Controllers
         [HttpPost("schedule-search-job")]
         public async Task<string> ScheduleSearchJob(
             [FromForm] string query,
-            [FromForm] string email 
-            
-           /* string? filterQuery = null,
-            string? sortBy = null,
-            string? fieldList = null,
-            int maxHiglightSnippets = 1*/)
+            [FromForm] string email,
+            [FromForm] string label)
         {
             SearchResult solrSearchResult = null;
             string parentJobId = "";
             try
             {
-               parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJob(query));
+                string fileName = $@"querySearchResult_{label.Replace(" ","_").Trim()}.csv";
+                _solr.SubmitSearchJobAsync(query, fileName);
+              //parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJobAsync(query, fileName));
 
                /* Email emailDto = new Email();
                 emailDto.Subject = "Background Job";
