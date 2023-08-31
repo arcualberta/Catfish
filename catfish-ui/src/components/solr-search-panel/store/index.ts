@@ -54,7 +54,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 this.isLoadig = false;
             });
         },
-        executeJob(query: string | null, email: string) {
+        executeJob(query: string | null, email: string, label: string) {
             this.isLoadig = true;
            // this.offset = offset;
            // this.max = max;
@@ -64,7 +64,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             const form = new FormData();
             form.append("query", this.activeQueryString);
             form.append("email", email)
-          //  form.append("max", max.toString());
+            form.append("label", label);
 
             this.queryStart = new Date().getTime()
 
