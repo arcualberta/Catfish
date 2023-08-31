@@ -17,11 +17,13 @@ namespace Catfish.API.Repository.Controllers
         
         private readonly ISolrService _solr;
         private readonly IEmailService _email;
+        protected readonly IConfiguration _config;
 
-        public SolrSearchController(ISolrService solrService, IEmailService email)
+        public SolrSearchController(ISolrService solrService, IEmailService email, IConfiguration config)
         {
             _solr = solrService;
             _email = email;
+            _config = config;
         }
 
 
@@ -60,13 +62,15 @@ namespace Catfish.API.Repository.Controllers
             try
             {
                 string fileName = $@"querySearchResult_{label.Replace(" ","_").Trim()}.csv";
-                _solr.SubmitSearchJobAsync(query, fileName);
-              //parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJobAsync(query, fileName));
+               
+
+                 string solrCoreUrl = _config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
+                parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJobAsync(query, fileName, solrCoreUrl));
 
                /* Email emailDto = new Email();
                 emailDto.Subject = "Background Job";
                 emailDto.ToRecipientEmail = new List<string> { email };
-                emailDto.Body = "Your background is done. You could download yoyr data <a href='' >here </a>";
+                emailDto.Body = $@"Your background is done. You could download your data : {filename} </a>";
 
                 BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));*/
             }

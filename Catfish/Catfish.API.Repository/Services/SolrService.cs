@@ -193,13 +193,13 @@ namespace Catfish.API.Repository.Services
             return fieldNames;
         }
 
-        public async Task SubmitSearchJobAsync(string query, string filename="")
+        public async Task SubmitSearchJobAsync(string query, string filename="", string solrCoreUrl="")
         {
             // query = query + "&wt=csv"; //write the outout in csv format
             // SearchResult searchResult = Task.Run(() => ExecuteSearch(query, 0, 100/*int.MaxValue*/)).Result; //await ExecuteSearch(query, 0, int.MaxValue);
 
    
-            var result = await ExecuteSolrSearch(query, 0, 100);
+            var result = await ExecuteSolrSearch(solrCoreUrl, query, 0, int.MaxValue);
             //var result = task.Result;
 
             //save the searchResult??
@@ -224,9 +224,9 @@ namespace Catfish.API.Repository.Services
             }
            
         }
-        public async Task<string> ExecuteSolrSearch(string query, int start, int max, string? filterQuery = null, string? sortBy = null, string? fieldList = null, int maxHiglightSnippets = 1, string outputFormat = "csv")
+        public async Task<string> ExecuteSolrSearch(string solrCoreUrl, string query, int start, int max, string? filterQuery = null, string? sortBy = null, string? fieldList = null, int maxHiglightSnippets = 1, string outputFormat = "csv")
         {
-            string qUrl = _solrCoreUrl + "/select?";// "/select?hl=on";
+            string qUrl = solrCoreUrl + "/select?"; //"http://localhost:8983/solr/showtimes3/select?";// _solrCoreUrl + "/select?";// "/select?hl=on";
             var parameters = new Dictionary<string, string>();
             parameters["q"] = query;
             parameters["start"] = start.ToString();

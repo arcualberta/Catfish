@@ -16,7 +16,13 @@ builder.AddCatfishExtensions(true, true);
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 
-builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString")));
+var options = new Hangfire.SqlServer.SqlServerStorageOptions
+{
+    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+    QueuePollInterval = TimeSpan.Zero
+};
+
+builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString"), options));
 builder.Services.AddHangfireServer();
 
 //Adding services specific to this project

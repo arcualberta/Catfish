@@ -23,7 +23,7 @@ namespace Catfish.API.Repository.Interfaces
             int maxHiglightSnippets = 1, 
             bool useSolrJson = false);
 
-        public Task<string> ExecuteSolrSearch(
+        public Task<string> ExecuteSolrSearch(string solrCoreUrl,
            string query,
            int start,
            int max,
@@ -32,7 +32,7 @@ namespace Catfish.API.Repository.Interfaces
            string? fieldList = null,
            int maxHiglightSnippets = 1,
            string outputFormat = "csv");
-        public Task SubmitSearchJobAsync(string query, string filename="");
+        public Task SubmitSearchJobAsync(string query, string filename="", string solrCoreUrl="");
         public void WriteToCsv(string content, string path);
 
 
