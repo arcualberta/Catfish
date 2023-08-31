@@ -67,12 +67,13 @@ namespace Catfish.API.Repository.Controllers
                  string solrCoreUrl = _config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
                 parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJobAsync(query, fileName, solrCoreUrl));
 
-               /* Email emailDto = new Email();
+                Email emailDto = new Email();
                 emailDto.Subject = "Background Job";
                 emailDto.ToRecipientEmail = new List<string> { email };
-                emailDto.Body = $@"Your background is done. You could download your data : {filename} </a>";
+                emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca"};
+                emailDto.Body = $@"Your background is done. You could download your data : {fileName} </a>";
 
-                BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));*/
+                BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));
             }
             catch (Exception ex)
             {
