@@ -71,7 +71,11 @@ namespace Catfish.API.Repository.Controllers
                 emailDto.Subject = "Background Job";
                 emailDto.ToRecipientEmail = new List<string> { email };
                 emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca"};
-                emailDto.Body = $@"Your background is done. You could download your data : {fileName} </a>";
+                //https://localhost:5020/api/solr-search/get-file?fileName=querySearchResult_whole_data_set.csv
+                string downloadLink = Request.Scheme + "://" + Request.Host.Value.TrimEnd('/') + Request.Path + "?fileName=" + fileName;
+               
+
+                emailDto.Body = $@"Your background is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
 
                 BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));
             }
@@ -82,5 +86,26 @@ namespace Catfish.API.Repository.Controllers
 
             return parentJobId;
         }
+
+        [HttpGet("get-file")]
+        public async Task<FileContentResult> GetFile(string fileName)
+        {
+            if (!fileName.Contains(".csv"))
+                fileName = fileName + ".csv";
+
+            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data");
+            string filePath = Path.Combine(uploadFolder, fileName!);
+            if (!System.IO.File.Exists(filePath))
+                throw new FileNotFoundException();
+
+            string mimeType = "application/octet-stream";
+            byte[] fileBytes;
+            fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return new FileContentResult(fileBytes!, mimeType)
+            {
+                FileDownloadName = fileName
+            };
+        }
+
     }
 }
