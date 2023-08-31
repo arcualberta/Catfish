@@ -191,7 +191,7 @@
         </div>
         <div class="mt-3 mb-3 panel-search-bg">
             <h4>Background Search</h4>
-            <div>Email : <input type="text" v-model="email" :value="email" placeholder="email address" /> {{email}} </div>
+            <div>Email : <input type="text" v-model="email" placeholder="email address" /> {{email}} </div>
             <button @click="executeJob" class="btn btn-success">Submit Search Job</button>
         </div>
     </div>
