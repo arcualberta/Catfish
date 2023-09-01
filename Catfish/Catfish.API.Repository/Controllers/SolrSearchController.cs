@@ -33,14 +33,9 @@ namespace Catfish.API.Repository.Controllers
             int maxHiglightSnippets = 1)
         {
             SearchResult solrSearchResult = null;
-            try
-            { 
+            
                solrSearchResult = await _solr.ExecuteSearch(query, offset, max, filterQuery, sortBy, fieldList, maxHiglightSnippets);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            
 
             return solrSearchResult;
         }
