@@ -1,5 +1,7 @@
 ﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Solr;
+using CatfishExtensions.DTO;
+using Hangfire;
 
 
 
@@ -14,10 +16,14 @@ namespace Catfish.API.Repository.Controllers
     {
         
         private readonly ISolrService _solr;
+        private readonly IEmailService _email;
+        protected readonly IConfiguration _config;
 
-        public SolrSearchController(ISolrService solrService)
+        public SolrSearchController(ISolrService solrService, IEmailService email, IConfiguration config)
         {
             _solr = solrService;
+            _email = email;
+            _config = config;
         }
 
 
@@ -40,6 +46,60 @@ namespace Catfish.API.Repository.Controllers
             return solrSearchResult;
         }
 
+        [HttpPost("schedule-search-job")]
+        public string ScheduleSearchJob(
+            [FromForm] string query,
+            [FromForm] string email,
+            [FromForm] string label)
+        {
+            string parentJobId = "";
+            try
+            {
+                string fileName = $@"querySearchResult_{label.Replace(" ","_").Trim()}.csv";
+               
+
+                 string solrCoreUrl = _config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
+                parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJobAsync(query, fileName, solrCoreUrl));
+
+                Email emailDto = new Email();
+                emailDto.Subject = "Background Job";
+                emailDto.ToRecipientEmail = new List<string> { email };
+                emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca"};
+                //https://localhost:5020/api/solr-search/get-file?fileName=querySearchResult_whole_data_set.csv
+                string downloadLink = Request.Scheme + "://" + Request.Host.Value.TrimEnd('/') + Request.Path + "?fileName=" + fileName;
+               
+
+                emailDto.Body = $@"Your background is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
+
+                BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return parentJobId;
+        }
+
+        [HttpGet("get-file")]
+        public FileContentResult GetFile(string fileName)
+        {
+            if (!fileName.Contains(".csv"))
+                fileName = fileName + ".csv";
+
+            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data");
+            string filePath = Path.Combine(uploadFolder, fileName!);
+            if (!System.IO.File.Exists(filePath))
+                throw new FileNotFoundException();
+
+            string mimeType = "application/octet-stream";
+            byte[] fileBytes;
+            fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return new FileContentResult(fileBytes!, mimeType)
+            {
+                FileDownloadName = fileName
+            };
+        }
 
     }
 }

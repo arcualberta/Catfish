@@ -51,7 +51,7 @@ namespace CatfishExtensions
             }
 
             if (configureJwtAuthorization)
-                AddJwtAuthorization(builder);
+                AddJwtAuthentication(builder);
 
             return builder;
         }
@@ -80,7 +80,7 @@ namespace CatfishExtensions
             return app;
         }
 
-        private static void AddJwtAuthorization(WebApplicationBuilder builder)
+        private static void AddJwtAuthentication(WebApplicationBuilder builder)
         {
             // Adding JWT Bearer authorization
 
