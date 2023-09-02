@@ -52,12 +52,11 @@ namespace Catfish.API.Repository.Controllers
         }
 
         [HttpPost("schedule-search-job")]
-        public async Task<string> ScheduleSearchJob(
+        public string ScheduleSearchJob(
             [FromForm] string query,
             [FromForm] string email,
             [FromForm] string label)
         {
-            SearchResult solrSearchResult = null;
             string parentJobId = "";
             try
             {
@@ -88,7 +87,7 @@ namespace Catfish.API.Repository.Controllers
         }
 
         [HttpGet("get-file")]
-        public async Task<FileContentResult> GetFile(string fileName)
+        public FileContentResult GetFile(string fileName)
         {
             if (!fileName.Contains(".csv"))
                 fileName = fileName + ".csv";

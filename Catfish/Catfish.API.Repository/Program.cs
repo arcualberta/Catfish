@@ -16,13 +16,26 @@ builder.AddCatfishExtensions(true, true);
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 
-var options = new Hangfire.SqlServer.SqlServerStorageOptions
-{
-    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-    QueuePollInterval = TimeSpan.Zero
-};
+//GlobalConfiguration.Configuration
+//    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+//    .UseSimpleAssemblyNameTypeSerializer()
+//    .UseRecommendedSerializerSettings()
+//    .UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString"));
 
-builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString"), options));
+
+////var options = new Hangfire.SqlServer.SqlServerStorageOptions
+////{
+////    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+////    QueuePollInterval = TimeSpan.Zero
+////};
+
+////builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString"), options));
+builder.Services.AddHangfire(x =>
+   x.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString")));
+
 builder.Services.AddHangfireServer();
 
 //Adding services specific to this project
