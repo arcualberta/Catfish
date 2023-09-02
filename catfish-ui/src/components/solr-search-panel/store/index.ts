@@ -19,7 +19,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         queryStart: 0,
         queryTime: 0,
         queryApi: 'https://localhost:5020/api/solr-search',
-        isLoadig: false
+        isLoadig: false,
+        jobId:""
     }),
     actions: {
         query(query: string | null, offset: number, max: number){
@@ -52,6 +53,39 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 console.error('Load Entities API Error:', error);
                 this.isLoadig = false;
             });
+        },
+        executeJob(query: string | null, email: string, label: string) {
+            this.isLoadig = true;
+           // this.offset = offset;
+           // this.max = max;
+
+            this.activeQueryString = query && query.trim().length > 0 ? query : "*:*";
+
+            const form = new FormData();
+            form.append("query", this.activeQueryString);
+            form.append("email", email)
+            form.append("label", label);
+
+            this.queryStart = new Date().getTime()
+
+            var querySearchJobApi = this.queryApi + "/schedule-search-job"
+
+            fetch(querySearchJobApi, {
+                method: 'POST',
+                body: form,
+                headers: {
+                    'encType': 'multipart/form-data'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.jobId = data;
+                    alert("Jod has been successfully submitted: job id " + this.jobId);
+                })
+                .catch((error) => {
+                    console.error('Load Entities API Error:', error);
+                    this.isLoadig = false;
+                });
         },
         next(){
             console.log("next")

@@ -31,7 +31,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<IEnumerable<TenantInfo>>> GetTenants(int offset = 0, int max = int.MaxValue, bool includeRoles = false)
         {
             IQueryable<Tenant> query = includeRoles ? _db.Tenants.Include(t => t.Roles) : _db.Tenants;

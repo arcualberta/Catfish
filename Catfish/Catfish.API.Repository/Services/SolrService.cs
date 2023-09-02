@@ -149,7 +149,7 @@ namespace Catfish.API.Repository.Services
             string qUrl = _solrCoreUrl + "/select?hl=on";
             var parameters = new Dictionary<string, string>();
             parameters["q"] = query;
-            parameters["start"] = start.ToString();
+            parameters["start"] = start.ToString();                                 
             parameters["rows"] = max.ToString();
             if (!string.IsNullOrEmpty(filterQuery)) parameters["fq"] = filterQuery;
             if (!string.IsNullOrEmpty(sortBy)) parameters["sort"] = sortBy;
@@ -193,5 +193,60 @@ namespace Catfish.API.Repository.Services
             return fieldNames;
         }
 
+        public async Task SubmitSearchJobAsync(string query, string filename="", string solrCoreUrl="")
+        {
+            // query = query + "&wt=csv"; //write the outout in csv format
+            // SearchResult searchResult = Task.Run(() => ExecuteSearch(query, 0, 100/*int.MaxValue*/)).Result; //await ExecuteSearch(query, 0, int.MaxValue);
+
+   
+            var result = await ExecuteSolrSearch(solrCoreUrl, query, 0, int.MaxValue);
+            //var result = task.Result;
+
+            //save the searchResult??
+            string folderRoot = Path.Combine("App_Data");
+            if (!(System.IO.Directory.Exists(folderRoot)))
+                System.IO.Directory.CreateDirectory(folderRoot);
+            string outFile = Path.Combine(folderRoot, filename);
+                if (System.IO.File.Exists(outFile))
+                    System.IO.File.Delete(outFile);
+           WriteToCsv(result, outFile);
+           
+        }
+
+        public void WriteToCsv(string content, string path)
+        {
+            try
+            {
+                File.AppendAllText(path, content);
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+           
+        }
+        public async Task<string> ExecuteSolrSearch(string solrCoreUrl, string query, int start, int max, string? filterQuery = null, string? sortBy = null, string? fieldList = null, int maxHiglightSnippets = 1, string outputFormat = "csv")
+        {
+            string qUrl = solrCoreUrl + "/select?"; //"http://localhost:8983/solr/showtimes3/select?";// _solrCoreUrl + "/select?";// "/select?hl=on";
+            var parameters = new Dictionary<string, string>();
+            parameters["q"] = query;
+            parameters["start"] = start.ToString();
+            parameters["rows"] = max.ToString();
+            if (!string.IsNullOrEmpty(filterQuery)) parameters["fq"] = filterQuery;
+            if (!string.IsNullOrEmpty(sortBy)) parameters["sort"] = sortBy;
+            if (!string.IsNullOrEmpty(fieldList)) parameters["fl"] = fieldList;
+            parameters["hl.fl"] = "*";
+            parameters["hl.snippets"] = maxHiglightSnippets.ToString();
+            parameters["wt"] = outputFormat;
+
+          
+            
+            Uri fullUri = new Uri(qUrl);
+            var postResponse = await _httpClient.PostAsync(fullUri, new FormUrlEncodedContent(parameters));
+            //var postResponse = await _httpClient.PostAsync(new Uri(qUrl), new FormUrlEncodedContent(parameters));
+            postResponse.EnsureSuccessStatusCode();
+            var postContents = await postResponse.Content.ReadAsStringAsync();
+
+            return postContents;
+        }
     }
 }
