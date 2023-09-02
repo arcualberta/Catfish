@@ -32,11 +32,17 @@
                 foreach(string emailRecipient in email.ToRecipientEmail)
                     mailMessage.To.Add(emailRecipient);
 
-                foreach (string emailRecipient in email.CcRecipientEmail)
-                    mailMessage.CC.Add(emailRecipient);
+                if (email.CcRecipientEmail != null)
+                {
+                    foreach (string emailRecipient in email.CcRecipientEmail)
+                        mailMessage.CC.Add(emailRecipient);
+                }
 
-                foreach (string emailRecipient in email.BccRecipientEmail)
-                    mailMessage.Bcc.Add(emailRecipient);
+                if (email.BccRecipientEmail != null)
+                {
+                    foreach (string emailRecipient in email.BccRecipientEmail)
+                        mailMessage.Bcc.Add(emailRecipient);
+                }
 
                 using (SmtpClient client = new SmtpClient(_smtpServer, _smtpPort))
                 {

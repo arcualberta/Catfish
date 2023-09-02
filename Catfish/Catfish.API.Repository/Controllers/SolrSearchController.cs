@@ -17,11 +17,13 @@ namespace Catfish.API.Repository.Controllers
         
         private readonly ISolrService _solr;
         private readonly IEmailService _email;
+        protected readonly IConfiguration _config;
 
-        public SolrSearchController(ISolrService solrService, IEmailService email)
+        public SolrSearchController(ISolrService solrService, IEmailService email, IConfiguration config)
         {
             _solr = solrService;
             _email = email;
+            _config = config;
         }
 
 
@@ -37,40 +39,39 @@ namespace Catfish.API.Repository.Controllers
             int maxHiglightSnippets = 1)
         {
             SearchResult solrSearchResult = null;
-            try
-            { 
+            
                solrSearchResult = await _solr.ExecuteSearch(query, offset, max, filterQuery, sortBy, fieldList, maxHiglightSnippets);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            
 
             return solrSearchResult;
         }
 
         [HttpPost("schedule-search-job")]
-        public async Task<string> ScheduleSearchJob(
+        public string ScheduleSearchJob(
             [FromForm] string query,
-            [FromForm] string email 
-            
-           /* string? filterQuery = null,
-            string? sortBy = null,
-            string? fieldList = null,
-            int maxHiglightSnippets = 1*/)
+            [FromForm] string email,
+            [FromForm] string label)
         {
-            SearchResult solrSearchResult = null;
             string parentJobId = "";
             try
             {
-               parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJob(query));
+                string fileName = $@"querySearchResult_{label.Replace(" ","_").Trim()}.csv";
+               
 
-               /* Email emailDto = new Email();
+                 string solrCoreUrl = _config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
+                parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJobAsync(query, fileName, solrCoreUrl));
+
+                Email emailDto = new Email();
                 emailDto.Subject = "Background Job";
                 emailDto.ToRecipientEmail = new List<string> { email };
-                emailDto.Body = "Your background is done. You could download yoyr data <a href='' >here </a>";
+                emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca"};
+                //https://localhost:5020/api/solr-search/get-file?fileName=querySearchResult_whole_data_set.csv
+                string downloadLink = Request.Scheme + "://" + Request.Host.Value.TrimEnd('/') + Request.Path + "?fileName=" + fileName;
+               
 
-                BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));*/
+                emailDto.Body = $@"Your background is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
+
+                BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));
             }
             catch (Exception ex)
             {
@@ -79,5 +80,26 @@ namespace Catfish.API.Repository.Controllers
 
             return parentJobId;
         }
+
+        [HttpGet("get-file")]
+        public FileContentResult GetFile(string fileName)
+        {
+            if (!fileName.Contains(".csv"))
+                fileName = fileName + ".csv";
+
+            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data");
+            string filePath = Path.Combine(uploadFolder, fileName!);
+            if (!System.IO.File.Exists(filePath))
+                throw new FileNotFoundException();
+
+            string mimeType = "application/octet-stream";
+            byte[] fileBytes;
+            fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return new FileContentResult(fileBytes!, mimeType)
+            {
+                FileDownloadName = fileName
+            };
+        }
+
     }
 }
