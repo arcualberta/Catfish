@@ -54,7 +54,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddElmah<XmlFileErrorLog>(options =>
 {
     options.LogPath = "~/log";
-    options.OnPermissionCheck = context => context.User.IsInRole("SysAdmin");
+    //options.OnPermissionCheck = context => context.User.IsInRole("SysAdmin");
 });
 
 //////Retrieving tenant info from the Auth API and adding access policies for each role in each tenant.
@@ -86,5 +86,7 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
     //Authorization = new[] { new MyAuthorizationFilter() }
 });
+
+app.UseElmah();
 
 app.Run();
