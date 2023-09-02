@@ -1,5 +1,6 @@
 ﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Solr;
+using ElmahCore;
 
 
 
@@ -14,7 +15,7 @@ namespace Catfish.API.Repository.Controllers
     {
         
         private readonly ISolrService _solr;
-
+        private readonly ErrorLog _errorLog;
         public SolrSearchController(ISolrService solrService)
         {
             _solr = solrService;
@@ -33,11 +34,18 @@ namespace Catfish.API.Repository.Controllers
             int maxHiglightSnippets = 1)
         {
             SearchResult solrSearchResult = null;
-            
+            try
+            { 
                solrSearchResult = await _solr.ExecuteSearch(query, offset, max, filterQuery, sortBy, fieldList, maxHiglightSnippets);
-            
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
 
+#pragma warning disable CS8603 // Possible null reference return.
             return solrSearchResult;
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
 

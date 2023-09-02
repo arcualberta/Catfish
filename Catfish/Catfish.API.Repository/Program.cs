@@ -2,6 +2,8 @@ using Catfish.API.Repository;
 using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Services;
 using CatfishExtensions;
+using ElmahCore;
+using ElmahCore.Mvc;
 using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,13 @@ builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
 builder.Services.AddScoped<IExcelFileProcessingService, ExcelFileProcessingService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+//ELMAH Error Logger
+builder.Services.AddElmah<XmlFileErrorLog>(options =>
+{
+    options.LogPath = "~/log";
+    options.OnPermissionCheck = context => context.User.IsInRole("SysAdmin");
+});
 
 var app = builder.Build();
 
