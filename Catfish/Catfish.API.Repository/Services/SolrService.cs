@@ -193,13 +193,13 @@ namespace Catfish.API.Repository.Services
             return fieldNames;
         }
 
-        public async Task SubmitSearchJobAsync(string query, string filename="", string solrCoreUrl="")
+        public async Task SubmitSearchJobAsync(string query, string? fieldList, string filename="", string solrCoreUrl="")
         {
             // query = query + "&wt=csv"; //write the outout in csv format
             // SearchResult searchResult = Task.Run(() => ExecuteSearch(query, 0, 100/*int.MaxValue*/)).Result; //await ExecuteSearch(query, 0, int.MaxValue);
 
    
-            var result = await ExecuteSolrSearch(solrCoreUrl, query, 0, int.MaxValue);
+            var result = await ExecuteSolrSearch(solrCoreUrl, query, 0, int.MaxValue, null, null, fieldList);
             //var result = task.Result;
 
             //save the searchResult??

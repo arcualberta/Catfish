@@ -56,6 +56,7 @@ namespace Catfish.API.Repository.Controllers
         [HttpPost("schedule-search-job")]
         public string ScheduleSearchJob(
             [FromForm] string query,
+            [FromForm] string fieldList,
             [FromForm] string email,
             [FromForm] string label)
         {
@@ -66,7 +67,7 @@ namespace Catfish.API.Repository.Controllers
                
 
                  string solrCoreUrl = _config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
-                parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJobAsync(query, fileName, solrCoreUrl));
+                parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJobAsync(query, fieldList, fileName, solrCoreUrl));
 
                 Email emailDto = new Email();
                 emailDto.Subject = "Background Job";
