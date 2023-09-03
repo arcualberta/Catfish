@@ -85,6 +85,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 .then(response => response.json())
                 .then(data => {
                     this.jobId = data;
+                    this.isLoadig = false;
                     alert("Jod has been successfully submitted: job id " + this.jobId);
                 })
                 .catch((error) => {

@@ -74,10 +74,10 @@ namespace Catfish.API.Repository.Controllers
                 emailDto.ToRecipientEmail = new List<string> { email };
                 emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca"};
                 //https://localhost:5020/api/solr-search/get-file?fileName=querySearchResult_whole_data_set.csv
-                string downloadLink = Request.Scheme + "://" + Request.Host.Value.TrimEnd('/') + Request.Path + "?fileName=" + fileName;
-               
+                string path = Request.Path.Value.Substring(0, Request.Path.Value.LastIndexOf("/")) + "/get-file";
+                string downloadLink = Request.Scheme + "://" + Request.Host.Value.TrimEnd('/') + path + "?fileName=" + fileName;
 
-                emailDto.Body = $@"Your background is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
+                emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
 
                 BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));
             }
