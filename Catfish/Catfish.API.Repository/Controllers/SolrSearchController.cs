@@ -35,7 +35,7 @@ namespace Catfish.API.Repository.Controllers
             [FromForm] int max = 100,
             string? filterQuery = null,
             string? sortBy = null,
-            string? fieldList = null,
+            [FromForm] string? fieldList = null,
             int maxHiglightSnippets = 1)
         {
             SearchResult solrSearchResult = null;
@@ -63,7 +63,7 @@ namespace Catfish.API.Repository.Controllers
             string parentJobId = "";
             try
             {
-                string fileName = $@"querySearchResult_{label.Replace(" ","_").Trim()}.csv";
+                string fileName = $@"querySearchResult_{label.Replace(" ","_").Trim()}_{Guid.NewGuid()}.csv";
                
 
                  string solrCoreUrl = _config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');

@@ -34,7 +34,10 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             form.append("query", this.activeQueryString);
             form.append("offset", offset.toString())
             form.append("max", max.toString());
-
+            if(this.resultFieldNames.length > 0){
+                form.append("fieldList", this.resultFieldNames.join());
+            }
+            
             this.queryStart = new Date().getTime()
             fetch(this.queryApi, {
                 method: 'POST',
@@ -65,7 +68,9 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             form.append("query", this.activeQueryString);
             form.append("email", email)
             form.append("label", label);
-
+            if(this.resultFieldNames.length > 0){
+                form.append("fieldList", this.resultFieldNames.join());
+            }
             this.queryStart = new Date().getTime()
 
             var querySearchJobApi = this.queryApi + "/schedule-search-job"
