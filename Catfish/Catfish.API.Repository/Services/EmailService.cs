@@ -20,6 +20,15 @@
             _smtpPort = _config.GetValue<int>("EmailConfig:Port");
             _ssl = _config.GetValue<bool>("EmailConfig:SSL");
         }
+
+        public EmailService(string fromEmail, string smtpServer, int smtpPort, bool ssl)
+        {
+            _fromEmail = fromEmail;
+            _smtpServer = smtpServer;
+            _smtpPort = smtpPort;
+            _ssl = ssl;
+        }
+
         public void SendEmail(Email email)
         {
             try

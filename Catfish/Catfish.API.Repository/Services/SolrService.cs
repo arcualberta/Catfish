@@ -1,5 +1,8 @@
 ﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Solr;
+using CatfishExtensions.DTO;
+using CatfishExtensions.Services;
+using System.IO;
 using System.Text;
 using System.Xml.Linq;
 
@@ -193,37 +196,75 @@ namespace Catfish.API.Repository.Services
             return fieldNames;
         }
 
-        public async Task SubmitSearchJobAsync(string query, string? fieldList, string filename="", string solrCoreUrl="")
+        public async Task SubmitSearchJobAsync(string query, string? fieldList, string notificationEmail, string jobLabel, string solrCoreUrl, string downloadEndpoint, int batchSize, int maxRows, string fromEmail, string smtpServer, int smtpPort, bool ssl)
         {
-            // query = query + "&wt=csv"; //write the outout in csv format
-            // SearchResult searchResult = Task.Run(() => ExecuteSearch(query, 0, 100/*int.MaxValue*/)).Result; //await ExecuteSearch(query, 0, int.MaxValue);
+            Interfaces.IEmailService _email = new EmailService(fromEmail, smtpServer, smtpPort, ssl);  
 
-   
-            var result = await ExecuteSolrSearch(solrCoreUrl, query, 0, int.MaxValue, null, null, fieldList);
-            //var result = task.Result;
-
-            //save the searchResult??
-            string folderRoot = Path.Combine("App_Data");
-            if (!(System.IO.Directory.Exists(folderRoot)))
-                System.IO.Directory.CreateDirectory(folderRoot);
-            string outFile = Path.Combine(folderRoot, filename);
-                if (System.IO.File.Exists(outFile))
-                    System.IO.File.Delete(outFile);
-           WriteToCsv(result, outFile);
-           
-        }
-
-        public void WriteToCsv(string content, string path)
-        {
             try
             {
-                File.AppendAllText(path, content);
-            }catch(Exception ex)
-            {
-                throw ex;
+                string fileName = $@"{jobLabel.Replace(" ", "_").Trim()}_{Guid.NewGuid()}.csv";
+
+                string folderRoot = Path.Combine("App_Data");
+                if (!(Directory.Exists(folderRoot)))
+                    Directory.CreateDirectory(folderRoot);
+                string outFile = Path.Combine(folderRoot, fileName);
+                if (File.Exists(outFile))
+                    File.Delete(outFile);
+
+                for (int offset = 0; offset < maxRows; offset += batchSize)
+                {
+                    var result = await ExecuteSolrSearch(solrCoreUrl, query, offset, batchSize, null, null, fieldList);
+
+                    //Skipping the header line if this is not the first batch
+                    if(offset > 0)
+                    {
+                        result = result.Substring(result.IndexOf("\n") + 1);
+                    }
+                   
+                    await File.AppendAllTextAsync(outFile, result);
+                }
+
+                CatfishExtensions.DTO.Email emailDto = new CatfishExtensions.DTO.Email();
+                emailDto.Subject = "Background Job Completed";
+                emailDto.ToRecipientEmail = new List<string> { notificationEmail };
+                emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
+                string downloadLink = downloadEndpoint + "?fileName=" + fileName;
+
+                emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
+                _email.SendEmail(emailDto);
             }
-           
+            catch(Exception ex)
+            {
+                CatfishExtensions.DTO.Email emailDto = new CatfishExtensions.DTO.Email();
+                emailDto.Subject = "Background Job Failed";
+                emailDto.ToRecipientEmail = new List<string> { notificationEmail };
+                emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
+
+                emailDto.Body = $@"Your background-job failed. \n\n{ex.Message}\n\n{ex.StackTrace}";
+                _email.SendEmail(emailDto);
+            }
+
+            ////var result = await ExecuteSolrSearch(solrCoreUrl, query, 0, int.MaxValue, null, null, fieldList);
+            //////var result = task.Result;
+
+            //////save the searchResult??
+            ////string folderRoot = Path.Combine("App_Data");
+            ////if (!(System.IO.Directory.Exists(folderRoot)))
+            ////    System.IO.Directory.CreateDirectory(folderRoot);
+            ////string outFile = Path.Combine(folderRoot, filename);
+            ////if (System.IO.File.Exists(outFile))
+            ////    System.IO.File.Delete(outFile);
+            ////WriteToCsv(result, outFile);
+
         }
+
+        public async Task<int> GetMatchCount(string query, string solrCoreUrl = "")
+        {
+            var result = await ExecuteSearch(query, 0, 1);
+            return result.TotalMatches;
+        }
+
+
         public async Task<string> ExecuteSolrSearch(string solrCoreUrl, string query, int start, int max, string? filterQuery = null, string? sortBy = null, string? fieldList = null, int maxHiglightSnippets = 1, string outputFormat = "csv")
         {
             string qUrl = solrCoreUrl + "/select?"; //"http://localhost:8983/solr/showtimes3/select?";// _solrCoreUrl + "/select?";// "/select?hl=on";
