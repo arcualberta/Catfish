@@ -4,6 +4,7 @@ using Catfish.API.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catfish.API.Repository.Migrations
 {
     [DbContext(typeof(RepoDbContext))]
-    partial class RepoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230904011347_CreatedJobRecords")]
+    partial class CreatedJobRecords
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,42 +30,26 @@ namespace Catfish.API.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("CompletedIterations")
+                        .HasColumnType("int");
+
                     b.Property<string>("DataFile")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("DataFileSize")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("DownloadDataFileLink")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DownloadStatsFileLink")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ExpectedDataRows")
+                    b.Property<int>("DataFileSize")
                         .HasColumnType("int");
 
                     b.Property<string>("JobLabel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProcessedDataRows")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Started")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalIterations")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

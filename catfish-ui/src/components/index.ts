@@ -32,4 +32,7 @@ export { default as SolrSearchPanel } from './solr-search-panel/App.vue'
 export { useSolrSearchStore } from './solr-search-panel/store'
 export { SolrQuery } from './solr-search-panel/solrQuery'
 
-
+/* Job Tracker */
+export { default as JobTracker } from './job-tracker/App.vue'
+export { useJobTrackerStore } from './job-tracker/store'
+export type {  JobRecord } from './job-tracker/models'

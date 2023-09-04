@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository.Interfaces;
+using Catfish.API.Repository.Models.BackgroundJobs;
 using Catfish.API.Repository.Models.Forms;
 using Catfish.API.Repository.Models.Workflow;
 using Hangfire;
@@ -10,6 +11,12 @@ namespace Catfish.API.Repository.Services
 {
     public class BackgroundJobService : IBackgroundJobService
     {
+        private readonly RepoDbContext _db;
+        public BackgroundJobService(RepoDbContext db)
+        {
+            _db = db;
+        }
+
         public void DummyTest()
         {
              string folderRoot = "C:\\Projects\\HangfireLogs";
@@ -26,7 +33,17 @@ namespace Catfish.API.Repository.Services
                   Thread.Sleep(1000);
               } 
         }
-          
+
+        public async Task<List<JobRecord>> GetJobs(int offset, int max)
+        {
+            return await _db.JobRecords.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+        }
+
+        public async Task<JobRecord?> GetJob(Guid id)
+        {
+            return await _db.JobRecords.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public string RunTestBackgroundJob()
         {
             var jobId = BackgroundJob.Enqueue(() => DummyTest());
@@ -36,5 +53,6 @@ namespace Catfish.API.Repository.Services
             BackgroundJob.ContinueJobWith(jobId, () => Console.WriteLine($"{jobId} is done ."));
             return jobId;
         }
+
     }
 }

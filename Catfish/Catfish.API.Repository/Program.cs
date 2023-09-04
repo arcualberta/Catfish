@@ -2,6 +2,8 @@ using Catfish.API.Repository;
 using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Services;
 using CatfishExtensions.Services.Auth.Requirements;
+using ElmahCore;
+using ElmahCore.Mvc;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -34,8 +36,8 @@ builder.Services.AddHangfire(x =>
    x.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString")));
-
+    .UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString"))
+    );
 builder.Services.AddHangfireServer();
 
 //Adding services specific to this project
@@ -46,6 +48,14 @@ builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
 builder.Services.AddScoped<IExcelFileProcessingService, ExcelFileProcessingService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+
+//ELMAH Error Logger
+builder.Services.AddElmah<XmlFileErrorLog>(options =>
+{
+    options.LogPath = "~/log";
+    //options.OnPermissionCheck = context => context.User.IsInRole("SysAdmin");
+});
 
 //////Retrieving tenant info from the Auth API and adding access policies for each role in each tenant.
 //////NOTE: This will require the Auth API running before starting the repository service
@@ -62,6 +72,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthorizationHandler, MembershipHandler>();
 
+
 var app = builder.Build();
 
 app.UseCatfishExtensions(true, true);
@@ -75,5 +86,7 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
     //Authorization = new[] { new MyAuthorizationFilter() }
 });
+
+app.UseElmah();
 
 app.Run();

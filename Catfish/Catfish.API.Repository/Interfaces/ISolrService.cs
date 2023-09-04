@@ -32,9 +32,19 @@ namespace Catfish.API.Repository.Interfaces
            string? fieldList = null,
            int maxHiglightSnippets = 1,
            string outputFormat = "csv");
-        public Task SubmitSearchJobAsync(string query, string filename="", string solrCoreUrl="");
-        public void WriteToCsv(string content, string path);
+        public Task SubmitSearchJobAsync(
+            string query,
+            string? fieldList,
+            string notificationEmaill,
+            string jobLabel,
+            string solrCoreUrl,
+            string downloadEndpoint,
+            int batchSize,
+            int maxRows,
+            bool? selectUniqueEntries,
+            int? numFloatDecimals);
 
+        public Task<int> GetMatchCount(string query, string solrCoreUrl="");
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿
+using Catfish.API.Repository.Models.BackgroundJobs;
 using Catfish.API.Repository.Models.Workflow;
 
 namespace Catfish.API.Repository
@@ -54,6 +55,7 @@ namespace Catfish.API.Repository
         //public DbSet<Collection>? Collections { get; set; }
         public DbSet<Relationship>? Relationships { get; set; }
         public DbSet<WorkflowDbRecord> Workflows { get; set; }
+        public DbSet<JobRecord> JobRecords { get; set; }
 
     }
 }
