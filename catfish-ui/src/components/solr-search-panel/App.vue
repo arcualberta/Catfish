@@ -203,9 +203,9 @@
             <div>Batch Size: <input type="number" v-model="batchSize" placeholder="Batch Size" /></div>
             <div><input type="checkbox" v-model="selectUniqueEntries" /> Select unique entries</div>
             <div v-if="selectUniqueEntries"><input type="checkbox" v-model="roundFloats" />Round floats <span v-if="roundFloats">to: <input type="number" v-model="numDecimalPoints" style="width: 60px"/> decimal places</span></div>
-            <div  v-if="selectUniqueEntries" class="alert alert-warning">
+            <!--<div  v-if="selectUniqueEntries" class="alert alert-warning">
                 CAUTION: If you select fields that contain commas or multiple values, the result can be unpredictable.
-            </div>
+            </div>-->
             <button @click="executeJob" class="btn btn-success" :disabled='isBatchButtonDisabled'>Submit Search Job</button>
         </div>
     </div>
