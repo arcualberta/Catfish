@@ -239,6 +239,8 @@ namespace Catfish.API.Repository.Services
                 string downloadLink = downloadEndpoint + "?fileName=" + fileName;
 
                 List<string> uniqueKeys = new List<string>();
+                List<int> frequencies = new List<int>();
+
                 string[] fieldTypes = null;
                 bool[] decimalFieldIndices = new bool[]{ };
 
@@ -263,11 +265,15 @@ namespace Catfish.API.Repository.Services
                         {
                             string[] fieldValues = line.Split(new char[] {','});
                             string key = GetUniqueKey(fieldValues, numDecimalPoints, decimalFieldIndices);
-                            if (!uniqueKeys.Contains(key))
+                            int idx = uniqueKeys.IndexOf(key);
+                            if (idx < 0)
                             {
                                 uniqueKeys.Add(key);
                                 selectedLines.Add(line);
+                                frequencies.Add(1);
                             }
+                            else
+                                frequencies[idx] += 1;
                         }
 
 
@@ -288,12 +294,22 @@ namespace Catfish.API.Repository.Services
                     jobRecord.ProcessedDataRows = offset + batchSize;
                     jobRecord.LastUpdated = DateTime.UtcNow;
                     jobRecord.DataFileSize = new FileInfo(outFile).Length;
-                    if (string.IsNullOrEmpty(jobRecord.DownloadLink))
+                    if (string.IsNullOrEmpty(jobRecord.DownloadDataFileLink))
                     {
                         jobRecord.DataFile = fileName;
-                        jobRecord.DownloadLink = downloadLink;
+                        jobRecord.DownloadDataFileLink = downloadLink;
                     }
                     _db.SaveChanges();
+                }
+
+                //Saving the frequencies file.
+                if (frequencies.Count > 0)
+                {
+                    string statsFile = fileName.Substring(0, fileName.Length - 4) + "-stats.csv";
+                    string statsOutFile = Path.Combine(folderRoot, statsFile);
+                    await File.WriteAllTextAsync(statsOutFile, "frequencies\n");
+                    await File.AppendAllLinesAsync(statsOutFile, frequencies.Select(x => x.ToString()));
+                    jobRecord.DownloadStatsFileLink = downloadEndpoint + "?fileName=" + statsFile; ;
                 }
 
                 jobRecord.ProcessedDataRows = maxRows;

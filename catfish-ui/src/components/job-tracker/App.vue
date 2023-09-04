@@ -61,7 +61,10 @@ id: Guid,
                 <td>{{ job.lastUpdated }}</td>
                 <td>{{ Math.round((job.processedDataRows / job.expectedDataRows) * 10000)/100 }} %</td>
                 <td>{{ job.dataFileSize.toLocaleString("en-US") }}</td>
-                <td><a :href="job.downloadLink">{{ job.dataFile }}</a></td>
+                <td>
+                    <div><a :href="job.downloadDataFileLink">{{ job.dataFile }}</a></div>
+                    <div v-if="job.downloadStatsFileLink"><a :href="job.downloadStatsFileLink">stats.csv</a></div>
+                </td>
             </tr>
         </tbody>
     </table>

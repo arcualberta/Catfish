@@ -8,7 +8,8 @@
         public int ExpectedDataRows { get; set; }
         public string Status { get; set; }
         public string DataFile { get; set; }
-        public string DownloadLink { get; set; }
+        public string DownloadDataFileLink { get; set; }
+        public string? DownloadStatsFileLink { get; set; }
         public long DataFileSize { get; set; }
         public DateTime Started { get; set; }
         public DateTime LastUpdated { get; set; }

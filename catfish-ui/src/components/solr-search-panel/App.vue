@@ -119,7 +119,7 @@
     const batchSize = ref(50000)
     const selectUniqueEntries = ref(false)
     const roundFloats = ref(false)
-    const numDecimalPoints = ref(2)
+    const numDecimalPoints = ref(4)
 
     const isBatchButtonDisabled = computed(() => email.value.trim().length == 0 || label.value.trim().length == 0 || batchSize.value <= 0);
 
@@ -191,19 +191,21 @@
         </b-card>
     </div>
    
-    <div class="mt-12 mb-12 panel-search">
-        <div class="mt-3 mb-3 panel-live-seacrh">
+    <div class="mt-12 mb-12 panel-search container row">
+        <div class="mt-3 mb-3 panel-live-seacrh col-md-6">
             <h4>Live Search</h4>
             <button @click="query" class="btn btn-danger">Search</button>
         </div>
-        <div class="mt-3 mb-3 panel-search-bg">
+        <div class="mt-3 mb-3 panel-search-bg col-md-6">
             <h4>Background Search</h4>
             <div>Notification Email : <input type="text" v-model="email" placeholder="email address" /> </div>
             <div>Job Label : <input type="text" v-model="label" placeholder="label for the job" /></div>
             <div>Batch Size: <input type="number" v-model="batchSize" placeholder="Batch Size" /></div>
             <div><input type="checkbox" v-model="selectUniqueEntries" /> Select unique entries</div>
             <div v-if="selectUniqueEntries"><input type="checkbox" v-model="roundFloats" />Round floats <span v-if="roundFloats">to: <input type="number" v-model="numDecimalPoints" style="width: 60px"/> decimal places</span></div>
-
+            <div  v-if="selectUniqueEntries" class="alert alert-warning">
+                CAUTION: If you select fields that contain commas or multiple values, the result can be unpredictable.
+            </div>
             <button @click="executeJob" class="btn btn-success" :disabled='isBatchButtonDisabled'>Submit Search Job</button>
         </div>
     </div>
