@@ -96,13 +96,13 @@
         store.queryResult = null;
         
         if (uiMode.value === eUiMode.Default) {
-            store.executeJob(quertString.value, email.value, label.value, batchSize.value)
+            store.executeJob(quertString.value, email.value, label.value, batchSize.value, selectUniqueEntries.value, roundFloats.value, numDecimalPoints.value)
            // const resultEntryTypes = store.selectedEntryType ? store.selectedEntryType.label : "All Entry Types"
             //store.querySource = `Filter Result (${resultEntryTypes})`
         }
         else if (uiMode.value === eUiMode.Raw) {
             if (rawQuery.value && rawQuery.value.trim().length > 0) {
-                store.executeJob(rawQuery.value, email.value, label.value, batchSize.value)
+                store.executeJob(rawQuery.value, email.value, label.value, batchSize.value, selectUniqueEntries.value, roundFloats.value, numDecimalPoints.value)
                // store.querySource = "Solr Query Result"
             }
             else {
@@ -117,6 +117,9 @@
     const email = ref("");
     const label = ref("");
     const batchSize = ref(50000)
+    const selectUniqueEntries = ref(false)
+    const roundFloats = ref(false)
+    const numDecimalPoints = ref(2)
 
     const isBatchButtonDisabled = computed(() => email.value.trim().length == 0 || label.value.trim().length == 0 || batchSize.value <= 0);
 
@@ -198,6 +201,9 @@
             <div>Notification Email : <input type="text" v-model="email" placeholder="email address" /> </div>
             <div>Job Label : <input type="text" v-model="label" placeholder="label for the job" /></div>
             <div>Batch Size: <input type="number" v-model="batchSize" placeholder="Batch Size" /></div>
+            <div><input type="checkbox" v-model="selectUniqueEntries" /> Select unique entries</div>
+            <div v-if="selectUniqueEntries"><input type="checkbox" v-model="roundFloats" />Round floats <span v-if="roundFloats">to: <input type="number" v-model="numDecimalPoints" style="width: 60px"/> decimal places</span></div>
+
             <button @click="executeJob" class="btn btn-success" :disabled='isBatchButtonDisabled'>Submit Search Job</button>
         </div>
     </div>

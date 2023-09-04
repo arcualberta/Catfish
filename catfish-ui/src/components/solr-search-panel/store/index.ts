@@ -57,7 +57,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 this.isLoadig = false;
             });
         },
-        executeJob(query: string | null, email: string, label: string, batchSize:number) {
+        executeJob(query: string | null, email: string, label: string, batchSize:number, selectUniqueEntries:boolean, roundFloats:boolean, numDecimalPoints:number) {
             this.isLoadig = true;
            // this.offset = offset;
            // this.max = max;
@@ -71,6 +71,13 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             form.append("batchSize", batchSize.toString());
             if(this.resultFieldNames?.length > 0){
                 form.append("fieldList", this.resultFieldNames.join());
+            }
+
+            if(selectUniqueEntries){
+                form.append("selectUniqueEntries", selectUniqueEntries.toString());
+                if(roundFloats){
+                    form.append("numDecimalPoints", numDecimalPoints.toString());
+                }
             }
             
             this.queryStart = new Date().getTime()

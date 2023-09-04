@@ -3,6 +3,9 @@ using Catfish.API.Repository.Models.BackgroundJobs;
 using Catfish.API.Repository.Solr;
 using CatfishExtensions.DTO;
 using CatfishExtensions.Services;
+using CsvHelper;
+using System.Formats.Asn1;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -200,10 +203,18 @@ namespace Catfish.API.Repository.Services
             return fieldNames;
         }
 
-        public async Task SubmitSearchJobAsync(string query, string? fieldList, string notificationEmail, string jobLabel, string solrCoreUrl, string downloadEndpoint, int batchSize, int maxRows, string fromEmail, string smtpServer, int smtpPort, bool ssl)
+        public async Task SubmitSearchJobAsync(
+            string query, 
+            string? fieldList,
+            string notificationEmail,
+            string jobLabel,
+            string solrCoreUrl,
+            string downloadEndpoint,
+            int batchSize,
+            int maxRows,
+            bool? selectUniqueEntries, 
+            int? numDecimalPoints)
         {
-            //Interfaces.IEmailService _email = new EmailService(fromEmail, smtpServer, smtpPort, ssl);
-
             JobRecord jobRecord = new JobRecord()
             {
                 JobLabel = jobLabel,
@@ -227,16 +238,78 @@ namespace Catfish.API.Repository.Services
 
                 string downloadLink = downloadEndpoint + "?fileName=" + fileName;
 
+                List<string> uniqueKeys = new List<string>();
+                string[] fieldTypes = null;
+                bool[] decimalFieldIndices = new bool[]{ };
+
                 for (int offset = 0; offset < maxRows; offset += batchSize)
                 {
                     var result = await ExecuteSolrSearch(solrCoreUrl, query, offset, batchSize, null, null, fieldList);
-                    //Skipping the header line if this is not the first batch
-                    if (offset > 0)
+
+                    if(offset == 0)
                     {
-                        result = result.Substring(result.IndexOf("\n") + 1);
+                        fieldTypes = result.Substring(0, result.IndexOf("\n")).Split(new char[] { ',' });
+                        decimalFieldIndices = fieldTypes.Select(ft => ft.EndsWith("_d")).ToArray();
                     }
+                    
+                    //Skipping the header line if this is not the first batch
+                    result = result.Substring(result.IndexOf("\n") + 1);
                    
-                    await File.AppendAllTextAsync(outFile, result);
+                    if(selectUniqueEntries.HasValue && selectUniqueEntries.Value)
+                    {
+                        List<string> selectedLines = new List<string>();
+                        string[] lines = result.Split(new char[] {'\n'});
+                        foreach(var line in lines)
+                        {
+                            string[] fieldValues = line.Split(new char[] {','});
+                            string key = GetUniqueKey(fieldValues, numDecimalPoints, decimalFieldIndices);
+                            if (!uniqueKeys.Contains(key))
+                            {
+                                uniqueKeys.Add(key);
+                                selectedLines.Add(line);
+                            }
+                        }
+
+
+                        if (offset == 0)
+                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fieldTypes!) });
+
+                        if (selectedLines.Count > 0)
+                            await File.AppendAllLinesAsync(outFile, selectedLines);
+
+
+                        ////StringBuilder outputCsvBuilder = new StringBuilder(); ;
+                        ////using (var writer = new StringWriter(outputCsvBuilder))
+                        ////using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                        ////{
+                        ////    using (var reader = new StringReader(result))
+                        ////    using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
+                        ////    {
+                        ////        var rows = csvReader.GetRecords<string[]>().ToList();
+                        ////        foreach(var row in rows)
+                        ////        {
+                        ////            string key = GetUniqueKey(row, numDecimalPoints, decimalFieldIndices);
+                        ////            if (!uniqueKeys.Contains(key))
+                        ////            {
+                        ////                uniqueKeys.Add(key);
+                        ////                csvWriter.WriteRecord(row);
+                        ////            }
+                        ////        }
+                        ////    }
+                        ////}
+
+                        ////if (offset == 0)
+                        ////    await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fieldTypes!) });
+
+                        ////await File.AppendAllTextAsync(outFile, outputCsvBuilder.ToString());
+                    }
+                    else
+                    {
+                        if (offset == 0)
+                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fieldTypes!) });
+
+                        await File.AppendAllTextAsync(outFile, result);
+                    }
 
                     jobRecord.ProcessedDataRows = offset + batchSize;
                     jobRecord.LastUpdated = DateTime.Now;
@@ -289,6 +362,24 @@ namespace Catfish.API.Repository.Services
             ////    System.IO.File.Delete(outFile);
             ////WriteToCsv(result, outFile);
 
+        }
+
+        private string GetUniqueKey(string[] fieldValues, int? numDecimalPoints, bool[] decimalFieldIndices)
+        {
+            if (!numDecimalPoints.HasValue)
+                return string.Join(",", fieldValues);
+            else
+            {
+                string key = "";
+                for(int i=0; i< fieldValues.Length; ++i)
+                {
+                    if (decimalFieldIndices[i] && decimal.TryParse(fieldValues[i], out decimal decimalValue))
+                        key = $"{key},{Math.Round(decimalValue, numDecimalPoints.Value)}";
+                    else
+                        key = $"{key},{fieldValues[i]}";
+                }
+                return key;
+            }
         }
 
         public async Task<int> GetMatchCount(string query, string solrCoreUrl = "")
