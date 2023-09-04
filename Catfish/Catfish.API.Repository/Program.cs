@@ -36,8 +36,8 @@ builder.Services.AddHangfire(x =>
    x.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString")));
-
+    .UseSqlServerStorage(configuration.GetConnectionString("RepoConnectionString"))
+    );
 builder.Services.AddHangfireServer();
 
 //Adding services specific to this project

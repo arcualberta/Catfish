@@ -1,9 +1,8 @@
 ﻿using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Solr;
 using ElmahCore;
-using CatfishExtensions.DTO;
 using Hangfire;
-using Hangfire.Storage;
+using CatfishExtensions.Services;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -68,10 +67,10 @@ namespace Catfish.API.Repository.Controllers
         [HttpPost("schedule-search-job")]
         public async Task<string> ScheduleSearchJob(
             [FromForm] string query,
-            [FromForm] string fieldList,
             [FromForm] string email,
             [FromForm] string label,
-            [FromForm] int batchSize = 10000)
+            [FromForm] int batchSize = 10000,
+            [FromForm] string? fieldList = null)
         {
             string parentJobId = "";
             try
@@ -81,11 +80,12 @@ namespace Catfish.API.Repository.Controllers
                 int matchCount = await _solr.GetMatchCount(query);
                 string solrCoreUrl = _config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
 
-                string path = Request.Path.Value.Substring(0, Request.Path.Value.LastIndexOf("/")) + "/get-file";
+                string path = (Request.PathBase.Value?.Length > 0 ? Request.PathBase.Value : "")
+                    + Request.Path.Value.Substring(0, Request.Path.Value.LastIndexOf("/")) + "/get-file";
                 string downloadEndpoint = Request.Scheme + "://" + Request.Host.Value.TrimEnd('/') + path;
 
 
-                parentJobId = BackgroundJob.Enqueue(() => _solr.SubmitSearchJobAsync(query, fieldList, email, label, solrCoreUrl, downloadEndpoint, batchSize, matchCount, _fromEmail, _smtpServer, _smtpPort, _ssl));
+                parentJobId = BackgroundJob.Enqueue<ISolrService>((solrService) => solrService.SubmitSearchJobAsync(query, fieldList, email, label, solrCoreUrl, downloadEndpoint, batchSize, matchCount, _fromEmail, _smtpServer, _smtpPort, _ssl));
 
                 ////Email emailDto = new Email();
                 ////emailDto.Subject = "Background Job";

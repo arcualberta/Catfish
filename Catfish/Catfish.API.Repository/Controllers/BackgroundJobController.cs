@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository.Interfaces;
+using Catfish.API.Repository.Models.BackgroundJobs;
 
 namespace Catfish.API.Repository.Controllers
 {
@@ -11,15 +12,21 @@ namespace Catfish.API.Repository.Controllers
         private readonly IBackgroundJobService _bgJobSrv;
         public BackgroundJobController(IBackgroundJobService bgJobSrv)
         {
-           // _context = context;
             _bgJobSrv = bgJobSrv;
         }
         // GET: api/Forms
         [HttpGet]
-        public async Task<string> Get()
+        public async Task<List<JobRecord>> Get(int offset = 0, int max = 100)
         {
-            return _bgJobSrv.RunTestBackgroundJob();
+            return await _bgJobSrv.GetJobs(offset, max);
         }
-      
+
+        [HttpGet("job")]
+        public async Task<JobRecord> GetJobRecord(Guid id)
+        {
+            return await _bgJobSrv.GetJob(id);
+        }
+
     }
+
 }

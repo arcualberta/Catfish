@@ -96,13 +96,13 @@
         store.queryResult = null;
         
         if (uiMode.value === eUiMode.Default) {
-            store.executeJob(quertString.value, email.value, label.value)
+            store.executeJob(quertString.value, email.value, label.value, batchSize.value)
            // const resultEntryTypes = store.selectedEntryType ? store.selectedEntryType.label : "All Entry Types"
             //store.querySource = `Filter Result (${resultEntryTypes})`
         }
         else if (uiMode.value === eUiMode.Raw) {
             if (rawQuery.value && rawQuery.value.trim().length > 0) {
-                store.executeJob(rawQuery.value, email.value, label.value)
+                store.executeJob(rawQuery.value, email.value, label.value, batchSize.value)
                // store.querySource = "Solr Query Result"
             }
             else {
@@ -116,6 +116,9 @@
     const visible = ref(false);
     const email = ref("");
     const label = ref("");
+    const batchSize = ref(50000)
+
+    const isBatchButtonDisabled = computed(() => email.value.trim().length == 0 || label.value.trim().length == 0 || batchSize.value <= 0);
 
 
 </script>
@@ -192,9 +195,10 @@
         </div>
         <div class="mt-3 mb-3 panel-search-bg">
             <h4>Background Search</h4>
-            <div>Email : <input type="text" v-model="email" placeholder="email address" /> {{email}} </div>
-            <div>Job Label : <input type="text" v-model="label" placeholder="label for the job" /> {{label}} </div>
-            <button @click="executeJob" class="btn btn-success">Submit Search Job</button>
+            <div>Notification Email : <input type="text" v-model="email" placeholder="email address" /> </div>
+            <div>Job Label : <input type="text" v-model="label" placeholder="label for the job" /></div>
+            <div>Batch Size: <input type="number" v-model="batchSize" placeholder="Batch Size" /></div>
+            <button @click="executeJob" class="btn btn-success" :disabled='isBatchButtonDisabled'>Submit Search Job</button>
         </div>
     </div>
     <div v-if="store.isLoadig" class="mt-2">

@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository.Interfaces;
+using Catfish.API.Repository.Models.BackgroundJobs;
 using Catfish.API.Repository.Solr;
 using CatfishExtensions.DTO;
 using CatfishExtensions.Services;
@@ -15,16 +16,19 @@ namespace Catfish.API.Repository.Services
         //private readonly ErrorLog _errorLog;
         private readonly bool _indexFieldNames;
         private static readonly HttpClient _httpClient = new HttpClient();
+        private readonly RepoDbContext _db;
+        private readonly IEmailService _email;
 
+        //public SolrService()
+        //{
 
-        public SolrService()
-        {
+        //}
 
-        }
-
-        public SolrService(IConfiguration config)
+        public SolrService(IConfiguration config, RepoDbContext db, IEmailService email)
         {
             _config = config;
+            _db = db;
+            _email = email;
             _solrCoreUrl = config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
             //_errorLog = errorLog;
 
@@ -198,7 +202,17 @@ namespace Catfish.API.Repository.Services
 
         public async Task SubmitSearchJobAsync(string query, string? fieldList, string notificationEmail, string jobLabel, string solrCoreUrl, string downloadEndpoint, int batchSize, int maxRows, string fromEmail, string smtpServer, int smtpPort, bool ssl)
         {
-            Interfaces.IEmailService _email = new EmailService(fromEmail, smtpServer, smtpPort, ssl);  
+            //Interfaces.IEmailService _email = new EmailService(fromEmail, smtpServer, smtpPort, ssl);
+
+            JobRecord jobRecord = new JobRecord()
+            {
+                JobLabel = jobLabel,
+                Started = DateTime.Now,
+                LastUpdated = DateTime.Now,
+                Status = "In Progress",
+                ExpectedDataRows = maxRows
+            };
+            _db.JobRecords.Add(jobRecord);
 
             try
             {
@@ -211,30 +225,49 @@ namespace Catfish.API.Repository.Services
                 if (File.Exists(outFile))
                     File.Delete(outFile);
 
+                string downloadLink = downloadEndpoint + "?fileName=" + fileName;
+
                 for (int offset = 0; offset < maxRows; offset += batchSize)
                 {
                     var result = await ExecuteSolrSearch(solrCoreUrl, query, offset, batchSize, null, null, fieldList);
-
                     //Skipping the header line if this is not the first batch
-                    if(offset > 0)
+                    if (offset > 0)
                     {
                         result = result.Substring(result.IndexOf("\n") + 1);
                     }
                    
                     await File.AppendAllTextAsync(outFile, result);
+
+                    jobRecord.ProcessedDataRows = offset + batchSize;
+                    jobRecord.LastUpdated = DateTime.Now;
+                    jobRecord.DataFileSize = new FileInfo(outFile).Length;
+                    if (string.IsNullOrEmpty(jobRecord.DownloadLink))
+                    {
+                        jobRecord.DataFile = fileName;
+                        jobRecord.DownloadLink = downloadLink;
+                    }
+                    _db.SaveChanges();
                 }
+
+                jobRecord.ProcessedDataRows = maxRows;
+                jobRecord.Status = "Completed";
+                jobRecord.LastUpdated = DateTime.Now;
+                _db.SaveChanges();
 
                 CatfishExtensions.DTO.Email emailDto = new CatfishExtensions.DTO.Email();
                 emailDto.Subject = "Background Job Completed";
                 emailDto.ToRecipientEmail = new List<string> { notificationEmail };
                 emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
-                string downloadLink = downloadEndpoint + "?fileName=" + fileName;
 
                 emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
                 _email.SendEmail(emailDto);
             }
             catch(Exception ex)
             {
+                jobRecord.Status = "Failed";
+                jobRecord.LastUpdated= DateTime.Now;
+                _db.SaveChanges();
+
                 CatfishExtensions.DTO.Email emailDto = new CatfishExtensions.DTO.Email();
                 emailDto.Subject = "Background Job Failed";
                 emailDto.ToRecipientEmail = new List<string> { notificationEmail };
