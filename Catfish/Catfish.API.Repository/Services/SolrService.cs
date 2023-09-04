@@ -8,6 +8,7 @@ using System.Formats.Asn1;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace Catfish.API.Repository.Services
@@ -244,6 +245,8 @@ namespace Catfish.API.Repository.Services
                 string[] fieldTypes = null;
                 bool[] decimalFieldIndices = new bool[]{ };
 
+                Regex csvSplitRegx = new Regex("," + "(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
+
                 for (int offset = 0; offset < maxRows; offset += batchSize)
                 {
                     var result = await ExecuteSolrSearch(solrCoreUrl, query, offset, batchSize, null, null, fieldList);
@@ -263,7 +266,8 @@ namespace Catfish.API.Repository.Services
                         string[] lines = result.Split(new char[] {'\n'});
                         foreach(var line in lines)
                         {
-                            string[] fieldValues = line.Split(new char[] {','});
+                            string[] fieldValues = csvSplitRegx.Split(line);
+
                             string key = GetUniqueKey(fieldValues, numDecimalPoints, decimalFieldIndices);
                             int idx = uniqueKeys.IndexOf(key);
                             if (idx < 0)
@@ -346,19 +350,26 @@ namespace Catfish.API.Repository.Services
 
         private string GetUniqueKey(string[] fieldValues, int? numDecimalPoints, bool[] decimalFieldIndices)
         {
-            if (!numDecimalPoints.HasValue)
-                return string.Join(",", fieldValues);
-            else
+            try
             {
-                string key = "";
-                for(int i=0; i< fieldValues.Length; ++i)
+                if (!numDecimalPoints.HasValue)
+                    return string.Join(",", fieldValues);
+                else
                 {
-                    if (decimalFieldIndices[i] && decimal.TryParse(fieldValues[i], out decimal decimalValue))
-                        key = $"{key},{Math.Round(decimalValue, numDecimalPoints.Value)}";
-                    else
-                        key = $"{key},{fieldValues[i]}";
+                    string key = "";
+                    for (int i = 0; i < fieldValues.Length; ++i)
+                    {
+                        if (decimalFieldIndices[i] && decimal.TryParse(fieldValues[i], out decimal decimalValue))
+                            key = $"{key},{Math.Round(decimalValue, numDecimalPoints.Value)}";
+                        else
+                            key = $"{key},{fieldValues[i]}";
+                    }
+                    return key;
                 }
-                return key;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
