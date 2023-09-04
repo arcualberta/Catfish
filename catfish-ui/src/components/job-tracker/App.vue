@@ -49,9 +49,14 @@ id: Guid,
             </tr>
         </thead>
         <tbody>
-            <tr v-for="job in jobs" :key="job.id">
+            <tr v-for="job in jobs" :key="job.id.toString()">
                 <td>{{ job.id }}</td>
-                <td>{{ job.status }}</td>
+                <td>
+                    <span :id="job.id.toString()">{{ job.status }}</span>
+                    <b-tooltip v-if="job.message?.length>0" :target="job.id.toString()" triggers="hover">
+                        {{ job.message }}
+                    </b-tooltip>
+                </td>
                 <td>{{ job.jobLabel }}</td>
                 <td>{{ job.started }}</td>
                 <td>{{ job.lastUpdated }}</td>

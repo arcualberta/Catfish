@@ -218,8 +218,8 @@ namespace Catfish.API.Repository.Services
             JobRecord jobRecord = new JobRecord()
             {
                 JobLabel = jobLabel,
-                Started = DateTime.Now,
-                LastUpdated = DateTime.Now,
+                Started = DateTime.UtcNow,
+                LastUpdated = DateTime.UtcNow,
                 Status = "In Progress",
                 ExpectedDataRows = maxRows
             };
@@ -276,32 +276,6 @@ namespace Catfish.API.Repository.Services
 
                         if (selectedLines.Count > 0)
                             await File.AppendAllLinesAsync(outFile, selectedLines);
-
-
-                        ////StringBuilder outputCsvBuilder = new StringBuilder(); ;
-                        ////using (var writer = new StringWriter(outputCsvBuilder))
-                        ////using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                        ////{
-                        ////    using (var reader = new StringReader(result))
-                        ////    using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
-                        ////    {
-                        ////        var rows = csvReader.GetRecords<string[]>().ToList();
-                        ////        foreach(var row in rows)
-                        ////        {
-                        ////            string key = GetUniqueKey(row, numDecimalPoints, decimalFieldIndices);
-                        ////            if (!uniqueKeys.Contains(key))
-                        ////            {
-                        ////                uniqueKeys.Add(key);
-                        ////                csvWriter.WriteRecord(row);
-                        ////            }
-                        ////        }
-                        ////    }
-                        ////}
-
-                        ////if (offset == 0)
-                        ////    await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fieldTypes!) });
-
-                        ////await File.AppendAllTextAsync(outFile, outputCsvBuilder.ToString());
                     }
                     else
                     {
@@ -312,7 +286,7 @@ namespace Catfish.API.Repository.Services
                     }
 
                     jobRecord.ProcessedDataRows = offset + batchSize;
-                    jobRecord.LastUpdated = DateTime.Now;
+                    jobRecord.LastUpdated = DateTime.UtcNow;
                     jobRecord.DataFileSize = new FileInfo(outFile).Length;
                     if (string.IsNullOrEmpty(jobRecord.DownloadLink))
                     {
@@ -324,10 +298,11 @@ namespace Catfish.API.Repository.Services
 
                 jobRecord.ProcessedDataRows = maxRows;
                 jobRecord.Status = "Completed";
-                jobRecord.LastUpdated = DateTime.Now;
+                jobRecord.LastUpdated = DateTime.UtcNow;
+                jobRecord.Message = $"Processing time: {(jobRecord.LastUpdated - jobRecord.Started)}";
                 _db.SaveChanges();
 
-                CatfishExtensions.DTO.Email emailDto = new CatfishExtensions.DTO.Email();
+                Email emailDto = new Email();
                 emailDto.Subject = "Background Job Completed";
                 emailDto.ToRecipientEmail = new List<string> { notificationEmail };
                 emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
@@ -338,10 +313,11 @@ namespace Catfish.API.Repository.Services
             catch(Exception ex)
             {
                 jobRecord.Status = "Failed";
-                jobRecord.LastUpdated= DateTime.Now;
+                jobRecord.LastUpdated= DateTime.UtcNow;
+                jobRecord.Message = $"{ex.Message}\n\n{ex.StackTrace}";
                 _db.SaveChanges();
 
-                CatfishExtensions.DTO.Email emailDto = new CatfishExtensions.DTO.Email();
+                Email emailDto = new Email();
                 emailDto.Subject = "Background Job Failed";
                 emailDto.ToRecipientEmail = new List<string> { notificationEmail };
                 emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
@@ -349,18 +325,6 @@ namespace Catfish.API.Repository.Services
                 emailDto.Body = $@"Your background-job failed. \n\n{ex.Message}\n\n{ex.StackTrace}";
                 _email.SendEmail(emailDto);
             }
-
-            ////var result = await ExecuteSolrSearch(solrCoreUrl, query, 0, int.MaxValue, null, null, fieldList);
-            //////var result = task.Result;
-
-            //////save the searchResult??
-            ////string folderRoot = Path.Combine("App_Data");
-            ////if (!(System.IO.Directory.Exists(folderRoot)))
-            ////    System.IO.Directory.CreateDirectory(folderRoot);
-            ////string outFile = Path.Combine(folderRoot, filename);
-            ////if (System.IO.File.Exists(outFile))
-            ////    System.IO.File.Delete(outFile);
-            ////WriteToCsv(result, outFile);
 
         }
 

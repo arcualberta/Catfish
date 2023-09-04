@@ -12,6 +12,7 @@
         public long DataFileSize { get; set; }
         public DateTime Started { get; set; }
         public DateTime LastUpdated { get; set; }
+        public string? Message { get; set; }
 
     }
 }

@@ -10,5 +10,6 @@ export interface JobRecord{
     downloadLink: string,
     dataFileSize: number,
     started: Date,
-    lastUpdated: Date
+    lastUpdated: Date,
+    message: string
 }
