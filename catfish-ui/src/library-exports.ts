@@ -16,6 +16,9 @@ export {BootstrapVue3} from 'bootstrap-vue-3'
 import IconsPlugin from 'bootstrap-vue-3'
 export {IconsPlugin}
 
+import FloatingVue from 'floating-vue'
+export {FloatingVue}
+
 /**
  * Exporting Font Awesome librarty
  */

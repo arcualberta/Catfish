@@ -4,6 +4,7 @@ using Catfish.API.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catfish.API.Repository.Migrations
 {
     [DbContext(typeof(RepoDbContext))]
-    partial class RepoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230904182916_AddedStatsFileLink")]
+    partial class AddedStatsFileLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,6 +42,7 @@ namespace Catfish.API.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DownloadStatsFileLink")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ExpectedDataRows")

@@ -4,6 +4,7 @@ using Catfish.API.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catfish.API.Repository.Migrations
 {
     [DbContext(typeof(RepoDbContext))]
-    partial class RepoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230904034414_ChangedFileSizeType")]
+    partial class ChangedFileSizeType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,11 +37,8 @@ namespace Catfish.API.Repository.Migrations
                     b.Property<long>("DataFileSize")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("DownloadDataFileLink")
+                    b.Property<string>("DownloadLink")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DownloadStatsFileLink")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ExpectedDataRows")
@@ -51,9 +50,6 @@ namespace Catfish.API.Repository.Migrations
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProcessedDataRows")
                         .HasColumnType("int");
