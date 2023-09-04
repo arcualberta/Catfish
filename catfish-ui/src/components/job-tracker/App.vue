@@ -4,6 +4,8 @@
 import { computed, onMounted } from 'vue';
 import { useJobTrackerStore } from './store';
 
+import 'floating-vue/dist/style.css'
+
 const props = defineProps<{
     apiRoot: string
 }>();
@@ -52,10 +54,7 @@ id: Guid,
             <tr v-for="job in jobs" :key="job.id.toString()">
                 <td>{{ job.id }}</td>
                 <td>
-                    <span :id="job.id.toString()">{{ job.status }}</span>
-                    <b-tooltip v-if="job.message?.length>0" :target="job.id.toString()" triggers="hover">
-                        {{ job.message }}
-                    </b-tooltip>
+                    <span v-tooltip="job.message">{{ job.status }}</span>
                 </td>
                 <td>{{ job.jobLabel }}</td>
                 <td>{{ job.started }}</td>
