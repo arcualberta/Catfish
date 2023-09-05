@@ -326,7 +326,7 @@ namespace Catfish.API.Repository.Services
                     Email emailDto = new Email();
                     emailDto.Subject = "Background Job Completed";
                     emailDto.ToRecipientEmail = new List<string> { notificationEmail };
-                    emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
+                   // emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
 
                     emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
                     _email.SendEmail(emailDto);
@@ -344,7 +344,7 @@ namespace Catfish.API.Repository.Services
                     Email emailDto = new Email();
                     emailDto.Subject = "Background Job Failed";
                     emailDto.ToRecipientEmail = new List<string> { notificationEmail };
-                    emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
+                   // emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
 
                     emailDto.Body = $@"Your background-job failed. \n\n{ex.Message}\n\n{ex.StackTrace}";
                     _email.SendEmail(emailDto);
