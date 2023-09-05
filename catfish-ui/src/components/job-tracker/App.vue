@@ -12,7 +12,12 @@ const props = defineProps<{
 
 const store = useJobTrackerStore();
 
-const jobs = computed(() => store.jobs)
+    const jobs = computed(() => store.jobs)
+    var totalJobs = computed(() => store.jobs.length);
+    const first = computed(() => store.offset + 1)
+    const last = computed(() => store.offset + store.jobs.length)
+    const hasPrev = computed(() => first.value > 1)
+    const hasNext = computed(() => last.value < totalJobs.value)
 
 if(props.apiRoot){
     store.apiRoot = props.apiRoot;
@@ -22,6 +27,8 @@ onMounted(() => {
     store.load(0, 100);
 })
 
+
+    
 
 
 </script>
@@ -37,6 +44,11 @@ id: Guid,
     started: Date,
     lastUpdated: Date
 <template>
+    <div class="mt-2">
+        <span v-if="hasPrev" class="link" @click="store.previous()">&lt;&lt;&lt;</span>
+        {{ first.toLocaleString("en-US") }} to {{ last.toLocaleString("en-US") }} of {{ totalJobs.toLocaleString("en-US") }}
+        <span v-if="hasNext" class="link" @click="store.next()">&gt;&gt;&gt;</span>
+    </div>
     <table class="table">
         <thead>
             <tr>
