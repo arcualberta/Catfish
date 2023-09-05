@@ -57,7 +57,7 @@ namespace Catfish.API.Repository.Controllers
         [HttpPost("schedule-search-job")]
         public async Task<string> ScheduleSearchJob(
             [FromForm] string query,
-            [FromForm] string email,
+            [FromForm] string? email,
             [FromForm] string label,
             [FromForm] int batchSize = 10000,
             [FromForm] string? fieldList = null,

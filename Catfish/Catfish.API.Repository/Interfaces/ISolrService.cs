@@ -35,7 +35,7 @@ namespace Catfish.API.Repository.Interfaces
         public Task SubmitSearchJobAsync(
             string query,
             string? fieldList,
-            string notificationEmaill,
+            string? notificationEmaill,
             string jobLabel,
             string solrCoreUrl,
             string downloadEndpoint,

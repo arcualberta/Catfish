@@ -207,7 +207,7 @@ namespace Catfish.API.Repository.Services
         public async Task SubmitSearchJobAsync(
             string query, 
             string? fieldList,
-            string notificationEmail,
+            string? notificationEmail,
             string jobLabel,
             string solrCoreUrl,
             string downloadEndpoint,
@@ -321,14 +321,16 @@ namespace Catfish.API.Repository.Services
                 jobRecord.LastUpdated = DateTime.UtcNow;
                 jobRecord.Message = $"Processing time: {(jobRecord.LastUpdated - jobRecord.Started)}";
                 _db.SaveChanges();
+                if (!string.IsNullOrEmpty(notificationEmail))
+                {
+                    Email emailDto = new Email();
+                    emailDto.Subject = "Background Job Completed";
+                    emailDto.ToRecipientEmail = new List<string> { notificationEmail };
+                    emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
 
-                Email emailDto = new Email();
-                emailDto.Subject = "Background Job Completed";
-                emailDto.ToRecipientEmail = new List<string> { notificationEmail };
-                emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
-
-                emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
-                _email.SendEmail(emailDto);
+                    emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
+                    _email.SendEmail(emailDto);
+                }
             }
             catch(Exception ex)
             {
@@ -337,13 +339,16 @@ namespace Catfish.API.Repository.Services
                 jobRecord.Message = $"{ex.Message}\n\n{ex.StackTrace}";
                 _db.SaveChanges();
 
-                Email emailDto = new Email();
-                emailDto.Subject = "Background Job Failed";
-                emailDto.ToRecipientEmail = new List<string> { notificationEmail };
-                emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
+                if (!string.IsNullOrEmpty(notificationEmail))
+                {
+                    Email emailDto = new Email();
+                    emailDto.Subject = "Background Job Failed";
+                    emailDto.ToRecipientEmail = new List<string> { notificationEmail };
+                    emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
 
-                emailDto.Body = $@"Your background-job failed. \n\n{ex.Message}\n\n{ex.StackTrace}";
-                _email.SendEmail(emailDto);
+                    emailDto.Body = $@"Your background-job failed. \n\n{ex.Message}\n\n{ex.StackTrace}";
+                    _email.SendEmail(emailDto);
+                }
             }
 
         }
