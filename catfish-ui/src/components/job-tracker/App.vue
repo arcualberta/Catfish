@@ -7,7 +7,8 @@ import { useJobTrackerStore } from './store';
 import 'floating-vue/dist/style.css'
 
 const props = defineProps<{
-    apiRoot: string
+    apiRoot: string,
+    pageSize: number
 }>();
 
 const store = useJobTrackerStore();
@@ -44,6 +45,7 @@ id: Guid,
     started: Date,
     lastUpdated: Date
 <template>
+    Page Size: {{ props.pageSize }}
     <div class="mt-2">
         <span v-if="hasPrev" class="link" @click="store.previous()">&lt;&lt;&lt;</span>
         {{ first.toLocaleString("en-US") }} to {{ last.toLocaleString("en-US") }} of {{ totalJobs.toLocaleString("en-US") }}
