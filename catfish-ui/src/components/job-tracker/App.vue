@@ -8,15 +8,17 @@ import 'floating-vue/dist/style.css'
 
 const props = defineProps<{
     apiRoot: string,
-    pageSize: number
+    pageSize: number,
+    maxItem: number
 }>();
 
 const store = useJobTrackerStore();
 
     const jobs = computed(() => store.jobs)
+    const displayJobs = computed(() => store.jobsToDisplayPerPage)
     var totalJobs = computed(() => store.jobs.length);
     const first = computed(() => store.offset + 1)
-    const last = computed(() => store.offset + store.jobs.length)
+    const last = computed(() => (store.offset + props.pageSize) > store.jobs.length ? store.jobs.length : (store.offset + props.pageSize)) //store.offset + store.jobs.length
     const hasPrev = computed(() => first.value > 1)
     const hasNext = computed(() => last.value < totalJobs.value)
 
@@ -24,13 +26,12 @@ if(props.apiRoot){
     store.apiRoot = props.apiRoot;
 }
 
-onMounted(() => {
-    store.load(0, 100);
+    onMounted(() => {
+        //store.setPageSize(props.pageSize)
+        store.load(0, props.maxItem, props.pageSize);
 })
 
-
     
-
 
 </script>
 
@@ -45,11 +46,11 @@ id: Guid,
     started: Date,
     lastUpdated: Date
 <template>
-    Page Size: {{ props.pageSize }}
+    Page Size: {{ props.pageSize }} Max-Items: {{ props.maxItem }}
     <div class="mt-2">
-        <span v-if="hasPrev" class="link" @click="store.previous()">&lt;&lt;&lt;</span>
+        <span v-if="hasPrev" class="link" @click="store.previous(props.pageSize)">&lt;&lt;&lt;</span>
         {{ first.toLocaleString("en-US") }} to {{ last.toLocaleString("en-US") }} of {{ totalJobs.toLocaleString("en-US") }}
-        <span v-if="hasNext" class="link" @click="store.next()">&gt;&gt;&gt;</span>
+        <span v-if="hasNext" class="link" @click="store.next(props.pageSize)">&gt;&gt;&gt;</span>
     </div>
     <table class="table">
         <thead>
@@ -65,7 +66,7 @@ id: Guid,
             </tr>
         </thead>
         <tbody>
-            <tr v-for="job in jobs" :key="job.id.toString()">
+            <tr v-for="job in displayJobs" :key="job.id.toString()">
                 <td>{{ job.id }}</td>
                 <td>
                     <span v-tooltip="job.message">{{ job.status }}</span>
