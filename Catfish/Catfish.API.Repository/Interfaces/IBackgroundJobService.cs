@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Models.BackgroundJobs;
+﻿using Catfish.API.Repository.DTOs;
+using Catfish.API.Repository.Models.BackgroundJobs;
 
 namespace Catfish.API.Repository.Interfaces
 {
@@ -7,7 +8,7 @@ namespace Catfish.API.Repository.Interfaces
         public void  DummyTest();
         public string RunTestBackgroundJob();
 
-        public Task<List<JobRecord>> GetJobs(int offset, int max);
+        public Task<JobSearchResult> GetJobs(int offset, int max);
         public Task<JobRecord?> GetJob(Guid id);
     }
 }

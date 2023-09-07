@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Interfaces;
+﻿using Catfish.API.Repository.DTOs;
+using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Models.BackgroundJobs;
 using Catfish.API.Repository.Models.Forms;
 using Catfish.API.Repository.Models.Workflow;
@@ -34,9 +35,17 @@ namespace Catfish.API.Repository.Services
               } 
         }
 
-        public async Task<List<JobRecord>> GetJobs(int offset, int max)
+        public async Task<JobSearchResult> GetJobs(int offset, int max)
         {
-            return await _db.JobRecords.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+            JobSearchResult result = new JobSearchResult()
+            {
+                Offset = offset,
+                TotalMatches = await _db.JobRecords.CountAsync()
+            };
+
+            result.ResultEntries = await _db.JobRecords.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+
+            return result;
         }
 
         public async Task<JobRecord?> GetJob(Guid id)

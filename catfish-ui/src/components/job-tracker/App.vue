@@ -14,13 +14,13 @@ const props = defineProps<{
 
 const store = useJobTrackerStore();
 
-    const jobs = computed(() => store.jobs)
+    const jobs = computed(() => store.jobSearchResult.resultEntries)
     const displayJobs = computed(() => store.jobsToDisplayPerPage)
     var totalJobs = computed(() => store.jobs.length);
     const first = computed(() => store.offset + 1)
     const last = computed(() => (store.offset + props.pageSize) > store.jobs.length ? store.jobs.length : (store.offset + props.pageSize)) //store.offset + store.jobs.length
-    const hasPrev = computed(() => first.value > 1)
-    const hasNext = computed(() => last.value < totalJobs.value)
+    const hasPrev = computed(() => store.jobSearchResult.offset > 0)
+    const hasNext = computed(() => (store.jobSearchResult.offset + store.jobSearchResult.resultEntries.length) < store.jobSearchResult.totalMatches))
 
 if(props.apiRoot){
     store.apiRoot = props.apiRoot;
@@ -28,7 +28,7 @@ if(props.apiRoot){
 
     onMounted(() => {
         //store.setPageSize(props.pageSize)
-        store.load(0, props.maxItem, props.pageSize);
+        store.load(0, props.pageSize);
 })
 
     

@@ -14,3 +14,10 @@ export interface JobRecord{
     lastUpdated: Date,
     message: string
 }
+
+export interface JobSearchResult{
+    resultEntries: JobRecord[],
+    offset: number,
+    totalMatches: number,
+    itemsPerPage: number
+}

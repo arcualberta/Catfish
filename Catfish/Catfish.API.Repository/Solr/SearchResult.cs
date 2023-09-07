@@ -1,21 +1,12 @@
-﻿using System.Xml.Linq;
+﻿using Catfish.API.Repository.DTOs;
+using Catfish.API.Repository.Models.BackgroundJobs;
+using System.Xml.Linq;
 
 namespace Catfish.API.Repository.Solr
 {
-    public class SearchResult
+    public class SearchResult: PaginatedSearchResult
     {
         public List<SolrResultEntry> ResultEntries { get; set; }
-
-        public int Offset { get; set; }
-
-        /// <summary>
-        /// The total number of matches found, which may be larger than the page size.
-        /// </summary>
-        public int TotalMatches { get; set; }
-
-        public int ItemsPerPage { get; set; }
-
-        //private readonly ErrorLog _errorLog;
 
         public SearchResult() { }
         public void InitFromXml(string response)

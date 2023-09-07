@@ -1,28 +1,22 @@
 import { buildHashFromArray } from "@fullcalendar/core";
 import { defineStore } from "pinia";
-import { JobRecord } from "../models";
+import { JobRecord, JobSearchResult } from "../models";
 
 export const useJobTrackerStore = defineStore('JobTrackerStore', {
     state: () => ({
-        jobs: [] as JobRecord[],
-        jobsToDisplayPerPage: [] as JobRecord[],
-        offset: 0,
+        jobSearchResult: {} as JobSearchResult,
         apiRoot: '',
-        max: 100
     }),
     actions: {
-        load( offset: number, max: number, pageSize: number){
+        load( offset: number, pageSize: number){
             //update max
-            this.max = max;
-
-            const api = `${this.apiRoot}/background-job?offset=${offset}&max=${max}`;
+            const api = `${this.apiRoot}/background-job?offset=${offset}&max=${pageSize}`;
             fetch(api, {
                 method: 'GET'
             })
             .then(response => response.json())
             .then(data => {
-                this.jobs = data as JobRecord[];
-                this.jobsToDisplayPerPage = this.jobs.slice(0, pageSize);
+                this.jobSearchResult = data as JobSearchResult;
             })
             .catch((error) => {
                 console.error('Load Error:', error);
@@ -30,19 +24,13 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
         },
         next(pageSize: number) {
             console.log("next")
-            this.offset = this.offset + pageSize;
-           
-            var toItems = this.offset + pageSize > this.jobs.length ? this.jobs.length : this.offset + pageSize;
-            this.jobsToDisplayPerPage = this.jobs.slice(this.offset, toItems);
-            
+            this.load(this.jobSearchResult.offset+this.jobSearchResult.itemsPerPage, pageSize)        
         },
         previous(pageSize: number) {
             console.log("previous")
-           
-            this.offset =  this.offset - pageSize;
-            var toItems = this.offset + pageSize > this.jobs.length ? this.jobs.length : this.offset + pageSize;
-            this.jobsToDisplayPerPage = this.jobs.slice(this.offset, toItems);
-        }
+            const offset = Math.max(0, (this.jobSearchResult.offset - this.jobSearchResult.itemsPerPage))
+            this.load(offset, pageSize)
+       }
         
     }
 });
