@@ -15,27 +15,21 @@ const props = defineProps<{
 const store = useJobTrackerStore();
 
     const jobs = computed(() => store.jobSearchResult.resultEntries)
-    // const displayJobs = computed(() => store.jobsToDisplayPerPage)
+    
     console.log("total matched" + store.jobSearchResult.totalMatches ? store.jobSearchResult.totalMatches: 0)
     var totalJobs = computed(() => store.jobSearchResult.totalMatches ? store.jobSearchResult.totalMatches: 0);
     const first = computed(() => store.jobSearchResult.offset + 1)
-    const last = computed(() => store.jobSearchResult.offset + store.jobSearchResult.resultEntries?.length) //store.offset + store.jobs.length
+    const last = computed(() => store.jobSearchResult.offset + store.jobSearchResult.resultEntries?.length) 
     const hasPrev = computed(() => first.value > 1)
     const hasNext = computed(() => (last.value < store.jobSearchResult.totalMatches))
 
-    /*
-     * 
-     * const first = computed(() => props.model.offset + 1)
-    const last = computed(() => props.model.offset + props.model.resultEntries.length)
-    const hasPrev = computed(() => first.value > 1)
-    const hasNext = computed(() => last.value < props.model.totalMatches)
-     * */
+   
 if(props.apiRoot){
     store.apiRoot = props.apiRoot;
 }
 
     onMounted(() => {
-        //store.setPageSize(props.pageSize)
+        
         store.load(0, props.pageSize);
 })
 
