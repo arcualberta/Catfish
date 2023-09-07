@@ -9,19 +9,27 @@ import 'floating-vue/dist/style.css'
 const props = defineProps<{
     apiRoot: string,
     pageSize: number,
-    maxItem: number
+   
 }>();
 
 const store = useJobTrackerStore();
 
     const jobs = computed(() => store.jobSearchResult.resultEntries)
-    const displayJobs = computed(() => store.jobsToDisplayPerPage)
-    var totalJobs = computed(() => store.jobs.length);
-    const first = computed(() => store.offset + 1)
-    const last = computed(() => (store.offset + props.pageSize) > store.jobs.length ? store.jobs.length : (store.offset + props.pageSize)) //store.offset + store.jobs.length
-    const hasPrev = computed(() => store.jobSearchResult.offset > 0)
-    const hasNext = computed(() => (store.jobSearchResult.offset + store.jobSearchResult.resultEntries.length) < store.jobSearchResult.totalMatches))
+    // const displayJobs = computed(() => store.jobsToDisplayPerPage)
+    console.log("total matched" + store.jobSearchResult.totalMatches ? store.jobSearchResult.totalMatches: 0)
+    var totalJobs = computed(() => store.jobSearchResult.totalMatches ? store.jobSearchResult.totalMatches: 0);
+    const first = computed(() => store.jobSearchResult.offset + 1)
+    const last = computed(() => store.jobSearchResult.offset + store.jobSearchResult.resultEntries?.length) //store.offset + store.jobs.length
+    const hasPrev = computed(() => first.value > 1)
+    const hasNext = computed(() => (last.value < store.jobSearchResult.totalMatches))
 
+    /*
+     * 
+     * const first = computed(() => props.model.offset + 1)
+    const last = computed(() => props.model.offset + props.model.resultEntries.length)
+    const hasPrev = computed(() => first.value > 1)
+    const hasNext = computed(() => last.value < props.model.totalMatches)
+     * */
 if(props.apiRoot){
     store.apiRoot = props.apiRoot;
 }
@@ -46,7 +54,7 @@ id: Guid,
     started: Date,
     lastUpdated: Date
 <template>
-    Page Size: {{ props.pageSize }} Max-Items: {{ props.maxItem }}
+    Page Size: {{ props.pageSize }}
     <div class="mt-2">
         <span v-if="hasPrev" class="link" @click="store.previous(props.pageSize)">&lt;&lt;&lt;</span>
         {{ first.toLocaleString("en-US") }} to {{ last.toLocaleString("en-US") }} of {{ totalJobs.toLocaleString("en-US") }}
@@ -66,7 +74,7 @@ id: Guid,
             </tr>
         </thead>
         <tbody>
-            <tr v-for="job in displayJobs" :key="job.id.toString()">
+            <tr v-for="job in jobs" :key="job.id.toString()">
                 <td>{{ job.id }}</td>
                 <td>
                     <span v-tooltip="job.message">{{ job.status }}</span>

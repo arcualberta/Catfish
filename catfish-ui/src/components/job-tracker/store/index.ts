@@ -24,11 +24,11 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
         },
         next(pageSize: number) {
             console.log("next")
-            this.load(this.jobSearchResult.offset+this.jobSearchResult.itemsPerPage, pageSize)        
+            this.load(this.jobSearchResult.offset + pageSize, pageSize)        
         },
         previous(pageSize: number) {
             console.log("previous")
-            const offset = Math.max(0, (this.jobSearchResult.offset - this.jobSearchResult.itemsPerPage))
+            const offset = Math.max(0, (this.jobSearchResult.offset - pageSize))
             this.load(offset, pageSize)
        }
         
