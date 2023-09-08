@@ -39,16 +39,18 @@ namespace Catfish.API.Repository.Services
         {
             JobSearchResult result = new JobSearchResult()
             {
-                Offset = offset,
-                TotalMatches = await _db.JobRecords.CountAsync()
+                Offset = offset
             };
+
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 result.ResultEntries = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm)).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
                 result.TotalMatches = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm)).CountAsync();
             }
-            else {
+            else 
+            {
                 result.ResultEntries = await _db.JobRecords.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+                result.TotalMatches = await _db.JobRecords.CountAsync();
             }
 
             return result;
