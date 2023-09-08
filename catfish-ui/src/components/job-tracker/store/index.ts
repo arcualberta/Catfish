@@ -6,11 +6,13 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
     state: () => ({
         jobSearchResult: {} as JobSearchResult,
         apiRoot: '',
+        searchTerm: ""
     }),
     actions: {
         load( offset: number, pageSize: number){
             //update max
-            const api = `${this.apiRoot}/background-job?offset=${offset}&max=${pageSize}`;
+            console.log("searchTerm: " + this.searchTerm)
+            const api = `${this.apiRoot}/background-job?offset=${offset}&max=${pageSize}&searchTerm=${this.searchTerm}`;
             fetch(api, {
                 method: 'GET'
             })
@@ -30,7 +32,11 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
             console.log("previous")
             const offset = Math.max(0, (this.jobSearchResult.offset - pageSize))
             this.load(offset, pageSize)
-       }
+        },
+        updateSearchTerm(searchText: string) {
+            this.searchTerm = searchText;
+           
+        }
         
     }
 });

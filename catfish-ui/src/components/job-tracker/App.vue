@@ -1,7 +1,7 @@
 
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useJobTrackerStore } from './store';
 
 import 'floating-vue/dist/style.css'
@@ -33,7 +33,16 @@ if(props.apiRoot){
         store.load(0, props.pageSize);
 })
 
-    
+    const searchTerm = ref(store.searchTerm);
+   
+
+
+    const reLoad = () => {
+
+        console.log("call reLoad - " + searchTerm.value)
+        store.updateSearchTerm(searchTerm.value);
+        store.load(0, props.pageSize)
+    }
 
 </script>
 
@@ -48,7 +57,10 @@ id: Guid,
     started: Date,
     lastUpdated: Date
 <template>
-    Page Size: {{ props.pageSize }}
+    <div class="mt-2">
+       
+        Search Label: <input type="text" v-model="searchTerm" @keyup.enter="reLoad()" /> 
+    </div>
     <div class="mt-2">
         <span v-if="hasPrev" class="link" @click="store.previous(props.pageSize)">&lt;&lt;&lt;</span>
         {{ first.toLocaleString("en-US") }} to {{ last.toLocaleString("en-US") }} of {{ totalJobs.toLocaleString("en-US") }}

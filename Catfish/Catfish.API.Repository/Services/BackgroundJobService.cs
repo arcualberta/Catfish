@@ -35,15 +35,21 @@ namespace Catfish.API.Repository.Services
               } 
         }
 
-        public async Task<JobSearchResult> GetJobs(int offset, int max)
+        public async Task<JobSearchResult> GetJobs(int offset, int max, string? searchTerm=null)
         {
             JobSearchResult result = new JobSearchResult()
             {
                 Offset = offset,
                 TotalMatches = await _db.JobRecords.CountAsync()
             };
-
-            result.ResultEntries = await _db.JobRecords.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                result.ResultEntries = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm)).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+                result.TotalMatches = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm)).CountAsync();
+            }
+            else {
+                result.ResultEntries = await _db.JobRecords.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+            }
 
             return result;
         }

@@ -17,9 +17,9 @@ namespace Catfish.API.Repository.Controllers
         }
         // GET: api/Forms
         [HttpGet]
-        public async Task<JobSearchResult> Get(int offset = 0, int max = 100)
+        public async Task<JobSearchResult> Get(int offset = 0, int max = 100, string? searchTerm = null)
         {
-            return await _bgJobSrv.GetJobs(offset, max);
+            return await _bgJobSrv.GetJobs(offset, max, searchTerm);
         }
 
         [HttpGet("job")]
