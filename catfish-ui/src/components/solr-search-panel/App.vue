@@ -42,6 +42,8 @@
         }
     }) 
 
+    //watch(() => props.)
+
     const uiMode = computed(() => props.uiMode ? props.uiMode : eUiMode.Default)
 
     const expression = computed(() => store.fieldExpression)

@@ -59,7 +59,7 @@ id: Guid,
 <template>
     <div class="mt-2">
        
-        Search Label: <input type="text" v-model="searchTerm" @keyup.enter="reLoad()" /> 
+        Search Label: <input type="text" v-model="searchTerm" @keyup="reLoad()" /> 
     </div>
     <div class="mt-2">
         <span v-if="hasPrev" class="link" @click="store.previous(props.pageSize)">&lt;&lt;&lt;</span>
