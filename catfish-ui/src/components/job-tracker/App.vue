@@ -66,6 +66,12 @@ id: Guid,
         {{ first.toLocaleString("en-US") }} to {{ last.toLocaleString("en-US") }} of {{ totalJobs.toLocaleString("en-US") }}
         <span v-if="hasNext" class="link" @click="store.next(props.pageSize)">&gt;&gt;&gt;</span>
     </div>
+    <div v-if="store.isLoadig" class="mt-2">
+        <b-spinner variant="primary" label="Spinning"></b-spinner>
+    </div>
+    <div v-if="store.isLoadingFailed" class="alert alert-danger">
+        Data loading failed!
+    </div>
     <table class="table">
         <thead>
             <tr>

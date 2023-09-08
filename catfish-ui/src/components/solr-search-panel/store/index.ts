@@ -20,11 +20,13 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         queryTime: 0,
         queryApi: 'https://localhost:5020/api/solr-search',
         isLoadig: false,
+        isLoadingFailed: false,
         jobId:""
     }),
     actions: {
         query(query: string | null, offset: number, max: number){
             this.isLoadig = true;
+            this.isLoadingFailed = false;
             this.offset = offset;
             this.max = max;
 
@@ -55,6 +57,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             .catch((error) => {
                 console.error('Load Entities API Error:', error);
                 this.isLoadig = false;
+                this.isLoadingFailed = true;
             });
         },
         executeJob(query: string | null, email: string, label: string, batchSize:number, selectUniqueEntries:boolean, roundFloats:boolean, numDecimalPoints:number) {

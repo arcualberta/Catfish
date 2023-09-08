@@ -212,7 +212,9 @@
     <div v-if="store.isLoadig" class="mt-2">
         <b-spinner variant="primary" label="Spinning"></b-spinner>
     </div>
-
+    <div v-if="store.isLoadingFailed" class="alert alert-danger">
+        Data loading failed!
+    </div>
     <div class="mt-3 mb-3" v-if="store.queryResult">
         <div class="mt-3">
             <h4>{{ querySource }}</h4>

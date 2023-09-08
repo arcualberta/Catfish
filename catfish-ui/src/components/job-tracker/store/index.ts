@@ -6,22 +6,30 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
     state: () => ({
         jobSearchResult: {} as JobSearchResult,
         apiRoot: '',
-        searchTerm: ""
+        searchTerm: "",
+        isLoadig: false,
+        isLoadingFailed: false
     }),
     actions: {
         load( offset: number, pageSize: number){
             //update max
             console.log("searchTerm: " + this.searchTerm)
             const api = `${this.apiRoot}/background-job?offset=${offset}&max=${pageSize}&searchTerm=${this.searchTerm}`;
+            this.isLoadig = true;
+            this.isLoadingFailed = false;
             fetch(api, {
                 method: 'GET'
             })
             .then(response => response.json())
             .then(data => {
                 this.jobSearchResult = data as JobSearchResult;
+                this.isLoadig = false;
             })
             .catch((error) => {
                 console.error('Load Error:', error);
+                this.isLoadingFailed = true;
+                this.isLoadig = false;
+
             });
         },
         next(pageSize: number) {
