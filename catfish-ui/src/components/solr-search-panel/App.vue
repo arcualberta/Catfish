@@ -4,12 +4,13 @@
     import { useSolrSearchStore } from './store';
     import { computed, ref, watch } from 'vue';
     import { buildQueryString } from './helpers';
-    import { eUiMode, SearchFieldDefinition, SolrEntryType } from './models';
+    import { eUiMode, SearchFieldDefinition, SolrEntryType, ParameterSweepProperties } from './models';
     import { copyToClipboard } from './helpers'
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
     const props = defineProps<{
         searchFields?: SearchFieldDefinition[],
+        sweepableFieldNames: string[],
         resultFieldNames: string[],
         entryTypeFieldName?: string,
         entryTypeFieldOptions?: SolrEntryType[],
@@ -71,6 +72,8 @@
         }
     })
 
+    const sweepableFields = computed((): SearchFieldDefinition[] => store.activeFieldList.filter(field => props.sweepableFieldNames.includes(field.name)))
+
     const rawQuery = ref("*:*")
 
     const pageSize = ref(100);
@@ -117,7 +120,9 @@
        // alert("Search job submitted. When it ready, notoification will be send to your email: " + email.value)
     }
 
-    const visible = ref(false);
+    const isResultColumnsVisible = ref(false);
+    const isExportConfigVisible = ref(false);
+    const isParamSweepVisible = ref(false);
     const email = ref("");
     const label = ref("");
     const batchSize = ref(50000)
@@ -126,9 +131,10 @@
     const numDecimalPoints = ref(4)
     const frequencyArrayFields = ref([] as string[])
     const uniqueExportFields = ref([] as string[])
+    const enableParameterSweep = ref(false)
+    const sweepParameters = ref({} as ParameterSweepProperties);
 
     const isBatchButtonDisabled = computed(() => label.value.trim().length == 0 || batchSize.value <= 0);
-
 
 </script>
 <template>
@@ -172,13 +178,13 @@
     <div class="accordion pb-3" role="tablist">
         <b-card no-body class="mb-1">
             <b-card-header header-tag="header" class="p-0 card-header" role="tab">
-                <b-button block data-bs-target="accordion-3" data-bs-toggle="visible" variant="success" @click="visible = !visible">
+                <b-button block data-bs-target="accordion-3" data-bs-toggle="visible" variant="success" @click="isResultColumnsVisible = !isResultColumnsVisible">
                     Result Columns
-                    <font-awesome-icon icon="fa-chevron-down" class="fa-icon down-arrow" v-if="!visible" />
-                    <font-awesome-icon icon="fa-chevron-up" class="fa-icon up-arrow" v-if="visible" />
+                    <font-awesome-icon icon="fa-chevron-down" class="fa-icon down-arrow" v-if="!isResultColumnsVisible" />
+                    <font-awesome-icon icon="fa-chevron-up" class="fa-icon up-arrow" v-if="isResultColumnsVisible" />
                 </b-button>
             </b-card-header>
-            <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel" :class="!visible? '' : 'show'">
+            <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel" :class="!isResultColumnsVisible? '' : 'show'">
                 <b-card-body>
                     <b-card-text>
                         <div class="row">
@@ -199,31 +205,132 @@
    
     <div class="mt-12 mb-12 panel-search container row">
         <div class="mt-3 mb-3 panel-live-seacrh col-md-6">
-            <h4>Live Search</h4>
+            <h3>Live Search</h3>
             <button @click="query" class="btn btn-danger">Search</button>
         </div>
         <div class="mt-3 mb-3 panel-search-bg col-md-6">
-            <h4>Background Search</h4>
+            <h3>Background Search</h3>
             <!--  <div>Notification Email : <input type="text" v-model="email" placeholder="email address" /> </div> -->
             <div>Job Label : <input type="text" v-model="label" placeholder="label for the job" /></div>
             <div>Batch Size: <input type="number" v-model="batchSize" placeholder="Batch Size" /></div>
-            <div><input type="checkbox" v-model="selectUniqueEntries" /> Select unique entries</div>
-            <div v-if="selectUniqueEntries">
-                <input type="checkbox" v-model="roundFloats" />Round floats <span v-if="roundFloats">to: <input type="number" v-model="numDecimalPoints" style="width: 60px" /> decimal places</span>
-                <div v-if="store.resultArrayFields?.length > 0">
-                    <b>Select arrays where number of elements counted towards frequency.</b>
-                    <div v-for="field in store.resultArrayFields" :id="field" style="margin-left:15px">
-                        <input  type="checkbox" :value="field" v-model="frequencyArrayFields" name="field"> {{ searchFields?.find(sf => sf.name == field)?.label }}
+            
+            <div class="accordion pb-3 mt-3" role="tablist">
+                <b-card no-body class="mb-1">
+                    <b-card-header header-tag="header" class="p-0 card-header" role="tab">
+                        <b-button block data-bs-target="export-config-accordion" data-bs-toggle="visible" variant="success" @click="isExportConfigVisible = !isExportConfigVisible">
+                            Export Configuration
+                            <font-awesome-icon icon="fa-chevron-down" class="fa-icon down-arrow" v-if="!isExportConfigVisible" />
+                            <font-awesome-icon icon="fa-chevron-up" class="fa-icon up-arrow" v-if="isExportConfigVisible" />
+                        </b-button>
+                    </b-card-header>
+                    <b-collapse id="export-config-accordion" accordion="export-config-accordion" role="tabpanel" :class="!isExportConfigVisible? '' : 'show'">
+                        <b-card-body>
+                            <b-card-text>
+                                <div class="row">
+                                    <div><input type="checkbox" v-model="selectUniqueEntries" /> Select unique entries</div>
+                                    <div v-if="selectUniqueEntries">
+                                        <input type="checkbox" v-model="roundFloats" /> Round decimal values<span v-if="roundFloats"> to: <input type="number" v-model="numDecimalPoints" style="width: 60px" /> decimal places</span>
+                                        <div v-if="store.resultArrayFields?.length > 0">
+                                            <h5 class="mt-2">Select arrays where number of elements counted towards frequency.</h5>
+                                            <div v-for="field in store.resultArrayFields" :id="field" style="margin-left:15px">
+                                                <input  type="checkbox" :value="field" v-model="frequencyArrayFields" name="field"> {{ searchFields?.find(sf => sf.name == field)?.label }}
+                                            </div>
+                                        </div>
+                                        <div v-if="store.resultFieldNames.length > 0">
+                                            <h5 class="mt-2">Limit export fields to (select none to export all result fields):</h5>
+                                            <div class="alert alert-info">
+                                                Note: unique entries are identified based on the combination of values in exported fields.
+                                            </div>
+                                            <div v-if="store.resultFieldNames.length > 0">
+                                                <div v-for="field in store.resultFieldNames" :id="field" style="margin-left:15px">
+                                                    <input  type="checkbox" :value="field" v-model="uniqueExportFields" name="field" > {{ searchFields?.find(sf => sf.name == field)?.label }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </b-card-text>
+                        </b-card-body>
+                    </b-collapse>
+                </b-card>
+            </div>            
+            
+            <!--
+            <div class="mt-3 mb-3">
+                <h4>Export Configuration</h4>
+                <div><input type="checkbox" v-model="selectUniqueEntries" /> Select unique entries</div>
+                <div v-if="selectUniqueEntries">
+                    <input type="checkbox" v-model="roundFloats" />Round floats <span v-if="roundFloats">to: <input type="number" v-model="numDecimalPoints" style="width: 60px" /> decimal places</span>
+                    <div v-if="store.resultArrayFields?.length > 0">
+                        <h5 class="mt-2">Select arrays where number of elements counted towards frequency.</h5>
+                        <div v-for="field in store.resultArrayFields" :id="field" style="margin-left:15px">
+                            <input  type="checkbox" :value="field" v-model="frequencyArrayFields" name="field"> {{ searchFields?.find(sf => sf.name == field)?.label }}
+                        </div>
                     </div>
-                </div>
-                <div v-if="store.resultFieldNames.length > 0">
-                    <b>Limit export fields to (select none to export all result fields):</b>
                     <div v-if="store.resultFieldNames.length > 0">
-                        <div v-for="field in store.resultFieldNames" :id="field" style="margin-left:15px">
-                            <input  type="checkbox" :value="field" v-model="uniqueExportFields" name="field" > {{ searchFields?.find(sf => sf.name == field)?.label }}
+                        <h5 class="mt-2">Limit export fields to (select none to export all result fields):</h5>
+                        <div class="alert alert-info">
+                            Note: unique entries are identified based on the combination of values in ALL exported fields.
+                        </div>
+                        <div v-if="store.resultFieldNames.length > 0">
+                            <div v-for="field in store.resultFieldNames" :id="field" style="margin-left:15px">
+                                <input  type="checkbox" :value="field" v-model="uniqueExportFields" name="field" > {{ searchFields?.find(sf => sf.name == field)?.label }}
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div> -->
+
+            <div class="accordion pb-3" role="tablist">
+                <b-card no-body class="mb-1">
+                    <b-card-header header-tag="header" class="p-0 card-header" role="tab">
+                        <b-button block data-bs-target="param-sweep-accordion" data-bs-toggle="visible" variant="success" @click="isParamSweepVisible = !isParamSweepVisible">
+                            Parameter Sweep
+                            <font-awesome-icon icon="fa-chevron-down" class="fa-icon down-arrow" v-if="!isParamSweepVisible" />
+                            <font-awesome-icon icon="fa-chevron-up" class="fa-icon up-arrow" v-if="isParamSweepVisible" />
+                        </b-button>
+                    </b-card-header>
+                    <b-collapse id="param-sweep-accordion" accordion="param-sweep-accordion" role="tabpanel" :class="!isParamSweepVisible? '' : 'show'">
+                        <b-card-body>
+                            <b-card-text>
+                                <input type="checkbox" v-model="enableParameterSweep" /> Enable
+                                <div class="col-mb-2" v-if="enableParameterSweep">
+                                    <div class="form-group row">
+                                        <label for="sweepField" class="col-md-3">Sweep on</label>
+                                        <select v-model="store.sweepField"  class="form-control" style="width:250px;" id="sweepField">
+                                            <option v-for="val in sweepableFields" :value="val" >{{val.label}}</option>
+                                        </select>
+                                    </div>
+                                    <div v-if="store.sweepField?.name.endsWith('_dt')">
+                                        <div class="form-group mt-3" >
+                                            <label for="sweepFrom" class="col-md-3">From</label>
+                                            <input type="date" v-bind="sweepParameters.startDate" name="sweepFrom"/>
+                                        </div>
+                                        <div class="form-group mt-3" >
+                                            <label for="sweepTo" class="col-md-3">To</label>
+                                            <input type="date" v-bind="sweepParameters.endDate" name="sweepTo"/>
+                                        </div>
+                                        <div class="form-group mt-3" >
+                                            <label for="sweepStep" class="col-md-3">Step</label>
+                                            <input type="number" v-bind="sweepParameters.step" style="100px;" name="sweepStep"/>
+                                            in 
+                                            <select v-model="sweepParameters.stepType">
+                                                <option v-for="val in ['days', 'weeks', 'months', 'years']" :value="val" >{{val}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div v-if="store.sweepField?.name.endsWith('_s')">
+                                        <div class="form-group mt-3" >
+                                            <label for="sweepValues" class="col-12">Sweep over values (specify separated by commas)</label>
+                                            <input type="text" v-bind="sweepParameters.values" class="col-12" name="sweepValues"/>
+                                        </div>                                        
+                                    </div>
+                               </div>
+                            </b-card-text>
+                        </b-card-body>
+                    </b-collapse>
+                </b-card>
             </div>
             <button @click="executeJob" class="btn btn-success" :disabled='isBatchButtonDisabled'>Submit Search Job</button>
         </div>

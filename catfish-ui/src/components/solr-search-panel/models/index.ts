@@ -44,6 +44,14 @@ export interface SearchResult {
     resultEntries: SolrResultEntry[]
 }
 
+export interface ParameterSweepProperties {
+    startDate: Date,
+    endDate: Date,
+    step: number,
+    stepType: "days" | "weeks" | "months" | "years",
+    values: string[]
+}
+
 /* solr model from previous version -- we might or might not need them */
 
 /*

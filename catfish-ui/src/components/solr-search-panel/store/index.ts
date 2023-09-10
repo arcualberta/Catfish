@@ -21,7 +21,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         queryApi: 'https://localhost:5020/api/solr-search',
         isLoadig: false,
         isLoadingFailed: false,
-        jobId:""
+        jobId:"",
+        sweepField: null as SearchFieldDefinition | null
     }),
     actions: {
         query(query: string | null, offset: number, max: number){
@@ -127,7 +128,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         }   
     },
     getters: {
-        activeFieldList: (state) => {
+        activeFieldList: (state): SearchFieldDefinition[] => {
             if(state.selectedEntryType){
                 const selected = state.searchFieldDefinitions?.filter(fd => Array.isArray(fd.entryType) 
                     ? (fd.entryType as number[]).includes(state.selectedEntryType!.entryType) 
@@ -139,10 +140,9 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 return state.searchFieldDefinitions.sort((a, b) => a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1);
             }            
         },
-        activeSelectedResultFieldNames: (state) => {
-            return state.resultFieldNames.filter(fieldName => state.activeFieldList.filter(fd => fd.name == fieldName)?.length > 0)
+        activeSelectedResultFieldNames(): string[] {
+            return this.resultFieldNames.filter(fieldName => this.activeFieldList.filter(fd => fd.name == fieldName)?.length > 0)
         },
-        resultArrayFields: (state) => state.resultFieldNames.filter(fieldName => fieldName.match(new RegExp('.*_.+s$')))
-        
+        resultArrayFields: (state) => state.resultFieldNames.filter(fieldName => fieldName.match(new RegExp('.*_.+s$'))),
     }
 });
