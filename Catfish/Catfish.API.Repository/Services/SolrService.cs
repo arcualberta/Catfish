@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Interfaces;
+﻿using Catfish.API.Repository.DTOs;
+using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Models.BackgroundJobs;
 using Catfish.API.Repository.Solr;
 using CatfishExtensions.DTO;
@@ -214,7 +215,9 @@ namespace Catfish.API.Repository.Services
             int batchSize,
             int maxRows,
             bool? selectUniqueEntries, 
-            int? numDecimalPoints)
+            int? numDecimalPoints,
+            string? frequencyArrayFields,
+            string? exportFields)
         {
             JobRecord jobRecord = new JobRecord()
             {
@@ -240,49 +243,100 @@ namespace Catfish.API.Repository.Services
                 string downloadLink = downloadEndpoint + "?fileName=" + fileName;
 
                 List<string> uniqueKeys = new List<string>();
-                List<int> frequencies = new List<int>();
 
-                string[] fieldTypes = null;
-                bool[] decimalFieldIndices = new bool[]{ };
+                string[] frequencyArrayFieldList = string.IsNullOrEmpty(frequencyArrayFields) ? new string[0] : frequencyArrayFields.Split(',');
+                bool[] freqFieldFlagsWithRespectToFullFieldList = new bool[] { };
+
+                string[] unorderedExportFieldList = string.IsNullOrEmpty(exportFields) ? new string[0] : exportFields.Split(','); ;
+                string[] exportFieldList = null;
+                bool[] exportFieldFlagsWithRespectToFullFieldList = new bool[] { };
 
                 Regex csvSplitRegx = new Regex("," + "(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
+
+                string[] fullFieldNameList = null;
+                bool[] decimalFieldFlagsWithRespectToExportFieldList = new bool[] { };
+
+                BackgroundProcessingStats stats = null; 
 
                 for (int offset = 0; offset < maxRows; offset += batchSize)
                 {
                     var result = await ExecuteSolrSearch(solrCoreUrl, query, offset, batchSize, null, null, fieldList);
 
-                    if(offset == 0)
+                    if (offset == 0)
                     {
-                        fieldTypes = result.Substring(0, result.IndexOf("\n")).Split(new char[] { ',' });
-                        decimalFieldIndices = fieldTypes.Select(ft => ft.EndsWith("_d")).ToArray();
+                        //First row in the result set returned by solr search represents the list of field names.
+                        fullFieldNameList = result.Substring(0, result.IndexOf("\n")).Split(',');
+
+                        //If no export field list have been provided as an input argument, we should export all fields.
+                        if (unorderedExportFieldList.Length == 0)
+                            exportFieldList = fullFieldNameList;
+                        else
+                            exportFieldList = fullFieldNameList.Where(fieldName => unorderedExportFieldList.Contains(fieldName)).ToArray();
+
+
+                        exportFieldFlagsWithRespectToFullFieldList = fullFieldNameList.Select(fieldName => exportFieldList.Contains(fieldName)).ToArray();
+
+                        decimalFieldFlagsWithRespectToExportFieldList = exportFieldList.Select(fieldName => fieldName.EndsWith("_d")).ToArray();
+
+                        freqFieldFlagsWithRespectToFullFieldList = fullFieldNameList.Select(fieldName => frequencyArrayFieldList.Contains(fieldName)).ToArray();
                     }
                     
-                    //Skipping the header line if this is not the first batch
+                    //Skipping the header line
                     result = result.Substring(result.IndexOf("\n") + 1);
                    
                     if(selectUniqueEntries.HasValue && selectUniqueEntries.Value)
                     {
+                        if(stats == null)
+                            stats = new BackgroundProcessingStats();
+
                         List<string> selectedLines = new List<string>();
                         string[] lines = result.Split(new char[] {'\n'});
                         foreach(var line in lines)
                         {
+                            if(string.IsNullOrEmpty(line)) 
+                                continue;
+
+                            //Full list of field values represented in the result row.
                             string[] fieldValues = csvSplitRegx.Split(line);
 
-                            string key = GetUniqueKey(fieldValues, numDecimalPoints, decimalFieldIndices);
+                            //Extract the list of values that needs to be exported from the full field value list
+                            string[] exportFieldValues = fieldValues.Where((str, index) => exportFieldFlagsWithRespectToFullFieldList[index]).ToArray(); 
+                            
+                            //Calculate the frequency increment of the selected data row. If one or more frequency-array-fields have been
+                            //specified, set the cumulative element count of those arrays as the frequency increment. Otherwise, set the 
+                            //frequency increment to be 1.
+                            int freqIncrement = 0;
+                            if (!freqFieldFlagsWithRespectToFullFieldList.Where(x => x).Any())
+                                freqIncrement = 1;
+                            else
+                            {
+                                var freqArrayValues = fieldValues.Where((str, index) => freqFieldFlagsWithRespectToFullFieldList[index]).ToList();
+                                foreach (var concatenatedArrayValue in freqArrayValues)
+                                {
+                                    freqIncrement += concatenatedArrayValue.Split(',').Select(s => s.Trim('"')).Where(s => s.Length > 0).Count();
+                                }
+                            }
+
+                            //Calculate the unique key that represent the combination of export field values
+                            string key = CalculateUniqueKey(exportFieldValues, numDecimalPoints, decimalFieldFlagsWithRespectToExportFieldList);
                             int idx = uniqueKeys.IndexOf(key);
                             if (idx < 0)
                             {
                                 uniqueKeys.Add(key);
-                                selectedLines.Add(line);
-                                frequencies.Add(1);
+                                selectedLines.Add(string.Join(',', exportFieldValues));
+                                stats.Frequencies.Add(freqIncrement);
+                                ++stats.UniqueRecordCount;
                             }
                             else
-                                frequencies[idx] += 1;
+                            {
+                                stats.Frequencies[idx] += freqIncrement;
+                            }
+                            stats.TotalCount += freqIncrement;
                         }
 
 
                         if (offset == 0)
-                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fieldTypes!) });
+                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", exportFieldList) });
 
                         if (selectedLines.Count > 0)
                             await File.AppendAllLinesAsync(outFile, selectedLines);
@@ -290,7 +344,7 @@ namespace Catfish.API.Repository.Services
                     else
                     {
                         if (offset == 0)
-                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fieldTypes!) });
+                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fullFieldNameList!) });
 
                         await File.AppendAllTextAsync(outFile, result);
                     }
@@ -307,12 +361,16 @@ namespace Catfish.API.Repository.Services
                 }
 
                 //Saving the frequencies file.
-                if (frequencies.Count > 0)
+                if (stats != null)
                 {
                     string statsFile = fileName.Substring(0, fileName.Length - 4) + "-stats.csv";
                     string statsOutFile = Path.Combine(folderRoot, statsFile);
-                    await File.WriteAllTextAsync(statsOutFile, "frequencies\n");
-                    await File.AppendAllLinesAsync(statsOutFile, frequencies.Select(x => x.ToString()));
+
+                    await File.WriteAllTextAsync(statsOutFile, "Record Frequencies,Unique Record Count,Total Record Count\n");
+                    await File.AppendAllTextAsync(statsOutFile, $"{stats.Frequencies[0]},{stats.UniqueRecordCount},{stats.TotalCount}\n");
+                    await File.AppendAllLinesAsync(statsOutFile, stats.Frequencies.GetRange(1, stats.Frequencies.Count-1).Select(x => x.ToString()));
+
+
                     jobRecord.DownloadStatsFileLink = downloadEndpoint + "?fileName=" + statsFile; ;
                 }
 
@@ -353,7 +411,7 @@ namespace Catfish.API.Repository.Services
 
         }
 
-        private string GetUniqueKey(string[] fieldValues, int? numDecimalPoints, bool[] decimalFieldIndices)
+        private string CalculateUniqueKey(string[] fieldValues, int? numDecimalPoints, bool[] decimalFieldIndices)
         {
             try
             {
@@ -377,6 +435,9 @@ namespace Catfish.API.Repository.Services
                 throw ex;
             }
         }
+
+        private T[] GetSubArray<T>(T[] source, bool[] selectIndicies) => 
+            selectIndicies?.Length > 0 ? source.Where((val, index) => selectIndicies[index]).ToArray() : source;
 
         public async Task<int> GetMatchCount(string query, string solrCoreUrl = "")
         {

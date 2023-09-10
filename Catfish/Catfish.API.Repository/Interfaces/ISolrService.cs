@@ -42,7 +42,9 @@ namespace Catfish.API.Repository.Interfaces
             int batchSize,
             int maxRows,
             bool? selectUniqueEntries,
-            int? numFloatDecimals);
+            int? numFloatDecimals,
+            string? frequencyArrayFields,
+            string? uniqueExportFields);
 
         public Task<int> GetMatchCount(string query, string solrCoreUrl="");
 
