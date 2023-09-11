@@ -5,7 +5,7 @@ export interface JobRecord{
     jobLabel: string,
     processedDataRows: number,
     expectedDataRows: number,
-    status: 'In Progress' | 'Completed' | 'Failed',
+    status: 'In Progress' | 'Completed' | 'Failed' | 'Pending' | 'Deleted'
     dataFile: string,
     downloadDataFileLink: string,
     downloadStatsFileLink: string,
