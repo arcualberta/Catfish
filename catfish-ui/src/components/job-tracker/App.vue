@@ -5,6 +5,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useJobTrackerStore } from './store';
 
 import 'floating-vue/dist/style.css'
+import { Guid } from 'guid-typescript';
 
 const props = defineProps<{
     apiRoot: string,
@@ -14,7 +15,7 @@ const props = defineProps<{
 
 const store = useJobTrackerStore();
 
-    const jobs = computed(() => store.jobSearchResult.resultEntries)
+    var jobs = computed(() => store.jobSearchResult.resultEntries)
     
     console.log("total matched" + store.jobSearchResult.totalMatches ? store.jobSearchResult.totalMatches: 0)
     var totalJobs = computed(() => store.jobSearchResult.totalMatches ? store.jobSearchResult.totalMatches: 0);
@@ -42,6 +43,16 @@ if(props.apiRoot){
         console.log("call reLoad - " + searchTerm.value)
         store.updateSearchTerm(searchTerm.value);
         store.load(0, props.pageSize)
+    }
+
+
+    const RemoveJob = (jobId: Guid, index: number) => {
+
+        if (confirm('Are you sure you want to delete this job: ' + jobId + ' ? ')) {
+            alert('job is deleted');
+
+            jobs.value.splice(index, 1);
+        }
     }
 
 </script>
@@ -83,10 +94,11 @@ id: Guid,
                 <th scope="col">Progress</th>
                 <th scope="col">File Size</th>
                 <th scope="col">Data File</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="job in jobs" :key="job.id.toString()">
+            <tr v-for="(job, index) in jobs" :key="job.id.toString()">
                 <td>{{ job.id }}</td>
                 <td>
                     <span v-tooltip="job.message">{{ job.status }}</span>
@@ -100,6 +112,7 @@ id: Guid,
                     <div><a :href="job.downloadDataFileLink">{{ job.dataFile }}</a></div>
                     <div v-if="job.downloadStatsFileLink"><a :href="job.downloadStatsFileLink">stats.csv</a></div>
                 </td>
+                <td><button @click="RemoveJob(job.id, index)" class="btn btn-danger">Delete</button></td>
             </tr>
         </tbody>
     </table>
