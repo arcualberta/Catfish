@@ -15,5 +15,7 @@
         public DateTime LastUpdated { get; set; }
         public string? Message { get; set; }
 
+        public string? JobId { get; set; } //Hangfire job id
+
     }
 }
