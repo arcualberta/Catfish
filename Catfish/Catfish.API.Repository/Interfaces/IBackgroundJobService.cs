@@ -10,5 +10,7 @@ namespace Catfish.API.Repository.Interfaces
 
         public Task<JobSearchResult> GetJobs(int offset, int max, string? searchTerm = null);
         public Task<JobRecord?> GetJob(Guid id);
+
+        public Task RemoveBackgroundJob(Guid jobId);
     }
 }

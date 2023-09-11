@@ -49,8 +49,8 @@ if(props.apiRoot){
     const RemoveJob = (jobId: Guid, index: number) => {
 
         if (confirm('Are you sure you want to delete this job: ' + jobId + ' ? ')) {
-            alert('job is deleted');
-
+            // alert('job is deleted');
+            store.removeJob(jobId);
             jobs.value.splice(index, 1);
         }
     }

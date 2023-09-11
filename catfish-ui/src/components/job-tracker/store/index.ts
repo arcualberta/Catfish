@@ -1,4 +1,5 @@
 import { buildHashFromArray } from "@fullcalendar/core";
+import { Guid } from "guid-typescript";
 import { defineStore } from "pinia";
 import { JobRecord, JobSearchResult } from "../models";
 
@@ -44,7 +45,27 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
         updateSearchTerm(searchText: string) {
             this.searchTerm = searchText;
            
+        },
+        removeJob(jobId: Guid) {
+            //const form = new FormData();
+            //form.append("jobId", jobId.toString());
+            
+            var removeJobApi = `${this.apiRoot}/background-job/remove-job?jobId=${jobId}`;
+            fetch(removeJobApi, {
+                method: 'POST',
+               // body: form,
+                headers: {
+                    'encType': 'multipart/form-data'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert("Job has been canceled.")
+                })
+                .catch((error) => {
+                    console.error('Error on trying canceling the job', error);
+                  
+                });
         }
-        
     }
 });

@@ -5,7 +5,7 @@ export interface JobRecord{
     jobLabel: string,
     processedDataRows: number,
     expectedDataRows: number,
-    status: 'In Progress' | 'Completed' | 'Failed' | 'Pending' | 'Deleted'
+    status: 'In Progress' | 'Completed' | 'Failed' | 'Pending'
     dataFile: string,
     downloadDataFileLink: string,
     downloadStatsFileLink: string,
@@ -13,7 +13,9 @@ export interface JobRecord{
     started: Date,
     lastUpdated: Date,
     message: string,
-    jobId: string //hangfire's jobId
+    jobId: string, //hangfire's jobId
+    isDeleted: boolean | null,
+    deletedDate: Date | null
 }
 
 export interface JobSearchResult{

@@ -44,13 +44,13 @@ namespace Catfish.API.Repository.Services
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                result.ResultEntries = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm)).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
-                result.TotalMatches = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm)).CountAsync();
+                result.ResultEntries = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm) && j.IsDeleted != true).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+                result.TotalMatches = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm) && j.IsDeleted != true).CountAsync();
             }
             else 
             {
-                result.ResultEntries = await _db.JobRecords.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
-                result.TotalMatches = await _db.JobRecords.CountAsync();
+                result.ResultEntries = await _db.JobRecords.Where(j=>j.IsDeleted != true).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+                result.TotalMatches = await _db.JobRecords.Where(j => j.IsDeleted != true).CountAsync();
             }
 
             return result;
@@ -69,6 +69,35 @@ namespace Catfish.API.Repository.Services
 
             BackgroundJob.ContinueJobWith(jobId, () => Console.WriteLine($"{jobId} is done ."));
             return jobId;
+        }
+
+        public async Task RemoveBackgroundJob(Guid jobId)
+        {
+            try
+            {
+                JobRecord jobRecord = await _db.JobRecords.FindAsync(jobId);
+
+                if (jobRecord == null)
+                    throw new Exception("Object not found");
+
+                //stop hangfire job
+                if(!string.IsNullOrEmpty(jobRecord.JobId))
+                    BackgroundJob.Delete(jobRecord.JobId);
+
+                jobRecord.IsDeleted = true;
+                jobRecord.DeletedDate = DateTime.UtcNow;
+
+                _db.Entry(jobRecord).State = EntityState.Modified;
+
+                _db.SaveChanges();
+
+
+               
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
     }
