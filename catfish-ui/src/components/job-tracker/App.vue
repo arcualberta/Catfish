@@ -23,15 +23,29 @@ const store = useJobTrackerStore();
     const last = computed(() => store.jobSearchResult.offset + store.jobSearchResult.resultEntries?.length) 
     const hasPrev = computed(() => first.value > 1)
     const hasNext = computed(() => (last.value < store.jobSearchResult.totalMatches))
-
    
 if(props.apiRoot){
     store.apiRoot = props.apiRoot;
 }
 
-    onMounted(() => {
+onMounted(() => {
+    store.load(0, props.pageSize, false);
+
+    let interval = setInterval(() => {
+        if(store.activeJobs?.length == 0){
+            clearInterval(interval);
+        }
+        else{
+            store.load(0, props.pageSize, true);
+        }
         
-        store.load(0, props.pageSize);
+/*        if (timer === 0) {
+            clearInterval(interval)                
+        } else {
+            timer--
+            console.log(timer)
+        }  */           
+        }, 5000)
 })
 
     const searchTerm = ref(store.searchTerm);
@@ -42,7 +56,7 @@ if(props.apiRoot){
 
         console.log("call reLoad - " + searchTerm.value)
         store.updateSearchTerm(searchTerm.value);
-        store.load(0, props.pageSize)
+        store.load(0, props.pageSize, false)
     }
 
 
@@ -72,7 +86,7 @@ id: Guid,
        
         Search Label: <input type="text" v-model="searchTerm" @keyup="reLoad()" /> 
     </div>
-    <div class="mt-2">
+    <div class="mt-2" v-if="store.jobSearchResult.resultEntries?.length > 0">
         <span v-if="hasPrev" class="link" @click="store.previous(props.pageSize)">&lt;&lt;&lt;</span>
         {{ first.toLocaleString("en-US") }} to {{ last.toLocaleString("en-US") }} of {{ totalJobs.toLocaleString("en-US") }}
         <span v-if="hasNext" class="link" @click="store.next(props.pageSize)">&gt;&gt;&gt;</span>
@@ -99,7 +113,10 @@ id: Guid,
         </thead>
         <tbody>
             <tr v-for="(job, index) in jobs" :key="job.id.toString()">
-                <td>{{ job.id }}</td>
+                <td>
+                    <b-spinner class="status-icon" v-if="job.status == 'In Progress'" variant="success" label="Spinning"></b-spinner>
+                    <span>{{ job.jobId ? job.jobId : job.id }}</span>
+                </td>
                 <td>
                     <span v-tooltip="job.message">{{ job.status }}</span>
                 </td>
@@ -117,3 +134,10 @@ id: Guid,
         </tbody>
     </table>
 </template>
+
+<style scoped>
+.status-icon{
+    width: 20px;
+    height: 20px;
+}
+</style>
