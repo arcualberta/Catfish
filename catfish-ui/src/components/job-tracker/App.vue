@@ -46,9 +46,9 @@ if(props.apiRoot){
     }
 
 
-    const RemoveJob = (jobId: Guid, index: number) => {
+    const RemoveJob = (jobId: Guid, index: number, jobLabel: string) => {
 
-        if (confirm('Are you sure you want to delete this job: ' + jobId + ' ? ')) {
+        if (confirm('Are you sure you want to delete this job: ' + jobLabel + ' ? ')) {
             // alert('job is deleted');
             store.removeJob(jobId);
             jobs.value.splice(index, 1);
@@ -112,7 +112,7 @@ id: Guid,
                     <div><a :href="job.downloadDataFileLink">{{ job.dataFile }}</a></div>
                     <div v-if="job.downloadStatsFileLink"><a :href="job.downloadStatsFileLink">stats.csv</a></div>
                 </td>
-                <td><button @click="RemoveJob(job.id, index)" class="btn btn-danger">Delete</button></td>
+                <td><button @click="RemoveJob(job.id, index, job.jobLabel)" class="btn btn-danger">Delete</button></td>
             </tr>
         </tbody>
     </table>

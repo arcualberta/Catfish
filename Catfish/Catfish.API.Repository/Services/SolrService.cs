@@ -220,20 +220,11 @@ namespace Catfish.API.Repository.Services
             string? frequencyArrayFields,
             string? exportFields)
         {
-            /* JobRecord jobRecord = new JobRecord()
-             {
-                 JobLabel = jobLabel,
-                 Started = DateTime.UtcNow,
-                 LastUpdated = DateTime.UtcNow,
-                 Status = "In Progress",
-                 ExpectedDataRows = maxRows
-             };*/
             JobRecord jobRecord = await GetJobRecord(jobRecordId);
             jobRecord.Status = "In Progress";
             jobRecord.LastUpdated = DateTime.UtcNow;
-
-            //_db.JobRecords.Add(jobRecord);
-            _db.Entry(jobRecord).State = EntityState.Modified;
+            //_db.Entry(jobRecord).State = EntityState.Modified;
+            _db.SaveChanges();
 
             string jobLabel = jobRecord.JobLabel;
             int maxRows = jobRecord.ExpectedDataRows;
@@ -303,6 +294,8 @@ namespace Catfish.API.Repository.Services
                         {
                             if (string.IsNullOrEmpty(line))
                                 continue;
+
+                            Thread.Sleep(1000);
 
                             //Full list of field values represented in the result row.
                             string[] fieldValues = csvSplitRegx.Split(line);
