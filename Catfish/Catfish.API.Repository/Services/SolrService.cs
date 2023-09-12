@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Interfaces;
+﻿using Catfish.API.Repository.DTOs;
+using Catfish.API.Repository.Interfaces;
 using Catfish.API.Repository.Models.BackgroundJobs;
 using Catfish.API.Repository.Solr;
 using CatfishExtensions.DTO;
@@ -8,6 +9,7 @@ using System.Formats.Asn1;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace Catfish.API.Repository.Services
@@ -50,7 +52,7 @@ namespace Catfish.API.Repository.Services
 
             await AddUpdateAsync(payload);
         }
-        
+
         public async Task Index(IList<EntityData> entities, List<FormTemplate> forms)
         {
             var docs = entities.Select(entity => new SolrDoc(entity, forms, _indexFieldNames)).ToList();
@@ -63,7 +65,7 @@ namespace Catfish.API.Repository.Services
             foreach (var doc in docs)
                 payload.Add(doc.Root);
 
-            await AddUpdateAsync(payload); 
+            await AddUpdateAsync(payload);
         }
 
         public async Task AddUpdateAsync(XElement payload)
@@ -90,7 +92,7 @@ namespace Catfish.API.Repository.Services
             httpResponse.EnsureSuccessStatusCode();
         }
 
-        
+
         public async Task<SearchResult> Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1)
         {
             string query = "doc_type_ss:item";
@@ -108,7 +110,7 @@ namespace Catfish.API.Repository.Services
 
             return await ExecuteSearch(query, start, maxRows, null, null, null, maxHighlightsPerEntry);
         }
-       
+
 
         /// <summary>
         /// Executes a given valid solr query.
@@ -159,7 +161,7 @@ namespace Catfish.API.Repository.Services
             string qUrl = _solrCoreUrl + "/select?hl=on";
             var parameters = new Dictionary<string, string>();
             parameters["q"] = query;
-            parameters["start"] = start.ToString();                                 
+            parameters["start"] = start.ToString();
             parameters["rows"] = max.ToString();
             if (!string.IsNullOrEmpty(filterQuery)) parameters["fq"] = filterQuery;
             if (!string.IsNullOrEmpty(sortBy)) parameters["sort"] = sortBy;
@@ -204,27 +206,28 @@ namespace Catfish.API.Repository.Services
         }
 
         public async Task SubmitSearchJobAsync(
-            string query, 
+            string query,
             string? fieldList,
-            string notificationEmail,
-            string jobLabel,
+            string? notificationEmail,
+            //string jobLabel,
+            Guid jobRecordId,
             string solrCoreUrl,
             string downloadEndpoint,
             int batchSize,
-            int maxRows,
-            bool? selectUniqueEntries, 
-            int? numDecimalPoints)
+            // int maxRows,
+            bool? selectUniqueEntries,
+            int? numDecimalPoints,
+            string? frequencyArrayFields,
+            string? exportFields)
         {
-            JobRecord jobRecord = new JobRecord()
-            {
-                JobLabel = jobLabel,
-                Started = DateTime.UtcNow,
-                LastUpdated = DateTime.UtcNow,
-                Status = "In Progress",
-                ExpectedDataRows = maxRows
-            };
-            _db.JobRecords.Add(jobRecord);
+            JobRecord jobRecord = await GetJobRecord(jobRecordId);
+            jobRecord.Status = "In Progress";
+            jobRecord.LastUpdated = DateTime.UtcNow;
+            //_db.Entry(jobRecord).State = EntityState.Modified;
+            _db.SaveChanges();
 
+            string jobLabel = jobRecord.JobLabel;
+            int maxRows = jobRecord.ExpectedDataRows;
             try
             {
                 string fileName = $@"{jobLabel.Replace(" ", "_").Trim()}_{Guid.NewGuid()}.csv";
@@ -239,46 +242,102 @@ namespace Catfish.API.Repository.Services
                 string downloadLink = downloadEndpoint + "?fileName=" + fileName;
 
                 List<string> uniqueKeys = new List<string>();
-                List<int> frequencies = new List<int>();
 
-                string[] fieldTypes = null;
-                bool[] decimalFieldIndices = new bool[]{ };
+                string[] frequencyArrayFieldList = string.IsNullOrEmpty(frequencyArrayFields) ? new string[0] : frequencyArrayFields.Split(',');
+                bool[] freqFieldFlagsWithRespectToFullFieldList = new bool[] { };
+
+                string[] unorderedExportFieldList = string.IsNullOrEmpty(exportFields) ? new string[0] : exportFields.Split(','); ;
+                string[] exportFieldList = null;
+                bool[] exportFieldFlagsWithRespectToFullFieldList = new bool[] { };
+
+                Regex csvSplitRegx = new Regex("," + "(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
+
+                string[] fullFieldNameList = null;
+                bool[] decimalFieldFlagsWithRespectToExportFieldList = new bool[] { };
+
+                BackgroundProcessingStats stats = null;
 
                 for (int offset = 0; offset < maxRows; offset += batchSize)
                 {
                     var result = await ExecuteSolrSearch(solrCoreUrl, query, offset, batchSize, null, null, fieldList);
 
-                    if(offset == 0)
+                    if (offset == 0)
                     {
-                        fieldTypes = result.Substring(0, result.IndexOf("\n")).Split(new char[] { ',' });
-                        decimalFieldIndices = fieldTypes.Select(ft => ft.EndsWith("_d")).ToArray();
+                        //First row in the result set returned by solr search represents the list of field names.
+                        fullFieldNameList = result.Substring(0, result.IndexOf("\n")).Split(',');
+
+                        //If no export field list have been provided as an input argument, we should export all fields.
+                        if (unorderedExportFieldList.Length == 0)
+                            exportFieldList = fullFieldNameList;
+                        else
+                            exportFieldList = fullFieldNameList.Where(fieldName => unorderedExportFieldList.Contains(fieldName)).ToArray();
+
+
+                        exportFieldFlagsWithRespectToFullFieldList = fullFieldNameList.Select(fieldName => exportFieldList.Contains(fieldName)).ToArray();
+
+                        decimalFieldFlagsWithRespectToExportFieldList = exportFieldList.Select(fieldName => fieldName.EndsWith("_d")).ToArray();
+
+                        freqFieldFlagsWithRespectToFullFieldList = fullFieldNameList.Select(fieldName => frequencyArrayFieldList.Contains(fieldName)).ToArray();
                     }
-                    
-                    //Skipping the header line if this is not the first batch
+
+                    //Skipping the header line
                     result = result.Substring(result.IndexOf("\n") + 1);
-                   
-                    if(selectUniqueEntries.HasValue && selectUniqueEntries.Value)
+
+                    if (selectUniqueEntries.HasValue && selectUniqueEntries.Value)
                     {
+                        if (stats == null)
+                            stats = new BackgroundProcessingStats();
+
                         List<string> selectedLines = new List<string>();
-                        string[] lines = result.Split(new char[] {'\n'});
-                        foreach(var line in lines)
+                        string[] lines = result.Split(new char[] { '\n' });
+                        foreach (var line in lines)
                         {
-                            string[] fieldValues = line.Split(new char[] {','});
-                            string key = GetUniqueKey(fieldValues, numDecimalPoints, decimalFieldIndices);
+                            if (string.IsNullOrEmpty(line))
+                                continue;
+
+                            Thread.Sleep(1000);
+
+                            //Full list of field values represented in the result row.
+                            string[] fieldValues = csvSplitRegx.Split(line);
+
+                            //Extract the list of values that needs to be exported from the full field value list
+                            string[] exportFieldValues = fieldValues.Where((str, index) => exportFieldFlagsWithRespectToFullFieldList[index]).ToArray();
+
+                            //Calculate the frequency increment of the selected data row. If one or more frequency-array-fields have been
+                            //specified, set the cumulative element count of those arrays as the frequency increment. Otherwise, set the 
+                            //frequency increment to be 1.
+                            int freqIncrement = 0;
+                            if (!freqFieldFlagsWithRespectToFullFieldList.Where(x => x).Any())
+                                freqIncrement = 1;
+                            else
+                            {
+                                var freqArrayValues = fieldValues.Where((str, index) => freqFieldFlagsWithRespectToFullFieldList[index]).ToList();
+                                foreach (var concatenatedArrayValue in freqArrayValues)
+                                {
+                                    freqIncrement += concatenatedArrayValue.Split(',').Select(s => s.Trim('"')).Where(s => s.Length > 0).Count();
+                                }
+                            }
+
+                            //Calculate the unique key that represent the combination of export field values
+                            string key = CalculateUniqueKey(exportFieldValues, numDecimalPoints, decimalFieldFlagsWithRespectToExportFieldList);
                             int idx = uniqueKeys.IndexOf(key);
                             if (idx < 0)
                             {
                                 uniqueKeys.Add(key);
-                                selectedLines.Add(line);
-                                frequencies.Add(1);
+                                selectedLines.Add(string.Join(',', exportFieldValues));
+                                stats.Frequencies.Add(freqIncrement);
+                                ++stats.UniqueRecordCount;
                             }
                             else
-                                frequencies[idx] += 1;
+                            {
+                                stats.Frequencies[idx] += freqIncrement;
+                            }
+                            stats.TotalCount += freqIncrement;
                         }
 
 
                         if (offset == 0)
-                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fieldTypes!) });
+                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", exportFieldList) });
 
                         if (selectedLines.Count > 0)
                             await File.AppendAllLinesAsync(outFile, selectedLines);
@@ -286,7 +345,7 @@ namespace Catfish.API.Repository.Services
                     else
                     {
                         if (offset == 0)
-                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fieldTypes!) });
+                            await File.AppendAllLinesAsync(outFile, new string[] { string.Join(",", fullFieldNameList!) });
 
                         await File.AppendAllTextAsync(outFile, result);
                     }
@@ -303,12 +362,16 @@ namespace Catfish.API.Repository.Services
                 }
 
                 //Saving the frequencies file.
-                if (frequencies.Count > 0)
+                if (stats != null)
                 {
                     string statsFile = fileName.Substring(0, fileName.Length - 4) + "-stats.csv";
                     string statsOutFile = Path.Combine(folderRoot, statsFile);
-                    await File.WriteAllTextAsync(statsOutFile, "frequencies\n");
-                    await File.AppendAllLinesAsync(statsOutFile, frequencies.Select(x => x.ToString()));
+
+                    await File.WriteAllTextAsync(statsOutFile, "Record Frequencies,Unique Record Count,Total Record Count\n");
+                    await File.AppendAllTextAsync(statsOutFile, $"{stats.Frequencies[0]},{stats.UniqueRecordCount},{stats.TotalCount}\n");
+                    await File.AppendAllLinesAsync(statsOutFile, stats.Frequencies.GetRange(1, stats.Frequencies.Count - 1).Select(x => x.ToString()));
+
+
                     jobRecord.DownloadStatsFileLink = downloadEndpoint + "?fileName=" + statsFile; ;
                 }
 
@@ -317,50 +380,65 @@ namespace Catfish.API.Repository.Services
                 jobRecord.LastUpdated = DateTime.UtcNow;
                 jobRecord.Message = $"Processing time: {(jobRecord.LastUpdated - jobRecord.Started)}";
                 _db.SaveChanges();
+                if (!string.IsNullOrEmpty(notificationEmail))
+                {
+                    Email emailDto = new Email();
+                    emailDto.Subject = "Background Job Completed";
+                    emailDto.ToRecipientEmail = new List<string> { notificationEmail };
+                    // emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
 
-                Email emailDto = new Email();
-                emailDto.Subject = "Background Job Completed";
-                emailDto.ToRecipientEmail = new List<string> { notificationEmail };
-                emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
-
-                emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
-                _email.SendEmail(emailDto);
+                    emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
+                    _email.SendEmail(emailDto);
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 jobRecord.Status = "Failed";
-                jobRecord.LastUpdated= DateTime.UtcNow;
+                jobRecord.LastUpdated = DateTime.UtcNow;
                 jobRecord.Message = $"{ex.Message}\n\n{ex.StackTrace}";
                 _db.SaveChanges();
 
-                Email emailDto = new Email();
-                emailDto.Subject = "Background Job Failed";
-                emailDto.ToRecipientEmail = new List<string> { notificationEmail };
-                emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
-
-                emailDto.Body = $@"Your background-job failed. \n\n{ex.Message}\n\n{ex.StackTrace}";
-                _email.SendEmail(emailDto);
-            }
-
-        }
-
-        private string GetUniqueKey(string[] fieldValues, int? numDecimalPoints, bool[] decimalFieldIndices)
-        {
-            if (!numDecimalPoints.HasValue)
-                return string.Join(",", fieldValues);
-            else
-            {
-                string key = "";
-                for(int i=0; i< fieldValues.Length; ++i)
+                if (!string.IsNullOrEmpty(notificationEmail))
                 {
-                    if (decimalFieldIndices[i] && decimal.TryParse(fieldValues[i], out decimal decimalValue))
-                        key = $"{key},{Math.Round(decimalValue, numDecimalPoints.Value)}";
-                    else
-                        key = $"{key},{fieldValues[i]}";
+                    Email emailDto = new Email();
+                    emailDto.Subject = "Background Job Failed";
+                    emailDto.ToRecipientEmail = new List<string> { notificationEmail };
+                    // emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
+
+                    emailDto.Body = $@"Your background-job failed. \n\n{ex.Message}\n\n{ex.StackTrace}";
+                    _email.SendEmail(emailDto);
                 }
-                return key;
+            }
+
+        }
+
+        private string CalculateUniqueKey(string[] fieldValues, int? numDecimalPoints, bool[] decimalFieldIndices)
+        {
+            try
+            {
+                if (!numDecimalPoints.HasValue)
+                    return string.Join(",", fieldValues);
+                else
+                {
+                    string key = "";
+                    for (int i = 0; i < fieldValues.Length; ++i)
+                    {
+                        if (decimalFieldIndices[i] && decimal.TryParse(fieldValues[i], out decimal decimalValue))
+                            key = $"{key},{Math.Round(decimalValue, numDecimalPoints.Value)}";
+                        else
+                            key = $"{key},{fieldValues[i]}";
+                    }
+                    return key;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
+
+        private T[] GetSubArray<T>(T[] source, bool[] selectIndicies) =>
+            selectIndicies?.Length > 0 ? source.Where((val, index) => selectIndicies[index]).ToArray() : source;
 
         public async Task<int> GetMatchCount(string query, string solrCoreUrl = "")
         {
@@ -383,8 +461,8 @@ namespace Catfish.API.Repository.Services
             parameters["hl.snippets"] = maxHiglightSnippets.ToString();
             parameters["wt"] = outputFormat;
 
-          
-            
+
+
             Uri fullUri = new Uri(qUrl);
             var postResponse = await _httpClient.PostAsync(fullUri, new FormUrlEncodedContent(parameters));
             //var postResponse = await _httpClient.PostAsync(new Uri(qUrl), new FormUrlEncodedContent(parameters));
@@ -392,6 +470,58 @@ namespace Catfish.API.Repository.Services
             var postContents = await postResponse.Content.ReadAsStringAsync();
 
             return postContents;
+        }
+        public async Task<JobRecord?> GetJobRecord(Guid jobId)
+        {
+            return await _db.JobRecords.FindAsync(jobId);
+        }
+        public JobRecord CreateJobRecord(string label, int maxRow)
+        {
+            try
+            {
+                JobRecord jobRecord = new JobRecord()
+                {
+                    JobLabel = label,
+                    Started = DateTime.UtcNow,
+                    LastUpdated = DateTime.UtcNow,
+                    Status = "Pending",
+                    ExpectedDataRows = maxRow
+                };
+
+                _db.JobRecords.Add(jobRecord);
+                _db.SaveChanges();
+
+                return jobRecord;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+
+        }
+        public async Task UpdateJobRecordHangfireId(Guid jobId, string hangfireId)
+        {
+            try
+            {
+                JobRecord jRecord = await GetJobRecord(jobId);
+
+                if (jRecord == null)
+                    throw new Exception("Object not found");
+
+                jRecord.JobId = hangfireId;
+
+                _db.Entry(jRecord).State = EntityState.Modified;
+
+                _db.SaveChanges();
+
+                
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

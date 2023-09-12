@@ -5,12 +5,22 @@ export interface JobRecord{
     jobLabel: string,
     processedDataRows: number,
     expectedDataRows: number,
-    status: 'In Progress' | 'Completed' | 'Failed',
+    status: 'In Progress' | 'Completed' | 'Failed' | 'Pending'
     dataFile: string,
     downloadDataFileLink: string,
     downloadStatsFileLink: string,
     dataFileSize: number,
     started: Date,
     lastUpdated: Date,
-    message: string
+    message: string,
+    jobId: string, //hangfire's jobId
+    isDeleted: boolean | null,
+    deletedDate: Date | null
+}
+
+export interface JobSearchResult{
+    resultEntries: JobRecord[],
+    offset: number,
+    totalMatches: number,
+    itemsPerPage: number
 }

@@ -1,4 +1,5 @@
-﻿using Catfish.API.Repository.Solr;
+﻿using Catfish.API.Repository.Models.BackgroundJobs;
+using Catfish.API.Repository.Solr;
 using System.Xml.Linq;
 
 namespace Catfish.API.Repository.Interfaces
@@ -35,16 +36,24 @@ namespace Catfish.API.Repository.Interfaces
         public Task SubmitSearchJobAsync(
             string query,
             string? fieldList,
-            string notificationEmaill,
-            string jobLabel,
+            string? notificationEmaill,
+            //string jobLabel,
+            Guid jobRecordId,
             string solrCoreUrl,
             string downloadEndpoint,
             int batchSize,
-            int maxRows,
+           // int maxRows,
             bool? selectUniqueEntries,
-            int? numFloatDecimals);
+            int? numFloatDecimals,
+            string? frequencyArrayFields,
+            string? uniqueExportFields);
 
         public Task<int> GetMatchCount(string query, string solrCoreUrl="");
+        public JobRecord CreateJobRecord(string label, int maxRow);
+
+        public Task<JobRecord?> GetJobRecord(Guid jobId);
+
+        public Task UpdateJobRecordHangfireId(Guid jobId, string hangfireId);
 
     }
 }

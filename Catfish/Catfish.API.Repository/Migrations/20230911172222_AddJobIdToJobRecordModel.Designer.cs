@@ -4,6 +4,7 @@ using Catfish.API.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catfish.API.Repository.Migrations
 {
     [DbContext(typeof(RepoDbContext))]
-    partial class RepoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230911172222_AddJobIdToJobRecordModel")]
+    partial class AddJobIdToJobRecordModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,9 +36,6 @@ namespace Catfish.API.Repository.Migrations
                     b.Property<long>("DataFileSize")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("DownloadDataFileLink")
                         .HasColumnType("nvarchar(max)");
 
@@ -45,9 +44,6 @@ namespace Catfish.API.Repository.Migrations
 
                     b.Property<int>("ExpectedDataRows")
                         .HasColumnType("int");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("JobId")
                         .HasColumnType("nvarchar(max)");

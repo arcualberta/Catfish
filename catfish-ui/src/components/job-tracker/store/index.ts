@@ -1,26 +1,71 @@
+import { buildHashFromArray } from "@fullcalendar/core";
+import { Guid } from "guid-typescript";
 import { defineStore } from "pinia";
-import { JobRecord } from "../models";
+import { JobRecord, JobSearchResult } from "../models";
 
 export const useJobTrackerStore = defineStore('JobTrackerStore', {
     state: () => ({
-        jobs: [] as JobRecord[],
-        offset: 0,
-        apiRoot: ''
+        jobSearchResult: {} as JobSearchResult,
+        apiRoot: '',
+        searchTerm: "",
+        isLoadig: false,
+        isLoadingFailed: false
     }),
     actions: {
-        load( offset: number, max: number){
-
-            const api = `${this.apiRoot}/background-job?offset=${offset}&max=${max}`;
+        load( offset: number, pageSize: number){
+            //update max
+            console.log("searchTerm: " + this.searchTerm)
+            const api = `${this.apiRoot}/background-job?offset=${offset}&max=${pageSize}&searchTerm=${this.searchTerm}`;
+            this.isLoadig = true;
+            this.isLoadingFailed = false;
             fetch(api, {
                 method: 'GET'
             })
             .then(response => response.json())
             .then(data => {
-                    this.jobs = data as JobRecord[];
+                this.jobSearchResult = data as JobSearchResult;
+                this.isLoadig = false;
             })
             .catch((error) => {
                 console.error('Load Error:', error);
+                this.isLoadingFailed = true;
+                this.isLoadig = false;
+
             });
+        },
+        next(pageSize: number) {
+            console.log("next")
+            this.load(this.jobSearchResult.offset + pageSize, pageSize)        
+        },
+        previous(pageSize: number) {
+            console.log("previous")
+            const offset = Math.max(0, (this.jobSearchResult.offset - pageSize))
+            this.load(offset, pageSize)
+        },
+        updateSearchTerm(searchText: string) {
+            this.searchTerm = searchText;
+           
+        },
+        removeJob(jobId: Guid) {
+            //const form = new FormData();
+            //form.append("jobId", jobId.toString());
+            
+            var removeJobApi = `${this.apiRoot}/background-job/remove-job?jobId=${jobId}`;
+            fetch(removeJobApi, {
+                method: 'POST',
+               // body: form,
+                headers: {
+                    'encType': 'multipart/form-data'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert("Job has been canceled.")
+                })
+                .catch((error) => {
+                    console.error('Error on trying canceling the job', error);
+                  
+                });
         }
     }
 });

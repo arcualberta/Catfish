@@ -20,11 +20,13 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         queryTime: 0,
         queryApi: 'https://localhost:5020/api/solr-search',
         isLoadig: false,
+        isLoadingFailed: false,
         jobId:""
     }),
     actions: {
         query(query: string | null, offset: number, max: number){
             this.isLoadig = true;
+            this.isLoadingFailed = false;
             this.offset = offset;
             this.max = max;
 
@@ -55,9 +57,10 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             .catch((error) => {
                 console.error('Load Entities API Error:', error);
                 this.isLoadig = false;
+                this.isLoadingFailed = true;
             });
         },
-        executeJob(query: string | null, email: string, label: string, batchSize:number, selectUniqueEntries:boolean, roundFloats:boolean, numDecimalPoints:number) {
+        executeJob(query: string | null, email: string, label: string, batchSize:number, selectUniqueEntries:boolean, roundFloats:boolean, numDecimalPoints:number, frequencyArrayFields: string[], uniqueExportFields: string[]) {
             this.isLoadig = true;
            // this.offset = offset;
            // this.max = max;
@@ -79,6 +82,16 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                     form.append("numDecimalPoints", numDecimalPoints.toString());
                 }
             }
+
+            if(frequencyArrayFields?.length > 0){
+                form.append("frequencyArrayFields", frequencyArrayFields.join());
+            }
+
+            if(uniqueExportFields?.length > 0){
+                form.append("exportFields", uniqueExportFields.join());
+            }
+
+            //console.log("uniqueExportFields", JSON.stringify(uniqueExportFields))
             
             this.queryStart = new Date().getTime()
 
@@ -128,6 +141,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         },
         activeSelectedResultFieldNames: (state) => {
             return state.resultFieldNames.filter(fieldName => state.activeFieldList.filter(fd => fd.name == fieldName)?.length > 0)
-        }
+        },
+        resultArrayFields: (state) => state.resultFieldNames.filter(fieldName => fieldName.match(new RegExp('.*_.+s$')))
+        
     }
 });
