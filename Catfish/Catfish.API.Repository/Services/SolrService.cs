@@ -295,8 +295,6 @@ namespace Catfish.API.Repository.Services
                             if (string.IsNullOrEmpty(line))
                                 continue;
 
-                            Thread.Sleep(1000);
-
                             //Full list of field values represented in the result row.
                             string[] fieldValues = csvSplitRegx.Split(line);
 
