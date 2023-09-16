@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using MySql.EntityFrameworkCore.Extensions;
 
 namespace Catfish.Test.Helpers
 {
@@ -30,14 +31,19 @@ namespace Catfish.Test.Helpers
             services.AddSingleton(typeof(IConfiguration), configuration);
          
             //Registering application DB Context
-            string dbConnectionString = configuration.GetConnectionString("catfish3");
+            string dbConnectionString = configuration.GetConnectionString("RepoConnectionString");
             services.AddDbContext<RepoDbContext>(options => options
                 .UseSqlServer(dbConnectionString)
                 );
 
+            services.AddEntityFrameworkMySQL().AddDbContext<MySqlMoviesDbContext>(options => {
+                options.UseMySQL(configuration.GetConnectionString("mysqlMovies"));
+            });
+
             //Registering other services
             //Registering other services
             services.AddScoped<ISolrService, SolrService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             ////services.AddScoped<SolrService>();
             // Solr services
@@ -54,6 +60,7 @@ namespace Catfish.Test.Helpers
         public RepoDbContext Db => Seviceprovider.GetService<RepoDbContext>()!;
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>()!;
         public ISolrService Solr => Seviceprovider.GetService<ISolrService>()!;
+        public MySqlMoviesDbContext MySqlMoviesDbContext => Seviceprovider.GetService<MySqlMoviesDbContext>()!;
 
     }
 }
