@@ -8,7 +8,9 @@ namespace Catfish.API.Repository.Interfaces
         public void  DummyTest();
         public string RunTestBackgroundJob();
 
-        public Task<JobSearchResult> GetJobs(int offset, int max, string? searchTerm = null);
+        public Task<JobSearchResult> GetJobs(int offset, int max, string? searchTerm = null, bool inProgressOnly = false);
         public Task<JobRecord?> GetJob(Guid id);
+
+        public Task RemoveBackgroundJob(Guid jobId);
     }
 }

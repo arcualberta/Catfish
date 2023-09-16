@@ -52,7 +52,7 @@ namespace Catfish.API.Repository.Services
 
             await AddUpdateAsync(payload);
         }
-        
+
         public async Task Index(IList<EntityData> entities, List<FormTemplate> forms)
         {
             var docs = entities.Select(entity => new SolrDoc(entity, forms, _indexFieldNames)).ToList();
@@ -65,7 +65,7 @@ namespace Catfish.API.Repository.Services
             foreach (var doc in docs)
                 payload.Add(doc.Root);
 
-            await AddUpdateAsync(payload); 
+            await AddUpdateAsync(payload);
         }
 
         public async Task AddUpdateAsync(XElement payload)
@@ -92,7 +92,7 @@ namespace Catfish.API.Repository.Services
             httpResponse.EnsureSuccessStatusCode();
         }
 
-        
+
         public async Task<SearchResult> Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1)
         {
             string query = "doc_type_ss:item";
@@ -110,7 +110,7 @@ namespace Catfish.API.Repository.Services
 
             return await ExecuteSearch(query, start, maxRows, null, null, null, maxHighlightsPerEntry);
         }
-       
+
 
         /// <summary>
         /// Executes a given valid solr query.
@@ -161,7 +161,7 @@ namespace Catfish.API.Repository.Services
             string qUrl = _solrCoreUrl + "/select?hl=on";
             var parameters = new Dictionary<string, string>();
             parameters["q"] = query;
-            parameters["start"] = start.ToString();                                 
+            parameters["start"] = start.ToString();
             parameters["rows"] = max.ToString();
             if (!string.IsNullOrEmpty(filterQuery)) parameters["fq"] = filterQuery;
             if (!string.IsNullOrEmpty(sortBy)) parameters["sort"] = sortBy;
@@ -206,29 +206,28 @@ namespace Catfish.API.Repository.Services
         }
 
         public async Task SubmitSearchJobAsync(
-            string query, 
+            string query,
             string? fieldList,
             string? notificationEmail,
-            string jobLabel,
+            //string jobLabel,
+            Guid jobRecordId,
             string solrCoreUrl,
             string downloadEndpoint,
             int batchSize,
-            int maxRows,
-            bool? selectUniqueEntries, 
+            // int maxRows,
+            bool? selectUniqueEntries,
             int? numDecimalPoints,
             string? frequencyArrayFields,
             string? exportFields)
         {
-            JobRecord jobRecord = new JobRecord()
-            {
-                JobLabel = jobLabel,
-                Started = DateTime.UtcNow,
-                LastUpdated = DateTime.UtcNow,
-                Status = "In Progress",
-                ExpectedDataRows = maxRows
-            };
-            _db.JobRecords.Add(jobRecord);
+            JobRecord jobRecord = await GetJobRecord(jobRecordId);
+            jobRecord.Status = "In Progress";
+            jobRecord.LastUpdated = DateTime.UtcNow;
+            //_db.Entry(jobRecord).State = EntityState.Modified;
+            _db.SaveChanges();
 
+            string jobLabel = jobRecord.JobLabel;
+            int maxRows = jobRecord.ExpectedDataRows;
             try
             {
                 string fileName = $@"{jobLabel.Replace(" ", "_").Trim()}_{Guid.NewGuid()}.csv";
@@ -256,7 +255,7 @@ namespace Catfish.API.Repository.Services
                 string[] fullFieldNameList = null;
                 bool[] decimalFieldFlagsWithRespectToExportFieldList = new bool[] { };
 
-                BackgroundProcessingStats stats = null; 
+                BackgroundProcessingStats stats = null;
 
                 for (int offset = 0; offset < maxRows; offset += batchSize)
                 {
@@ -280,28 +279,28 @@ namespace Catfish.API.Repository.Services
 
                         freqFieldFlagsWithRespectToFullFieldList = fullFieldNameList.Select(fieldName => frequencyArrayFieldList.Contains(fieldName)).ToArray();
                     }
-                    
+
                     //Skipping the header line
                     result = result.Substring(result.IndexOf("\n") + 1);
-                   
-                    if(selectUniqueEntries.HasValue && selectUniqueEntries.Value)
+
+                    if (selectUniqueEntries.HasValue && selectUniqueEntries.Value)
                     {
-                        if(stats == null)
+                        if (stats == null)
                             stats = new BackgroundProcessingStats();
 
                         List<string> selectedLines = new List<string>();
-                        string[] lines = result.Split(new char[] {'\n'});
-                        foreach(var line in lines)
+                        string[] lines = result.Split(new char[] { '\n' });
+                        foreach (var line in lines)
                         {
-                            if(string.IsNullOrEmpty(line)) 
+                            if (string.IsNullOrEmpty(line))
                                 continue;
 
                             //Full list of field values represented in the result row.
                             string[] fieldValues = csvSplitRegx.Split(line);
 
                             //Extract the list of values that needs to be exported from the full field value list
-                            string[] exportFieldValues = fieldValues.Where((str, index) => exportFieldFlagsWithRespectToFullFieldList[index]).ToArray(); 
-                            
+                            string[] exportFieldValues = fieldValues.Where((str, index) => exportFieldFlagsWithRespectToFullFieldList[index]).ToArray();
+
                             //Calculate the frequency increment of the selected data row. If one or more frequency-array-fields have been
                             //specified, set the cumulative element count of those arrays as the frequency increment. Otherwise, set the 
                             //frequency increment to be 1.
@@ -368,7 +367,7 @@ namespace Catfish.API.Repository.Services
 
                     await File.WriteAllTextAsync(statsOutFile, "Record Frequencies,Unique Record Count,Total Record Count\n");
                     await File.AppendAllTextAsync(statsOutFile, $"{stats.Frequencies[0]},{stats.UniqueRecordCount},{stats.TotalCount}\n");
-                    await File.AppendAllLinesAsync(statsOutFile, stats.Frequencies.GetRange(1, stats.Frequencies.Count-1).Select(x => x.ToString()));
+                    await File.AppendAllLinesAsync(statsOutFile, stats.Frequencies.GetRange(1, stats.Frequencies.Count - 1).Select(x => x.ToString()));
 
 
                     jobRecord.DownloadStatsFileLink = downloadEndpoint + "?fileName=" + statsFile; ;
@@ -384,16 +383,16 @@ namespace Catfish.API.Repository.Services
                     Email emailDto = new Email();
                     emailDto.Subject = "Background Job Completed";
                     emailDto.ToRecipientEmail = new List<string> { notificationEmail };
-                   // emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
+                    // emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
 
                     emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
                     _email.SendEmail(emailDto);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 jobRecord.Status = "Failed";
-                jobRecord.LastUpdated= DateTime.UtcNow;
+                jobRecord.LastUpdated = DateTime.UtcNow;
                 jobRecord.Message = $"{ex.Message}\n\n{ex.StackTrace}";
                 _db.SaveChanges();
 
@@ -402,7 +401,7 @@ namespace Catfish.API.Repository.Services
                     Email emailDto = new Email();
                     emailDto.Subject = "Background Job Failed";
                     emailDto.ToRecipientEmail = new List<string> { notificationEmail };
-                   // emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
+                    // emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca" };
 
                     emailDto.Body = $@"Your background-job failed. \n\n{ex.Message}\n\n{ex.StackTrace}";
                     _email.SendEmail(emailDto);
@@ -436,7 +435,7 @@ namespace Catfish.API.Repository.Services
             }
         }
 
-        private T[] GetSubArray<T>(T[] source, bool[] selectIndicies) => 
+        private T[] GetSubArray<T>(T[] source, bool[] selectIndicies) =>
             selectIndicies?.Length > 0 ? source.Where((val, index) => selectIndicies[index]).ToArray() : source;
 
         public async Task<int> GetMatchCount(string query, string solrCoreUrl = "")
@@ -460,8 +459,8 @@ namespace Catfish.API.Repository.Services
             parameters["hl.snippets"] = maxHiglightSnippets.ToString();
             parameters["wt"] = outputFormat;
 
-          
-            
+
+
             Uri fullUri = new Uri(qUrl);
             var postResponse = await _httpClient.PostAsync(fullUri, new FormUrlEncodedContent(parameters));
             //var postResponse = await _httpClient.PostAsync(new Uri(qUrl), new FormUrlEncodedContent(parameters));
@@ -469,6 +468,58 @@ namespace Catfish.API.Repository.Services
             var postContents = await postResponse.Content.ReadAsStringAsync();
 
             return postContents;
+        }
+        public async Task<JobRecord?> GetJobRecord(Guid jobId)
+        {
+            return await _db.JobRecords.FindAsync(jobId);
+        }
+        public JobRecord CreateJobRecord(string label, int maxRow)
+        {
+            try
+            {
+                JobRecord jobRecord = new JobRecord()
+                {
+                    JobLabel = label,
+                    Started = DateTime.UtcNow,
+                    LastUpdated = DateTime.UtcNow,
+                    Status = "Pending",
+                    ExpectedDataRows = maxRow
+                };
+
+                _db.JobRecords.Add(jobRecord);
+                _db.SaveChanges();
+
+                return jobRecord;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+
+        }
+        public async Task UpdateJobRecordHangfireId(Guid jobId, string hangfireId)
+        {
+            try
+            {
+                JobRecord jRecord = await GetJobRecord(jobId);
+
+                if (jRecord == null)
+                    throw new Exception("Object not found");
+
+                jRecord.JobId = hangfireId;
+
+                _db.Entry(jRecord).State = EntityState.Modified;
+
+                _db.SaveChanges();
+
+                
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

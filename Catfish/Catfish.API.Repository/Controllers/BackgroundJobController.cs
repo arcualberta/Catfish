@@ -28,6 +28,14 @@ namespace Catfish.API.Repository.Controllers
             return await _bgJobSrv.GetJob(id);
         }
 
+
+        [HttpPost("remove-job")]
+        public async Task RemoveJob(Guid jobId)
+        {
+            //markedjob as  deleted
+           await _bgJobSrv.RemoveBackgroundJob(jobId);  
+           
+        }
     }
 
 }

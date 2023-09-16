@@ -15,5 +15,10 @@
         public DateTime LastUpdated { get; set; }
         public string? Message { get; set; }
 
+        public string? JobId { get; set; } //Hangfire job id
+
+        public bool? IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+
     }
 }

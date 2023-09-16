@@ -35,23 +35,27 @@ namespace Catfish.API.Repository.Services
               } 
         }
 
-        public async Task<JobSearchResult> GetJobs(int offset, int max, string? searchTerm=null)
+        public async Task<JobSearchResult> GetJobs(int offset, int max, string? searchTerm=null, bool inProgressOnly = false)
         {
-            JobSearchResult result = new JobSearchResult()
+            JobSearchResult result = new()
             {
                 Offset = offset
             };
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                result.ResultEntries = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm)).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
-                result.TotalMatches = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm)).CountAsync();
+                result.ResultEntries = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm) && j.IsDeleted != true).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+                result.TotalMatches = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm) && j.IsDeleted != true).CountAsync();
             }
             else 
             {
-                result.ResultEntries = await _db.JobRecords.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
-                result.TotalMatches = await _db.JobRecords.CountAsync();
+                result.ResultEntries = await _db.JobRecords.Where(j=>j.IsDeleted != true).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+                result.TotalMatches = await _db.JobRecords.Where(j => j.IsDeleted != true).CountAsync();
             }
+
+            //Out of the paginated result set, select the sub-set of entries that are still in progress.
+            if (inProgressOnly)
+                result.ResultEntries = result.ResultEntries.Where(entry => entry.Status == "In Progress").ToList();
 
             return result;
         }
@@ -69,6 +73,35 @@ namespace Catfish.API.Repository.Services
 
             BackgroundJob.ContinueJobWith(jobId, () => Console.WriteLine($"{jobId} is done ."));
             return jobId;
+        }
+
+        public async Task RemoveBackgroundJob(Guid jobId)
+        {
+            try
+            {
+                JobRecord jobRecord = await _db.JobRecords.FindAsync(jobId);
+
+                if (jobRecord == null)
+                    throw new Exception("Object not found");
+
+                //stop hangfire job
+                if(!string.IsNullOrEmpty(jobRecord.JobId))
+                    BackgroundJob.Delete(jobRecord.JobId);
+
+                jobRecord.IsDeleted = true;
+                jobRecord.DeletedDate = DateTime.UtcNow;
+
+                _db.Entry(jobRecord).State = EntityState.Modified;
+
+                _db.SaveChanges();
+
+
+               
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
     }
