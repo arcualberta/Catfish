@@ -25,19 +25,19 @@ namespace DataProcessing
     {
         [Key]
         public int Movie_ID { get; set; }
-        public string Movie_Title { get; set; }
-        public int Parent_ID { get; set; }
-        public string Genre { get; set; }
-        public string Rating { get; set; }
-        public string Director { get; set; }
-        public string Producer { get; set; }
-        public string Actor { get; set; }
-        public string Writer { get; set; }
-        public string Distributor { get; set; }
-        public DateTime Release_Date { get; set; }
-        public string Release_Notes { get; set; }
-        public int Running_Time { get; set; }
-        public float Star_Rating { get; set; }
-        public string URL { get; set; }
+        public string? Movie_Title { get; set; }
+        public int? Parent_ID { get; set; }
+        public string? Genre { get; set; }
+        public string? Rating { get; set; }
+        public string? Director { get; set; }
+        public string? Producer { get; set; }
+        public string? Actor { get; set; }
+        public string? Writer { get; set; }
+        public string? Distributor { get; set; }
+        public DateTime? Release_Date { get; set; }
+        public string? Release_Notes { get; set; }
+        public int? Running_Time { get; set; }
+        public float? Star_Rating { get; set; }
+        public string? URL { get; set; }
     }
 }
