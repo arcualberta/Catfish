@@ -12,10 +12,10 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
         isLoadingFailed: false
     }),
     actions: {
-        load( offset: number, pageSize: number){
+        load( offset: number, pageSize: number, isRefreshCall: boolean){
             //update max
             console.log("searchTerm: " + this.searchTerm)
-            const api = `${this.apiRoot}/background-job?offset=${offset}&max=${pageSize}&searchTerm=${this.searchTerm}`;
+            const api = `${this.apiRoot}/background-job?offset=${offset}&max=${pageSize}&searchTerm=${this.searchTerm}&isRefreshCall=${isRefreshCall}`;
             this.isLoadig = true;
             this.isLoadingFailed = false;
             fetch(api, {
@@ -23,7 +23,20 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
             })
             .then(response => response.json())
             .then(data => {
-                this.jobSearchResult = data as JobSearchResult;
+                if(isRefreshCall) {
+                    (data as JobSearchResult).resultEntries.forEach(job => {
+                        const target = this.jobSearchResult.resultEntries.find(child => child.id == job.id)
+                        if(target) {
+                            target.status = job.status;
+                            target.lastUpdated = job.lastUpdated;
+                            target.processedDataRows = job.processedDataRows;
+                            target.dataFileSize = job.dataFileSize;                            
+                        }
+                    });
+                }
+                else{
+                    this.jobSearchResult = data as JobSearchResult;
+                }
                 this.isLoadig = false;
             })
             .catch((error) => {
@@ -35,12 +48,12 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
         },
         next(pageSize: number) {
             console.log("next")
-            this.load(this.jobSearchResult.offset + pageSize, pageSize)        
+            this.load(this.jobSearchResult.offset + pageSize, pageSize, false)        
         },
         previous(pageSize: number) {
             console.log("previous")
             const offset = Math.max(0, (this.jobSearchResult.offset - pageSize))
-            this.load(offset, pageSize)
+            this.load(offset, pageSize, false)
         },
         updateSearchTerm(searchText: string) {
             this.searchTerm = searchText;
@@ -67,5 +80,8 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
                   
                 });
         }
+    },
+    getters:{
+        activeJobs: (state) => state.jobSearchResult?.resultEntries?.filter(job => job.status == "In Progress")
     }
 });
