@@ -1,12 +1,12 @@
 ﻿using Catfish.API.Repository;
 using Catfish.API.Repository.Services;
 using Catfish.API.Repository.Interfaces;
-using DataProcessing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using MySql.EntityFrameworkCore.Extensions;
+using DataProcessing.ShowtimeMySqlProcessing;
 
 namespace Catfish.Test.Helpers
 {
@@ -36,9 +36,30 @@ namespace Catfish.Test.Helpers
                 .UseSqlServer(dbConnectionString)
                 );
 
+            services.AddEntityFrameworkMySQL().AddDbContext<MySqlCountryOriginDbContext>(options => {
+                options.UseMySQL(configuration.GetConnectionString("mysqlCountryOrigins"));
+            });
+
+            services.AddEntityFrameworkMySQL().AddDbContext<MySqlDistributionDbContext>(options => {
+                options.UseMySQL(configuration.GetConnectionString("mysqlDistributions"));
+            });
+
             services.AddEntityFrameworkMySQL().AddDbContext<MySqlMoviesDbContext>(options => {
                 options.UseMySQL(configuration.GetConnectionString("mysqlMovies"));
             });
+
+            services.AddEntityFrameworkMySQL().AddDbContext<MySqlMovieCastDbContext>(options => {
+                options.UseMySQL(configuration.GetConnectionString("mysqlMovieCasts"));
+            });
+
+            services.AddEntityFrameworkMySQL().AddDbContext<MySqlMovieGenreDbContext>(options => {
+                options.UseMySQL(configuration.GetConnectionString("mysqlMovieGenres"));
+            });
+
+            services.AddEntityFrameworkMySQL().AddDbContext<MySqlTheaterDbContext>(options => {
+                options.UseMySQL(configuration.GetConnectionString("mysqlTheaters"));
+            });
+
 
             //Registering other services
             //Registering other services
@@ -60,7 +81,12 @@ namespace Catfish.Test.Helpers
         public RepoDbContext Db => Seviceprovider.GetService<RepoDbContext>()!;
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>()!;
         public ISolrService Solr => Seviceprovider.GetService<ISolrService>()!;
-        public MySqlMoviesDbContext MySqlMoviesDbContext => Seviceprovider.GetService<MySqlMoviesDbContext>()!;
+        public MySqlCountryOriginDbContext countryDbContext => Seviceprovider.GetService<MySqlCountryOriginDbContext>()!;
+        public MySqlDistributionDbContext distributionDbContext => Seviceprovider.GetService<MySqlDistributionDbContext>()!;
+        public MySqlMoviesDbContext movieDbContext => Seviceprovider.GetService<MySqlMoviesDbContext>()!;
+        public MySqlMovieCastDbContext movieCastDbContext => Seviceprovider.GetService<MySqlMovieCastDbContext>()!;
+        public MySqlMovieGenreDbContext movieGenreDbContext => Seviceprovider.GetService<MySqlMovieGenreDbContext>()!;
+        public MySqlTheaterDbContext theaterDbContext => Seviceprovider.GetService<MySqlTheaterDbContext>()!;
 
     }
 }

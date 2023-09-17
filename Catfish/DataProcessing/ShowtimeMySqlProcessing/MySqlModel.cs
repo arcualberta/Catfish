@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DataProcessing.ShowtimeMySqlProcessing
@@ -10,22 +11,50 @@ namespace DataProcessing.ShowtimeMySqlProcessing
     public class MySqlModel
     {
         public static readonly string STR2STR = "','";
-        public static readonly string STR2INT = "',";
-        public static readonly string INT2STR = ",'";
-        public static readonly string INT2INT = ",";
+        public static readonly string STR2NUM = "',";
+        public static readonly string NUM2STR = ",'";
+        public static readonly string NUM2NUM = ",";
 
-        protected static string getFieldValue(
+        protected static Regex _csvSplitRegx = new Regex(",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
+        protected static string? getFieldValue(
             string concatenatedFieldValues,
             int currentOffset,
-            string endOfValueSeparator,
+            string? endOfValueSeparator,
             out int nextOffset)
         {
             if (endOfValueSeparator != null)
             {
-                int idx = concatenatedFieldValues.IndexOf(endOfValueSeparator, currentOffset);
-                string value = concatenatedFieldValues.Substring(currentOffset, idx - currentOffset);
-                nextOffset = idx + endOfValueSeparator.Length;
-                return value;
+                //Checking if the current value is a NULL string
+                if (concatenatedFieldValues.IndexOf("NULL,", currentOffset) == currentOffset)
+                {
+                    nextOffset = currentOffset + 5;
+                    return null;
+                }
+                else
+                {
+                    int idx = concatenatedFieldValues.IndexOf(endOfValueSeparator, currentOffset);
+
+                    //Checking if the next value is a NULL string
+                    bool isNextStringNull = false;
+                    if (endOfValueSeparator == STR2STR || endOfValueSeparator == NUM2STR)
+                    {
+                        int nextNullPosition = concatenatedFieldValues.IndexOf(",NULL,", currentOffset);
+
+                        if (idx < 0 || (nextNullPosition > 0 && nextNullPosition < idx))
+                        {
+                            idx = nextNullPosition;
+                            isNextStringNull = true;
+                        }
+                    }
+
+                    string value = concatenatedFieldValues.Substring(currentOffset, idx - currentOffset).Trim('\'');
+                    if (isNextStringNull)
+                        nextOffset = idx + 1;
+                    else
+                        nextOffset = idx + endOfValueSeparator.Length;
+
+                    return value;
+                }
             }
             else
             {
