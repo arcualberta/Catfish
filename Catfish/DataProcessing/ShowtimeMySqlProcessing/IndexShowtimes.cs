@@ -27,6 +27,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             string errorLogFile = $"{dataFolder}\\zz_{tmp}-errors.txt";
             string progressLogFile = $"{dataFolder}\\zz_{tmp}-progress.txt";
 
+            DateTime start = DateTime.Now;
+            File.AppendAllText(progressLogFile, $"Started at: {start}\n");
+
             int lineNumber = 0;
             int count = 0;
             using (StreamReader sr = File.OpenText(sourceSqlDumpFileName))
@@ -67,6 +70,11 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
                 sr.Close();
             }
+
+            DateTime end = DateTime.Now;
+            File.AppendAllText(progressLogFile, $"Completed at: {end}\n");
+            File.AppendAllText(progressLogFile, $"Computation time: {end-start}\n");
+
         }
 
         private void ProcessShwotime(string concatenatedFieldValues)
