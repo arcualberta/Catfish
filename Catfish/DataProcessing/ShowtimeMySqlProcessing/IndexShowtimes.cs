@@ -3,6 +3,7 @@ using Catfish.API.Repository.Solr;
 using Catfish.Test.Helpers;
 using DataProcessing.ShowtimeMySqlProcessing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
@@ -161,12 +162,15 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         public async Task SplitDataFileIntoMultipleFiles()
         {
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SrcFolder").Value;
+
+            string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+            string outputFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:OutputFolder").Value;
+            Directory.CreateDirectory(logFolder);
+            Directory.CreateDirectory(outputFolder);
+
             string srcSqlDumpFileName = Path.Combine(srcFolder, "07-showtime.sql");
-            string outputFolder = Path.Combine(srcFolder, "output");
-            string insertFileFolder = Path.Combine(outputFolder, "insert-files");
-            Directory.CreateDirectory(insertFileFolder);
-            string outLogFile = Path.Combine(outputFolder, "out.txt");
-            string errorLogFile = Path.Combine(outputFolder, "error.txt");
+            string outLogFile = Path.Combine(logFolder, "out.txt");
+            string errorLogFile = Path.Combine(logFolder, "error.txt");
 
 
             //Loading statements that needs to be added before and after each insert set
@@ -249,7 +253,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                             }
 
                             //Creating a new output file
-                            outputFile = Path.Combine(insertFileFolder, $"insert-{++insertFileIndex}.sql");
+                            outputFile = Path.Combine(outputFolder, $"insert-{string.Format("{0:d3}", ++insertFileIndex)}.sql");
 
                             //Inserting pre-statements
                             await File.AppendAllLinesAsync(outputFile, preStatements);
@@ -278,8 +282,38 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
             DateTime stage2 = DateTime.Now;
 
-            await File.AppendAllTextAsync(outLogFile, $"Total line count: {lineCount}\n,Total insert count: {insertCount}\n, Total time: {stage2 - start}\n");
+            await File.AppendAllTextAsync(outLogFile, $"Total line count: {lineCount}\nTotal insert count: {insertCount}\nTotal time: {stage2 - start}\n");
         }
 
+        [Fact]
+        public async Task UploadSplitFilesToMySqlDatabase()
+        {
+            string folderRoot = Path.Combine(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SrcFolder").Value, "output");
+            string srcFolder = Path.Combine(folderRoot, "insert-files");
+            Assert.True(Directory.Exists(srcFolder));
+
+            string[] sqlFiles = Directory.GetFiles(srcFolder).OrderBy(x => x).ToArray();
+
+            string trackerFile = Path.Combine(folderRoot, "mysql-ingestion-tracker.txt");
+            List<string> ingestedFiles = File.Exists(trackerFile) ? new List<string>(await File.ReadAllLinesAsync(trackerFile)) : new List<string>();
+
+            int i = 12;
+            string x = string.Format("{0:d3}", i);
+
+            foreach (string sqlFile in sqlFiles)
+            {
+                if (ingestedFiles.Contains(sqlFile))
+                    continue;
+
+                IngestFile(sqlFile);
+                ingestedFiles.Add(sqlFile);
+                await File.AppendAllTextAsync(trackerFile, $"{sqlFile}\n");
+            }
+        }
+
+        protected void IngestFile(string sqlFile)
+        {
+            Thread.Sleep(1000);
+        }
     }
 }
