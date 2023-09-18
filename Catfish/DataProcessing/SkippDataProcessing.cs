@@ -104,7 +104,7 @@ namespace DataProcessing
                     }
                     else if (colHeading == "Position")
                     {
-                        solrDoc.AddField($"data_{FORM_ID}_{POSITION}_t", colValue);
+                        solrDoc.AddField($"data_{FORM_ID}_{POSITION}_s", colValue);
                     }
                     else if (colHeading == "Faculty or Organizational Affiliation")
                     {
