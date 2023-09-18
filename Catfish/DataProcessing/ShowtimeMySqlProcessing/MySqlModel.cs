@@ -36,6 +36,14 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                     else
                     {
                         idx = concatenatedFieldValues.IndexOf(endOfValueSeparator, currentOffset);
+                        if(endOfValueSeparator == STR2STR || endOfValueSeparator == NUM2STR)
+                        {
+                            //It may possible we can have a pure null instead of a string. If that's
+                            //the case we should use it's position as the end of value position.
+                            int idx2 = concatenatedFieldValues.IndexOf(",NULL,", currentOffset);
+                            if (idx2 > 0 && (idx < 0 || idx2 < idx))
+                                idx = idx2;
+                        }
 
                         //Checking if the next value is a NULL string
                         bool isNextStringNull = false;
