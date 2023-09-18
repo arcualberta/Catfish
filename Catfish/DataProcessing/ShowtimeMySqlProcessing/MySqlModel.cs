@@ -22,46 +22,51 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             string? endOfValueSeparator,
             out int nextOffset)
         {
-            if (endOfValueSeparator != null)
+            int idx = 0;
+            try
             {
-                //Checking if the current value is a NULL string
-                if (concatenatedFieldValues.IndexOf("NULL,", currentOffset) == currentOffset)
+                if (endOfValueSeparator != null)
                 {
-                    nextOffset = currentOffset + 5;
-                    return null;
+                    //Checking if the current value is a NULL string
+                    if (concatenatedFieldValues.IndexOf("NULL,", currentOffset) == currentOffset)
+                    {
+                        nextOffset = currentOffset + 5;
+                        return null;
+                    }
+                    else
+                    {
+                        idx = concatenatedFieldValues.IndexOf(endOfValueSeparator, currentOffset);
+
+                        //Checking if the next value is a NULL string
+                        bool isNextStringNull = false;
+                        if (endOfValueSeparator == STR2STR || endOfValueSeparator == NUM2STR)
+                        {
+                            int nextNullPosition = concatenatedFieldValues.IndexOf(",NULL,", currentOffset);
+
+                            if (idx < 0 || (nextNullPosition > 0 && nextNullPosition < idx))
+                            {
+                                idx = nextNullPosition;
+                                isNextStringNull = true;
+                            }
+                        }
+
+                        string value = concatenatedFieldValues.Substring(currentOffset, idx - currentOffset).Trim('\'');
+                        if (isNextStringNull)
+                            nextOffset = idx + 1;
+                        else
+                            nextOffset = idx + endOfValueSeparator.Length;
+
+                        return value;
+                    }
                 }
                 else
                 {
-                    int idx = concatenatedFieldValues.IndexOf(endOfValueSeparator, currentOffset);
-
-                    //Checking if the next value is a NULL string
-                    bool isNextStringNull = false;
-                    if (endOfValueSeparator == STR2STR || endOfValueSeparator == NUM2STR)
-                    {
-                        int nextNullPosition = concatenatedFieldValues.IndexOf(",NULL,", currentOffset);
-
-                        if (idx < 0 || (nextNullPosition > 0 && nextNullPosition < idx))
-                        {
-                            idx = nextNullPosition;
-                            isNextStringNull = true;
-                        }
-                    }
-
-                    string value = concatenatedFieldValues.Substring(currentOffset, idx - currentOffset).Trim('\'');
-                    if (isNextStringNull)
-                        nextOffset = idx + 1;
-                    else
-                        nextOffset = idx + endOfValueSeparator.Length;
-
+                    string value = concatenatedFieldValues.Substring(currentOffset).Trim('\'');
+                    nextOffset = -1;
                     return value;
                 }
             }
-            else
-            {
-                string value = concatenatedFieldValues.Substring(currentOffset).Trim('\'');
-                nextOffset = -1;
-                return value;
-            }
+            catch(Exception e) { throw e; }
         }
 
         protected static void AddArrayField(SolrDoc doc, string fieldName, string? concatenatedFieldValue)

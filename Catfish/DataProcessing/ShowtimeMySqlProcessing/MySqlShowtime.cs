@@ -153,16 +153,23 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
             //Movie ID
             string movieIdStr = getFieldValue(concatenatedFieldValues, offset, NUM2NUM, out offset);
-            showtime.MovieId = int.Parse(movieIdStr);
+            try { showtime.MovieId = int.Parse(movieIdStr); }
+            catch(Exception ex) { throw ex; }
+            
 
             //Theater Id
             string theaterIdStr = getFieldValue(concatenatedFieldValues, offset, NUM2STR, out offset);
-            showtime.TheaterId = int.Parse(theaterIdStr);
+            try { showtime.TheaterId = int.Parse(theaterIdStr); }
+            catch(Exception ex) { throw ex; }
 
             //Show Date
             string showDateStr = getFieldValue(concatenatedFieldValues, offset, STR2STR, out offset);
             if (!showDateStr.StartsWith("0000"))
-                showtime.ShowDate = DateTime.Parse(showDateStr);
+            {
+                try { showtime.ShowDate = DateTime.Parse(showDateStr); }
+                catch(Exception ex) { throw ex; }
+            }
+                
 
             //Show Time
             //This will only be one time string according to the old schema.
@@ -172,10 +179,14 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             string showTimeStr = getFieldValue(concatenatedFieldValues, offset, STR2STR, out offset);
             if (showTimeStr?.Length > 0)
             {
-                showtime.ShowTimes = new string[] { showTimeStr };
+                try
+                {
+                    showtime.ShowTimes = new string[] { showTimeStr };
 
-                string[] hms = showTimeStr.Split(':').Select(x => x.Trim('\'')).ToArray();
-                showtime.ShowTimeMinutes = new int[] { int.Parse(hms[0]) * 60 + int.Parse(hms[1]) };
+                    string[] hms = showTimeStr.Split(':').Select(x => x.Trim('\'')).ToArray();
+                    showtime.ShowTimeMinutes = new int[] { int.Parse(hms[0]) * 60 + int.Parse(hms[1]) };
+                }
+                catch(Exception ex) { throw ex; }
             }
 
             //Sepcial Attributes
@@ -187,7 +198,11 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             //WithMoviedId, which is the next nullable integer
             string withMovideIdStr = getFieldValue(concatenatedFieldValues, offset, NUM2STR, out offset);
             if (withMovideIdStr?.Length > 0 && withMovideIdStr != "NULL")
-                showtime.WithMovieId = int.Parse(withMovideIdStr);
+            {
+                try { showtime.WithMovieId = int.Parse(withMovideIdStr); }
+                catch(Exception ex) { throw ex; }
+            }
+                
 
             //ShowSound
             showtime.ShowSound = getFieldValue(concatenatedFieldValues, offset, STR2STR, out offset);

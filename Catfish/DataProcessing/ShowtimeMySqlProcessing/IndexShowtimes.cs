@@ -39,6 +39,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 {
                     ++lineNumber;
 
+                    //DEBUG
+                    if (lineNumber < 93) continue;
+
                     if (!line.StartsWith($"INSERT INTO `{modelName}` VALUES "))
                         continue;
 
@@ -79,9 +82,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
         private void ProcessShwotime(string concatenatedFieldValues)
         {
-            var showtime = MySqlShowtime.CreateInstance(concatenatedFieldValues);
-
-
+            var showtime = MySqlShowtime.CreateInstance2(concatenatedFieldValues);
         }
 
         protected List<MySqlCountryOrigin> _countryOrigins = new List<MySqlCountryOrigin>();
@@ -97,12 +98,12 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         [Fact]
         public async Task Execute()
         {
-            _countryOrigins = _testHelper.countryDbContext.Data.ToList();
-            _distribuitons = _testHelper.distributionDbContext.Data.ToList();
-            _movies = _testHelper.movieDbContext.Data.ToList();
-            _movieCasts = _testHelper.movieCastDbContext.Data.ToList();
-            _movieGenres = _testHelper.movieGenreDbContext.Data.ToList();
-            _theaters = _testHelper.theaterDbContext.Data.ToList();
+            ////_countryOrigins = _testHelper.countryDbContext.Data.ToList();
+            ////_distribuitons = _testHelper.distributionDbContext.Data.ToList();
+            ////_movies = _testHelper.movieDbContext.Data.ToList();
+            ////_movieCasts = _testHelper.movieCastDbContext.Data.ToList();
+            ////_movieGenres = _testHelper.movieGenreDbContext.Data.ToList();
+            ////_theaters = _testHelper.theaterDbContext.Data.ToList();
 
 
             string sourceSqlDumpFileName = "C:\\Projects\\Showtime Database\\kinomatics\\07-showtime.sql";
