@@ -39,9 +39,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 {
                     ++lineNumber;
 
-                    //DEBUG
-                    if (lineNumber < 93) continue;
-
                     if (!line.StartsWith($"INSERT INTO `{modelName}` VALUES "))
                         continue;
 
@@ -157,6 +154,131 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 sr.Close();
             }
             */
+        }
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.SplitDataFileIntoMultipleFiles
+        [Fact]
+        public async Task SplitDataFileIntoMultipleFiles()
+        {
+            string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SrcFolder").Value;
+            string srcSqlDumpFileName = Path.Combine(srcFolder, "07-showtime.sql");
+            string outputFolder = Path.Combine(srcFolder, "output");
+            string insertFileFolder = Path.Combine(outputFolder, "insert-files");
+            Directory.CreateDirectory(insertFileFolder);
+            string outLogFile = Path.Combine(outputFolder, "out.txt");
+            string errorLogFile = Path.Combine(outputFolder, "error.txt");
+
+
+            //Loading statements that needs to be added before and after each insert set
+            //======================================================================================
+            List<string> preStatements = new List<string>();
+            List<string> postStatements = new List<string>();
+
+            bool addToPreStatements = true;
+            bool addToPostStatements = false;
+            bool donePreStatements = false;
+
+            DateTime start = DateTime.Now;
+
+            using (StreamReader sr = File.OpenText(srcSqlDumpFileName))
+            {
+                string line = string.Empty;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (line.StartsWith("--"))
+                        continue; //Skippping comments.
+
+                    if (line.StartsWith("DROP TABLE IF EXISTS"))
+                        addToPreStatements = false;
+
+                    if(line.StartsWith("LOCK TABLES"))
+                        addToPreStatements = true;
+
+                    if (addToPreStatements && line.StartsWith("INSERT INTO"))
+                    {
+                        //DONE all the prestatements and starts the inserts block
+                        addToPreStatements = false;
+                        donePreStatements = true;
+                    }
+
+                    if (addToPreStatements)
+                        preStatements.Add(line);
+
+                    if (donePreStatements)
+                    {
+                        if(!addToPostStatements && !line.StartsWith("INSERT INTO"))
+                            addToPostStatements = true;
+
+                        if(addToPostStatements)
+                            postStatements.Add(line);
+                    }
+                }
+                sr.Close();
+            }
+
+            DateTime stage1 = DateTime.Now;
+            await File.AppendAllTextAsync(outLogFile, $"Finished collecting pre statamenets and post statements in {stage1 - start}.\n");
+
+
+            int numInsertsPerFile = 50;
+            string outputFile = null;
+            int lineCount = 0;
+            int insertCount = 0;
+            int insertFileIndex = 0;
+            bool appendPostStatements = false;
+            try
+            {
+                using (StreamReader sr = File.OpenText(srcSqlDumpFileName))
+                {
+                    string line = string.Empty;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        ++lineCount;
+
+                        if (!line.StartsWith($"INSERT INTO `Showtime` VALUES "))
+                            continue;
+
+                        if (insertCount % numInsertsPerFile == 0)
+                        {
+                            if(appendPostStatements)
+                            {
+                                //We already have copied insert statements to the outfile.
+                                //We should now copy the post statements to it
+                                await File.AppendAllLinesAsync(outputFile!, postStatements);
+                                appendPostStatements = false;
+                            }
+
+                            //Creating a new output file
+                            outputFile = Path.Combine(insertFileFolder, $"insert-{++insertFileIndex}.sql");
+
+                            //Inserting pre-statements
+                            await File.AppendAllLinesAsync(outputFile, preStatements);
+
+                            //Flag to insert post statements when the inserts are complete.
+                            appendPostStatements = true;
+                        }
+
+                        await File.AppendAllTextAsync(outputFile!, line + "\n");
+                        ++insertCount;
+                    }
+
+                    //Done processing all lines. We need to append the post statements to the end of the last file
+                    if(appendPostStatements)
+                        await File.AppendAllLinesAsync(outputFile!, postStatements);
+
+                    sr.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllText(errorLogFile, $"{ex.Message}\n");
+                File.AppendAllText(errorLogFile, $"Inner Exception:\n{ex.InnerException}\n");
+                File.AppendAllText(errorLogFile, $"Stack Trace:\n {ex.StackTrace}\n");
+            }
+
+            DateTime stage2 = DateTime.Now;
+
+            await File.AppendAllTextAsync(outLogFile, $"Total line count: {lineCount}\n,Total insert count: {insertCount}\n, Total time: {stage2 - start}\n");
         }
 
     }
