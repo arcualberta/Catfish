@@ -306,7 +306,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             List<string> ingestedFiles = File.Exists(trackerFile) ? new List<string>(await File.ReadAllLinesAsync(trackerFile)) : new List<string>();
 
             var started = DateTime.Now;
-            await File.AppendAllTextAsync(progressLogFile, $"Started at: {started})\n");
+            await File.AppendAllTextAsync(progressLogFile, $"Started at: {started}\n");
 
             foreach (string sqlFile in sqlFiles)
             {
@@ -328,8 +328,8 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 }
 
                 var completed = DateTime.Now;
-                await File.AppendAllTextAsync(progressLogFile, $"Completed at: {completed})\n");
-                await File.AppendAllTextAsync(progressLogFile, $"Total time: {completed - started})\n");
+                await File.AppendAllTextAsync(progressLogFile, $"Completed at: {completed}\n");
+                await File.AppendAllTextAsync(progressLogFile, $"Total time: {completed - started}\n");
 
 
             }
