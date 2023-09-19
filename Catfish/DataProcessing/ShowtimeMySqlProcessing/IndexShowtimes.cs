@@ -286,6 +286,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             await File.AppendAllTextAsync(outLogFile, $"Total line count: {lineCount}\nTotal insert count: {insertCount}\nTotal time: {stage2 - start}\n");
         }
 
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.UploadSplitFilesToMySqlDatabase
         [Fact]
         public async Task UploadSplitFilesToMySqlDatabase()
         {
