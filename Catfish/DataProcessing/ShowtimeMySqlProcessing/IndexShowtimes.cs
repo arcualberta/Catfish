@@ -20,6 +20,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         private readonly TestHelper _testHelper = new TestHelper();
 
         public delegate void CreateMySqlModel(string concatenatedFieldValues);
+        public delegate Task FileProcessingDelegate(string fileName, string? param1 = null, int? param2 = null);
 
         protected void ProcessSqlInserts(string sourceSqlDumpFileName, string modelName, CreateMySqlModel createInstance)
         {
@@ -164,7 +165,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         {
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SrcFolder").Value;
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
-            string outputFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:OutputFolder").Value;
+            string outputFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:InsertFileFolder").Value;
 
             Directory.CreateDirectory(logFolder);
             Directory.CreateDirectory(outputFolder);
@@ -286,42 +287,52 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             await File.AppendAllTextAsync(outLogFile, $"Total line count: {lineCount}\nTotal insert count: {insertCount}\nTotal time: {stage2 - start}\n");
         }
 
-        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.UploadSplitFilesToMySqlDatabase
-        [Fact]
-        public async Task UploadSplitFilesToMySqlDatabase()
+        #region Main Batch Processing Delegator Method
+
+        protected async Task ProcessFileBatch (
+            string srcFolder,
+            string stopFlagFile,
+            string logFolder,
+            string? outputFolder,
+            string trackerFile,
+            string errorLogFile,
+            string progressLogFile,
+            FileProcessingDelegate fileProcessingDelegate)
         {
-            //Source folder for this method is the output folder of insert split files
-            string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:OutputFolder").Value;
             Assert.True(Directory.Exists(srcFolder));
-            
-            string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+
             Directory.CreateDirectory(logFolder);
 
+            if (!string.IsNullOrEmpty(outputFolder))
+                Directory.CreateDirectory(outputFolder);
 
-            string[] sqlFiles = Directory.GetFiles(srcFolder).OrderBy(x => x).ToArray();
+            trackerFile = Path.Combine(logFolder, trackerFile);
+            errorLogFile = Path.Combine(logFolder, errorLogFile);
+            progressLogFile = Path.Combine(logFolder, progressLogFile);
 
-            string trackerFile = Path.Combine(logFolder, "mysql-ingestion-tracker.txt");
-            string errorLogFile = Path.Combine(logFolder, "mysql-ingestion-errors.txt");
-            string progressLogFile = Path.Combine(logFolder, "mysql-ingestion-progress.txt");
-
+            string[] srcFfiles = Directory.GetFiles(srcFolder).OrderBy(x => x).ToArray();
             List<string> ingestedFiles = File.Exists(trackerFile) ? new List<string>(await File.ReadAllLinesAsync(trackerFile)) : new List<string>();
 
             var started = DateTime.Now;
             await File.AppendAllTextAsync(progressLogFile, $"Started at: {started}\n");
+            int fileIndex = 0;
 
-            foreach (string sqlFile in sqlFiles)
+            foreach (string srcFile in srcFfiles)
             {
-                if (ingestedFiles.Contains(sqlFile))
+                if (File.Exists(stopFlagFile) && File.ReadAllText(stopFlagFile).StartsWith("1"))
+                    break;
+
+                if (ingestedFiles.Contains(srcFile))
                     continue;
 
                 try
                 {
                     var t1 = DateTime.Now;
-                    await IngestFile(sqlFile);
+                    await fileProcessingDelegate(srcFile, outputFolder, ++fileIndex);
                     var t2 = DateTime.Now;
-                    ingestedFiles.Add(sqlFile);
-                    await File.AppendAllTextAsync(trackerFile, $"{sqlFile}\n");
-                    await File.AppendAllTextAsync(progressLogFile, $"{sqlFile.Substring(sqlFile.LastIndexOf("\\") + 1)}: {t2-t1}\n");
+                    ingestedFiles.Add(srcFile);
+                    await File.AppendAllTextAsync(trackerFile, $"{srcFile}\n");
+                    await File.AppendAllTextAsync(progressLogFile, $"{srcFile.Substring(srcFile.LastIndexOf("\\") + 1)}: {t2 - t1}\n");
                 }
                 catch (Exception ex)
                 {
@@ -335,7 +346,35 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
         }
 
-        protected async Task IngestFile(string sqlFile)
+        #endregion
+
+        #region Uploading Batch of SQL Insert Files to MySql Database
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.UploadSplitFilesToMySqlDatabase
+        [Fact]
+        public async Task UploadSplitFilesToMySqlDatabase()
+        {
+            //Source folder for this method is the output folder of insert split files
+            string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:InsertFileFolder").Value;
+            string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value;
+            string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+
+            string trackerFile = "mysql-ingestion-tracker.txt";
+            string errorLogFile = "mysql-ingestion-errors.txt";
+            string progressLogFile = "mysql-ingestion-progress.txt";
+
+            await ProcessFileBatch(
+                srcFolder,
+                stopFlagFile,
+                logFolder,
+                null, //Nothing to output into an output folder since the output goes to the MySql database.
+                trackerFile,
+                errorLogFile,
+                progressLogFile,
+                IngestFile);
+        }
+
+        protected async Task IngestFile(string sqlFile, string? _, int? __)
         {
             string host = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Host").Value;
             string user = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:User").Value;
@@ -369,7 +408,138 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 input.Close();
                 throw ex;
             }
-           
         }
+
+        #endregion
+
+        #region Extracting Insert Data from a Batch of Files to Text Data Files
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.ExtractInsertDataFromSplitMySqlFilesToTextFiles
+        [Fact]
+        public async Task ExtractInsertDataFromSplitMySqlFilesToTextFiles()
+        {
+            //Source folder for this method is the output folder of insert split files
+            string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:InsertFileFolder").Value;
+            string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value; 
+            string outptFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:TextDataFolder").Value;
+            string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+
+            string trackerFile = "text-export-tracker.txt";
+            string errorLogFile = "text-export-errors.txt";
+            string progressLogFile = "text-export-progress.txt";
+
+            await ProcessFileBatch(
+                srcFolder,
+                stopFlagFile,
+                logFolder,
+                outptFolder,
+                trackerFile,
+                errorLogFile,
+                progressLogFile,
+                ExportTextFromInserts);
+        }
+
+        protected async Task ExportTextFromInserts(string sqlFile, string? outputFolder, int? fileIndex)
+        {
+            int lineCount = 0;
+
+            try
+            {
+                string outFile = $"showtime.txt_{string.Format("{0:d3}", fileIndex)}";
+                outFile = Path.Combine(outputFolder!, outFile);
+
+                using (StreamReader sr = File.OpenText(sqlFile))
+                {
+                    using (StreamWriter writer = File.CreateText(outFile))
+                    {
+                        string line = string.Empty;
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            ++lineCount;
+
+                            if (!line.StartsWith($"INSERT INTO `Showtime` VALUES "))
+                                continue;
+
+                            var valueStr = line.Substring(line.IndexOf("VALUES (") + 8);
+                            valueStr = valueStr.TrimEnd(new char[] { ')', ';' });
+                            string[] values = valueStr.Split("),(");
+
+                            foreach(var val in values)
+                                await writer.WriteLineAsync(val);
+                        }
+
+                        writer.Close();
+                    }
+
+                    sr.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Export Text Error on line {lineCount} in {sqlFile}\n", ex);
+            }
+        }
+
+        #endregion
+
+
+        #region Uploading Batch of Text Data to MySql Database
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.UploadTextDataFilesToMySqlDatabase
+        [Fact]
+        public async Task UploadTextDataFilesToMySqlDatabase()
+        {
+            //Source folder for this method is the output folder of insert split files
+            string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:TextDataFolder").Value;
+            string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value;
+            string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+
+            string trackerFile = "mysql-text-data-ingestion-tracker.txt";
+            string errorLogFile = "mysql-text-data-ingestion-errors.txt";
+            string progressLogFile = "mysql-text-data-ingestion-progress.txt";
+
+            await ProcessFileBatch(
+                srcFolder,
+                stopFlagFile,
+                logFolder,
+                null, //Nothing to output into an output folder since the output goes to the MySql database.
+                trackerFile,
+                errorLogFile,
+                progressLogFile,
+                IngestTextDataFile);
+        }
+
+        protected async Task IngestTextDataFile(string txtDataFile, string? _, int? __)
+        {
+            string host = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Host").Value;
+            string user = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:User").Value;
+            string password = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Password").Value;
+            string port = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Port").Value;
+            string database = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Database").Value;
+
+            try
+            {
+                await Cli.Wrap("mysqlimport.exe")
+                    .WithArguments(new[] {
+                    "--protocol=tcp",
+                    $"--host={host}",
+                    $"--user={user}",
+                    $"--password={password}",
+                    $"--port={port}",
+                    "--default-character-set=utf8",
+                    "--fields-optionally-enclosed-by='",
+                    "--fields-terminated-by=,",
+                    "--lines-terminated-by=\\r\\n",
+                    database,
+                    txtDataFile
+                    })
+                    .ExecuteAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
     }
 }
