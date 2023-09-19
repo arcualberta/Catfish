@@ -1,6 +1,7 @@
 ﻿using Catfish.API.Repository.Services;
 using Catfish.API.Repository.Solr;
 using Catfish.Test.Helpers;
+using CliWrap;
 using DataProcessing.ShowtimeMySqlProcessing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -223,8 +224,8 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             DateTime stage1 = DateTime.Now;
             await File.AppendAllTextAsync(outLogFile, $"Finished collecting pre statamenets and post statements in {stage1 - start}.\n");
 
-
             int numInsertsPerFile = 50;
+//            int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:NumInsertsPerFile").Value;
             string outputFile = null;
             int lineCount = 0;
             int insertCount = 0;
@@ -299,22 +300,76 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             string[] sqlFiles = Directory.GetFiles(srcFolder).OrderBy(x => x).ToArray();
 
             string trackerFile = Path.Combine(logFolder, "mysql-ingestion-tracker.txt");
+            string errorLogFile = Path.Combine(logFolder, "mysql-ingestion-errors.txt");
+            string progressLogFile = Path.Combine(logFolder, "mysql-ingestion-progress.txt");
+
             List<string> ingestedFiles = File.Exists(trackerFile) ? new List<string>(await File.ReadAllLinesAsync(trackerFile)) : new List<string>();
+
+            var started = DateTime.Now;
+            await File.AppendAllTextAsync(progressLogFile, $"Started at: {started})\n");
 
             foreach (string sqlFile in sqlFiles)
             {
                 if (ingestedFiles.Contains(sqlFile))
                     continue;
 
-                IngestFile(sqlFile);
-                ingestedFiles.Add(sqlFile);
-                await File.AppendAllTextAsync(trackerFile, $"{sqlFile}\n");
+                try
+                {
+                    var t1 = DateTime.Now;
+                    await IngestFile(sqlFile);
+                    var t2 = DateTime.Now;
+                    ingestedFiles.Add(sqlFile);
+                    await File.AppendAllTextAsync(trackerFile, $"{sqlFile})\n");
+                    await File.AppendAllTextAsync(progressLogFile, $"{sqlFile.Substring(sqlFile.LastIndexOf("\\") + 1)}: {t2-t1})\n");
+                }
+                catch (Exception ex)
+                {
+                    await File.AppendAllTextAsync(errorLogFile, $"{ex.Message}\n\n{ex.InnerException}\n\n{ex.StackTrace}\n\n\n");
+                }
+
+                var completed = DateTime.Now;
+                await File.AppendAllTextAsync(progressLogFile, $"Completed at: {completed})\n");
+                await File.AppendAllTextAsync(progressLogFile, $"Total time: {completed - started})\n");
+
+
             }
         }
 
-        protected void IngestFile(string sqlFile)
+        protected async Task IngestFile(string sqlFile)
         {
-            Thread.Sleep(1000);
+            string host = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Host").Value;
+            string user = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:User").Value;
+            string password = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Password").Value;
+            string port = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Port").Value;
+            string database = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Database").Value;
+
+            await using var input = File.OpenRead(sqlFile);
+
+            try
+            {
+                await Cli.Wrap("mysql.exe")
+                    .WithArguments(new[] {
+                    "--protocol=tcp",
+                    $"--host={host}",
+                    $"--user={user}",
+                    $"--password={password}",
+                    $"--port={port}",
+                    "--default-character-set=utf8",
+                    "--comments",
+                    $"--database={database}"
+                    })
+                    .WithStandardInputPipe(PipeSource.FromStream(input))
+                    .ExecuteAsync();
+
+                input.Close();
+
+            }
+            catch (Exception ex)
+            {
+                input.Close();
+                throw ex;
+            }
+           
         }
     }
 }

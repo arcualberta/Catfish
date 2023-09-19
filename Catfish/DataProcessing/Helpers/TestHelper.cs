@@ -60,6 +60,9 @@ namespace Catfish.Test.Helpers
                 options.UseMySQL(configuration.GetConnectionString("mysqlTheaters"));
             });
 
+            services.AddEntityFrameworkMySQL().AddDbContext<MySqlShowtimeDbContext>(options => {
+                options.UseMySQL(configuration.GetConnectionString("mysqlShowtimes"));
+            });
 
             //Registering other services
             //Registering other services
@@ -87,6 +90,7 @@ namespace Catfish.Test.Helpers
         public MySqlMovieCastDbContext movieCastDbContext => Seviceprovider.GetService<MySqlMovieCastDbContext>()!;
         public MySqlMovieGenreDbContext movieGenreDbContext => Seviceprovider.GetService<MySqlMovieGenreDbContext>()!;
         public MySqlTheaterDbContext theaterDbContext => Seviceprovider.GetService<MySqlTheaterDbContext>()!;
+        public MySqlShowtimeDbContext showtimeDbContext => Seviceprovider.GetService<MySqlShowtimeDbContext>()!;
 
     }
 }

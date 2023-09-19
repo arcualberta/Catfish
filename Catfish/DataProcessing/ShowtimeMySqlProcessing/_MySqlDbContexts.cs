@@ -45,4 +45,10 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         public MySqlTheaterDbContext(DbContextOptions<MySqlTheaterDbContext> options) : base(options) { }
         public DbSet<MySqlTheater> Data { get; set; }
     }
+
+    public class MySqlShowtimeDbContext : DbContext
+    {
+        public MySqlShowtimeDbContext(DbContextOptions<MySqlShowtimeDbContext> options) : base(options) { }
+        public DbSet<MySqlShowtime> Data { get; set; }
+    }
 }
