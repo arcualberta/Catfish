@@ -3,6 +3,7 @@ using Catfish.API.Repository.Solr;
 using Catfish.Test.Helpers;
 using CliWrap;
 using DataProcessing.ShowtimeMySqlProcessing;
+using MessagePack;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Org.BouncyCastle.Ocsp;
@@ -20,7 +21,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         private readonly TestHelper _testHelper = new TestHelper();
 
         public delegate void CreateMySqlModel(string concatenatedFieldValues);
-        public delegate Task FileProcessingDelegate(string fileName, string? param1 = null, int? param2 = null);
+        public delegate Task FileProcessingDelegate(string fileName, string? outputFolder = null, int? fileIndex = null, string? errorLogFile = null);
 
         protected void ProcessSqlInserts(string sourceSqlDumpFileName, string modelName, CreateMySqlModel createInstance)
         {
@@ -328,7 +329,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 try
                 {
                     var t1 = DateTime.Now;
-                    await fileProcessingDelegate(srcFile, outputFolder, ++fileIndex);
+                    await fileProcessingDelegate(srcFile, outputFolder, ++fileIndex, errorLogFile);
                     var t2 = DateTime.Now;
                     ingestedFiles.Add(srcFile);
                     await File.AppendAllTextAsync(trackerFile, $"{srcFile}\n");
@@ -374,7 +375,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 IngestFile);
         }
 
-        protected async Task IngestFile(string sqlFile, string? _, int? __)
+        protected async Task IngestFile(string sqlFile, string? _, int? __, string? ___)
         {
             string host = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Host").Value;
             string user = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:User").Value;
@@ -439,7 +440,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 ExportTextFromInserts);
         }
 
-        protected async Task ExportTextFromInserts(string sqlFile, string? outputFolder, int? fileIndex)
+        protected async Task ExportTextFromInserts(string sqlFile, string? outputFolder, int? fileIndex, string? ___)
         {
             int lineCount = 0;
 
@@ -509,7 +510,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 IngestTextDataFile);
         }
 
-        protected async Task IngestTextDataFile(string txtDataFile, string? _, int? __)
+        protected async Task IngestTextDataFile(string txtDataFile, string? _, int? __, string? ___)
         {
             string host = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Host").Value;
             string user = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:User").Value;
@@ -541,5 +542,83 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             }
         }
         #endregion
+
+
+        #region Direct Solr Ingestion of Batch of Text showtime Data
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.IndexTextDataToSolr
+        [Fact]
+        public async Task IndexTextDataToSolr()
+        {
+            //Source folder for this method is the output folder of insert split files
+            string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:TextDataFolder").Value;
+            string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value;
+            string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+
+            string trackerFile = "text-data-solr-indexing-tracker.txt";
+            string errorLogFile = "text-data-solr-indexing-errors.txt";
+            string progressLogFile = "text-data-solr-indexing-progress.txt";
+
+            //Pre-loading related data models that are needed by the IndexTextDataFileToSolr method from MySql database 
+            _countryOrigins = _testHelper.countryDbContext.Data.ToList();
+            _distribuitons = _testHelper.distributionDbContext.Data.ToList();
+            _movies = _testHelper.movieDbContext.Data.ToList();
+            _movieCasts = _testHelper.movieCastDbContext.Data.ToList();
+            _movieGenres = _testHelper.movieGenreDbContext.Data.ToList();
+            _theaters = _testHelper.theaterDbContext.Data.ToList();
+
+            await ProcessFileBatch(
+                srcFolder,
+                stopFlagFile,
+                logFolder,
+                null, //Nothing to output into an output folder since the output goes to the MySql database.
+                trackerFile,
+                errorLogFile,
+                progressLogFile,
+                IndexTextDataFileToSolr);
+        }
+
+        protected async Task IndexTextDataFileToSolr(string txtDataFile, string? _, int? __, string? errorLogFile)
+        {
+            ////string host = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Host").Value;
+            ////string user = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:User").Value;
+            ////string password = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Password").Value;
+            ////string port = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Port").Value;
+            ////string database = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Database").Value;
+
+            try
+            {
+                int lineNumber = 0;
+
+                using (StreamReader sr = File.OpenText(txtDataFile))
+                {
+                    string line = string.Empty;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        ++lineNumber;
+
+                        if (line.Length == 0)
+                            continue;
+
+                        try
+                        {
+                            MySqlShowtime showtime = MySqlShowtime.CreateInstance(line);
+                        }
+                        catch(Exception ex)
+                        {
+                            File.AppendAllText(errorLogFile!, $"{ex.Message}\nFile: {txtDataFile}\nLine: {lineNumber}\n_DATA_: {line}\n\n");
+                        }
+                    }
+
+                    sr.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
     }
 }

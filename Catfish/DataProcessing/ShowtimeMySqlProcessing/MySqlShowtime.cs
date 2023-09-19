@@ -46,6 +46,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             MySqlShowtime showtime = new MySqlShowtime();
 
             var doubleQuoteSeparatedStr = concatenatedFieldValues
+                .Replace("\\\"", "").Replace("\"", "") //If the string has double quotes and escaped double quotes, we run into regex split issues, so we remove them here
                 .Replace("','", "\",\"")//separation between two string values
                 .Replace("',", "\",")   //separation bewteen a string and numberor NULL
                 .Replace(",'", ",\"")   //separation between a number or NULL and a string
@@ -61,9 +62,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 .Select(s => s.Trim('\"')) // removing leading or trailing double quotes
                 .ToArray();
 
-
-
-            int offset = 0;
 
             int idx = 0;
             //Movie ID
