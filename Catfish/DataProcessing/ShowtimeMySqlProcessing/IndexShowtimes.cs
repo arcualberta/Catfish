@@ -319,20 +319,19 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                     await IngestFile(sqlFile);
                     var t2 = DateTime.Now;
                     ingestedFiles.Add(sqlFile);
-                    await File.AppendAllTextAsync(trackerFile, $"{sqlFile})\n");
-                    await File.AppendAllTextAsync(progressLogFile, $"{sqlFile.Substring(sqlFile.LastIndexOf("\\") + 1)}: {t2-t1})\n");
+                    await File.AppendAllTextAsync(trackerFile, $"{sqlFile}\n");
+                    await File.AppendAllTextAsync(progressLogFile, $"{sqlFile.Substring(sqlFile.LastIndexOf("\\") + 1)}: {t2-t1}\n");
                 }
                 catch (Exception ex)
                 {
                     await File.AppendAllTextAsync(errorLogFile, $"{ex.Message}\n\n{ex.InnerException}\n\n{ex.StackTrace}\n\n\n");
                 }
-
-                var completed = DateTime.Now;
-                await File.AppendAllTextAsync(progressLogFile, $"Completed at: {completed}\n");
-                await File.AppendAllTextAsync(progressLogFile, $"Total time: {completed - started}\n");
-
-
             }
+
+            var completed = DateTime.Now;
+            await File.AppendAllTextAsync(progressLogFile, $"Completed at: {completed}\n");
+            await File.AppendAllTextAsync(progressLogFile, $"Total time: {completed - started}\n");
+
         }
 
         protected async Task IngestFile(string sqlFile)
