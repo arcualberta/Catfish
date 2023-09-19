@@ -162,9 +162,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         public async Task SplitDataFileIntoMultipleFiles()
         {
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SrcFolder").Value;
-
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
             string outputFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:OutputFolder").Value;
+
             Directory.CreateDirectory(logFolder);
             Directory.CreateDirectory(outputFolder);
 
@@ -288,17 +288,18 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         [Fact]
         public async Task UploadSplitFilesToMySqlDatabase()
         {
-            string folderRoot = Path.Combine(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SrcFolder").Value, "output");
-            string srcFolder = Path.Combine(folderRoot, "insert-files");
+            //Source folder for this method is the output folder of insert split files
+            string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:OutputFolder").Value;
             Assert.True(Directory.Exists(srcFolder));
+            
+            string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+            Directory.CreateDirectory(logFolder);
+
 
             string[] sqlFiles = Directory.GetFiles(srcFolder).OrderBy(x => x).ToArray();
 
-            string trackerFile = Path.Combine(folderRoot, "mysql-ingestion-tracker.txt");
+            string trackerFile = Path.Combine(logFolder, "mysql-ingestion-tracker.txt");
             List<string> ingestedFiles = File.Exists(trackerFile) ? new List<string>(await File.ReadAllLinesAsync(trackerFile)) : new List<string>();
-
-            int i = 12;
-            string x = string.Format("{0:d3}", i);
 
             foreach (string sqlFile in sqlFiles)
             {
