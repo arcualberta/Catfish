@@ -496,9 +496,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrDocBufferSize").Value, out _solrDocBufferSize))
                 _solrDocBufferSize = 10000;
 
-            string trackerFile = "test-text-data-solr-indexing-tracker.txt";
-            string errorLogFile = "test-text-data-solr-indexing-errors.txt";
-            string progressLogFile = "test-text-data-solr-indexing-progress.txt";
+            string trackerFile = "text-data-solr-indexing-tracker.txt";
+            string errorLogFile = "text-data-solr-indexing-errors.txt";
+            string progressLogFile = "text-data-solr-indexing-progress.txt";
 
             //Pre-loading related data models that are needed by the IndexTextDataFileToSolr method from MySql database 
             _countryOrigins = _testHelper.countryDbContext.Data.ToList();
