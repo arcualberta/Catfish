@@ -73,6 +73,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ApiTest',
         component: () => import('./views/ApiTest.vue')
     },
+    {
+        path: '/test-page/',
+        name: 'TestPage',
+        component: () => import('./views/TestPage.vue')
+    },
 ]
 
 const router = createRouter({

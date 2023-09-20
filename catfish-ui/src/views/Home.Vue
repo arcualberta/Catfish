@@ -17,6 +17,7 @@
     <button class="home-link" @click="navigateTo('/entity-editor')">Entity Editor</button>
     <button class="home-link" @click="navigateTo('/solr-search-panel')">Solr Search</button>
     <button class="home-link" @click="navigateTo('/api-test')">API Test</button>
+    <button class="home-link" @click="navigateTo('/test-page')">Test Page</button>
 </template>
 
 <style scoped>
