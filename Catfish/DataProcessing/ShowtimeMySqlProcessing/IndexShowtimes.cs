@@ -2,6 +2,7 @@
 using Catfish.API.Repository.Solr;
 using Catfish.Test.Helpers;
 using CliWrap;
+using Google.Protobuf.WellKnownTypes;
 
 namespace DataProcessing.ShowtimeMySqlProcessing
 {
@@ -10,7 +11,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         private readonly TestHelper _testHelper = new TestHelper();
 
         public delegate void CreateMySqlModel(string concatenatedFieldValues);
-        public delegate Task FileProcessingDelegate(string fileName, string? outputFolder = null, int? fileIndex = null, string? errorLogFile = null);
+        public delegate Task<bool> FileProcessingDelegate(string fileName, string? outputFolder = null, int? fileIndex = null, string? errorLogFile = null);
 
         protected void ProcessSqlInserts(string sourceSqlDumpFileName, string modelName, CreateMySqlModel createInstance)
         {
@@ -84,6 +85,8 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
         protected List<SolrDoc> _solrDocs = new List<SolrDoc>();
         protected int _solrDocBufferSize = 10000;
+        protected string _indexedShowtimeIdTrackerFolder;
+        protected List<string> _solrObjectTrackingKeys = new List<string>();
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.Execute
         [Fact]
@@ -278,11 +281,16 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             await File.AppendAllTextAsync(outLogFile, $"Total line count: {lineCount}\nTotal insert count: {insertCount}\nTotal time: {stage2 - start}\n");
         }
 
+        public async Task<bool> IsStopFlagSet()
+        {
+            string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value;
+            return File.Exists(stopFlagFile) && (await File.ReadAllTextAsync(stopFlagFile)).StartsWith("1");
+        }
+
         #region Main Batch Processing Delegator Method
 
         protected async Task ProcessFileBatch (
             string srcFolder,
-            string stopFlagFile,
             string logFolder,
             string? outputFolder,
             string trackerFile,
@@ -310,7 +318,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
             foreach (string srcFile in srcFfiles)
             {
-                if (File.Exists(stopFlagFile) && File.ReadAllText(stopFlagFile).StartsWith("1"))
+                if (await IsStopFlagSet())
                     break;
 
                 if (ingestedFiles.Contains(srcFile))
@@ -319,10 +327,13 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 try
                 {
                     var t1 = DateTime.Now;
-                    await fileProcessingDelegate(srcFile, outputFolder, ++fileIndex, errorLogFile);
+                    if (await fileProcessingDelegate(srcFile, outputFolder, ++fileIndex, errorLogFile))
+                    {
+                        ingestedFiles.Add(srcFile);
+                        await File.AppendAllTextAsync(trackerFile, $"{srcFile}\n");
+                    }
                     var t2 = DateTime.Now;
-                    ingestedFiles.Add(srcFile);
-                    await File.AppendAllTextAsync(trackerFile, $"{srcFile}\n");
+                    
                     await File.AppendAllTextAsync(progressLogFile, $"{srcFile.Substring(srcFile.LastIndexOf("\\") + 1)}: {t2 - t1}\n");
                 }
                 catch (Exception ex)
@@ -347,7 +358,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         {
             //Source folder for this method is the output folder of insert split files
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:InsertFileFolder").Value;
-            string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value;
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
 
             string trackerFile = "mysql-ingestion-tracker.txt";
@@ -356,7 +366,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
             await ProcessFileBatch(
                 srcFolder,
-                stopFlagFile,
                 logFolder,
                 null, //Nothing to output into an output folder since the output goes to the MySql database.
                 trackerFile,
@@ -365,7 +374,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 IngestFile);
         }
 
-        protected async Task IngestFile(string sqlFile, string? _, int? __, string? ___)
+        protected async Task<bool> IngestFile(string sqlFile, string? _, int? __, string? ___)
         {
             string host = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Host").Value;
             string user = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:User").Value;
@@ -399,6 +408,8 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 input.Close();
                 throw ex;
             }
+
+            return true;
         }
 
         #endregion
@@ -411,7 +422,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         {
             //Source folder for this method is the output folder of insert split files
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:InsertFileFolder").Value;
-            string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value; 
             string outptFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:TextDataFolder").Value;
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
 
@@ -421,7 +431,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
             await ProcessFileBatch(
                 srcFolder,
-                stopFlagFile,
                 logFolder,
                 outptFolder,
                 trackerFile,
@@ -430,7 +439,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 ExportTextFromInserts);
         }
 
-        protected async Task ExportTextFromInserts(string sqlFile, string? outputFolder, int? fileIndex, string? ___)
+        protected async Task<bool> ExportTextFromInserts(string sqlFile, string? outputFolder, int? fileIndex, string? ___)
         {
             int lineCount = 0;
 
@@ -469,6 +478,8 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             {
                 throw new Exception($"Export Text Error on line {lineCount} in {sqlFile}\n", ex);
             }
+
+            return true;
         }
 
         #endregion
@@ -482,7 +493,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         {
             //Source folder for this method is the output folder of insert split files
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:TextDataFolder").Value;
-            string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value;
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
 
             string trackerFile = "mysql-text-data-ingestion-tracker.txt";
@@ -491,7 +501,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
             await ProcessFileBatch(
                 srcFolder,
-                stopFlagFile,
                 logFolder,
                 null, //Nothing to output into an output folder since the output goes to the MySql database.
                 trackerFile,
@@ -500,7 +509,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 IngestTextDataFile);
         }
 
-        protected async Task IngestTextDataFile(string txtDataFile, string? _, int? __, string? ___)
+        protected async Task<bool> IngestTextDataFile(string txtDataFile, string? _, int? __, string? ___)
         {
             string host = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Host").Value;
             string user = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:User").Value;
@@ -525,11 +534,14 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                     txtDataFile
                     })
                     .ExecuteAsync();
+
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+         
+            return true;
         }
         #endregion
 
@@ -541,15 +553,17 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         public async Task IndexTextDataToSolr()
         {
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:TextDataFolder").Value;
-            string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value;
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+
+            _indexedShowtimeIdTrackerFolder = Path.Combine(logFolder, "indexed-showtime-tracker-files");
+            Directory.CreateDirectory(_indexedShowtimeIdTrackerFolder);
 
             if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrDocBufferSize").Value, out _solrDocBufferSize))
                 _solrDocBufferSize = 10000;
 
-            string trackerFile = "text-data-solr-indexing-tracker.txt";
-            string errorLogFile = "text-data-solr-indexing-errors.txt";
-            string progressLogFile = "text-data-solr-indexing-progress.txt";
+            string trackerFile = "test-text-data-solr-indexing-tracker.txt";
+            string errorLogFile = "test-text-data-solr-indexing-errors.txt";
+            string progressLogFile = "test-text-data-solr-indexing-progress.txt";
 
             //Pre-loading related data models that are needed by the IndexTextDataFileToSolr method from MySql database 
             _countryOrigins = _testHelper.countryDbContext.Data.ToList();
@@ -561,7 +575,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
             await ProcessFileBatch(
                 srcFolder,
-                stopFlagFile,
                 logFolder,
                 null, //Nothing to output into an output folder since the output goes to the MySql database.
                 trackerFile,
@@ -570,11 +583,20 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 IndexTextDataFileToSolr);
         }
 
-        protected async Task IndexTextDataFileToSolr(string txtDataFile, string? _, int? __, string? errorLogFile)
+        protected async Task<bool> IndexTextDataFileToSolr(string txtDataFile, string? _, int? __, string? errorLogFile)
         {
+            string indexedSolrObjectTrackerFile = Path.Combine(_indexedShowtimeIdTrackerFolder, txtDataFile.Substring(txtDataFile.LastIndexOf("\\") + 1) + ".txt");
+
+            if (!File.Exists(indexedSolrObjectTrackerFile))
+                File.Create(indexedSolrObjectTrackerFile).Close();
+           
+            bool isFileCompleted = false;
+
             try
             {
                 int lineNumber = 0;
+
+                string[] previouslyIndexedSolrObjectTrackingKeys = await File.ReadAllLinesAsync(indexedSolrObjectTrackerFile);
 
                 using (StreamReader sr = File.OpenText(txtDataFile))
                 {
@@ -586,21 +608,38 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                         if (line.Length == 0)
                             continue;
 
+                        //Check whether stop has been request after processing every X number of lines 
+                        if (lineNumber % 5000 == 0 && await IsStopFlagSet())
+                            break;
+
                         try
                         {
                             MySqlShowtime showtime = MySqlShowtime.CreateInstance(line);
 
+                            string showtimeTrackingKey = GetShowtimeKey(showtime);
+                            if (previouslyIndexedSolrObjectTrackingKeys.Contains(showtimeTrackingKey))
+                                continue;
+
+                            MySqlMovie movie = _movies.FirstOrDefault(x => x.Movie_ID == showtime.MovieId);
+                            if (movie == null)
+                                throw new Exception($"Movie {showtime.MovieId} not found");
+
+                            MySqlTheater theater = _theaters.First(x => x.Venue_ID == showtime.TheaterId);
+                            if(theater == null)
+                                throw new Exception($"Theater {showtime.TheaterId} not found");
+
                             //Updating the solr doc with info of the showtime and related models
                             SolrDoc doc = CreateSolrDoc(showtime,
-                                _movies.FirstOrDefault(x => x.Movie_ID == showtime.MovieId),
-                                _theaters.FirstOrDefault(x => x.Venue_ID == showtime.TheaterId),
+                                movie!,
+                                theater!,
                                 _distribuitons.FirstOrDefault(x => x.Movie_ID == showtime.MovieId),
-                                _movieCasts.FirstOrDefault(x => x.Movie_ID == showtime.MovieId),
-                                _movieGenres.FirstOrDefault(x => x.Movie_ID == showtime.MovieId),
+                                _movieCasts.Where(x => x.Movie_ID == showtime.MovieId),
+                                _movieGenres.Where(x => x.Movie_ID == showtime.MovieId),
                                 _countryOrigins.FirstOrDefault(x => x.Movie_ID == showtime.MovieId));
 
                             //If everything is successful, add the solr doc to the list of solr docs.
                             _solrDocs.Add(doc);
+                            _solrObjectTrackingKeys.Add(showtimeTrackingKey);
                         }
                         catch(Exception ex)
                         {
@@ -609,66 +648,116 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
                         //If a sufficient number of the solr docs is collected in the list, index them and clear the list.
                         if (_solrDocs.Count >= _solrDocBufferSize)
-                            await PushToSolrIndex();
+                            await PushToSolrIndex(indexedSolrObjectTrackerFile);
                     }
 
+                    isFileCompleted = line == null;
                     sr.Close();
                 }
             }
             catch (Exception ex)
             {
                 //Push any solr docs successfully created.
-                await PushToSolrIndex();
+                await PushToSolrIndex(indexedSolrObjectTrackerFile);
                 throw ex;
             }
 
             //Push any solr docs still not indexed.
-            await PushToSolrIndex();
+            await PushToSolrIndex(indexedSolrObjectTrackerFile);
+
+            return isFileCompleted;
         }
 
         protected SolrDoc CreateSolrDoc(
             MySqlShowtime showtime,
-            MySqlMovie? movie,
-            MySqlTheater? theater,
+            MySqlMovie movie,
+            MySqlTheater theater,
             MySqlDistribution? distribution,
-            MySqlMovieCast? cast,
-            MySqlMovieGenre? genre,
+            IEnumerable<MySqlMovieCast> casts,
+            IEnumerable<MySqlMovieGenre> genre,
             MySqlCountryOrigin? origin)
         {
             SolrDoc doc = new SolrDoc();
 
-            doc.AddId(Guid.NewGuid().ToString());
+            doc.AddId(showtime.Id);
             doc.AddField("entry_type_s", "showtime");
             doc.AddField("entry_src_s", "kinomatics");
             doc.AddField("showtime_key_t", $"{movie.Movie_ID}-{theater.Venue_ID}-{showtime.ShowDate.Year}-{showtime.ShowDate.Month}-{showtime.ShowDate.Day}");
+            doc.AddField("movie_id_i", movie.Movie_ID);
             doc.AddField("movie_name_t", movie.Movie_Title);
-            doc.AddField("show_passes_t", showtime.ShowPasses);
-            doc.AddField("show_festival_t", showtime.Festival);
-            doc.AddField("title_t", movie.Movie_Title);
+            doc.AddField("parent_id_i",movie.Parent_ID);
             doc.AddField("rating_t", movie.Rating);
-            //doc.AddField("advisory_t", ); //NO DATA
-            ////doc.AddField("intl_country_s", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
-            ////doc.AddField("", );
+            doc.AddField("directors_ts", GetStringArray(movie.Director));
+            doc.AddField("producers_ts", GetStringArray(movie.Producer));
+            doc.AddField("actors_ts", GetStringArray(movie.Actor));         //NEW: VERIFY
+            doc.AddField("writers_ts", GetStringArray(movie.Writer));
+            doc.AddField("distributors_ts", GetStringArray(movie.Distributor));
+            doc.AddField("release_date_dt", movie.Release_Date);
+            doc.AddField("release_notes_t", movie.Release_Notes);
+            doc.AddField("running_time_i", movie.Running_Time);
+
+
+            doc.AddField("title_t", movie.Movie_Title);
+            doc.AddField("official_site_s", movie.URL);
+            doc.AddField("star_rating_d", movie.Star_Rating.HasValue ? (decimal)movie.Star_Rating.Value : null);
+
+            //Note: we keep one-one correspondence with the Cast_Name and Cast_Type in the two array fields below
+            doc.AddField("casts_ts",        casts.Where(x => x.Cast_Name!= null || x.Cast_Type != null).Select(x => x.Cast_Name == null ? "-" : x.Cast_Name).ToArray());
+            doc.AddField("cast_types_ts",   casts.Where(x => x.Cast_Name != null || x.Cast_Type != null).Select(x => x.Cast_Type == null ? "-" : x.Cast_Type).ToArray());
+
+            //set the union of move.genre and genre.Movie_Genre array as the genres_ts field's value
+            string[] genre_vals = string.IsNullOrEmpty(movie.Genre)
+                ? genre.Where(x => !string.IsNullOrEmpty(x.Movie_Genre)).Select(x => x.Movie_Genre!).Distinct().ToArray()
+                : genre.Where(x => !string.IsNullOrEmpty(x.Movie_Genre)).Select(x => x.Movie_Genre!).Union(new string[] { movie.Genre }).Distinct().ToArray();
+            doc.AddField("genres_ts", genre_vals);
+
+            doc.AddField("show_date_dt", showtime.ShowDate);
+            doc.AddField("showtimes_ts", showtime.ShowTimes);
+            doc.AddField("showtime_minutes_is", showtime.ShowTimeMinutes);
+            doc.AddField("show_attributes_ts", GetStringArray(showtime.SpecialAttributes));
+            doc.AddField("show_festival_t", showtime.Festival);
+            doc.AddField("show_with_t", _movies.FirstOrDefault(x => x.Movie_ID == showtime.WithMovieId)?.Movie_Title);
+            doc.AddField("show_sound_t", showtime.ShowSound);
+            doc.AddField("show_passes_t", showtime.ShowPasses);
+            doc.AddField("show_comments_ts", GetStringArray(showtime.ShowComments));
+            doc.AddField("theater_id_i", showtime.TheaterId);
+            doc.AddField("theater_name_t", theater.Venue_Name);
+            doc.AddField("theater_country_s", theater.Country);
+            doc.AddField("theater_address_t", theater.Address);
+            doc.AddField("theater_city_t", theater.City);
+            doc.AddField("theater_county_t", theater.Country);
+            doc.AddField("theater_state_t", theater.State);
+            doc.AddField("theater_zip_t", theater.Postcode);
+            doc.AddField("theater_lat_d", GetDecimal(theater.Lattitude));
+            doc.AddField("theater_lon_d", GetDecimal(theater.Longitude));
+            doc.AddField("theater_type_t", theater.Venue_Type);
+            doc.AddField("theater_screens_i", theater.Screens);
+            doc.AddField("theater_closed_reason_t", theater.Closed);
+            doc.AddField("theater_attributes_t", theater.Attributes);
+            doc.AddField("theater_seating_t", theater.Seating);
+            doc.AddField("theater_market_t", theater.DMA_Market);
+            doc.AddField("theater_adult_t", theater.Ticket_Adult);
+            doc.AddField("theater_child_t", theater.Ticket_Child);
+            doc.AddField("theater_senior_t", theater.Ticket_Senior);
+            doc.AddField("theater_online_t", theater.Ticket_Online);
+            doc.AddField("theater_bargain_t", theater.Ticket_Bargain);
+            doc.AddField("theater_comments_t", theater.Ticket_Comment);
+
+            doc.AddField("intl_release_dt", distribution?.Intl_Release_Date);
+            doc.AddField("intl_name_t", distribution?.Intl_Title);
+            doc.AddField("intl_country_s", distribution?.Intl_Country);
+            doc.AddField("intl_rating_t", distribution?.Intl_Rating);
+
+            doc.AddField("origin_movie_title_t", origin?.Movie_Title);
+            doc.AddField("origin_imdb_id_i", origin?.IMDb_ID);
+            doc.AddField("origin_imdb_title_t", origin?.IMDb_Title);
+            doc.AddField("origin_movie_origin_t", origin?.Movie_Origin);
+            doc.AddField("origin_parent_id_i", origin?.Parent_ID);
+            doc.AddField("origin_year_t", origin?.Year);
 
             return doc;
         }
-        protected async Task PushToSolrIndex()
+        protected async Task PushToSolrIndex(string indexedSolrObjectTrackerFile)
         {
             if (_solrDocs.Count >= 0)
             {
@@ -676,9 +765,38 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 await _testHelper.Solr.CommitAsync();
 
                 _solrDocs.Clear();
+
+                await File.AppendAllLinesAsync(indexedSolrObjectTrackerFile, _solrObjectTrackingKeys);
+                _solrObjectTrackingKeys.Clear();
+
                 GC.Collect();
             }
         }
+
+        protected string GetShowtimeKey(MySqlShowtime showtime) =>
+            $"{showtime.MovieId}-{showtime.TheaterId}-{showtime.ShowDate.Year}{string.Format("{0:d2}", showtime.ShowDate.Month)}{string.Format("{0:d2}", showtime.ShowDate.Day)}-{string.Join("_", showtime.ShowTimeMinutes.Select(x => x.ToString()))}";
+
+        public string[]? GetStringArray(string? concatenatedValues) =>
+            concatenatedValues?
+            .Split(";", StringSplitOptions.TrimEntries)
+            .Where(x => x?.Length > 0)
+            .ToArray();
+
+        public int[]? GetIntArray(string? concatenatedValues) =>
+            GetStringArray(concatenatedValues)?.Select(x => int.Parse(x)).ToArray();
+
+        public decimal[]? GetDecimalArray(string? concatenatedValues) =>
+            GetStringArray(concatenatedValues)?.Select(x => decimal.Parse(x)).ToArray();
+
+        public DateTime[]? GetDateTimeArray(string? concatenatedValues) =>
+            GetStringArray(concatenatedValues)?.Select(x => DateTime.Parse(x)).ToArray();
+
+        public decimal? GetDecimal(string? value) => 
+            string.IsNullOrEmpty(value) ? null : decimal.Parse(value);
+
+        public decimal? GetDecimal(float? value) =>
+            value.HasValue ? (decimal) value : null;
+
         #endregion
 
     }

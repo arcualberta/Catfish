@@ -11,6 +11,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
     public class MySqlShowtime : MySqlModel
     {
         #region Properties
+        public Guid Id { get; set; } = Guid.NewGuid();
         public int MovieId { get; set; }
         public int TheaterId { get; set; }
         public DateTime ShowDate { get; set; } = DateTime.MinValue;

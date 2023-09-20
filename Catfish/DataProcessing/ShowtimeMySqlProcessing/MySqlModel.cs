@@ -83,6 +83,5 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 foreach (var x in concatenatedFieldValue.Split(";", StringSplitOptions.TrimEntries).ToList())
                     doc.AddField(fieldName, x);
         }
-
     }
 }

@@ -18,6 +18,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         public string? IMDb_Title { get; set; }
         public string? Movie_Origin { get; set; }
         public int? Parent_ID { get; set; }
+        public string? Year { get; set; }
 
     }
 }
