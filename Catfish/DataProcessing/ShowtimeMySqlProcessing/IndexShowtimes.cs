@@ -2,17 +2,6 @@
 using Catfish.API.Repository.Solr;
 using Catfish.Test.Helpers;
 using CliWrap;
-using DataProcessing.ShowtimeMySqlProcessing;
-using MessagePack;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Org.BouncyCastle.Ocsp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DataProcessing.ShowtimeMySqlProcessing.IndexMovies;
 
 namespace DataProcessing.ShowtimeMySqlProcessing
 {
@@ -94,6 +83,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         protected List<MySqlTheater> _theaters = new List<MySqlTheater>();
 
         protected List<SolrDoc> _solrDocs = new List<SolrDoc>();
+        protected int _solrDocBufferSize = 10000;
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.Execute
         [Fact]
@@ -544,16 +534,18 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         #endregion
 
 
-        #region Direct Solr Ingestion of Batch of Text showtime Data
+        #region Direct Solr Ingestion of Batch of Showtime Data from Text Data Files
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.IndexTextDataToSolr
         [Fact]
         public async Task IndexTextDataToSolr()
         {
-            //Source folder for this method is the output folder of insert split files
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:TextDataFolder").Value;
             string stopFlagFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:StopFlagFile").Value;
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrDocBufferSize").Value, out _solrDocBufferSize))
+                _solrDocBufferSize = 10000;
 
             string trackerFile = "text-data-solr-indexing-tracker.txt";
             string errorLogFile = "text-data-solr-indexing-errors.txt";
@@ -580,12 +572,6 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
         protected async Task IndexTextDataFileToSolr(string txtDataFile, string? _, int? __, string? errorLogFile)
         {
-            ////string host = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Host").Value;
-            ////string user = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:User").Value;
-            ////string password = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Password").Value;
-            ////string port = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Port").Value;
-            ////string database = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:Database").Value;
-
             try
             {
                 int lineNumber = 0;
@@ -603,11 +589,27 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                         try
                         {
                             MySqlShowtime showtime = MySqlShowtime.CreateInstance(line);
+
+                            //Updating the solr doc with info of the showtime and related models
+                            SolrDoc doc = CreateSolrDoc(showtime,
+                                _movies.FirstOrDefault(x => x.Movie_ID == showtime.MovieId),
+                                _theaters.FirstOrDefault(x => x.Venue_ID == showtime.TheaterId),
+                                _distribuitons.FirstOrDefault(x => x.Movie_ID == showtime.MovieId),
+                                _movieCasts.FirstOrDefault(x => x.Movie_ID == showtime.MovieId),
+                                _movieGenres.FirstOrDefault(x => x.Movie_ID == showtime.MovieId),
+                                _countryOrigins.FirstOrDefault(x => x.Movie_ID == showtime.MovieId));
+
+                            //If everything is successful, add the solr doc to the list of solr docs.
+                            _solrDocs.Add(doc);
                         }
                         catch(Exception ex)
                         {
                             File.AppendAllText(errorLogFile!, $"{ex.Message}\nFile: {txtDataFile}\nLine: {lineNumber}\n_DATA_: {line}\n\n");
                         }
+
+                        //If a sufficient number of the solr docs is collected in the list, index them and clear the list.
+                        if (_solrDocs.Count >= _solrDocBufferSize)
+                            await PushToSolrIndex();
                     }
 
                     sr.Close();
@@ -615,7 +617,66 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             }
             catch (Exception ex)
             {
+                //Push any solr docs successfully created.
+                await PushToSolrIndex();
                 throw ex;
+            }
+
+            //Push any solr docs still not indexed.
+            await PushToSolrIndex();
+        }
+
+        protected SolrDoc CreateSolrDoc(
+            MySqlShowtime showtime,
+            MySqlMovie? movie,
+            MySqlTheater? theater,
+            MySqlDistribution? distribution,
+            MySqlMovieCast? cast,
+            MySqlMovieGenre? genre,
+            MySqlCountryOrigin? origin)
+        {
+            SolrDoc doc = new SolrDoc();
+
+            doc.AddId(Guid.NewGuid().ToString());
+            doc.AddField("entry_type_s", "showtime");
+            doc.AddField("entry_src_s", "kinomatics");
+            doc.AddField("showtime_key_t", $"{movie.Movie_ID}-{theater.Venue_ID}-{showtime.ShowDate.Year}-{showtime.ShowDate.Month}-{showtime.ShowDate.Day}");
+            doc.AddField("movie_name_t", movie.Movie_Title);
+            doc.AddField("show_passes_t", showtime.ShowPasses);
+            doc.AddField("show_festival_t", showtime.Festival);
+            doc.AddField("title_t", movie.Movie_Title);
+            doc.AddField("rating_t", movie.Rating);
+            //doc.AddField("advisory_t", ); //NO DATA
+            ////doc.AddField("intl_country_s", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+            ////doc.AddField("", );
+
+            return doc;
+        }
+        protected async Task PushToSolrIndex()
+        {
+            if (_solrDocs.Count >= 0)
+            {
+                await _testHelper.Solr.Index(_solrDocs);
+                await _testHelper.Solr.CommitAsync();
+
+                _solrDocs.Clear();
+                GC.Collect();
             }
         }
         #endregion

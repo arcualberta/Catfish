@@ -1,4 +1,5 @@
 ﻿using Catfish.API.Repository.Solr;
+using Google.Apis.Sheets.v4.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -213,9 +214,5 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             return showtime;
         }
 
-        public void UpdateSolrFields(SolrDoc doc)
-        {
-
-        }
     }
 }
