@@ -500,8 +500,12 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             //Setting extended timeouts for all MySql connecitons
             if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:ConnectionTimeoutMinutes").Value, out int mySqlConnectionTimeOutMinutes))
                 mySqlConnectionTimeOutMinutes = 5;
-
             _testHelper.SetMySqlConnectionTimeouts(mySqlConnectionTimeOutMinutes);
+
+            //Setting the solr HTTP connection tymeout
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrHttpConnectionTimeoutMinutes").Value, out int myHttpConnectionTimeOutMinutes))
+                myHttpConnectionTimeOutMinutes = 5;
+            _testHelper.Solr.SetHttpClientTimeoutSeconds(myHttpConnectionTimeOutMinutes * 60);
 
             string trackerFile = "text-data-solr-indexing-tracker.txt";
             string errorLogFile = "text-data-solr-indexing-errors.txt";
@@ -705,9 +709,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 await _testHelper.Solr.Index(_solrDocs);
                 await _testHelper.Solr.CommitAsync();
 
-                _solrDocs.Clear();
-
                 await File.AppendAllLinesAsync(indexedSolrObjectTrackerFile, _solrObjectTrackingKeys);
+
+                _solrDocs.Clear();
                 _solrObjectTrackingKeys.Clear();
 
                 GC.Collect();

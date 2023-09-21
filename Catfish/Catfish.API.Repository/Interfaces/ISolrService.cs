@@ -14,6 +14,7 @@ namespace Catfish.API.Repository.Interfaces
         public Task CommitAsync();
         public Task<SearchResult> Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1);
         public Task<SearchResult> Search(SearchFieldConstraint[] constraints, int start, int maxRows, int maxHighlightsPerEntry = 1);
+        public void SetHttpClientTimeoutSeconds(int seconds);
         public Task<SearchResult> ExecuteSearch(
             string query, 
             int start, 

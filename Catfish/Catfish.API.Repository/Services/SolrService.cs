@@ -39,7 +39,15 @@ namespace Catfish.API.Repository.Services
 
             _indexFieldNames = false;
             _ = bool.TryParse(_config.GetSection("SolarConfiguration:IndexFieldNames").Value, out _indexFieldNames);
+
+            
         }
+
+        public void SetHttpClientTimeoutSeconds(int seconds)
+        {
+            _httpClient.Timeout = TimeSpan.FromSeconds(seconds);
+        }
+
         public async Task Index(EntityData entity, List<FormTemplate> forms)
         {
             SolrDoc doc = new SolrDoc(entity, forms, _indexFieldNames);
