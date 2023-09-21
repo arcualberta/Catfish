@@ -1,15 +1,31 @@
 <script setup lang="ts">
+    import { ref } from 'vue';
     import Carousel from "./components/Carousel.vue"
     import Slide from "./components/Slide.vue"
 
-    const slideImages = ["img-1", "img-2"];
+    const props = defineProps<{
+        navigation: boolean,
+        pagination: boolean,
+        autoPlay: boolean,
+        timeoutAutoPlay: number,
+        slides: string[]
+    }>();
+
+    const navigationEnabled = ref(props.navigation);
+    const paginationEnabled = ref(props.pagination);
+    const autoPlayEnabled = ref(props.autoPlay);
+    const timeoutPlay = ref(props.timeoutAutoPlay);
+
+
+    console.log(props.slides)
+    const slideImages = props.slides;
     const getImageUrl = (name: string) => {
        
         return "../../src/assets/images/" + name + ".jpg";
     }
 </script>
 <template>
-   <Carousel class="carousel" v-slot="{currentSlide}" :auto-play="true" :timeout-auto-play="10000" :navigation="true" :pagination="false">
+   <Carousel class="carousel" v-slot="{currentSlide}" :auto-play="autoPlayEnabled" :timeout-auto-play="timeoutPlay" :navigation="navigationEnabled" :pagination="paginationEnabled">
        <Slide v-for="(slide, index) in slideImages" :key="index">
            <div class="slide-info" v-show="currentSlide === (index+1)">
               
@@ -21,5 +37,4 @@
 </template>
 <style lang="scss" scoped>
    @import "./styles/index.scss";
-   @import "./styles/_carousel.scss";
 </style> 
