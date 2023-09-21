@@ -1,5 +1,5 @@
-/*$chevron-bg-color: #6347c7;
-$chevron-color: #fff;*/
+$indianred-color: indianred;
+$white-color: #fff;
 
 
 .carousel-navigate {
@@ -24,8 +24,8 @@ $chevron-color: #fff;*/
             border-radius: 50%;
             width: 40px;
             height: 40px;
-            background-color: indianred;
-            color: #fff;
+            background-color: $indianred-color;
+            color: $white-color;
         }
     }
     /*.left {
@@ -58,6 +58,6 @@ $chevron-color: #fff;*/
     }
 
     .active {
-        background-color: indianred;
+        background-color: $indianred-color; 
     }
 }

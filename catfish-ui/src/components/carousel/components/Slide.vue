@@ -8,3 +8,8 @@
         </transition>
     </div>
 </template>
+
+
+<style lang="scss">
+    @import "../styles/slide.scss";
+</style>

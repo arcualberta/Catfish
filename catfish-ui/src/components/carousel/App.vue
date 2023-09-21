@@ -9,7 +9,7 @@
     }
 </script>
 <template>
-   <Carousel class="carousel" v-slot="{currentSlide}" :auto-play="false" :timeout-auto-play="10000" :navigation="true" :pagination="false">
+   <Carousel class="carousel" v-slot="{currentSlide}" :auto-play="true" :timeout-auto-play="10000" :navigation="true" :pagination="false">
        <Slide v-for="(slide, index) in slideImages" :key="index">
            <div class="slide-info" v-show="currentSlide === (index+1)">
               
@@ -19,6 +19,7 @@
        </Slide>
    </Carousel>
 </template>
-<style scoped>
+<style lang="scss" scoped>
    @import "./styles/index.scss";
+   @import "./styles/_carousel.scss";
 </style> 

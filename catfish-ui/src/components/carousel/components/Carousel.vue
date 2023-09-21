@@ -90,7 +90,7 @@
 
     </div>
 </template>
-<style scoped>
+<style lang="scss" scoped>
     @import "../styles/_carousel.scss";
    
 </style>
