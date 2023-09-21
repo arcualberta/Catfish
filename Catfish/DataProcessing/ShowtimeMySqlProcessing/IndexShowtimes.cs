@@ -627,7 +627,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
             doc.AddId(showtime.Id);
             doc.AddField("entry_type_s", "showtime");
-            doc.AddField("entry_src_s", "kinomatics");
+            doc.AddField("data_src_s", "kinomatics");
             doc.AddField("showtime_key_t", $"{movie.Movie_ID}-{theater.Venue_ID}-{showtime.ShowDate.Year}-{showtime.ShowDate.Month}-{showtime.ShowDate.Day}");
             doc.AddField("movie_id_i", movie.Movie_ID);
             doc.AddField("movie_name_t", movie.Movie_Title);
