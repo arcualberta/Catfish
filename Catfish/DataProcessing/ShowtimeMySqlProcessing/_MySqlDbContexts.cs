@@ -12,43 +12,43 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 {
     public class MySqlCountryOriginDbContext : DbContext
     {
-        public MySqlCountryOriginDbContext(DbContextOptions<MySqlCountryOriginDbContext> options) : base(options) { }
+        public MySqlCountryOriginDbContext(DbContextOptions<MySqlCountryOriginDbContext> options) : base(options) { Database.SetCommandTimeout(TimeSpan.FromMinutes(5)); }
         public DbSet<MySqlCountryOrigin> Data { get; set; }
     }
 
     public class MySqlDistributionDbContext : DbContext
     {
-        public MySqlDistributionDbContext(DbContextOptions<MySqlDistributionDbContext> options) : base(options) { }
+        public MySqlDistributionDbContext(DbContextOptions<MySqlDistributionDbContext> options) : base(options) { Database.SetCommandTimeout(TimeSpan.FromMinutes(5)); }
         public DbSet<MySqlDistribution> Data { get; set; }
     }
 
     public class MySqlMoviesDbContext : DbContext
     {
-        public MySqlMoviesDbContext(DbContextOptions<MySqlMoviesDbContext> options) : base(options) { }
+        public MySqlMoviesDbContext(DbContextOptions<MySqlMoviesDbContext> options) : base(options) { Database.SetCommandTimeout(TimeSpan.FromMinutes(5)); }
         public DbSet<MySqlMovie> Data { get; set; }
     }
 
     public class MySqlMovieCastDbContext : DbContext
     {
-        public MySqlMovieCastDbContext(DbContextOptions<MySqlMovieCastDbContext> options) : base(options) { }
+        public MySqlMovieCastDbContext(DbContextOptions<MySqlMovieCastDbContext> options) : base(options) { Database.SetCommandTimeout(TimeSpan.FromMinutes(5)); }
         public DbSet<MySqlMovieCast> Data { get; set; }
     }
 
     public class MySqlMovieGenreDbContext : DbContext
     {
-        public MySqlMovieGenreDbContext(DbContextOptions<MySqlMovieGenreDbContext> options) : base(options) { }
+        public MySqlMovieGenreDbContext(DbContextOptions<MySqlMovieGenreDbContext> options) : base(options) { Database.SetCommandTimeout(TimeSpan.FromMinutes(5)); }
         public DbSet<MySqlMovieGenre> Data { get; set; }
     }
     
     public class MySqlTheaterDbContext : DbContext
     {
-        public MySqlTheaterDbContext(DbContextOptions<MySqlTheaterDbContext> options) : base(options) { }
+        public MySqlTheaterDbContext(DbContextOptions<MySqlTheaterDbContext> options) : base(options) { Database.SetCommandTimeout(TimeSpan.FromMinutes(5)); }
         public DbSet<MySqlTheater> Data { get; set; }
     }
 
     public class MySqlShowtimeDbContext : DbContext
     {
-        public MySqlShowtimeDbContext(DbContextOptions<MySqlShowtimeDbContext> options) : base(options) { }
+        public MySqlShowtimeDbContext(DbContextOptions<MySqlShowtimeDbContext> options) : base(options) { Database.SetCommandTimeout(TimeSpan.FromMinutes(5)); }
         public DbSet<MySqlShowtime> Data { get; set; }
     }
 }

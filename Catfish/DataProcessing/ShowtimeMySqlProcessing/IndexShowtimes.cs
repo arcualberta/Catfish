@@ -3,6 +3,7 @@ using Catfish.API.Repository.Solr;
 using Catfish.Test.Helpers;
 using CliWrap;
 using Google.Protobuf.WellKnownTypes;
+using System.Configuration;
 
 namespace DataProcessing.ShowtimeMySqlProcessing
 {
@@ -495,6 +496,12 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
             if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrDocBufferSize").Value, out _solrDocBufferSize))
                 _solrDocBufferSize = 10000;
+
+            //Setting extended timeouts for all MySql connecitons
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:MySqlServer:ConnectionTimeoutMinutes").Value, out int mySqlConnectionTimeOutMinutes))
+                mySqlConnectionTimeOutMinutes = 5;
+
+            _testHelper.SetMySqlConnectionTimeouts(mySqlConnectionTimeOutMinutes);
 
             string trackerFile = "text-data-solr-indexing-tracker.txt";
             string errorLogFile = "text-data-solr-indexing-errors.txt";

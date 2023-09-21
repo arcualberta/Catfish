@@ -77,9 +77,22 @@ namespace Catfish.Test.Helpers
             //test methods.
             Seviceprovider = services.BuildServiceProvider();
 
-          
-            
+
+
         }
+
+        public void SetMySqlConnectionTimeouts(int timeoutInMinutes)
+        {
+
+            countryDbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(timeoutInMinutes));
+            distributionDbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(timeoutInMinutes));
+            movieDbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(timeoutInMinutes));
+            movieCastDbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(timeoutInMinutes));
+            movieGenreDbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(timeoutInMinutes));
+            theaterDbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(timeoutInMinutes));
+        }
+
+
 
         public RepoDbContext Db => Seviceprovider.GetService<RepoDbContext>()!;
         public IConfiguration Configuration => Seviceprovider.GetService<IConfiguration>()!;
@@ -90,7 +103,7 @@ namespace Catfish.Test.Helpers
         public MySqlMovieCastDbContext movieCastDbContext => Seviceprovider.GetService<MySqlMovieCastDbContext>()!;
         public MySqlMovieGenreDbContext movieGenreDbContext => Seviceprovider.GetService<MySqlMovieGenreDbContext>()!;
         public MySqlTheaterDbContext theaterDbContext => Seviceprovider.GetService<MySqlTheaterDbContext>()!;
-        public MySqlShowtimeDbContext showtimeDbContext => Seviceprovider.GetService<MySqlShowtimeDbContext>()!;
+        //public MySqlShowtimeDbContext showtimeDbContext => Seviceprovider.GetService<MySqlShowtimeDbContext>()!;
 
     }
 }
