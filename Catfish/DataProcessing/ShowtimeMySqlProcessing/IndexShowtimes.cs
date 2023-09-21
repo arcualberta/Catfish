@@ -491,7 +491,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:TextDataFolder").Value;
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
 
-            _indexedShowtimeIdTrackerFolder = Path.Combine(logFolder, "indexed-showtime-tracker-files");
+            _indexedShowtimeIdTrackerFolder = Path.Combine(logFolder, "solr-showtime-indexing-tracker-files");
             Directory.CreateDirectory(_indexedShowtimeIdTrackerFolder);
 
             if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrDocBufferSize").Value, out _solrDocBufferSize))
@@ -507,9 +507,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 myHttpConnectionTimeOutMinutes = 5;
             _testHelper.Solr.SetHttpClientTimeoutSeconds(myHttpConnectionTimeOutMinutes * 60);
 
-            string trackerFile = "text-data-solr-indexing-tracker.txt";
-            string errorLogFile = "text-data-solr-indexing-errors.txt";
-            string progressLogFile = "text-data-solr-indexing-progress.txt";
+            string trackerFile = "solr-showtime-indexing-tracker.txt";
+            string errorLogFile = "solr-showtime-indexing-errors.txt";
+            string progressLogFile = "solr-showtime-indexing-progress.txt";
 
             //Pre-loading related data models that are needed by the IndexTextDataFileToSolr method from MySql database 
             _countryOrigins = _testHelper.countryDbContext.Data.ToList();
