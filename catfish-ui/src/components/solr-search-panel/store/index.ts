@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { buildQueryString } from '../helpers';
-import { SearchFieldDefinition, SearchResult, SolrEntryType } from '../models';
+import { DataSourceOption, SearchFieldDefinition, SearchResult, SolrEntryType } from '../models';
 import { ConstraintType, createFieldExpression, FieldExpression } from '../models/FieldExpression';
 
 
@@ -12,6 +12,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         searchFieldDefinitions: [] as SearchFieldDefinition[],
         resultFieldNames: [] as string[],
         selectedEntryType: null as SolrEntryType | null,
+        selectedDataSource: null as DataSourceOption | null,
         selectedEntryTypeBackup: null as SolrEntryType | null,
         queryResult: null as null | SearchResult,
         offset: 0,
