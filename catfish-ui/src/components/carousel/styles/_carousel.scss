@@ -1,6 +1,9 @@
 $indianred-color: indianred;
 $white-color: #fff;
 
+@mixin setBackground($color: indianred){
+    background-color: $color;
+}
 
 .carousel-navigate {
     padding: 0 16px;
@@ -24,7 +27,8 @@ $white-color: #fff;
             border-radius: 50%;
             width: 40px;
             height: 40px;
-            background-color: $indianred-color;
+            /*background-color: $indianred-color; */
+            @include setBackground(); /*    @include setBackground($color: Blue); */
             color: $white-color;
         }
     }
@@ -58,6 +62,7 @@ $white-color: #fff;
     }
 
     .active {
-        background-color: $indianred-color; 
+        /*background-color: $indianred-color; */
+        @include setBackground();
     }
 }

@@ -7,6 +7,6 @@
 <template>
     <h4>Test Page</h4>
     <di class="cols-md-6">
-        <Carousel :auto-play="true" :timeout-auto-play="10000" :navigation="true" :pagination="false" :slides="slides" />
+        <Carousel :auto-play="true" :timeout-auto-play="10000" :navigation="true" :pagination="true" :slides="slides" />
     </di>
 </template>
