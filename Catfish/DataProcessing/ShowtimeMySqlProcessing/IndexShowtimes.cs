@@ -772,5 +772,67 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
         #endregion
 
+
+        #region Ingesting Solr XML Documents to Solr
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.IngestSolrXmlToSolr
+        [Fact]
+        public async Task IngestSolrXmlToSolr()
+        {
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:FirstFileIndex").Value, out _firstFileIndex))
+                _firstFileIndex = 0;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:FileBatchSize").Value, out _fileBatchSize))
+                _fileBatchSize = int.MaxValue;
+
+            //Setting the solr HTTP connection tymeout
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:SolrHttpConnectionTimeoutMinutes").Value, out int myHttpConnectionTimeOutMinutes))
+                myHttpConnectionTimeOutMinutes = 5;
+            _testHelper.Solr.SetHttpClientTimeoutSeconds(myHttpConnectionTimeOutMinutes * 60);
+
+            string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrXmlFolder").Value;
+            string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+            logFolder = Path.Combine(logFolder, $"solr-docs-{_firstFileIndex}");
+
+            string trackerFile = "xml-solr-upload-tracker.txt";
+            string errorLogFile = "xml-solr-upload-errors.txt";
+            string progressLogFile = "xml-solr-upload-progress.txt";
+
+            string progressFileFullPathName = Path.Combine(logFolder, progressLogFile);
+            //Repeat the process until the stop flag is set. After processing each bactch, wait for 5 minutes before repeating
+            int sleepTimeMinutes = 5;
+            while (!(await IsStopFlagSet()))
+            {
+                await ProcessFileBatch(
+                    srcFolder,
+                    logFolder,
+                    null, //Nothing to output into an output folder since the output goes to the MySql database.
+                    trackerFile,
+                    errorLogFile,
+                    progressLogFile,
+                    UploadXmlFileToSolr);
+
+                await File.AppendAllTextAsync(progressFileFullPathName, $"Batch completed. Sleeping for {sleepTimeMinutes} minutes. Set the stop-flag to 1 to terminate when wake up.");
+                Thread.Sleep(sleepTimeMinutes * 60000);
+            }
+        }
+
+        protected async Task<bool> UploadXmlFileToSolr(string xmlFile, string? _, int? __, string? errorLogFile)
+        {
+            try
+            {
+                string xmlPayload = await File.ReadAllTextAsync(xmlFile);
+                await _testHelper.Solr.AddUpdateAsync(xmlPayload);
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                File.AppendAllText(errorLogFile!, $"{ex.Message}\nFile: {xmlFile}\n\n");
+                return false;
+            }
+        }
+
+        #endregion
+
     }
 }
