@@ -826,8 +826,15 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 string xmlPayload = await File.ReadAllTextAsync(xmlFile);
                 await _testHelper.Solr.AddUpdateAsync(xmlPayload);
 
-                string outFile = Path.Combine(outputFolder!, xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1));
-                File.Move(xmlFile, outFile);
+                try
+                {
+                    string outFile = Path.Combine(outputFolder!, xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1));
+                    File.Move(xmlFile, outFile);
+                }
+                catch(Exception ex) 
+                {
+                    File.AppendAllText(errorLogFile!, $"{ex.Message}\nFile: {xmlFile}\n\n");
+                }
 
                 return true;
             }
