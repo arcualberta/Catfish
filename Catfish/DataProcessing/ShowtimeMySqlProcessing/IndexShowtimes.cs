@@ -790,6 +790,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             _testHelper.Solr.SetHttpClientTimeoutSeconds(myHttpConnectionTimeOutMinutes * 60);
 
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrXmlFolder").Value;
+            string outputFolder = Path.Combine(srcFolder, "completed");
+            Directory.CreateDirectory(outputFolder);
+
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
             logFolder = Path.Combine(logFolder, $"solr-docs-{_firstFileIndex}");
 
@@ -805,7 +808,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 await ProcessFileBatch(
                     srcFolder,
                     logFolder,
-                    null, //Nothing to output into an output folder since the output goes to the MySql database.
+                    outputFolder,
                     trackerFile,
                     errorLogFile,
                     progressLogFile,
@@ -816,12 +819,15 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             }
         }
 
-        protected async Task<bool> UploadXmlFileToSolr(string xmlFile, string? _, int? __, string? errorLogFile)
+        protected async Task<bool> UploadXmlFileToSolr(string xmlFile, string? outputFolder, int? __, string? errorLogFile)
         {
             try
             {
                 string xmlPayload = await File.ReadAllTextAsync(xmlFile);
                 await _testHelper.Solr.AddUpdateAsync(xmlPayload);
+
+                string outFile = Path.Combine(outputFolder!, xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1));
+                File.Move(xmlFile, outFile);
 
                 return true;
             }
