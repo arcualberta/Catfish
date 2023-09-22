@@ -8,9 +8,13 @@ using CsvHelper;
 using System.Formats.Asn1;
 using System.Globalization;
 using System.IO;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace Catfish.API.Repository.Services
 {
@@ -18,6 +22,7 @@ namespace Catfish.API.Repository.Services
     {
         protected readonly IConfiguration _config;
         private readonly string _solrCoreUrl;
+        private readonly string _solrDocUploadApi;
         //private readonly ErrorLog _errorLog;
         private readonly bool _indexFieldNames;
         private static readonly HttpClient _httpClient = new HttpClient();
@@ -35,6 +40,7 @@ namespace Catfish.API.Repository.Services
             _db = db;
             _email = email;
             _solrCoreUrl = config.GetSection("SolarConfiguration:solrCore").Value.TrimEnd('/');
+            _solrDocUploadApi = config.GetSection("SolarConfiguration:SolrDocUploadApi").Value.TrimEnd('/');
             //_errorLog = errorLog;
 
             _indexFieldNames = false;
@@ -67,6 +73,17 @@ namespace Catfish.API.Repository.Services
             await Index(docs);
         }
 
+        public string GetPayloadString(List<SolrDoc> docs)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<add>");
+            foreach (var doc in docs)
+                sb.Append(doc.Root.ToString(SaveOptions.DisableFormatting));
+            sb.Append("</add>");
+
+            return sb.ToString();
+        }
+
         public async Task Index(List<SolrDoc> docs)
         {
             XElement payload = new XElement("add");
@@ -96,6 +113,35 @@ namespace Catfish.API.Repository.Services
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
             using var httpResponse = await _httpClient.GetAsync(uri).ConfigureAwait(false);
+
+            httpResponse.EnsureSuccessStatusCode();
+        }
+
+        public async Task UploadIndexingSolrDocs(List<SolrDoc> docs, string? basicAuthenticationCredentials)
+        {
+            string payloadXmlString = GetPayloadString(docs).Replace("\"", "\\\"");
+
+            HttpResponseMessage httpResponse;
+            if (!string.IsNullOrEmpty(basicAuthenticationCredentials))
+            {
+                // Set up basic authentication credentials
+                var authValue = new AuthenticationHeaderValue(
+                    "Basic",
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes(basicAuthenticationCredentials))
+                );
+
+                _httpClient.DefaultRequestHeaders.Authorization = authValue;
+
+                var content = new StringContent($"\"{payloadXmlString}\"", Encoding.UTF8, "application/json");
+
+                httpResponse = await _httpClient.PostAsync(_solrDocUploadApi, content);
+            }
+            else
+            {
+                var uri = new Uri(_solrDocUploadApi);
+                using var content = new StringContent(payloadXmlString, Encoding.UTF8, "text/plain");
+                httpResponse = await _httpClient.PostAsync(uri, content);
+            }
 
             httpResponse.EnsureSuccessStatusCode();
         }

@@ -9,8 +9,10 @@ namespace Catfish.API.Repository.Interfaces
         public Task Index(EntityData entityList,List<FormTemplate> forms);
         public Task Index(IList<EntityData> entities, List<FormTemplate> forms);
         public Task Index(List<SolrDoc> docs);
+        public string GetPayloadString(List<SolrDoc> docs);
         public Task AddUpdateAsync(XElement payload);
         public Task AddUpdateAsync(string payloadXmlString);
+        public Task UploadIndexingSolrDocs(List<SolrDoc> docs, string? basicAuthenticationCredentials);
         public Task CommitAsync();
         public Task<SearchResult> Search(string searchText, int start, int maxRows, int maxHighlightsPerEntry = 1);
         public Task<SearchResult> Search(SearchFieldConstraint[] constraints, int start, int maxRows, int maxHighlightsPerEntry = 1);

@@ -4,7 +4,7 @@
     import { useSolrSearchStore } from './store';
     import { computed, ref, watch } from 'vue';
     import { buildQueryString } from './helpers';
-    import { eUiMode, SearchFieldDefinition, SolrEntryType } from './models';
+    import { eUiMode, SearchFieldDefinition, SolrEntryType, DataSourceOption } from './models';
     import { copyToClipboard } from './helpers'
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
@@ -12,6 +12,7 @@
         searchFields?: SearchFieldDefinition[],
         resultFieldNames: string[],
         entryTypeFieldName?: string,
+        dataSourceOptions?: DataSourceOption[],
         entryTypeFieldOptions?: SolrEntryType[],
         queryApi?: string,
         uiMode?: eUiMode
@@ -52,23 +53,37 @@
     const querySource = computed(() => store.querySource)
 
     const queryString = computed(() => {
-        const q = buildQueryString(store.fieldExpression)
+        let q = buildQueryString(store.fieldExpression)
         if(q){
             if(props.entryTypeFieldName && store.selectedEntryType){
-                return `(${props.entryTypeFieldName}:${store.selectedEntryType.name}) AND (${q})`;
-            }
-            else{
-                return q;
+                q = `(${props.entryTypeFieldName}:${store.selectedEntryType.name}) AND (${q})`;
             }
         }
         else{
             if(props.entryTypeFieldName && store.selectedEntryType){
-                return `${props.entryTypeFieldName}:${store.selectedEntryType.name}`;
+                q = `${props.entryTypeFieldName}:${store.selectedEntryType.name}`;
             }
             else{
-                return '*:*';
+                q = '*:*';
             }
         }
+
+        if(store.selectedDataSource?.constraint && store.selectedDataSource.constraint.length > 0){
+            if(q == '*:*'){
+                q = store.selectedDataSource.constraint
+            }
+            else{
+                if(store.selectedDataSource.constraint == '-data_src_s:*'){
+                    q = `(${q}) ${store.selectedDataSource.constraint}`
+                }
+                else{
+                    q = `(${q}) AND (${store.selectedDataSource.constraint})`
+                }
+                
+            }
+        }
+
+        return q;
     })
 
     const rawQuery = ref("*:*")
@@ -138,6 +153,13 @@
             <select v-model="store.selectedEntryType">
                 <option value="">ALL</option>
                 <option v-for="val in entryTypeFieldOptions" :value="val" >{{val.label}}</option>
+            </select>
+            &nbsp;&nbsp;&nbsp;
+        </span>
+        <span v-if="dataSourceOptions">
+            Data Source:
+            <select v-model="store.selectedDataSource">
+                <option v-for="val in dataSourceOptions" :value="val" >{{val.label}}</option>
             </select>
             &nbsp;&nbsp;&nbsp;
         </span>

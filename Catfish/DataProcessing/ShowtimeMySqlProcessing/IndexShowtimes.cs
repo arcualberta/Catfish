@@ -1,9 +1,5 @@
-﻿using Catfish.API.Repository.Services;
-using Catfish.API.Repository.Solr;
-using Catfish.Test.Helpers;
+﻿using Catfish.API.Repository.Solr;
 using CliWrap;
-using Google.Protobuf.WellKnownTypes;
-using System.Configuration;
 
 namespace DataProcessing.ShowtimeMySqlProcessing
 {
@@ -86,6 +82,11 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         protected int _solrDocBufferSize = 10000;
         protected string _indexedShowtimeIdTrackerFolder;
         protected List<string> _solrObjectTrackingKeys = new List<string>();
+
+        protected bool _uploadToIndexingServer;
+        protected string _uploadApi;
+        protected string _basciApiSecurityCredentials;
+
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.Execute
         [Fact]
@@ -503,9 +504,18 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             _testHelper.SetMySqlConnectionTimeouts(mySqlConnectionTimeOutMinutes);
 
             //Setting the solr HTTP connection tymeout
-            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrHttpConnectionTimeoutMinutes").Value, out int myHttpConnectionTimeOutMinutes))
+            if (!int.TryParse(_testHelper.Configuration.GetSection("SolarConfiguration:SolrHttpConnectionTimeoutMinutes").Value, out int myHttpConnectionTimeOutMinutes))
                 myHttpConnectionTimeOutMinutes = 5;
             _testHelper.Solr.SetHttpClientTimeoutSeconds(myHttpConnectionTimeOutMinutes * 60);
+            
+            if(!bool.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:UploadToIndexingServer").Value, out _uploadToIndexingServer))
+                _uploadToIndexingServer = false;
+            if (_uploadToIndexingServer)
+            {
+                _uploadApi = _testHelper.Configuration.GetSection("SolarConfiguration:SolrDocUploadApi").Value;
+                Assert.False(string.IsNullOrEmpty(_uploadApi));
+            }
+            _basciApiSecurityCredentials = _testHelper.Configuration.GetSection("SolarConfiguration:BasciApiSecurityCredentials").Value;
 
             string trackerFile = "solr-showtime-indexing-tracker.txt";
             string errorLogFile = "solr-showtime-indexing-errors.txt";
@@ -706,8 +716,15 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         {
             if (_solrDocs.Count >= 0)
             {
-                await _testHelper.Solr.Index(_solrDocs);
-                await _testHelper.Solr.CommitAsync();
+                if (_uploadToIndexingServer)
+                {
+                    await _testHelper.Solr.UploadIndexingSolrDocs(_solrDocs, _basciApiSecurityCredentials);
+                }
+                else
+                {
+                    await _testHelper.Solr.Index(_solrDocs);
+                    await _testHelper.Solr.CommitAsync();
+                }
 
                 await File.AppendAllLinesAsync(indexedSolrObjectTrackerFile, _solrObjectTrackingKeys);
 
