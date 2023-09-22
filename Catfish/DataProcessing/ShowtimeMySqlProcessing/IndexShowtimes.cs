@@ -86,6 +86,8 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         protected bool _uploadToIndexingServer;
         protected string _uploadApi;
         protected string _basciApiSecurityCredentials;
+        protected int _firstFileIndex;
+        protected int _fileBatchSize;
 
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.Execute
@@ -309,7 +311,8 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             errorLogFile = Path.Combine(logFolder, errorLogFile);
             progressLogFile = Path.Combine(logFolder, progressLogFile);
 
-            string[] srcFfiles = Directory.GetFiles(srcFolder).OrderBy(x => x).ToArray();
+            string[] srcFfiles = Directory.GetFiles(srcFolder).OrderBy(x => x).Skip(_firstFileIndex).Take(_fileBatchSize).ToArray();
+
             List<string> ingestedFiles = File.Exists(trackerFile) ? new List<string>(await File.ReadAllLinesAsync(trackerFile)) : new List<string>();
 
             var started = DateTime.Now;
@@ -489,8 +492,15 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         [Fact]
         public async Task IndexTextDataToSolr()
         {
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:FirstFileIndex").Value, out _firstFileIndex))
+                _firstFileIndex = 0;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:FileBatchSize").Value, out _fileBatchSize))
+                _fileBatchSize = int.MaxValue;
+
             string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:TextDataFolder").Value;
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+            logFolder = Path.Combine(logFolder, _firstFileIndex.ToString());
 
             _indexedShowtimeIdTrackerFolder = Path.Combine(logFolder, "solr-showtime-indexing-tracker-files");
             Directory.CreateDirectory(_indexedShowtimeIdTrackerFolder);
@@ -516,6 +526,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 Assert.False(string.IsNullOrEmpty(_uploadApi));
             }
             _basciApiSecurityCredentials = _testHelper.Configuration.GetSection("SolarConfiguration:BasciApiSecurityCredentials").Value;
+
 
             string trackerFile = "solr-showtime-indexing-tracker.txt";
             string errorLogFile = "solr-showtime-indexing-errors.txt";
