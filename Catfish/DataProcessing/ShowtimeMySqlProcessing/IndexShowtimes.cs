@@ -878,7 +878,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 _isDryRun = true;
 
             string parentFolder = srcFolder.TrimEnd('\\');
-            parentFolder = parentFolder.Substring(0, parentFolder.LastIndexOf('\\') ;
+            parentFolder = parentFolder.Substring(0, parentFolder.LastIndexOf('\\'));
             _fileMoveFolderCount = Directory.GetDirectories(parentFolder).Length;
 
             _dryRunOutFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:DryRunOutFile").Value;
