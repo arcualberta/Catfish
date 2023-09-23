@@ -89,6 +89,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         protected int _firstFileIndex;
         protected int _fileBatchSize;
 
+        protected int _fileMoveFolderCount;
+        protected bool _isDryRun;
+        protected string _dryRunOutFile;
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.Execute
         [Fact]
@@ -871,6 +874,15 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
             logFolder = Path.Combine(logFolder, $"solr-docs-{_firstFileIndex}");
 
+            if (!bool.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:IsDryRun").Value, out _isDryRun))
+                _isDryRun = true;
+
+            string parentFolder = srcFolder.TrimEnd('\\');
+            parentFolder = parentFolder.Substring(0, parentFolder.LastIndexOf('\\') ;
+            _fileMoveFolderCount = Directory.GetDirectories(parentFolder).Length;
+
+            _dryRunOutFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:DryRunOutFile").Value;
+
             string trackerFile = "xml-file-upload-balance-tracker.txt";
             string errorLogFile = "xml-file-upload-balance-errors.txt";
             string progressLogFile = "xml-file-upload-balance-progress.txt";
@@ -906,13 +918,17 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             {
                 string dstFolder = xmlFile.Substring(xmlFile.LastIndexOf("\\"));
 
-                int dstFolderIndex = (fileIndex!.Value % 5) + 1;
+                int dstFolderIndex = (fileIndex!.Value % (_fileMoveFolderCount - 1)) + 1;
                 dstFolder = Path.Combine(dstFolder, $"{dstFolderIndex}");
 
                 try
                 {
                     string outFile = Path.Combine(dstFolder!, xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1));
-                    File.Move(xmlFile, outFile);
+
+                    if (_isDryRun)
+                        await File.AppendAllTextAsync(_dryRunOutFile, $"{outFile}\n");
+                    else
+                        File.Move(xmlFile, outFile);
                 }
                 catch (Exception ex)
                 {
