@@ -917,14 +917,14 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         {
             try
             {
-                string dstFolder = xmlFile.Substring(xmlFile.LastIndexOf("\\"));
+                string dstFolder = xmlFile.Substring(0, xmlFile.LastIndexOf("\\"));
 
                 int dstFolderIndex = (fileIndex!.Value % (_fileMoveFolderCount - 1)) + 1;
                 dstFolder = Path.Combine(dstFolder, $"{dstFolderIndex}");
 
                 try
                 {
-                    string outFile = Path.Combine(dstFolder!, xmlFile.Substring(0, xmlFile.LastIndexOf("\\") + 1));
+                    string outFile = Path.Combine(dstFolder!, xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1));
 
                     if (_isDryRun)
                         await File.AppendAllTextAsync(_dryRunOutFile, $"{outFile}\n");
