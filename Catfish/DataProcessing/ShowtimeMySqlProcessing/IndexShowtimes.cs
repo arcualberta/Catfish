@@ -805,6 +805,8 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             int sleepTimeMinutes = 5;
             while (!(await IsStopFlagSet()))
             {
+                DateTime t1 = DateTime.Now;
+
                 await ProcessFileBatch(
                     srcFolder,
                     logFolder,
@@ -814,8 +816,12 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                     progressLogFile,
                     UploadXmlFileToSolr);
 
-                await File.AppendAllTextAsync(progressFileFullPathName, $"Batch completed. Sleeping for {sleepTimeMinutes} minutes. Set the stop-flag to 1 to terminate when wake up.");
-                Thread.Sleep(sleepTimeMinutes * 60000);
+                DateTime t2 = DateTime.Now;
+                if((t2-t1).Seconds < 1)
+                {
+                    await File.AppendAllTextAsync(progressFileFullPathName, $"No more files to process now. Sleeping for {sleepTimeMinutes} minutes. Set the stop-flag to 1 to terminate when wake up.");
+                    Thread.Sleep(sleepTimeMinutes * 60000);
+                }
             }
         }
 
@@ -839,6 +845,83 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 return true;
             }
             catch(Exception ex)
+            {
+                File.AppendAllText(errorLogFile!, $"{ex.Message}\nFile: {xmlFile}\n\n");
+                return false;
+            }
+        }
+
+        #endregion
+
+
+        #region XML File Upload Load Balancing
+
+        //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.BalanceXmlFileUploadWorkload
+        [Fact]
+        public async Task BalanceXmlFileUploadWorkload()
+        {
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:FirstFileIndex").Value, out _firstFileIndex))
+                _firstFileIndex = 0;
+
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:FileBatchSize").Value, out _fileBatchSize))
+                _fileBatchSize = int.MaxValue;
+
+            string srcFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:SolrXmlFolder").Value;
+
+            string logFolder = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LogFolder").Value;
+            logFolder = Path.Combine(logFolder, $"solr-docs-{_firstFileIndex}");
+
+            string trackerFile = "xml-file-upload-balance-tracker.txt";
+            string errorLogFile = "xml-file-upload-balance-errors.txt";
+            string progressLogFile = "xml-file-upload-balance-progress.txt";
+
+            string progressFileFullPathName = Path.Combine(logFolder, progressLogFile);
+            //Repeat the process until the stop flag is set. After processing each bactch, wait for 5 minutes before repeating
+            int sleepTimeMinutes = 15;
+            while (!(await IsStopFlagSet()))
+            {
+                DateTime t1 = DateTime.Now;
+
+                await ProcessFileBatch(
+                    srcFolder,
+                    logFolder,
+                    null,
+                    trackerFile,
+                    errorLogFile,
+                    progressLogFile,
+                    MoveFile);
+
+                DateTime t2 = DateTime.Now;
+                if ((t2 - t1).Seconds < 1)
+                {
+                    await File.AppendAllTextAsync(progressFileFullPathName, $"No more files to process now. Sleeping for {sleepTimeMinutes} minutes. Set the stop-flag to 1 to terminate when wake up.");
+                    Thread.Sleep(sleepTimeMinutes * 60000);
+                }
+            }
+        }
+
+        protected async Task<bool> MoveFile(string xmlFile, string? _, int? fileIndex, string? errorLogFile)
+        {
+            try
+            {
+                string dstFolder = xmlFile.Substring(xmlFile.LastIndexOf("\\"));
+
+                int dstFolderIndex = (fileIndex!.Value % 5) + 1;
+                dstFolder = Path.Combine(dstFolder, $"{dstFolderIndex}");
+
+                try
+                {
+                    string outFile = Path.Combine(dstFolder!, xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1));
+                    File.Move(xmlFile, outFile);
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText(errorLogFile!, $"{ex.Message}\nFile: {xmlFile}\n\n");
+                }
+
+                return true;
+            }
+            catch (Exception ex)
             {
                 File.AppendAllText(errorLogFile!, $"{ex.Message}\nFile: {xmlFile}\n\n");
                 return false;
