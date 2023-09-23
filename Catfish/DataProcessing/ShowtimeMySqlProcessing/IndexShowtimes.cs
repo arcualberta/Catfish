@@ -926,9 +926,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 {
                     string outFile = Path.Combine(dstFolder!, xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1));
 
-                    if (_isDryRun)
-                        await File.AppendAllTextAsync(_dryRunOutFile, $"{outFile}\n");
-                    else
+                    await File.AppendAllTextAsync(_dryRunOutFile, $"{outFile}\n");
+
+                    if (!_isDryRun)
                         File.Move(xmlFile, outFile);
                 }
                 catch (Exception ex)
