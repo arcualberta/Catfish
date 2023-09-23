@@ -917,7 +917,8 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         {
             try
             {
-                string dstFolder = xmlFile.Substring(0, xmlFile.LastIndexOf("\\"));
+                string dstFolder = xmlFile.Substring(0, xmlFile.LastIndexOf("\\")).TrimEnd('\'');
+                dstFolder = xmlFile.Substring(0, xmlFile.LastIndexOf("\\")).TrimEnd('\'');
 
                 int dstFolderIndex = (fileIndex!.Value % (_fileMoveFolderCount - 1)) + 1;
                 dstFolder = Path.Combine(dstFolder, $"{dstFolderIndex}");
