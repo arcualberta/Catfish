@@ -825,7 +825,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 if((t2-t1).Seconds < 1)
                 {
                     await File.AppendAllTextAsync(progressFileFullPathName, $"No more files to process now. Sleeping for {sleepTimeMinutes} minutes. Set the stop-flag to 1 to terminate when wake up.");
-                    Thread.Sleep(sleepTimeMinutes * 60000);
+                    await Task.Delay(sleepTimeMinutes * 60000);
                 }
             }
         }
@@ -912,7 +912,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 if ((t2 - t1).Seconds < 1)
                 {
                     await File.AppendAllTextAsync(progressFileFullPathName, $"No more files to process now. Sleeping for {sleepTimeMinutes} minutes. Set the stop-flag to 1 to terminate when wake up.");              
-                    Thread.Sleep(sleepTimeMinutes * 60000);
+                    await Task.Delay(sleepTimeMinutes * 60000);
                 }
             }
         }
@@ -939,7 +939,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                         File.Move(xmlFile, outFile);
 
                         if (_loadBalanceFileMoveSleepMilliseconds > 0)
-                            Thread.Sleep(_loadBalanceFileMoveSleepMilliseconds); //We don't want the file copying to make th server super busy.
+                            await Task.Delay(_loadBalanceFileMoveSleepMilliseconds); //We don't want the file copying to make th server super busy.
                     }
                 }
                 catch (Exception ex)
