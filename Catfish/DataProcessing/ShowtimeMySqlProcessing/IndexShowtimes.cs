@@ -92,6 +92,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
         protected int _fileMoveFolderCount;
         protected bool _isDryRun;
         protected string _dryRunOutFile;
+        protected string _balancerFolderRoot;
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.Execute
         [Fact]
@@ -923,7 +924,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
                 try
                 {
-                    string outFile = Path.Combine(dstFolder!, xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1));
+                    string outFile = Path.Combine(dstFolder!, xmlFile.Substring(0, xmlFile.LastIndexOf("\\") + 1));
 
                     if (_isDryRun)
                         await File.AppendAllTextAsync(_dryRunOutFile, $"{outFile}\n");
