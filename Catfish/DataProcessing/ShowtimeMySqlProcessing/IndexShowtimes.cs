@@ -91,8 +91,9 @@ namespace DataProcessing.ShowtimeMySqlProcessing
 
         protected int _fileMoveFolderCount;
         protected bool _isDryRun;
-        protected string _dryRunOutFile;
+        protected string _loadBalanceOutFile;
         protected string _balancerFolderRoot;
+        protected int _loadBalanceFileMoveSleepMilliseconds;
 
         //CMD: C:\PATH\TO\Catfish\DataProcessing> dotnet test DataProcessing.csproj --filter DataProcessing.ShowtimeMySqlProcessing.IndexShowtimes.Execute
         [Fact]
@@ -878,11 +879,14 @@ namespace DataProcessing.ShowtimeMySqlProcessing
             if (!bool.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:IsDryRun").Value, out _isDryRun))
                 _isDryRun = true;
 
+            if (!int.TryParse(_testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LoadBalanceFileMoveSleepMilliseconds").Value, out _loadBalanceFileMoveSleepMilliseconds))
+                _loadBalanceFileMoveSleepMilliseconds = 0;
+
             string parentFolder = srcFolder.TrimEnd('\\');
             parentFolder = parentFolder.Substring(0, parentFolder.LastIndexOf('\\'));
             _fileMoveFolderCount = Directory.GetDirectories(parentFolder).Length;
 
-            _dryRunOutFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:DryRunOutFile").Value;
+            _loadBalanceOutFile = _testHelper.Configuration.GetSection("OldShowtimeDataIngestion:LoadBalanceOutFile").Value;
 
             string trackerFile = "xml-file-upload-balance-tracker.txt";
             string errorLogFile = "xml-file-upload-balance-errors.txt";
@@ -907,7 +911,7 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 DateTime t2 = DateTime.Now;
                 if ((t2 - t1).Seconds < 1)
                 {
-                    await File.AppendAllTextAsync(progressFileFullPathName, $"No more files to process now. Sleeping for {sleepTimeMinutes} minutes. Set the stop-flag to 1 to terminate when wake up.");
+                    await File.AppendAllTextAsync(progressFileFullPathName, $"No more files to process now. Sleeping for {sleepTimeMinutes} minutes. Set the stop-flag to 1 to terminate when wake up.");              
                     Thread.Sleep(sleepTimeMinutes * 60000);
                 }
             }
@@ -927,10 +931,16 @@ namespace DataProcessing.ShowtimeMySqlProcessing
                 {
                     string outFile = Path.Combine(dstFolder!, xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1));
 
-                    await File.AppendAllTextAsync(_dryRunOutFile, $"{outFile}\n");
+                    if (!string.IsNullOrEmpty(_loadBalanceOutFile))
+                        await File.AppendAllTextAsync(_loadBalanceOutFile, $"{outFile}\n");
 
                     if (!_isDryRun)
+                    {
                         File.Move(xmlFile, outFile);
+
+                        if (_loadBalanceFileMoveSleepMilliseconds > 0)
+                            Thread.Sleep(_loadBalanceFileMoveSleepMilliseconds); //We don't want the file copying to make th server super busy.
+                    }
                 }
                 catch (Exception ex)
                 {
