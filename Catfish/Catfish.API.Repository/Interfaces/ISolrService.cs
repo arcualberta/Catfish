@@ -52,7 +52,7 @@ namespace Catfish.API.Repository.Interfaces
             string? uniqueExportFields);
 
         public Task<int> GetMatchCount(string query, string solrCoreUrl="");
-        public JobRecord CreateJobRecord(string label, int maxRow);
+        public Task<JobRecord> CreateJobRecord(string label, int maxRow);
 
         public Task<JobRecord?> GetJobRecord(Guid jobId);
 
