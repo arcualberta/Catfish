@@ -2,7 +2,7 @@
     import { computed, watch} from "vue";
     import { Pinia } from 'pinia'
     import { Guid } from "guid-typescript";
-
+    import type { FormData } from '../shared/form-models'
     import { useFormSubmissionStore } from './store';
     import { default as Form } from './components/Form.vue';
     //import { FieldType } from '../shared/form-models';
@@ -32,6 +32,8 @@
     const submitForm = () => store.submitForm()
     const hasForm = computed(() => store.form ? true : false)
 
+    const formData = computed(() => store.formData as FormData | undefined)
+
 </script>
 
 <style scoped src="./styles.css"></style>
@@ -43,7 +45,7 @@
     <h2>Form Submission</h2>
     <hr />
     <!--{{store.form}}-->
-    <Form v-if="store.form" :model="store.form" />
+    <Form v-if="store.form" :model="store.form" :form-data="formData" />
     <div class="control">
         <!--<button type="button" class="btn btn-success" :disabled="!hasForm" @click="saveForm">Save</button>-->
         <button type="button" class="btn btn-primary" :disabled="!hasForm" @click="submitForm">Submit</button>

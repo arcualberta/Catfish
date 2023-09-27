@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { Guid } from "guid-typescript";
 import { default as config } from "@/appsettings";
-import { FormData } from '../../shared/form-models'
+import type { FormData } from '../../shared/form-models'
 import { createFormData } from '../../shared/form-helpers'
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
 import { eState } from '@/components/shared/constants';
@@ -11,7 +11,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
     state: () => ({
         lang: "en",
         form: null as FormTemplate | null,
-        formData: {} as FormData,
+        formData: {} as FormData | undefined,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
         files: [] as File[] | null,

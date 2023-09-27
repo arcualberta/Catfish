@@ -37,7 +37,7 @@ namespace Catfish.API.Repository.Controllers
 
         // POST api/<FormSubmissionController>
         [HttpPost]
-        public async Task<Guid> Post( FormData value)
+        public async Task<Guid> Post([FromBody] FormData value)
         {
             _context.FormData?.Add(value);
             await _context.SaveChangesAsync();
