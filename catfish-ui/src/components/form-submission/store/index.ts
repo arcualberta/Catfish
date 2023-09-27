@@ -71,7 +71,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             var response;
             if (newForm) {
                 method = "POST";
-                this.formData.state=eState.Draft;
+                this.formData!.state=eState.Draft;
                 
                 response = await FormDataProxy.Post<FormData>(this.formData as FormData);
                
