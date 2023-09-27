@@ -44,6 +44,11 @@ export interface SearchResult {
     resultEntries: SolrResultEntry[]
 }
 
+export interface DataSourceOption{
+    label: string,
+    constraint: string
+}
+
 /* solr model from previous version -- we might or might not need them */
 
 /*

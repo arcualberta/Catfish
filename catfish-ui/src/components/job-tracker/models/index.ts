@@ -15,7 +15,8 @@ export interface JobRecord{
     message: string,
     jobId: string, //hangfire's jobId
     isDeleted: boolean | null,
-    deletedDate: Date | null
+    deletedDate: Date | null,
+    user: string | null
 }
 
 export interface JobSearchResult{
