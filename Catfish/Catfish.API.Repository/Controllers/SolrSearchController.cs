@@ -65,7 +65,8 @@ namespace Catfish.API.Repository.Controllers
             [FromForm] bool? selectUniqueEntries = false,
             [FromForm] int? numDecimalPoints = null,
             [FromForm] string? frequencyArrayFields = null,
-            [FromForm] string? exportFields = null)
+            [FromForm] string? exportFields = null,
+            [FromForm] string? user = null)
         {
             string parentJobId = "";
             try
@@ -79,7 +80,7 @@ namespace Catfish.API.Repository.Controllers
                     + Request.Path.Value.Substring(0, Request.Path.Value.LastIndexOf("/")) + "/get-file";
                 string downloadEndpoint = Request.Scheme + "://" + Request.Host.Value.TrimEnd('/') + path;
 
-                JobRecord jobRecord = _solr.CreateJobRecord(label, matchCount);
+                JobRecord jobRecord = await _solr.CreateJobRecord(label, matchCount, user);
                 
 
                 parentJobId = BackgroundJob.Enqueue<ISolrService>((solrService) => solrService.SubmitSearchJobAsync(query, fieldList, email, jobRecord.Id, solrCoreUrl, downloadEndpoint, batchSize,/* matchCount,*/ selectUniqueEntries, numDecimalPoints, frequencyArrayFields, exportFields));

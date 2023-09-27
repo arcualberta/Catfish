@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { buildQueryString } from '../helpers';
-import { SearchFieldDefinition, SearchResult, SolrEntryType } from '../models';
+import { DataSourceOption, SearchFieldDefinition, SearchResult, SolrEntryType } from '../models';
 import { ConstraintType, createFieldExpression, FieldExpression } from '../models/FieldExpression';
 
 
@@ -12,6 +12,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         searchFieldDefinitions: [] as SearchFieldDefinition[],
         resultFieldNames: [] as string[],
         selectedEntryType: null as SolrEntryType | null,
+        selectedDataSource: null as DataSourceOption | null,
         selectedEntryTypeBackup: null as SolrEntryType | null,
         queryResult: null as null | SearchResult,
         offset: 0,
@@ -21,7 +22,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         queryApi: 'https://localhost:5020/api/solr-search',
         isLoadig: false,
         isLoadingFailed: false,
-        jobId:""
+        jobId:"",
+        user: null as string | null
     }),
     actions: {
         query(query: string | null, offset: number, max: number){
@@ -72,6 +74,10 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             form.append("email", email)
             form.append("label", label);
             form.append("batchSize", batchSize.toString());
+            if(this.user?.length && this.user?.length> 0){
+                form.append("user", this.user)
+            }
+
             if(this.resultFieldNames?.length > 0){
                 form.append("fieldList", this.resultFieldNames.join());
             }

@@ -42,20 +42,33 @@ namespace Catfish.API.Repository.Services
                 Offset = offset
             };
 
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                result.ResultEntries = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm) && j.IsDeleted != true).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
-                result.TotalMatches = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm) && j.IsDeleted != true).CountAsync();
-            }
-            else 
-            {
-                result.ResultEntries = await _db.JobRecords.Where(j=>j.IsDeleted != true).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
-                result.TotalMatches = await _db.JobRecords.Where(j => j.IsDeleted != true).CountAsync();
-            }
+            IQueryable<JobRecord> query = _db.JobRecords.Where(j => j.IsDeleted != true);
 
-            //Out of the paginated result set, select the sub-set of entries that are still in progress.
+
+            if (!string.IsNullOrEmpty(searchTerm))
+                query = query.Where(j => j.JobLabel.Contains(searchTerm));
+
             if (inProgressOnly)
-                result.ResultEntries = result.ResultEntries.Where(entry => entry.Status == "In Progress").ToList();
+                query = query.Where(entry => entry.Status == "In Progress");
+
+
+            result.ResultEntries = await query.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+
+
+            ////if (!string.IsNullOrEmpty(searchTerm))
+            ////{
+            ////    result.ResultEntries = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm) && j.IsDeleted != true).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+            ////    result.TotalMatches = await _db.JobRecords.Where(j => j.JobLabel.Contains(searchTerm) && j.IsDeleted != true).CountAsync();
+            ////}
+            ////else 
+            ////{
+            ////    result.ResultEntries = await _db.JobRecords.Where(j=>j.IsDeleted != true).OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
+            ////    result.TotalMatches = await _db.JobRecords.Where(j => j.IsDeleted != true).CountAsync();
+            ////}
+
+            //////Out of the paginated result set, select the sub-set of entries that are still in progress.
+            ////if (inProgressOnly)
+            ////    result.ResultEntries = result.ResultEntries.Where(entry => entry.Status == "In Progress").ToList();
 
             return result;
         }
