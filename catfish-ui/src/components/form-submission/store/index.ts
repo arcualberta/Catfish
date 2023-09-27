@@ -5,6 +5,7 @@ import { FormData } from '../../shared/form-models'
 import { createFormData } from '../../shared/form-helpers'
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
 import { eState } from '@/components/shared/constants';
+import {FormDataProxy} from '@/api/formDataProxy'
 
 export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
     state: () => ({
@@ -57,7 +58,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             console.log("TODO: Validate form data.")
             return true;
         },
-        submitForm() {
+       async submitForm() {
             
             if (!this.validateFormData()) {
                 console.log("Form validation failed.")
@@ -67,16 +68,22 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             const newForm = this.formData?.id?.toString() === Guid.EMPTY;
             let api = `${config.dataRepositoryApiRoot}/api/form-submissions`;//"https://localhost:5020/api/form-submissions";
             let method = "";
+            var response;
             if (newForm) {
                 method = "POST";
                 this.formData.state=eState.Draft;
+                
+                response = await FormDataProxy.Post<FormData>(this.formData as FormData);
+               
             }
             else {
-                api = `${api}/${this.formData.id}`
+                api = `${api}/${this.formData.id as unknown as Guid}`
                 method = "PUT";
+                response = await FormDataProxy.Put<FormData>(this.formData as FormData);
+               
             }
 
-            fetch(api,
+           /* fetch(api,
                 {
                     body: JSON.stringify(this.formData),
                     method: method,
@@ -89,7 +96,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                     if (response.ok) {
                         if (newForm) {
                             const id = await response.json();
-                            this.formData.id = id as Guid;
+                            this.formData.id = id as unknown as Guid;
                         }
                         this.transientMessage = "Success";
                         this.transientMessageClass = "success";
@@ -120,7 +127,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                     this.transientMessage = "Unknown error occurred"
                     this.transientMessageClass = "danger"
                     console.error('FormData Submit API Error:', error)
-                });
+                });*/
         },
         saveForm() {
             if (!this.form) {
