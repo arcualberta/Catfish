@@ -66,7 +66,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             }
 
             const newForm = this.formData?.id?.toString() === Guid.EMPTY;
-            let api = `${config.dataRepositoryApiRoot}/api/form-submissions`;//"https://localhost:5020/api/form-submissions";
+            //let api = `${config.dataRepositoryApiRoot}/api/form-submissions`;//"https://localhost:5020/api/form-submissions";
             let method = "";
             var response;
             if (newForm) {
@@ -77,9 +77,9 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                
             }
             else {
-                api = `${api}/${this.formData.id as unknown as Guid}`
+              //  api = `${api}/${this.formData.id as unknown as Guid}`
                 method = "PUT";
-                response = await FormDataProxy.Put<FormData>(this.formData as FormData);
+                response = await FormDataProxy.Put(this.formData as FormData);
                
             }
 
