@@ -15,12 +15,15 @@
         dataSourceOptions?: DataSourceOption[],
         entryTypeFieldOptions?: SolrEntryType[],
         queryApi?: string,
-        uiMode?: eUiMode
+        uiMode?: eUiMode,
+        user: string | null
     }>();
 
     const store = useSolrSearchStore();
     store.selectedEntryType = props.entryTypeFieldOptions?.find(entry => entry.label == "Showtimes") as SolrEntryType;
 
+    store.user = props.user;
+    
     if(props.searchFields){
         store.searchFieldDefinitions = props.searchFields;
     }

@@ -587,7 +587,7 @@ namespace Catfish.API.Repository.Services
         {
             return await _db.JobRecords.FindAsync(jobId);
         }
-        public async Task<JobRecord> CreateJobRecord(string label, int maxRow)
+        public async Task<JobRecord> CreateJobRecord(string label, int maxRow, string? user)
         {
             try
             {
@@ -597,7 +597,8 @@ namespace Catfish.API.Repository.Services
                     Started = DateTime.UtcNow,
                     LastUpdated = DateTime.UtcNow,
                     Status = "Pending",
-                    ExpectedDataRows = maxRow
+                    ExpectedDataRows = maxRow,
+                    User = user
                 };
 
                 _db.JobRecords.Add(jobRecord);

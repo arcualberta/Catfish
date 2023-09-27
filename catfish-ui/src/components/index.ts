@@ -13,6 +13,7 @@ export { useFormSubmissionStore } from './form-submission/store';
 /* Login component */
 export { default as Login } from './login/App.vue';
 export { useLoginStore } from './login/store';
+export type { GoogleIdentityResult } from './login/models'
 
 /* Workflow Builder component */
 export { default as WorkflowBuilder } from './workflow-builder/App.vue';
