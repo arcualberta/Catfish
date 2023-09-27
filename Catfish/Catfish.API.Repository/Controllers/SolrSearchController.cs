@@ -3,6 +3,7 @@ using Catfish.API.Repository.Solr;
 using ElmahCore;
 using Hangfire;
 using CatfishExtensions.Services;
+using Catfish.API.Repository.Models.BackgroundJobs;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -57,12 +58,15 @@ namespace Catfish.API.Repository.Controllers
         [HttpPost("schedule-search-job")]
         public async Task<string> ScheduleSearchJob(
             [FromForm] string query,
-            [FromForm] string email,
+            [FromForm] string? email,
             [FromForm] string label,
             [FromForm] int batchSize = 10000,
             [FromForm] string? fieldList = null,
             [FromForm] bool? selectUniqueEntries = false,
-            [FromForm] int? numDecimalPoints = null)
+            [FromForm] int? numDecimalPoints = null,
+            [FromForm] string? frequencyArrayFields = null,
+            [FromForm] string? exportFields = null,
+            [FromForm] string? user = null)
         {
             string parentJobId = "";
             try
@@ -76,20 +80,13 @@ namespace Catfish.API.Repository.Controllers
                     + Request.Path.Value.Substring(0, Request.Path.Value.LastIndexOf("/")) + "/get-file";
                 string downloadEndpoint = Request.Scheme + "://" + Request.Host.Value.TrimEnd('/') + path;
 
+                JobRecord jobRecord = await _solr.CreateJobRecord(label, matchCount, user);
+                
 
-                parentJobId = BackgroundJob.Enqueue<ISolrService>((solrService) => solrService.SubmitSearchJobAsync(query, fieldList, email, label, solrCoreUrl, downloadEndpoint, batchSize, matchCount, selectUniqueEntries, numDecimalPoints));
+                parentJobId = BackgroundJob.Enqueue<ISolrService>((solrService) => solrService.SubmitSearchJobAsync(query, fieldList, email, jobRecord.Id, solrCoreUrl, downloadEndpoint, batchSize,/* matchCount,*/ selectUniqueEntries, numDecimalPoints, frequencyArrayFields, exportFields));
 
-                ////Email emailDto = new Email();
-                ////emailDto.Subject = "Background Job";
-                ////emailDto.ToRecipientEmail = new List<string> { email };
-                ////emailDto.CcRecipientEmail = new List<string> { "arcrcg@ualberta.ca"};
-                //////https://localhost:5020/api/solr-search/get-file?fileName=querySearchResult_whole_data_set.csv
-                ////string path = Request.Path.Value.Substring(0, Request.Path.Value.LastIndexOf("/")) + "/get-file";
-                ////string downloadLink = Request.Scheme + "://" + Request.Host.Value.TrimEnd('/') + path + "?fileName=" + fileName;
-
-                ////emailDto.Body = $@"Your background-job is done. You could download your data :<a href='{downloadLink}' target='_blank'> {fileName} </a>";
-
-                ////BackgroundJob.ContinueJobWith(parentJobId, () => _email.SendEmail(emailDto));
+                await _solr.UpdateJobRecordHangfireId(jobRecord.Id, parentJobId);
+              
             }
             catch (Exception ex)
             {

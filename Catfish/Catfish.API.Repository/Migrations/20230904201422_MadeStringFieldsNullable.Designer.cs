@@ -4,6 +4,7 @@ using Catfish.API.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catfish.API.Repository.Migrations
 {
     [DbContext(typeof(RepoDbContext))]
-    partial class RepoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230904201422_MadeStringFieldsNullable")]
+    partial class MadeStringFieldsNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,17 +30,11 @@ namespace Catfish.API.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AttemptCount")
-                        .HasColumnType("int");
-
                     b.Property<string>("DataFile")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("DataFileSize")
                         .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("DownloadDataFileLink")
                         .HasColumnType("nvarchar(max)");
@@ -49,12 +45,6 @@ namespace Catfish.API.Repository.Migrations
                     b.Property<int>("ExpectedDataRows")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("JobId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("JobLabel")
                         .HasColumnType("nvarchar(max)");
 
@@ -64,9 +54,6 @@ namespace Catfish.API.Repository.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Offset")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProcessedDataRows")
                         .HasColumnType("int");
 
@@ -75,9 +62,6 @@ namespace Catfish.API.Repository.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("User")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

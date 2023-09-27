@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { buildQueryString } from '../helpers';
-import { SearchFieldDefinition, SearchResult, SolrEntryType } from '../models';
+import { DataSourceOption, SearchFieldDefinition, SearchResult, SolrEntryType } from '../models';
 import { ConstraintType, createFieldExpression, FieldExpression } from '../models/FieldExpression';
 
 
@@ -12,6 +12,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         searchFieldDefinitions: [] as SearchFieldDefinition[],
         resultFieldNames: [] as string[],
         selectedEntryType: null as SolrEntryType | null,
+        selectedDataSource: null as DataSourceOption | null,
         selectedEntryTypeBackup: null as SolrEntryType | null,
         queryResult: null as null | SearchResult,
         offset: 0,
@@ -20,11 +21,14 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         queryTime: 0,
         queryApi: 'https://localhost:5020/api/solr-search',
         isLoadig: false,
-        jobId:""
+        isLoadingFailed: false,
+        jobId:"",
+        user: null as string | null
     }),
     actions: {
         query(query: string | null, offset: number, max: number){
             this.isLoadig = true;
+            this.isLoadingFailed = false;
             this.offset = offset;
             this.max = max;
 
@@ -55,9 +59,10 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             .catch((error) => {
                 console.error('Load Entities API Error:', error);
                 this.isLoadig = false;
+                this.isLoadingFailed = true;
             });
         },
-        executeJob(query: string | null, email: string, label: string, batchSize:number, selectUniqueEntries:boolean, roundFloats:boolean, numDecimalPoints:number) {
+        executeJob(query: string | null, email: string, label: string, batchSize:number, selectUniqueEntries:boolean, roundFloats:boolean, numDecimalPoints:number, frequencyArrayFields: string[], uniqueExportFields: string[]) {
             this.isLoadig = true;
            // this.offset = offset;
            // this.max = max;
@@ -69,6 +74,10 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             form.append("email", email)
             form.append("label", label);
             form.append("batchSize", batchSize.toString());
+            if(this.user?.length && this.user?.length> 0){
+                form.append("user", this.user)
+            }
+
             if(this.resultFieldNames?.length > 0){
                 form.append("fieldList", this.resultFieldNames.join());
             }
@@ -79,6 +88,16 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                     form.append("numDecimalPoints", numDecimalPoints.toString());
                 }
             }
+
+            if(frequencyArrayFields?.length > 0){
+                form.append("frequencyArrayFields", frequencyArrayFields.join());
+            }
+
+            if(uniqueExportFields?.length > 0){
+                form.append("exportFields", uniqueExportFields.join());
+            }
+
+            //console.log("uniqueExportFields", JSON.stringify(uniqueExportFields))
             
             this.queryStart = new Date().getTime()
 
@@ -128,6 +147,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         },
         activeSelectedResultFieldNames: (state) => {
             return state.resultFieldNames.filter(fieldName => state.activeFieldList.filter(fd => fd.name == fieldName)?.length > 0)
-        }
+        },
+        resultArrayFields: (state) => state.resultFieldNames.filter(fieldName => fieldName.match(new RegExp('.*_.+s$')))
+        
     }
 });

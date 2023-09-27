@@ -4,7 +4,7 @@
     import { useSolrSearchStore } from './store';
     import { computed, ref, watch } from 'vue';
     import { buildQueryString } from './helpers';
-    import { eUiMode, SearchFieldDefinition, SolrEntryType } from './models';
+    import { eUiMode, SearchFieldDefinition, SolrEntryType, DataSourceOption } from './models';
     import { copyToClipboard } from './helpers'
     import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
@@ -12,12 +12,18 @@
         searchFields?: SearchFieldDefinition[],
         resultFieldNames: string[],
         entryTypeFieldName?: string,
+        dataSourceOptions?: DataSourceOption[],
         entryTypeFieldOptions?: SolrEntryType[],
         queryApi?: string,
-        uiMode?: eUiMode
+        uiMode?: eUiMode,
+        user: string | null
     }>();
 
     const store = useSolrSearchStore();
+    store.selectedEntryType = props.entryTypeFieldOptions?.find(entry => entry.label == "Showtimes") as SolrEntryType;
+
+    store.user = props.user;
+    
     if(props.searchFields){
         store.searchFieldDefinitions = props.searchFields;
     }
@@ -42,29 +48,45 @@
         }
     }) 
 
+    //watch(() => props.)
+
     const uiMode = computed(() => props.uiMode ? props.uiMode : eUiMode.Default)
 
     const expression = computed(() => store.fieldExpression)
     const querySource = computed(() => store.querySource)
 
-    const quertString = computed(() => {
-        const q = buildQueryString(store.fieldExpression)
+    const queryString = computed(() => {
+        let q = buildQueryString(store.fieldExpression)
         if(q){
             if(props.entryTypeFieldName && store.selectedEntryType){
-                return `(${props.entryTypeFieldName}:${store.selectedEntryType.name}) AND (${q})`;
-            }
-            else{
-                return q;
+                q = `(${props.entryTypeFieldName}:${store.selectedEntryType.name}) AND (${q})`;
             }
         }
         else{
             if(props.entryTypeFieldName && store.selectedEntryType){
-                return `${props.entryTypeFieldName}:${store.selectedEntryType.name}`;
+                q = `${props.entryTypeFieldName}:${store.selectedEntryType.name}`;
             }
             else{
-                return '*:*';
+                q = '*:*';
             }
         }
+
+        if(store.selectedDataSource?.constraint && store.selectedDataSource.constraint.length > 0){
+            if(q == '*:*'){
+                q = store.selectedDataSource.constraint
+            }
+            else{
+                if(store.selectedDataSource.constraint == '-data_src_s:*'){
+                    q = `(${q}) ${store.selectedDataSource.constraint}`
+                }
+                else{
+                    q = `(${q}) AND (${store.selectedDataSource.constraint})`
+                }
+                
+            }
+        }
+
+        return q;
     })
 
     const rawQuery = ref("*:*")
@@ -77,7 +99,7 @@
         store.queryResult = null;
 
         if(uiMode.value === eUiMode.Default){
-            store.query(quertString.value, 0, Number(pageSize.value))
+            store.query(queryString.value, 0, Number(pageSize.value))
             const resultEntryTypes = store.selectedEntryType ? store.selectedEntryType.label : "All Entry Types"
             store.querySource = `Filter Result (${resultEntryTypes})`
         }
@@ -96,13 +118,13 @@
         store.queryResult = null;
         
         if (uiMode.value === eUiMode.Default) {
-            store.executeJob(quertString.value, email.value, label.value, batchSize.value, selectUniqueEntries.value, roundFloats.value, numDecimalPoints.value)
+            store.executeJob(queryString.value, email.value, label.value, batchSize.value, selectUniqueEntries.value, roundFloats.value, numDecimalPoints.value, frequencyArrayFields.value, uniqueExportFields.value)
            // const resultEntryTypes = store.selectedEntryType ? store.selectedEntryType.label : "All Entry Types"
             //store.querySource = `Filter Result (${resultEntryTypes})`
         }
         else if (uiMode.value === eUiMode.Raw) {
             if (rawQuery.value && rawQuery.value.trim().length > 0) {
-                store.executeJob(rawQuery.value, email.value, label.value, batchSize.value, selectUniqueEntries.value, roundFloats.value, numDecimalPoints.value)
+                store.executeJob(rawQuery.value, email.value, label.value, batchSize.value, selectUniqueEntries.value, roundFloats.value, numDecimalPoints.value, frequencyArrayFields.value, uniqueExportFields.value)
                // store.querySource = "Solr Query Result"
             }
             else {
@@ -120,8 +142,10 @@
     const selectUniqueEntries = ref(false)
     const roundFloats = ref(false)
     const numDecimalPoints = ref(4)
+    const frequencyArrayFields = ref([] as string[])
+    const uniqueExportFields = ref([] as string[])
 
-    const isBatchButtonDisabled = computed(() => email.value.trim().length == 0 || label.value.trim().length == 0 || batchSize.value <= 0);
+    const isBatchButtonDisabled = computed(() => label.value.trim().length == 0 || batchSize.value <= 0);
 
 
 </script>
@@ -131,7 +155,14 @@
             Entry Type:
             <select v-model="store.selectedEntryType">
                 <option value="">ALL</option>
-                <option v-for="val in entryTypeFieldOptions" :value="val">{{val.label}}</option>
+                <option v-for="val in entryTypeFieldOptions" :value="val" >{{val.label}}</option>
+            </select>
+            &nbsp;&nbsp;&nbsp;
+        </span>
+        <span v-if="dataSourceOptions">
+            Data Source:
+            <select v-model="store.selectedDataSource">
+                <option v-for="val in dataSourceOptions" :value="val" >{{val.label}}</option>
             </select>
             &nbsp;&nbsp;&nbsp;
         </span>
@@ -154,10 +185,10 @@
             <b>Query String</b>
             <font-awesome-icon icon="fa-solid fa-copy"
                                class="fa-icon btn"
-                               @click="copyToClipboard(quertString)"
+                               @click="copyToClipboard(queryString)"
                                v-b-tooltip.hover :title="'Copy the query string to clipboard.'" />
         </div>
-        <div>{{ quertString }}</div>
+        <div>{{ queryString }}</div>
     </div>
     <div v-if="uiMode === eUiMode.Raw">
         <textarea v-model="rawQuery" class="col-12"></textarea>
@@ -198,13 +229,26 @@
         </div>
         <div class="mt-3 mb-3 panel-search-bg col-md-6">
             <h4>Background Search</h4>
-            <div>Notification Email : <input type="text" v-model="email" placeholder="email address" /> </div>
+            <!--  <div>Notification Email : <input type="text" v-model="email" placeholder="email address" /> </div> -->
             <div>Job Label : <input type="text" v-model="label" placeholder="label for the job" /></div>
             <div>Batch Size: <input type="number" v-model="batchSize" placeholder="Batch Size" /></div>
             <div><input type="checkbox" v-model="selectUniqueEntries" /> Select unique entries</div>
-            <div v-if="selectUniqueEntries"><input type="checkbox" v-model="roundFloats" />Round floats <span v-if="roundFloats">to: <input type="number" v-model="numDecimalPoints" style="width: 60px"/> decimal places</span></div>
-            <div  v-if="selectUniqueEntries" class="alert alert-warning">
-                CAUTION: If you select fields that contain commas or multiple values, the result can be unpredictable.
+            <div v-if="selectUniqueEntries">
+                <input type="checkbox" v-model="roundFloats" />Round floats <span v-if="roundFloats">to: <input type="number" v-model="numDecimalPoints" style="width: 60px" /> decimal places</span>
+                <div v-if="store.resultArrayFields?.length > 0">
+                    <b>Select arrays where number of elements counted towards frequency.</b>
+                    <div v-for="field in store.resultArrayFields" :id="field" style="margin-left:15px">
+                        <input  type="checkbox" :value="field" v-model="frequencyArrayFields" name="field"> {{ searchFields?.find(sf => sf.name == field)?.label }}
+                    </div>
+                </div>
+                <div v-if="store.resultFieldNames.length > 0">
+                    <b>Limit export fields to (select none to export all result fields):</b>
+                    <div v-if="store.resultFieldNames.length > 0">
+                        <div v-for="field in store.resultFieldNames" :id="field" style="margin-left:15px">
+                            <input  type="checkbox" :value="field" v-model="uniqueExportFields" name="field" > {{ searchFields?.find(sf => sf.name == field)?.label }}
+                        </div>
+                    </div>
+                </div>
             </div>
             <button @click="executeJob" class="btn btn-success" :disabled='isBatchButtonDisabled'>Submit Search Job</button>
         </div>
@@ -212,7 +256,9 @@
     <div v-if="store.isLoadig" class="mt-2">
         <b-spinner variant="primary" label="Spinning"></b-spinner>
     </div>
-
+    <div v-if="store.isLoadingFailed" class="alert alert-danger">
+        Data loading failed!
+    </div>
     <div class="mt-3 mb-3" v-if="store.queryResult">
         <div class="mt-3">
             <h4>{{ querySource }}</h4>
