@@ -6,8 +6,6 @@ import { useJobTrackerStore } from './store';
 
 import 'floating-vue/dist/style.css'
 import { Guid } from 'guid-typescript';
-import { useLoginStore } from '../login/store';
-import { pluckProps } from 'bootstrap-vue-3/dist/utils';
 
 const props = defineProps<{
     apiRoot: string,
