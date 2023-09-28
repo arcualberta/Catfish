@@ -22,12 +22,6 @@
     else if (props.submissionId)
         store.loadSubmission(props.submissionId)
 
-   /* watch(() => store.transientMessage, async newMessage => {
-        if (newMessage)
-            setTimeout(() => {
-                store.transientMessage = null;
-            }, 2000)
-    })*/
 
     const saveForm = () => store.saveForm()
     const submitForm = () => {
@@ -63,6 +57,6 @@
         <!--<button type="button" class="btn btn-success" :disabled="!hasForm" @click="saveForm">Save</button>-->
         <button type="button" class="btn btn-primary" :disabled="!hasForm" @click="submitForm">Submit</button>
     </div>
-
+<div>{{JSON.stringify(store.formData)}}</div>
 </template>
 

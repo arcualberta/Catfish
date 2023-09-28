@@ -30,11 +30,13 @@ export const createTextCollection = (lang: string[] | string): TextCollection =>
  */
 export const createText = (lang: string | null): Text => {
 	const text = {
-		id: Guid.create().toString() as unknown as Guid
+		id: Guid.create().toString() as unknown as Guid,
+		value: "",
+		lang: lang? lang : "en"
 	} as Text
 
-	if (lang)
-		text.lang = lang;
+	//if (lang)
+	//	text.lang = lang;
 
 	return text;
 }
