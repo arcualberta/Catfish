@@ -60,11 +60,11 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             console.log("TODO: Validate form data.")
             return true;
         },
-       async submitForm() {
+       async submitForm(): Promise<boolean> {
             
             if (!this.validateFormData()) {
                 console.log("Form validation failed.")
-                return;
+                return false;
             }
 
             const isNewForm = this.formData?.id?.toString() === Guid.EMPTY;
@@ -77,9 +77,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 submissionStatus = await proxy.Put<FormData>(this.formData as FormData);
             }
 
-            if(submissionStatus){
-
-            }
+            return submissionStatus;
 
            /* fetch(api,
                 {

@@ -29,7 +29,18 @@
     })
 
     const saveForm = () => store.saveForm()
-    const submitForm = () => store.submitForm()
+    const submitForm = () => {
+        store.submitForm()
+        .then(submissionStatus => {
+            console.log("Response: ", submissionStatus)
+            if(submissionStatus){
+                //Remove the edit view of the form and display a message that the form submission is successful.
+            }
+            else{
+                //Just stay here in the new-form  because the form submission failed
+            }
+        })
+    }
     const hasForm = computed(() => store.form ? true : false)
 
     const formData = computed(() => store.formData as FormData | undefined)
