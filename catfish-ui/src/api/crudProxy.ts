@@ -1,14 +1,10 @@
-import { default as config } from "@/appsettings";
-import { TemplateEntry } from "@/components/entity-editor/models";
-import { EntityTemplate } from "@/components/entity-template-builder/models";
-import { ListEntry } from "@/components/shared";
 import { Guid } from "guid-typescript";
 import { WebClient } from "./webClient";
 
 export interface ObjectId{
     id: Guid | null
  }
-export class CrudProxy{
+export class CrudProxy {
  
     private _apiRoot: string;
 
@@ -36,18 +32,20 @@ export class CrudProxy{
                 newIdCreated = true
             }
             var response = await WebClient.postJson(`${this._apiRoot}`, data)
+            
             return true;
         }
         catch(e){
             if(newIdCreated){
                 data.id = Guid.parse(Guid.EMPTY)
             }
-            throw e;
+            console.error(e)
+            return false;
         }
     }    
 
-    async Put(id: Guid, data: object): Promise<boolean> {
-        var response = await WebClient.putJson(`${this._apiRoot}/${id}`, data)
+    async Put<T extends ObjectId>(data: T): Promise<boolean> {
+        var response = await WebClient.putJson(`${this._apiRoot}/${data.id}`, data)
         return true
     }
 

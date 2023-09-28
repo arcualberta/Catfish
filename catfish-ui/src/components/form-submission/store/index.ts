@@ -5,13 +5,15 @@ import type { FormData } from '../../shared/form-models'
 import { createFormData } from '../../shared/form-helpers'
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
 import { eState } from '@/components/shared/constants';
-import {FormDataProxy} from '@/api/formDataProxy'
+import { FormDataProxy } from '@/api/formDataProxy'
+
+const proxy = new FormDataProxy();
 
 export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
     state: () => ({
         lang: "en",
         form: null as FormTemplate | null,
-        formData: {} as FormData | undefined,
+        formData: {} as FormData,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
         files: [] as File[] | null,
@@ -65,22 +67,18 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
                 return;
             }
 
-            const newForm = this.formData?.id?.toString() === Guid.EMPTY;
-            let api = `${config.dataRepositoryApiRoot}/api/form-submissions`;//"https://localhost:5020/api/form-submissions";
-            let method = "";
-            var response;
-            if (newForm) {
-                method = "POST";
+            const isNewForm = this.formData?.id?.toString() === Guid.EMPTY;
+            let submissionStatus: boolean;
+            if (isNewForm) {
                 this.formData.state=eState.Draft;
-                
-                response = await FormDataProxy.Post<FormData>(this.formData as FormData);
-               
+                submissionStatus = await proxy.Post<FormData>(this.formData as FormData);
             }
             else {
-                api = `${api}/${this.formData.id as unknown as Guid}`
-                method = "PUT";
-                response = await FormDataProxy.Put<FormData>(this.formData as FormData);
-               
+                submissionStatus = await proxy.Put<FormData>(this.formData as FormData);
+            }
+
+            if(submissionStatus){
+
             }
 
            /* fetch(api,

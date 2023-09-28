@@ -19,7 +19,7 @@ export class CollectionProxy{
         return await this._crudProxy.Get<EntityData>(id);
     }
 
-    static async Post<EntityData extends ObjectId>(entityData: EntityData): Promise<boolean> {
+    static async Post(entityData: EntityData): Promise<boolean> {
        return await this._crudProxy.Post<EntityData>(entityData);
        
     }    

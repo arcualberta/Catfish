@@ -19,7 +19,7 @@ export class EntityTemplateProxy{
         return await EntityTemplateProxy._crudProxy.Get<EntityTemplate>(id);
     }
 
-    static async Post<EntityTemplate extends ObjectId>(entityTemplate: EntityTemplate): Promise<boolean> {
+    static async Post(entityTemplate: EntityTemplate): Promise<boolean> {
        return await this._crudProxy.Post<EntityTemplate>(entityTemplate);
         /* let newIdCreated = false
         try{

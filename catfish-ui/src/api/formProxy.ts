@@ -1,4 +1,15 @@
 import { default as config } from "@/appsettings";
+import { CrudProxy } from "./crudProxy";
+
+export class FormProxy extends CrudProxy {   
+    constructor() {
+        super(`${config.dataRepositoryApiRoot}/api/forms`)
+    }  
+}
+
+/*
+
+import { default as config } from "@/appsettings";
 import { EntityData, TemplateEntry } from "@/components/entity-editor/models";
 import { EntityTemplate } from "@/components/entity-template-builder/models";
 import { FormTemplate } from "@/components/shared/form-models";
@@ -20,13 +31,13 @@ export class FormProxy{
         return await this._crudProxy.Get<FormTemplate>(id);
     }
 
-    static async Post<FormTemplate extends ObjectId>(formData: FormTemplate): Promise<boolean> {
+    static async Post(formData: FormTemplate): Promise<boolean> {
        return await this._crudProxy.Post<FormTemplate>(formData);
        
     }    
 
     static async Put(formTemplate: FormTemplate): Promise<boolean> {
-        return await this._crudProxy.Put(formTemplate.id as Guid, formTemplate); 
+        return await this._crudProxy.Put<FormTemplate>(formTemplate.id as Guid, formTemplate); 
     } 
     
     static async Delete(id: Guid): Promise<boolean>{
@@ -35,3 +46,4 @@ export class FormProxy{
 
     private static getApiRoot = () => `${config.dataRepositoryApiRoot}/api/forms`;
 }
+*/
