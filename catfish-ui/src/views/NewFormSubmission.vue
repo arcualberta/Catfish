@@ -17,7 +17,7 @@
     const formSubmissionStore = useFormSubmissionStore();
     watch(() => formSubmissionStore.formData?.id, async (newId, oldId) => {
         if ((oldId === Guid.EMPTY as unknown as Guid) && (newId !== Guid.EMPTY as unknown as Guid)) {
-            router.push(`/edit-form-submission/${newId}`)
+          //  router.push(`/edit-form-submission/${newId}`)
         }
     })
 </script>

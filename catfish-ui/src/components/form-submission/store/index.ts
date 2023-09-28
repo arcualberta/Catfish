@@ -6,6 +6,7 @@ import { createFormData } from '../../shared/form-helpers'
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
 import { eState } from '@/components/shared/constants';
 import { FormDataProxy } from '@/api/formDataProxy'
+import { TransientMessageModel } from '../../shared/components/transient-message/models'
 
 const proxy = new FormDataProxy();
 
@@ -14,6 +15,7 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
         lang: "en",
         form: null as FormTemplate | null,
         formData: {} as FormData,
+        transientMessageModel: {} as TransientMessageModel,
         transientMessage: null as string | null,
         transientMessageClass: null as string | null,
         files: [] as File[] | null,
@@ -68,16 +70,25 @@ export const useFormSubmissionStore = defineStore('FormSubmissionStore', {
             }
 
             const isNewForm = this.formData?.id?.toString() === Guid.EMPTY;
-            let submissionStatus: boolean;
+            var responseStatus: boolean;
             if (isNewForm) {
                 this.formData.state=eState.Draft;
-                submissionStatus = await proxy.Post<FormData>(this.formData as FormData);
+                responseStatus = await proxy.Post<FormData>(this.formData as FormData);
             }
             else {
-                submissionStatus = await proxy.Put<FormData>(this.formData as FormData);
+                responseStatus = await proxy.Put<FormData>(this.formData as FormData);
             }
 
-            return submissionStatus;
+            if(responseStatus){
+                this.transientMessageModel.message = "The template saved/updated successfully"
+                this.transientMessageModel.messageClass = "success"
+               }
+               else{
+                this.transientMessageModel.message = "The template fail to save/update"
+                this.transientMessageModel.messageClass = "danger"
+               }
+
+            return responseStatus;
 
            /* fetch(api,
                 {

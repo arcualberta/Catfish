@@ -5,6 +5,7 @@
     import type { FormData } from '../shared/form-models'
     import { useFormSubmissionStore } from './store';
     import { default as Form } from './components/Form.vue';
+    import { default as TransientMessage } from '../shared/components/transient-message/TransientMessage.vue'
     //import { FieldType } from '../shared/form-models';
 
     const props = defineProps<{
@@ -21,12 +22,12 @@
     else if (props.submissionId)
         store.loadSubmission(props.submissionId)
 
-    watch(() => store.transientMessage, async newMessage => {
+   /* watch(() => store.transientMessage, async newMessage => {
         if (newMessage)
             setTimeout(() => {
                 store.transientMessage = null;
             }, 2000)
-    })
+    })*/
 
     const saveForm = () => store.saveForm()
     const submitForm = () => {
@@ -50,12 +51,13 @@
 <style scoped src="./styles.css"></style>
 
 <template>
-    <transition name="fade">
+   <!-- <transition name="fade">
         <p v-if="store.transientMessage" :class="'alert alert-' + store.transientMessageClass">{{store.transientMessage}}</p>
-    </transition>
+    </transition>-->
+
     <h2>Form Submission</h2>
     <hr />
-    <!--{{store.form}}-->
+     <TransientMessage :model="store.transientMessageModel"></TransientMessage>
     <Form v-if="store.form" :model="store.form" :form-data="formData" />
     <div class="control">
         <!--<button type="button" class="btn btn-success" :disabled="!hasForm" @click="saveForm">Save</button>-->
