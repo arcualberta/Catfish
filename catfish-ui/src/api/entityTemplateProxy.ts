@@ -7,7 +7,14 @@ import { Guid } from "guid-typescript";
 import { CrudProxy, ObjectId } from "./crudProxy";
 import { WebClient } from "./webClient";
 
-export class EntityTemplateProxy{
+export class EntityTemplateProxy extends CrudProxy {   
+    private static getApiRoot = () => `${config.dataRepositoryApiRoot}/api/entity-templates`;
+
+    constructor() {
+        super(`${config.dataRepositoryApiRoot}/api/entity-templates`)
+    }  
+}
+/*export class EntityTemplateProxy{
 
     private static _crudProxy: CrudProxy = new CrudProxy(`${config.dataRepositoryApiRoot}/api/entity-templates`);
     
@@ -37,7 +44,7 @@ export class EntityTemplateProxy{
             throw e;
         }*/
        
-    }    
+  /*  }    
 
     static async Put(entityTemplate: EntityTemplate): Promise<boolean> {
         return await EntityTemplateProxy._crudProxy.Put(entityTemplate.id as Guid, entityTemplate); 
@@ -52,4 +59,4 @@ export class EntityTemplateProxy{
     }
 
     private static getApiRoot = () => `${config.dataRepositoryApiRoot}/api/entity-templates`;
-}
+}*/

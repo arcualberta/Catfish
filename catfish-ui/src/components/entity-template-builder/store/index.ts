@@ -11,6 +11,10 @@ import { TransientMessageModel } from '../../shared/components/transient-message
 import { EntityTemplateProxy } from '@/api/entityTemplateProxy';
 import {FormProxy} from '@/api/formProxy'
 
+const formProxy = new FormProxy();
+
+const entityTemplateProxy = new EntityTemplateProxy();
+
 export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderStore', {
     state: () => ({
         id: null as Guid | null,
@@ -49,18 +53,18 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
         async associateForm(formId: Guid) {
             if (formId.toString() !== Guid.EMPTY && this.forms.findIndex(form => form.id === formId) < 0) {
             
-            var data = await FormProxy.Get(formId);
+            var data = await formProxy.Get<FormTemplate>(formId);
             this.forms.push(data as FormTemplate);
             
             }
         },
         async loadFormEntries() {
 
-            this.formEntries = await FormProxy.List();
+            this.formEntries = await formProxy.List<FormEntry>();
          
         },
         async loadTemplate(id: Guid) {
-            this.template = await EntityTemplateProxy.Get(id);
+            this.template = await entityTemplateProxy.Get<EntityTemplate>(id);
            /* const api = `${this.getApiRoot}/${id}`;
             console.log("loading entityTemplate: ", api);
 
@@ -88,14 +92,14 @@ export const useEntityTemplateBuilderStore = defineStore('EntityTemplateBuilderS
                 if(this.template?.id?.toString() === Guid.EMPTY){
                     this.template.id = Guid.create().toString() as unknown as Guid;
                 }
-                response = await EntityTemplateProxy.Post<EntityTemplate>(this.template as EntityTemplate);
+                response = await entityTemplateProxy.Post<EntityTemplate>(this.template as EntityTemplate);
                // method = "POST";
              
             }
             else {
                 console.log("Updating existing template.")
              
-               response = await EntityTemplateProxy.Put(this.template as EntityTemplate);
+               response = await entityTemplateProxy.Put(this.template as EntityTemplate);
               
             }
             if(response){
