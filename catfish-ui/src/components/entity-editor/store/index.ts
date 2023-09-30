@@ -15,6 +15,13 @@ import { useFormSubmissionStore } from '@/components/form-submission/store';
 import {useEntitySelectStore} from '../../shared/components/entity-selection-list/store'
 import { useLoginStore } from '@/components/login/store';
 import {EntityTemplateProxy} from '@/api/entityTemplateProxy'
+import {EntityProxy} from '@/api/entityProxy'
+//import {FormProxy} from '@/api/formProxy'
+
+//const formProxy = new FormProxy();
+
+const entityTemplateProxy = new EntityTemplateProxy();
+const entityProxy = new EntityProxy();
 
 export const useEntityEditorStore = defineStore('EntityEditorStore', {
     state: () => ({
@@ -37,7 +44,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
     actions: {
         async loadTemplates() {
 
-            this.templates = await EntityTemplateProxy.List();
+            this.templates = await entityTemplateProxy.List<TemplateEntry>();
           /*  let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/`;
            
@@ -81,7 +88,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
 
             if(templateId.toString() === Guid.EMPTY)
                 return;
-            this.entityTemplate = await EntityTemplateProxy.Get(templateId);
+            this.entityTemplate = await entityTemplateProxy.Get<EntityTemplate>(templateId);
           /*  let webRoot = config.dataRepositoryApiRoot;
             const api = `${webRoot}/api/entity-templates/${templateId}`;
             console.log(api)
@@ -229,11 +236,12 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 console.error('Save/Update Entity API Error:', error);
             });
         },
-        loadEntity(entityId: Guid) {
+        async loadEntity(entityId: Guid) {
+            this.entity= await entityProxy.Get<EntityData>(entityId);
            // const api = `${config.dataRepositoryApiRoot}/api/entities/${entityId}`;
-            const api=`${this.getApiRoot}/${entityId}`
+           // const api=`${this.getApiRoot}/${entityId}`
           //  const jwtToken=localStorage.getItem("catfishJwtToken");
-
+/*
             fetch(api, {
                 method: 'GET',
                 headers: {
@@ -247,6 +255,7 @@ export const useEntityEditorStore = defineStore('EntityEditorStore', {
                 .catch((error) => {
                     console.error('Load Entity API Error:', error);
                 });
+                */
         },
         loadEntities(entityType: eEntityType, searchTarget: eSearchTarget, searchText: string, offset: number, max?: number){
             let api = config.dataRepositoryApiRoot + "/api/entities/"+ entityType + "/" + searchTarget + "/" + searchText + "/" +offset + "/" + max ;

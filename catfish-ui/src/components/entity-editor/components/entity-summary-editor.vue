@@ -11,14 +11,16 @@
     import { default as ConfirmPopUp } from '../../shared/components/pop-up/ConfirmPopUp.vue';
 
     import { default as FieldComponent } from '../../form-submission/components/Field.vue'
-    const popupTrigger = ref(false);
+    import * as formHelper from '../../shared/form-helpers'
+   
+   const popupTrigger = ref(false);
     const store = useEntityEditorStore();
     //const entity = computed(() => store.entity)
     const { entity } = storeToRefs(store);
 
     watch(() => entity.value?.templateId, async newTemplateId => {
         store.loadTemplate(newTemplateId as Guid);
-    })
+    })  
 
     //if(entity.value?.templateId.toString() !== Guid.EMPTY)
     store.loadTemplate(entity.value?.templateId as Guid);
@@ -29,9 +31,14 @@
     const eEntityTypes = Object.values(eEntityType);
 
     const titleField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
+    console.log("title field: " + titleField.value)
     const titleFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
+     console.log("title field data: " + titleFieldData.value)
     const descriptionField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
+    console.log("description field: " + descriptionField.value)
     const descriptionFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
+    console.log("description field data: " + descriptionFieldData.value)
+    
     const mediaField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
     const mediaFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
     const TogglePopup = () => (popupTrigger.value = !popupTrigger.value);
@@ -40,8 +47,7 @@
     watch(() => entityTemplate.value, async newTemplate => {
         instantiateRequiredForms(entity.value as EntityData, newTemplate as EntityTemplate);
     })
-
-
+    
 </script>
 
 <template>
@@ -102,7 +108,9 @@
                 <legend> Right side </legend>
                 <div class="col-sm-8">
                     <div>{{titleField?.title?.values[0]?.value}}: {{titleFieldData?.multilingualTextValues[0]?.values[0]?.value}}</div>
-                    <div>{{descriptionField?.title?.values[0]?.value}}: {{descriptionFieldData?.multilingualTextValues[0]?.values[0]?.value}}</div>
+                    <div>{{descriptionField?.title?.values[0]?.value}}: {{descriptionFieldData?.multilingualTextValues.length > 0? descriptionFieldData?.multilingualTextValues[0]?.values[0]?.value: "monolingual text"}}
+                         
+                    </div>
                     <div>{{mediaFieldData?.fileReferences[0]?.originalFileName}}</div>
 
                 </div>
