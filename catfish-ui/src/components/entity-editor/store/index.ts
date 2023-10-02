@@ -16,9 +16,6 @@ import {useEntitySelectStore} from '../../shared/components/entity-selection-lis
 import { useLoginStore } from '@/components/login/store';
 import {EntityTemplateProxy} from '@/api/entityTemplateProxy'
 import {EntityProxy} from '@/api/entityProxy'
-//import {FormProxy} from '@/api/formProxy'
-
-//const formProxy = new FormProxy();
 
 const entityTemplateProxy = new EntityTemplateProxy();
 const entityProxy = new EntityProxy();

@@ -31,13 +31,13 @@
     const eEntityTypes = Object.values(eEntityType);
 
     const titleField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
-    console.log("title field: " + titleField.value)
+    //console.log("title field: " + titleField.value)
     const titleFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.titleField as FieldEntry));
-     console.log("title field data: " + titleFieldData.value)
+    // console.log("title field data: " + titleFieldData.value)
     const descriptionField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
-    console.log("description field: " + descriptionField.value)
+   // console.log("description field: " + descriptionField.value)
     const descriptionFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.descriptionField as FieldEntry));
-    console.log("description field data: " + descriptionFieldData.value)
+   // console.log("description field data: " + descriptionFieldData.value)
     
     const mediaField = computed(() => getField(entityTemplate.value as EntityTemplate, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
     const mediaFieldData = computed(() => getFieldData(entity.value as EntityData, entityTemplate.value?.entityTemplateSettings.mediaField as FieldEntry));
@@ -108,7 +108,7 @@
                 <legend> Right side </legend>
                 <div class="col-sm-8">
                     <div>{{titleField?.title?.values[0]?.value}}: {{titleFieldData?.multilingualTextValues[0]?.values[0]?.value}}</div>
-                    <div>{{descriptionField?.title?.values[0]?.value}}: {{descriptionFieldData?.multilingualTextValues.length > 0? descriptionFieldData?.multilingualTextValues[0]?.values[0]?.value: "monolingual text"}}
+                    <div>{{descriptionField?.title?.values[0]?.value}}: {{descriptionFieldData?.multilingualTextValues? descriptionFieldData?.multilingualTextValues[0]?.values[0]?.value: descriptionFieldData?.monolingualTextValues[0].value}}
                          
                     </div>
                     <div>{{mediaFieldData?.fileReferences[0]?.originalFileName}}</div>
