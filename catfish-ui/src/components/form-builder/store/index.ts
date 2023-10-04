@@ -7,6 +7,7 @@ import { TransientMessageModel } from '../../shared/components/transient-message
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
 import { eState } from '@/components/shared/constants';
 import {FormProxy} from '@/api/formProxy'
+import { useLoginStore } from "../../login/store"
 
 const proxy = new FormProxy();
 
@@ -35,7 +36,8 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
             };
         },
         async loadForm(id: Guid) {
-           this.form = await proxy.Get<FormTemplate>(id);
+            proxy.setSecurityToken(this.jwtToken);
+            this.form = await proxy.Get<FormTemplate>(id);
         },
         async saveForm(): Promise<boolean> {
             if (!this.form) {
@@ -45,6 +47,9 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
          
             const newForm = this.form?.id?.toString() === Guid.EMPTY;
             var responseStatus: boolean;
+
+            proxy.setSecurityToken(this.jwtToken);
+
             if (newForm) {
                
                 this.form.id = Guid.create().toString() as unknown as Guid;

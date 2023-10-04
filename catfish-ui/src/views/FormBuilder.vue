@@ -8,14 +8,16 @@
     import {default as config} from "@/appsettings";
 
     import { FormBuilder } from '../components'
-import { ref } from 'vue';
+    import { useLoginStore } from '../components';
 
     const route = useRoute()
     const formId = route.params.id as unknown as Guid
-     const apiRoot= config.dataRepositoryApiRoot + "/api/forms";
+    const apiRoot= config.dataRepositoryApiRoot + "/api/forms";
 
+    const loginStore = useLoginStore();
+    const jwtToken = loginStore.jwtToken;
 </script>
 
 <template>
-    <FormBuilder  :api-root="apiRoot" :form-id="formId" />
+    <FormBuilder  :api-root="apiRoot" :form-id="formId" :jwt-token="jwtToken" />
 </template>
