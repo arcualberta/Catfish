@@ -1,6 +1,5 @@
 ﻿using Catfish.API.Repository.Solr;
 using Catfish.Test.Helpers;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,7 +19,6 @@ using System.Configuration;
 using System.Collections;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.SignalR.Protocol;
-using NuGet.Packaging.Signing;
 using Catfish.API.Repository.Services;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Globalization;
