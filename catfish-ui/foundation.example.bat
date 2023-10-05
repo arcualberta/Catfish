@@ -9,6 +9,7 @@ set LIB_NAME=@arc/arc-foundation
 :: END: Set up
 :: ===========
 
+echo off
 echo APP_PATH = %APP_PATH%
 echo LIB_PATH = %LIB_PATH%
 
