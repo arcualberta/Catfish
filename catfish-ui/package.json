@@ -24,7 +24,7 @@
     "tsc": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@arc/arc-foundation": "^0.1.0",
+    "@arc/arc-foundation": "file:../../arc-foundation/arc-foundation/arc-arc-foundation-0.1.0.tgz",
     "@fontsource/architects-daughter": "^4.5.9",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
