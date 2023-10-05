@@ -12,7 +12,7 @@ echo off
 echo APP_PATH = %APP_PATH%
 echo LIB_PATH = %LIB_PATH%
 
-:: Getting the node package name and version string, and setting them to the LIB_NAME and VERSION variable 
+:: Getting the NPM library name and version string, and setting them to the LIB_NAME and VERSION variables 
 cd %LIB_PATH%
 FOR /F "tokens=*" %%g IN ('node -p "require('./package.json').name"') do (SET LIB_NAME=%%g)
 FOR /F "tokens=*" %%g IN ('node -p "require('./package.json').version"') do (SET VERSION=%%g)
