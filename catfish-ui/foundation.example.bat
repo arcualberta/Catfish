@@ -4,7 +4,6 @@
 :: Initializing developer-setup specific parameters
 set APP_PATH=C:\Projects\Catfish-3.0\catfish-ui
 set LIB_PATH=C:\Projects\arc-foundation\arc-foundation
-set LIB_NAME=@arc/arc-foundation
 
 :: END: Set up
 :: ===========
@@ -13,11 +12,14 @@ echo off
 echo APP_PATH = %APP_PATH%
 echo LIB_PATH = %LIB_PATH%
 
-:: Getting the node package version string and settingit to the VERSION variable 
+:: Getting the node package name and version string, and setting them to the LIB_NAME and VERSION variable 
 cd %LIB_PATH%
+FOR /F "tokens=*" %%g IN ('node -p "require('./package.json').name"') do (SET LIB_NAME=%%g)
 FOR /F "tokens=*" %%g IN ('node -p "require('./package.json').version"') do (SET VERSION=%%g)
 cd %APP_PATH%
+echo Found name %LIB_NAME%
 echo Found version %VERSION%
+
 
 :: Calculating the lib file name by removing @ characters
 :: and replacing "/" with "-" characters, and trimming off any
