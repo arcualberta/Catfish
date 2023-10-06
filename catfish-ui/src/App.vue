@@ -25,13 +25,13 @@
    
    // const jwtToken = computed(()=> authorizationStore.jwtToken.get())
     
-    console.log("localstorage jwt: " + jwtToken.value)
+   // console.log("localstorage jwt: " + jwtToken.value)
 
    //const loginRes =computed(()=> authorizationStore.loginResult.get())
     
-    console.log("localstorage loginRes: " + JSON.stringify(loginRes.value))
+  //  console.log("localstorage loginRes: " + JSON.stringify(loginRes.value))
    
-   console.log("sucess: " + loginRes.value?.success)
+ //  console.log("sucess: " + loginRes.value?.success)
   
   
 
@@ -49,7 +49,7 @@
     </div>
     <router-view />
 
-    <div>{{jwtToken}}</div>
+   <!-- <div>{{jwtToken}}</div> -->
 </template>
 
 <style scoped>

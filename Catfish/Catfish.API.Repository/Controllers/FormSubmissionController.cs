@@ -30,7 +30,7 @@ namespace Catfish.API.Repository.Controllers
         // GET api/<FormSubmissionController>/5
         [HttpGet("{id}")]
         public async Task<FormData?> Get(Guid id)
-        {
+         {
             FormData? formData = await _context.FormData!.FirstOrDefaultAsync(fd => fd.Id == id);
             return formData;
         }

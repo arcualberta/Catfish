@@ -40,31 +40,36 @@
     
     const route = useRoute();
     const entityId =route.params.id as unknown as Guid; 
+     let isNewEntity = ref(true);
+    const createEntity = ()=>{
+        store.createNewEntity(null);
+    };
     onMounted(() => {
+        createEntity();
 
         if(entityId){
-            //console.log("entity Id: " + entityId.toString())
-            store.loadEntity(entityId);
+           // console.log("entity Id: " + entityId.toString())
+            store.loadEntity(entityId).then((responseStatus)=>{
+              // console.log("load entity" + responseStatus)
+                isNewEntity.value=false;
+            });
         }
         else{
            // console.log("load empty template")
-            store.loadTemplates();
+            store.loadTemplates().then((responseStatus)=>{
+                console.log("load templates status: " + responseStatus)
+            });
         }
        
     });
 
     const templateEntries = computed(()=>store.templates);
-    
-    const createEntity = ()=>{
-        store.createNewEntity(null);
-    };
-    let isNewEntity = ref(true);
-    if(entityId){
-           store.loadEntity(entityId);
-           isNewEntity.value=false;
-    }
-    const entity = computed(() => store.entity)
+   // console.log("template entries: " + JSON.stringify(templateEntries.value))
    
+   
+   
+    const entity = computed(() => store.entity)
+  // console.log("entity" + JSON.stringify(entity.value))
     const metadataForms = computed(() => store.entityTemplate?.entityTemplateSettings.metadataForms)
     const dataForms = computed(() => store.entityTemplate?.entityTemplateSettings.dataForms)
 
@@ -75,9 +80,9 @@
     
     const files =computed(()=>store.getFiles)
 
-     onMounted(() => {
-        createEntity();
-    });
+   //  onMounted(() => {
+   //     createEntity();
+   // });
 </script>
 
 <template>

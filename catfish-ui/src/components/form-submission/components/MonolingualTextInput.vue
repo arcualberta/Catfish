@@ -21,11 +21,11 @@
 </script>
 
 <template>
-    <div v-for="value,index in fieldData.monolingualTextValues" :key="value.id" :model="value" class="row mb-3">
+    <div v-for="(value,index) in fieldData.monolingualTextValues" :key="value.id" :model="value" class="row mb-3">
         <div class="col col-sm-11">
             <Text :model="value" :text-type="model.type" />
         </div>
-            <div v-if="fieldData.monolingualTextValues!.length > 1" class="col-sm-1">
+            <div v-if="fieldData.monolingualTextValues?.length > 1" class="col-sm-1">
                 <font-awesome-icon icon="fa-solid fa-circle-xmark" @click="deleteValue(index)" class="fa-icon delete" />
             </div>
         </div>

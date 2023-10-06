@@ -17,6 +17,16 @@ export const getFormData = (entity: EntityData, formId: Guid): FormData | undefi
 
 /**
  * Returns the FieldData object that corresponds to the field identified by 
+ * the fieldId from the given formData object
+ * 
+ * @param data
+ * @param fieldId
+ */
+export const getFieldDataFromFormData = (data: FormData, fieldId: Guid): FieldData | undefined =>
+    data?.fieldData.find(fieldData => fieldData.fieldId === fieldId);
+    
+/**
+ * Returns the FieldData object that corresponds to the field identified by 
  * the fieldEntry.fieldId in the first form data object of the form identified by the fieldEntry.formId from the input entity
  * 
  * @param entity

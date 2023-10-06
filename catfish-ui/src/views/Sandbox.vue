@@ -4,6 +4,9 @@
   import { VueDraggableNext as draggable } from 'vue-draggable-next'
   import {default as EntitySelectionList} from '../components/shared/components/entity-selection-list/EntitySelectionList.vue'
   import {eEntityType} from '../components/shared/constants'
+
+  import { multiply } from '@arc/arc-foundation'
+
   const list = ref([
           { name: 'John', id: 1 },
           { name: 'Joao', id: 2 },
@@ -24,6 +27,7 @@
 </script>
 
 <template>
+  <div>2 x 3 = {{ multiply(2,2) }}</div>
   <div class="flex m-10" style="width:50%">
       <draggable class="dragArea list-group w-full" :list="list" @change="log">
           <div class="list-group-item bg-gray-300 m-1 p-3 rounded-md text-center"

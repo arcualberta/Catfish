@@ -7,6 +7,10 @@ import { TransientMessageModel } from '../../shared/components/transient-message
 import { FormTemplate } from '@/components/shared/form-models/formTemplate';
 import { eState } from '@/components/shared/constants';
 import {FormProxy} from '@/api/formProxy'
+import { useLoginStore } from "../../login/store"
+
+const proxy = new FormProxy();
+
 export const useFormBuilderStore = defineStore('FormBuilderStore', {
     state: () => ({
         lang: ["en", "fr"],
@@ -32,35 +36,42 @@ export const useFormBuilderStore = defineStore('FormBuilderStore', {
             };
         },
         async loadForm(id: Guid) {
-           this.form = await FormProxy.Get(id);
-           
+            proxy.setSecurityToken(this.jwtToken);
+            this.form = await proxy.Get<FormTemplate>(id);
         },
-        async saveForm() {
+        async saveForm(): Promise<boolean> {
             if (!this.form) {
-                console.error("Cannot save null form.")
-                return;
+                console.error("Cannot save a null form.")
+                return false;
             }
          
             const newForm = this.form?.id?.toString() === Guid.EMPTY;
-            var response;
+            var responseStatus: boolean;
+
+            proxy.setSecurityToken(this.jwtToken);
+
             if (newForm) {
                
                 this.form.id = Guid.create().toString() as unknown as Guid;
                 this.form.status= eState.Draft;
               
-                response = await FormProxy.Post<FormTemplate>(this.form as FormTemplate);
-               
+                responseStatus = await proxy.Post<FormTemplate>(this.form as FormTemplate);
             }
             else {
-                response = await FormProxy.Put(this.form as FormTemplate);
+                responseStatus = await proxy.Put<FormTemplate>(this.form as FormTemplate);
             }
-            if(response){
+
+            if(responseStatus){
                 this.transientMessageModel.message = "The template saved/updated successfully"
                 this.transientMessageModel.messageClass = "success"
-               }else{
+               }
+               else{
                 this.transientMessageModel.message = "The template fail to save/update"
                 this.transientMessageModel.messageClass = "danger"
                }
+
+               return responseStatus;
+               
            /* fetch(api,
                 {
                     body: JSON.stringify(this.form),

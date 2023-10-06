@@ -1,13 +1,20 @@
 import { default as config } from "@/appsettings";
-import { TemplateEntry } from "@/components/entity-editor/models";
-import { EntityTemplate } from "@/components/entity-template-builder/models";
-import { ReturnVoid } from "@/components/form-submission/__VLS_types";
-import { eState } from "@/components/shared/constants";
-import { Guid } from "guid-typescript";
+//import { TemplateEntry } from "@/components/entity-editor/models";
+//import { EntityTemplate } from "@/components/entity-template-builder/models";
+//import { ReturnVoid } from "@/components/form-submission/__VLS_types";
+//import { eState } from "@/components/shared/constants";
+//import { Guid } from "guid-typescript";
 import { CrudProxy, ObjectId } from "./crudProxy";
-import { WebClient } from "./webClient";
+//import { WebClient } from "./webClient";
 
-export class EntityTemplateProxy{
+export class EntityTemplateProxy extends CrudProxy {   
+    private static getApiRoot = () => `${config.dataRepositoryApiRoot}/api/entity-templates`;
+
+    constructor() {
+        super(`${config.dataRepositoryApiRoot}/api/entity-templates`)
+    }  
+}
+/*export class EntityTemplateProxy{
 
     private static _crudProxy: CrudProxy = new CrudProxy(`${config.dataRepositoryApiRoot}/api/entity-templates`);
     
@@ -19,7 +26,7 @@ export class EntityTemplateProxy{
         return await EntityTemplateProxy._crudProxy.Get<EntityTemplate>(id);
     }
 
-    static async Post<EntityTemplate extends ObjectId>(entityTemplate: EntityTemplate): Promise<boolean> {
+    static async Post(entityTemplate: EntityTemplate): Promise<boolean> {
        return await this._crudProxy.Post<EntityTemplate>(entityTemplate);
         /* let newIdCreated = false
         try{
@@ -37,7 +44,7 @@ export class EntityTemplateProxy{
             throw e;
         }*/
        
-    }    
+  /*  }    
 
     static async Put(entityTemplate: EntityTemplate): Promise<boolean> {
         return await EntityTemplateProxy._crudProxy.Put(entityTemplate.id as Guid, entityTemplate); 
@@ -52,4 +59,4 @@ export class EntityTemplateProxy{
     }
 
     private static getApiRoot = () => `${config.dataRepositoryApiRoot}/api/entity-templates`;
-}
+}*/

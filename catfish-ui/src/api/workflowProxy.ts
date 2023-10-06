@@ -8,8 +8,13 @@ import { Guid } from "guid-typescript";
 import { CrudProxy, ObjectId } from "./crudProxy";
 //import { WebClient } from "./webClient";
 
-export class WorkflowProxy{
+export class WorkflowProxy extends CrudProxy{
 
+    
+    constructor() {
+        super(`${config.dataRepositoryApiRoot}/api/workflow`)
+    }  
+ /*
     private static _crudProxy: CrudProxy = new CrudProxy(`${config.dataRepositoryApiRoot}/api/workflow`);
     
     static async List (): Promise<Workflow[]> {
@@ -34,4 +39,5 @@ export class WorkflowProxy{
     }
 
     private static getApiRoot = () => `${config.dataRepositoryApiRoot}/api/workflow`;
+    */
 }

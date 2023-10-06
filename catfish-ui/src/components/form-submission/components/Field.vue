@@ -58,7 +58,7 @@ import { Guid } from 'guid-typescript';
                 <h3 class="text-field-label">{{title}}</h3>
             </div>
             <b-col v-else class="col-sm-2">
-                {{title}} <span class="hovertext" :data-hover="description" v-if="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span> :
+                {{title}} <span v-if="model.isRequired" class="required">*</span> <span class="hovertext" :data-hover="description" v-if="description"><font-awesome-icon icon="fas fa-question-circle" class="fas fa-question-circle" /></span> :
             </b-col>
             <b-col class="col-sm-10">
                 <!-- Rendering appropriate user input field-->
@@ -86,3 +86,8 @@ import { Guid } from 'guid-typescript';
     </b-container>
 </template>
 
+<style scoped>
+.required {
+    color: red;
+}
+</style>
