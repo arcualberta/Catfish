@@ -182,3 +182,4 @@ Catfish/CatfishExtensions/Properties/launchSettings.json
 /Catfish/Catfish.API.Repository/log
 /Catfish/Catfish.API.Auth/log
 
+catfish-ui/foundation.bat

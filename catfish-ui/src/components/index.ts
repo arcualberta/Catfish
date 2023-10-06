@@ -36,4 +36,8 @@ export { SolrQuery } from './solr-search-panel/solrQuery'
 /* Job Tracker */
 export { default as JobTracker } from './job-tracker/App.vue'
 export { useJobTrackerStore } from './job-tracker/store'
-export type {  JobRecord } from './job-tracker/models'
+export type { JobRecord } from './job-tracker/models'
+
+
+/* Carousel */
+export { default as Carousel} from './carousel/App.vue'

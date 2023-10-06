@@ -1,0 +1,68 @@
+$indianred-color: indianred;
+$white-color: #fff;
+
+@mixin setBackground($color: indianred){
+    background-color: $color;
+}
+
+.carousel-navigate {
+    padding: 0 16px;
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    .toggle-page {
+        display: flex;
+        flex: 1;
+
+        .font-awesome-icon {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            /*background-color: $indianred-color; */
+            @include setBackground(); /*    @include setBackground($color: Blue); */
+            color: $white-color;
+        }
+    }
+    /*.left {
+        justify-content: flex-start;
+    }*/
+
+    .right {
+        justify-content: flex-end;
+    }
+}
+
+.carousel-pagination {
+    position: fixed;
+    bottom: 24px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    gap: 16px; /* with display 'flex' this gap will display each item between this gap spaces within thi sflex container */
+    max-height: 100%;
+
+    .page-number {
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #fff;
+       
+        box-shadow: 0 1px 3px 0 rgb(0, 0, 0, 0.1), 0 1px 2px 0 rgb(0,0,0,0.06);
+    }
+
+    .active {
+        /*background-color: $indianred-color; */
+        @include setBackground();
+    }
+}

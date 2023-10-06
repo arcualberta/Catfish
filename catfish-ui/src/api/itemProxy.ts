@@ -1,15 +1,18 @@
 import { default as config } from "@/appsettings";
-import { EntityData, TemplateEntry } from "@/components/entity-editor/models";
-import { EntityTemplate } from "@/components/entity-template-builder/models";
+//import { EntityData, TemplateEntry } from "@/components/entity-editor/models";
+//import { EntityTemplate } from "@/components/entity-template-builder/models";
 
-import { EntityEntry } from "@/components/shared/models/listEntries";
-import { Guid } from "guid-typescript";
+//import { EntityEntry } from "@/components/shared/models/listEntries";
+//import { Guid } from "guid-typescript";
 import { CrudProxy, ObjectId } from "./crudProxy";
 //import { WebClient } from "./webClient";
 
-export class ItemProxy{
+export class ItemProxy extends CrudProxy{
 
-    private static _crudProxy: CrudProxy = new CrudProxy(`${config.dataRepositoryApiRoot}/api/items`);
+    constructor() {
+        super(`${config.dataRepositoryApiRoot}/api/items`)
+    }  
+   /* private static _crudProxy: CrudProxy = new CrudProxy(`${config.dataRepositoryApiRoot}/api/items`);
     
     static async List (): Promise<EntityEntry[]> {
         return await this._crudProxy.List<EntityEntry>();
@@ -33,4 +36,5 @@ export class ItemProxy{
     }
 
     private static getApiRoot = () => `${config.dataRepositoryApiRoot}/api/items`;
+    */
 }

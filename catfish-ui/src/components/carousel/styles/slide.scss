@@ -1,0 +1,13 @@
+
+//transition -enetr-active, -leave-active, -enter-to, -enter-from, -leave-to, leave-from : all these classes has been defined in vue 3 transition
+.slide-enter-active, .slide-leave-active{
+
+    transition: opacity 0.7s ease-in-out;
+}
+
+.slide-enter-from, slide-leave-to{
+    opacity: 0;
+}
+.slide-enter-to, slide-leave-from {
+    opacity: 1;
+}

@@ -13,6 +13,7 @@
 
     import { default as Form } from './components/Form.vue';
     import { useRoute } from "vue-router";
+import router from "@/router";
 
     const props = defineProps<{
         dataAttributes?: AppletAttribute | null,
@@ -42,7 +43,15 @@
         store.loadForm(formId)
 
     
-    const saveForm = () => store.saveForm()
+    const saveForm = () => {
+        store.saveForm()
+        .then(status => {
+            if(status){
+                const newRoute = `${router.currentRoute.value.path}/${store.form?.id}`;
+                router.push(newRoute)
+            }
+        })
+    }
 
     const disabled = computed(() => store.form ? false : true)
 
