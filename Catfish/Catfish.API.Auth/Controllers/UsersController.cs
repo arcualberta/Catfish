@@ -1,12 +1,13 @@
 ﻿using Catfish.API.Auth.Interfaces;
 using CatfishExtensions.Constants;
-using CatfishExtensions.DTO;
+//using CatfishExtensions.DTO;
 using CatfishExtensions.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using ARC.Security.Lib.DTO;
 
 namespace Catfish.API.Auth.Controllers
 {
@@ -62,7 +63,7 @@ namespace Catfish.API.Auth.Controllers
         }
 
         [HttpGet("membership/{username}")]
-        public async Task<ActionResult<UserMembership>> GeMembership(string username)
+        public async Task<ActionResult<UserMembershipDto>> GeMembership(string username)
         {
             try
             {

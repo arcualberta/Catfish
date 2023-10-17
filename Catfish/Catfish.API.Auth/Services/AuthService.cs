@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Catfish.API.Auth.Interfaces;
 using Catfish.API.Auth.Models;
-using CatfishExtensions.DTO;
+//using CatfishExtensions.DTO;
+using ARC.Security.Lib.DTO;
 using CatfishExtensions.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -101,9 +102,9 @@ namespace Catfish.API.Auth.Services
             _db.Entry(model).State= EntityState.Modified;
         }
 
-        public async Task<UserMembership> GetMembership(IdentityUser user)
+        public async Task<UserMembershipDto> GetMembership(IdentityUser user)
         {
-            UserMembership membership = new UserMembership();
+            UserMembershipDto membership = new UserMembershipDto();
 
             if (user == null)
                 return membership;

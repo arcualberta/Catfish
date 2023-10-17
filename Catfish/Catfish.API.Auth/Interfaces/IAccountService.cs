@@ -1,6 +1,7 @@
-﻿using CatfishExtensions.Models;
+﻿//using CatfishExtensions.Models;
 using Microsoft.AspNetCore.Identity;
 using ARC.Security.Lib.DTO;
+using ARC.Security.Lib.Google.DTO;
 
 namespace Catfish.API.Auth.Interfaces
 {

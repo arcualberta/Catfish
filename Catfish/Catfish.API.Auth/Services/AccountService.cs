@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using Catfish.API.Auth.Interfaces;
 using Catfish.API.Auth.Models;
-using CatfishExtensions.DTO;
 using CatfishExtensions.Exceptions;
-using CatfishExtensions.Models;
+//using CatfishExtensions.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +13,8 @@ using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
+
+using ARC.Security.Lib.DTO;
 
 namespace Catfish.API.Auth.Services
 {
@@ -149,7 +150,7 @@ namespace Catfish.API.Auth.Services
                 .ToListAsync();
         }
 
-        public async Task<string> GetSignedToken(LoginResult externalLoginResult)
+        public async Task<string> GetSignedToken(ARC.Security.Lib.Google.DTO.LoginResult externalLoginResult)
         {
             if (!externalLoginResult.Success)
                 return string.Empty;
@@ -193,7 +194,7 @@ namespace Catfish.API.Auth.Services
             return "";
         }
 
-        private string GetSignedToken(string userName, string userEmail, IList<string> userRoles, UserMembership membership, string userData, DateTime expiresAt)
+        private string GetSignedToken(string userName, string userEmail, IList<string> userRoles, UserMembershipDto membership, string userData, DateTime expiresAt)
         {
             var authClaims = new List<Claim>
                 {

@@ -5,11 +5,15 @@
 
 using Catfish.API.Auth.Interfaces;
 using Catfish.API.Auth.Models;
-using CatfishExtensions.Constants;
-using CatfishExtensions.Interfaces;
+//using CatfishExtensions.Constants;
+//using CatfishExtensions.Interfaces;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ARC.Security.Lib.Constants;
+using ARC.Security.Lib.Interfaces;
+using ARC.Security.Lib.Google.Interfaces;
+using ARC.Security.Lib.Google.DTO;
 
 namespace Catfish.API.Authorization.Controllers
 {
@@ -18,13 +22,13 @@ namespace Catfish.API.Authorization.Controllers
     [EnableCors(CorsPolicyNames.General)]
     public class GoogleIdentityController : ControllerBase
     {
-        private readonly IGoogleIdentity _googleIdentity;
+        private readonly IGoogleJwtAuthentication  _googleIdentity;
         private readonly IJwtProcessor _jwtProcessor;
         private readonly AuthDbContext _authDbContext;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IAccountService _accountService;
 
-        public GoogleIdentityController(IGoogleIdentity googleIdentity, IJwtProcessor jwtProcessor, AuthDbContext authDbContext, UserManager<IdentityUser> userManager, IAccountService accountService)
+        public GoogleIdentityController(IGoogleJwtAuthentication googleIdentity, IJwtProcessor jwtProcessor, AuthDbContext authDbContext, UserManager<IdentityUser> userManager, IAccountService accountService)
         {
             _googleIdentity = googleIdentity;
             _jwtProcessor = jwtProcessor;
@@ -39,7 +43,7 @@ namespace Catfish.API.Authorization.Controllers
         {
             try
             {
-                var externalLoginResult = await _googleIdentity.GetUserLoginResult(jwt);
+                LoginResult externalLoginResult = await _googleIdentity.GetUserLoginResult(jwt);
                 var jwtToken = await _accountService.GetSignedToken(externalLoginResult);                
                 return jwtToken;
             }

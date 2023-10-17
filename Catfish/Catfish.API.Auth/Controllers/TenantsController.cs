@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Catfish.API.Auth.Interfaces;
 using Catfish.API.Auth.Models;
-using CatfishExtensions.Constants;
+//using CatfishExtensions.Constants;
 using CatfishExtensions.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ARC.Security.Lib.DTO;
+using ARC.Security.Lib.Constants;
 
 namespace Catfish.API.Auth.Controllers
 {
