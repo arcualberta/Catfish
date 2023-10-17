@@ -21,4 +21,10 @@
     <ProjectReference Include="..\CatfishExtensions\CatfishExtensions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ARC.Security.Lib">
+      <HintPath>..\..\..\ARC.Security.Lib\ARC.Security.Lib\ARC.Security.Lib\bin\Debug\net6.0\ARC.Security.Lib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
