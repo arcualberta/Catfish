@@ -2,14 +2,13 @@
 using Catfish.API.Auth.Interfaces;
 using Catfish.API.Auth.Models;
 using CatfishExtensions.Constants;
-using CatfishExtensions.DTO;
 using CatfishExtensions.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-//using ARC.Security.Lib.DTO;
+using ARC.Security.Lib.DTO;
 
 namespace Catfish.API.Auth.Controllers
 {

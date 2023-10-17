@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using CatfishExtensions.DTO;
+//using CatfishExtensions.DTO;
 using Microsoft.AspNetCore.Identity;
+using ARC.Security.Lib.DTO;
 
 namespace Catfish.API.Auth.Models
 {
