@@ -7,11 +7,11 @@ namespace CatfishExtensions.Services.Auth
 {
     public class RoleApiProxy : IRoleApiProxy
     {
-        private readonly ICatfishWebClient _webClient;
+        private readonly IArcWebClient _webClient;
         private readonly IConfiguration _configuration;
         private readonly string? _apiRoot;
 
-        public RoleApiProxy(ICatfishWebClient webClient, IConfiguration configuration)
+        public RoleApiProxy(IArcWebClient webClient, IConfiguration configuration)
         {
             _webClient = webClient;
             _configuration = configuration;

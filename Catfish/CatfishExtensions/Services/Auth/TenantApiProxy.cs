@@ -8,11 +8,11 @@ namespace CatfishExtensions.Services.Auth
 {
     public class TenantApiProxy : ITenantApiProxy
     {
-        private readonly ICatfishWebClient _webClient;
+        private readonly IArcWebClient _webClient;
         private readonly IConfiguration _configuration;
         private readonly string? _apiRoot;
 
-        public TenantApiProxy(ICatfishWebClient webClient, IConfiguration configuration)
+        public TenantApiProxy(IArcWebClient webClient, IConfiguration configuration)
         {
             _webClient = webClient;
             _configuration = configuration;

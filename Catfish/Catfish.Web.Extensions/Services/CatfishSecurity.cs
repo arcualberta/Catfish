@@ -10,7 +10,7 @@ namespace CatfishWebExtensions.Services
 {
     public class CatfishSecurity : ISecurity, ICatfishSecurity
     {
-        private readonly ICatfishWebClient _catfishWebClient = new CatfishWebClient();
+        private readonly IArcWebClient _catfishWebClient = new ArcWebClient();
         private string _authUrlRoot;
         private IJwtProcessor _jwtProcessor;
         public CatfishSecurity()

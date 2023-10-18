@@ -19,12 +19,12 @@ namespace CatfishWebExtensions.Services
         private readonly IConfiguration _configuration;
         private readonly ISecurity _security;
         private readonly IJwtProcessor _jwtProcessor;
-        private readonly ICatfishWebClient _catfishWebClient;
+        private readonly IArcWebClient _catfishWebClient;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly IUserApiProxy _authProxy;
 
-        public CatfishSignInManager(IConfiguration configuration, ISecurity security, IJwtProcessor jwtProcessor, ICatfishWebClient catfishWebClient, UserManager<User> userManager, RoleManager<Role> roleManager, IUserApiProxy authApiProxy)
+        public CatfishSignInManager(IConfiguration configuration, ISecurity security, IJwtProcessor jwtProcessor, IArcWebClient catfishWebClient, UserManager<User> userManager, RoleManager<Role> roleManager, IUserApiProxy authApiProxy)
         {
             _configuration = configuration;
             _security = security;

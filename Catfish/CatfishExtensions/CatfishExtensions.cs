@@ -1,10 +1,11 @@
 ﻿
+using ARC.Security.Lib;
+using ARC.Security.Lib.Extensions;
 using CatfishExtensions.Interfaces.Auth;
 using CatfishExtensions.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-
-
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace CatfishExtensions
 {
@@ -20,38 +21,60 @@ namespace CatfishExtensions
             //services.AddSingleton<ICatfishWebClient, CatfishWebClient>();
             //services.AddScoped<IJwtProcessor, JwtProcessor>();
             //services.AddScoped<IGoogleIdentity, GoogleIdentity > ();
-            services.AddSingleton<IUserApiProxy, UserApiProxy>();
-            services.AddSingleton<ITenantApiProxy, TenantApiProxy>();
-            services.AddSingleton<IRoleApiProxy, RoleApiProxy>();
+            services.AddScoped<IUserApiProxy, UserApiProxy>();
+            services.AddScoped<ITenantApiProxy, TenantApiProxy>();
+            services.AddScoped<IRoleApiProxy, RoleApiProxy>();
 
-           /* if (configureSwagger)
+
+            builder.AddArcLSecurityLib();
+
+            builder.Services.PostConfigure<ArcSecurityLibOptions>(options =>
             {
-                if (configureJwtAuthorization)
+                options.JwtOptions = new ArcSecurityLibJwtOptions
                 {
-                    builder.Services.AddSwaggerGen(options =>
-                    {
-                        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                        {
-                            Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
-                            In = ParameterLocation.Header,
-                            Name = "Authorization",
-                            Type = SecuritySchemeType.ApiKey
-                        });
+                    JwtPublicKey = configuration.GetSection("JwtConfig:RsaPublicKey").Value,
+                    JwtPrivateKey = configuration.GetSection("JwtConfig:RsaPrivateKey").Value,
+                    JwtIssuer = configuration.GetSection("JwtConfig:Issuer").Value,
+                    JwtAudience = configuration.GetSection("JwtConfig:Audience").Value
+                };
 
-                        options.OperationFilter<SecurityRequirementsOperationFilter>();
-                    });
-                }
-                else
-                {
-                    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-                    builder.Services.AddEndpointsApiExplorer();
-                    builder.Services.AddSwaggerGen();
-                }
-            }
+                //Google Identity
+                options.GoogleIdentityPublicKey = configuration.GetSection("Google:Identity:PublicKeyApiJwk").Value;
+                options.GoogleIdentityIssuer = configuration.GetSection("Google:Identity:Issuer").Value;
+                options.GoogleIdentityAudience = configuration.GetSection("Google:ClientId").Value;//??? client
+            });
 
-            if (configureJwtAuthorization)
-                AddJwtAuthentication(builder);
-           */
+
+             if (configureSwagger)
+             {
+                services.EnableSwagger();
+
+                 //if (configureJwtAuthorization)
+                 //{
+                 //    builder.Services.AddSwaggerGen(options =>
+                 //    {
+                 //        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                 //        {
+                 //            Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+                 //            In = ParameterLocation.Header,
+                 //            Name = "Authorization",
+                 //            Type = SecuritySchemeType.ApiKey
+                 //        });
+
+                 //        options.OperationFilter<SecurityRequirementsOperationFilter>();
+                 //    });
+                 //}
+                 //else
+                 //{
+                 //    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+                 //    builder.Services.AddEndpointsApiExplorer();
+                 //    builder.Services.AddSwaggerGen();
+                 //}
+             }
+
+             if (configureJwtAuthorization)
+                 AddJwtAuthentication(builder);
+            
             return builder;
         }
 

@@ -10,11 +10,11 @@ namespace CatfishExtensions.Services.Auth
 {
     public class UserApiProxy : IUserApiProxy
     {
-        private readonly ICatfishWebClient _webClient;
+        private readonly IArcWebClient _webClient;
         private readonly IConfiguration _configuration;
         private readonly string? _apiRoot;
 
-        public UserApiProxy(ICatfishWebClient webClient, IConfiguration configuration)
+        public UserApiProxy(IArcWebClient webClient, IConfiguration configuration)
         {
             _webClient = webClient;
             _configuration = configuration;
