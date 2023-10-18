@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ARC.Security.Lib" Version="1.2.0" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.22" />
@@ -19,12 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CatfishExtensions\CatfishExtensions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="ARC.Security.Lib">
-      <HintPath>..\..\..\ARC.Security.Lib\ARC.Security.Lib\ARC.Security.Lib\bin\Debug\net6.0\ARC.Security.Lib.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
