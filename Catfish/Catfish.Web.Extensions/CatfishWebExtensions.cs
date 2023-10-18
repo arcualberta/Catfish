@@ -1,18 +1,7 @@
-﻿using CatfishExtensions.DTO;
+﻿
 using CatfishExtensions.Interfaces.Auth;
-using CatfishWebExtensions.Models.Attributes;
-using CatfishWebExtensions.Models.Blocks;
-using CatfishWebExtensions.Models.Sites;
-using CatfishWebExtensions.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Microsoft.Extensions.Configuration;
-using System.Reflection;
-using Piranha.AspNetCore.Services;
-using Piranha.Models;
 using static CatfishExtensions.Helpers.ICatfishAppConfiguration;
-using CatfishWebExtensions.Models.Sites.Headers;
+using ARC.Security.Lib.Google.Interfaces;
 
 namespace CatfishWebExtensions
 {
@@ -101,7 +90,7 @@ namespace CatfishWebExtensions
 
             //Google Login
             (builder as WebApplication)?.MapPost("/google", async ([FromBody] string jwt,
-                IGoogleIdentity googleIdentity,
+                IGoogleJwtAuthentication googleIdentity,
                 IConfiguration configuration,
                 HttpRequest request,
                 ICatfishUserManager catfishUserManager,

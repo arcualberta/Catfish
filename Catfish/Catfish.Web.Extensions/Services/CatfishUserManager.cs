@@ -1,4 +1,8 @@
 ﻿
+using ARC.Security.Lib.Google.DTO;
+using ARC.Security.Lib.Google.Interfaces;
+using ARC.Security.Lib.Interfaces;
+
 namespace CatfishWebExtensions.Services
 {
     [Obsolete]
@@ -8,7 +12,7 @@ namespace CatfishWebExtensions.Services
         private readonly Piranha.AspNetCore.Identity.IDb _db;
         private readonly IConfiguration _configuration;
         private readonly RoleManager<Role> _roleManager;
-        private readonly CatfishExtensions.Interfaces.IGoogleIdentity _googleIdentity;
+        private readonly IGoogleJwtAuthentication _googleIdentity;
         private readonly IJwtProcessor _jwtProcessor;
       
         public CatfishUserManager(
@@ -16,7 +20,7 @@ namespace CatfishWebExtensions.Services
             RoleManager<Role> roleManager,
             Piranha.AspNetCore.Identity.IDb db,
             IConfiguration configuration,
-            IGoogleIdentity googleIdentity,
+            IGoogleJwtAuthentication googleIdentity,
             IJwtProcessor jwtProcessor)
         {
             _userManager = userManager;

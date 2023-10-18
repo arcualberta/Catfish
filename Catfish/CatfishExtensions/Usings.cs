@@ -18,5 +18,5 @@ global using System.Text;
 global using CatfishExtensions.Helpers;
 global using CatfishExtensions.Services;
 global using CatfishExtensions.Interfaces;
-global using CatfishExtensions.Models;
+
 global using CatfishExtensions.Exceptions;

@@ -1,17 +1,12 @@
-﻿using CatfishExtensions.DTO;
+﻿using ARC.Security.Lib.DTO;
+using ARC.Security.Lib.Google.DTO;
+using ARC.Security.Lib.Google.Interfaces;
+using ARC.Security.Lib.Interfaces;
+
 using CatfishExtensions.Interfaces.Auth;
-using CatfishWebExtensions.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+
 using Newtonsoft.Json;
-using Piranha.AspNetCore.Identity.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CatfishWebExtensions.Services
 {
@@ -93,7 +88,7 @@ namespace CatfishWebExtensions.Services
             if(string.IsNullOrEmpty(membershipStr))
                 return; //No membership exist at all. Cannot proceed.
 
-            var membership = JsonConvert.DeserializeObject<UserMembership>(membershipStr);
+            var membership = JsonConvert.DeserializeObject<UserMembershipDto>(membershipStr);
             if (membership == null)
                 return; //No membership exist at all. Cannot proceed.
 
@@ -107,7 +102,7 @@ namespace CatfishWebExtensions.Services
             status = await _security.SignIn(httpContext, user.UserName, password);
         }
 
-        private async Task<User> GetOrCreateLocalUser(UserMembership membership)
+        private async Task<User> GetOrCreateLocalUser(UserMembershipDto membership)
         {
 
             if (string.IsNullOrEmpty(membership?.User?.UserName))

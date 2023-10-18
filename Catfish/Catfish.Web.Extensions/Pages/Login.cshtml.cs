@@ -1,11 +1,13 @@
 
+using ARC.Security.Lib.Google.Interfaces;
+
 namespace CatfishWebExtensions.Pages
 {
     public class LoginModel : PageModel
     {
         private readonly ISecurity _security;
         private SignInManager<User> _signInManager;
-        private readonly IGoogleIdentity _googleIdentity;
+        private readonly IGoogleJwtAuthentication _googleIdentity;
         private readonly ManagerLocalizer _localizer;
         ICatfishUserManager _catfishUserManager;
         IConfiguration _configuration;
@@ -22,7 +24,7 @@ namespace CatfishWebExtensions.Pages
 
         public string ErrorMessage { get; set; }
 
-        public LoginModel(ISecurity security, SignInManager<User> signInManager, IGoogleIdentity googleIdentity, ManagerLocalizer localizer, ICatfishUserManager catfishUserManager, IConfiguration configuration)
+        public LoginModel(ISecurity security, SignInManager<User> signInManager, IGoogleJwtAuthentication googleIdentity, ManagerLocalizer localizer, ICatfishUserManager catfishUserManager, IConfiguration configuration)
         {
             _security = security;
             _signInManager = signInManager;

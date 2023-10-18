@@ -36,7 +36,7 @@ global using CatfishExtensions.Helpers;
 global using CatfishExtensions.Interfaces;
 global using CatfishExtensions.Services;
 global using CatfishExtensions.Exceptions;
-global using CatfishExtensions.Models;
+//global using CatfishExtensions.Models;
 
 //Project namespaces
 global using CatfishWebExtensions.Interfaces;

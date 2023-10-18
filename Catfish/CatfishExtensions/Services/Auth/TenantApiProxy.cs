@@ -1,10 +1,8 @@
-﻿using CatfishExtensions.DTO;
+﻿
+using ARC.Security.Lib.DTO;
+using ARC.Security.Lib.Google.Interfaces;
 using CatfishExtensions.Interfaces.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CatfishExtensions.Services.Auth
 {

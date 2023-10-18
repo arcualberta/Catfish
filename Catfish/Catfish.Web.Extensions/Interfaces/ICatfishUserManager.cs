@@ -1,6 +1,8 @@
 ﻿
 
 
+using ARC.Security.Lib.Google.DTO;
+
 namespace CatfishWebExtensions.Interfaces
 {
     [Obsolete]

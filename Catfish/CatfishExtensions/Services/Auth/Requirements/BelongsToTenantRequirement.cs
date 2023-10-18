@@ -1,12 +1,8 @@
-﻿using CatfishExtensions.DTO;
+﻿
 using CatfishExtensions.Interfaces.Auth.Requirements;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ARC.Security.Lib.DTO;
 
 namespace CatfishExtensions.Services.Auth.Requirements
 {
@@ -25,7 +21,7 @@ namespace CatfishExtensions.Services.Auth.Requirements
             if (string.IsNullOrEmpty(membershipStr))
                 return false;
 
-            var membership = JsonConvert.DeserializeObject<UserMembership>(membershipStr);
+            var membership = JsonConvert.DeserializeObject<UserMembershipDto>(membershipStr);
             if (membership == null)
                 return false;
 

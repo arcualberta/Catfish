@@ -1,6 +1,6 @@
 
-using CatfishExtensions.DTO;
-using CatfishExtensions.Interfaces.Auth;
+using ARC.Security.Lib.DTO;
+
 
 namespace CatfishWebExtensions.Pages
 {

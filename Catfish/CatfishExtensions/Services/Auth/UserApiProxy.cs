@@ -1,11 +1,10 @@
-﻿using CatfishExtensions.DTO;
+﻿//using CatfishExtensions.DTO;
+using ARC.Security.Lib.DTO;
+using ARC.Security.Lib.Google.Interfaces;
 using CatfishExtensions.Interfaces.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CatfishExtensions.Services.Auth
 {
@@ -34,8 +33,8 @@ namespace CatfishExtensions.Services.Auth
         public async Task<bool> Register(RegistrationModel model)
             => (await _webClient.PostJson($"{_apiRoot}/api/users", model)).StatusCode == HttpStatusCode.OK;
 
-        public async Task<UserMembership> GetMembership(string username)
-            => await _webClient.Get<UserMembership>($"{_apiRoot}/api/users/membership/{username}");
+        public async Task<UserMembershipDto> GetMembership(string username)
+            => await _webClient.Get<UserMembershipDto>($"{_apiRoot}/api/users/membership/{username}");
 
         public async Task<List<UserInfo>> GetUsers(int offset = 0, int max = int.MaxValue, string? jwtBearerToken = null)
           => await _webClient.Get<List<UserInfo>>($"{_apiRoot}/api/users?offset={offset}&max={max}", jwtBearerToken);

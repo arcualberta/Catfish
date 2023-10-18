@@ -1,14 +1,7 @@
-﻿using CatfishExtensions.DTO;
-using CatfishExtensions.Interfaces.Auth.Requirements;
+﻿using CatfishExtensions.Interfaces.Auth.Requirements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CatfishExtensions.Services.Auth.Requirements
 {

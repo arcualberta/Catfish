@@ -8,16 +8,28 @@
 
   <ItemGroup>
     <Compile Remove="Interfaces\Auth\ITenantsProxy.cs" />
+    <Compile Remove="Interfaces\ICatfishWebClient.cs" />
+    <Compile Remove="Interfaces\IGoogleIdentity.cs" />
+    <Compile Remove="Interfaces\IJwtProcessor.cs" />
+    <Compile Remove="Models\LoginResult.cs" />
     <Compile Remove="Services\Auth\TenantsProxy.cs" />
+    <Compile Remove="Services\CatfishWebClient.cs" />
+    <Compile Remove="Services\GoogleIdentity.cs" />
+    <Compile Remove="Services\JwtProcessor.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ARC.Security.Lib" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.22" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.22" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>
