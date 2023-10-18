@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Exceptions\**" />
+    <Content Remove="Exceptions\**" />
+    <EmbeddedResource Remove="Exceptions\**" />
+    <None Remove="Exceptions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Constants\Enums1.cs" />
   </ItemGroup>
 
@@ -37,7 +44,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Exceptions\" />
   </ItemGroup>
 
 </Project>
