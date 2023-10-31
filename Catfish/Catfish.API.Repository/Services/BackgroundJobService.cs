@@ -53,7 +53,7 @@ namespace Catfish.API.Repository.Services
 
 
             result.ResultEntries = await query.OrderByDescending(rec => rec.Started).Skip(offset).Take(max).ToListAsync();
-
+            result.TotalMatches = await query.CountAsync();
 
             ////if (!string.IsNullOrEmpty(searchTerm))
             ////{
