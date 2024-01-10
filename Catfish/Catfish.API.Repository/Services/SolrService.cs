@@ -101,6 +101,7 @@ namespace Catfish.API.Repository.Services
 
         public async Task AddUpdateAsync(string payloadXmlString)
         {
+            //await File.WriteAllTextAsync("C:\\codebase\\docs.xml", payloadXmlString);
             var uri = new Uri(_solrCoreUrl + "/update?commit=true");
 
             using var content = new StringContent(payloadXmlString, Encoding.UTF8, "text/xml");

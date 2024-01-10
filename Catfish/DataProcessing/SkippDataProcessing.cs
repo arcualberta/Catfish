@@ -75,7 +75,7 @@ namespace DataProcessing
                 solrDocs.Add(solrDoc);
 
                 solrDoc.AddId(Guid.NewGuid().ToString());
-
+                solrDoc.AddField("tenant_id_s", "a4a50d9f-fd20-4d74-8274-2acad28a6553");
                 for (int i = 0; i < row.Values.Count; ++i)
                 {
                     string colHeading = colHeadings[i];
