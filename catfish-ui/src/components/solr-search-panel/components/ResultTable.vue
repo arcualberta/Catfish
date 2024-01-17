@@ -5,7 +5,9 @@ import { faListDots } from '@fortawesome/free-solid-svg-icons';
 import {toTableData, downloadCSV} from '../helpers'
 
     const props = defineProps<{
-        model: SearchResult
+        model: SearchResult,
+        enableEditing: false,
+        editPage: string | null
     }>();
 
     const store = useSolrSearchStore()
@@ -17,7 +19,7 @@ import {toTableData, downloadCSV} from '../helpers'
 
     const fieldDefs = computed(()=>store.activeFieldList)
     //const requestedResultFieldNames = computed(()=>store.activeSelectedResultFieldNames)
-    const tableData = computed(() => toTableData(props.model.resultEntries, fieldDefs.value, store.activeSelectedResultFieldNames))
+    const tableData = computed(() => toTableData(props.model.resultEntries, fieldDefs.value, store.activeSelectedResultFieldNames, props.enableEditing, props.editPage))
 
     const downloadData = () => downloadCSV(props.model.resultEntries, fieldDefs.value)
 

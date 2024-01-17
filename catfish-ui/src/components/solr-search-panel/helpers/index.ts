@@ -79,7 +79,7 @@ export function getFieldConstraintValue(fieldConstraint: FieldConstraint) {
     return fieldConstraint.value
 }
 
-export function toTableData(rows: SolrResultEntry[], fieldDefs: SearchFieldDefinition[], requestedResultFieldNames: string[]){
+export function toTableData(rows: SolrResultEntry[], fieldDefs: SearchFieldDefinition[], requestedResultFieldNames: string[], enableEditing: boolean, editPage: string | null){
     const items: Record<string, any>[] = [];
 
     const tableHeadingDefs = requestedResultFieldNames?.length > 0
@@ -95,6 +95,10 @@ export function toTableData(rows: SolrResultEntry[], fieldDefs: SearchFieldDefin
         tableHeadingDefs?.forEach((def) => {
             item[def.label.replaceAll(' ', '_')] = row.data.find(d => d.key === def.name)?.value
         })
+        
+        if(enableEditing){
+            item['id'] = row.id
+        }
         items.push(item);
     })
 

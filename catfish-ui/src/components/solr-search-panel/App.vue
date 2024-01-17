@@ -16,7 +16,9 @@
         entryTypeFieldOptions?: SolrEntryType[],
         queryApi?: string,
         uiMode?: eUiMode,
-        user: string | null
+        user: string | null,
+        enableEditing: false,
+        editPage: string | null
     }>();
 
     const store = useSolrSearchStore();
@@ -263,7 +265,7 @@
         <div class="mt-3">
             <h4>{{ querySource }}</h4>
             Query time: {{store.queryTime}} seconds<br /><br />
-            <ResultTable :model="store.queryResult" />
+            <ResultTable :model="store.queryResult" :enable-editing="props.enableEditing" :edit-page="props.editPage" />
         </div>
     </div>
 </template>

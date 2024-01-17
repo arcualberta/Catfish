@@ -39,7 +39,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             form.append("offset", offset.toString())
             form.append("max", max.toString());
             if(this.resultFieldNames.length > 0){
-                form.append("fieldList", this.resultFieldNames.join());
+                form.append("fieldList", "id,"+this.resultFieldNames.join());
             }
             
             this.queryStart = new Date().getTime()
