@@ -1,18 +1,17 @@
 export default {
-    googleApiKey: "AIzaSyBgCnBy-LbHAqbB8PbQhNID68vZ8f8_j_Q",
-    googleCalendarIds: ["ualberta.ca_kdp9enkplai8s5ipu2efknjels@group.calendar.google.com","c_1netqe2n16i5o9su69ft5c8f8c@group.calendar.google.com"],
+    googleApiKey: "Use dev credentials from https://docs.google.com/document/d/1N_y4aQupxPKPGh2eaxpOqCmc_75QionPp4U_MoY3gZQ/edit",
+    googleCalendarIds: ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
     maxEvents: 10,
     initialView: 'dayGridMonth',
-    googleLoginClientId:"589183038778-u256nlels7v2443j3h1unvtp367f80s4.apps.googleusercontent.com",
+    googleLoginClientId:"Use dev credentials from https://docs.google.com/document/d/1N_y4aQupxPKPGh2eaxpOqCmc_75QionPp4U_MoY3gZQ/edit",
     authorizationApiRoot:"https://localhost:5010/",
-    dataRepositoryApiRoot: "https://localhost:5020",
-    //authorizationApiRoot: "https://catfish-test.artsrn.ualberta.ca/authorization",
-    //dataRepositoryApiRoot: "https://catfish-test.artsrn.ualberta.ca/repository"
+    dataRepositoryApiRoot: "https://localhost:5020"
 }
 
 
 import { eFieldType } from '@/components/shared/constants'
 import {SearchFieldDefinition} from '@/components/solr-search-panel/models'
+import { TabNavigationDefinition } from './components/workflow-builder/models';
 
 export enum eShowtimeEntryType {
     Movie = 1,
@@ -100,4 +99,11 @@ export const solrFields:SearchFieldDefinition[] = [
     { name: "theater_lon_d", label: "Theater longitude", type: eFieldType.Decimal, options: [], entryType: eShowtimeEntryType.Theater },
     { name: "theater_lat_d", label: "Theater latitude", type: eFieldType.Decimal, options: [], entryType: eShowtimeEntryType.Theater },
 ];
-
+export const tabMenu:TabNavigationDefinition[] = [
+    { name: "Action", title: "Action"},
+    { name: "States", title: "States"},
+    { name: "Roles", title: "Roles"},
+    { name: "Templates", title: "Email Templates" },
+    { name: "Triggers", title: "Triggers"},
+    { name: "Pop-ups", title: "Popups"},
+];
