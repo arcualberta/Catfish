@@ -40,7 +40,16 @@
     if(props.queryApi){
         store.queryApi = props.queryApi;
     }
-
+    watch(() => props.apiToken, async newApiToken => {
+        if (newApiToken) {
+            store.apiToken = newApiToken;
+        }
+    })
+    watch(() => props.tenantId, async newTenantId => {
+        if (newTenantId) {
+            store.tenantId = newTenantId;
+        }
+    })
     watch(() => props.queryApi, async newQueryApi => {
         if(newQueryApi){
             store.queryApi = newQueryApi;
@@ -57,7 +66,7 @@
         }
     }) 
 
-    //watch(() => props.)
+    
 
     const uiMode = computed(() => props.uiMode ? props.uiMode : eUiMode.Default)
 
