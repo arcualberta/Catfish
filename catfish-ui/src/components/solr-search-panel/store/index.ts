@@ -45,6 +45,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             }
             
             this.queryStart = new Date().getTime()
+            console.log("Solr Query API: ", this.queryApi)
             fetch(this.queryApi, {
                 method: 'POST',
                 body: form,
