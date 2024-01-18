@@ -23,7 +23,9 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         isLoadig: false,
         isLoadingFailed: false,
         jobId:"",
-        user: null as string | null
+        user: null as string | null,
+        apiToken: null as string | null,
+        tenantId: null as string | null
     }),
     actions: {
         query(query: string | null, offset: number, max: number){
@@ -47,7 +49,9 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 method: 'POST',
                 body: form,
                 headers: {
-                        'encType': 'multipart/form-data'
+                    'encType': 'multipart/form-data',
+                    'Authorization': `bearer ${this.apiToken}`,
+                    'Tenant-Id': `${this.tenantId}`
                 },
             })
             .then(response => response.json())
@@ -108,7 +112,9 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                 method: 'POST',
                 body: form,
                 headers: {
-                    'encType': 'multipart/form-data'
+                    'encType': 'multipart/form-data',
+                    'Authorization': `bearer ${this.apiToken}`,
+                    'Tenant-Id': `${this.tenantId}`
                 },
             })
                 .then(response => response.json())

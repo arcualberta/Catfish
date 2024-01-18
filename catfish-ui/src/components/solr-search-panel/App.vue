@@ -18,14 +18,21 @@
         uiMode?: eUiMode,
         user: string | null,
         enableEditing: false,
-        editPage: string | null
+        editPage: string | null,
+        apiToken: string | null,
+        tenantId: string | null
     }>();
 
     const store = useSolrSearchStore();
     store.selectedEntryType = props.entryTypeFieldOptions?.find(entry => entry.label == "Showtimes") as SolrEntryType;
 
     store.user = props.user;
-    
+    if (props.apiToken !== null) {
+        store.apiToken = props.apiToken;
+    }
+    if (props.tenantId !== null) {
+        store.tenantId = props.tenantId;
+    }
     if(props.searchFields){
         store.searchFieldDefinitions = props.searchFields;
     }
