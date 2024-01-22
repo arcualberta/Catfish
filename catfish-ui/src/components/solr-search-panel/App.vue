@@ -168,10 +168,6 @@
 
 </script>
 <template>
-    <div class="alert alert-info">
-        <b>Solr Search Panel Store API Key</b>
-        <div>{{ store.apiToken }}</div>
-    </div>
     <div class="mb-2">
         <span v-if="entryTypeFieldName">
             Entry Type:
