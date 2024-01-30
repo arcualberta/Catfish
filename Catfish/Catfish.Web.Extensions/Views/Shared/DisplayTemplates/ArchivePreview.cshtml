@@ -24,8 +24,8 @@
     var archive = await WebApp.Api.Archives.GetByIdAsync<StandardPost>(archivePageId, postCount);
     var posts = archive.Posts
         .Where(p => p.IsPublished)
-        .OrderByDescending(p=>p.LastModified)
-        //.OrderBy(p => p.LastModified)
+        .OrderByDescending(p=>p.Created)
+        //.OrderByDescending(p=>p.LastModified) 
         .Take(postCount)
         .ToList();
 

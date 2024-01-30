@@ -26,6 +26,8 @@
     const store = useSolrSearchStore();
     store.selectedEntryType = props.entryTypeFieldOptions?.find(entry => entry.label == "Showtimes") as SolrEntryType;
 
+    const emit = defineEmits(["getSelectedApiUrl"]);
+
     store.user = props.user;
     if (props.apiToken !== null) {
         store.apiToken = props.apiToken;
@@ -165,9 +167,16 @@
 
     const isBatchButtonDisabled = computed(() => label.value.trim().length == 0 || batchSize.value <= 0);
 
-
+    watch(() => store.selectedDataSourceQueryApi, async newQueryApi => {
+        if (newQueryApi) {
+            //call parent emit
+            emit("getSelectedApiUrl", store.selectedDataSourceQueryApi);
+        }
+    })
+   
 </script>
 <template>
+    
     <div class="mb-2">
         <span v-if="entryTypeFieldName">
             Entry Type:
