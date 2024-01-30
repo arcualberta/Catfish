@@ -46,7 +46,8 @@ export interface SearchResult {
 
 export interface DataSourceOption{
     label: string,
-    constraint: string
+    constraint: string,
+    api: string
 }
 
 /* solr model from previous version -- we might or might not need them */

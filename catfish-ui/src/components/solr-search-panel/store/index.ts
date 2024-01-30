@@ -19,7 +19,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         max: 100,
         queryStart: 0,
         queryTime: 0,
-        queryApi: 'https://localhost:5020/api/solr-search',
+        queryApi: null as string | null,
         isLoadig: false,
         isLoadingFailed: false,
         jobId:"",
@@ -45,8 +45,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             }
             
             this.queryStart = new Date().getTime()
-            console.log("Solr Query API: ", this.queryApi)
-            fetch(this.queryApi, {
+            console.log("Solr Query API: ", this.selectedDataSourceQueryApi)
+            fetch(this.selectedDataSourceQueryApi, {
                 method: 'POST',
                 body: form,
                 headers: {
@@ -106,7 +106,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             
             this.queryStart = new Date().getTime()
 
-            var querySearchJobApi = this.queryApi + "/schedule-search-job"
+            var querySearchJobApi = this.selectedDataSourceQueryApi + "/schedule-search-job"
             console.log("API: ", querySearchJobApi)
 
             fetch(querySearchJobApi, {
@@ -140,6 +140,17 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         }   
     },
     getters: {
+        selectedDataSourceQueryApi: (state) => {
+            if(state.selectedDataSource && state.selectedDataSource.api?.length > 0){
+                return state.selectedDataSource.api
+            }
+            else{
+                return state.queryApi!
+            }
+        },
+        getSelectedDataSource: (state) => {
+            return state.selectedDataSource
+        },
         activeFieldList: (state) => {
             if(state.selectedEntryType){
                 const selected = state.searchFieldDefinitions?.filter(fd => Array.isArray(fd.entryType) 
