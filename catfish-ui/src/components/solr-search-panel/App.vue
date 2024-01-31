@@ -68,7 +68,9 @@
         }
     }) 
 
-    
+    if(props.dataSourceOptions && props.dataSourceOptions.length > 0 && !store.selectedDataSource){
+        store.selectedDataSource = props.dataSourceOptions[0]
+    }
 
     const uiMode = computed(() => props.uiMode ? props.uiMode : eUiMode.Default)
 
