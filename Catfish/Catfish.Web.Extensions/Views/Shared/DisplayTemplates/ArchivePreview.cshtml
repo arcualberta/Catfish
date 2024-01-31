@@ -21,14 +21,13 @@
     //TODO: Retrieve the archive page identified by the above ID here using a Piranha APO Call.
 
     var page = await WebApp.Api.Pages.GetByIdAsync(archivePageId);
-    var archive = await WebApp.Api.Archives.GetByIdAsync<StandardPost>(archivePageId, postCount);
+    var archive = await WebApp.Api.Archives.GetByIdAsync<StandardPost>(archivePageId);
     var posts = archive.Posts
         .Where(p => p.IsPublished)
-        .OrderByDescending(p=>p.Created)
+        .OrderByDescending(p=>p.Published)
         //.OrderByDescending(p=>p.LastModified) 
         .Take(postCount)
         .ToList();
-
 }
 
 
