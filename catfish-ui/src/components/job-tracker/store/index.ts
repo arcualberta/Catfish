@@ -15,7 +15,7 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
         tenantId: null as Guid | null
     }),
     actions: {
-        load( offset: number, pageSize: number, isRefreshCall: boolean){
+       async load( offset: number, pageSize: number, isRefreshCall: boolean){
             //update max
             console.log("searchTerm: " + this.searchTerm)
             console.log("apiRoot: " + this.apiRoot)
@@ -24,10 +24,10 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
             const operation = 2; //Solr Read
 
             const proxy = new api.SolrProxy(this.apiRoot, this.tenantId as Guid, this.apiToken as string)
-            const data = proxy.GetJobs(0, 100);
-            console.log(JSON.stringify(data))
+            const data = await proxy.GetJobs(0, 100);
+            
             this.jobSearchResult = data as JobSearchResult;
-
+            console.log(JSON.stringify(this.jobSearchResult))
             /*
             const api = `${this.apiRoot}/api/background-job?offset=${offset}&max=${pageSize}&searchTerm=${this.searchTerm}&isRefreshCall=${isRefreshCall}`;
             this.isLoadig = true;
