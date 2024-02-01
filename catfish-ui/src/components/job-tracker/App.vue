@@ -11,7 +11,9 @@ const props = defineProps<{
     apiRoot: string,
     pageSize: number,
     user: string | null,
-    admins: string[]   
+    admins: string[],
+    apiToken: string | null,
+    tenantId: Guid | null
 }>();
 
 const store = useJobTrackerStore();
@@ -26,10 +28,17 @@ const hasPrev = computed(() => first.value > 1)
 const hasNext = computed(() => (last.value < store.jobSearchResult.totalMatches))
 
 
-if(props.apiRoot){
-    store.apiRoot = props.apiRoot;
-}
 
+store.apiRoot = props.apiRoot;
+store.apiToken = props.apiToken;
+store.tenantId = props.tenantId;
+
+watch(() => props.apiToken, async newApiToken => {
+        if (newApiToken) {
+            store.apiToken = newApiToken;
+        }
+    })
+    
 onMounted(() => {
     store.load(0, props.pageSize, false);
 

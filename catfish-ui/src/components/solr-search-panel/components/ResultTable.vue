@@ -36,7 +36,11 @@ import {toTableData, downloadCSV} from '../helpers'
         <span v-if="hasNext" class="link" @click="store.next()">&gt;&gt;&gt;</span></div>
     <hr />
 
-    <b-table hover :items="tableData"></b-table>
+    <b-table hover :items="tableData">
+        <template v-if="enableEditing && editPage" #cell(id)="tableData">
+            <router-link :to="`${editPage}/${tableData.item.id}`">edit</router-link>
+        </template>
+    </b-table>
 </template>
 
 <style scoped>

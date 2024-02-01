@@ -2,6 +2,7 @@ import { buildHashFromArray } from "@fullcalendar/core";
 import { Guid } from "guid-typescript";
 import { defineStore } from "pinia";
 import { JobRecord, JobSearchResult } from "../models";
+import { api } from "@arc/arc-foundation"
 
 export const useJobTrackerStore = defineStore('JobTrackerStore', {
     state: () => ({
@@ -9,19 +10,32 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
         apiRoot: '',
         searchTerm: "",
         isLoadig: false,
-        isLoadingFailed: false
+        isLoadingFailed: false,
+        apiToken: null as string | null,
+        tenantId: null as Guid | null
     }),
     actions: {
         load( offset: number, pageSize: number, isRefreshCall: boolean){
             //update max
             console.log("searchTerm: " + this.searchTerm)
-            const api = `${this.apiRoot}/background-job?offset=${offset}&max=${pageSize}&searchTerm=${this.searchTerm}&isRefreshCall=${isRefreshCall}`;
+            console.log("apiRoot: " + this.apiRoot)
+            console.log("tenantId: " + this.tenantId)
+            console.log("apiToken: " + this.apiToken)
+            const operation = 2; //Solr Read
+
+            const proxy = new api.SolrProxy(this.apiRoot, this.tenantId as Guid, this.apiToken as string)
+            const data = proxy.GetJobs(0, 100);
+            console.log(JSON.stringify(data))
+            this.jobSearchResult = data as JobSearchResult;
+
+            /*
+            const api = `${this.apiRoot}/api/background-job?offset=${offset}&max=${pageSize}&searchTerm=${this.searchTerm}&isRefreshCall=${isRefreshCall}`;
             this.isLoadig = true;
             this.isLoadingFailed = false;
             fetch(api, {
                 method: 'GET'
             })
-            .then(response => response.json())
+            .then(response => response.json()))
             .then(data => {
                 if(isRefreshCall) {
                     (data as JobSearchResult).resultEntries.forEach(job => {
@@ -45,6 +59,7 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
                 this.isLoadig = false;
 
             });
+            */
         },
         next(pageSize: number) {
             console.log("next")

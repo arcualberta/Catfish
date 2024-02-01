@@ -142,7 +142,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
     getters: {
         selectedDataSourceQueryApi: (state) => {
             if(state.selectedDataSource && state.selectedDataSource.api?.length > 0){
-                return state.selectedDataSource.api
+                return `${state.selectedDataSource.api}/api/SolrSearch`
             }
             else{
                 return state.queryApi!
