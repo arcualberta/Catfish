@@ -84,7 +84,7 @@ onMounted(() => {
         (jobUser && jobUser.length > 0 && props.user == jobUser) ||
         (props.user != null && props.admins.includes(props.user))
 
-    const getFileApi = props.apiRoot + '/BackgroundJob/get-file?filename=';
+    const getFileApi = props.apiRoot + '/api/background-job/get-file?filename=';
     const getDataFileUrl = (fname: string) => { return getFileApi + fname };
 </script>
 
