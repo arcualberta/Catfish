@@ -33,6 +33,7 @@ store.apiRoot = props.apiRoot;
 store.apiToken = props.apiToken;
 store.tenantId = props.tenantId;
 
+    
 watch(() => props.apiToken, async newApiToken => {
         if (newApiToken) {
             store.apiToken = newApiToken;
@@ -70,7 +71,6 @@ onMounted(() => {
         store.load(0, props.pageSize, false)
     }
 
-
     const RemoveJob = (jobId: Guid, index: number, jobLabel: string) => {
 
         if (confirm('Are you sure you want to delete this job: ' + jobLabel + ' ? ')) {
@@ -84,6 +84,8 @@ onMounted(() => {
         (jobUser && jobUser.length > 0 && props.user == jobUser) ||
         (props.user != null && props.admins.includes(props.user))
 
+    const getFileApi = props.apiRoot + '/BackgroundJob/get-file?filename=';
+    const getDataFileUrl = (fname: string) => { return getFileApi + fname };
 </script>
 
 <template>
@@ -132,7 +134,8 @@ onMounted(() => {
                 <td>{{ Math.round((job.processedDataRows / job.expectedDataRows) * 10000)/100 }} %</td>
                 <td>{{ job.dataFileSize.toLocaleString("en-US") }}</td>
                 <td>
-                    <div><a :href="job.downloadDataFileLink">{{ job.dataFile }}</a></div>
+                    <!--<div><a :href="job.downloadDataFileLink">{{ job.dataFile }}</a></div>-->
+                    <div><a :href="getDataFileUrl(job.dataFile)">{{ job.dataFile }}</a></div>
                     <div v-if="job.downloadStatsFileLink"><a :href="job.downloadStatsFileLink">stats.csv</a></div>
                 </td>
                 <td>
