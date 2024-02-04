@@ -7,6 +7,7 @@ import { useJobTrackerStore } from './store';
 import 'floating-vue/dist/style.css'
 import { Guid } from 'guid-typescript';
 import { JobRecord } from '@arc/arc-foundation/lib/solr/models';
+import { utils } from '@arc/arc-foundation';
 
 const props = defineProps<{
     apiRoot: string,
@@ -90,8 +91,7 @@ onMounted(() => {
     const downloadDataFile = (job: JobRecord) => store.downloadFile(job.dataFile)
     const downloadStatFile = (job: JobRecord) => {
         store.downloadFile(job.downloadStatsFileLink)
-    }
-
+    }  
 
 </script>
 
@@ -139,7 +139,7 @@ onMounted(() => {
                 <td>{{ job.started }}</td>
                 <td>{{ job.lastUpdated }}</td>
                 <td>{{ Math.round((job.processedDataRows / job.expectedDataRows) * 10000)/100 }} %</td>
-                <td>{{ job.dataFileSize.toLocaleString("en-US") }}</td>
+                <td>{{ utils.formatBytes(job.dataFileSize) }}</td>
                 <td>
                     <!--<div><a :href="job.downloadDataFileLink">{{ job.dataFile }}</a></div>-->
                     <button type="button" class="btn btn-link" @click="downloadDataFile(job)">data file</button>
