@@ -6,6 +6,7 @@ import { useJobTrackerStore } from './store';
 
 import 'floating-vue/dist/style.css'
 import { Guid } from 'guid-typescript';
+import { JobRecord } from '@arc/arc-foundation/lib/solr/models';
 
 const props = defineProps<{
     apiRoot: string,
@@ -18,7 +19,7 @@ const props = defineProps<{
 
 const store = useJobTrackerStore();
 
-var jobs = computed(() => store.jobSearchResult.resultEntries)
+var jobs = computed(() => store.jobSearchResult.resultEntries as unknown as JobRecord[])
 
 console.log("total matched" + store.jobSearchResult.totalMatches ? store.jobSearchResult.totalMatches: 0)
 var totalJobs = computed(() => store.jobSearchResult.totalMatches ? store.jobSearchResult.totalMatches: 0);
@@ -86,6 +87,12 @@ onMounted(() => {
 
     const getFileApi = props.apiRoot + '/api/background-job/get-file?filename=';
     const getDataFileUrl = (fname: string) => { return getFileApi + fname };
+    const downloadDataFile = (job: JobRecord) => store.downloadFile(job.dataFile)
+    const downloadStatFile = (job: JobRecord) => {
+        store.downloadFile(job.downloadStatsFileLink)
+    }
+
+
 </script>
 
 <template>
@@ -105,7 +112,7 @@ onMounted(() => {
         </div>
     </div>
     
-    <table class="table">
+    <table class="table" v-if="jobs?.length > 0">
         <thead>
             <tr>
                 <th scope="col">Id</th>
@@ -123,7 +130,7 @@ onMounted(() => {
             <tr v-for="(job, index) in jobs" :key="job.id.toString()">
                 <td>
                     <b-spinner class="status-icon" v-if="job.status == 'In Progress'" variant="success" label="Spinning"></b-spinner>
-                    <span>{{ job?.jobId }}</span>
+                    <span>{{ job?.id }}</span>
                 </td>
                 <td>
                     <span v-tooltip="job.message">{{ job.status }}</span>
@@ -135,8 +142,13 @@ onMounted(() => {
                 <td>{{ job.dataFileSize.toLocaleString("en-US") }}</td>
                 <td>
                     <!--<div><a :href="job.downloadDataFileLink">{{ job.dataFile }}</a></div>-->
+                    <button type="button" class="btn btn-link" @click="downloadDataFile(job)">data file</button>
+                    <span v-if="job.downloadStatsFileLink"> | <button  type="button" class="btn btn-link" @click="downloadStatFile(job)">stat file</button></span> 
+                    
+                    <!--
                     <div><a :href="getDataFileUrl(job.dataFile)">{{ job.dataFile }}</a></div>
                     <div v-if="job.downloadStatsFileLink"><a :href="job.downloadStatsFileLink">stats.csv</a></div>
+                    -->
                 </td>
                 <td>
                     <button v-if="shouldAllowDelete(job.user)" @click="RemoveJob(job.id, index, job.jobLabel)" class="btn btn-danger">Delete</button>
@@ -144,6 +156,9 @@ onMounted(() => {
             </tr>
         </tbody>
     </table>
+    <div v-else>
+        <div class="alert alert-info" v-if="!store.isLoadig">No jobs found</div>
+    </div>
 </template>
 
 <style scoped>

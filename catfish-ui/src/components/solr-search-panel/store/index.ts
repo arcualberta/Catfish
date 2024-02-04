@@ -2,6 +2,10 @@ import { defineStore } from 'pinia';
 import { buildQueryString } from '../helpers';
 import { DataSourceOption, SearchFieldDefinition, SearchResult, SolrEntryType } from '../models';
 import { ConstraintType, createFieldExpression, FieldExpression } from '../models/FieldExpression';
+import { api } from '@arc/arc-foundation';
+import { Guid } from 'guid-typescript';
+import { SolrSearchApiParams, SolrSearchBatchApiParams, SolrSearchBatchApiParams } from '@arc/arc-foundation/lib/solr/models';
+import { SolrProxy } from '@arc/arc-foundation/lib/api';
 
 
 export const useSolrSearchStore = defineStore('SolrSearchStore', {
@@ -28,64 +32,90 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
         tenantId: null as string | null
     }),
     actions: {
-        query(query: string | null, offset: number, max: number){
+        async query(query: string | null, offset: number, max: number){
             this.isLoadig = true;
             this.isLoadingFailed = false;
+            this.activeQueryString = query && query.trim().length > 0 ? query : "*:*";
             this.offset = offset;
             this.max = max;
 
-            this.activeQueryString = query && query.trim().length > 0 ? query : "*:*";
+            const params = {
+                query: this.activeQueryString,
+                offset: this.offset,
+                max: this.max
+            } as SolrSearchApiParams
 
-            const form = new FormData();
-            form.append("query", this.activeQueryString);
-            form.append("offset", offset.toString())
-            form.append("max", max.toString());
             if(this.resultFieldNames.length > 0){
-                form.append("fieldList", "id,"+this.resultFieldNames.join());
+                params.fieldList = "id,"+this.resultFieldNames.join();
             }
             
             this.queryStart = new Date().getTime()
-            console.log("Solr Query API: ", this.selectedDataSourceQueryApi)
-            fetch(this.selectedDataSourceQueryApi, {
-                method: 'POST',
-                body: form,
-                headers: {
-                    'encType': 'multipart/form-data',
-                    'Authorization': `bearer ${this.apiToken}`,
-                    'Tenant-Id': `${this.tenantId}`
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                    this.queryResult = data;
-                    this.queryTime = (new Date().getTime()- this.queryStart)/1000.0
-                    this.isLoadig = false;
-            })
-            .catch((error) => {
+
+            try {
+                const proxy = new api.SolrProxy(this.selectedDataSourceQueryApi, this.tenantId as unknown as Guid, this.apiToken!)
+                const data = await proxy.Search(params)
+                this.queryResult = data
+                this.queryTime = (new Date().getTime()- this.queryStart)/1000.0
+                this.isLoadig = false;
+            }
+            catch(error){
                 console.error('Load Entities API Error:', error);
                 this.isLoadig = false;
                 this.isLoadingFailed = true;
-            });
+            }
         },
-        executeJob(query: string | null, email: string, label: string, batchSize:number, selectUniqueEntries:boolean, roundFloats:boolean, numDecimalPoints:number, frequencyArrayFields: string[], uniqueExportFields: string[]) {
+        async executeJob(query: string | null, email: string, label: string, batchSize:number, selectUniqueEntries:boolean, roundFloats:boolean, numDecimalPoints:number, frequencyArrayFields: string[], uniqueExportFields: string[]) {
             this.isLoadig = true;
-           // this.offset = offset;
-           // this.max = max;
+            // this.offset = offset;
+            // this.max = max;
 
             this.activeQueryString = query && query.trim().length > 0 ? query : "*:*";
-
-            const form = new FormData();
-            form.append("query", this.activeQueryString);
-            form.append("email", email)
-            form.append("label", label);
-            form.append("batchSize", batchSize.toString());
+            
+            const params = {} as SolrSearchBatchApiParams
+            params.query = this.activeQueryString
+            params.jobLabel = label
+            params.batchSize = batchSize;
             if(this.user?.length && this.user?.length> 0){
-                form.append("user", this.user)
+                params.user = this.user
+            }
+            if(this.resultFieldNames?.length > 0){
+                params.fieldList = this.resultFieldNames.join()
+            }
+            if(selectUniqueEntries){
+                params.selectUniqueEntries = true
+                if(roundFloats){
+                    params.numDecimalPoints = numDecimalPoints
+                }
+            }
+            if(frequencyArrayFields?.length > 0){
+                params.frequencyArrayFields =frequencyArrayFields.join();
+            }
+            if(uniqueExportFields?.length > 0){
+                params.exportFields = uniqueExportFields.join()
             }
 
-            if(this.resultFieldNames?.length > 0){
-                form.append("fieldList", this.resultFieldNames.join());
-            }
+            this.queryStart = new Date().getTime()
+
+            const proxy = new api.SolrProxy(this.selectedDataSourceQueryApi, this.tenantId as unknown as Guid, this.apiToken!)
+            const data = await proxy.ScheduleSearchJob(params)
+
+            this.jobId = data;
+            this.isLoadig = false;
+            alert("Jod has been successfully submitted: job id " + this.jobId);
+            
+ /*
+            const form = new FormData();
+            //form.append("query", this.activeQueryString);
+            //form.append("email", email)
+            //form.append("label", label);
+            //form.append("batchSize", batchSize.toString());
+            //if(this.user?.length && this.user?.length> 0){
+            //    form.append("user", this.user)
+            //}
+
+            //if(this.resultFieldNames?.length > 0){
+            //    form.append("fieldList", this.resultFieldNames.join());
+            //}
 
             if(selectUniqueEntries){
                 form.append("selectUniqueEntries", selectUniqueEntries.toString());
@@ -109,6 +139,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             var querySearchJobApi = this.selectedDataSourceQueryApi + "/schedule-search-job"
             console.log("API: ", querySearchJobApi)
 
+
+
             fetch(querySearchJobApi, {
                 method: 'POST',
                 body: form,
@@ -128,6 +160,8 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
                     console.error('Load Entities API Error:', error);
                     this.isLoadig = false;
                 });
+
+                */
         },
         next(){
             console.log("next")
@@ -142,7 +176,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
     getters: {
         selectedDataSourceQueryApi: (state) => {
             if(state.selectedDataSource && state.selectedDataSource.api?.length > 0){
-                return `${state.selectedDataSource.api}/api/SolrSearch`
+                return state.selectedDataSource.api
             }
             else{
                 return state.queryApi!
