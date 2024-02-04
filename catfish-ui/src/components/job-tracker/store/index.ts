@@ -32,7 +32,7 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
             
             const operation = 2; //Solr Read
             const proxy = new api.SolrProxy(this.apiRoot, this.tenantId as Guid, this.apiToken)
-            const data = await proxy.GetJobs(offset, pageSize, operation, false, this.searchTerm);
+            const data = await proxy.getJobs(offset, pageSize, operation, false, this.searchTerm);
             this.jobSearchResult = data as unknown as JobSearchResult;
             this.isLoadig = false;
 
@@ -53,11 +53,11 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
         },
         async removeJob(jobId: Guid) {
             const proxy = new api.SolrProxy(this.apiRoot, this.tenantId as Guid, this.apiToken!)
-            await proxy.DeleteJob(jobId)
+            await proxy.deleteJob(jobId)
         },
         async downloadFile(fileName: string){
             const proxy = new api.SolrProxy(this.apiRoot, this.tenantId as Guid, this.apiToken!)
-            await proxy.DownloadDataFile(fileName)
+            await proxy.downloadDataFile(fileName)
         }
     },
     getters:{

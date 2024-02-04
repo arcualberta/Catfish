@@ -1,0 +1,1 @@
+{"version":3,"file":"entityProxy.js","sourceRoot":"","sources":["entityProxy.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,IAAI,MAAM,EAAE,MAAM,eAAe,CAAC;AAClD,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AAIxC,MAAM,OAAO,WAAY,SAAQ,SAAS;IACtC,+DAA+D;IAC/D,qDAAqD;IACrD;QACI,KAAK,CAAC,GAAG,MAAM,CAAC,qBAAqB,eAAe,CAAC,CAAC;IAC1D,CAAC;CAQJ"}

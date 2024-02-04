@@ -53,7 +53,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
 
             try {
                 const proxy = new api.SolrProxy(this.selectedDataSourceQueryApi, this.tenantId as unknown as Guid, this.apiToken!)
-                const data = await proxy.Search(params)
+                const data = await proxy.search(params)
                 this.queryResult = data
                 this.queryTime = (new Date().getTime()- this.queryStart)/1000.0
                 this.isLoadig = false;
@@ -97,7 +97,7 @@ export const useSolrSearchStore = defineStore('SolrSearchStore', {
             this.queryStart = new Date().getTime()
 
             const proxy = new api.SolrProxy(this.selectedDataSourceQueryApi, this.tenantId as unknown as Guid, this.apiToken!)
-            const data = await proxy.ScheduleSearchJob(params)
+            const data = await proxy.scheduleSearchJob(params)
 
             this.jobId = data;
             this.isLoadig = false;

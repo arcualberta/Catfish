@@ -1,0 +1,1 @@
+{"version":3,"file":"workflowProxy.js","sourceRoot":"","sources":["workflowProxy.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,IAAI,MAAM,EAAE,MAAM,eAAe,CAAC;AAOlD,OAAO,EAAE,SAAS,EAAY,MAAM,aAAa,CAAC;AAClD,0CAA0C;AAE1C,MAAM,OAAO,aAAc,SAAQ,SAAS;IAGxC;QACI,KAAK,CAAC,GAAG,MAAM,CAAC,qBAAqB,eAAe,CAAC,CAAA;IACzD,CAAC;CA2BJ"}

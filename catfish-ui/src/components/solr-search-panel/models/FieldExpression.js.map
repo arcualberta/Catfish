@@ -1,0 +1,1 @@
+{"version":3,"file":"FieldExpression.js","sourceRoot":"","sources":["FieldExpression.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAoB,MAAM,+BAA+B,CAAC;AAYlF,MAAM,CAAC,MAAM,qBAAqB,GAAG,GAAoB,EAAE;IACvD,OAAO;QACH,oBAAoB,EAAE,EAAE;QACxB,SAAS,EAAE,EAAE;QACb,IAAI,EAAE,eAAe,CAAC,eAAe;KACrB,CAAA;AACxB,CAAC,CAAA"}
