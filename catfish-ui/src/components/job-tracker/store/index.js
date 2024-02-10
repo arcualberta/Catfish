@@ -46,6 +46,10 @@ export const useJobTrackerStore = defineStore('JobTrackerStore', {
         },
         async downloadFile(fileName) {
             const proxy = new api.SolrProxy(this.apiRoot, this.tenantId, this.apiToken);
+            if(fileName.startsWith("https://")){
+                fileName = fileName.substr(fileName.lastIndexOf("fileName=") + 9);
+            }
+            //console.log("FILE NAME:", fileName)
             await proxy.downloadDataFile(fileName);
         }
     },
