@@ -1,9 +1,9 @@
 export default {
-    googleApiKey: "Use dev credentials from https://docs.google.com/document/d/1N_y4aQupxPKPGh2eaxpOqCmc_75QionPp4U_MoY3gZQ/edit",
+    googleApiKey: "Use dev credentials from https://docs.google.com/document/d/******************************/edit",
     googleCalendarIds: ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
     maxEvents: 10,
     initialView: 'dayGridMonth',
-    googleLoginClientId:"Use dev credentials from https://docs.google.com/document/d/1N_y4aQupxPKPGh2eaxpOqCmc_75QionPp4U_MoY3gZQ/edit",
+    googleLoginClientId:"Use dev credentials from https://docs.google.com/document/d/*********************************/edit",
     authorizationApiRoot:"https://localhost:5010/",
     dataRepositoryApiRoot: "https://localhost:5020"
 }
